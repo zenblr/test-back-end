@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 // RxJS
 import { Observable, Subject } from 'rxjs';
-import { finalize, takeUntil, tap } from 'rxjs/operators';
+import { finalize, takeUntil, tap, catchError } from 'rxjs/operators';
 // Translate
 import { TranslateService } from '@ngx-translate/core';
 // Store
@@ -15,6 +15,7 @@ import { AuthNoticeService, Login } from '../../../../core/auth';
 
 // services
 import { AuthService } from '../../../../core/auth/_services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 /**
  * ! Just example => Should be removed in development
@@ -62,7 +63,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 		private store: Store<AppState>,
 		private fb: FormBuilder,
 		private cdr: ChangeDetectorRef,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		private toastr: ToastrService
 	) {
 		this.unsubscribe = new Subject();
 	}
@@ -157,11 +159,17 @@ export class LoginComponent implements OnInit, OnDestroy {
 					} else {
 						this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.INVALID_LOGIN'), 'danger');
 					}
+					this.toastr.success('', 'Successfully Logged In!', { timeOut: 2000, progressBar: true });
+
 				}),
 				takeUntil(this.unsubscribe),
 				finalize(() => {
 					this.loading = false;
 					this.cdr.markForCheck();
+				}),
+				catchError(err => {
+					console.log(err);
+					throw this.toastr.error('Please try again!', err.message, { timeOut: 2000, progressBar: true });
 				})
 			)
 			.subscribe();

@@ -11,6 +11,7 @@
             </kt-portlet-header>
             <kt-portlet-body class="kt-portlet__body">
                 <div class="row">
+                    <!-- <form> -->
                     <div class="col image-box-container">
                         <div>
                             <mat-form-field appearance="outline" class="w-100">
@@ -25,13 +26,15 @@
 
                         <div class="col image-box mat-elevation-z4">
                             <div>
-                                <img src="/assets/media/bg/sc-home1-bg.png">
+                                <img [src]="imageUrl1">
                             </div>
-                            <input style="display: none;" #file accept="image/*" type="file" />
+                            <input style="display: none;" #fileInput accept="image/*" type="file"
+                                (change)="uploadFile($event, 1)" />
                         </div>
 
                         <div class="actionContainer text-center">
-                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item">
+                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item"
+                                (click)="fileInput.click()">
                                 <mat-icon>create</mat-icon>
                             </button>
                             <button class="m-2" mat-mini-fab mat-icon-button color="warn" type="button"
@@ -51,12 +54,16 @@
 
                         <div class="image-box mat-elevation-z4">
                             <div>
-                                <img src="/assets/media/bg/sc-home1-bg.png">
+                                <img [src]="imageUrl2">
                             </div>
+                            <input style="display: none;" #fileInput accept="image/*" type="file"
+                                (change)="uploadFile($event, 2)" />
+
                         </div>
 
                         <div class="actionContainer text-center">
-                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item">
+                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item"
+                                (click)="fileInput.click()">
                                 <mat-icon>create</mat-icon>
                             </button>
                             <button class="m-2" mat-mini-fab mat-icon-button color="warn" type="button"
@@ -76,12 +83,16 @@
 
                         <div class="image-box mat-elevation-z4">
                             <div>
-                                <img src="/assets/media/bg/sc-home1-bg.png">
+                                <img [src]="imageUrl3">
                             </div>
+                            <input style="display: none;" #fileInput accept="image/*" type="file"
+                                (change)="uploadFile($event, 3)" />
+
                         </div>
 
                         <div class="actionContainer text-center">
-                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item">
+                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item"
+                                (click)="fileInput.click()">
                                 <mat-icon>create</mat-icon>
                             </button>
                             <button class="m-2" mat-mini-fab mat-icon-button color="warn" type="button"
@@ -99,6 +110,7 @@
                             <button mat-raised-button color="primary">Submit</button>
                         </div>
                     </div>
+                    <!-- </form> -->
                 </div>
 
             </kt-portlet-body>
