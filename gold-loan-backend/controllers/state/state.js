@@ -1,4 +1,4 @@
-const models = require('../../../models');
+const models = require('../../models');
 const sequelize = models.sequelize;
 
 const Sequelize = models.Sequelize;
@@ -6,21 +6,23 @@ const Op = Sequelize.Op;
 const csv = require('csvtojson')
 
 
-exports.postCity = async(req, res) => {
+exports.postState = async(req, res) => {
     try {
         const csvFilePath = req.file.path;
         const jsonArray = await csv().fromFile(csvFilePath);
-
-        let checkIfCsvUploaded = await models.cities.findAll();
+        let checkIfCsvUploaded = await models.states.findAll();
         if (checkIfCsvUploaded.length > 0) {
-            return res.status(404).json({ messgae: "Cities Csv is already Uploaded" })
+            return res.status(404).json({ messgae: "State Csv is already Uploaded" })
         }
+
         await sequelize.transaction(async t => {
             for (var i = 0; i < jsonArray.length; i++) {
-                let data = await models.cities.create({ name: jsonArray[i].name, stateId: jsonArray[i].state_id }, { transaction: t })
+                let data = await models.states.create({ id: jsonArray[i].id, name: jsonArray[i].name }, { transaction: t })
             }
         }).then(() => {
-            res.status(200).json({ message: "success" })
+            res.status(200).json({
+                message: "success"
+            })
 
         }).catch((exception) => {
             return res.status(500).json({
@@ -28,19 +30,20 @@ exports.postCity = async(req, res) => {
                 data: exception.message
             });
         })
+
     } catch (error) {
         return res.status(500).json({ message: `Internal server error.` })
     }
 }
 
-exports.getCity = async(req, res) => {
+exports.getState = async(req, res) => {
     try {
-        const { stateId } = req.params;
-        let cities = await models.cities.findAll({
-            where: { isActive: true, stateId: stateId },
-            attributes: ['id', 'name', 'stateId'],
+
+        let states = await models.states.findAll({
+            where: { isActive: true },
+            attributes: ['id', 'name'],
         });
-        res.status(200).json({ message: cities })
+        res.status(200).json({ message: states })
 
     } catch (err) {
         return res.status(500).json({ message: `Internal server error.` })

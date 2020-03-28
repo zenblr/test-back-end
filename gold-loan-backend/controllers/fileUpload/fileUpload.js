@@ -1,6 +1,6 @@
 const multer = require('multer');
 
-const models = require('../../../models'); // importing models.
+const models = require('../../models'); // importing models.
 
 
 const storage = multer.diskStorage({

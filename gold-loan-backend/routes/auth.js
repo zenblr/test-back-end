@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-const { userLogin } = require('../../controllers/auth/authController');
-const { wrapper } = require('../../utils/errorWrap')
+const { userLogin } = require('../controllers/auth/authController');
+const { wrapper } = require('../utils/errorWrap')
 
 
 router.post('/userLogin', wrapper(userLogin));

@@ -1,4 +1,4 @@
-const models = require('../../../models'); // importing models.
+const models = require('../../models'); // importing models.
 
 
 

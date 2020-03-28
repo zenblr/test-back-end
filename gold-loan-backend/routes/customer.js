@@ -1,10 +1,10 @@
 const express = require('express');
 const route = express.Router();
 
-const { wrapper } = require('../../utils/errorWrap');
+const { wrapper } = require('../utils/errorWrap');
 
 
-const { registerSendOtp, verifyRegistrationOtp, resendOtp } = require('../../controllers/customer/customer')
+const { registerSendOtp, verifyRegistrationOtp, resendOtp } = require('../controllers/customer/customer')
 
 //Register User
 

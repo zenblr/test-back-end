@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { postState, getState } = require('../../controllers/admin/state/state')
+const { postState, getState } = require('../controllers/state/state')
 
 
 const multer = require('multer');
