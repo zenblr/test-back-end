@@ -1,0 +1,52 @@
+version: "3"
+services: 
+    web:
+      build: ./gold-loan-backend/
+      container_name: gold-loan-nodejs-demo
+      image: gold-loan:nodejs-demo
+      links:
+        - db:db
+        - redis:redis
+      ports:
+        - "8000:3000"
+        
+    
+
+    db:
+      build: ./postgres
+      restart: always
+      container_name: gold-loan-postgres-demo
+      image: gold-loan:postgres-demo
+      environment:
+        LC_ALL: C.UTF-8
+      ports:
+        - "8432:5432"
+      volumes:
+        - gold-loan-pg-data:/var/lib/postgresql/data
+
+    
+    redis:
+      container_name: gold-loan-redis-demo
+      restart: always
+      image: redis:latest
+      expose:
+        - "8379"
+
+    
+
+    nginx:
+      restart: always
+      container_name: gold-loan-nginx-demo
+      image: gold-loan:nginx-demo
+      build: ./gold-admin-frontend/
+      volumes:
+        - ./logs/:/gold/logs
+      ports:
+        - "8200:80"
+      links:
+        - web
+volumes:
+    gold-loan-pg-data:
+    front-horse:
+
+    
