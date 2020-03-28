@@ -24,5 +24,11 @@ router.use('/banner', banner)
 const uploadfile = require('./fileUpload'); // uploadfile Route
 router.use('/upload-file', uploadfile)
 
+const partner=require('./partner');//  partner Route
+router.use('/partner',partner);
+
+const branch=require('./branch'); // branch Route
+router.use('/branch',branch);
+
 
 module.exports = router;
