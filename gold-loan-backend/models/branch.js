@@ -4,17 +4,21 @@ module.exports=(sequelize,DATATYPES)=>{
             type:DATATYPES.INTEGER,
             field:'partner_id'
         },
+        branchId:{
+            type:DATATYPES.STRING,
+            field:'branch_id'
+        },
         name:{
             type:DATATYPES.STRING,
             field:'name'
         },
-        city:{
-            type:DATATYPES.STRING,
-            field:'city'
+        cityId:{
+            type:DATATYPES.INTEGER,
+            field:'city_id'
         },
-        state:{
-            type:DATATYPES.STRING,
-            field:'state'
+        stateId:{
+            type:DATATYPES.INTEGER,
+            field:'state_id'
         },
         address:{
             type:DATATYPES.TEXT,
@@ -27,12 +31,13 @@ module.exports=(sequelize,DATATYPES)=>{
 
         },
         commission:{
-            type:DATATYPES.STRING,
+            type:DATATYPES.BIGINT,
             field:'commission'
         },
     isActive:{
         type:DATATYPES.BOOLEAN,
-        field:'is_active'
+        field:'is_active',
+        defaultValue:true
     }},
    
         {
@@ -44,6 +49,8 @@ module.exports=(sequelize,DATATYPES)=>{
 
     Branch.associate = function(models) {
         Branch.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
+        Branch.belongsTo(models.states,{foreignKey:'stateId', as :'states'});
+        Branch.belongsTo(models.cities,{foreignKey:'cityId', as :'cities'});
 
     }
     return Branch;
