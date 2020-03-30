@@ -4,7 +4,7 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 
 
-const { registerSendOtp, verifyRegistrationOtp, resendOtp } = require('../controllers/customer/customer')
+const { registerSendOtp, verifyRegistrationOtp, resendOtp } = require('../controllers/user/user')
 
 //Register User
 

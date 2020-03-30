@@ -7,8 +7,8 @@ router.use('/auth', auth);
 
 
 //CUSTOMER ROUTE
-const customer = require('./customer'); //Customer Route
-router.use('/customer', customer);
+const user = require('./user'); //Customer Route
+router.use('/user', user);
 
 
 //ADMIN ROUTES
