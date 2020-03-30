@@ -1,27 +1,31 @@
 var express = require('express');
 var router = express.Router();
 
-//AUTH ROUTE
-const auth = require('./auth'); //auth Route
+const auth = require('./auth'); //Auth Route
 router.use('/auth', auth);
 
 
-//CUSTOMER ROUTE
-const user = require('./user'); //Customer Route
+const user = require('./user'); //User Route
 router.use('/user', user);
 
 
-//ADMIN ROUTES
-const city = require('./city'); //city Route
+const customer = require('./customer'); //Customer Route
+router.use('/customer', customer);
+
+
+const city = require('./city'); //City Route
 router.use('/city', city);
 
-const state = require('./state'); //state Route
+
+const state = require('./state'); //State Route
 router.use('/state', state);
 
-const banner = require('./banner'); // banner Route
+
+const banner = require('./banner'); //Banner Route
 router.use('/banner', banner)
 
-const uploadfile = require('./fileUpload'); // uploadfile Route
+
+const uploadfile = require('./fileUpload'); //Uploadfile Route
 router.use('/upload-file', uploadfile)
 
 
