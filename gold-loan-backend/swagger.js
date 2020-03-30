@@ -2,13 +2,15 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const express = require("express");
 const app = express();
 
+const { BASEURLFORSWAGGER } = require('./config/baseurl')
+
 const swaggerDefinition = {
     info: {
         swagger: "2.0",
         title: 'Gold Loan',
         description: 'Gold Loan APIs',
     },
-    host: 'localhost:3000',
+    host: `${BASEURLFORSWAGGER}`,
     basePath: '/api',
     securityDefinitions: {
         bearerAuth: {

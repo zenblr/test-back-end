@@ -15,12 +15,11 @@ const API_ROLES_URL = 'api/roles';
 
 @Injectable()
 export class AuthService {
-    baseUrl = 'http://173.249.49.7:3001';
 
     constructor(private http: HttpClient) { }
     // Authentication/Authorization
     login(username: string, password: string): Observable<User> {
-        return this.http.post<User>(`${this.baseUrl}/api/auth/userLogin`, { firstName: username, password });
+        return this.http.post<User>(`/api/auth/userLogin`, { firstName: username, password });
     }
 
     generateOtp(userName: string) {

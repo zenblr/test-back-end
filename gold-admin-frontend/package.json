@@ -48,7 +48,6 @@
         "ng-inline-svg": "^9.2.2",
         "ngrx-store-freeze": "^0.2.4",
         "ngx-clipboard": "^12.3.0",
-        "ngx-daterangepicker-material": "^2.1.11",
         "ngx-highlightjs": "^3.0.3",
         "ngx-perfect-scrollbar": "^8.0.0",
         "ngx-permissions": "^7.0.3",
