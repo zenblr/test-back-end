@@ -28,18 +28,18 @@ export class PartnerAddComponent implements OnInit {
 
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   partnerForm: FormGroup;
-  // states: any;
-  // cities: any;
-  states = [
-    { id: 1, name: 'maharashtra' },
-    { id: 2, name: 'Goa' },
-    { id: 3, name: 'punjab' },
-  ];
-  cities = [
-    { id: 1, name: 'maharashtra' },
-    { id: 2, name: 'Goa' },
-    { id: 3, name: 'punjab' },
-  ];
+  states: any;
+  cities: any;
+  // states = [
+  //   { id: 1, name: 'maharashtra' },
+  //   { id: 2, name: 'Goa' },
+  //   { id: 3, name: 'punjab' },
+  // ];
+  // cities = [
+  //   { id: 1, name: 'maharashtra' },
+  //   { id: 2, name: 'Goa' },
+  //   { id: 3, name: 'punjab' },
+  // ];
 
   constructor(
     public dialogRef: MatDialogRef<PartnerAddComponent>,
@@ -51,39 +51,38 @@ export class PartnerAddComponent implements OnInit {
 
   ngOnInit() {
     this.formInitialize();
-    // this.getStates();
+    this.getStates();
   }
 
   formInitialize() {
     this.partnerForm = this.fb.group({
-      partnerName: ['', [Validators.required]],
-      partnerId: ['', [Validators.required]],
-      commission: ['', [Validators.required]],
-      state: ['', [Validators.required]],
-      city: ['', [Validators.required]],
-      address: ['', [Validators.required]],
+      name: ['', [Validators.required]],
+      // partnerId: ['', [Validators.required]],
+      commission: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
+      // state: ['', [Validators.required]],
+      // city: ['', [Validators.required]],
+      // address: ['', [Validators.required]],
     });
   }
 
   getStates() {
     this.sharedService.getStates().subscribe(res => {
-      console.log(res);
-      // this.states = res;
+      this.states = res.message;
     },
       error => {
-        console.error(error);
+        // console.error(error);
       });
   }
 
-  getCities() {
+  getCities(event) {
+    // console.log(event);
     const stateId = this.controls.state.value;
     console.log(stateId);
     this.sharedService.getCities(stateId).subscribe(res => {
-      console.log(res);
-      // this.cities = res;
+      this.cities = res.message;
     },
       error => {
-        console.error(error);
+        // console.error(error);
       });
   }
 
@@ -105,8 +104,8 @@ export class PartnerAddComponent implements OnInit {
       }
     },
       error => {
-        console.log(error);
-        const msg = 'Partner Added Successfully';
+        console.log(error.error.message);
+        const msg = error.error.message;
         this.toastr.errorToastr(msg);
       });
 

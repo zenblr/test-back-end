@@ -94,53 +94,45 @@ export class UploadBannerComponent implements OnInit {
   }
 
   singleProductImageChangenew(event, num) {
+    debugger
     if (num == 1) {
       if (event.target.files.length && event.target.files[0]) {
         let imgSize = event.target.files[0].size;
-        if (imgSize > 50000) {
+        if (imgSize > 150000) {
           this.widthHeightError = false;
-          // this.enableButton = false;
           this.img1Error = true;
         }
         else {
           this.img1Error = false;
-
           this.imageFile = <File>event.target.files[0];
           var reader = new FileReader();
-
           const img = new Image();
           img.src = window.URL.createObjectURL(this.imageFile);
-
           this.imagePath1 = event.target.files;
           reader.readAsDataURL(event.target.files[0]);
           reader.onload = (_event) => {
             setTimeout(() => {
               const width = img.naturalWidth;
               const height = img.naturalHeight;
-
               window.URL.revokeObjectURL(img.src);
-
-
-              if (width > 500 && height > 500) {
-
+              if (width > 600 || height > 600) {
                 this.widthHeightError = true;
-
                 this.enableButton = false;
-
-
               } else {
+                this.url = reader.result;
                 const fd = new FormData();
                 fd.append('avatar', this.imageFile, this.imageFile.name);
                 this.uploadBannerService.uploadFile(fd).subscribe(
                   res => {
                     this.images[num - 1] = '';
                     this.enableBtn = false;
+                    this.widthHeightError = false;
                     this.ref.detectChanges();
                     this.images[num - 1] = res['uploadFile']['URL'];
                     // this.spinnerValue = true;
                     this.uploadBannerService.uploadBanners(this.images).subscribe(
                       res => {
-                        // this.spinnerValue = false;            
+                        // this.spinnerValue = false;
                         this.ref.detectChanges();
                         this.toast.success('Success', 'Banners Uploaded Successfully', {
                           timeOut: 3000
@@ -149,39 +141,36 @@ export class UploadBannerComponent implements OnInit {
                         this.ref.detectChanges();
                       },
                       err => {
+                        // this.spinnerValue = false;
+                        this.ref.detectChanges();
+                        this.widthHeightError = false;
+                        this.ref.detectChanges();
                         this.toast.error('Sorry', err['error']['message'], {
                           timeOut: 3000
                         });
                       }
                     )
-
                     this.ref.detectChanges();
                   },
                   err => {
-                    this.enableBtn = true;
+                    // this.spinnerValue = false;
                     this.ref.detectChanges();
+                    this.enableBtn = true;
                   }
                 )
               }
               this.ref.detectChanges();
-
             }, 2000);
-
           }
         }
       }
     } else if (num == 2) {
-      console.log("img2");
       if (event.target.files.length && event.target.files[0]) {
         let imgSize = event.target.files[0].size;
-        if (imgSize > 50000) {
-
+        if (imgSize > 150000) {
           this.widthHeightError2 = false;
-          // this.enableButton = false;
           this.img2Error = true;
-
         } else {
-
           this.img2Error = false;
           this.imageFile2 = <File>event.target.files[0];
           const img = new Image();
@@ -193,21 +182,16 @@ export class UploadBannerComponent implements OnInit {
             setTimeout(() => {
               const width = img.naturalWidth;
               const height = img.naturalHeight;
-
-
               window.URL.revokeObjectURL(img.src);
-
-              if (width > 500 && height > 500) {
-
+              if (width > 600 || height > 600) {
                 this.widthHeightError2 = true;
                 this.enableButton = false;
-
-
-
               } else {
-
+                this.url2 = reader.result;
+                this.widthHeightError2 = false;
+                this.ref.detectChanges();
                 const fd = new FormData();
-                fd.append('avatar', this.imageFile, this.imageFile.name);
+                fd.append('avatar', this.imageFile2, this.imageFile2.name);
                 this.uploadBannerService.uploadFile(fd).subscribe(
                   res => {
                     this.images[num - 1] = '';
@@ -217,42 +201,43 @@ export class UploadBannerComponent implements OnInit {
                     // this.spinnerValue = true;
                     this.uploadBannerService.uploadBanners(this.images).subscribe(
                       res => {
-                        // this.spinnerValue = false;              
+                        // this.spinnerValue = false;
                         this.ref.detectChanges();
                         this.toast.success('success', 'Banners Uploaded Successfully', {
                           timeOut: 3000
                         });
                         this.getBanners();
                         this.ref.detectChanges();
+                      },
+                      err => {
+                        // this.spinnerValue = false;
+                        this.ref.detectChanges();
+                        this.toast.error('Sorry', err['error']['message'], {
+                          timeOut: 3000
+                        });
                       }
                     )
-
                     this.ref.detectChanges();
                   },
                   err => {
-                    this.enableBtn = true;
+                    // this.spinnerValue = false;
                     this.ref.detectChanges();
+                    this.enableBtn = true;
                   }
                 )
               }
-
               this.ref.detectChanges();
-
             }, 2000);
-
           }
         }
       }
     } else {
+      // debugger
       if (event.target.files.length && event.target.files[0]) {
-
         let imgSize = event.target.files[0].size;
-        if (imgSize > 50000) {
-
+        if (imgSize > 150000) {
           this.widthHeightError3 = false;
-
           this.img3Error = true;
-
         } else {
           this.img3Error = false;
           this.imageFile3 = <File>event.target.files[0];
@@ -265,19 +250,16 @@ export class UploadBannerComponent implements OnInit {
             setTimeout(() => {
               const width = img.naturalWidth;
               const height = img.naturalHeight;
-
-
               window.URL.revokeObjectURL(img.src);
-
-
-              if (width > 500 && height > 500) {
-
+              if (width > 600 || height > 600) {
                 this.widthHeightError3 = true;
                 this.enableButton = false;
-
               } else {
+                this.url3 = reader.result;
+                this.widthHeightError3 = false;
+                this.ref.detectChanges();
                 const fd = new FormData();
-                fd.append('avatar', this.imageFile, this.imageFile.name);
+                fd.append('avatar', this.imageFile3, this.imageFile3.name);
                 this.uploadBannerService.uploadFile(fd).subscribe(
                   res => {
                     this.images[num - 1] = '';
@@ -287,36 +269,37 @@ export class UploadBannerComponent implements OnInit {
                     // this.spinnerValue = true;
                     this.uploadBannerService.uploadBanners(this.images).subscribe(
                       res => {
-                        // this.spinnerValue = false;         
+                        // this.spinnerValue = false;
                         this.ref.detectChanges();
                         this.toast.success('success', 'Banners Uploaded Successfully', {
                           timeOut: 3000
                         });
                         this.getBanners();
                         this.ref.detectChanges();
+                      },
+                      err => {
+                        // this.spinnerValue = false;
+                        this.ref.detectChanges();
+                        this.toast.error('Sorry', err['error']['message'], {
+                          timeOut: 3000
+                        });
                       }
                     )
-
                     this.ref.detectChanges();
                   },
                   err => {
                     this.enableBtn = true;
                     this.ref.detectChanges();
                   }
-
-
                 )
               }
-
               this.ref.detectChanges();
-
             }, 2000);
             this.ref.detectChanges();
           }
         }
       }
     }
-
   }
 
   getBanners() {
@@ -361,6 +344,111 @@ export class UploadBannerComponent implements OnInit {
         this.ref.detectChanges();
       }
     );
+  }
+
+  deleteBanner(num) {
+    if (num == 1) {
+      // const dialogRef = this.dialog.open(DeleteEntityDialogComponent, {
+      //   data: { title: "UploadBannersComponent", action: "Delete banner", num },
+      //   width: "50vw"
+      // }); dialogRef.afterClosed().subscribe(res => {
+      //   let status = res;
+      //   this.ref.detectChanges();
+      //   if (status == "delete") {
+      this.url = '';
+      this.images[num - 1] = '';
+      this.urlCheck = true;
+      // this.spinnerValue = true;
+      this.uploadBannerService.uploadBanners(this.images).subscribe(
+        res => {
+          // this.spinnerValue = false;
+          this.ref.detectChanges();
+          this.toast.success('success', 'Banners Deleted Successfully', {
+            timeOut: 3000
+          });
+          this.getBanners();
+          this.ref.detectChanges();
+        },
+        err => {
+          // this.spinnerValue = false;
+          this.ref.detectChanges();
+          this.toast.error('Sorry', err['error']['message'], {
+            timeOut: 3000
+          });
+        }
+      )
+      //   }
+      // });
+    }
+    else if (num == 2) {
+
+      // const dialogRef = this.dialog.open(DeleteEntityDialogComponent, {
+      //   data: { title: "UploadBannersComponent", action: "Delete banner", num },
+      //   width: "50vw"
+      // }); dialogRef.afterClosed().subscribe(res => {
+      //   let status = res;
+      //   this.ref.detectChanges();
+      //   if (status == "delete") {
+      this.url2 = '';
+      this.images[num - 1] = '';
+      this.urlCheck2 = true;
+      // this.spinnerValue = true;
+      this.ref.detectChanges();
+      this.uploadBannerService.uploadBanners(this.images).subscribe(
+        res => {
+          // this.spinnerValue = false;
+          this.ref.detectChanges();
+          this.toast.success('success', 'Banners Deleted Successfully', {
+            timeOut: 3000
+          });
+          this.getBanners();
+          this.ref.detectChanges();
+        },
+        err => {
+          // this.spinnerValue = false;
+          this.ref.detectChanges();
+          this.toast.error('Sorry', err['error']['message'], {
+            timeOut: 3000
+          });
+        }
+      )
+      //   }
+      // });
+    }
+    else if (num == 3) {
+      // const dialogRef = this.dialog.open(DeleteEntityDialogComponent, {
+      //   data: { title: "UploadBannersComponent", action: "Delete banner", num },
+      //   width: "50vw"
+      // }); 
+      // dialogRef.afterClosed().subscribe(res => {
+      //   let status = res;
+      //   this.ref.detectChanges();
+      //   if (status == "delete") {
+      this.url3 = '';
+      this.images[num - 1] = '';
+      this.urlCheck3 = true;
+      // this.spinnerValue = true;
+      this.uploadBannerService.uploadBanners(this.images).subscribe(
+        res => {
+          // this.spinnerValue = false;
+          this.ref.detectChanges();
+          this.toast.success('success', 'Banners Deleted Successfully', {
+            timeOut: 3000
+          });
+          this.getBanners();
+          this.ref.detectChanges();
+        },
+        err => {
+          // this.spinnerValue = false;
+          this.ref.detectChanges();
+          this.toast.error('Sorry', err['error']['message'], {
+            timeOut: 3000
+          });
+        }
+      )
+      //   }
+      // });
+    }
   }
 
 }

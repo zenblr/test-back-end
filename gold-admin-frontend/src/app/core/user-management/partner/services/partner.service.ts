@@ -14,11 +14,15 @@ export class PartnerService {
   }
 
   getPartner(): Observable<any> {
-    return this.http.get<any>(`/api/partner/getpartner`);
+    return this.http.get<any>(`/api/partner/readpartner`);
   }
 
-  editPartner(id, data): Observable<any> {
-    return this.http.get<any>(`/api/partner/editpartner/${id}`, data);
+  getPartnerById(id): Observable<any> {
+    return this.http.get<any>(`/api/partner/readpartnerbyid/${id}`);
+  }
+
+  updatePartner(id, data): Observable<any> {
+    return this.http.get<any>(`/api/partner/updatepartner/${id}`, data);
   }
 
   deletePartner(data): Observable<any> {

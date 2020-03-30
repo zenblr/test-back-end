@@ -22,8 +22,8 @@ import { ToastrComponent } from '../../../../views/partials/components/toastr/to
  * ! Just example => Should be removed in development
  */
 const DEMO_PARAMS = {
-	EMAIL: 'rupesh',
-	PASSWORD: 'rupesh'
+	EMAIL: '',
+	PASSWORD: ''
 };
 
 @Component({

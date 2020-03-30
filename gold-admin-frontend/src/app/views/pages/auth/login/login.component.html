@@ -24,10 +24,10 @@
 					<mat-label>Username</mat-label>
 					<input matInput type="email" placeholder="{{ 'AUTH.INPUT.EMAIL' | translate }}"
 						formControlName="username" autocomplete="off" />
-					<!-- <mat-error *ngIf="isControlHasError('email','required')">
+					<mat-error *ngIf="isControlHasError('username','required')">
 						<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
 					</mat-error>
-					<mat-error *ngIf="isControlHasError('email','email')">
+					<!-- <mat-error *ngIf="isControlHasError('email','email')">
 						<strong>{{ 'AUTH.VALIDATION.INVALID_FIELD' | translate }}</strong>
 					</mat-error>
 					<mat-error *ngIf="isControlHasError('email','minlength')">

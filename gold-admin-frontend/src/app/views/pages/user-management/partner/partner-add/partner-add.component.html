@@ -28,66 +28,58 @@
                             <div>
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>Partner Name</mat-label>
-                                    <input matInput formControlName="partnerName" autocomplete="off"
+                                    <input matInput formControlName="name" autocomplete="off"
                                         placeholder="Enter Partner Name">
                                     <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
                                     <!-- <mat-hint>Hint</mat-hint> -->
-                                    <mat-error *ngIf="controls.partnerName.errors?.required">Required field</mat-error>
+                                    <mat-error *ngIf="controls.name.errors?.required">Required field</mat-error>
 
                                 </mat-form-field>
                             </div>
 
                             <div class="row">
                                 <!-- Partner Id -->
-                                <div class="col">
+                                <!-- <div class="col">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Partner Id</mat-label>
                                         <input matInput formControlName="partnerId" autocomplete="off"
                                             placeholder="Enter Partner Id">
-                                        <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
-                                        <!-- <mat-hint>Hint</mat-hint> -->
                                         <mat-error *ngIf="controls.partnerId.errors?.required">Required field
                                         </mat-error>
 
                                     </mat-form-field>
-                                </div>
+                                </div> -->
 
-                                <!-- Commission -->
                                 <div class="col">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Commission</mat-label>
                                         <input matInput formControlName="commission" type="number"
-                                            placeholder="Enter Commission">
-                                        <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
-                                        <!-- <mat-hint>Hint</mat-hint> -->
+                                            placeholder="Enter Commission" min="0" max="100">
                                         <mat-error *ngIf="controls.commission.errors?.required">Required field
                                         </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.commission.errors?.min ||controls.commission.errors?.max">
+                                            Invalid Input</mat-error>
 
                                     </mat-form-field>
                                 </div>
                             </div>
 
 
-                            <div class="row">
-                                <!-- State -->
+                            <!-- <div class="row">
                                 <div class="col">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>State</mat-label>
-                                        <mat-select formControlName="state">
-                                            <mat-option *ngFor="let state of states" (selectionChange)="getCities()"
-                                                [value]="state.id">
+                                        <mat-select formControlName="state" (selectionChange)="getCities($event)">
+                                            <mat-option *ngFor="let state of states" [value]="state.id">
                                                 {{state.name}}
                                             </mat-option>
                                         </mat-select>
-                                        <!-- <input matInput placeholder="Enter State"> -->
-                                        <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
-                                        <!-- <mat-hint>Hint</mat-hint> -->
                                         <mat-error *ngIf="controls.state.errors?.required">Required field</mat-error>
 
                                     </mat-form-field>
                                 </div>
 
-                                <!-- City -->
                                 <div class="col">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>City</mat-label>
@@ -96,25 +88,20 @@
                                                 {{city.name}}
                                             </mat-option>
                                         </mat-select>
-                                        <!-- <input matInput placeholder="Enter City"> -->
-                                        <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
-                                        <!-- <mat-hint>Hint</mat-hint> -->
                                         <mat-error *ngIf="controls.city.errors?.required">Required field</mat-error>
 
                                     </mat-form-field>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Address -->
-                            <div>
+                            <!-- <div>
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>Address</mat-label>
                                     <input matInput formControlName="address" placeholder="Enter Address">
-                                    <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
-                                    <!-- <mat-hint>Hint</mat-hint> -->
                                     <mat-error *ngIf="controls.address.errors?.required">Required field</mat-error>
                                 </mat-form-field>
-                            </div>
+                            </div> -->
 
                         </div>
                     </div>
