@@ -445,6 +445,40 @@ export class MenuConfig {
 						},
 					]
 				},
+				{
+					title: 'User Management',
+					root: true,
+					icon: 'flaticon-users-1',
+					// page: '/user-management',
+					bullet: 'dot',
+					submenu: [
+						// {
+						// 	title: 'Upload Banner',
+						// 	page: '/upload-data/upload-banner',
+						// 	bullet: 'dot',
+						// },
+						{
+							title: 'Partner Details',
+							page: '/user-management/partner',
+							bullet: 'dot',
+						},
+						{
+							title: 'Branch Details',
+							page: '/user-management/branch',
+							bullet: 'dot',
+						},
+						// {
+						// 	title: 'Upload Lender Banner',
+						// 	// page: '/material/form-controls/autocomplete',
+						// 	bullet: 'dot',
+						// },
+						// {
+						// 	title: 'Upload Scheme',
+						// 	// page: '/material/form-controls/autocomplete',
+						// 	bullet: 'dot',
+						// },
+					]
+				},
 				// {
 				// 	title: 'Layout Builder',
 				// 	root: true,

@@ -40,11 +40,11 @@ export class UserProfileComponent implements OnInit {
 	 */
 	ngOnInit(): void {
 		const token = localStorage.getItem('accessToken');
-		console.log(token);
+		// console.log(token);
 		const arr = token.split('.');
 		const payload = arr[1];
 		const decodedToken = atob(payload);
-		console.log(decodedToken);
+		// console.log(decodedToken);
 		this.user$ = decodedToken;
 		// this.user$ = this.store.pipe(select(currentUser));
 	}

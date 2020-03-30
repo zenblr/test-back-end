@@ -1,5 +1,5 @@
 // Angular
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 // RxJS
@@ -16,6 +16,7 @@ import { AuthNoticeService, Login } from '../../../../core/auth';
 // services
 import { AuthService } from '../../../../core/auth/_services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { ToastrComponent } from '../../../../views/partials/components/toastr/toastr.component';
 
 /**
  * ! Just example => Should be removed in development
@@ -31,6 +32,8 @@ const DEMO_PARAMS = {
 	encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit, OnDestroy {
+
+	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 	// Public params
 	loginForm: FormGroup;
 	loading = false;
@@ -64,7 +67,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 		private fb: FormBuilder,
 		private cdr: ChangeDetectorRef,
 		private route: ActivatedRoute,
-		private toastr: ToastrService
 	) {
 		this.unsubscribe = new Subject();
 	}
@@ -145,7 +147,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 			.login(authData.username, authData.password)
 			.pipe(
 				tap(user => {
-					console.log(user);
+					// console.log(user);
 					if (user) {
 						// this.store.dispatch(new Login({ authToken: user.accessToken }));
 						localStorage.setItem('accessToken', user['Token']);
@@ -159,7 +161,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 					} else {
 						this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.INVALID_LOGIN'), 'danger');
 					}
-					this.toastr.success('', 'Successfully Logged In!', { timeOut: 2000, progressBar: true });
+					const msg = 'Successfully Logged In';
+					this.toastr.successToastr(msg);
 
 				}),
 				takeUntil(this.unsubscribe),
@@ -168,8 +171,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 					this.cdr.markForCheck();
 				}),
 				catchError(err => {
-					console.log(err);
-					throw this.toastr.error('Please try again!', err.message, { timeOut: 2000, progressBar: true });
+
+					let showError = JSON.stringify(err.error.message);
+					this.toastr.successToastr(showError);
+					throw err;
+
 				})
 			)
 			.subscribe();
