@@ -1,19 +1,16 @@
-const express = require('express');
-const route = express.Router();
+var express = require('express');
+var router = express.Router();
 
-const { wrapper } = require('../utils/errorWrap');
+const { wrapper } = require('../utils/errorWrap')
 
+const { addCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer } = require('../controllers/customer/customer')
 
-const { registerSendOtp, verifyRegistrationOtp, resendOtp } = require('../controllers/customer/customer')
+router.post('/add-customer', addCustomer);
 
-//Register User
+router.delete('/deactivate-customer', deactivateCustomer);
 
-route.post('/registerOtp', registerSendOtp);
+router.get('/get-all-customers', getAllCustomers);
 
-route.post('/verifyOtp', verifyRegistrationOtp);
+router.get('/get-single-customer', getSingleCustomer)
 
-route.post('/resendOtp', resendOtp);
-
-
-
-module.exports = route;
+module.exports = router;

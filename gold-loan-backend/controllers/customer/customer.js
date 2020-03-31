@@ -5,103 +5,112 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 
 const check = require('../../lib/checkLib');
-const request = require('request');
-const { createRefrenceCode } = require('../../utils/refrenceCode');
-//for email
-const { sendMail } = require('../../service/EmailService')
-const CONSTANT = require('../../utils/constant');
 
-exports.registerSendOtp = async(req, res) => {
+exports.addCustomer = async(req, res) => {
+
     try {
-        let { firstName, lastName, password, mobileNumber, email, panCardNumber, address } = req.body;
-        let userExist = await models.users.findOne({ where: { mobileNumber: mobileNumber } })
-
-        if (!check.isEmpty(userExist)) {
+        const { firstName, lastName, password, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, statusId, isActive } = req.body
+        let customerExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
+        if (!check.isEmpty(customerExist)) {
             return res.status(404).json({ message: 'This Mobile number is already Exist' });
         }
-        const refrenceCode = await createRefrenceCode(5);
-        let otp = Math.floor(1000 + Math.random() * 9000);
+
+        let getStageId = await models.stage.findOne({ where: { stageName: 'lead' } });
+        let stageId = getStageId.id;
 
         await sequelize.transaction(async t => {
+            const customer = await models.customers.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, address, stateId, cityId, postalCode, ratingId, stageId, statusId }, { transaction: t })
 
-            const user = await models.users.create({ firstName, lastName, password, mobileNumber, email, otp, panCardNumber }, { transaction: t })
-            for (let i = 0; i < address.length; i++) {
-                let data = await models.address.create({
-                    userId: user.id,
-                    landMark: address[i].landMark,
-                    stateId: address[i].stateId,
-                    cityId: address[i].cityId,
-                    postalCode: address[i].postalCode
-                }, { transaction: t })
-            }
-        }).then(() => {
-            request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${refrenceCode} your OTP is ${otp}`);
-
-            // //for email
-            // const Emaildata = {
-            //     data: `Your otp is ${user.otp}`,
-            //     email: user.email
-            // }
-            // await sendMail(Emaildata)
-            // //for email
-            return res.status(200).json({ message: 'Otp send to your Mobile number.', refrenceCode: refrenceCode });
-        }).catch((exception) => {
+        }).then((customer) => {
+            return res.status(200).json({ messgae: `User created` })
+        }).catch(() => {
             return res.status(500).json({
                 message: "something went wrong",
                 data: exception.message
             });
         })
     } catch (error) {
-        return res.status(500).json({ message: `Internal server error.` })
+        return res.status(500).json({ message: `Internal server error` })
     }
 }
 
-exports.verifyRegistrationOtp = async(req, res) => {
+
+exports.deactivateCustomer = async(req, res) => {
     try {
-        const { mobileNumber, otp } = req.body;
-        let user = await models.users.findOne({ where: { mobileNumber: mobileNumber } });
-
-        if (check.isEmpty(user)) {
-            return res.status(404).json({ message: 'User not found' });
+        const { customerId, value } = req.query;
+        let customerExist = await models.customers.findOne({ where: { id: customerId } })
+        if (check.isEmpty(customerExist)) {
+            return res.status(404).json({ message: 'Customer is not exist' });
         }
-        if (user.dataValues.otp === otp) {
-            let verifyUser = await models.users.update({ otp: null, isActive: true }, { where: { id: user.dataValues.id } });
-
-            ////for Email    
-            // const Emaildata = {
-            //     data: `Your Login Credentials userName: ${user.firstName} & password: ${password}`,
-            //     email: user.email
-            // }
-            // await sendMail(Emaildata)
-            ////for Email    
-
-            return res.status(200).json({ message: 'Success' });
-        } else {
-            return res.status(400).json({ message: 'Invalid OTP' });
-        }
+        await models.customers.update({ isActive: value }, { where: { id: customerId } })
+        return res.status(200).json({ message: `Updated` })
     } catch (error) {
-        res.status(500).json({ message: `Internal Server error.` })
+        return res.status(500).json({ message: `Internal server error` })
     }
 }
 
-exports.resendOtp = async(req, res) => {
+exports.getAllCustomers = async(req, res) => {
     try {
-        const { mobileNumber } = req.body;
-        let userDetails = await models.users.findOne({ where: { mobileNumber } });
-        if (userDetails) {
-            let otp = Math.floor(1000 + Math.random() * 9000);
-            const refrenceCode = await createRefrenceCode(5);
-            let otpAdded = await models.users.update({ otp }, { where: { id: userDetails.id } });
 
-            request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${refrenceCode} your OTP is ${otp}`);
-
-            return res.status(200).json({ message: 'Otp send to your Mobile number.', refrenceCode: refrenceCode });
-
-        } else {
-            res.status(400).json({ message: 'User does not exists, please contact to Admin' });
-        }
+        let allCustomers = await models.customers.findAll({
+            include: [{
+                model: models.states,
+                as: 'state',
+            }, {
+                model: models.cities,
+                as: 'city',
+            }, {
+                model: models.rating,
+                as: 'rating'
+            }, {
+                model: models.stage,
+                as: 'stage'
+            }, {
+                model: models.status,
+                as: 'status'
+            }]
+        });
+        return res.status(200).json({ allCustomers })
 
     } catch (error) {
-        res.status(500).json({ message: `Internal Server error.` })
+        return res.status(500).json({ message: `Internal server error` })
+
+    }
+}
+
+exports.getSingleCustomer = async(req, res) => {
+    try {
+        const { customerId } = req.query;
+        let singleCustomer = await models.customers.findOne({
+            where: {
+                id: customerId
+            },
+            include: [{
+                model: models.states,
+                as: 'state',
+            }, {
+                model: models.cities,
+                as: 'city',
+            }, {
+                model: models.rating,
+                as: 'rating'
+            }, {
+                model: models.stage,
+                as: 'stage'
+            }, {
+                model: models.status,
+                as: 'status'
+            }]
+        });
+        if (check.isEmpty(singleCustomer)) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+
+
+        return res.status(200).json({ singleCustomer })
+
+    } catch (error) {
+        return res.status(500).json({ message: `Internal server error` })
+
     }
 }

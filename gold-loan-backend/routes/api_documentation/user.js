@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /customer/registerOtp:
+ * /user/registerOtp:
  *   post:
  *     tags:
  *       - Customer Registration
@@ -38,7 +38,7 @@
  *          description: Your otp send it on to the mobile number
  *       401:
  *          description: Something went wrong
- * /customer/verifyOtp:
+ * /user/verifyOtp:
  *   post:
  *     tags:
  *       - Customer Registration
@@ -66,7 +66,7 @@
  *       400:
  *          description: Invalid Otp
  * 
- * /customer/resendOtp:
+ * /user/resendOtp:
  *   post:
  *     tags:
  *       - Customer Registration

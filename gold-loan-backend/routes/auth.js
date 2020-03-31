@@ -1,46 +1,17 @@
 var express = require('express');
 var router = express.Router();
 
-const { userLogin } = require('../controllers/auth/authController');
-const { wrapper } = require('../utils/errorWrap')
+const { userLogin } = require('../controllers/auth/userAuthController');
+const { wrapper } = require('../utils/errorWrap');
+
+const { customerLogin } = require('../controllers/auth/customerAuthController');
 
 
+//User Login
 router.post('/userLogin', wrapper(userLogin));
 
 
+//Customer Login
+router.post('/customerLogin', wrapper(customerLogin));
 
 module.exports = router;
-
-/**
- * @swagger
- * /auth/userLogin:
- *   post:
- *     tags:
- *       - Authentication
- *     name: userLogin
- *     summary: To get login 
- *     consumes:
- *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         schema:
- *           type: object
- *           properties:
- *             firstName:
- *               type: string
- *             password:
- *               type: string
- *               format: password
- *         required:
- *           - firstName
- *           - password
- *     responses:
- *       200:
- *         description: Your refresh token
- *       401:
- *         description: You entered wrong password
- *       404:
- *         description: User not found
- * 
- */
