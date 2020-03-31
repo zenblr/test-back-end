@@ -9,20 +9,25 @@ const check = require('../../lib/checkLib');
 exports.addCustomer = async(req, res) => {
 
     try {
-        const { firstName, lastName, password, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, statusId } = req.body
+        // cheanges needed here 
+        let createdBy = 2
+        let modifiedBy = 2
+
+        let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, statusId } = req.body
         let customerExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
         if (!check.isEmpty(customerExist)) {
             return res.status(404).json({ message: 'This Mobile number is already Exist' });
         }
 
+
         let getStageId = await models.stage.findOne({ where: { stageName: 'lead' } });
         let stageId = getStageId.id;
 
         await sequelize.transaction(async t => {
-            const customer = await models.customers.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, address, stateId, cityId, postalCode, ratingId, stageId, statusId }, { transaction: t })
+            const customer = await models.customers.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, address, stateId, cityId, postalCode, ratingId, stageId, statusId, createdBy, modifiedBy }, { transaction: t })
         }).then((customer) => {
             return res.status(200).json({ messgae: `User created` })
-        }).catch(() => {
+        }).catch((exception) => {
             return res.status(500).json({
                 message: "something went wrong",
                 data: exception.message
@@ -52,15 +57,21 @@ exports.deactivateCustomer = async(req, res) => {
 
 exports.editCustomer = async(req, res) => {
     try {
-        const { id, firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive } = req.body
-        let mobileNumberExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
 
+        // changes need here
+        let modifiedBy = 2;
+
+        let { id, firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive } = req.body
+        let customerExist = await models.customers.findOne({ where: { id: id } })
+        if (check.isEmpty(customerExist)) {
+            return res.status(404).json({ message: 'Customer is not exist' });
+        }
+        let mobileNumberExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
         if (mobileNumberExist > 1) {
             return res.status(404).json({ message: 'This Mobile number is already Exist' });
         }
-        console.log(req.body)
         await sequelize.transaction(async t => {
-            const customer = await models.customers.update({ firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive }, { where: { id: id }, transaction: t })
+            const customer = await models.customers.update({ firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive, modifiedBy }, { where: { id: id }, transaction: t })
         }).then((customer) => {
             return res.status(200).json({ messgae: `User Updated` })
         }).catch((exception) => {

@@ -87,6 +87,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_active',
             defaultValue: false
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by',
+            allowNull: false,
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by',
+            allowNull: false,
+        }
     }, {
         freezeTableName: true,
         tableName: 'customers',
@@ -98,6 +108,8 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
         Customer.belongsTo(models.states, { foreignKey: 'stateId', as: 'state' });
         Customer.belongsTo(models.cities, { foreignKey: 'cityId', as: 'city' });
+        Customer.belongsTo(models.users, { foreignKey: 'createdBy', as: 'Createdby' });
+        Customer.belongsTo(models.users, { foreignKey: 'modifiedBy', as: 'modifiedby' });
     }
 
     // This hook is always run before create.
