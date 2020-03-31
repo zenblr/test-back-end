@@ -5,6 +5,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'permission_name',
             allowNull: false,
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true,
         }
     }, {
         freezeTableName: true,

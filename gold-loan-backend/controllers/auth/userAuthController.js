@@ -25,6 +25,20 @@ exports.userLogin = async(req, res) => {
                     expiresIn: JWT_EXPIRATIONTIME
                 });
 
+            const decoded = jwt.verify(Token, JWT_SECRETKEY);
+            const createdTime = new Date(decoded.iat * 1000).toGMTString();
+            const expiryTime = new Date(decoded.exp * 1000).toGMTString();
+
+            await models.users.update({ lastLogin: createdTime }, {
+                where: { id: decoded.id }
+            });
+            models.logger.create({
+                userId: decoded.id,
+                token: Token,
+                expiryDate: expiryTime,
+                createdDate: createdTime
+            });
+
             return res.status(200).json({ message: 'login successful', Token });
         } else {
             res.status(401).json({ message: 'Wrong Credentials' });

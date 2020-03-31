@@ -42,12 +42,12 @@ exports.addCustomer = async(req, res) => {
 
 exports.deactivateCustomer = async(req, res) => {
     try {
-        const { customerId, value } = req.query;
+        const { customerId, isActive } = req.query;
         let customerExist = await models.customers.findOne({ where: { id: customerId } })
         if (check.isEmpty(customerExist)) {
             return res.status(404).json({ message: 'Customer is not exist' });
         }
-        await models.customers.update({ isActive: value }, { where: { id: customerId } })
+        await models.customers.update({ isActive: isActive }, { where: { id: customerId } })
         return res.status(200).json({ message: `Updated` })
     } catch (error) {
         return res.status(500).json({ message: `Internal server error` })

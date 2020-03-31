@@ -57,6 +57,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_active',
             defaultValue: false
         },
+        lastLogin: {
+            type: DataTypes.DATE,
+            field: 'last_login',
+        }
     }, {
         freezeTableName: true,
         tableName: 'users',
