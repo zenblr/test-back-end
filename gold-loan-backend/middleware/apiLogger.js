@@ -11,14 +11,11 @@ module.exports = (req, res, next) => {
 
     let skipUrls = [
         "/",
-        "/api/customer/register",
+        "/api/auth/userLogin",
+        "/api/auth/customerLogin",
         "/api/customer/registerOtp",
         "/api/customer/verifyOtp",
-        "/api/customer/resendOtp",
-        "/api/city",
-        "/api/state",
-        "/api/banner",
-        "/api/upload-file"
+        "/api/customer/resendOtp"
     ];
     if (!skipUrls.includes(req.originalUrl)) {
         try {

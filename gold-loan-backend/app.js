@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //middleware for apiLogger
-// app.use(apiLogger);
+app.use(apiLogger);
 
 //index Route
 var indexRouter = require('./routes/index');
