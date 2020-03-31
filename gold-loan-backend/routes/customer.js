@@ -3,9 +3,11 @@ var router = express.Router();
 
 const { wrapper } = require('../utils/errorWrap')
 
-const { addCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer } = require('../controllers/customer/customer')
+const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer } = require('../controllers/customer/customer')
 
 router.post('/add-customer', addCustomer);
+
+router.put('/edit-customer', editCustomer)
 
 router.delete('/deactivate-customer', deactivateCustomer);
 
