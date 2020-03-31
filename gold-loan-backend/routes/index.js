@@ -29,4 +29,13 @@ const uploadfile = require('./fileUpload'); //Uploadfile Route
 router.use('/upload-file', uploadfile)
 
 
+const status = require('./status'); //Status Route
+router.use('/status', status)
+
+const rating = require('./rating'); //Rating Route
+router.use('/rating', rating)
+
+const stage = require('./stage'); //Stage Route
+router.use('/stage', stage)
+
 module.exports = router;
