@@ -9,7 +9,7 @@ module.exports=(sequelize,DATATYPES)=>{
             field:'name'
         },
         commission:{
-            type:DATATYPES.BIGINT,
+            type:DATATYPES.FLOAT,
             field:'commission'
         },
     

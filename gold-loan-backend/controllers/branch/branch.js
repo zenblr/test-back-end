@@ -1,19 +1,33 @@
 const models=require('../../models');
+const sequelize = models.sequelize;
+
 
 //Add branch
 exports.AddBranch=async (req,res)=>{
     try {
         const{partnerId,name,cityId,stateId,address,pincode,commission,isActive}=req.body;
-        let newdata1=await models.branch.findAll();
-        let newdata2=newdata1.reverse();
-        if(!newdata2[0]){var bId=1;}
+        await sequelize.transaction(async t => {
+            
+            let addbranch=await models.branch.create({partnerId,name,cityId,stateId,address,pincode,commission,isActive},{transaction: t} );            
+              let id=addbranch.dataValues.id;
+              
+              let partnerdataid=await models.partner.findOne({where:{id:addbranch.dataValues.partnerId},transaction:t});
 
-       else{ var bId=newdata2[0].dataValues.id+1;}
-        console.log(bId)
-        let addbranch=await models.branch.create({partnerId,branchId:name.slice(0, 3).toUpperCase() + '-'+bId,name,cityId,stateId,address,pincode,commission,isActive});
-        if(!addbranch){return res.status(422).json({message:'Data not created'});}
-        
-        return res.status(201).json({message:"data is created"});
+             let pqid=partnerdataid.dataValues.partnerId;
+            let newId=pqid.slice(0,2)+addbranch.dataValues.name.slice(0,3).toUpperCase()+'-'+id;
+                   await models.branch.update({branchId:newId},{where:{id},transaction:t});
+                 return addbranch;  
+        }).then((addbranch) => {
+            return res.status(200).json({ messgae: "branch created" })
+        }).catch((exception) => {
+            
+            return res.status(500).json({
+                message: "something went wrong",
+                data: exception.message
+            
+            });
+        })
+
     } catch (error) {
         console.log(error)
     }
@@ -24,6 +38,7 @@ exports.AddBranch=async (req,res)=>{
 //get branch
 exports.ReadBranch=async (req,res)=>{
     try{
+    
     let readbranchdata=await models.branch.findAll({where:{isActive:true},
     
 });

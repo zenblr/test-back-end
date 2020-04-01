@@ -1,20 +1,27 @@
 const models=require('../../models');
+const sequelize = models.sequelize;
 
 
 //add partner
 exports.AddPartner=async (req,res)=>{
+
     const {name,commission,isActive}=req.body;
-let previousdata=await models.partner.findAll();
-let previousdatareverse=previousdata.reverse();
-if(!previousdatareverse[0]){var partnerId=1;}
-else{var partnerId=previousdatareverse[0].dataValues.id+1;}
-// console.log(partnerId)
-let pId = name.slice(0, 3).toUpperCase() + '-'+partnerId;
-    let partnerdata=await models.partner.create({name,partnerId:pId,commission,isActive});
-    if(!partnerdata){
-        return res.status(422).json({message:'Data is not created'});
-    }
-    return res.status(201).json({message:'data is created'});
+    await sequelize.transaction(async t => {
+            
+            let partnerdata=await models.partner.create({name,commission,isActive}, { transaction: t });
+            let id=partnerdata.dataValues.id;
+            let partnerId=partnerdata.dataValues.name.slice(0,3).toUpperCase()+'-'+id;
+            await models.partner.update({partnerId:partnerId},{ where: { id: id }, transaction: t });
+        return partnerdata;
+        }).then((partnerdata) => {
+            return res.status(200).json({ messgae: "partner created" });
+        }).catch((exception) => {
+            return res.status(500).json({
+                message: "something went wrong",
+                data: exception.message
+            });
+        })
+
 }
 //update partner
 
@@ -61,5 +68,5 @@ exports.DeletePartner=async(req,res)=>{
         return res.status(404).json({message:'data not found'});
     }
     
-    return res.status(200).json({message:'success'});
+    return res.status(200).json({message:'Success'});
 }

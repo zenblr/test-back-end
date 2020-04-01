@@ -31,7 +31,7 @@ module.exports=(sequelize,DATATYPES)=>{
 
         },
         commission:{
-            type:DATATYPES.BIGINT,
+            type:DATATYPES.FLOAT,
             field:'commission'
         },
     isActive:{

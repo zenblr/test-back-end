@@ -48,5 +48,5 @@ exports.DeleteBanner = async(req, res) => {
         return res.status(404).json({ message: ' data not found' })
     }
     let deletedata = await models.banner.destroy({ where: { id } });
-    res.status(200).json({ message: 'Sucess' });
+    res.status(200).json({ message: 'Success' });
 }
