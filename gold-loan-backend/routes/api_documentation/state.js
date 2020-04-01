@@ -3,7 +3,7 @@
  * /state:
  *   get:
  *     tags:
- *       - state
+ *       - State
  *     name: state-api
  *     summary: To read state
  *     security:
@@ -17,7 +17,7 @@
  *         description: Internal server error.
  *   post:
  *     tags:
- *       - state
+ *       - State
  *     summary: To post state csv file
  *     security:
  *       - bearerAuth: []  

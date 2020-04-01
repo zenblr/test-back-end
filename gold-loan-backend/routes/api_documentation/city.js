@@ -3,7 +3,7 @@
  * /city/{stateId}:
  *   get:
  *     tags:
- *       - city
+ *       - City
  *     summary: To read city by Id
  *     parameters:
  *     - name: stateId
@@ -23,7 +23,7 @@
  * /city:
  *   post:
  *     tags:
- *       - city
+ *       - City
  *     summary: To post city csv file
  *     security:
  *       - bearerAuth: []  
