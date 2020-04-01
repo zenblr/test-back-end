@@ -29,7 +29,7 @@
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>Partner Name</mat-label>
                                     <input matInput formControlName="name" autocomplete="off"
-                                        placeholder="Enter Partner Name">
+                                        placeholder="Enter Partner Name" [disabled]="canEdit">
                                     <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
                                     <!-- <mat-hint>Hint</mat-hint> -->
                                     <mat-error *ngIf="controls.name.errors?.required">Required field</mat-error>
@@ -54,7 +54,7 @@
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Commission</mat-label>
                                         <input matInput formControlName="commission" type="number"
-                                            placeholder="Enter Commission" min="0" max="100">
+                                            placeholder="Enter Commission" min="0" max="100" [disabled]="canEdit">
                                         <mat-error *ngIf="controls.commission.errors?.required">Required field
                                         </mat-error>
                                         <mat-error
@@ -115,8 +115,9 @@
                                     matTooltip="Cancel changes">
                                     Cancel
                                 </button>&nbsp;
-                                <button type="button" mat-raised-button color="primary" [disabled]="partnerForm.invalid"
-                                    (click)="onSubmit()" matTooltip="Save changes">
+                                <button type="button" mat-raised-button color="primary"
+                                    [disabled]="partnerForm.invalid || canEdit" (click)="onSubmit()"
+                                    matTooltip="Save changes">
                                     Save
                                 </button>
                             </div>

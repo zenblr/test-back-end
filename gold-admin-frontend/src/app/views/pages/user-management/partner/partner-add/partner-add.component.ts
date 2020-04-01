@@ -30,6 +30,7 @@ export class PartnerAddComponent implements OnInit {
   partnerForm: FormGroup;
   states: any;
   cities: any;
+  canEdit = false;
   // states = [
   //   { id: 1, name: 'maharashtra' },
   //   { id: 2, name: 'Goa' },
@@ -52,6 +53,10 @@ export class PartnerAddComponent implements OnInit {
   ngOnInit() {
     this.formInitialize();
     this.getStates();
+    console.log(this.data);
+    if (this.data['action'] !== 'add') {
+      this.getPartnerById(this.data['partnerId']);
+    }
   }
 
   formInitialize() {
@@ -83,6 +88,19 @@ export class PartnerAddComponent implements OnInit {
     },
       error => {
         // console.error(error);
+      });
+  }
+
+  getPartnerById(id) {
+    this.partnerService.getPartnerById(id).subscribe(res => {
+      console.log(res);
+      this.partnerForm.patchValue(res);
+      if (this.data['action'] === 'edit') {
+        this.canEdit = true;
+      }
+    },
+      error => {
+        console.log(error.error.message);
       });
   }
 

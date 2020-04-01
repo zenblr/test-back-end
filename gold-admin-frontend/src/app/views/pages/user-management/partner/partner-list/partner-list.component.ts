@@ -16,6 +16,9 @@ import { Role, RolesDataSource, RoleDeleted, RolesPageRequested } from '../../..
 import { AppState } from '../../../../../core/reducers';
 import { QueryParamsModel } from '../../../../../core/_base/crud';
 import { PartnerAddComponent } from '../partner-add/partner-add.component';
+import { PartnerDatasource } from '../../../../../core/user-management/partner/datasources/partner.datasource';
+import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
+import { PartnerModel } from '../../../../../core/user-management/partner/models/partner.model';
 
 // Components
 // import { RoleEditDialogComponent } from '../role-edit/role-edit.dialog.component';
@@ -28,18 +31,19 @@ import { PartnerAddComponent } from '../partner-add/partner-add.component';
 export class PartnerListComponent implements OnInit {
 
   // Table fields
-  dataSource: RolesDataSource;
-  displayedColumns = ['select', 'id', 'title', 'actions'];
+  dataSource: PartnerDatasource;
+  displayedColumns = ['partnerId', 'name', 'commission', 'actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   // Selection
   selection = new SelectionModel<Role>(true, []);
-  rolesResult: Role[] = [];
+  // rolesResult: Role[] = [];
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
+  partnerResult: PartnerModel[] = [];
 
 	/**
 	 * Component constructor
@@ -53,7 +57,8 @@ export class PartnerListComponent implements OnInit {
     private store: Store<AppState>,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    private layoutUtilsService: LayoutUtilsService) { }
+    private layoutUtilsService: LayoutUtilsService,
+    private partnerService: PartnerService) { }
 
 	/**
 	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
@@ -73,7 +78,8 @@ export class PartnerListComponent implements OnInit {
 		**/
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {
-        this.loadRolesList();
+        // this.loadRolesList();
+        this.loadPartnersPage();
       })
     )
       .subscribe();
@@ -86,26 +92,31 @@ export class PartnerListComponent implements OnInit {
       distinctUntilChanged(), // This operator will eliminate duplicate values
       tap(() => {
         this.paginator.pageIndex = 0;
-        this.loadRolesList();
+        // this.loadRolesList();
+        this.loadPartnersPage();
       })
     )
       .subscribe();
     this.subscriptions.push(searchSubscription);
 
     // Init DataSource
-    this.dataSource = new RolesDataSource(this.store);
+    debugger
+    this.dataSource = new PartnerDatasource(this.partnerService);
+    console.log(this.dataSource);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      this.rolesResult = res;
+      console.log(res);
+      // this.rolesResult = res;
+      this.partnerResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
 
     // First load
-    of(undefined).pipe(take(1), delay(1000)).subscribe(() => { // Remove this line, just loading imitation
-      this.loadRolesList();
-    });
+    // this.loadRolesList();
+
+    this.dataSource.loadPartners(1, 10, '', '', '', '');
   }
 
 	/**
@@ -113,6 +124,16 @@ export class PartnerListComponent implements OnInit {
 	 */
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
+  }
+
+
+  loadPartnersPage() {
+    if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
+      return;
+    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+
+    this.dataSource.loadPartners(from, to, '', this.searchInput.nativeElement.value, '', '');
   }
 
 	/**
@@ -149,10 +170,10 @@ export class PartnerListComponent implements OnInit {
 	 * @param _item: Role
 	 */
   deleteRole(_item: Role) {
-    const _title = 'User Role';
-    const _description = 'Are you sure to permanently delete this role?';
-    const _waitDesciption = 'Role is deleting...';
-    const _deleteMessage = `Role has been deleted`;
+    const _title = 'Delete Partner';
+    const _description = 'Are you sure to permanently delete this partner?';
+    const _waitDesciption = 'Partner is deleting...';
+    const _deleteMessage = `Partner has been deleted`;
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
@@ -162,7 +183,9 @@ export class PartnerListComponent implements OnInit {
 
       this.store.dispatch(new RoleDeleted({ id: _item.id }));
       this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-      this.loadRolesList();
+      // this.loadRolesList();
+      this.loadPartnersPage();
+
     });
   }
 
@@ -186,11 +209,7 @@ export class PartnerListComponent implements OnInit {
 	 * Add role
 	 */
   addRole() {
-    // const newRole = new Role();
-    // newRole.clear(); // Set all defaults fields
-    // this.editRole(newRole);
-
-    const dialogRef = this.dialog.open(PartnerAddComponent);
+    const dialogRef = this.dialog.open(PartnerAddComponent, { data: { action: 'add' } });
   }
 
 	/**
@@ -198,38 +217,51 @@ export class PartnerListComponent implements OnInit {
 	 *
 	 * @param role: Role
 	 */
-  // editRole(role: Role) {
-  // 	const _saveMessage = `Role successfully has been saved.`;
-  // 	const _messageType = role.id ? MessageType.Update : MessageType.Create;
-  // 	const dialogRef = this.dialog.open(RoleEditDialogComponent, { data: { roleId: role.id } });
-  // 	dialogRef.afterClosed().subscribe(res => {
-  // 		if (!res) {
-  // 			return;
-  // 		}
+  editRole(role: Role) {
+    const _saveMessage = `Role successfully has been saved.`;
+    const _messageType = role.id ? MessageType.Update : MessageType.Create;
+    const dialogRef = this.dialog.open(PartnerAddComponent, { data: { partnerId: role.id, action: 'edit' } });
+    dialogRef.afterClosed().subscribe(res => {
+      if (!res) {
+        return;
+      }
 
-  // 		this.layoutUtilsService.showActionNotification(_saveMessage, _messageType, 10000, true, true);
-  // 		this.loadRolesList();
-  // 	});
-  // }
+      // this.loadRolesList();
+      // this.loadPartnersPage();
+    });
+  }
+
+  viewRole(role) {
+    const dialogRef = this.dialog.open(PartnerAddComponent, { data: { partnerId: role.id, action: 'view' } });
+
+    dialogRef.afterClosed().subscribe(res => {
+      if (!res) {
+        return;
+      }
+
+      // this.loadRolesList();
+      // this.loadPartnersPage();
+    });
+  }
 
 	/**
 	 * Check all rows are selected
 	 */
-  isAllSelected(): boolean {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.rolesResult.length;
-    return numSelected === numRows;
-  }
+  // isAllSelected(): boolean {
+  //   const numSelected = this.selection.selected.length;
+  //   const numRows = this.partnerResult.length;
+  //   return numSelected === numRows;
+  // }
 
 	/**
 	 * Toggle selection
 	 */
-  masterToggle() {
-    if (this.selection.selected.length === this.rolesResult.length) {
-      this.selection.clear();
-    } else {
-      this.rolesResult.forEach(row => this.selection.select(row));
-    }
-  }
+  // masterToggle() {
+  //   if (this.selection.selected.length === this.partnerResult.length) {
+  //     this.selection.clear();
+  //   } else {
+  //     this.partnerResult.forEach(row => this.selection.select(row));
+  //   }
+  // }
 
 }

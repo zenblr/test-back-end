@@ -10,22 +10,22 @@ export class PartnerService {
   constructor(private http: HttpClient) { }
 
   addPartner(data): Observable<any> {
-    return this.http.post<any>(`/api/partner/addpartner`, data);
+    return this.http.post<any>(`/api/partner`, data);
   }
 
-  getPartner(): Observable<any> {
-    return this.http.get<any>(`/api/partner/readpartner`);
+  getAllPartner(from, to, fromDate, text, toDate, userId): Observable<any> {
+    return this.http.get<any>(`/api/partner`);
   }
 
   getPartnerById(id): Observable<any> {
-    return this.http.get<any>(`/api/partner/readpartnerbyid/${id}`);
+    return this.http.get<any>(`/api/partner/${id}`);
   }
 
   updatePartner(id, data): Observable<any> {
-    return this.http.get<any>(`/api/partner/updatepartner/${id}`, data);
+    return this.http.put<any>(`/api/partner/${id}`, data);
   }
 
   deletePartner(data): Observable<any> {
-    return this.http.delete<any>(`/api/partner/deletepartner/${data}`);
+    return this.http.delete<any>(`/api/partner/${data}`);
   }
 }

@@ -69,6 +69,9 @@ export class UploadBannerComponent implements OnInit {
     console.log(event, num);
     let reader = new FileReader(); // HTML5 FileReader API
     let file = <File>event.target.files[0];
+    const fd = new FormData();
+    fd.append('image', file);
+    console.log(fd);
     if (event.target.files && event.target.files[0]) {
       reader.readAsDataURL(file);
 
@@ -82,7 +85,8 @@ export class UploadBannerComponent implements OnInit {
 
         const fd = new FormData();
         fd.append('image', file, file.name);
-        console.log(file.name);
+        console.log(fd);
+
         // this.uploadBannerService.uploadBanner(fd).subscribe();
 
         // this.editFile = false;
@@ -120,6 +124,7 @@ export class UploadBannerComponent implements OnInit {
                 this.enableButton = false;
               } else {
                 this.url = reader.result;
+
                 const fd = new FormData();
                 fd.append('avatar', this.imageFile, this.imageFile.name);
                 this.uploadBannerService.uploadFile(fd).subscribe(

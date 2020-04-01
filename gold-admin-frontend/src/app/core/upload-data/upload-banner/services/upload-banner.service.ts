@@ -1,16 +1,23 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+const HttpUploadOptions = {
+  headers: new HttpHeaders({ "Accept": "application/json" })
+}
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class UploadBannerService {
 
   constructor(private http: HttpClient) { }
 
+
   uploadFile(fd): Observable<any> {
-    return this.http.post<any>(`/api/upload-file`, { avatar: fd });
+    console.log(fd);
+    return this.http.post<any>(`/api/upload-file`, fd, HttpUploadOptions);
   }
 
   uploadBanners(fd): Observable<any> {

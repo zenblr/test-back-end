@@ -73,7 +73,7 @@
 
                 <!-- Table with selection -->
                 <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
-                <ng-container matColumnDef="select">
+                <!-- <ng-container matColumnDef="select">
                     <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
                         <mat-checkbox (change)="$event ? masterToggle() : null"
                             [checked]="selection.hasValue() && isAllSelected()"
@@ -85,30 +85,36 @@
                             (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
                         </mat-checkbox>
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
 
-                <ng-container matColumnDef="id">
+                <ng-container matColumnDef="partnerId">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.id}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Partner ID</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="title">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.title}}</mat-cell>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Partner Name</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.name}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="commission">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Commission</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.commission}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <button mat-icon-button color="primary" matTooltip="{{ role.isCoreRole ? 'View' : 'Edit'}} role"
-                            (click)="editRole(role)">
-                            <mat-icon>
-                                {{ role.isCoreRole ? 'visibility' : 'create' }}
-                            </mat-icon>
+                        <button mat-icon-button color="primary" matTooltip="View Partner" (click)="viewRole(role)">
+                            <mat-icon>visibility </mat-icon>
                         </button>&nbsp;
-                        <button mat-icon-button color="warn" matTooltip="Delete role" type="button"
-                            [disabled]="role.isCoreRole" (click)="deleteRole(role)">
+                        <button mat-icon-button color="warn" matTooltip="Edit Partner" type="button"
+                            (click)="editRole(role)">
+                            <mat-icon>create</mat-icon>
+                        </button>&nbsp;
+                        <button mat-icon-button color="danger" matTooltip="Delete Partner" type="button"
+                            (click)="deleteRole(role)">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </mat-cell>
