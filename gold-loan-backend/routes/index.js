@@ -32,10 +32,20 @@ router.use('/upload-file', uploadfile)
 const status = require('./status'); //Status Route
 router.use('/status', status)
 
+
 const rating = require('./rating'); //Rating Route
 router.use('/rating', rating)
 
+
 const stage = require('./stage'); //Stage Route
 router.use('/stage', stage)
+
+const partner = require('./partner'); //  partner Route
+router.use('/partner', partner);
+
+
+const branch = require('./branch'); // branch Route
+router.use('/branch', branch);
+
 
 module.exports = router;

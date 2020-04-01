@@ -4,10 +4,12 @@ var router = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 
 const { addStatus, getStatus, deactivateStatus } = require('../controllers/status/status')
+const checkAuth = require('../middleware/checkAuth');
 
-router.post('/', addStatus)
 
-router.get('/', getStatus);
+router.post('/', checkAuth, addStatus)
 
-router.delete('/', deactivateStatus)
+router.get('/', checkAuth, getStatus);
+
+router.delete('/', checkAuth, deactivateStatus)
 module.exports = router;

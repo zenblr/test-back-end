@@ -10,8 +10,8 @@ exports.addCustomer = async(req, res) => {
 
     try {
         // cheanges needed here 
-        let createdBy = 2
-        let modifiedBy = 2
+        let createdBy = req.userData.id
+        let modifiedBy = req.userData.id
 
         let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, statusId } = req.body
         let customerExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
@@ -59,7 +59,7 @@ exports.editCustomer = async(req, res) => {
     try {
 
         // changes need here
-        let modifiedBy = 2;
+        let modifiedBy = req.userData.id
 
         let { id, firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive } = req.body
         let customerExist = await models.customers.findOne({ where: { id: id } })

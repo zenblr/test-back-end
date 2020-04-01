@@ -3,6 +3,8 @@ var router = express.Router();
 
 const { postCity, getCity } = require('../controllers/city/city')
 
+const checkAuth = require('../middleware/checkAuth');
+
 
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -17,9 +19,9 @@ const upload = multer({
     storage: storage
 });
 
-router.post('/', upload.single('csv'), postCity)
+router.post('/', checkAuth, upload.single('csv'), postCity)
 
-router.get('/:stateId', getCity);
+router.get('/:stateId', checkAuth, getCity);
 
 
 

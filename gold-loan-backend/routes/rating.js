@@ -3,11 +3,13 @@ var router = express.Router();
 
 const { wrapper } = require('../utils/errorWrap');
 
-const { addRating, getRating, deactivateRating } = require('../controllers/rating/rating')
+const { addRating, getRating, deactivateRating } = require('../controllers/rating/rating');
+const checkAuth = require('../middleware/checkAuth');
 
-router.post('/', addRating)
 
-router.get('/', getRating);
+router.post('/', checkAuth, addRating)
 
-router.delete('/', deactivateRating)
+router.get('/', checkAuth, getRating);
+
+router.delete('/', checkAuth, deactivateRating)
 module.exports = router;

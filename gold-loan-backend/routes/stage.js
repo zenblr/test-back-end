@@ -3,11 +3,13 @@ var router = express.Router();
 
 const { wrapper } = require('../utils/errorWrap');
 
-const { addStage, getStage, deactivateStage } = require('../controllers/stage/stage')
+const { addStage, getStage, deactivateStage } = require('../controllers/stage/stage');
+const checkAuth = require('../middleware/checkAuth');
 
-router.post('/', addStage);
 
-router.get('/', getStage);
+router.post('/', checkAuth, addStage);
 
-router.delete('/', deactivateStage)
+router.get('/', checkAuth, getStage);
+
+router.delete('/', checkAuth, deactivateStage)
 module.exports = router;

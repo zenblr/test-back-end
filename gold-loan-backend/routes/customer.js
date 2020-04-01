@@ -4,15 +4,17 @@ var router = express.Router();
 const { wrapper } = require('../utils/errorWrap')
 
 const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer } = require('../controllers/customer/customer')
+const checkAuth = require('../middleware/checkAuth');
 
-router.post('/add-customer', addCustomer);
 
-router.put('/edit-customer', editCustomer)
+router.post('/add-customer', checkAuth, addCustomer);
 
-router.delete('/deactivate-customer', deactivateCustomer);
+router.put('/edit-customer', checkAuth, editCustomer)
 
-router.get('/get-all-customers', getAllCustomers);
+router.delete('/deactivate-customer', checkAuth, deactivateCustomer);
 
-router.get('/get-single-customer', getSingleCustomer)
+router.get('/get-all-customers', checkAuth, getAllCustomers);
+
+router.get('/get-single-customer', checkAuth, getSingleCustomer)
 
 module.exports = router;
