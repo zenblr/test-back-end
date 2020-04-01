@@ -13,7 +13,7 @@ export class BranchService {
     return this.http.post<any>(`/api/branch`, data);
   }
 
-  getAllBranch(from, to, fromDate, text, toDate, userId): Observable<any> {
+  getAllBranch(from?, to?, fromDate?, text?, toDate?, userId?): Observable<any> {
     return this.http.get<any>(`/api/branch`);
   }
 

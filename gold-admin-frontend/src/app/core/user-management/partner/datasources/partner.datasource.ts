@@ -30,16 +30,15 @@ export class PartnerDatasource extends BaseDataSource {
             { name: 'Cupcake', calories: 305, fat: 4, carbs: 67, protein: 4 },
             { name: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4 },
         ];
-        this.entitySubject.next(this.desserts);
+        // this.entitySubject.next(this.desserts);
 
         this.PartnerService.getAllPartner(from, to, fromDate, search, toDate, userId)
             .pipe(
                 map(
                     report => {
-                        console.log(report);
-                        this.paginatorTotalSubject.next(report.data.TotalRecords);
+                        this.paginatorTotalSubject.next(report['length']);
                         this.entitySubject.next(report);
-                        console.log(this.entitySubject);
+                        // console.log(this.entitySubject);
                     }
                 ),
                 catchError(() => of([])),

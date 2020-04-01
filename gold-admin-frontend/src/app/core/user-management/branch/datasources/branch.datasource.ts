@@ -25,8 +25,8 @@ export class BranchDatasource extends BaseDataSource {
             .pipe(
                 map(
                     report => {
-                        this.paginatorTotalSubject.next(report.data.TotalRecords);
-                        this.entitySubject.next(report.data.Leads);
+                        this.paginatorTotalSubject.next(report['length']);
+                        this.entitySubject.next(report);
                     }
                 ),
                 catchError(() => of([])),

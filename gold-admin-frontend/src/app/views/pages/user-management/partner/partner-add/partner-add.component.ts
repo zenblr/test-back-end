@@ -30,17 +30,8 @@ export class PartnerAddComponent implements OnInit {
   partnerForm: FormGroup;
   states: any;
   cities: any;
-  canEdit = false;
-  // states = [
-  //   { id: 1, name: 'maharashtra' },
-  //   { id: 2, name: 'Goa' },
-  //   { id: 3, name: 'punjab' },
-  // ];
-  // cities = [
-  //   { id: 1, name: 'maharashtra' },
-  //   { id: 2, name: 'Goa' },
-  //   { id: 3, name: 'punjab' },
-  // ];
+  viewOnly = false;
+  editData = false;
 
   constructor(
     public dialogRef: MatDialogRef<PartnerAddComponent>,
@@ -52,8 +43,8 @@ export class PartnerAddComponent implements OnInit {
 
   ngOnInit() {
     this.formInitialize();
-    this.getStates();
-    console.log(this.data);
+    // this.getStates();
+    // console.log(this.data);
     if (this.data['action'] !== 'add') {
       this.getPartnerById(this.data['partnerId']);
     }
@@ -61,6 +52,7 @@ export class PartnerAddComponent implements OnInit {
 
   formInitialize() {
     this.partnerForm = this.fb.group({
+      id: [''],
       name: ['', [Validators.required]],
       // partnerId: ['', [Validators.required]],
       commission: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
@@ -82,7 +74,7 @@ export class PartnerAddComponent implements OnInit {
   getCities(event) {
     // console.log(event);
     const stateId = this.controls.state.value;
-    console.log(stateId);
+    // console.log(stateId);
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.message;
     },
@@ -95,8 +87,11 @@ export class PartnerAddComponent implements OnInit {
     this.partnerService.getPartnerById(id).subscribe(res => {
       console.log(res);
       this.partnerForm.patchValue(res);
+      if (this.data['action'] === 'view') {
+        this.viewOnly = true;
+      }
       if (this.data['action'] === 'edit') {
-        this.canEdit = true;
+        this.editData = true;
       }
     },
       error => {
@@ -111,21 +106,39 @@ export class PartnerAddComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.partnerForm.value);
+    // console.log(this.partnerForm.value);
     const partnerData = this.partnerForm.value;
 
-    this.partnerService.addPartner(partnerData).subscribe(res => {
-      // console.log(res);
-      if (res) {
-        const msg = 'Partner Added Successfully';
-        this.toastr.successToastr(msg);
-      }
-    },
-      error => {
-        console.log(error.error.message);
-        const msg = error.error.message;
-        this.toastr.errorToastr(msg);
-      });
+    if (this.editData) {
+      const id = this.controls.id.value;
+      this.partnerService.updatePartner(id, partnerData).subscribe(res => {
+        // console.log(res);
+        if (res) {
+          const msg = 'Partner Updated Successfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
+    } else {
+      this.partnerService.addPartner(partnerData).subscribe(res => {
+        // console.log(res);
+        if (res) {
+          const msg = 'Partner Added Successfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
+    }
 
     //   this.hasFormErrors = false;
     //   this.loadingAfterSubmit = false;

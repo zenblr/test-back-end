@@ -8,6 +8,8 @@ import { tap, debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 import { RolesPageRequested, Role } from '../../../../../core/auth';
 import { BranchAddComponent } from '../branch-add/branch-add.component';
 import { SelectionModel } from '@angular/cdk/collections';
+import { BranchModel } from '../../../../../core/user-management/branch/models/branch.model';
+import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 
 @Component({
   selector: 'kt-branch-list',
@@ -18,14 +20,14 @@ export class BranchListComponent implements OnInit {
 
   // Table fields
   dataSource: BranchDatasource;
-  displayedColumns = ['select', 'id', 'name', 'commission', 'actions'];
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  displayedColumns = ['partnerId', 'branchId', 'name', 'actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  Selection
-  selection = new SelectionModel<Role>(true, []);
-  rolesResult: Role[] = [];
+  branchResult: BranchModel[] = [];
+
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
@@ -49,7 +51,7 @@ export class BranchListComponent implements OnInit {
 		**/
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {
-        this.loadRolesList();
+        this.loadBranchPage();
       })
     )
       .subscribe();
@@ -62,7 +64,7 @@ export class BranchListComponent implements OnInit {
       distinctUntilChanged(), // This operator will eliminate duplicate values
       tap(() => {
         this.paginator.pageIndex = 0;
-        this.loadRolesList();
+        this.loadBranchPage();
       })
     )
       .subscribe();
@@ -74,14 +76,14 @@ export class BranchListComponent implements OnInit {
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      this.rolesResult = res;
+      this.branchResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
 
     // First load
-    // this.loadRolesList();
+    this.loadBranchPage();
 
-    // this.dataSource.loadPartners(1, 10, '', '', '', '');
+    this.dataSource.loadBranches(1, 10, '', '', '', '');
   }
 
 	/**
@@ -92,30 +94,13 @@ export class BranchListComponent implements OnInit {
   }
 
 
-  loadPartnersPage() {
+  loadBranchPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
     this.dataSource.loadBranches(from, to, '', this.searchInput.nativeElement.value, '', '');
-  }
-
-	/**
-	 * Load Roles List
-	 */
-  loadRolesList() {
-    // this.selection.clear();
-    const queryParams = new QueryParamsModel(
-      this.filterConfiguration(),
-      this.sort.direction,
-      this.sort.active,
-      this.paginator.pageIndex,
-      this.paginator.pageSize
-    );
-    // Call request from server
-    // this.store.dispatch(new RolesPageRequested({ page: queryParams }));
-    // this.selection.clear();
   }
 
 	/**
@@ -135,25 +120,36 @@ export class BranchListComponent implements OnInit {
 	 * @param _item: Role
 	 */
   deleteRole(_item) {
-    const _title = 'Delete Partner';
-    const _description = 'Are you sure to permanently delete this partner?';
-    const _waitDesciption = 'Partner is deleting...';
-    const _deleteMessage = `Partner has been deleted`;
+    const role = _item;
+    const _title = 'Delete Branch';
+    const _description = 'Are you sure to permanently delete this branch?';
+    const _waitDesciption = 'Branch is deleting...';
+    const _deleteMessage = `Branch has been deleted`;
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
-      if (!res) {
-        return;
+      if (res) {
+        console.log(res);
+        this.branchService.deleteBranch(role.id).subscribe(successDelete => {
+          this.toastr.successToastr(_deleteMessage);
+          this.loadBranchPage();
+        },
+          errorDelete => {
+            this.toastr.errorToastr(errorDelete.error.message);
+          });
       }
-
       // this.store.dispatch(new RoleDeleted({ id: _item.id }));
       // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-      // this.loadRolesList();
     });
   }
 
   addRole() {
     const dialogRef = this.dialog.open(BranchAddComponent, { data: { action: 'add' } });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadBranchPage();
+      }
+    });
   }
 
 	/**
@@ -162,50 +158,27 @@ export class BranchListComponent implements OnInit {
 	 * @param role: Role
 	 */
   editRole(role) {
+    console.log(role);
     // const _saveMessage = `Role successfully has been saved.`;
     // const _messageType = role.id ? MessageType.Update : MessageType.Create;
     const dialogRef = this.dialog.open(BranchAddComponent, { data: { partnerId: role.id, action: 'edit' } });
     dialogRef.afterClosed().subscribe(res => {
-      if (!res) {
-        return;
+      if (res) {
+        this.loadBranchPage();
       }
-
-      // this.loadRolesList();
-      // this.loadPartnersPage();
     });
   }
 
   viewRole(role) {
+    console.log(role);
     const dialogRef = this.dialog.open(BranchAddComponent, { data: { partnerId: role.id, action: 'view' } });
 
     dialogRef.afterClosed().subscribe(res => {
       if (!res) {
         return;
       }
-
-      // this.loadRolesList();
-      // this.loadPartnersPage();
     });
   }
 
-  /**
-	 * Check all rows are selected
-	 */
-  // isAllSelected(): boolean {
-  //   const numSelected = this.selection.selected.length;
-  //   const numRows = this.rolesResult.length;
-  //   return numSelected === numRows;
-  // }
-
-  // /**
-  //  * Toggle selection
-  //  */
-  // masterToggle() {
-  //   if (this.selection.selected.length === this.rolesResult.length) {
-  //     this.selection.clear();
-  //   } else {
-  //     this.rolesResult.forEach(row => this.selection.select(row));
-  //   }
-  // }
 
 }

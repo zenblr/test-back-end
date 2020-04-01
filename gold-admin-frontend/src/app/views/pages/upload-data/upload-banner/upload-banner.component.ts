@@ -127,8 +127,11 @@ export class UploadBannerComponent implements OnInit {
 
                 const fd = new FormData();
                 fd.append('avatar', this.imageFile, this.imageFile.name);
+                const data = fd.getAll('avatar');
+                console.log(data);
                 this.uploadBannerService.uploadFile(fd).subscribe(
                   res => {
+                    console.log(res);
                     this.images[num - 1] = '';
                     this.enableBtn = false;
                     this.widthHeightError = false;

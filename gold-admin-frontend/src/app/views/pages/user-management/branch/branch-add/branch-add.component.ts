@@ -5,6 +5,7 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { DialogData } from '../../../material/popups-and-modals/dialog/dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
+import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
 
 @Component({
   selector: 'kt-branch-add',
@@ -17,17 +18,21 @@ export class BranchAddComponent implements OnInit {
   branchForm: FormGroup;
   states: any;
   cities: any;
-  canEdit = false;
+  partners = [];
+  editData = false;
+  viewOnly = false;
 
   constructor(public dialogRef: MatDialogRef<BranchAddComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private sharedService: SharedService,
     private fb: FormBuilder,
-    private branchService: BranchService
+    private branchService: BranchService,
+    private partnerService: PartnerService
   ) { }
 
   ngOnInit() {
     this.formInitialize();
+    this.getAllPartners();
     this.getStates();
     console.log(this.data);
     if (this.data['action'] !== 'add') {
@@ -37,13 +42,20 @@ export class BranchAddComponent implements OnInit {
 
   formInitialize() {
     this.branchForm = this.fb.group({
+      id: [''],
       name: ['', [Validators.required]],
       partnerId: ['', [Validators.required]],
-      commission: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
-      state: ['', [Validators.required]],
-      city: ['', [Validators.required]],
+      stateId: ['', [Validators.required]],
+      cityId: ['', [Validators.required]],
+      pincode: ['', [Validators.required]],
       address: ['', [Validators.required]],
     });
+  }
+
+  getAllPartners() {
+    this.partnerService.getAllPartner().subscribe(res => {
+      this.partners = res;
+    })
   }
 
   getStates() {
@@ -57,8 +69,7 @@ export class BranchAddComponent implements OnInit {
 
   getCities(event) {
     // console.log(event);
-    const stateId = this.controls.state.value;
-    console.log(stateId);
+    const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.message;
     },
@@ -71,8 +82,11 @@ export class BranchAddComponent implements OnInit {
     this.branchService.getBranchById(id).subscribe(res => {
       console.log(res);
       this.branchForm.patchValue(res);
+      if (this.data['action'] === 'view') {
+        this.viewOnly = true;
+      }
       if (this.data['action'] === 'edit') {
-        this.canEdit = true;
+        this.editData = true;
       }
     },
       error => {
@@ -87,29 +101,41 @@ export class BranchAddComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.branchForm.value);
+    // console.log(this.branchForm.value);
     const partnerData = this.branchForm.value;
+    const id = this.controls.id.value;
 
-    this.branchService.addBranch(partnerData).subscribe(res => {
-      // console.log(res);
-      if (res) {
-        const msg = 'Partner Added Successfully';
-        this.toastr.successToastr(msg);
-      }
-    },
-      error => {
-        console.log(error.error.message);
-        const msg = error.error.message;
-        this.toastr.errorToastr(msg);
-      });
+    if (this.editData) {
+      this.branchService.updateBranch(id, partnerData).subscribe(res => {
+        // console.log(res);
+        if (res) {
+          const msg = 'Branch Updated Sucessfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
 
-    //   this.hasFormErrors = false;
-    //   this.loadingAfterSubmit = false;
-    //   /** check form */
-    //   if (!this.isTitleValid()) {
-    //     this.hasFormErrors = true;
-    //     return;
-    //   }
+    } else {
+      this.branchService.addBranch(partnerData).subscribe(res => {
+        // console.log(res);
+        if (res) {
+          const msg = 'Partner Added Successfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
+    }
+
   }
 
   onAlertClose($event) {

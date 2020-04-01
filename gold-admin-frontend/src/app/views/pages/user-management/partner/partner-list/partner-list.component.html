@@ -1,12 +1,11 @@
-<!-- <p>partner-list works!</p> -->
-
+<kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <!-- PORTLET LOADING | Binded to TABLE Datasource -->
     <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
     <kt-portlet-header [title]="'Partners List'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
 
         <ng-container ktPortletTools>
-            <button (click)="addRole()" mat-raised-button matTooltip="Create new role" color="primary" type="button">
+            <button (click)="addRole()" mat-raised-button matTooltip="Create new partner" color="primary" type="button">
                 <span>Add Partner</span>
             </button>
             <!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
@@ -90,7 +89,7 @@
                 <ng-container matColumnDef="partnerId">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Partner ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role}}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.partnerId}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="name">
@@ -109,11 +108,11 @@
                         <button mat-icon-button color="primary" matTooltip="View Partner" (click)="viewRole(role)">
                             <mat-icon>visibility </mat-icon>
                         </button>&nbsp;
-                        <button mat-icon-button color="warn" matTooltip="Edit Partner" type="button"
+                        <button mat-icon-button color="accent" matTooltip="Edit Partner" type="button"
                             (click)="editRole(role)">
                             <mat-icon>create</mat-icon>
                         </button>&nbsp;
-                        <button mat-icon-button color="danger" matTooltip="Delete Partner" type="button"
+                        <button mat-icon-button color="warn" matTooltip="Delete Partner" type="button"
                             (click)="deleteRole(role)">
                             <mat-icon>delete</mat-icon>
                         </button>

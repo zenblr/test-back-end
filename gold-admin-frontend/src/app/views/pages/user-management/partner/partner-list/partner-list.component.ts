@@ -19,6 +19,7 @@ import { PartnerAddComponent } from '../partner-add/partner-add.component';
 import { PartnerDatasource } from '../../../../../core/user-management/partner/datasources/partner.datasource';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
 import { PartnerModel } from '../../../../../core/user-management/partner/models/partner.model';
+import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 
 // Components
 // import { RoleEditDialogComponent } from '../role-edit/role-edit.dialog.component';
@@ -33,6 +34,7 @@ export class PartnerListComponent implements OnInit {
   // Table fields
   dataSource: PartnerDatasource;
   displayedColumns = ['partnerId', 'name', 'commission', 'actions'];
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
@@ -100,21 +102,15 @@ export class PartnerListComponent implements OnInit {
     this.subscriptions.push(searchSubscription);
 
     // Init DataSource
-    debugger
     this.dataSource = new PartnerDatasource(this.partnerService);
-    console.log(this.dataSource);
+    // console.log(this.dataSource);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      console.log(res);
-      // this.rolesResult = res;
       this.partnerResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-
-    // First load
-    // this.loadRolesList();
 
     this.dataSource.loadPartners(1, 10, '', '', '', '');
   }
@@ -170,6 +166,7 @@ export class PartnerListComponent implements OnInit {
 	 * @param _item: Role
 	 */
   deleteRole(_item: Role) {
+    const role = _item;
     const _title = 'Delete Partner';
     const _description = 'Are you sure to permanently delete this partner?';
     const _waitDesciption = 'Partner is deleting...';
@@ -177,15 +174,16 @@ export class PartnerListComponent implements OnInit {
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
-      if (!res) {
-        return;
+      if (res) {
+        console.log(res);
+        this.partnerService.deletePartner(role.id).subscribe(successDelete => {
+          this.toastr.successToastr(_deleteMessage);
+          this.loadPartnersPage();
+        },
+          errorDelete => {
+            this.toastr.errorToastr(errorDelete.error.message);
+          });
       }
-
-      this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-      // this.loadRolesList();
-      this.loadPartnersPage();
-
     });
   }
 
@@ -210,6 +208,11 @@ export class PartnerListComponent implements OnInit {
 	 */
   addRole() {
     const dialogRef = this.dialog.open(PartnerAddComponent, { data: { action: 'add' } });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPartnersPage();
+      }
+    })
   }
 
 	/**
@@ -222,12 +225,9 @@ export class PartnerListComponent implements OnInit {
     const _messageType = role.id ? MessageType.Update : MessageType.Create;
     const dialogRef = this.dialog.open(PartnerAddComponent, { data: { partnerId: role.id, action: 'edit' } });
     dialogRef.afterClosed().subscribe(res => {
-      if (!res) {
-        return;
+      if (res) {
+        this.loadPartnersPage();
       }
-
-      // this.loadRolesList();
-      // this.loadPartnersPage();
     });
   }
 

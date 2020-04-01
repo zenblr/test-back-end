@@ -1,7 +1,6 @@
 <!-- <kt-action-natification></kt-action-natification> -->
 <kt-toastr #toastr></kt-toastr>
-<div class="kt-portlet"
-    [ngClass]="{ 'kt-portlet--body-progress' : viewLoading, 'kt-portlet--body-progress-overlay' : loadingAfterSubmit }">
+<div class="kt-portlet">
     <div class="kt-portlet__head kt-portlet__head__custom">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">Add Partner</h3>
@@ -29,7 +28,7 @@
                                 <mat-form-field appearance="outline" class="w-100">
                                     <mat-label>Partner Name</mat-label>
                                     <input matInput formControlName="name" autocomplete="off"
-                                        placeholder="Enter Partner Name" [disabled]="canEdit">
+                                        placeholder="Enter Partner Name" [readonly]="viewOnly">
                                     <!-- <mat-icon matSuffix>sentiment_very_satisfied</mat-icon> -->
                                     <!-- <mat-hint>Hint</mat-hint> -->
                                     <mat-error *ngIf="controls.name.errors?.required">Required field</mat-error>
@@ -54,7 +53,7 @@
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Commission</mat-label>
                                         <input matInput formControlName="commission" type="number"
-                                            placeholder="Enter Commission" min="0" max="100" [disabled]="canEdit">
+                                            placeholder="Enter Commission" min="0" max="100" [readonly]="viewOnly">
                                         <mat-error *ngIf="controls.commission.errors?.required">Required field
                                         </mat-error>
                                         <mat-error
@@ -116,7 +115,7 @@
                                     Cancel
                                 </button>&nbsp;
                                 <button type="button" mat-raised-button color="primary"
-                                    [disabled]="partnerForm.invalid || canEdit" (click)="onSubmit()"
+                                    [disabled]="partnerForm.invalid || viewOnly" (click)="onSubmit()"
                                     matTooltip="Save changes">
                                     Save
                                 </button>

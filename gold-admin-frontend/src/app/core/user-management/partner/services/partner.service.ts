@@ -13,7 +13,7 @@ export class PartnerService {
     return this.http.post<any>(`/api/partner`, data);
   }
 
-  getAllPartner(from, to, fromDate, text, toDate, userId): Observable<any> {
+  getAllPartner(from?, to?, fromDate?, text?, toDate?, userId?): Observable<any> {
     return this.http.get<any>(`/api/partner`);
   }
 
