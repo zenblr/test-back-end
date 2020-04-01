@@ -13,9 +13,9 @@ module.exports = (req, res, next) => {
         "/",
         "/api/auth/userLogin",
         "/api/auth/customerLogin",
-        "/api/customer/registerOtp",
-        "/api/customer/verifyOtp",
-        "/api/customer/resendOtp"
+        "/api/user/registerOtp",
+        "/api/user/verifyOtp",
+        "/api/user/resendOtp"
     ];
     if (!skipUrls.includes(req.originalUrl)) {
         try {
