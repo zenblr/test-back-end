@@ -12,6 +12,7 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	// Public properties
 	headerLogo: string;
 	headerStickyLogo: string;
+	height:number;
 
 	toggleOptions: ToggleOptions = {
 		target: 'body',
@@ -36,6 +37,7 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	 * On init
 	 */
 	ngOnInit(): void {
+		this.height = 75;
 		this.headerLogo = this.layoutConfigService.getLogo();
 		this.headerStickyLogo = this.layoutConfigService.getStickyLogo();
 	}
