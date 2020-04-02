@@ -26,8 +26,6 @@ export class InterceptService implements HttpInterceptor {
 		if (this.authService.isLoggedIn()) {
 			request = request.clone({
 				setHeaders: {
-					Accept: `application/json`,
-					'Content-Type': `application/json`,
 					Authorization: `Bearer ${token}`
 				}
 			});

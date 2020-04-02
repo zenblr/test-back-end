@@ -11,7 +11,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { TranslateModule } from '@ngx-translate/core';
 import { PartialsModule } from '../../partials/partials.module';
 // Services
-import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsService} from '../../../core/_base/crud';
+import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsService } from '../../../core/_base/crud';
 // Shared
 import { ActionNotificationComponent } from '../../partials/content/crud';
 // Components
@@ -47,13 +47,19 @@ import {
 	MatExpansionModule,
 	MatAutocompleteModule,
 	MAT_DIALOG_DEFAULT_OPTIONS,
+	MAT_DIALOG_DATA,
 	MatSnackBarModule,
-	MatTooltipModule
+	MatTooltipModule,
+	MAT_SNACK_BAR_DATA,
 } from '@angular/material';
 import {
 	usersReducer,
 	UserEffects
 } from '../../../core/auth';
+import { PartnerListComponent } from './partner/partner-list/partner-list.component';
+import { BranchListComponent } from './branch/branch-list/branch-list.component';
+import { BranchAddComponent } from './branch/branch-add/branch-add.component';
+import { PartnerAddComponent } from './partner/partner-add/partner-add.component';
 
 const routes: Routes = [
 	{
@@ -68,6 +74,14 @@ const routes: Routes = [
 			{
 				path: 'roles',
 				component: RolesListComponent
+			},
+			{
+				path: 'partner',
+				component: PartnerListComponent
+			},
+			{
+				path: 'branch',
+				component: BranchListComponent
 			},
 			{
 				path: 'users',
@@ -104,14 +118,14 @@ const routes: Routes = [
 		PartialsModule,
 		RouterModule.forChild(routes),
 		StoreModule.forFeature('users', usersReducer),
-        EffectsModule.forFeature([UserEffects]),
+		EffectsModule.forFeature([UserEffects]),
 		FormsModule,
 		ReactiveFormsModule,
 		TranslateModule.forChild(),
 		MatButtonModule,
 		MatMenuModule,
 		MatSelectModule,
-        MatInputModule,
+		MatInputModule,
 		MatTableModule,
 		MatAutocompleteModule,
 		MatRadioModule,
@@ -133,10 +147,13 @@ const routes: Routes = [
 	providers: [
 		InterceptService,
 		{
-        	provide: HTTP_INTERCEPTORS,
-       	 	useClass: InterceptService,
+			provide: HTTP_INTERCEPTORS,
+			useClass: InterceptService,
 			multi: true
 		},
+		{ provide: MAT_DIALOG_DATA, useValue: {} },
+		{ provide: MAT_SNACK_BAR_DATA, useValue: {} },
+		// { provide: MdDialogRef, useValue: {} },
 		{
 			provide: MAT_DIALOG_DEFAULT_OPTIONS,
 			useValue: {
@@ -152,7 +169,9 @@ const routes: Routes = [
 	],
 	entryComponents: [
 		ActionNotificationComponent,
-		RoleEditDialogComponent
+		RoleEditDialogComponent,
+		BranchAddComponent,
+		PartnerAddComponent
 	],
 	declarations: [
 		UserManagementComponent,
@@ -163,7 +182,11 @@ const routes: Routes = [
 		UserRolesListComponent,
 		ChangePasswordComponent,
 		AddressComponent,
-		SocialNetworksComponent
+		SocialNetworksComponent,
+		PartnerListComponent,
+		BranchListComponent,
+		BranchAddComponent,
+		PartnerAddComponent
 	]
 })
-export class UserManagementModule {}
+export class UserManagementModule { }
