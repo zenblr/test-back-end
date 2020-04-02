@@ -8,11 +8,11 @@ const { registerSendOtp, verifyRegistrationOtp, resendOtp } = require('../contro
 
 //Register User
 
-route.post('/registerOtp', registerSendOtp);
+route.post('/register-otp', wrapper(registerSendOtp));
 
-route.post('/verifyOtp', verifyRegistrationOtp);
+route.post('/verify-otp', wrapper(verifyRegistrationOtp));
 
-route.post('/resendOtp', resendOtp);
+route.post('/resend-otp', wrapper(resendOtp));
 
 
 

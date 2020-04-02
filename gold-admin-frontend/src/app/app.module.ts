@@ -60,6 +60,8 @@ import * as typescript from 'highlight.js/lib/languages/typescript';
 import * as scss from 'highlight.js/lib/languages/scss';
 import * as xml from 'highlight.js/lib/languages/xml';
 import * as json from 'highlight.js/lib/languages/json';
+// Toastr Service
+import { ToastrModule } from 'ngx-toastr';
 
 // tslint:disable-next-line:class-name
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -80,10 +82,10 @@ export function initializeLayoutConfig(appConfig: LayoutConfigService) {
 
 export function hljsLanguages(): HighlightLanguage[] {
 	return [
-		{name: 'typescript', func: typescript},
-		{name: 'scss', func: scss},
-		{name: 'xml', func: xml},
-		{name: 'json', func: json}
+		{ name: 'typescript', func: typescript },
+		{ name: 'scss', func: scss },
+		{ name: 'xml', func: xml },
+		{ name: 'json', func: json }
 	];
 }
 
@@ -102,15 +104,16 @@ export function hljsLanguages(): HighlightLanguage[] {
 		PartialsModule,
 		CoreModule,
 		OverlayModule,
-		StoreModule.forRoot(reducers, {metaReducers}),
+		StoreModule.forRoot(reducers, { metaReducers }),
 		EffectsModule.forRoot([]),
-		StoreRouterConnectingModule.forRoot({stateKey: 'router'}),
+		StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
 		StoreDevtoolsModule.instrument(),
 		AuthModule.forRoot(),
 		TranslateModule.forRoot(),
 		MatProgressSpinnerModule,
 		InlineSVGModule.forRoot(),
-		ThemeModule
+		ThemeModule,
+		ToastrModule.forRoot()
 	],
 	exports: [],
 	providers: [
@@ -138,7 +141,7 @@ export function hljsLanguages(): HighlightLanguage[] {
 		},
 		{
 			provide: HIGHLIGHT_OPTIONS,
-			useValue: {languages: hljsLanguages}
+			useValue: { languages: hljsLanguages }
 		},
 		// template services
 		SubheaderService,

@@ -7,9 +7,9 @@ const { addRating, getRating, deactivateRating } = require('../controllers/ratin
 const checkAuth = require('../middleware/checkAuth');
 
 
-router.post('/', checkAuth, addRating)
+router.post('/', checkAuth, wrapper(addRating))
 
-router.get('/', checkAuth, getRating);
+router.get('/', checkAuth, wrapper(getRating));
 
-router.delete('/', checkAuth, deactivateRating)
+router.delete('/', checkAuth, wrapper(deactivateRating))
 module.exports = router;

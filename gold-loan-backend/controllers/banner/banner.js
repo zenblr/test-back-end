@@ -3,7 +3,7 @@ const models = require('../../models'); // importing models.
 
 
 // Add & Update banner
-exports.AddUpdateBanner = async(req, res) => {
+exports.addUpdateBanner = async(req, res) => {
     const id = 1;
     const { images, userId } = req.body;
     let BannerData = await models.banner.findBanner(id);
@@ -28,7 +28,7 @@ exports.AddUpdateBanner = async(req, res) => {
 
 // Read Banner.
 
-exports.ReadBanner = async(req, res) => {
+exports.readBanner = async(req, res) => {
     const id = 1;
     let BannerData = await models.banner.readBanner(id);
     if (!BannerData) {
@@ -40,7 +40,7 @@ exports.ReadBanner = async(req, res) => {
 
 //Delete Banner.
 
-exports.DeleteBanner = async(req, res) => {
+exports.deleteBanner = async(req, res) => {
     let id = req.params.id;
 
     let data = await models.banner.findOne({ where: { id } });

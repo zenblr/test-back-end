@@ -7,14 +7,15 @@ const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingl
 const checkAuth = require('../middleware/checkAuth');
 
 
-router.post('/add-customer', checkAuth, addCustomer);
 
-router.put('/edit-customer', checkAuth, editCustomer)
+router.post('/', checkAuth, wrapper(addCustomer));
 
-router.delete('/deactivate-customer', checkAuth, deactivateCustomer);
+router.put('/', checkAuth, wrapper(editCustomer))
 
-router.get('/get-all-customers', checkAuth, getAllCustomers);
+router.delete('/', checkAuth, wrapper(deactivateCustomer));
 
-router.get('/get-single-customer', checkAuth, getSingleCustomer)
+router.get('/', checkAuth, wrapper(getAllCustomers));
+
+router.get('/:customerId', checkAuth, wrapper(getSingleCustomer))
 
 module.exports = router;

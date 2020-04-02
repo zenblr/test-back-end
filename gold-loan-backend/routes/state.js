@@ -3,6 +3,7 @@ var router = express.Router();
 
 const { postState, getState } = require('../controllers/state/state')
 const checkAuth = require('../middleware/checkAuth');
+const { wrapper } = require('../utils/errorWrap');
 
 
 
@@ -19,9 +20,9 @@ const upload = multer({
     storage: storage
 });
 
-router.post('/', checkAuth, upload.single('csv'), postState);
+router.post('/', checkAuth, upload.single('csv'), wrapper(postState));
 
-router.get('/', checkAuth, getState);
+router.get('/', checkAuth, wrapper(getState));
 
 
 

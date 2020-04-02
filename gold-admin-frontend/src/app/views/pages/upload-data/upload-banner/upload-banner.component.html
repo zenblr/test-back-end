@@ -11,13 +11,14 @@
             </kt-portlet-header>
             <kt-portlet-body class="kt-portlet__body">
                 <div class="row">
+                    <!-- <form> -->
                     <div class="col image-box-container">
-                        <div>
+                        <!-- <div>
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Description for Banner</mat-label>
                                 <textarea matInput rows="4"></textarea>
                             </mat-form-field>
-                        </div>
+                        </div> -->
 
                         <!-- <div class="text-center">
                             <button mat-raised-button color="primary">Submit</button>
@@ -25,67 +26,77 @@
 
                         <div class="col image-box mat-elevation-z4">
                             <div>
-                                <img src="/assets/media/bg/sc-home1-bg.png">
+                                <img *ngIf="!urlCheck" [src]="url">
                             </div>
-                            <input style="display: none;" #file accept="image/*" type="file" />
+                            <input style="display: none;" #fileInput accept="image/*" type="file"
+                                (change)="singleProductImageChangenew($event, 1)" />
                         </div>
 
                         <div class="actionContainer text-center">
-                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item">
+                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item"
+                                (click)="fileInput.click()">
                                 <mat-icon>create</mat-icon>
                             </button>
-                            <button class="m-2" mat-mini-fab mat-icon-button color="warn" type="button"
-                                matTooltip="Delete item">
+                            <button *ngIf="!urlCheck" class="m-2" mat-mini-fab mat-icon-button color="warn"
+                                type="button" matTooltip="Delete item" (click)="deleteBanner(1)">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </div>
                     </div>
 
                     <div class="col image-box-container">
-                        <div>
+                        <!-- <div>
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Description for Banner</mat-label>
                                 <textarea matInput rows="4"></textarea>
                             </mat-form-field>
-                        </div>
+                        </div> -->
 
                         <div class="image-box mat-elevation-z4">
                             <div>
-                                <img src="/assets/media/bg/sc-home1-bg.png">
+                                <img *ngIf="!urlCheck2" [src]="url2">
                             </div>
+                            <input style="display: none;" #fileInput2 accept="image/*" type="file"
+                                (change)="singleProductImageChangenew($event, 2)" />
+
                         </div>
 
                         <div class="actionContainer text-center">
-                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item">
+                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item"
+                                (click)="fileInput2.click()">
                                 <mat-icon>create</mat-icon>
                             </button>
-                            <button class="m-2" mat-mini-fab mat-icon-button color="warn" type="button"
-                                matTooltip="Delete item">
+                            <button *ngIf="!urlCheck2" class="m-2" mat-mini-fab mat-icon-button color="warn"
+                                type="button" matTooltip="Delete item" (click)="deleteBanner(2)">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </div>
                     </div>
 
                     <div class="col image-box-container">
-                        <div>
+                        <!-- <div>
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Description for Banner</mat-label>
                                 <textarea matInput rows="4"></textarea>
                             </mat-form-field>
-                        </div>
+                        </div> -->
 
                         <div class="image-box mat-elevation-z4">
                             <div>
-                                <img src="/assets/media/bg/sc-home1-bg.png">
+                                <img *ngIf="!urlCheck3" [src]="url3">
                             </div>
+                            <input style="display: none;" #fileInput3 accept="image/*" type="file"
+                                (change)="singleProductImageChangenew($event, 3)" />
+
                         </div>
 
                         <div class="actionContainer text-center">
-                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item">
+                            <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item"
+                                (click)="fileInput3.click()">
                                 <mat-icon>create</mat-icon>
                             </button>
-                            <button class="m-2" mat-mini-fab mat-icon-button color="warn" type="button"
-                                matTooltip="Delete item">
+                            <button *ngIf="!urlCheck3" class="m-2" mat-mini-fab mat-icon-button color="warn"
+                                type="button" matTooltip="Delete item" (click)="deleteBanner(3)">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </div>
@@ -93,12 +104,13 @@
 
 
                     <!-- Description for image -->
-                    <div class="col-12 kt-margin-t-20 kt-margin-b-25">
+                    <!-- <div class="col-12 kt-margin-t-20 kt-margin-b-25">
 
                         <div class="text-center">
                             <button mat-raised-button color="primary">Submit</button>
                         </div>
-                    </div>
+                    </div> -->
+                    <!-- </form> -->
                 </div>
 
             </kt-portlet-body>

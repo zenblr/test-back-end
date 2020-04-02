@@ -7,9 +7,9 @@ const { addStage, getStage, deactivateStage } = require('../controllers/stage/st
 const checkAuth = require('../middleware/checkAuth');
 
 
-router.post('/', checkAuth, addStage);
+router.post('/', checkAuth, wrapper(addStage));
 
-router.get('/', checkAuth, getStage);
+router.get('/', checkAuth, wrapper(getStage));
 
-router.delete('/', checkAuth, deactivateStage)
+router.delete('/', checkAuth, wrapper(deactivateStage))
 module.exports = router;
