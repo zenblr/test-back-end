@@ -16,20 +16,19 @@ export class UploadBannerService {
 
 
   uploadFile(fd): Observable<any> {
-    console.log(fd);
     return this.http.post<any>(`/api/upload-file`, fd);
   }
 
   uploadBanners(fd): Observable<any> {
-    return this.http.post<any>(`/api/banner/addbanner`, { images: fd });
+    return this.http.post<any>(`/api/banner`, { images: fd });
   }
 
   getBanners(): Observable<any> {
-    return this.http.get<any>(`/api/banner/readbanner`);
+    return this.http.get<any>(`/api/banner`);
   }
 
   deleteBanner(id): Observable<any> {
-    return this.http.delete<any>(`/api/banner/deletebanner/${id}`);
+    return this.http.delete<any>(`/api/banner/${id}`);
 
   }
 }

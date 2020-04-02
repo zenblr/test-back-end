@@ -20,7 +20,7 @@ export class AuthService {
     constructor(private http: HttpClient) { }
     // Authentication/Authorization
     login(username: string, password: string): Observable<User> {
-        return this.http.post<User>(`/api/auth/userLogin`, { firstName: username, password });
+        return this.http.post<User>(`/api/auth/user-login`, { firstName: username, password });
     }
 
     generateOtp(userName: string) {
