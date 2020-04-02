@@ -1,18 +1,18 @@
-const { AddBranch, ReadBranch, ReadBranchById, UpdateBranch, DeleteBranch } = require('../controllers/branch/branch');
+const { addBranch, readBranch, readBranchById, updateBranch, deleteBranch } = require('../controllers/branch/branch');
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 
 const checkAuth = require('../middleware/checkAuth');
 
-route.post('/', checkAuth, wrapper(AddBranch)); // add branch
+route.post('/', checkAuth, wrapper(addBranch)); // add branch
 
-route.get('/', checkAuth, wrapper(ReadBranch)); // get branch
+route.get('/', checkAuth, wrapper(readBranch)); // get branch
 
-route.get('/:id', checkAuth, wrapper(ReadBranchById)); //get branch by id
+route.get('/:id', checkAuth, wrapper(readBranchById)); //get branch by id
 
-route.put('/:id', checkAuth, wrapper(UpdateBranch)); //update branch 
+route.put('/:id', checkAuth, wrapper(updateBranch)); //update branch 
 
-route.delete('/:id', checkAuth, wrapper(DeleteBranch)); //delete branch
+route.delete('/:id', checkAuth, wrapper(deleteBranch)); //delete branch
 
 module.exports = route;

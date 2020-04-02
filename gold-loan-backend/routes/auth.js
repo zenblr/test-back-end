@@ -8,10 +8,10 @@ const { customerLogin } = require('../controllers/auth/customerAuthController');
 
 
 //User Login
-router.post('/userLogin', wrapper(userLogin));
+router.post('/user-login', wrapper(userLogin));
 
 
 //Customer Login
-router.post('/customerLogin', wrapper(customerLogin));
+router.post('/customer-login', wrapper(customerLogin));
 
 module.exports = router;

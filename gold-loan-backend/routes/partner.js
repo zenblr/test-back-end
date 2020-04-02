@@ -1,18 +1,18 @@
-const { AddPartner, ReadPartner, UpdatePartner, DeletePartner, ReadPartnerById } = require('../controllers/partner/partner');
+const { addPartner, readPartner, updatePartner, deletePartner, readPartnerById } = require('../controllers/partner/partner');
 const { wrapper } = require('../utils/errorWrap');
 const express = require('express');
 const checkAuth = require('../middleware/checkAuth');
 
 const route = express.Router();
 
-route.post('/', checkAuth, wrapper(AddPartner)); // add partner
+route.post('/', checkAuth, wrapper(addPartner)); // add partner
 
-route.get('/', checkAuth, wrapper(ReadPartner)); // read partner
+route.get('/', checkAuth, wrapper(readPartner)); // read partner
 
-route.put('/:id', checkAuth, wrapper(UpdatePartner)); // update partner
+route.put('/:id', checkAuth, wrapper(updatePartner)); // update partner
 
-route.delete('/:id', checkAuth, wrapper(DeletePartner)); // delete partner
+route.delete('/:id', checkAuth, wrapper(deletePartner)); // delete partner
 
-route.get('/:id', checkAuth, wrapper(ReadPartnerById)); // read by id partner
+route.get('/:id', checkAuth, wrapper(readPartnerById)); // read by id partner
 
 module.exports = route;

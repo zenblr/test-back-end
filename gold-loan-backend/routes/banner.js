@@ -1,12 +1,12 @@
 const express = require('express');
-const Banner = require('../controllers/banner/banner');
+const { addUpdateBanner, readBanner, deleteBanner } = require('../controllers/banner/banner');
 const route = express.Router();
-const errorwrapper = require('../utils/errorWrap');
+const { wrapper } = require('../utils/errorWrap');
 
 const checkAuth = require('../middleware/checkAuth');
 
-route.post('/addbanner', checkAuth, errorwrapper.wrapper(Banner.AddUpdateBanner));
-route.get('/readbanner', checkAuth, errorwrapper.wrapper(Banner.ReadBanner));
-route.delete('/deletebanner/:id', checkAuth, errorwrapper.wrapper(Banner.DeleteBanner));
+route.post('/', checkAuth, wrapper(addUpdateBanner));
+route.get('/', checkAuth, wrapper(readBanner));
+route.delete('/:id', checkAuth, wrapper(deleteBanner));
 
 module.exports = route;
