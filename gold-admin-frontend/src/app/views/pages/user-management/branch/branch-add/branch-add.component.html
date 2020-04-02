@@ -93,6 +93,7 @@
                                         <mat-label>Pin Code</mat-label>
                                         <input matInput formControlName="pincode" placeholder="Enter Pin Code"
                                             [readonly]="viewOnly">
+                                        <mat-hint>Enter pin code without spaces</mat-hint>
                                         <mat-error *ngIf="controls.pincode.errors?.required">Required field</mat-error>
                                     </mat-form-field>
                                 </div>
@@ -125,7 +126,7 @@
                                     Cancel
                                 </button>&nbsp;
                                 <button type="button" mat-raised-button color="primary" (click)="onSubmit()"
-                                    matTooltip="Save changes">
+                                    [disabled]="branchForm.invalid || viewOnly" matTooltip="Save changes">
                                     Save
                                 </button>
                             </div>

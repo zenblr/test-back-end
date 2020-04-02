@@ -94,7 +94,7 @@
 
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Partner Name</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.name}}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="commission">

@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 const HttpUploadOptions = {
-  headers: new HttpHeaders({ "Accept": "application/json" })
+  headers: new HttpHeaders({ "Content-type": "multipart/form-data" })
 }
 
 @Injectable({
@@ -17,7 +17,7 @@ export class UploadBannerService {
 
   uploadFile(fd): Observable<any> {
     console.log(fd);
-    return this.http.post<any>(`/api/upload-file`, fd, HttpUploadOptions);
+    return this.http.post<any>(`/api/upload-file`, fd);
   }
 
   uploadBanners(fd): Observable<any> {
