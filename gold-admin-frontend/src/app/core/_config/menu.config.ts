@@ -479,6 +479,13 @@ export class MenuConfig {
 						// },
 					]
 				},
+				{
+					title: 'Customer Management',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					page: '/customer-management',
+					bullet: 'dot',
+				},
 				// {
 				// 	title: 'Layout Builder',
 				// 	root: true,

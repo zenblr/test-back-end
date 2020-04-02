@@ -31,7 +31,6 @@ export class BranchListComponent implements OnInit {
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
-  // rolesResult: any[];
 
   constructor(
     public dialog: MatDialog,
