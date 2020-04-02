@@ -47,5 +47,10 @@ router.use('/partner', partner);
 const branch = require('./branch'); // branch Route
 router.use('/branch', branch);
 
+const role= require('./role');
+router.use('/role',role)
+
+const permission= require('./permission');
+router.use('/permission',permission);
 
 module.exports = router;

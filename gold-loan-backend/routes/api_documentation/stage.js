@@ -36,7 +36,6 @@
  *       - bearerAuth: []
  *     consumes:
  *       - application/json
- *     parameters:
  *     responses:
  *       200:
  *          description: Success

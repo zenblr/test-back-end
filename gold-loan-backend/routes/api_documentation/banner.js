@@ -1,7 +1,7 @@
 
 /**
 * @swagger
-* /banner/readbanner:
+* /banner:
 *   get:
 *     tags:
 *       - Banner
@@ -16,7 +16,6 @@
 *         description: Data found 
 *       404:
 *         description: Data not found
-* /banner/addbanner:
 *   post:
 *     tags:
 *       - Banner
@@ -48,13 +47,13 @@
 *         description: Banner updated
 *       404:
 *         description: Data not found
-* /banner/deletebanner/{id}:
+* /banner/{id}:
 *   delete:
 *     tags:
 *       - Banner
 *     summary: To delete by Id
 *     parameters:
-*     - name: "bannerId"
+*     - name: "id"
 *       in: "path"
 *       description: "Id of banner to delete"
 *       required: true

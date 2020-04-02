@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /auth/userLogin:
+ * /auth/user-login:
  *   post:
  *     tags:
  *       - Authentication
