@@ -6,16 +6,17 @@ const redisConn = require('../config/redis')
 const client = redis.createClient(redisConn.PORT, redisConn.HOST);
 
 module.exports = (req, res, next) => {
+    // console.log(req)
 
     const createdDateTime = new Date();
 
     let skipUrls = [
         "/",
-        "/api/auth/userLogin",
-        "/api/auth/customerLogin",
-        "/api/user/registerOtp",
-        "/api/user/verifyOtp",
-        "/api/user/resendOtp"
+        "/api/auth/user-login",
+        "/api/auth/customer-login",
+        "/api/user/register-otp",
+        "/api/user/verify-otp",
+        "/api/user/resend-otp",
     ];
     if (!skipUrls.includes(req.originalUrl)) {
         try {

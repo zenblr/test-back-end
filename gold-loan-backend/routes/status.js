@@ -7,9 +7,9 @@ const { addStatus, getStatus, deactivateStatus } = require('../controllers/statu
 const checkAuth = require('../middleware/checkAuth');
 
 
-router.post('/', checkAuth, addStatus)
+router.post('/', checkAuth, wrapper(addStatus))
 
-router.get('/', checkAuth, getStatus);
+router.get('/', checkAuth, wrapper(getStatus));
 
-router.delete('/', checkAuth, deactivateStatus)
+router.delete('/', checkAuth, wrapper(deactivateStatus))
 module.exports = router;

@@ -30,8 +30,16 @@ export class PageConfig {
 			uploadLenderBanner: {
 				page: { title: 'Upload Lender Banner', desc: '' }
 			},
-			ploadScheme: {
+			uploadScheme: {
 				page: { title: 'Upload Scheme', desc: '' }
+			},
+		},
+		'user-management': {
+			'partner': {
+				page: { title: 'Partner Details', desc: '' }
+			},
+			'branch': {
+				page: { title: 'Branch Details', desc: '' }
 			},
 		},
 		// ngbootstrap: {

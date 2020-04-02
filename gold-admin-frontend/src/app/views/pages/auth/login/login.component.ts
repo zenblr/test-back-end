@@ -1,10 +1,10 @@
 // Angular
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 // RxJS
 import { Observable, Subject } from 'rxjs';
-import { finalize, takeUntil, tap } from 'rxjs/operators';
+import { finalize, takeUntil, tap, catchError } from 'rxjs/operators';
 // Translate
 import { TranslateService } from '@ngx-translate/core';
 // Store
@@ -15,13 +15,15 @@ import { AuthNoticeService, Login } from '../../../../core/auth';
 
 // services
 import { AuthService } from '../../../../core/auth/_services/auth.service';
+import { ToastrService } from 'ngx-toastr';
+import { ToastrComponent } from '../../../../views/partials/components/toastr/toastr.component';
 
 /**
  * ! Just example => Should be removed in development
  */
 const DEMO_PARAMS = {
-	EMAIL: 'rupesh',
-	PASSWORD: 'rupesh'
+	EMAIL: '',
+	PASSWORD: ''
 };
 
 @Component({
@@ -30,6 +32,8 @@ const DEMO_PARAMS = {
 	encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit, OnDestroy {
+
+	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 	// Public params
 	loginForm: FormGroup;
 	loading = false;
@@ -62,7 +66,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 		private store: Store<AppState>,
 		private fb: FormBuilder,
 		private cdr: ChangeDetectorRef,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
 	) {
 		this.unsubscribe = new Subject();
 	}
@@ -143,7 +147,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 			.login(authData.username, authData.password)
 			.pipe(
 				tap(user => {
-					console.log(user);
+					// console.log(user);
 					if (user) {
 						// this.store.dispatch(new Login({ authToken: user.accessToken }));
 						localStorage.setItem('accessToken', user['Token']);
@@ -157,11 +161,21 @@ export class LoginComponent implements OnInit, OnDestroy {
 					} else {
 						this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.INVALID_LOGIN'), 'danger');
 					}
+					const msg = 'Successfully Logged In';
+					this.toastr.successToastr(msg);
+
 				}),
 				takeUntil(this.unsubscribe),
 				finalize(() => {
 					this.loading = false;
 					this.cdr.markForCheck();
+				}),
+				catchError(err => {
+
+					let showError = JSON.stringify(err.error.message);
+					this.toastr.errorToastr(showError);
+					throw err;
+
 				})
 			)
 			.subscribe();
