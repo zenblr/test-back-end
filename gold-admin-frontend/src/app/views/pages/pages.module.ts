@@ -13,7 +13,7 @@ import { UserManagementModule } from './user-management/user-management.module';
 import { MyPageComponent } from './my-page/my-page.component';
 
 @NgModule({
-	declarations: [MyPageComponent],
+	declarations: [MyPageComponent, ],
 	exports: [],
 	imports: [
 		CommonModule,

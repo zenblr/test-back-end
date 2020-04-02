@@ -48,11 +48,6 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			desktop: {
 				// by default the menu mode set to accordion in desktop mode
 				default: 'dropdown',
-				// whenever body has this class switch the menu mode to dropdown
-				state: {
-					body: 'kt-aside--minimize',
-					mode: 'dropdown'
-				}
 			},
 			tablet: 'accordion', // menu set to accordion in tablet mode
 			mobile: 'accordion' // menu set to accordion in mobile mode
@@ -98,10 +93,6 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			});
 
 		const config = this.layoutConfigService.getConfig();
-
-		if (objectPath.get(config, 'aside.menu.dropdown') !== true && objectPath.get(config, 'aside.self.fixed')) {
-			this.render.setAttribute(this.asideMenu.nativeElement, 'data-ktmenu-scroll', '1');
-		}
 
 		if (objectPath.get(config, 'aside.menu.dropdown')) {
 			this.render.setAttribute(this.asideMenu.nativeElement, 'data-ktmenu-dropdown', '1');

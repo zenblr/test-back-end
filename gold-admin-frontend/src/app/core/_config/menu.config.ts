@@ -396,17 +396,36 @@ export class MenuConfig {
 					submenu: [
 						{
 							title: 'Change Password',
-							page: '/material/form-controls/autocomplete',
+							page: '/admin-account/change-password',
 							bullet: 'dot',
 						},
 						{
 							title: 'Show Queries',
-							page: '/material/form-controls/autocomplete',
+							page: '/admin-account/show-queries',
 							bullet: 'dot',
 						},
 						{
 							title: 'Show Feedback',
-							page: '/material/form-controls/autocomplete',
+							page: '/admin-account/show-feedback',
+							bullet: 'dot',
+						},
+					]
+				},
+				{
+					title: 'Loan Settings',
+					root: true,
+					icon: 'flaticon-web',
+					page: '/dashboard',
+					bullet: 'dot',
+					submenu: [
+						{
+							title: 'Loan Status',
+							page: '/loan-setting/loan-status',
+							bullet: 'dot',
+						},
+						{
+							title: 'Scheme',
+							page: '/loan-setting/scheme',
 							bullet: 'dot',
 						},
 					]
