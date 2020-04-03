@@ -74,7 +74,8 @@ export class CustomerManagementComponent implements OnInit {
     this.dataSource.loadLeads(from, to, '', '', '', '');
   }
 
-  addLead() {
+  addLead(event) {
+    console.log(event);
     const dialogRef = this.dialog.open(AddLeadComponent);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

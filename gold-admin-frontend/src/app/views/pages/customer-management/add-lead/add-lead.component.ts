@@ -27,6 +27,8 @@ export class AddLeadComponent implements OnInit {
   ];
   otpButton = true;
   panButton = true;
+  isPanVerified = false;
+  isMobileVerified = false;
   currentDate = new Date();
 
   constructor(
@@ -45,6 +47,7 @@ export class AddLeadComponent implements OnInit {
         this.otpButton = false;
       } else {
         this.otpButton = true;
+        this.isMobileVerified = false;
       }
     });
 
@@ -53,6 +56,7 @@ export class AddLeadComponent implements OnInit {
         this.panButton = false;
       } else {
         this.panButton = true;
+        this.isPanVerified = false;
       }
     });
   }
@@ -61,6 +65,7 @@ export class AddLeadComponent implements OnInit {
     this.leadForm = this.fb.group({
       name: ['', [Validators.required]],
       mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
+      otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
@@ -87,9 +92,17 @@ export class AddLeadComponent implements OnInit {
     console.log(mobileNumber);
   }
 
+  verifyOTP() {
+    const otp = this.controls.otp.value;
+    console.log(otp);
+  }
+
   verifyPAN() {
     const mobileNumber = this.controls.panCardNumber.value;
     console.log(mobileNumber);
+    setTimeout(() => {
+      this.isPanVerified = true;
+    }, 1000);
   }
 
   get controls() {

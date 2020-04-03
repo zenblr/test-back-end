@@ -59,10 +59,47 @@
                                     </mat-form-field>
                                 </div>
 
-                                <div class="col">
-                                    <button class="w-100" mat-raised-button color="primary" matTooltip="Save changes"
-                                        (click)="sendOTP()" [disabled]="otpButton">Sent OTP</button>
+                                <div class="col-3">
+                                    <div *ngIf="!isMobileVerified">
+                                        <kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
+                                            [value]="'Sent OTP'" (action)="sendOTP()">
+                                        </kt-button>
+                                    </div>
+                                    <div *ngIf="!isMobileVerified">
+                                        <kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
+                                            [value]="'Sent'">
+                                        </kt-button>
+                                    </div>
+                                    <div *ngIf="isMobileVerified">
+                                        <button class="w-100" mat-raised-button color="success"
+                                            matTooltip="Pan Verified">Verified</button>
+                                    </div>
                                 </div>
+
+                                <ng-container>
+																	<!-- OTP -->
+                                    <div class="col-4"></div>
+
+                                    <div class="col-5">
+                                        <mat-form-field appearance="outline" class="w-100">
+                                            <input matInput formControlName="otp" autocomplete="off"
+                                                placeholder="Enter OTP">
+                                            <mat-error *ngIf="controls.otp.errors?.required">Required field
+                                            </mat-error>
+                                            <mat-error *ngIf="controls.otp.errors?.pattern">Invalid Input
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <div *ngIf="!isMobileVerified">
+                                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Sumbit'"
+                                                (action)="verifyOTP()">
+                                            </kt-button>
+                                        </div>
+                                    </div>
+                                </ng-container>
+
                             </div>
 
                             <div class="row">
@@ -83,8 +120,16 @@
                                 </div>
 
                                 <div class="col">
-                                    <button class="w-100" mat-raised-button color="primary" matTooltip="Verify PAN"
-                                        (click)="verifyPAN()" [disabled]="panButton">Verify</button>
+                                    <div *ngIf="!isPanVerified">
+                                        <kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
+                                            [value]="'Verify'" (action)="verifyPAN()">
+                                        </kt-button>
+                                    </div>
+
+                                    <div *ngIf="isPanVerified">
+                                        <button class="w-100 success-button" mat-raised-button
+                                            matTooltip="Pan Verified">Verified</button>
+                                    </div>
                                 </div>
                             </div>
 
