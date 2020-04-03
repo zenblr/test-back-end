@@ -35,7 +35,7 @@ export class HeaderMobileComponent implements OnInit {
 	 * On init
 	 */
 	ngOnInit() {
-		this.headerLogo = this.layoutConfigService.getLogo();
+		this.headerLogo = this.layoutConfigService.getStickyLogo();
 		this.asideDisplay = this.layoutConfigService.getConfig('aside.self.display');
 	}
 }

@@ -23,7 +23,7 @@ import { HtmlClassService } from '../html-class.service';
 })
 export class AsideLeftComponent implements OnInit, AfterViewInit {
 
-	@ViewChild('asideMenu', {static: true}) asideMenu: ElementRef;
+	@ViewChild('asideMenu', { static: true }) asideMenu: ElementRef;
 
 	currentRouteUrl = '';
 	insideTm: any;
@@ -138,46 +138,46 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 	 * Use for fixed left aside menu, to show menu on mouseenter event.
 	 * @param e Event
 	 */
-	mouseEnter(e: Event) {
-		// check if the left aside menu is fixed
-		if (document.body.classList.contains('kt-aside--fixed')) {
-			if (this.outsideTm) {
-				clearTimeout(this.outsideTm);
-				this.outsideTm = null;
-			}
+	// mouseEnter(e: Event) {
+	// 	// check if the left aside menu is fixed
+	// 	if (document.body.classList.contains('kt-aside--fixed')) {
+	// 		if (this.outsideTm) {
+	// 			clearTimeout(this.outsideTm);
+	// 			this.outsideTm = null;
+	// 		}
 
-			this.insideTm = setTimeout(() => {
-				// if the left aside menu is minimized
-				if (document.body.classList.contains('kt-aside--minimize') && KTUtil.isInResponsiveRange('desktop')) {
-					// show the left aside menu
-					this.render.removeClass(document.body, 'kt-aside--minimize');
-					this.render.addClass(document.body, 'kt-aside--minimize-hover');
-				}
-			}, 50);
-		}
-	}
+	// 		this.insideTm = setTimeout(() => {
+	// 			// if the left aside menu is minimized
+	// 			if (document.body.classList.contains('kt-aside--minimize') && KTUtil.isInResponsiveRange('desktop')) {
+	// 				// show the left aside menu
+	// 				this.render.removeClass(document.body, 'kt-aside--minimize');
+	// 				this.render.addClass(document.body, 'kt-aside--minimize-hover');
+	// 			}
+	// 		}, 50);
+	// 	}
+	// }
 
 	/**
 	 * Use for fixed left aside menu, to show menu on mouseenter event.
 	 * @param e Event
 	 */
-	mouseLeave(e: Event) {
-		if (document.body.classList.contains('kt-aside--fixed')) {
-			if (this.insideTm) {
-				clearTimeout(this.insideTm);
-				this.insideTm = null;
-			}
+	// mouseLeave(e: Event) {
+	// 	if (document.body.classList.contains('kt-aside--fixed')) {
+	// 		if (this.insideTm) {
+	// 			clearTimeout(this.insideTm);
+	// 			this.insideTm = null;
+	// 		}
 
-			this.outsideTm = setTimeout(() => {
-				// if the left aside menu is expand
-				if (document.body.classList.contains('kt-aside--minimize-hover') && KTUtil.isInResponsiveRange('desktop')) {
-					// hide back the left aside menu
-					this.render.removeClass(document.body, 'kt-aside--minimize-hover');
-					this.render.addClass(document.body, 'kt-aside--minimize');
-				}
-			}, 100);
-		}
-	}
+	// 		this.outsideTm = setTimeout(() => {
+	// 			// if the left aside menu is expand
+	// 			if (document.body.classList.contains('kt-aside--minimize-hover') && KTUtil.isInResponsiveRange('desktop')) {
+	// 				// hide back the left aside menu
+	// 				this.render.removeClass(document.body, 'kt-aside--minimize-hover');
+	// 				this.render.addClass(document.body, 'kt-aside--minimize');
+	// 			}
+	// 		}, 100);
+	// 	}
+	// }
 
 	/**
 	 * Returns Submenu CSS Class Name

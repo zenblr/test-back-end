@@ -1,18 +1,6 @@
 <!-- begin: Header -->
-<div ktHeader #ktHeader class="kt-header kt-grid__item" [ngClass]="htmlClassService.getClasses('header', true)"
-	id="kt_header">
-	<ngb-progressbar class="kt-loading-bar" *ngIf="(loader.progress$|async) > 0" [value]="loader.progress$|async"
-		height="3px"></ngb-progressbar>
-
-	<!-- begin:: Brand -->
-	<kt-brand></kt-brand>
-	<!-- end:: Brand -->
-
-	<!-- begin:: Title -->
-	<h3 class="kt-header__title kt-grid__item">
-		Augmont Gold Loan
-	</h3>
-	<!-- end:: Title -->
+<div ktHeader #ktHeader class="kt-header kt-grid__item" [ngClass]="htmlClassService.getClasses('header', true)" id="kt_header">
+	<ngb-progressbar class="kt-loading-bar" *ngIf="(loader.progress$|async) > 0" [value]="loader.progress$|async" height="3px"></ngb-progressbar>
 
 	<!-- begin: Header Menu -->
 	<kt-menu-horizontal *ngIf="menuHeaderDisplay"></kt-menu-horizontal>

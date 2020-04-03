@@ -11,31 +11,36 @@
 				<ul ktTabClickEvent class="nav nav-tabs nav-tabs-line nav-tabs-bold nav-tabs-line-left nav-tabs-line-primary" role="tablist">
 					<li class="nav-item">
 						<a (click)="tab.select('tab-id-1')" class="nav-link active" href="javascript:;" role="tab">
-							Page
+							Skins
 						</a>
 					</li>
 					<li class="nav-item">
 						<a (click)="tab.select('tab-id-2')" class="nav-link" href="javascript:;" role="tab">
-							Header
+							Page
 						</a>
 					</li>
 					<li class="nav-item">
 						<a (click)="tab.select('tab-id-3')" class="nav-link" href="javascript:;" role="tab">
-							Subheader
+							Header
 						</a>
 					</li>
 					<li class="nav-item">
 						<a (click)="tab.select('tab-id-4')" class="nav-link" href="javascript:;" role="tab">
-							Content
+							Subheader
 						</a>
 					</li>
 					<li class="nav-item">
 						<a (click)="tab.select('tab-id-5')" class="nav-link" href="javascript:;" role="tab">
-							Aside
+							Content
 						</a>
 					</li>
 					<li class="nav-item">
 						<a (click)="tab.select('tab-id-6')" class="nav-link" href="javascript:;" role="tab">
+							Aside
+						</a>
+					</li>
+					<li class="nav-item">
+						<a (click)="tab.select('tab-id-7')" class="nav-link" href="javascript:;" role="tab">
 							Footer
 						</a>
 					</li>
@@ -45,6 +50,54 @@
 		<kt-portlet-body>
 			<ngb-tabset #tab="ngbTabset">
 				<ngb-tab id="tab-id-1">
+					<ng-template ngbTabContent>
+						<div class="kt-section kt-margin-t-30">
+							<div class="kt-section__body">
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Header Skin:</label>
+									<div class="col-lg-9 col-xl-4">
+										<select class="form-control" name="builder[header][self][skin]" [(ngModel)]="model.header.self.skin">
+											<option value="light">Light (Default)</option>
+											<option value="dark">Dark</option>
+										</select>
+										<div class="form-text text-muted">Select header skin</div>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Header Menu Skin:</label>
+									<div class="col-lg-9 col-xl-4">
+										<select class="form-control" name="builder[header][menu][desktop][submenu][skin]" [(ngModel)]="model.header.menu.desktop.submenu.skin">
+											<option value="light">Light (Default)</option>
+											<option value="dark">Dark</option>
+										</select>
+										<div class="form-text text-muted">Select header skin</div>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Logo Bar Skin:</label>
+									<div class="col-lg-9 col-xl-4">
+										<select class="form-control" name="builder[brand][self][skin]" [(ngModel)]="model.brand.self.skin">
+											<option value="dark">Dark (Default)</option>
+											<option value="light">Light</option>
+										</select>
+										<div class="form-text text-muted">Select logo bar skin</div>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Aside Skin:</label>
+									<div class="col-lg-9 col-xl-4">
+										<select class="form-control" name="builder[aside][self][skin]" [(ngModel)]="model.aside.self.skin">
+											<option value="dark">Dark (Default)</option>
+											<option value="light">Light</option>
+										</select>
+										<div class="form-text text-muted">Select header skin</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</ng-template>
+				</ngb-tab>
+				<ngb-tab id="tab-id-2">
 					<ng-template ngbTabContent>
 						<div class="kt-section kt-margin-t-30">
 							<div class="kt-section__body">
@@ -64,7 +117,7 @@
 						</div>
 					</ng-template>
 				</ngb-tab>
-				<ngb-tab id="tab-id-2">
+				<ngb-tab id="tab-id-3">
 					<ng-template ngbTabContent>
 						<div class="kt-section kt-margin-t-30">
 							<div class="kt-section__body">
@@ -73,7 +126,7 @@
 									<div class="col-lg-9 col-xl-4">
 										<span class="kt-switch kt-switch--icon-check">
 											<label>
-												<input type="checkbox" name="builder[header][self][fixed][desktop][enabled]" [(ngModel)]="model.header.self.fixed.desktop.enabled" value="true"/>
+												<input type="checkbox" name="builder[header][self][fixed][desktop]" [(ngModel)]="model.header.self.fixed.desktop" value="true"/>
 												<span></span>
 											</label>
 										</span>
@@ -81,8 +134,8 @@
 									</div>
 								</div>
 								<div class="form-group row">
-									<label class="col-lg-3 col-form-label">Fixed Mobile Header:</label>
-									<div class="col-lg-9 col-xl-6">
+									<label class="col-lg-3 col-form-label">Mobile Fixed Header:</label>
+									<div class="col-lg-9 col-xl-4">
 										<span class="kt-switch kt-switch--icon-check">
 											<label>
 												<input type="checkbox" name="builder[header][self][fixed][mobile]" [(ngModel)]="model.header.self.fixed.mobile" value="true"/>
@@ -108,6 +161,19 @@
 									</div>
 								</div>
 								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Header Menu Layout:</label>
+									<div class="col-lg-9 col-xl-4">
+										<select class="form-control" name="builder[header][menu][self][layout]" [(ngModel)]="model.header.menu.self.layout">
+											<option value="default">Default</option>
+											<option value="tab">Tab</option>
+										</select>
+										<div class="form-text text-muted">Select header menu layout style</div>
+									</div>
+								</div>
+
+								<div class="kt-separator kt-separator--space-lg kt-separator--border-dashed"></div>
+
+								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Header Menu Arrows:</label>
 									<div class="col-lg-9 col-xl-4">
 										<span class="kt-switch kt-switch--icon-check">
@@ -123,7 +189,7 @@
 						</div>
 					</ng-template>
 				</ngb-tab>
-				<ngb-tab id="tab-id-3">
+				<ngb-tab id="tab-id-4">
 					<ng-template ngbTabContent>
 						<div class="kt-section kt-margin-t-30">
 							<div class="kt-section__body">
@@ -140,15 +206,15 @@
 									</div>
 								</div>
 								<div class="form-group row">
-									<label class="col-lg-3 col-form-label">Subheader Layout:</label>
+									<label class="col-lg-3 col-form-label">Fixed Subheader:</label>
 									<div class="col-lg-9 col-xl-4">
-										<select class="form-control" name="builder[subheader][layout]" [(ngModel)]="model.subheader.layout">
-											<option value="subheader-v1">Subheader 1</option>
-											<option value="subheader-v2">Subheader 2</option>
-											<option value="subheader-v3">Subheader 3</option>
-											<option value="subheader-search">Subheader Search</option>
-										</select>
-										<div class="form-text text-muted">Select subheader layout</div>
+										<span class="kt-switch kt-switch--icon-check">
+											<label>
+												<input type="checkbox" name="builder[subheader][fixed]" [(ngModel)]="model.subheader.fixed" value="true"/>
+												<span></span>
+											</label>
+										</span>
+										<div class="form-text text-muted">Enable fixed(sticky) subheader. Requires <code>Solid</code> subheader style.</div>
 									</div>
 								</div>
 								<div class="form-group row">
@@ -161,11 +227,32 @@
 										<div class="form-text text-muted">Select layout width type.</div>
 									</div>
 								</div>
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Subheader Style:</label>
+									<div class="col-lg-9 col-xl-4">
+										<select class="form-control" name="builder[subheader][style]" [(ngModel)]="model.subheader.style">
+											<option value="transparent">Transparent</option>
+											<option value="solid">Solid</option>
+										</select>
+										<div class="form-text text-muted">Select subheader style</div>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Subheader Layout:</label>
+									<div class="col-lg-9 col-xl-4">
+										<select class="form-control" name="builder[subheader][layout]" [(ngModel)]="model.subheader.layout">
+											<option value="subheader-v1">Subheader 1</option>
+											<option value="subheader-v2">Subheader 2</option>
+											<option value="subheader-v3">Subheader 3</option>
+										</select>
+										<div class="form-text text-muted">Select subheader layout</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</ng-template>
 				</ngb-tab>
-				<ngb-tab id="tab-id-4">
+				<ngb-tab id="tab-id-5">
 					<ng-template ngbTabContent>
 						<div class="kt-section kt-margin-t-30">
 							<div class="kt-section__body">
@@ -183,7 +270,7 @@
 						</div>
 					</ng-template>
 				</ngb-tab>
-				<ngb-tab id="tab-id-5">
+				<ngb-tab id="tab-id-6">
 					<ng-template ngbTabContent>
 						<div class="kt-section kt-margin-t-30">
 							<div class="kt-section__body">
@@ -191,11 +278,11 @@
 									<label class="col-lg-3 col-form-label">Display:</label>
 									<div class="col-lg-9 col-xl-6">
 										<span class="kt-switch kt-switch--icon-check">
-											<label>
-												<input type="checkbox" name="builder[aside][self][display]" [(ngModel)]="model.aside.self.display" value="true"/>
-												<span></span>
-											</label>
-										</span>
+										<label>
+											<input type="checkbox" name="builder[aside][self][display]" [(ngModel)]="model.aside.self.display" value="true"/>
+									        <span></span>
+									    </label>
+									</span>
 										<div class="form-text text-muted">Display aside menu</div>
 									</div>
 								</div>
@@ -203,22 +290,68 @@
 									<label class="col-lg-3 col-form-label">Fixed:</label>
 									<div class="col-lg-9 col-xl-4">
 										<span class="kt-switch kt-switch--icon-check">
-											<label>
-												<input type="checkbox" name="builder[aside][self][fixed]" [(ngModel)]="model.aside.self.fixed" value="true"/>
-												<span></span>
-											</label>
-										</span>
+										<label>
+											<input type="checkbox" name="builder[aside][self][fixed]" [(ngModel)]="model.aside.self.fixed" value="true"/>
+									        <span></span>
+									    </label>
+									</span>
 										<div class="form-text text-muted">Set fixed aside layout</div>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Minimize:</label>
+									<div class="col-lg-9 col-xl-4">
+										<span class="kt-switch kt-switch--icon-check">
+										<label>
+											<input type="checkbox" name="builder[aside][self][minimize][toggle]" [(ngModel)]="model.aside.self.minimize.toggle" value="true"/>
+									        <span></span>
+									    </label>
+									</span>
+										<div class="form-text text-muted">Allow aside minimizing</div>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Default Minimize:</label>
+									<div class="col-lg-9 col-xl-4">
+										<span class="kt-switch kt-switch--icon-check">
+										<label>
+											<input type="checkbox" name="builder[aside][self][minimize][default]" [(ngModel)]="model.aside.self.minimize.default" value="true"/>
+									        <span></span>
+									    </label>
+									</span>
+										<div class="form-text text-muted">Set aside minimized by default</div>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Submenu Toggle:</label>
+									<div class="col-lg-9 col-xl-4">
+										<select class="form-control" name="builder[aside][menu][dropdown]" [(ngModel)]="model.aside.menu.dropdown">
+											<option value="true">Dropdown</option>
+											<option value="false">Accordion</option>
+										</select>
+										<div class="form-text text-muted">Select submenu toggle mode(works only when <code>Fixed Mode</code> is disabled)</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</ng-template>
 				</ngb-tab>
-				<ngb-tab id="tab-id-6">
+				<ngb-tab id="tab-id-7">
 					<ng-template ngbTabContent>
 						<div class="kt-section kt-margin-t-30">
 							<div class="kt-section__body">
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Fixed Footer:</label>
+									<div class="col-lg-9 col-xl-4">
+									<span class="kt-switch kt-switch--icon-check">
+									    <label>
+											<input type="checkbox" name="builder[footer][self][fixed]" [(ngModel)]="model.footer.self.fixed" value="true"/>
+									        <span></span>
+									    </label>
+									</span>
+										<div class="form-text text-muted">Set fixed footer</div>
+									</div>
+								</div>
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Width:</label>
 									<div class="col-lg-9 col-xl-4">

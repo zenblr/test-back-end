@@ -28,6 +28,8 @@ export class BaseComponent implements OnInit, OnDestroy {
 	asideDisplay: boolean;
 	asideSecondary: boolean;
 	subheaderDisplay: boolean;
+	desktopHeaderDisplay: boolean;
+	fitTop: boolean;
 	fluid: boolean;
 
 	// Private properties
@@ -81,8 +83,9 @@ export class BaseComponent implements OnInit, OnDestroy {
 		const config = this.layoutConfigService.getConfig();
 		this.selfLayout = objectPath.get(config, 'self.layout');
 		this.asideDisplay = objectPath.get(config, 'aside.self.display');
-		this.asideSecondary = objectPath.get(config, 'aside-secondary.self.display');
 		this.subheaderDisplay = objectPath.get(config, 'subheader.display');
+		this.desktopHeaderDisplay = objectPath.get(config, 'header.self.fixed.desktop');
+		this.fitTop = objectPath.get(config, 'content.fit-top');
 		this.fluid = objectPath.get(config, 'content.width') === 'fluid';
 
 		// let the layout type change
