@@ -50,10 +50,12 @@
 
                                 <div class="col-5">
                                     <mat-form-field appearance="outline" class="w-100">
-                                        <input matInput formControlName="mobile" autocomplete="off"
+                                        <input matInput formControlName="mobileNumber" autocomplete="off"
                                             placeholder="Enter mobile number">
-                                        <mat-error *ngIf="controls.mobile.errors?.required">Required field</mat-error>
-                                        <mat-error *ngIf="controls.mobile.errors?.pattern">Invalid Input</mat-error>
+                                        <mat-error *ngIf="controls.mobileNumber.errors?.required">Required field
+                                        </mat-error>
+                                        <mat-error *ngIf="controls.mobileNumber.errors?.pattern">Invalid Input
+                                        </mat-error>
                                     </mat-form-field>
                                 </div>
 
@@ -71,10 +73,12 @@
 
                                 <div class="col-5">
                                     <mat-form-field appearance="outline" class="w-100">
-                                        <input matInput formControlName="pan" autocomplete="off"
+                                        <input matInput formControlName="panCardNumber" autocomplete="off"
                                             placeholder="PAN Number">
-                                        <mat-error *ngIf="controls.pan.errors?.required">Required field</mat-error>
-                                        <mat-error *ngIf="controls.pan.errors?.pattern">Invalid Input</mat-error>
+                                        <mat-error *ngIf="controls.panCardNumber.errors?.required">Required field
+                                        </mat-error>
+                                        <mat-error *ngIf="controls.panCardNumber.errors?.pattern">Invalid Input
+                                        </mat-error>
                                     </mat-form-field>
                                 </div>
 
@@ -150,12 +154,12 @@
                                 <div class="col-8">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Select</mat-label>
-                                        <mat-select formControlName="status">
+                                        <mat-select formControlName="statusId">
                                             <mat-option *ngFor="let stat of status" [value]="stat.id">
                                                 {{stat.status}}
                                             </mat-option>
                                         </mat-select>
-                                        <mat-error *ngIf="controls.status.errors?.required">Required field</mat-error>
+                                        <mat-error *ngIf="controls.statusId.errors?.required">Required field</mat-error>
                                     </mat-form-field>
                                 </div>
                             </div>
