@@ -46,12 +46,12 @@
 		[ngbTooltip]="item.tooltip" data-placement="right">
 
 		<!-- if menu item hasn't submenu -->
-		<a *ngIf="!item.submenu" [routerLink]="item.page" class="kt-menu__link kt-menu__toggle">
+		<a *ngIf="!item.submenu" [routerLink]="item.page" class="kt-menu__link kt-menu__toggle text-white">
 			<ng-container [ngTemplateOutlet]="menuItemTextTemplate"
 				[ngTemplateOutletContext]="{ item: item, parentItem: parentItem }"></ng-container>
 		</a>
 		<!-- if menu item has sumnenu child  -->
-		<a *ngIf="item.submenu" class="kt-menu__link kt-menu__toggle">
+		<a *ngIf="item.submenu" class="kt-menu__link kt-menu__toggle text-white">
 			<ng-container [ngTemplateOutlet]="menuItemTextTemplate"
 				[ngTemplateOutletContext]="{ item: item, parentItem: parentItem }"></ng-container>
 		</a>

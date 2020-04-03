@@ -3,33 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { Routes, RouterModule } from "@angular/router";
 import { PartialsModule } from '../../partials/partials.module';
-import {
-  MatInputModule,
-  MatButtonModule,
-  MatMenuModule,
-  MatSelectModule,
-  MatTableModule,
-  MatAutocompleteModule,
-  MatRadioModule,
-  MatIconModule,
-  MatNativeDateModule,
-  MatProgressBarModule,
-  MatDatepickerModule,
-  MatCardModule,
-  MatPaginatorModule,
-  MatSortModule,
-  MatCheckboxModule,
-  MatProgressSpinnerModule,
-  MatSnackBarModule,
-  MatExpansionModule,
-  MatTabsModule,
-  MatTooltipModule,
-  MatDialogModule,
-  MAT_DIALOG_DATA,
-  MAT_SNACK_BAR_DATA,
-  MAT_DIALOG_DEFAULT_OPTIONS
-
-} from '@angular/material'
+import { AngularMaterialModule } from '../angular-material/angular-material.module'
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { usersReducer, UserEffects } from '../../../core/auth';
@@ -55,27 +29,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     TranslateModule.forChild(),
-    MatButtonModule,
-    MatMenuModule,
-    MatSelectModule,
-    MatInputModule,
-    MatTableModule,
-    MatAutocompleteModule,
-    MatRadioModule,
-    MatIconModule,
-    MatNativeDateModule,
-    MatProgressBarModule,
-    MatDatepickerModule,
-    MatCardModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    MatExpansionModule,
-    MatTabsModule,
-    MatTooltipModule,
-    MatDialogModule
+    AngularMaterialModule
   ],
   providers: [
     InterceptService,
@@ -83,18 +37,6 @@ const routes: Routes = [
       provide: HTTP_INTERCEPTORS,
       useClass: InterceptService,
       multi: true
-    },
-    { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MAT_SNACK_BAR_DATA, useValue: {} },
-    // { provide: MdDialogRef, useValue: {} },
-    {
-      provide: MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue: {
-        hasBackdrop: true,
-        panelClass: 'kt-mat-dialog-container__wrapper',
-        height: 'auto',
-        width: '900px'
-      }
     },
     HttpUtilsService,
     TypesUtilsService,

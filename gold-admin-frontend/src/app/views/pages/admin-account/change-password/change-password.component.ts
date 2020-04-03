@@ -50,11 +50,16 @@ export class ChangePasswordComponent implements OnInit {
     return result;
   }
 
-  submitForm(){
-    if(this.passwordForm.invalid){
+  submitForm() {
+    if (this.passwordForm.invalid) {
       this.passwordForm.markAllAsTouched()
       return
     }
     this.form.resetForm()
+  }
+  action(event) {
+    if (event == 'submit') {
+      this.submitForm()
+    }
   }
 }

@@ -15,10 +15,8 @@ $kt-header-topbar-item-svg-size-mobile: 30px;
 $kt-header-topbar-user-avatar-size-mobile: 30px;
 
 .kt-header__topbar {
-	display: flex;
 	align-items: stretch;
-	padding: 0;
-	padding-right: 15px;
+	padding: 0 15px ;
 
 	.kt-header__topbar-item {
 		display: flex;

@@ -511,6 +511,12 @@ export class MenuConfig {
 					page: '/customer-management',
 					bullet: 'dot',
 				},
+				{
+					title:'Log Out',
+					root:true,
+					page:'/auth/login',
+					bullet:'dot'
+				}
 				// {
 				// 	title: 'Layout Builder',
 				// 	root: true,

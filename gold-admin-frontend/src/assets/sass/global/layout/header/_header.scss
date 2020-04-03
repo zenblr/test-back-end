@@ -9,7 +9,7 @@
 	.kt-header {
 		display: flex;
 		justify-content: space-between;
-		height: kt-get($kt-header-config, base, desktop, default, height);
+		height: kt-get($kt-header-config, base, desktop, default, 60);
 		transition: kt-get($kt-aside-config, base, minimize, transition);
 		position: relative;
 		z-index: 2;

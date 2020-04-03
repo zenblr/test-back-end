@@ -1,6 +1,8 @@
 <!-- begin: Header -->
-<div ktHeader #ktHeader class="kt-header kt-grid__item" [ngClass]="htmlClassService.getClasses('header', true)" id="kt_header">
-	<ngb-progressbar class="kt-loading-bar" *ngIf="(loader.progress$|async) > 0" [value]="loader.progress$|async" height="3px"></ngb-progressbar>
+<div ktHeader #ktHeader class="kt-header kt-grid__item" [ngClass]="htmlClassService.getClasses('header', true)"
+	id="kt_header">
+	<ngb-progressbar class="kt-loading-bar" *ngIf="(loader.progress$|async) > 0" [value]="loader.progress$|async"
+		height="3px"></ngb-progressbar>
 
 	<!-- begin: Header Menu -->
 	<!-- <kt-menu-horizontal *ngIf="menuHeaderDisplay"></kt-menu-horizontal> -->
@@ -11,16 +13,11 @@
 	<!-- <div *ngIf="!menuHeaderDisplay"></div>
 	<kt-topbar></kt-topbar> -->
 	<!-- end:: Header Topbar -->
-		<div class="row w-100">
-			<div class="col-6 d-flex">
-				<h3 class="kt-header__title kt-grid__item">
-					Augmont Gold Loan
-				</h3>
-			</div>
-			<div class="offset-5 col-1" >
-					<kt-topbar></kt-topbar>
-			</div>
+	<div class="row w-100">
+		<div class="col-12">
+			<kt-topbar></kt-topbar>
 		</div>
+	</div>
 
 </div>
 <!-- end: Header -->
