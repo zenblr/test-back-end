@@ -6,6 +6,8 @@
  *       - Role
  *     name: role
  *     summary: To  add role
+ *     security:
+ *       - bearerAuth: []
  *     consumes:
  *       - application/json
  *     parameters:
@@ -28,13 +30,15 @@
  *       - Role
  *     name: role
  *     summary: To read role
+  *     security:
+ *       - bearerAuth: []
  *     consumes:
  *        - application/json
  *     responses:
  *       200:
- *         description:Success
+ *         description: Success
  *       404:
- *         description:data not found
+ *         description: data not found
  * /role/{id}:
  *   put:
  *     tags:

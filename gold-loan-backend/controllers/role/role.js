@@ -29,7 +29,7 @@ exports.updateRole=async(req,res)=>{
     const roleid=req.params.id;
     const{roleName}=req.body;
     let updateroledata=await models.roles.update({roleName},{where:{id:roleid,isActive:true}});
-    if(!updateroledata){return res.status(404).json({message:"data not found"})};
+    if(!updateroledata[0]){return res.status(404).json({message:"data not found"})};
     return res.status(200).json({message:"Updated"});
 
 }
@@ -38,8 +38,8 @@ exports.updateRole=async(req,res)=>{
 
 exports.deactiveRole=async(req,res)=>{
     const roleid=req.params.id;
-    let deactiverole=await models.roles.update({isActive:false},{where:{id:roleid}});
-    if(!deactiverole){
+    let deactiverole=await models.roles.update({isActive:false},{where:{id:roleid,isActive:true}});
+    if(!deactiverole[0]){
         return res.status(404).json({message:'data not found'});
     }
     return res.status(200).json({message:"Success"});

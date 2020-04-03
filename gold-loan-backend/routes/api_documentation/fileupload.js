@@ -6,7 +6,7 @@
 *     tags:
 *       - File-Upload
 *     name: file-upload APIs
-*     summary: To read file-upload with pagination
+*     summary: To read file-upload 
 *     security:
 *       - bearerAuth: [] 
 *     consumes:

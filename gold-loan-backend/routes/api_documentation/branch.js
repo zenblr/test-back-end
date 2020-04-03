@@ -39,21 +39,32 @@
  *           - pincode
  *           - commission
  *     responses:
- *       200:
+ *       201:
  *          description: branch created
  *       400:
  *          description: Something went wrong
- *       401:
- *          description: unauthorized
  *   get:
  *     tags:
  *       - Branch
  *     name: read branch
- *     summary: To read branch
+ *     summary: To read branch with pagination
  *     security:
  *       - bearerAuth: []
  *     consumes:
  *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
  *     responses:
  *       200:
  *          description: Success

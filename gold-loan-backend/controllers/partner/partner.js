@@ -1,5 +1,8 @@
 const models = require('../../models');
 const sequelize = models.sequelize;
+const paginationFUNC = require('../../utils/pagination'); // importing pagination function
+const Sequelize=models.Sequelize;
+const Op=Sequelize.Op;
 
 
 //add partner
@@ -14,7 +17,7 @@ exports.addPartner = async(req, res) => {
             await models.partner.update({ partnerId: partnerId }, { where: { id: id }, transaction: t });
             return partnerdata;
         }).then((partnerdata) => {
-            return res.status(200).json({ messgae: "partner created" });
+            return res.status(201).json({ messgae: "partner created" });
         }).catch((exception) => {
             return res.status(500).json({
                 message: "something went wrong",
@@ -40,13 +43,28 @@ exports.updatePartner = async(req, res) => {
 
 exports.readPartner = async(req, res) => {
 
-        let partnerdata = await models.partner.findAll({ where: { isActive: true } });
-        if (!partnerdata) {
-            return res.status(404).json({ message: 'Data not found' })
-        }
-        return res.status(200).json(partnerdata);
-
+    const { search, offset, pageSize } =
+    paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+    const searchQuery = {
+        [Op.or]: {
+            name: { [Op.iLike]: search + '%' }
+        },
+        isActive: true 
     }
+        let readpartnerdata = await models.partner.findAll({
+            where: searchQuery,
+            offset: offset,
+            limit: pageSize
+        });
+        let count = await models.partner.findAll({
+            where: {isActive:true},
+            offset: offset,
+            limit: pageSize
+        });
+        if (!readpartnerdata) { return res.status(404).json({ message: 'data not found' }) }
+        return res.status(200).json({data:readpartnerdata, count:count.length});
+      }
+
     //get partner by id
 
 exports.readPartnerById = async(req, res) => {
@@ -62,7 +80,7 @@ exports.readPartnerById = async(req, res) => {
 
 exports.deletePartner = async(req, res) => {
     const id = req.params.id;
-    let partnerdata = await models.partner.update({ isActive: false }, { where: { id } });
+    let partnerdata = await models.partner.update({ isActive: false }, { where: { id,isActive:true } });
 
     if (!partnerdata[0]) {
         return res.status(404).json({ message: 'data not found' });
