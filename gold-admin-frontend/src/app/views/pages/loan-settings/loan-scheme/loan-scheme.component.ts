@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'kt-loan-scheme',
@@ -7,9 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoanSchemeComponent implements OnInit {
 
-  constructor() { }
+  schemes: String[] = []
+  loader: boolean = true
+  constructor(private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
+    this.schemes = [
+      "1","1","1","1","1","1","1","1","1","1","1","1"
+    ]
   }
 
 }
