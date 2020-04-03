@@ -39,7 +39,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../core/_base/crud';
 import { ActionNotificationComponent } from '../../partials/content/crud';
 
-const Routes: Routes = [
+const routes: Routes = [
   { path: 'change-password', component: ChangePasswordComponent }
 ]
 
@@ -49,7 +49,7 @@ const Routes: Routes = [
     CommonModule,
     HttpClientModule,
     PartialsModule,
-    RouterModule.forChild(Routes),
+    RouterModule.forChild(routes),
     StoreModule.forFeature('users', usersReducer),
     EffectsModule.forFeature([UserEffects]),
     FormsModule,
