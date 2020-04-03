@@ -60,23 +60,23 @@
                                 </div>
 
                                 <div class="col-3">
-                                    <div *ngIf="!isMobileVerified">
+                                    <div *ngIf="!otpSent">
                                         <kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
                                             [value]="'Sent OTP'" (action)="sendOTP()">
                                         </kt-button>
                                     </div>
-                                    <div *ngIf="!isMobileVerified">
+                                    <div *ngIf="otpSent && !isMobileVerified">
                                         <kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
-                                            [value]="'Sent'">
+                                            [value]="'Sent'" (action)="verifyOTP()">
                                         </kt-button>
                                     </div>
                                     <div *ngIf="isMobileVerified">
-                                        <button class="w-100" mat-raised-button color="success"
+                                        <button class="w-100 success-button" mat-raised-button color="success"
                                             matTooltip="Pan Verified">Verified</button>
                                     </div>
                                 </div>
 
-                                <ng-container>
+                                <ng-container *ngIf="otpSent && !isMobileVerified">
 																	<!-- OTP -->
                                     <div class="col-4"></div>
 
@@ -93,7 +93,7 @@
 
                                     <div class="col-3">
                                         <div *ngIf="!isMobileVerified">
-                                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Sumbit'"
+                                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Sumbit'" [isDisabled]="isOpverified"
                                                 (action)="verifyOTP()">
                                             </kt-button>
                                         </div>

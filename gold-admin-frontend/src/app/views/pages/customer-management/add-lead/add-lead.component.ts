@@ -29,6 +29,8 @@ export class AddLeadComponent implements OnInit {
   panButton = true;
   isPanVerified = false;
   isMobileVerified = false;
+  otpSent = false;
+  isOpverified = true;
   currentDate = new Date();
 
   constructor(
@@ -48,6 +50,7 @@ export class AddLeadComponent implements OnInit {
       } else {
         this.otpButton = true;
         this.isMobileVerified = false;
+        this.otpSent = false;
       }
     });
 
@@ -57,6 +60,14 @@ export class AddLeadComponent implements OnInit {
       } else {
         this.panButton = true;
         this.isPanVerified = false;
+      }
+    });
+
+    this.controls.otp.valueChanges.subscribe(res => {
+      if (this.controls.otp.valid) {
+        this.isOpverified = false;
+      } else {
+        this.isOpverified = true;
       }
     });
   }
@@ -88,18 +99,32 @@ export class AddLeadComponent implements OnInit {
   }
 
   sendOTP() {
-    const mobileNumber = this.controls.mobileNumber.value;
-    console.log(mobileNumber);
+    const mobileNumber = +(this.controls.mobileNumber.value);
+    this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
+      if (res) {
+        this.otpSent = true;
+        const msg = 'Otp has been sent to the registered mobile number';
+        this.toastr.successToastr(msg);
+      }
+    }, error => {
+      this.toastr.errorToastr(error.error.message);
+    });
   }
 
   verifyOTP() {
-    const otp = this.controls.otp.value;
-    console.log(otp);
+    const params = {
+      mobileNumber: this.controls.mobileNumber.value,
+      otp: this.controls.otp.value,
+    };
+    this.customerManagementService.verifyOtp(params).subscribe(res => {
+      if (res) {
+        this.isMobileVerified = true;
+      }
+    });
   }
 
   verifyPAN() {
     const mobileNumber = this.controls.panCardNumber.value;
-    console.log(mobileNumber);
     setTimeout(() => {
       this.isPanVerified = true;
     }, 1000);

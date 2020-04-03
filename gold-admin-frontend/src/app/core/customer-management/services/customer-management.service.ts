@@ -16,4 +16,16 @@ export class CustomerManagementService {
   addLead(data): Observable<any> {
     return this.http.post<any>(`/api/leads`, data);
   }
+
+  sendOtp(data): Observable<any> {
+    return this.http.post<any>(`/api/user/registerOtp`, data);
+  }
+
+  verifyOtp(data): Observable<any> {
+    return this.http.post<any>(`/api/user/verifyOtp`, data);
+  }
+
+  resendOtp(data): Observable<any> {
+    return this.http.post<any>(`/api/user/resendOtp`, data);
+  }
 }
