@@ -8,8 +8,6 @@
             <button (click)="addRole()" mat-raised-button matTooltip="Create new branch" color="primary" type="button">
                 <span>Add Branch</span>
             </button>
-            <!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
-            <!-- mat-raised-button | Rectangular contained button w/ elevation  -->
         </ng-container>
     </kt-portlet-header>
     <!-- end::Header -->
@@ -40,23 +38,6 @@
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
-                <!-- Checkbox Column -->
-
-                <!-- Table with selection -->
-                <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
-                <!-- <ng-container matColumnDef="select">
-                    <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
-                        <mat-checkbox (change)="$event ? masterToggle() : null"
-                            [checked]="selection.hasValue() && isAllSelected()"
-                            [indeterminate]="selection.hasValue() && !isAllSelected()">
-                        </mat-checkbox>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let row" class="mat-column-checkbox">
-                        <mat-checkbox (click)="$event.stopPropagation()"
-                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
-                        </mat-checkbox>
-                    </mat-cell>
-                </ng-container> -->
 
                 <ng-container matColumnDef="partnerId">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->

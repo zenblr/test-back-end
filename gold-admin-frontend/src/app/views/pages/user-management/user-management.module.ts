@@ -153,7 +153,6 @@ const routes: Routes = [
 		},
 		{ provide: MAT_DIALOG_DATA, useValue: {} },
 		{ provide: MAT_SNACK_BAR_DATA, useValue: {} },
-		// { provide: MdDialogRef, useValue: {} },
 		{
 			provide: MAT_DIALOG_DEFAULT_OPTIONS,
 			useValue: {
