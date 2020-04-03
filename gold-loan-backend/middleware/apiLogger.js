@@ -6,7 +6,6 @@ const redisConn = require('../config/redis')
 const client = redis.createClient(redisConn.PORT, redisConn.HOST);
 
 module.exports = (req, res, next) => {
-    // console.log(req)
 
     const createdDateTime = new Date();
 
@@ -16,7 +15,8 @@ module.exports = (req, res, next) => {
         "/api/auth/customer-login",
         "/api/user/register-otp",
         "/api/user/verify-otp",
-        "/api/user/resend-otp",
+        "/api/user/send-otp",
+        "/api/user/update-password"
     ];
     if (!skipUrls.includes(req.originalUrl)) {
         try {
@@ -62,6 +62,8 @@ module.exports = (req, res, next) => {
         }
     } else {
         next();
+    console.log(req.body)
+
     }
 }
 

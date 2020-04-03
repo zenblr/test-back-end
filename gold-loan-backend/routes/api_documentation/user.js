@@ -66,7 +66,7 @@
  *       400:
  *          description: Invalid Otp
  * 
- * /user/resend-otp:
+ * /user/send-otp:
  *   post:
  *     tags:
  *       - Customer Registration

@@ -3,8 +3,10 @@ const route = express.Router();
 
 const { wrapper } = require('../utils/errorWrap');
 
+const checkAuth = require('../middleware/checkAuth')
 
-const { registerSendOtp, verifyRegistrationOtp, resendOtp } = require('../controllers/user/user')
+
+const { registerSendOtp, verifyRegistrationOtp, sendOtp,changePassword,updatePassword } = require('../controllers/user/user')
 
 //Register User
 
@@ -12,7 +14,16 @@ route.post('/register-otp', wrapper(registerSendOtp));
 
 route.post('/verify-otp', wrapper(verifyRegistrationOtp));
 
-route.post('/resend-otp', wrapper(resendOtp));
+route.post('/send-otp', wrapper(sendOtp));
+
+route.post('/update-password', wrapper(updatePassword));
+
+route.post('/change-password',checkAuth, wrapper(changePassword));
+
+
+
+
+
 
 
 
