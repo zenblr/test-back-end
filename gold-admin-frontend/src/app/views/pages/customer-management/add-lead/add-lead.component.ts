@@ -27,6 +27,8 @@ export class AddLeadComponent implements OnInit {
   ];
   otpButton = true;
   panButton = true;
+  isPanVerified = false;
+  isMobileVerified = false;
   currentDate = new Date();
 
   constructor(
@@ -39,19 +41,22 @@ export class AddLeadComponent implements OnInit {
 
   ngOnInit() {
     this.formInitialize();
-    this.controls.mobile.valueChanges.subscribe(res => {
-      if (this.controls.mobile.valid) {
+    this.getStates();
+    this.controls.mobileNumber.valueChanges.subscribe(res => {
+      if (this.controls.mobileNumber.valid) {
         this.otpButton = false;
       } else {
         this.otpButton = true;
+        this.isMobileVerified = false;
       }
     });
 
-    this.controls.pan.valueChanges.subscribe(res => {
-      if (this.controls.pan.valid) {
+    this.controls.panCardNumber.valueChanges.subscribe(res => {
+      if (this.controls.panCardNumber.valid) {
         this.panButton = false;
       } else {
         this.panButton = true;
+        this.isPanVerified = false;
       }
     });
   }
@@ -59,12 +64,13 @@ export class AddLeadComponent implements OnInit {
   formInitialize() {
     this.leadForm = this.fb.group({
       name: ['', [Validators.required]],
-      mobile: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
-      pan: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
+      otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
+      panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
       dateTime: [this.currentDate, [Validators.required]],
-      status: ['', [Validators.required]],
+      statusId: ['', [Validators.required]],
     });
   }
 
@@ -82,13 +88,21 @@ export class AddLeadComponent implements OnInit {
   }
 
   sendOTP() {
-    const mobile = this.controls.mobile.value;
-    console.log(mobile);
+    const mobileNumber = this.controls.mobileNumber.value;
+    console.log(mobileNumber);
+  }
+
+  verifyOTP() {
+    const otp = this.controls.otp.value;
+    console.log(otp);
   }
 
   verifyPAN() {
-    const mobile = this.controls.mobile.value;
-    console.log(mobile);
+    const mobileNumber = this.controls.panCardNumber.value;
+    console.log(mobileNumber);
+    setTimeout(() => {
+      this.isPanVerified = true;
+    }, 1000);
   }
 
   get controls() {
@@ -96,21 +110,21 @@ export class AddLeadComponent implements OnInit {
   }
 
   onSubmit() {
-    // console.log(this.branchForm.value);
-    const partnerData = this.leadForm.value;
+    console.log(this.leadForm.value);
+    const leadData = this.leadForm.value;
 
-    this.customerManagementService.addLead(partnerData).subscribe(res => {
-      // console.log(res);
-      if (res) {
-        const msg = 'Partner Added Successfully';
-        this.toastr.successToastr(msg);
-        this.dialogRef.close(true);
-      }
-    },
-      error => {
-        console.log(error.error.message);
-        const msg = error.error.message;
-        this.toastr.errorToastr(msg);
-      });
+    // this.customerManagementService.addLead(leadData).subscribe(res => {
+    //   // console.log(res);
+    //   if (res) {
+    //     const msg = 'Lead Added Successfully';
+    //     this.toastr.successToastr(msg);
+    //     this.dialogRef.close(true);
+    //   }
+    // },
+    //   error => {
+    //     console.log(error.error.message);
+    //     const msg = error.error.message;
+    //     this.toastr.errorToastr(msg);
+    //   });
   }
 }

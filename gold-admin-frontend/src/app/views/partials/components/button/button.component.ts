@@ -9,11 +9,13 @@ export class ButtonComponent implements OnInit {
 
   @Input() value;
   @Input() type;
+  @Input() myClass;
+  @Input() isDisabled;
   @Output() action = new EventEmitter();
   constructor() { }
 
   ngOnInit() {
-    
+
   }
   actionPerformed() {
     this.action.emit(true)

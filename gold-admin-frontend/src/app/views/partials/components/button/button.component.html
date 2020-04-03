@@ -1,3 +1,6 @@
-<button *ngIf="type == 'submit'" mat-raised-button color="primary" class=" submit" [type]="type" (click)="actionPerformed()">{{value | titlecase}}</button>
-<button *ngIf="type == 'reset'" mat-raised-button [type]="type" (click)="actionPerformed()">{{value | titlecase}}</button>
-<button *ngIf="type == 'button'" mat-raised-button color="primary" class=" submit" [type]="type" (click)="actionPerformed()">{{value | titlecase}}</button>
+<button *ngIf="type == 'submit'" mat-raised-button color="primary" [ngClass]="myClass" class=" submit"
+    [disabled]="isDisabled" [type]="type" (click)="actionPerformed()">{{value | titlecase}}</button>
+<button *ngIf="type == 'reset'" mat-raised-button [type]="type" [ngClass]="myClass"
+    (click)="actionPerformed()">{{value | titlecase}}</button>
+<button *ngIf="type == 'button'" mat-raised-button color="primary" [ngClass]="myClass" [disabled]="isDisabled"
+    class=" submit" [type]="type" (click)="actionPerformed()">{{value | titlecase}}</button>

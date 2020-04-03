@@ -2,9 +2,10 @@
     <kt-portlet-header [title]="'Branches List'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
 
         <ng-container ktPortletTools>
-            <button (click)="addLead()" mat-raised-button matTooltip="Create new Lead" color="primary" type="button">
+            <!-- <button (click)="addLead()" mat-raised-button matTooltip="Create new Lead" color="primary" type="button">
                 <span>Add Branch</span>
-            </button>
+            </button> -->
+            <kt-button [type]="'button'" [value]="'Add Lead'" (action)="addLead($event)"></kt-button>
         </ng-container>>
 
     </kt-portlet-header>
