@@ -6,7 +6,7 @@ export class ConfirmPasswordValidator {
 	 * @param control AbstractControl
 	 */
 	static MatchPassword(control: AbstractControl) {
-		const password = control.get('password').value;
+		const password = control.get('newPassword').value;
 
 		const confirmPassword = control.get('confirmPassword').value;
 

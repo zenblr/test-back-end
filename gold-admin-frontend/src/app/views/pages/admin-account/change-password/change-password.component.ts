@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmPasswordValidator } from './confirm-password-validator';
+import { AuthService } from '../../../../core/auth';
 
 @Component({
   selector: 'kt-change-password',
@@ -11,7 +12,8 @@ export class ChangePasswordComponent implements OnInit {
   @ViewChild('form', { static: false }) form;
   passwordForm: FormGroup
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+    private authService: AuthService) {
     this.startForm();
   }
 
@@ -23,7 +25,7 @@ export class ChangePasswordComponent implements OnInit {
   startForm() {
     this.passwordForm = this.fb.group({
       oldPassword: ['', Validators.required],
-      password: ["", Validators.compose([
+      newPassword: ["", Validators.compose([
         Validators.required,
         Validators.minLength(8),
         Validators.maxLength(100)
@@ -55,11 +57,7 @@ export class ChangePasswordComponent implements OnInit {
       this.passwordForm.markAllAsTouched()
       return
     }
+    this.authService.changePassword(this.passwordForm.value).subscribe()
     this.form.resetForm()
-  }
-  action(event) {
-    if (event == 'submit') {
-      this.submitForm()
-    }
   }
 }
