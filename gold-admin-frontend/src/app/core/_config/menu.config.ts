@@ -412,21 +412,27 @@ export class MenuConfig {
 					]
 				},
 				{
-					title: 'Loan Settings',
+					title: 'Settings',
 					root: true,
 					icon: 'flaticon-web',
-					page: '/dashboard',
 					bullet: 'dot',
 					submenu: [
 						{
-							title: 'Loan Status',
-							page: '/loan-setting/loan-status',
+							title: 'Loan Settings',
+							root: true,
 							bullet: 'dot',
-						},
-						{
-							title: 'Scheme',
-							page: '/loan-setting/scheme',
-							bullet: 'dot',
+							submenu: [
+								{
+									title: 'Loan Status',
+									page: '/loan-setting/loan-status',
+									bullet: 'dot',
+								},
+								{
+									title: 'Scheme',
+									page: '/loan-setting/scheme',
+									bullet: 'dot',
+								},
+							]
 						},
 					]
 				},
