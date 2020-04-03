@@ -12,4 +12,8 @@ export class CustomerManagementService {
   getAllLeads(from, to, fromDate, search, toDate, userId): Observable<any> {
     return this.http.get<any>(`/api/leads`);
   }
+
+  addLead(data): Observable<any> {
+    return this.http.post<any>(`/api/leads`, data);
+  }
 }

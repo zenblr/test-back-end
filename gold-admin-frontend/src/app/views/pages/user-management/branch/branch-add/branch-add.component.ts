@@ -22,7 +22,8 @@ export class BranchAddComponent implements OnInit {
   editData = false;
   viewOnly = false;
 
-  constructor(public dialogRef: MatDialogRef<BranchAddComponent>,
+  constructor(
+    public dialogRef: MatDialogRef<BranchAddComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private sharedService: SharedService,
     private fb: FormBuilder,
@@ -63,18 +64,15 @@ export class BranchAddComponent implements OnInit {
       this.states = res.message;
     },
       error => {
-        // console.error(error);
       });
   }
 
   getCities(event) {
-    // console.log(event);
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.message;
     },
       error => {
-        // console.error(error);
       });
   }
 

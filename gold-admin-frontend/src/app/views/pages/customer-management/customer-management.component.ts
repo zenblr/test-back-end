@@ -6,6 +6,7 @@ import { Subscription, merge, fromEvent } from 'rxjs';
 import { LayoutUtilsService } from '../../../core/_base/crud';
 import { CustomerManagementService } from '../../../core/customer-management/services/customer-management.service';
 import { tap, debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
+import { AddLeadComponent } from './add-lead/add-lead.component';
 
 @Component({
   selector: 'kt-customer-management',
@@ -73,4 +74,12 @@ export class CustomerManagementComponent implements OnInit {
     this.dataSource.loadLeads(from, to, '', '', '', '');
   }
 
+  addLead() {
+    const dialogRef = this.dialog.open(AddLeadComponent);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadLeadsPage();
+      }
+    });
+  }
 }
