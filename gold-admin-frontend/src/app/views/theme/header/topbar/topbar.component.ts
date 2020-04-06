@@ -26,7 +26,7 @@ export class TopbarComponent implements OnInit {
 	constructor(private router: Router,
 		private location: Location,
 		private customerManagementServiceCustomer: CustomerManagementService,
-		private loanSettingService:LoanSettingsService) {
+		private loanSettingService: LoanSettingsService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -64,6 +64,12 @@ export class TopbarComponent implements OnInit {
 			this.type1 = 'button';
 			this.value2 = 'Add New Lead';
 			this.type2 = 'button';
+		}
+		if (this.path == 'customer-list') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Search';
+			this.type1 = 'button';
 		}
 	}
 

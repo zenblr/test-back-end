@@ -434,6 +434,18 @@ export class MenuConfig {
 								},
 							]
 						},
+						{
+							title: 'Customer Settings',
+							root: true,
+							bullet: 'dot',
+							submenu: [
+								{
+									title: 'Customer list',
+									page: '/customer-setting/customer-list',
+									bullet: 'dot',
+								}
+							]
+						},
 					]
 				},
 				{
@@ -512,10 +524,10 @@ export class MenuConfig {
 					bullet: 'dot',
 				},
 				{
-					title:'Log Out',
-					root:true,
-					page:'/auth/login',
-					bullet:'dot'
+					title: 'Log Out',
+					root: true,
+					page: '/auth/login',
+					bullet: 'dot'
 				}
 				// {
 				// 	title: 'Layout Builder',

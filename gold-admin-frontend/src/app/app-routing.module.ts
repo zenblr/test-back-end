@@ -28,6 +28,10 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/loan-settings/loan-settings.module').then(m => m.LoanSettingsModule)
 			},
 			{
+				path: 'customer-setting',
+				loadChildren: () => import('../app/views/pages/customer-setting/customer-setting.module').then(m => m.CustomerSettingModule)
+			},
+			{
 				path: 'upload-data',
 				loadChildren: () => import('../app/views/pages/upload-data/upload-data.module').then(m => m.UploadDataModule)
 			},

@@ -31,4 +31,8 @@ export class CustomerManagementService {
   resendOtp(data): Observable<any> {
     return this.http.post<any>(`/api/user/resendOtp`, data);
   }
+
+  deleteCustomer(id): Observable<any> {
+    return this.http.delete<any>(`/api/user/delete/${id}`);
+  }
 }
