@@ -1,5 +1,5 @@
 module.exports=(sequelize,DATATYPES)=>{
-    const PartnerSchemes=sequelize.define('partnerschemes',{
+    const PartnerSchemes=sequelize.define('partner_schemes',{
         //attribute
         schemeId:{
            type:DATATYPES.INTEGER,
@@ -20,7 +20,7 @@ module.exports=(sequelize,DATATYPES)=>{
         {
             freezeTableName: true,
             allowNull: false,
-            tableName: 'partnerschemes',
+            tableName: 'partner_schemes',
         },
     )
     return PartnerSchemes;

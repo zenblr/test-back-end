@@ -46,6 +46,11 @@ module.exports=(sequelize,DATATYPES)=>{
             tableName: 'schemes',
         },
     )
+
+    Schemes.associate = function(models) {
+     
+        Schemes.belongsToMany(models.partner, {through: models.partner_schemes})
+    }
     return Schemes;
     
 }
