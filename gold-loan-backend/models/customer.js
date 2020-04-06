@@ -48,21 +48,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_card_number',
             allowNull: false,
         },
-        address: {
-            type: DataTypes.TEXT,
-            field: 'address',
-            allowNull: false,
-        },
-        stateId: {
-            type: DataTypes.INTEGER,
-            field: 'state_id',
-            allowNull: false,
-        },
-        cityId: {
-            type: DataTypes.INTEGER,
-            field: 'city_id',
-            allowNull: false,
-        },
         postalCode: {
             type: DataTypes.INTEGER,
             field: 'postal_code'
@@ -96,6 +81,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by',
             allowNull: false,
+        },
+        lastLogin: {
+            type: DataTypes.DATE,
+            field: 'last_login',
         }
     }, {
         freezeTableName: true,
@@ -103,6 +92,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Customer.associate = function(models) {
+        Customer.hasMany(models.customer_address, { foreignKey: 'customerId', as: 'address' });
         Customer.belongsTo(models.rating, { foreignKey: 'ratingId', as: 'rating' });
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });

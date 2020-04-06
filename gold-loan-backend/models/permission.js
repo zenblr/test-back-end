@@ -6,6 +6,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'permission_name',
             allowNull: false,
         },
+        description:{
+            type: DataTypes.TEXT,
+            field: 'description',
+            allowNull: false,
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -19,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
 
 
     Permission.associate = function(models) {
-        Permission.hasMany(models.role_permission, { foreignKey: 'permissionId', as: 'permission_role' });
+        // Permission.hasMany(models.role_permission, { foreignKey: 'permissionId', as: 'permission_role' });
+
+        Permission.belongsToMany(models.roles,{through: models.role_permission})
     }
 
 

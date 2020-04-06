@@ -26,7 +26,7 @@ exports.registerSendOtp = async (req, res) => {
         const user = await models.users.create({ firstName, lastName, password, mobileNumber, email, otp, panCardNumber }, { transaction: t })
         if (!check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
-                let data = await models.address.create({
+                let data = await models.user_address.create({
                     userId: user.id,
                     landMark: address[i].landMark,
                     stateId: address[i].stateId,
