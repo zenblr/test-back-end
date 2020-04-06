@@ -1,7 +1,9 @@
 :host{
     .submit{
-        background-color: #454D67 !important;
-        
+        background-color: #454D67 !important; 
+    }
+    .cancel{
+        background-color: #C5C6C6 !important;
     }
     button:disabled {
         background-color: rgb(224,224,224) !important;    
@@ -9,7 +11,12 @@
     .reset{
         background-color: #C43330 !important;
     }
-    button.submit{ 
-        color: #C5C6C6 !important;
+    button {
+        .submit{ 
+            color: #C5C6C6 !important;
+        }
+        .cancel{ 
+            color: #454D67 !important;
+        }
     }
 }

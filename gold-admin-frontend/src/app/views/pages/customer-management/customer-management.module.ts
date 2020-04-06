@@ -7,10 +7,9 @@ import { CoreModule } from '../../../core/core.module';
 import { PartialsModule } from '../../partials/partials.module';
 // Components
 import { CustomerManagementComponent } from './customer-management.component';
-
+import { AddLeadComponent } from './add-lead/add-lead.component';
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
-import { AddLeadComponent } from './add-lead/add-lead.component';
 import { HttpUtilsService, TypesUtilsService, LayoutUtilsService, InterceptService } from '../../../core/_base/crud';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA } from '@angular/material';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
