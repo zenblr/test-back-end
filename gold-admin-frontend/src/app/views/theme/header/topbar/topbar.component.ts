@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from "@angular/common";
 import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
-
+import { LoanSettingsService } from '../.././../../core/loan-setting'
 
 @Component({
 	selector: 'kt-topbar',
@@ -23,7 +23,10 @@ export class TopbarComponent implements OnInit {
 	value3: string;
 	showInput: boolean
 	path: string;
-	constructor(private router: Router, private location: Location, private customerManagementServiceCustomer: CustomerManagementService) {
+	constructor(private router: Router,
+		private location: Location,
+		private customerManagementServiceCustomer: CustomerManagementService,
+		private loanSettingService:LoanSettingsService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -49,7 +52,6 @@ export class TopbarComponent implements OnInit {
 	setTopbar(path: string) {
 		var pathArray = path.split('/')
 		this.path = pathArray[pathArray.length - 1]
-		console.log(path)
 		if (this.path == 'scheme') {
 			this.rightButton = true;
 			this.value3 = 'Add New Scheme';
@@ -69,6 +71,9 @@ export class TopbarComponent implements OnInit {
 
 		if (this.path == 'customer-management') {
 			this.customerManagementServiceCustomer.openModal.next(true);
+		}
+		if (this.path == 'scheme') {
+			this.loanSettingService.openModal.next(true)
 		}
 	}
 }

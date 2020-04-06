@@ -1,0 +1,14 @@
+:host {
+    .mat-form-field-appearance-fill .mat-form-field-flex {
+        background: gray(0, 255, 255, .5);
+        
+    }
+    .mat-form-field-appearance-fill .mat-form-field-flex{
+        border-radius: 15px !important;
+    }
+
+    
+}
+::ng-deep .mat-input-underline {
+    display: none;
+}
