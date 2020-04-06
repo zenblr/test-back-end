@@ -1,41 +1,42 @@
 module.exports=(sequelize,DATATYPES)=>{
     const Schemes=sequelize.define('schemes',{
         //attribute
-       amountId:{
-           type:DATATYPES.INTEGER,
-           field:'amount_id'
-       },
-        rateOfInterestThirtyDaysM:{
-            type:DATATYPES.FLOAT,
-            field:'rate_of_interest_thirty_days_M'
+        schemeAmountStart:{
+           type:DATATYPES.BIGINT,
+           field:'scheme_amount_start'
         },
-        rateOfInterestSixtyDaysM:{
-            type:DATATYPES.FLOAT,
-            field:'rate_of_interest_sixty_days_M'
+        schemeAmountEnd:{
+        type:DATATYPES.BIGINT,
+        field:'scheme_amount_end'
         },
-        rateOfInterestNinetyDaysM:{
+        interestRateThirtyDaysMonthly:{
             type:DATATYPES.FLOAT,
-            field:'rate_of_interest_ninety_days_M'
+            field:'interest_rate_thirty_days_monthly'
         },
-        rateOfInterestThirtyDaysAn:{
+        interestRateSixtyDaysMonthly:{
             type:DATATYPES.FLOAT,
-            field:'rate_of_interest_thirty_days_An'
+            field:'nterest_rate_sixty_days_monthly'
         },
-        rateOfInterestSixtyDaysAn:{
+        interestRateNinetyDaysMonthly:{
             type:DATATYPES.FLOAT,
-            field:'rate_of_interest_sixty_days_An'
+            field:'nterest_rate_ninety_days_monthly'
         },
-        rateOfInterestNinetyDaysAn:{
+        interestRateThirtyDaysAnnually:{
             type:DATATYPES.FLOAT,
-            field:'rate_of_interest_ninety_days_An'
+            field:'interest_rate_thirty_days_annually'
         },
-        partnerId:{
-            type:DATATYPES.INTEGER,
-            field:'partner_id'
+        interestRateSixtyDaysAnnually:{
+            type:DATATYPES.FLOAT,
+            field:'interest_rate_sixty_days_annually'
+        },
+        interestRateNinetyDaysAnnually:{
+            type:DATATYPES.FLOAT,
+            field:'interest_rate_ninety_days_annually'
         },
         isActive:{
             type:DATATYPES.BOOLEAN,
-            field:'is_active'
+            field:'is_active',
+            defaultValue:true
 
         }
     },
