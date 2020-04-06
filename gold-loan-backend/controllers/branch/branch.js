@@ -51,6 +51,10 @@ exports.readBranch = async(req, res) => {
     }
         let readbranchdata = await models.branch.findAll({
             where: searchQuery,
+            include:{
+                model:models.partner,
+                as:'partner'
+            },
             offset: offset,
             limit: pageSize
         });
