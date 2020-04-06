@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from "@angular/common";
+import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
 
 
 @Component({
@@ -20,8 +21,9 @@ export class TopbarComponent implements OnInit {
 	value2: string;
 	type3: string;
 	value3: string;
-	showInput:boolean
-	constructor(private router: Router, private location: Location) {
+	showInput: boolean
+	path: string;
+	constructor(private router: Router, private location: Location, private customerManagementServiceCustomer: CustomerManagementService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -38,7 +40,7 @@ export class TopbarComponent implements OnInit {
 		this.value1 = '';
 		this.type2 = '';
 		this.value2 = '';
-		 this.type3 = '';
+		this.type3 = '';
 		this.value3 = '';
 		this.showfilter = false
 		this.showInput = false
@@ -46,14 +48,14 @@ export class TopbarComponent implements OnInit {
 
 	setTopbar(path: string) {
 		var pathArray = path.split('/')
-		var path = pathArray[pathArray.length - 1]
+		this.path = pathArray[pathArray.length - 1]
 		console.log(path)
-		if (path == 'scheme') {
+		if (this.path == 'scheme') {
 			this.rightButton = true;
 			this.value3 = 'Add New Scheme';
 			this.type3 = 'button';
 		}
-		if (path == 'customer-management') {
+		if (this.path == 'customer-management') {
 			this.showfilter = true;
 			this.showInput = true;
 			this.value1 = 'Search';
@@ -64,6 +66,9 @@ export class TopbarComponent implements OnInit {
 	}
 
 	action(event: Event) {
-		console.log(event)
+
+		if (this.path == 'customer-management') {
+			this.customerManagementServiceCustomer.openModal.next(true);
+		}
 	}
 }

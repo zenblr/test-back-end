@@ -39,7 +39,8 @@ export class AddLeadComponent implements OnInit {
     private sharedService: SharedService,
     private fb: FormBuilder,
     private customerManagementService: CustomerManagementService
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.formInitialize();

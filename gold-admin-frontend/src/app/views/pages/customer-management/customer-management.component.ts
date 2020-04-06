@@ -30,7 +30,13 @@ export class CustomerManagementComponent implements OnInit {
     public dialog: MatDialog,
     private layoutUtilsService: LayoutUtilsService,
     private customerManagementService: CustomerManagementService
-  ) { }
+  ) {
+    this.customerManagementService.openModal$.subscribe(res => {
+      if (res) {
+        this.addLead();
+      }
+    });
+  }
 
   ngOnInit() {
     const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
@@ -74,13 +80,14 @@ export class CustomerManagementComponent implements OnInit {
     this.dataSource.loadLeads(from, to, '', '', '', '');
   }
 
-  addLead(event) {
-    console.log(event);
+  addLead() {
+    // console.log(event);
     const dialogRef = this.dialog.open(AddLeadComponent);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();
       }
+      this.customerManagementService.openModal.next(false);
     });
   }
 }

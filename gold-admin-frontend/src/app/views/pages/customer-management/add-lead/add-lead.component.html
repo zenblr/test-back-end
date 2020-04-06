@@ -5,7 +5,7 @@
 <div class="kt-portlet">
     <div class="kt-portlet__head kt-portlet__head__custom">
         <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">Add Partner</h3>
+            <h3 class="kt-portlet__head-title">Add New Lead</h3>
         </div>
     </div>
     <div>
@@ -77,7 +77,7 @@
                                 </div>
 
                                 <ng-container *ngIf="otpSent && !isMobileVerified">
-																	<!-- OTP -->
+                                    <!-- OTP -->
                                     <div class="col-4"></div>
 
                                     <div class="col-5">
@@ -93,8 +93,8 @@
 
                                     <div class="col-3">
                                         <div *ngIf="!isMobileVerified">
-                                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Sumbit'" [isDisabled]="isOpverified"
-                                                (action)="verifyOTP()">
+                                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Sumbit'"
+                                                [isDisabled]="isOpverified" (action)="verifyOTP()">
                                             </kt-button>
                                         </div>
                                     </div>
