@@ -16,7 +16,7 @@ exports.addCustomer = async(req, res) => {
     let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, statusId } = req.body
     let customerExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
     if (!check.isEmpty(customerExist)) {
-        return res.status(404).json({ message: 'This Mobile number is already Exist' });
+        return res.status(404).json({ message: 'This Mobile number already Exists' });
     }
 
 
@@ -58,11 +58,11 @@ exports.editCustomer = async(req, res) => {
     let { id, firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive } = req.body
     let customerExist = await models.customers.findOne({ where: { id: id } })
     if (check.isEmpty(customerExist)) {
-        return res.status(404).json({ message: 'Customer is not exist' });
+        return res.status(404).json({ message: 'Customer does not exist' });
     }
     let mobileNumberExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
     if (mobileNumberExist > 1) {
-        return res.status(404).json({ message: 'This Mobile number is already Exist' });
+        return res.status(404).json({ message: 'This Mobile number already Exists' });
     }
     await sequelize.transaction(async t => {
         const customer = await models.customers.update({ firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive, modifiedBy }, { where: { id: id }, transaction: t })
