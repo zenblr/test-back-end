@@ -1,5 +1,9 @@
 const models = require('../../models');
 const sequelize = models.sequelize;
+const paginationFUNC = require('../../utils/pagination'); // importing pagination function
+const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
+
 
 //Add branch
 exports.addBranch = async(req, res) => {
@@ -17,7 +21,7 @@ exports.addBranch = async(req, res) => {
             await models.branch.update({ branchId: newId }, { where: { id }, transaction: t });
             return addbranch;
         }).then((addbranch) => {
-            return res.status(200).json({ messgae: "branch created" })
+            return res.status(201).json({ messgae: "branch created" })
         }).catch((exception) => {
 
             return res.status(500).json({
@@ -37,13 +41,26 @@ exports.addBranch = async(req, res) => {
 //get branch
 exports.readBranch = async(req, res) => {
   
-
+    const { search, offset, pageSize } =
+    paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+    const searchQuery = {
+        [Op.or]: {
+            name: { [Op.iLike]: search + '%' }
+        },
+        isActive: true 
+    }
         let readbranchdata = await models.branch.findAll({
-            where: { isActive: true },
-
+            where: searchQuery,
+            offset: offset,
+            limit: pageSize
+        });
+        let count = await models.branch.findAll({
+            where: {isActive:true},
+            offset: offset,
+            limit: pageSize
         });
         if (!readbranchdata) { return res.status(404).json({ message: 'data not found' }) }
-        return res.status(200).json(readbranchdata);
+        return res.status(200).json({data:readbranchdata, count:count.length});
       }
 
 //get branch by id
@@ -103,7 +120,7 @@ exports.updateBranch = async(req, res) => {
 
 exports.deleteBranch = async(req, res) => {
     const id = req.params.id;
-    let branchdata = await models.branch.update({ isActive: false }, { where: { id } });
+    let branchdata = await models.branch.update({ isActive: false }, { where: { id ,isActive:true} });
     if (!branchdata[0]) {
         return res.status(404).json({ message: 'data not found' });
     }

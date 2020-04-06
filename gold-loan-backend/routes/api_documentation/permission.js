@@ -19,7 +19,7 @@
  *             permissionName:
  *               type: string
  *         required:
- *           - role
+ *           - permissionName
  *     responses:
  *       201:
  *         description: permission created

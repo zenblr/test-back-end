@@ -37,8 +37,8 @@ exports.updatePermission=async(req,res)=>{
 
 exports.deactivePermission=async(req,res)=>{
     const permissionid=req.params.id;
-    let deactivepermission=await models.permission.update({isActive:false},{where:{id:permissionid}});
-    if(!deactivepermission){
+    let deactivepermission=await models.permission.update({isActive:false},{where:{id:permissionid,isActive:true}});
+    if(!deactivepermission[0]){
         return res.status(404).json({message:"permission is not exist"});
     }
     return res.status(200).json({message:"Success"});

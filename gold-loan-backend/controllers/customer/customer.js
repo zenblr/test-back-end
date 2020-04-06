@@ -20,7 +20,7 @@ exports.addCustomer = async(req, res) => {
     }
 
 
-    let getStageId = await models.stage.findOne({ where: { stageName: 'lead' } });
+    let getStageId = await models.stage.findOne({ where: { stageName: 'lead' } });   
     let stageId = getStageId.id;
 
     await sequelize.transaction(async t => {
@@ -86,7 +86,15 @@ exports.getAllCustomers = async(req, res) => {
     );
     console.log(search, offset, pageSize)
 
+        const searchQuery = [ {
+            [Op.or]: {
+                first_name: { [Op.iLike]: search + '%' },
+                last_name: { [Op.iLike]: search + '%' },
+            },       
+            
+    }];
     let allCustomers = await models.customers.findAll({
+        where:searchQuery,
         include: [{
             model: models.states,
             as: 'state',
@@ -102,12 +110,19 @@ exports.getAllCustomers = async(req, res) => {
         }, {
             model: models.status,
             as: 'status'
-        }]
+        }],
+        offset: offset,
+        limit: pageSize
     });
-    return res.status(200).json({ allCustomers })
+    let count = await models.customers.findAll({
+        where: {isActive:true},
+        offset: offset,
+        limit: pageSize
+    });
 
-
+    return res.status(200).json({ data:allCustomers,count:count.length },)
 }
+
 
 exports.getSingleCustomer = async(req, res) => {
     const { customerId } = req.params;

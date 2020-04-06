@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /customer/add-customer:
+ * /customer:
  *   post:
  *     tags:
  *       - Customer By Admin
@@ -61,23 +61,33 @@
  *          description: This Mobile number is already Exist
  *       500:
  *          description: Something went wrong/Internal server error
- * /customer/get-all-customer:
  *   get:
  *     tags:
  *       - Customer By Admin
  *     name: read customers
- *     summary: To read customer
+ *     summary: To read customer with pagination
  *     security:
  *       - bearerAuth: []
  *     consumes:
  *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
  *     responses:
  *       200:
  *          description: Success
  *       500:
  *          description: Internal server error
- * 
- * /customer/edit-customer:
  *   put:
  *     tags:
  *       - Customer By Admin
@@ -146,7 +156,6 @@
  *          description: Customer is not exist/This Mobile number is already Exist
  *       500:
  *          description: something went wrong/Internal server error
- * /customer/deactivate-customer:
  *   delete:
  *     tags:
  *       - Customer By Admin
@@ -173,16 +182,16 @@
  *         description: Customer is not exist
  *       500:
  *         description: Internal server error.
- * /customer/get-single-customers:
+ * /{customerId}:
  *   get:
  *     tags:
  *       - Customer By Admin
  *     summary: To read by Id
  *     parameters:
  *     - name: "customerId"
- *       in: "query"
+ *       in: "path"
  *       description: "Id of customer to read"
- *       required: false
+ *       required: true
  *       type: "integer"
  *     security:
  *       - bearerAuth: []

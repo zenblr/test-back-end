@@ -24,7 +24,7 @@
  *           - name
  *           - commission
  *     responses:
- *       200:
+ *       201:
  *          description: partner created
  *       500:
  *          description: Something went wrong
@@ -32,11 +32,24 @@
  *     tags:
  *       - Partner
  *     name: read partner
- *     summary: To read partner
+ *     summary: To read partner with pagination
  *     security:
  *       - bearerAuth: []
  *     consumes:
  *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
  *     responses:
  *       200:
  *          description: Success
