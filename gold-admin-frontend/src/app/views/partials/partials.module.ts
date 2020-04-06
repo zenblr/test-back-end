@@ -77,6 +77,8 @@ import { ToastrComponent } from './components/toastr/toastr.component';
 import { ButtonComponent } from './components/button/button.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { SearchComponent } from './components/search/search.component';
+import { ModalHeaderComponent } from './components/modal/modal-header/modal-header.component';
+import { ModalFooterComponent } from './components/modal/modal-footer/modal-footer.component';
 
 @NgModule({
 	declarations: [
@@ -121,6 +123,10 @@ import { SearchComponent } from './components/search/search.component';
 		FilterComponent,
 
 		SearchComponent,
+
+		ModalHeaderComponent,
+
+		ModalFooterComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -163,6 +169,8 @@ import { SearchComponent } from './components/search/search.component';
 		ButtonComponent,
 		FilterComponent,
 		SearchComponent,
+		ModalHeaderComponent,
+		ModalFooterComponent,
 	],
 	imports: [
 		CommonModule,

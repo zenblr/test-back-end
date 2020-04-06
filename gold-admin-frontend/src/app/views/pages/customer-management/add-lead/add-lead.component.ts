@@ -16,6 +16,7 @@ import { ToastrComponent } from '../../../../views/partials/components/toastr/to
 })
 export class AddLeadComponent implements OnInit {
 
+  modalTitle = 'Add New Lead';
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   leadForm: FormGroup;
   states: any;
@@ -152,5 +153,17 @@ export class AddLeadComponent implements OnInit {
     //     const msg = error.error.message;
     //     this.toastr.errorToastr(msg);
     //   });
+  }
+
+  closeModal() {
+    this.dialogRef.close();
+  }
+
+  action(event) {
+    if (event) {
+      this.onSubmit();
+    } else if (!event) {
+      this.closeModal();
+    }
   }
 }
