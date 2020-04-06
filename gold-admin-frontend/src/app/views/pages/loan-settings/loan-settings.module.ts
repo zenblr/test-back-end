@@ -13,6 +13,7 @@ import { usersReducer, UserEffects } from '../../../core/auth';
 import { EffectsModule } from '@ngrx/effects';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { AddSchemeComponent } from './add-scheme/add-scheme.component';
 
 const routes: Routes = [
   { path: 'loan-status', component: LoanStatusComponent },
@@ -22,7 +23,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     LoanStatusComponent, 
-    LoanSchemeComponent
+    LoanSchemeComponent, AddSchemeComponent
   ],
   imports: [
     CommonModule,
@@ -49,6 +50,7 @@ const routes: Routes = [
   ],
   entryComponents: [
     ActionNotificationComponent,
+    AddSchemeComponent
   ],
 })
 export class LoanSettingsModule { }

@@ -49,9 +49,29 @@
 	position: static;
 }
 body{
-	color: #454D67;
+	color: #454D67 !important;
+}
+.text-color{
+	color: #454D67 !important;
 }
 .success-button {
 	color: #fff !important;
 	background-color: rgb(24, 179, 24) !important;
 }
+.form-control{
+	background-color: rgb(230, 230, 230) !important;
+}
+.isError{
+border: 1px solid red !important;
+}
+::-webkit-input-placeholder { /* Edge */
+	font-weight: bold;
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+	font-weight: bold;
+  }
+  
+  ::placeholder {
+	font-weight: bold;
+  }
