@@ -33,6 +33,10 @@ module.exports=(sequelize,DATATYPES)=>{
             type:DATATYPES.FLOAT,
             field:'interest_rate_ninety_days_annually'
         },
+        partnerId:{
+            type:DATATYPES.ARRAY(DATATYPES.INTEGER),
+            field:'partner_id'
+        },
         isActive:{
             type:DATATYPES.BOOLEAN,
             field:'is_active',
