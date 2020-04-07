@@ -1,6 +1,5 @@
 const models = require('../../models');
 const sequelize = models.sequelize;
-const check = require('../../lib/checkLib');
 
 // add schemes
 exports.addScheme = async (req, res, next) => {
@@ -51,7 +50,7 @@ exports.readSchemeById = async (req, res, next) => {
 
     const schemeId = req.params.id;
     const readSchemeByIdData = await models.schemes.findOne({ where: { id: schemeId, isActive: true } });
-    if (!readSchemeByIdData) {
+    if (!readSchemeByIdData[0]) {
         return res.status(404).json({ message: 'data not found' });
     }
     return res.status(200).json({ data: readSchemeByIdData });
