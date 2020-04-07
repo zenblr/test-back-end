@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../core/reducers';
 // Auth
-import { AuthNoticeService, Login } from '../../../../core/auth';
+import { AuthNoticeService, Login, Logout } from '../../../../core/auth';
 
 // services
 import { AuthService } from '../../../../core/auth/_services/auth.service';
@@ -79,6 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 	 * On init
 	 */
 	ngOnInit(): void {
+		localStorage.removeItem('accessToken')
 		this.initLoginForm();
 
 		// redirect back to the returnUrl before login

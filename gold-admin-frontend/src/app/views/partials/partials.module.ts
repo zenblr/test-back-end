@@ -74,6 +74,11 @@ import { WidgetModule } from './content/widgets/widget.module';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { CartComponent } from './layout/topbar/cart/cart.component';
 import { ToastrComponent } from './components/toastr/toastr.component';
+import { ButtonComponent } from './components/button/button.component';
+import { FilterComponent } from './components/filter/filter.component';
+import { SearchComponent } from './components/search/search.component';
+import { ModalHeaderComponent } from './components/modal/modal-header/modal-header.component';
+import { ModalFooterComponent } from './components/modal/modal-footer/modal-footer.component';
 
 @NgModule({
 	declarations: [
@@ -112,6 +117,16 @@ import { ToastrComponent } from './components/toastr/toastr.component';
 		ErrorComponent,
 
 		ToastrComponent,
+
+		ButtonComponent,
+
+		FilterComponent,
+
+		SearchComponent,
+
+		ModalHeaderComponent,
+
+		ModalFooterComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -150,7 +165,12 @@ import { ToastrComponent } from './components/toastr/toastr.component';
 		CartComponent,
 
 		ErrorComponent,
-		ToastrComponent
+		ToastrComponent,
+		ButtonComponent,
+		FilterComponent,
+		SearchComponent,
+		ModalHeaderComponent,
+		ModalFooterComponent,
 	],
 	imports: [
 		CommonModule,

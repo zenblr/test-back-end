@@ -23,7 +23,7 @@ import { HtmlClassService } from '../html-class.service';
 })
 export class AsideLeftComponent implements OnInit, AfterViewInit {
 
-	@ViewChild('asideMenu', {static: true}) asideMenu: ElementRef;
+	@ViewChild('asideMenu', { static: true }) asideMenu: ElementRef;
 
 	currentRouteUrl = '';
 	insideTm: any;
@@ -48,11 +48,6 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			desktop: {
 				// by default the menu mode set to accordion in desktop mode
 				default: 'dropdown',
-				// whenever body has this class switch the menu mode to dropdown
-				state: {
-					body: 'kt-aside--minimize',
-					mode: 'dropdown'
-				}
 			},
 			tablet: 'accordion', // menu set to accordion in tablet mode
 			mobile: 'accordion' // menu set to accordion in mobile mode
@@ -99,10 +94,6 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 
 		const config = this.layoutConfigService.getConfig();
 
-		if (objectPath.get(config, 'aside.menu.dropdown') !== true && objectPath.get(config, 'aside.self.fixed')) {
-			this.render.setAttribute(this.asideMenu.nativeElement, 'data-ktmenu-scroll', '1');
-		}
-
 		if (objectPath.get(config, 'aside.menu.dropdown')) {
 			this.render.setAttribute(this.asideMenu.nativeElement, 'data-ktmenu-dropdown', '1');
 			// tslint:disable-next-line:max-line-length
@@ -147,46 +138,46 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 	 * Use for fixed left aside menu, to show menu on mouseenter event.
 	 * @param e Event
 	 */
-	mouseEnter(e: Event) {
-		// check if the left aside menu is fixed
-		if (document.body.classList.contains('kt-aside--fixed')) {
-			if (this.outsideTm) {
-				clearTimeout(this.outsideTm);
-				this.outsideTm = null;
-			}
+	// mouseEnter(e: Event) {
+	// 	// check if the left aside menu is fixed
+	// 	if (document.body.classList.contains('kt-aside--fixed')) {
+	// 		if (this.outsideTm) {
+	// 			clearTimeout(this.outsideTm);
+	// 			this.outsideTm = null;
+	// 		}
 
-			this.insideTm = setTimeout(() => {
-				// if the left aside menu is minimized
-				if (document.body.classList.contains('kt-aside--minimize') && KTUtil.isInResponsiveRange('desktop')) {
-					// show the left aside menu
-					this.render.removeClass(document.body, 'kt-aside--minimize');
-					this.render.addClass(document.body, 'kt-aside--minimize-hover');
-				}
-			}, 50);
-		}
-	}
+	// 		this.insideTm = setTimeout(() => {
+	// 			// if the left aside menu is minimized
+	// 			if (document.body.classList.contains('kt-aside--minimize') && KTUtil.isInResponsiveRange('desktop')) {
+	// 				// show the left aside menu
+	// 				this.render.removeClass(document.body, 'kt-aside--minimize');
+	// 				this.render.addClass(document.body, 'kt-aside--minimize-hover');
+	// 			}
+	// 		}, 50);
+	// 	}
+	// }
 
 	/**
 	 * Use for fixed left aside menu, to show menu on mouseenter event.
 	 * @param e Event
 	 */
-	mouseLeave(e: Event) {
-		if (document.body.classList.contains('kt-aside--fixed')) {
-			if (this.insideTm) {
-				clearTimeout(this.insideTm);
-				this.insideTm = null;
-			}
+	// mouseLeave(e: Event) {
+	// 	if (document.body.classList.contains('kt-aside--fixed')) {
+	// 		if (this.insideTm) {
+	// 			clearTimeout(this.insideTm);
+	// 			this.insideTm = null;
+	// 		}
 
-			this.outsideTm = setTimeout(() => {
-				// if the left aside menu is expand
-				if (document.body.classList.contains('kt-aside--minimize-hover') && KTUtil.isInResponsiveRange('desktop')) {
-					// hide back the left aside menu
-					this.render.removeClass(document.body, 'kt-aside--minimize-hover');
-					this.render.addClass(document.body, 'kt-aside--minimize');
-				}
-			}, 100);
-		}
-	}
+	// 		this.outsideTm = setTimeout(() => {
+	// 			// if the left aside menu is expand
+	// 			if (document.body.classList.contains('kt-aside--minimize-hover') && KTUtil.isInResponsiveRange('desktop')) {
+	// 				// hide back the left aside menu
+	// 				this.render.removeClass(document.body, 'kt-aside--minimize-hover');
+	// 				this.render.addClass(document.body, 'kt-aside--minimize');
+	// 			}
+	// 		}, 100);
+	// 	}
+	// }
 
 	/**
 	 * Returns Submenu CSS Class Name

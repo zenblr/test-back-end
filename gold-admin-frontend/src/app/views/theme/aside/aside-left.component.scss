@@ -1,5 +1,16 @@
 :host {
+	color: white;
 	.kt-aside {
 		height: 100%;
+
+		.kt-aside-menu {
+			margin: 0;
+			color: white;
+		}
+	}
+
+	// fixed text line break issue on minimized aside hover
+	.kt-menu__link-text {
+		white-space: nowrap;
 	}
 }

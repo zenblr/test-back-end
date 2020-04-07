@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PartnerService {
+
+  openModal = new BehaviorSubject<any>(false);
+  openModal$ = this.openModal.asObservable();
 
   constructor(private http: HttpClient) { }
 

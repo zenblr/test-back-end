@@ -17,9 +17,9 @@ $kt-brand-config: (
 		space: 6px, 
 		radius: 2px,
 		color: (
-			default: #484f66,
-			hover: #ffffff,
-			active: #ffffff
+			default: #4e4c5f,
+			hover: kt-brand-color(),
+			active: kt-brand-color()
 		)
 	)
 );

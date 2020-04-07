@@ -5,7 +5,7 @@
 
 
 .kt-footer {
-	padding: 20px 0;
+	padding: 20px 0px;
 	background: #ffffff;
 
 	.kt-container {		
@@ -66,7 +66,7 @@
 
 @include kt-tablet-and-mobile {
 	.kt-footer {
-		padding: 15px 0;
+		padding: 15px 0px;
 	}
 }
 
@@ -87,7 +87,7 @@
 			justify-content: center;
 			order: 1;
 			padding: 0;
-			margin:  0 0 0.75rem 0;
+			margin:  0 0 0.5rem 0;
 
 			.kt-footer__menu-link {
 				&:first-child {

@@ -21,8 +21,10 @@ export class BranchAddComponent implements OnInit {
   partners = [];
   editData = false;
   viewOnly = false;
+  viewLoading :boolean = false;
 
-  constructor(public dialogRef: MatDialogRef<BranchAddComponent>,
+  constructor(
+    public dialogRef: MatDialogRef<BranchAddComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private sharedService: SharedService,
     private fb: FormBuilder,
@@ -63,22 +65,20 @@ export class BranchAddComponent implements OnInit {
       this.states = res.message;
     },
       error => {
-        // console.error(error);
       });
   }
 
   getCities(event) {
-    // console.log(event);
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.message;
     },
       error => {
-        // console.error(error);
       });
   }
 
   getPartnerById(id) {
+    this.viewLoading = true
     this.branchService.getBranchById(id).subscribe(res => {
       console.log(res);
       this.branchForm.patchValue(res);
@@ -100,7 +100,19 @@ export class BranchAddComponent implements OnInit {
     return this.branchForm.controls;
   }
 
+  action(event: Event) {
+    if (event) {
+      this.onSubmit()
+    } else if (!event) {
+      this.dialogRef.close()
+    }
+  }
+
   onSubmit() {
+    if(this.branchForm.invalid){
+      this.branchForm.markAllAsTouched()
+      return
+    }
     // console.log(this.branchForm.value);
     const partnerData = this.branchForm.value;
     const id = this.controls.id.value;

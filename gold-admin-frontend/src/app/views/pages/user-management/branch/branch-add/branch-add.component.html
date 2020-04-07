@@ -1,134 +1,115 @@
 <!-- <kt-action-natification></kt-action-natification> -->
+
 <kt-toastr #toastr></kt-toastr>
+
 <div class="kt-portlet">
-    <div class="kt-portlet__head kt-portlet__head__custom">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">Add Partner</h3>
-        </div>
-    </div>
-    <div>
+    <kt-modal-header [title]="'Add New Branch'"></kt-modal-header>
+    <div class="kt-portlet__body">
         <div class="kt-form">
             <form [formGroup]="branchForm">
-                <div class="kt-portlet__body">
 
-                    <div class="kt-portlet__body-progress">
-                        <mat-spinner [diameter]="20"></mat-spinner>
-                    </div>
-
-                    <!-- <kt-alert type="warn" [duration]="30000" [showCloseButton]="true" (close)="onAlertClose($event)">
-                    Oh snap! Change a few things up and try submitting again.
-                </kt-alert> -->
-
-
-
-                    <div class="form-group kt-form__group row">
-                        <div class="col-lg-12 kt-margin-bottom-20-mobile">
-
-
-                            <div class="row">
-                                <!-- Partner Name -->
-                                <div class="col">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>Branch Name</mat-label>
-                                        <input matInput formControlName="name" autocomplete="off"
-                                            placeholder="Enter Partner Name" [readonly]="viewOnly">
-                                        <mat-error *ngIf="controls.name.errors?.required">Required field</mat-error>
-
-                                    </mat-form-field>
-                                </div>
-
-                                <!-- Partner Id -->
-                                <div class="col">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>Partner Id</mat-label>
-                                        <!-- <input matInput formControlName="partnerId" autocomplete="off"
-                                            placeholder="Enter Partner Id"> -->
-                                        <mat-select formControlName="partnerId" [disabled]="viewOnly">
-                                            <mat-option *ngFor="let partner of partners" [value]="partner.id">
-                                                {{partner.name}}
-                                            </mat-option>
-                                        </mat-select>
-                                        <mat-error *ngIf="controls.partnerId.errors?.required">Required field
-                                        </mat-error>
-
-                                    </mat-form-field>
-                                </div>
-
-                            </div>
-
-
-                            <div class="row">
-                                <div class="col">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>State</mat-label>
-                                        <mat-select formControlName="stateId" (selectionChange)="getCities($event)"
-                                            [disabled]="viewOnly">
-                                            <mat-option *ngFor="let state of states" [value]="state.id">
-                                                {{state.name}}
-                                            </mat-option>
-                                        </mat-select>
-                                        <mat-error *ngIf="controls.stateId.errors?.required">Required field</mat-error>
-
-                                    </mat-form-field>
-                                </div>
-
-                                <div class="col">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>City</mat-label>
-                                        <mat-select formControlName="cityId" [disabled]="viewOnly">
-                                            <mat-option *ngFor="let city of cities" [value]="city.id">
-                                                {{city.name}}
-                                            </mat-option>
-                                        </mat-select>
-                                        <mat-error *ngIf="controls.cityId.errors?.required">Required field</mat-error>
-
-                                    </mat-form-field>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <!-- Pin Code -->
-                                <div class="col">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>Pin Code</mat-label>
-                                        <input matInput formControlName="pincode" placeholder="Enter Pin Code"
-                                            [readonly]="viewOnly">
-                                        <mat-hint>Enter pin code without spaces</mat-hint>
-                                        <mat-error *ngIf="controls.pincode.errors?.required">Required field</mat-error>
-                                    </mat-form-field>
-                                </div>
-
-
-                                <!-- Address -->
-                                <div class="col">
-                                    <mat-form-field appearance="outline" class="w-100">
-                                        <mat-label>Address</mat-label>
-                                        <textarea matInput rows="3" formControlName="address"
-                                            placeholder="Enter Address" [readonly]="viewOnly"></textarea>
-                                        <mat-error *ngIf="controls.address.errors?.required">Required field</mat-error>
-                                    </mat-form-field>
-                                </div>
-
-
-                            </div>
-
-
-                        </div>
-                    </div>
+                <div class="kt-portlet__body-progress" *ngIf="viewLoading">
+                    <mat-spinner [diameter]="20"></mat-spinner>
                 </div>
 
-                <div class="kt-portlet__foot kt-portlet__foot--fit kt-portlet__no-border">
-                    <div class="kt-form__actions kt-form__actions--solid">
-                        <div class="row text-right">
-                            <div class="col-lg-12">
-                                <button type="button" mat-raised-button [mat-dialog-close]="data.animal" cdkFocusInitial
-                                    matTooltip="Cancel changes">
-                                    Cancel
-                                </button>&nbsp;
-                                <button type="button" mat-raised-button color="primary" (click)="onSubmit()"
-                                    [disabled]="branchForm.invalid || viewOnly" matTooltip="Save changes">
-                                    Save
-                                </button>
+                <!-- <kt-alert type="warn" [duration]="30000" [showCloseButton]="true" (close)="onAlertClose($event)">
+                            Oh snap! Change a few things up and try submitting again.
+                        </kt-alert> -->
+
+
+
+                <div class="form-group kt-form__group row">
+                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+
+
+                        <div class="row">
+                            <!-- Partner Name -->
+                            <div class="col-4">
+                                <label>Branch Name</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="name" autocomplete="off"
+                                    placeholder="Enter Partner Name" [readonly]="viewOnly"
+                                    [class.isError]="controls.name.touched && controls.name.invalid">
+                                <mat-error *ngIf="controls.name.touched && controls.name.errors?.required">Required
+                                    field</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4">
+                                <label>Partner Id</label>
+                            </div>
+
+                            <div class="col-8">
+                                <select class="form-control" name="" id="" formControlName="partnerId"
+                                    [disabled]="viewOnly" [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
+                                    <option *ngFor="let partner of partners" [value]="partner.id">{{partner.name}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4">
+                                <label>State</label>
+                            </div>
+
+                            <div class="col-8">
+                                <select class="form-control" formControlName="stateId" (change)="getCities($event)"
+                                    [disabled]="viewOnly" [class.isError]="controls.stateId.touched && controls.stateId.invalid">
+                                    <option *ngFor="let state of states" [value]="state.id">
+                                        {{state.name}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">
+                                    Required field</mat-error>
+                            </div>
+
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4">
+                                <label>City</label>
+                            </div>
+
+                            <div class="col-8">
+                                <select class="form-control" formControlName="cityId" [disabled]="viewOnly" 
+                                [class.isError]="controls.cityId.touched && controls.cityId.invalid">
+                                    <option *ngFor="let city of cities" [value]="city.id">
+                                        {{city.name}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
+                                    Required field</mat-error>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4">
+                                <label>Pin Code</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="pincode" placeholder="Enter Pin Code"
+                                    [readonly]="viewOnly" [class.isError]="controls.pincode.touched && controls.pincode.invalid">
+                                <small class="text-color">Enter pin code without spaces</small>
+                                <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.required">
+                                    Required field</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4">
+                                <label for="">Address</label>
+                            </div>
+                            <!-- Address -->
+                            <div class="col-8">
+                                <textarea class="form-control" rows="3" formControlName="address"
+                                    placeholder="Enter Address" [readonly]="viewOnly" [class.isError]="controls.address.touched && controls.address.invalid"></textarea>
+                                <mat-error *ngIf=" controls.address.touched &&controls.address.errors?.required">
+                                    Required field</mat-error>
                             </div>
                         </div>
                     </div>
@@ -136,3 +117,9 @@
             </form>
         </div>
     </div>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)"></kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>

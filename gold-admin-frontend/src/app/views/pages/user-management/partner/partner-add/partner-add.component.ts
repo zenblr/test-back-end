@@ -105,9 +105,22 @@ export class PartnerAddComponent implements OnInit {
     return this.partnerForm.controls;
   }
 
+  action(event: Event) {
+    if (event) {
+      this.onSubmit()
+    } else if (!event) {
+      this.dialogRef.close()
+    }
+  }
+
   onSubmit() {
     // console.log(this.partnerForm.value);
+    if (this.partnerForm.invalid) {
+      this.partnerForm.markAllAsTouched()
+      return
+    }
     const partnerData = this.partnerForm.value;
+
 
     if (this.editData) {
       const id = this.controls.id.value;

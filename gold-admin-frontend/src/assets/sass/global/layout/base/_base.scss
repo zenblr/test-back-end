@@ -6,7 +6,7 @@
 
 // Body
 body {
-	background: $kt-page-bg-color;
+	background: $kt-content-bg-color;
 }
 
 // Base
@@ -75,12 +75,6 @@ body {
 			left: kt-get($kt-aside-config, base, minimize, width);
 			transition: kt-get($kt-aside-config, base, minimize, transition);
 		}
-
-		// Static header & solid subheader
-		.kt-header--static.kt-subheader--solid & {
-			margin: 0 0 kt-get($kt-page-padding, desktop) 0;
-			min-height: kt-get($kt-subheader-config, fixed, height);
-		}
 	}
 
 	// Container 
@@ -96,14 +90,36 @@ body {
 	}
 }
 
+//
 // Fixed container width change to fluid
-@include kt-media-range( lg, $kt-page-container-width + $kt-aside-minimize-width + (2 * kt-get($kt-page-padding, desktop)) ) {
-	.kt-container:not(.kt-container--fluid) {
-		width: 100%;
+// Aside removed
+body:not(.kt-aside--enabled) {
+	@include kt-media-range( lg, $kt-page-container-width + (2 * kt-get($kt-page-padding, desktop)) ) {
+		.kt-container:not(.kt-container--fluid) {
+			width: 100%;
+		}
 	}
 }
 
-// Tablet and mobile mode
+// Default Aside
+.kt-aside--enabled:not(.kt-aside--minimize) {
+	@include kt-media-range( lg, $kt-page-container-width + $kt-aside-default-width + (2 * kt-get($kt-page-padding, desktop)) ) {
+		.kt-container:not(.kt-container--fluid) {
+			width: 100%;
+		}
+	}
+}
+
+// Minimized Aside
+.kt-aside--enabled.kt-aside--minimize {
+	@include kt-media-range( lg, $kt-page-container-width + $kt-aside-minimize-width + (2 * kt-get($kt-page-padding, desktop)) ) {
+		.kt-container:not(.kt-container--fluid) {
+			width: 100%;
+		}
+	}
+}
+
+// Tablet & mobile
 @include kt-tablet-and-mobile {
 	// Page
 	.kt-wrapper {

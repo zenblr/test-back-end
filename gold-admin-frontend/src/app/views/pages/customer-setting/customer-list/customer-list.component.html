@@ -1,0 +1,72 @@
+<kt-portlet>
+
+    <kt-portlet-body>
+
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
+                matSortActive="id" matSortDirection="asc" matSortDisableClear>
+
+                <ng-container matColumnDef="fullName">
+                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.fullName}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Customer Id</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.customerId | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="mobile">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile Number</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.mobile}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="pan">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>PAN Number</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.pan | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="state">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.state | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="city">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>City</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.city | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell [ngClass]="'w-200'" *matHeaderCellDef mat-sort-header>Action</mat-header-cell>
+                    <mat-cell *matCellDef="let role" [ngClass]="'w-200'">
+                        <p>
+                            <span class="pointer">Add New Loan</span>&nbsp;|&nbsp;
+                            <span class="pointer">View Loan</span>&nbsp;|&nbsp;
+                            <span class="pointer" (click)="editCustomer(role)">Edit</span>&nbsp;|&nbsp;
+                            <span class="pointer" (click)="deleteCustomer(role)">Delete</span>
+                        </p>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <!-- Message for empty data  -->
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+
+        <!-- start: BOTTOM -->
+        <div class="mat-table__bottom">
+            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <!-- MATERIAL PAGINATOR | Binded to dasources -->
+            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[3, 5, 10]" [length]="dataSource.paginatorTotal$ | async"
+                [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>
