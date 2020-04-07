@@ -90,7 +90,7 @@ export class BranchListComponent implements OnInit {
     // First load
     this.loadBranchPage();
 
-    this.dataSource.loadBranches(1, 10, '', '', '', '');
+    // this.dataSource.loadBranches(1, 10, '', '', '', '');
   }
 
 	/**
