@@ -6,7 +6,7 @@ const Op = Sequelize.Op;
 
 
 //Add branch
-exports.addBranch = async(req, res) => {
+exports.addBranch = async(req, res, next) => {
         const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
         await sequelize.transaction(async t => {
 
@@ -22,17 +22,12 @@ exports.addBranch = async(req, res) => {
         }).then((addBranch) => {
             return res.status(201).json({ messgae: "branch created" })
         }).catch((exception) => {
-
-            return res.status(500).json({
-                message: "something went wrong",
-                data: exception.message
-
-            });
+            next(exception)
         })
 }
 
 //get branch
-exports.readBranch = async(req, res) => {
+exports.readBranch = async(req, res, next) => {
   
     const { search, offset, pageSize } =
     paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
@@ -62,7 +57,7 @@ exports.readBranch = async(req, res) => {
 
 //get branch by id
 
-exports.readBranchById = async(req, res) => {
+exports.readBranchById = async(req, res, next) => {
     const branchId = req.params.id;
     let branchData = await models.branch.findOne({
         where: { id: branchId, isActive: true },
@@ -99,7 +94,7 @@ exports.readBranchById = async(req, res) => {
 
 // update branch 
 
-exports.updateBranch = async(req, res) => {
+exports.updateBranch = async(req, res, next) => {
     const branchId = req.params.id;
 
     const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
@@ -115,7 +110,7 @@ exports.updateBranch = async(req, res) => {
 
 // delete branch
 
-exports.deleteBranch = async(req, res) => {
+exports.deleteBranch = async(req, res, next) => {
     const branchId = req.params.id;
     let branchData = await models.branch.update({ isActive: false }, { where: { id:branchId ,isActive:true} });
     if (!branchData[0]) {

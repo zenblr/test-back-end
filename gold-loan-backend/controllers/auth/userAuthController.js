@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
-exports.userLogin = async(req, res) => {
+exports.userLogin = async(req, res, next) => {
 
     const { firstName, password } = req.body;
 

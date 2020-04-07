@@ -1,6 +1,6 @@
 const models=require('../../models');
 
-exports.addPartnerScheme=async(req,res)=>{
+exports.addPartnerScheme=async(req,res, next)=>{
     const{schemeId,partnerId}=req.body;
     const addPartnersShemeData= await models.partner_schemes.create({
 schemeId,partnerId });
@@ -13,7 +13,7 @@ schemeId,partnerId });
 
 //read Schemes
 
-exports.readPartnerScheme=async(req,res)=>{
+exports.readPartnerScheme=async(req,res, next)=>{
     
     const readPartnerSchemeData=await models.partner_schemes.findAll({where:{isActive:true}});
     if(!readPartnerSchemeData){
@@ -25,7 +25,7 @@ exports.readPartnerScheme=async(req,res)=>{
 
 //read Scheme by id
 
-exports.readPartnerSchemeById=async(req,res)=>{
+exports.readPartnerSchemeById=async(req,res, next)=>{
     
     const partnerSchemeId=req.params.id;
     const readsPartnerSchemeByIdData=await models.partner_schemes.findOne({where:{id:partnerSchemeId,isActive:true}});
@@ -39,7 +39,7 @@ exports.readPartnerSchemeById=async(req,res)=>{
 
 // update Scheme By id
 
-exports.updatePartnerScheme=async(req,res)=>{
+exports.updatePartnerScheme=async(req,res, next)=>{
     const partnerSchemeId=req.params.id;
     const{chemeId,partnerId}=req.body;
     const updatePartnerSchemeData=await models.partner_schemes.update({chemeId,partnerId},{where:{id:partnerSchemeId,isActive:true}});
@@ -52,7 +52,7 @@ exports.updatePartnerScheme=async(req,res)=>{
 
 // delete Scheme by id
 
-exports.deactivePartnerScheme = async(req,res)=>{
+exports.deactivePartnerScheme = async(req,res, next)=>{
     const partnerSchemeId=req.params.id;
     
     const deactivePartnerSchemeData = await models.partner_schemes.update({isActive:false},{where:{id:partnerSchemeId,isActive:true}});

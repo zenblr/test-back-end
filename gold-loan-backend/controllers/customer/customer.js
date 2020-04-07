@@ -11,7 +11,7 @@ const request = require('request');
 const check = require('../../lib/checkLib');
 const { paginationWithFromTo } = require("../../utils/pagination");
 
-exports.addCustomer = async (req, res,next) => {
+exports.addCustomer = async (req, res, next) => {
 
     // cheanges needed here 
     let createdBy = req.userData.id
@@ -54,7 +54,7 @@ exports.addCustomer = async (req, res,next) => {
 
 }
 
-// exports.registerCustomerSendOtp = async (req, res) => {
+// exports.registerCustomerSendOtp = async (req, res, next) => {
 //     try {
 //         const { mobileNumber } = req.body
 
@@ -76,7 +76,7 @@ exports.addCustomer = async (req, res,next) => {
 
 
 
-exports.deactivateCustomer = async (req, res) => {
+exports.deactivateCustomer = async (req, res, next) => {
     const { customerId, isActive } = req.query;
     let customerExist = await models.customers.findOne({ where: { id: customerId } })
     if (check.isEmpty(customerExist)) {
@@ -88,7 +88,7 @@ exports.deactivateCustomer = async (req, res) => {
 }
 
 
-exports.editCustomer = async (req, res) => {
+exports.editCustomer = async (req, res, next) => {
 
     // changes need here
     let modifiedBy = req.userData.id
@@ -107,15 +107,12 @@ exports.editCustomer = async (req, res) => {
     }).then((customer) => {
         return res.status(200).json({ messgae: `User Updated` })
     }).catch((exception) => {
-        return res.status(500).json({
-            message: "something went wrong",
-            data: exception.message
-        });
+       next(exception)
     })
 
 }
 
-exports.getAllCustomers = async (req, res) => {
+exports.getAllCustomers = async (req, res, next) => {
 
     const { search, offset, pageSize } = paginationWithFromTo(
         req.query.search,
@@ -162,7 +159,7 @@ exports.getAllCustomers = async (req, res) => {
 }
 
 
-exports.getSingleCustomer = async (req, res) => {
+exports.getSingleCustomer = async (req, res, next) => {
     const { customerId } = req.params;
     let singleCustomer = await models.customers.findOne({
         where: {

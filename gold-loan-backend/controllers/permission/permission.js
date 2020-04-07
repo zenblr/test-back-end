@@ -1,7 +1,7 @@
 const models=require("../../models");
 
 //add permission
-exports.addPermission=async(req,res)=>{
+exports.addPermission=async(req, res, next)=>{
     const{permissionName,description}=req.body;
 
     let  addPermissionData=await models.permission.create({permissionName,description});
@@ -13,7 +13,7 @@ exports.addPermission=async(req,res)=>{
 }
 
 //read permissiion
-exports.readPermission=async(req,res)=>{
+exports.readPermission=async(req, res, next)=>{
     
     let readPermissionData=await models.permission.findAll({where:{isActive:true}});
 
@@ -25,7 +25,7 @@ exports.readPermission=async(req,res)=>{
 
 //update permission
 
-exports.updatePermission=async(req,res)=>{
+exports.updatePermission=async(req,res, next)=>{
     const permissionId=req.params.id;
     const {permissionName,description}=req.body
     let updatePermissionData=await models.permission.update({permissionName,description},{where:{id:permissionId,isActive:true}});
@@ -35,7 +35,7 @@ exports.updatePermission=async(req,res)=>{
 
 // delete permission
 
-exports.deactivePermission=async(req,res)=>{
+exports.deactivePermission=async(req,res, next)=>{
     const permissionId=req.params.id;
     let deactivePermission=await models.permission.update({isActive:false},{where:{id:permissionId,isActive:true}});
     if(!deactivePermission[0]){

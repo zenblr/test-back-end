@@ -11,7 +11,7 @@ const { createRefrenceCode } = require('../../utils/refrenceCode');
 const { sendMail } = require('../../service/EmailService')
 const CONSTANT = require('../../utils/constant');
 
-exports.registerSendOtp = async (req, res,next) => {
+exports.registerSendOtp = async (req, res, next) => {
     let { firstName, lastName, password, mobileNumber, email, panCardNumber, address } = req.body;
     let userExist = await models.users.findOne({ where: { mobileNumber: mobileNumber } })
 
@@ -29,7 +29,7 @@ exports.registerSendOtp = async (req, res,next) => {
                 console.log(address[i])
                 let data = await models.user_address.create({
                     userId: user.id,
-                    address:address[i].address,
+                    address: address[i].address,
                     landMark: address[i].landMark,
                     stateId: address[i].stateId,
                     cityId: address[i].cityId,
@@ -54,7 +54,7 @@ exports.registerSendOtp = async (req, res,next) => {
 
 }
 
-exports.verifyRegistrationOtp = async (req, res) => {
+exports.verifyRegistrationOtp = async (req, res, next) => {
     const { mobileNumber, otp } = req.body;
     let user = await models.users.findOne({ where: { mobileNumber: mobileNumber } });
 
@@ -79,7 +79,7 @@ exports.verifyRegistrationOtp = async (req, res) => {
 
 }
 
-exports.sendOtp = async (req, res) => {
+exports.sendOtp = async (req, res, next) => {
     const { mobileNumber } = req.body;
     let userDetails = await models.users.findOne({ where: { mobileNumber } });
     if (userDetails) {
@@ -96,30 +96,27 @@ exports.sendOtp = async (req, res) => {
     }
 }
 
-exports.updatePassword = async (req, res) => {
-    try {
-        const {mobileNumber,otp, newPassword} = req.body
+exports.updatePassword = async (req, res, next) => {
+    const { mobileNumber, otp, newPassword } = req.body
 
-        let user = await models.users.findOne({ where: { mobileNumber: mobileNumber } });
-        if (check.isEmpty(user)) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        if (user.dataValues.otp === otp) {
-            let verifyUser = await user.update({ otp: null,password: newPassword}, { where: { id: user.dataValues.id } });
-
-            return res.status(200).json({ message: 'Password Updated.' });
-        }
-        
-        return res.json({message: `not match`})
-
-    } catch (error) {
-        return res.status(200).json({ message: `Internal server error`, error })
+    let user = await models.users.findOne({ where: { mobileNumber: mobileNumber } });
+    if (check.isEmpty(user)) {
+        return res.status(404).json({ message: 'User not found' });
     }
+    if (user.dataValues.otp === otp) {
+        let verifyUser = await user.update({ otp: null, password: newPassword }, { where: { id: user.dataValues.id } });
+
+        return res.status(200).json({ message: 'Password Updated.' });
+    }
+
+    return res.json({ message: `not match` })
+
+
 }
 
-exports.changePassword = async (req, res) => {
+exports.changePassword = async (req, res, next) => {
 
-    const { oldPassword , newPassword} = req.body
+    const { oldPassword, newPassword } = req.body
     let userinfo = await models.users.findOne({ where: { id: req.userData.id, isActive: true } });
     if (check.isEmpty(userinfo)) {
         return res.status(200).json({ message: `User not found . Please contact Admin.` })
@@ -134,20 +131,20 @@ exports.changePassword = async (req, res) => {
     }
 }
 
-exports.getUser = async(req, res) =>{
-    try{
+exports.getUser = async (req, res, next) => {
+    try {
         let user = await models.users.findAll({
-            include:[{
-                model:models.roles,
-                include:[{
-                    model:models.permission,
-                    attributes:['id','permission_name']
+            include: [{
+                model: models.roles,
+                include: [{
+                    model: models.permission,
+                    attributes: ['id', 'permission_name']
                 }]
             }]
         });
         res.json(user)
 
-    }catch(error){
+    } catch (error) {
         res.status(500).json(error)
     }
 }

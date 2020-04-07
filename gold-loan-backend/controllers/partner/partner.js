@@ -6,7 +6,7 @@ const Op=Sequelize.Op;
 
 
 //add partner
-exports.addPartner = async(req, res) => {
+exports.addPartner = async(req, res, next) => {
 
         const { name, commission, isActive } = req.body;
         await sequelize.transaction(async t => {
@@ -19,16 +19,13 @@ exports.addPartner = async(req, res) => {
         }).then((partnerData) => {
             return res.status(201).json({ messgae: "partner created" });
         }).catch((exception) => {
-            return res.status(500).json({
-                message: "something went wrong",
-                data: exception.message
-            });
+          next(exception)
         })
 
     }
     //update partner
 
-exports.updatePartner = async(req, res) => {
+exports.updatePartner = async(req, res, next) => {
     const partnerId = req.params.id;
     const { name, commission, isActive } = req.body;
     let pId = name.slice(0, 3).toUpperCase() + '-' + partnerId;
@@ -41,7 +38,7 @@ exports.updatePartner = async(req, res) => {
 
 //get partner
 
-exports.readPartner = async(req, res) => {
+exports.readPartner = async(req, res, next) => {
 
     const { search, offset, pageSize } =
     paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
@@ -67,7 +64,7 @@ exports.readPartner = async(req, res) => {
 
     //get partner by id
 
-exports.readPartnerById = async(req, res) => {
+exports.readPartnerById = async(req, res, next) => {
     const partnerId = req.params.id;
     let partnerData = await models.partner.findOne({ where: { id:partnerId, isActive: true } });
     if (!partnerData[0]) {
@@ -78,7 +75,7 @@ exports.readPartnerById = async(req, res) => {
 
 //delete partner by id 
 
-exports.deletePartner = async(req, res) => {
+exports.deletePartner = async(req, res, next) => {
     const partnerId = req.params.id;
     let partnerData = await models.partner.update({ isActive: false }, { where: { id:partnerId,isActive:true } });
 

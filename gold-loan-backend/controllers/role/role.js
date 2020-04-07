@@ -25,7 +25,7 @@ exports.readRole=async(req,res)=>{
 
 //update Role
 
-exports.updateRole=async(req,res)=>{
+exports.updateRole=async(req,res, next)=>{
     const roleId=req.params.id;
     const{roleName,description}=req.body;
     let updateRoleData=await models.roles.update({roleName,description},{where:{id:roleId,isActive:true}});
@@ -36,7 +36,7 @@ exports.updateRole=async(req,res)=>{
 
 //delete Role
 
-exports.deactiveRole=async(req,res)=>{
+exports.deactiveRole=async(req,res, next)=>{
     const roleId=req.params.id;
     let deactiveRole=await models.roles.update({isActive:false},{where:{id:roleId,isActive:true}});
     if(!deactiveRole[0]){

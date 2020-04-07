@@ -6,7 +6,7 @@ const Op = Sequelize.Op;
 const csv = require('csvtojson')
 
 
-exports.postCity = async(req, res) => {
+exports.postCity = async(req, res, next) => {
     const csvFilePath = req.file.path;
     const jsonArray = await csv().fromFile(csvFilePath);
 
@@ -22,15 +22,12 @@ exports.postCity = async(req, res) => {
         res.status(200).json({ message: "success" })
 
     }).catch((exception) => {
-        return res.status(500).json({
-            message: "something went wrong",
-            data: exception.message
-        });
+       next(exception)
     })
 
 }
 
-exports.getCity = async(req, res) => {
+exports.getCity = async(req, res, next) => {
     const { stateId } = req.params;
     let cities = await models.cities.findAll({
         where: { isActive: true, stateId: stateId },

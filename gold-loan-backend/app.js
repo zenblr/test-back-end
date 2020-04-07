@@ -50,12 +50,6 @@ const models = require('./models');
 
 // error handler
 app.use(function (err, req, res, next) {
-    console.log(err.message)
-    console.log(req.body);
-    console.log(req.url);
-    console.log(req.method);
-    console.log(req.hostname);
-    console.log(req.userData)
 
     models.error_logger.create({
         message: err.message,
