@@ -7,7 +7,6 @@ const Op = Sequelize.Op;
 
 //Add branch
 exports.addBranch = async(req, res) => {
-    try {
         const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
         await sequelize.transaction(async t => {
 
@@ -30,12 +29,6 @@ exports.addBranch = async(req, res) => {
 
             });
         })
-
-    } catch (error) {
-        console.log(error)
-    }
-
-
 }
 
 //get branch

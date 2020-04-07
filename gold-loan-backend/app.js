@@ -41,12 +41,31 @@ app.use('/api', indexRouter);
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     next(createError(404));
 });
 
+const models = require('./models');
+
+
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
+    console.log(err.message)
+    console.log(req.body);
+    console.log(req.url);
+    console.log(req.method);
+    console.log(req.hostname);
+    console.log(req.userData)
+
+    models.error_logger.create({
+        message: err.message,
+        url:req.url,
+        method:req.method,
+        host: req.hostname,
+        body:req.body,
+        userData:req.userData
+    })
+
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -56,7 +75,7 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     res.status(500).send({ message: "something went wrong" });
 });
 

@@ -33,6 +33,15 @@ module.exports = (sequelize, DataTypes) => {
             field: 'mobile_number',
             allowNull: false,
         },
+        otp: {
+            type: DataTypes.INTEGER,
+            field: "otp"
+        },
+        isVerified:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_verified',
+            defaultValue: false
+        },
         email: {
             type: DataTypes.STRING,
             field: 'email',
@@ -47,10 +56,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'pan_card_number',
             allowNull: false,
-        },
-        postalCode: {
-            type: DataTypes.INTEGER,
-            field: 'postal_code'
         },
         ratingId: {
             type: DataTypes.INTEGER,
@@ -91,7 +96,7 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'customers',
     });
 
-    Customer.associate = function(models) {
+    Customer.associate = function (models) {
         Customer.hasMany(models.customer_address, { foreignKey: 'customerId', as: 'address' });
         Customer.belongsTo(models.rating, { foreignKey: 'ratingId', as: 'rating' });
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
@@ -103,14 +108,14 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     // This hook is always run before create.
-    Customer.beforeCreate(function(customer, options, cb) {
+    Customer.beforeCreate(function (customer, options, cb) {
         if (customer.password) {
             return new Promise((resolve, reject) => {
-                bcrypt.genSalt(10, function(err, salt) {
+                bcrypt.genSalt(10, function (err, salt) {
                     if (err) {
                         return err;
                     }
-                    bcrypt.hash(customer.password, salt, function(err, hash) {
+                    bcrypt.hash(customer.password, salt, function (err, hash) {
                         if (err) {
                             return err;
                         }
@@ -123,14 +128,14 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     // This hook is always run before update.
-    Customer.beforeUpdate(function(customer, options, cb) {
+    Customer.beforeUpdate(function (customer, options, cb) {
         if (customer.password) {
             return new Promise((resolve, reject) => {
-                bcrypt.genSalt(10, function(err, salt) {
+                bcrypt.genSalt(10, function (err, salt) {
                     if (err) {
                         return err;
                     }
-                    bcrypt.hash(customer.password, salt, function(err, hash) {
+                    bcrypt.hash(customer.password, salt, function (err, hash) {
                         if (err) {
                             return err;
                         }
@@ -143,9 +148,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     // Instance method for comparing password.
-    Customer.prototype.comparePassword = function(passw, cb) {
+    Customer.prototype.comparePassword = function (passw, cb) {
         return new Promise((resolve, reject) => {
-            bcrypt.compare(passw, this.password, function(err, isMatch) {
+            bcrypt.compare(passw, this.password, function (err, isMatch) {
                 if (err) {
                     return err;
                 }
@@ -155,7 +160,7 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     // This will not return password, refresh token and access token.
-    Customer.prototype.toJSON = function() {
+    Customer.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
         delete values.password;
         delete values.otp;

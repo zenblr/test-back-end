@@ -11,7 +11,7 @@ const { createRefrenceCode } = require('../../utils/refrenceCode');
 const { sendMail } = require('../../service/EmailService')
 const CONSTANT = require('../../utils/constant');
 
-exports.registerSendOtp = async (req, res) => {
+exports.registerSendOtp = async (req, res,next) => {
     let { firstName, lastName, password, mobileNumber, email, panCardNumber, address } = req.body;
     let userExist = await models.users.findOne({ where: { mobileNumber: mobileNumber } })
 
@@ -24,10 +24,12 @@ exports.registerSendOtp = async (req, res) => {
     await sequelize.transaction(async t => {
 
         const user = await models.users.create({ firstName, lastName, password, mobileNumber, email, otp, panCardNumber }, { transaction: t })
-        if (!check.isEmpty(address.length)) {
+        if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
+                console.log(address[i])
                 let data = await models.user_address.create({
                     userId: user.id,
+                    address:address[i].address,
                     landMark: address[i].landMark,
                     stateId: address[i].stateId,
                     cityId: address[i].cityId,
@@ -47,10 +49,7 @@ exports.registerSendOtp = async (req, res) => {
         // //for email
         return res.status(200).json({ message: 'Otp send to your Mobile number.', refrenceCode: refrenceCode });
     }).catch((exception) => {
-        return res.status(500).json({
-            message: "something went wrong",
-            data: exception.message
-        });
+        next(exception)
     })
 
 }
@@ -132,5 +131,23 @@ exports.changePassword = async (req, res) => {
         res.status(200).json({ message: 'Success' })
     } else {
         res.status(401).json({ message: ' wrong credentials' });
+    }
+}
+
+exports.getUser = async(req, res) =>{
+    try{
+        let user = await models.users.findAll({
+            include:[{
+                model:models.roles,
+                include:[{
+                    model:models.permission,
+                    attributes:['id','permission_name']
+                }]
+            }]
+        });
+        res.json(user)
+
+    }catch(error){
+        res.status(500).json(error)
     }
 }
