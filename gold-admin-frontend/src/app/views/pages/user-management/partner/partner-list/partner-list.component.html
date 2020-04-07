@@ -5,15 +5,7 @@
     <kt-portlet-header [title]="'Partners List'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
 
         <ng-container ktPortletTools>
-            <button (click)="addRole()" mat-raised-button matTooltip="Create new partner" color="primary" type="button">
-                <span>Add Partner</span>
-            </button>
-            <mat-form-field class="mat-form-field-fluid kt-padding-l-20">
-                <input matInput placeholder="Search user" #searchInput placeholder="Search">
-                <mat-hint align="start">
-                    <strong>Search</strong> in all fields
-                </mat-hint>
-            </mat-form-field>
+
             <!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
             <!-- mat-raised-button | Rectangular contained button w/ elevation  -->
         </ng-container>

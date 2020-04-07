@@ -1,14 +1,36 @@
 :host {
-    .mat-form-field-appearance-fill .mat-form-field-flex {
-        background: gray(0, 255, 255, .5);
-        
-    }
-    .mat-form-field-appearance-fill .mat-form-field-flex{
-        border-radius: 15px !important;
+    p {
+        margin: 0 !important;
     }
 
-    
-}
-::ng-deep .mat-input-underline {
-    display: none;
+    .amount {
+        display : inline-block;
+        position: relative;
+    }
+
+    /* position the unit to the right of the wrapper */
+    .amount::after {
+        position   : absolute;
+        top        : 11px;
+        right      : 1em;
+        transition : all .05s ease-in-out;
+        content    : '(Amt in laks)';
+        color      : #707480;
+        font-weight: bold;
+    }
+
+    .csv_pos {
+        position   : absolute;
+        top        : 40px;
+        right      : 30px;
+        font-weight: 500;
+        font-size  : 16px;
+    }
+
+    .bg{
+        background-color: #454D67 !important;
+        color: rgb(193, 193, 193) !important;
+
+    }
+
 }

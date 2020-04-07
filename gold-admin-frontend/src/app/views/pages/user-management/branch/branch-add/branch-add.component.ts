@@ -98,7 +98,19 @@ export class BranchAddComponent implements OnInit {
     return this.branchForm.controls;
   }
 
+  action(event: Event) {
+    if (event) {
+      this.onSubmit()
+    } else if (!event) {
+      this.dialogRef.close()
+    }
+  }
+
   onSubmit() {
+    if(this.branchForm.invalid){
+      this.branchForm.markAllAsTouched()
+      return
+    }
     // console.log(this.branchForm.value);
     const partnerData = this.branchForm.value;
     const id = this.controls.id.value;

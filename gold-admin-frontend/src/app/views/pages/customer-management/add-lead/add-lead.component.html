@@ -256,7 +256,11 @@
                         </div>
                     </div> -->
 
-                <kt-modal-footer (action)="action($event)" [isDisabled]="leadForm.invalid"></kt-modal-footer>
+                <div class="kt-portlet__foot kt-portlet__foot--fit kt-portlet__no-border">
+                    <div class="kt-form__actions kt-form__actions--solid">
+                        <kt-modal-footer (action)="action($event)" [isDisabled]="leadForm.invalid"></kt-modal-footer>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

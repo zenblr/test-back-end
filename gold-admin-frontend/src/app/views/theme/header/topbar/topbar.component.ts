@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { Location } from "@angular/common";
 import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
 import { LoanSettingsService } from '../.././../../core/loan-setting'
+import { PartnerService } from '../.././../../core/user-management/partner/services/partner.service';
+import { BranchService } from '../.././../../core/user-management/branch/services/branch.service';
 
 @Component({
 	selector: 'kt-topbar',
@@ -26,7 +28,9 @@ export class TopbarComponent implements OnInit {
 	constructor(private router: Router,
 		private location: Location,
 		private customerManagementServiceCustomer: CustomerManagementService,
-		private loanSettingService:LoanSettingsService) {
+		private loanSettingService:LoanSettingsService,
+		private partnerService :PartnerService,
+		private branchService:BranchService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -65,6 +69,22 @@ export class TopbarComponent implements OnInit {
 			this.value2 = 'Add New Lead';
 			this.type2 = 'button';
 		}
+		if (this.path == 'partner') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Search';
+			this.type1 = 'button';
+			this.value2 = 'Add Partner';
+			this.type2 = 'button';
+		}
+		if (this.path == 'branch') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Search';
+			this.type1 = 'button';
+			this.value2 = 'Add New Branch';
+			this.type2 = 'button';
+		}
 	}
 
 	action(event: Event) {
@@ -74,6 +94,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'scheme') {
 			this.loanSettingService.openModal.next(true)
+		}
+		if (this.path == 'partner') {
+			this.partnerService.openModal.next(true)
+		}
+		if (this.path == 'branch') {
+			this.branchService.openModal.next(true)
 		}
 	}
 }

@@ -37,7 +37,13 @@ export class BranchListComponent implements OnInit {
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
     private branchService: BranchService
-  ) { }
+  ) {
+    this.branchService.openModal$.subscribe(res => {
+      if (res) {
+        this.addRole();
+      }
+    })
+  }
 
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
@@ -57,17 +63,17 @@ export class BranchListComponent implements OnInit {
     this.subscriptions.push(paginatorSubscriptions);
 
     // Filtration, bind to searchInput
-    const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(
-      // tslint:disable-next-line:max-line-length
-      debounceTime(150), // The user can type quite quickly in the input box, and that could trigger a lot of server requests. With this operator, we are limiting the amount of server requests emitted to a maximum of one every 150ms
-      distinctUntilChanged(), // This operator will eliminate duplicate values
-      tap(() => {
-        this.paginator.pageIndex = 0;
-        this.loadBranchPage();
-      })
-    )
-      .subscribe();
-    this.subscriptions.push(searchSubscription);
+    // const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(
+    //   // tslint:disable-next-line:max-line-length
+    //   debounceTime(150), // The user can type quite quickly in the input box, and that could trigger a lot of server requests. With this operator, we are limiting the amount of server requests emitted to a maximum of one every 150ms
+    //   distinctUntilChanged(), // This operator will eliminate duplicate values
+    //   tap(() => {
+    //     this.paginator.pageIndex = 0;
+    //     this.loadBranchPage();
+    //   })
+    // )
+    //   .subscribe();
+    // this.subscriptions.push(searchSubscription);
 
     // Init DataSource
     this.dataSource = new BranchDatasource(this.branchService);
@@ -99,7 +105,7 @@ export class BranchListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadBranches(from, to, '', this.searchInput.nativeElement.value, '', '');
+    // this.dataSource.loadBranches(from, to, '', this.searchInput.nativeElement.value, '', '');
   }
 
 	/**
@@ -143,12 +149,16 @@ export class BranchListComponent implements OnInit {
   }
 
   addRole() {
-    const dialogRef = this.dialog.open(BranchAddComponent, { data: { action: 'add' } });
+    const dialogRef = this.dialog.open(BranchAddComponent, { 
+      data: { action: 'add' },
+      width:'450px' 
+    });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadBranchPage();
       }
     });
+    this.branchService.openModal.next(false)
   }
 
 	/**
@@ -170,7 +180,10 @@ export class BranchListComponent implements OnInit {
 
   viewRole(role) {
     console.log(role);
-    const dialogRef = this.dialog.open(BranchAddComponent, { data: { partnerId: role.id, action: 'view' } });
+    const dialogRef = this.dialog.open(BranchAddComponent, {
+      data: { partnerId: role.id, action: 'view' },
+      width: '550px'
+    });
 
     dialogRef.afterClosed().subscribe(res => {
       if (!res) {
@@ -178,6 +191,8 @@ export class BranchListComponent implements OnInit {
       }
     });
   }
+
+  
 
 
 }

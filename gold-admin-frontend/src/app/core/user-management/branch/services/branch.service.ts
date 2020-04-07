@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BranchService {
+  openModal = new BehaviorSubject<any>(false);
+  openModal$ = this.openModal.asObservable();
 
   constructor(private http: HttpClient) { }
 

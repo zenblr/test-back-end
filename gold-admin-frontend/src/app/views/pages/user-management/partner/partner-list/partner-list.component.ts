@@ -60,7 +60,13 @@ export class PartnerListComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private partnerService: PartnerService) { }
+    private partnerService: PartnerService) {
+    this.partnerService.openModal$.subscribe(res => {
+      if (res) {
+        this.addRole()
+      }
+    })
+  }
 
 	/**
 	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
@@ -88,18 +94,18 @@ export class PartnerListComponent implements OnInit {
     this.subscriptions.push(paginatorSubscriptions);
 
     // Filtration, bind to searchInput
-    const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(
-      // tslint:disable-next-line:max-line-length
-      debounceTime(150), // The user can type quite quickly in the input box, and that could trigger a lot of server requests. With this operator, we are limiting the amount of server requests emitted to a maximum of one every 150ms
-      distinctUntilChanged(), // This operator will eliminate duplicate values
-      tap(() => {
-        this.paginator.pageIndex = 0;
-        // this.loadRolesList();
-        this.loadPartnersPage();
-      })
-    )
-      .subscribe();
-    this.subscriptions.push(searchSubscription);
+    // const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(
+    //   // tslint:disable-next-line:max-line-length
+    //   debounceTime(150), // The user can type quite quickly in the input box, and that could trigger a lot of server requests. With this operator, we are limiting the amount of server requests emitted to a maximum of one every 150ms
+    //   distinctUntilChanged(), // This operator will eliminate duplicate values
+    //   tap(() => {
+    //     this.paginator.pageIndex = 0;
+    //     // this.loadRolesList();
+    //     this.loadPartnersPage();
+    //   })
+    // )
+    //   .subscribe();
+    // this.subscriptions.push(searchSubscription);
 
     // Init DataSource
     this.dataSource = new PartnerDatasource(this.partnerService);
@@ -207,12 +213,13 @@ export class PartnerListComponent implements OnInit {
 	 * Add role
 	 */
   addRole() {
-    const dialogRef = this.dialog.open(PartnerAddComponent, { data: { action: 'add' } });
+    const dialogRef = this.dialog.open(PartnerAddComponent, { data: { action: 'add' },width:'450px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPartnersPage();
       }
     })
+    this.partnerService.openModal.next(false);
   }
 
 	/**

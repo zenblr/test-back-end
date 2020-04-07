@@ -62,7 +62,7 @@ body{
 	background-color: rgb(230, 230, 230) !important;
 }
 .isError{
-border: 1px solid red !important;
+border: 2px solid red !important;
 }
 ::-webkit-input-placeholder { /* Edge */
 	font-weight: bold;
@@ -75,3 +75,21 @@ border: 1px solid red !important;
   ::placeholder {
 	font-weight: bold;
   }
+
+  /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.kt-pointer{
+	cursor: pointer
+}
+
+

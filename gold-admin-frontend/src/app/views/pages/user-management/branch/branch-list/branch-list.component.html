@@ -3,34 +3,10 @@
     <!-- PORTLET LOADING | Binded to TABLE Datasource -->
     <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
     <kt-portlet-header [title]="'Branches List'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
-
-        <ng-container ktPortletTools>
-            <button (click)="addRole()" mat-raised-button matTooltip="Create new branch" color="primary" type="button">
-                <span>Add Branch</span>
-            </button>
-        </ng-container>
     </kt-portlet-header>
     <!-- end::Header -->
 
     <kt-portlet-body>
-        <!-- start::FILTERS & GROUP ACTIONS -->
-        <div class="kt-form kt-margin-b-10">
-            <!-- start::FILTERS -->
-            <div class="kt-form__filtration">
-                <div class="row align-items-center">
-                    <div class="col-md-2 ml-auto kt-margin-bottom-10-mobile">
-                        <mat-form-field class="mat-form-field-fluid">
-                            <input matInput placeholder="Search user" #searchInput placeholder="Search">
-                            <mat-hint align="start">
-                                <strong>Search</strong> in all fields
-                            </mat-hint>
-                        </mat-form-field>
-                    </div>
-                </div>
-            </div>
-            <!-- end::FILTERS -->
-
-        </div>
         <!-- end::FILTERS & GROUP ACTIONS -->
 
         <!-- MATERIAL TABLE | Binded to datasources -->
