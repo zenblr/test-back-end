@@ -11,16 +11,16 @@ exports.addBranch = async(req, res) => {
         const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
         await sequelize.transaction(async t => {
 
-            let addbranch = await models.branch.create({ partnerId, name, cityId, stateId, address, pincode, commission, isActive }, { transaction: t });
-            let id = addbranch.dataValues.id;
+            let addBranch = await models.branch.create({ partnerId, name, cityId, stateId, address, pincode, commission, isActive }, { transaction: t });
+            let id = addBranch.dataValues.id;
 
-            let partnerdataid = await models.partner.findOne({ where: { id: addbranch.dataValues.partnerId }, transaction: t });
+            let partnerdataid = await models.partner.findOne({ where: { id: addBranch.dataValues.partnerId }, transaction: t });
 
             let pqid = partnerdataid.dataValues.partnerId;
-            let newId = pqid.slice(0, 2) + addbranch.dataValues.name.slice(0, 3).toUpperCase() + '-' + id;
+            let newId = pqid.slice(0, 2) + addBranch.dataValues.name.slice(0, 3).toUpperCase() + '-' + id;
             await models.branch.update({ branchId: newId }, { where: { id }, transaction: t });
-            return addbranch;
-        }).then((addbranch) => {
+            return addBranch;
+        }).then((addBranch) => {
             return res.status(201).json({ messgae: "branch created" })
         }).catch((exception) => {
 
@@ -49,7 +49,7 @@ exports.readBranch = async(req, res) => {
         },
         isActive: true 
     }
-        let readbranchdata = await models.branch.findAll({
+        let readBranchData = await models.branch.findAll({
             where: searchQuery,
             include:{
                 model:models.partner,
@@ -63,16 +63,16 @@ exports.readBranch = async(req, res) => {
             offset: offset,
             limit: pageSize
         });
-        if (!readbranchdata) { return res.status(404).json({ message: 'data not found' }) }
-        return res.status(200).json({data:readbranchdata, count:count.length});
+        if (!readBranchData) { return res.status(404).json({ message: 'data not found' }) }
+        return res.status(200).json({data:readBranchData, count:count.length});
       }
 
 //get branch by id
 
 exports.readBranchById = async(req, res) => {
-    const id = req.params.id;
-    let branchdata = await models.branch.findOne({
-        where: { id: id, isActive: true },
+    const branchId = req.params.id;
+    let branchData = await models.branch.findOne({
+        where: { id: branchId, isActive: true },
         include: [{
                 model: models.partner,
                 as: "partner",
@@ -97,9 +97,9 @@ exports.readBranchById = async(req, res) => {
         ]
     });
 
-    if (!branchdata) { return res.status(404).json({ message: 'data not found' }) }
+    if (!branchData[0]) { return res.status(404).json({ message: 'data not found' }) }
 
-    return res.status(200).json(branchdata);
+    return res.status(200).json(branchData);
 
 
 }
@@ -107,14 +107,14 @@ exports.readBranchById = async(req, res) => {
 // update branch 
 
 exports.updateBranch = async(req, res) => {
-    const id = req.params.id;
+    const branchId = req.params.id;
 
     const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
-    let pId = name.slice(0, 3).toUpperCase() + '-' + id;
+    let pId = name.slice(0, 3).toUpperCase() + '-' + branchId;
 
 
-    let branchdata = await models.branch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pincode, commission, isActive }, { where: { id, isActive: true } });
-    if (!branchdata[0]) {
+    let branchData = await models.branch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pincode, commission, isActive }, { where: { id:branchId, isActive: true } });
+    if (!branchData[0]) {
         return res.status(404).json({ message: 'data not found' });
     }
     return res.status(200).json({ message: "Success" });
@@ -123,9 +123,9 @@ exports.updateBranch = async(req, res) => {
 // delete branch
 
 exports.deleteBranch = async(req, res) => {
-    const id = req.params.id;
-    let branchdata = await models.branch.update({ isActive: false }, { where: { id ,isActive:true} });
-    if (!branchdata[0]) {
+    const branchId = req.params.id;
+    let branchData = await models.branch.update({ isActive: false }, { where: { id:branchId ,isActive:true} });
+    if (!branchData[0]) {
         return res.status(404).json({ message: 'data not found' });
     }
     return res.status(200).json({ message: 'Success' })
