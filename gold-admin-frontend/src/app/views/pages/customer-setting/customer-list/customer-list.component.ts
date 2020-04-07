@@ -1,22 +1,23 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
-import { ToastrComponent } from '../../partials/components/toastr/toastr.component';
-import { CustomerManagementDatasource } from '../../../core/customer-management/datasources/customer-management.datasource';
+import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
+import { CustomerManagementDatasource } from '../../../../core/customer-management/datasources/customer-management.datasource';
 import { Subscription, merge } from 'rxjs';
-import { CustomerManagementService } from '../../../core/customer-management/services/customer-management.service';
+import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
 import { tap, distinctUntilChanged, skip } from 'rxjs/operators';
-import { AddLeadComponent } from './add-lead/add-lead.component';
+import { LayoutUtilsService } from '../../../../core/_base/crud';
 
 @Component({
-  selector: 'kt-customer-management',
-  templateUrl: './customer-management.component.html',
-  styleUrls: ['./customer-management.component.scss']
+  selector: 'kt-customer-list',
+  templateUrl: './customer-list.component.html',
+  styleUrls: ['./customer-list.component.scss']
 })
-export class CustomerManagementComponent implements OnInit {
+export class CustomerListComponent implements OnInit {
 
+  toogler:string;
   dataSource: CustomerManagementDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'time', 'status'];
-  leadsResult = []
+  displayedColumns = ['fullName', 'customerId', 'mobile', 'pan', 'state', 'city', 'actions'];
+  leadsResult = [];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
@@ -26,14 +27,13 @@ export class CustomerManagementComponent implements OnInit {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    public dialog: MatDialog,
-    private customerManagementService: CustomerManagementService
-  ) {
-    this.customerManagementService.openModal$.subscribe(res => {
-      if (res) {
-        this.addLead();
-      }
-    });
+    private customerManagementService: CustomerManagementService,
+    private layoutUtilsService: LayoutUtilsService,
+  ) { 
+    this.customerManagementService.toggle$.subscribe(res =>{
+      this.toogler = res;
+      console.log(this.toogler)
+    })
   }
 
   ngOnInit() {
@@ -78,14 +78,31 @@ export class CustomerManagementComponent implements OnInit {
     this.dataSource.loadLeads(from, to, '', '', '', '');
   }
 
-  addLead() {
-    // console.log(event);
-    const dialogRef = this.dialog.open(AddLeadComponent);
+  editCustomer(role) {
+    console.log(role);
+  }
+
+  deleteCustomer(customerData) {
+    console.log(customerData);
+    const customer = customerData;
+    const _title = 'Delete Customer';
+    const _description = 'Are you sure to permanently delete this customer?';
+    const _waitDesciption = 'Customer is deleting...';
+    const _deleteMessage = `Customer has been deleted`;
+
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.loadLeadsPage();
+        console.log(res);
+        // this.customerManagementService.deleteCustomer(customer.id).subscribe(successDelete => {
+        //   this.toastr.successToastr(_deleteMessage);
+        //   // this.loadLeadsPage();
+        // },
+        //   errorDelete => {
+        //     this.toastr.errorToastr(errorDelete.error.message);
+        //   });
       }
-      this.customerManagementService.openModal.next(false);
     });
   }
+
 }

@@ -23,7 +23,9 @@ export class TopbarComponent implements OnInit {
 	value2: string;
 	type3: string;
 	value3: string;
-	showInput: boolean
+	showInput: boolean;
+	toogle:boolean;
+	toogler:string;
 	path: string;
 	constructor(private router: Router,
 		private location: Location,
@@ -49,8 +51,9 @@ export class TopbarComponent implements OnInit {
 		this.value2 = '';
 		this.type3 = '';
 		this.value3 = '';
-		this.showfilter = false
-		this.showInput = false
+		this.showfilter = false;
+		this.showInput = false;
+		this.toogle = false;
 	}
 
 	setTopbar(path: string) {
@@ -77,6 +80,13 @@ export class TopbarComponent implements OnInit {
 			this.value2 = 'Add Partner';
 			this.type2 = 'button';
 		}
+		if (this.path == 'customer-list') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Search';
+			this.type1 = 'button';
+			this.toogle = true;
+		}
 		if (this.path == 'branch') {
 			this.showfilter = true;
 			this.showInput = true;
@@ -101,5 +111,10 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'branch') {
 			this.branchService.openModal.next(true)
 		}
+	}
+
+	check(val){
+		this.customerManagementServiceCustomer.toggle.next(val)
+		console.log('hi1');
 	}
 }

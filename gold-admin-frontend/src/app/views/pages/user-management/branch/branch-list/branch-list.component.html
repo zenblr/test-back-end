@@ -15,11 +15,6 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
 
-                <ng-container matColumnDef="partnerId">
-                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Partner ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.partnerId}}</mat-cell>
-                </ng-container>
 
                 <!-- <ng-container matColumnDef="partnerName">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Partner Name</mat-header-cell>
@@ -35,21 +30,27 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Branch name</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.name | titlecase}}</mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="partner">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Parnter name</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.name | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="state">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.stateId }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="city">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>City</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.cityId }}</mat-cell>
+                </ng-container>
 
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <button mat-icon-button color="primary" matTooltip="View Partner" (click)="viewRole(role)">
-                            <mat-icon>visibility </mat-icon>
-                        </button>&nbsp;
-                        <button mat-icon-button color="accent" matTooltip="Edit Partner" type="button"
-                            (click)="editRole(role)">
-                            <mat-icon>create</mat-icon>
-                        </button>&nbsp;
-                        <button mat-icon-button color="warn" matTooltip="Delete Partner" type="button"
-                            (click)="deleteRole(role)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <div (click)="viewRole(role)" class="kt-pointer"> View Schemes | &nbsp;</div>
+                            <div (click)="editRole(role)" class="kt-pointer"> Edit | &nbsp;</div>
+                            <div class="kt-pointer text-danger" (click)="deleteRole(role)">Delete</div>
+                        </div>
                     </mat-cell>
                 </ng-container>
 

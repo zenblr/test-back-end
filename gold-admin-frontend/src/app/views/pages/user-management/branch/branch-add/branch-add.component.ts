@@ -21,6 +21,7 @@ export class BranchAddComponent implements OnInit {
   partners = [];
   editData = false;
   viewOnly = false;
+  viewLoading :boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<BranchAddComponent>,
@@ -77,6 +78,7 @@ export class BranchAddComponent implements OnInit {
   }
 
   getPartnerById(id) {
+    this.viewLoading = true
     this.branchService.getBranchById(id).subscribe(res => {
       console.log(res);
       this.branchForm.patchValue(res);

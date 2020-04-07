@@ -3,8 +3,8 @@ import { BranchService } from '../../../../../core/user-management/branch/servic
 import { LayoutUtilsService, QueryParamsModel } from '../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { BranchDatasource } from '../../../../../core/user-management/branch/datasources/branch.datasource';
-import { Subscription, merge, fromEvent } from 'rxjs';
-import { tap, debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
+import { Subscription, merge, fromEvent, Subject } from 'rxjs';
+import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { RolesPageRequested, Role } from '../../../../../core/auth';
 import { BranchAddComponent } from '../branch-add/branch-add.component';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -21,7 +21,7 @@ export class BranchListComponent implements OnInit {
   // Table fields
   dataSource: BranchDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ['partnerId', 'branchId', 'name', 'actions'];
+  displayedColumns = ['branchId', 'name','partner','state','city', 'actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
@@ -31,6 +31,8 @@ export class BranchListComponent implements OnInit {
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
+  private destroy$ = new Subject();
+
 
   constructor(
     public dialog: MatDialog,
@@ -38,7 +40,7 @@ export class BranchListComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private branchService: BranchService
   ) {
-    this.branchService.openModal$.subscribe(res => {
+    this.branchService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
         this.addRole();
       }
@@ -96,6 +98,8 @@ export class BranchListComponent implements OnInit {
 	 */
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
@@ -105,7 +109,7 @@ export class BranchListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    // this.dataSource.loadBranches(from, to, '', this.searchInput.nativeElement.value, '', '');
+    this.dataSource.loadBranches(from, to, '', '', '', '');
   }
 
 	/**
@@ -170,7 +174,11 @@ export class BranchListComponent implements OnInit {
     console.log(role);
     // const _saveMessage = `Role successfully has been saved.`;
     // const _messageType = role.id ? MessageType.Update : MessageType.Create;
-    const dialogRef = this.dialog.open(BranchAddComponent, { data: { partnerId: role.id, action: 'edit' } });
+    const dialogRef = this.dialog.open(BranchAddComponent,
+       { 
+         data: { partnerId: role.id, action: 'edit' },
+         width: '450px'
+       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadBranchPage();
@@ -182,7 +190,7 @@ export class BranchListComponent implements OnInit {
     console.log(role);
     const dialogRef = this.dialog.open(BranchAddComponent, {
       data: { partnerId: role.id, action: 'view' },
-      width: '550px'
+      width: '450px'
     });
 
     dialogRef.afterClosed().subscribe(res => {

@@ -8,7 +8,7 @@
         <div class="kt-form">
             <form [formGroup]="branchForm">
 
-                <div class="kt-portlet__body-progress">
+                <div class="kt-portlet__body-progress" *ngIf="viewLoading">
                     <mat-spinner [diameter]="20"></mat-spinner>
                 </div>
 

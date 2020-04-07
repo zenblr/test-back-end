@@ -10,6 +10,9 @@ export class CustomerManagementService {
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
+  toggle = new BehaviorSubject<any>('grid');
+  toggle$ = this.toggle.asObservable();
+
   constructor(private http: HttpClient) { }
 
   getAllLeads(from, to, fromDate, search, toDate, userId): Observable<any> {
@@ -30,5 +33,9 @@ export class CustomerManagementService {
 
   resendOtp(data): Observable<any> {
     return this.http.post<any>(`/api/user/resendOtp`, data);
+  }
+
+  deleteCustomer(id): Observable<any> {
+    return this.http.delete<any>(`/api/user/delete/${id}`);
   }
 }
