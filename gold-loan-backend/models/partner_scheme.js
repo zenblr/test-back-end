@@ -23,6 +23,7 @@ module.exports=(sequelize,DATATYPES)=>{
             tableName: 'partner_schemes',
         },
     )
+
     return PartnerSchemes;
     
 }

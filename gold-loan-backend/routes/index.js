@@ -53,5 +53,12 @@ router.use('/role',role)
 const permission= require('./permission'); // permission Route
 router.use('/permission',permission);
 
+const scheme = require('./scheme'); // scheme Route
+router.use('/scheme',scheme);
+
+const partnerscheme=require('./partnerscheme'); // partner Scheme Route
+router.use('/partnerscheme',partnerscheme);
+
+
 
 module.exports = router;

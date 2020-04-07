@@ -5,8 +5,8 @@ exports.addRole=async(req,res)=>{
     
     const{roleName,description}=req.body;
      
-    let addroledata=await models.roles.create({roleName,description});
-    if(!addroledata){
+    let addroleData=await models.roles.create({roleName,description});
+    if(!addroleData){
         return res.status(422).json({message:'role not created'});
     }
     return res.status(201).json({message:"role created"});
@@ -16,20 +16,20 @@ exports.addRole=async(req,res)=>{
 
 exports.readRole=async(req,res)=>{
     
-    let readroledata=await models.roles.findAll({where:{isActive:true}});
-    if(!readroledata){
+    let readRoleData=await models.roles.findAll({where:{isActive:true}});
+    if(!readRoleData[0]){
         return res.status(404).json({message:"Data not found"});
     }
-    return res.status(200).json({readroledata});
+    return res.status(200).json({readRoleData});
 }
 
 //update Role
 
 exports.updateRole=async(req,res)=>{
-    const roleid=req.params.id;
+    const roleId=req.params.id;
     const{roleName,description}=req.body;
-    let updateroledata=await models.roles.update({roleName,description},{where:{id:roleid,isActive:true}});
-    if(!updateroledata){return res.status(404).json({message:"data not found"})};
+    let updateRoleData=await models.roles.update({roleName,description},{where:{id:roleId,isActive:true}});
+    if(!updateRoleData[0]){return res.status(404).json({message:"data not found"})};
     return res.status(200).json({message:"Updated"});
 
 }
@@ -37,9 +37,9 @@ exports.updateRole=async(req,res)=>{
 //delete Role
 
 exports.deactiveRole=async(req,res)=>{
-    const roleid=req.params.id;
-    let deactiverole=await models.roles.update({isActive:false},{where:{id:roleid,isActive:true}});
-    if(!deactiverole[0]){
+    const roleId=req.params.id;
+    let deactiveRole=await models.roles.update({isActive:false},{where:{id:roleId,isActive:true}});
+    if(!deactiveRole[0]){
         return res.status(404).json({message:'data not found'});
     }
     return res.status(200).json({message:"Success"});

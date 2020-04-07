@@ -37,9 +37,9 @@ exports.uploadFile =
 //Read File.
 exports.getFile = async(req, res, next) => {
 
-    let filedata = await models.fileUpload.findAll();
-    if (!filedata) {
+    let fileData = await models.fileUpload.findAll();
+    if (!fileData) {
         return res.status(404).json({ message: 'data not found' });
     }
-    return res.status(200).json({ filedata });
+    return res.status(200).json({ fileData });
 }

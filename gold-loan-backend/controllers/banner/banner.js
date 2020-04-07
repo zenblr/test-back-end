@@ -30,23 +30,23 @@ exports.addUpdateBanner = async(req, res) => {
 
 exports.readBanner = async(req, res) => {
     const id = 1;
-    let BannerData = await models.banner.readBanner(id);
-    if (!BannerData) {
+    let bannerData = await models.banner.readBanner(id);
+    if (!bannerData) {
         res.status(404).json({ message: 'Data not found' });
     } else {
-        res.status(200).json(BannerData);
+        res.status(200).json(bannerData);
     }
 };
 
 //Delete Banner.
 
 exports.deleteBanner = async(req, res) => {
-    let id = req.params.id;
+    let bannerId = req.params.id;
 
-    let data = await models.banner.findOne({ where: { id } });
-    if (!data) {
+    let bannerData = await models.banner.findOne({ where: { id:bannerId } });
+    if (!bannerData[0]) {
         return res.status(404).json({ message: ' data not found' })
     }
-    let deletedata = await models.banner.destroy({ where: { id } });
+    let deletedata = await models.banner.destroy({ where: { id:bannerId } });
     res.status(200).json({ message: 'Success' });
 }
