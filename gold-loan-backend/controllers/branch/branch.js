@@ -39,10 +39,19 @@ exports.readBranch = async(req, res, next) => {
     }
         let readBranchData = await models.branch.findAll({
             where: searchQuery,
-            include:{
+            include:[{
                 model:models.partner,
                 as:'partner'
             },
+        {
+            model:models.cities,
+            as:'cities'
+
+        },
+    {
+        model:models.states,
+        as:'states'
+    }],
             offset: offset,
             limit: pageSize
         });
