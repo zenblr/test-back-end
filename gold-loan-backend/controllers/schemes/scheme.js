@@ -3,14 +3,14 @@ const sequelize = models.sequelize;
 
 // add schemes
 exports.addScheme = async (req, res, next) => {
-    const { schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateSixtyDaysMonthly,
-        interestRateNinetyDaysMonthly, interestRateThirtyDaysAnnually, interestRateSixtyDaysAnnually, interestRateNinetyDaysAnnually, partnerId } = req.body;
+    const { schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+        interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually, partnerId } = req.body;
 
     await sequelize.transaction(async t => {
         const addSchemeData = await models.schemes.create({
-            schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateSixtyDaysMonthly,
-            interestRateNinetyDaysMonthly, interestRateThirtyDaysAnnually, interestRateSixtyDaysAnnually, interestRateNinetyDaysAnnually
-        });
+            schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+            interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateSixtyDaysAnnually, interestRateOneHundredEightyDaysAnnually
+       });
 
         for (let i = 0; i < partnerId.length; i++) {
             console.log(partnerId[i]);
@@ -33,11 +33,11 @@ exports.addScheme = async (req, res, next) => {
 //read Schemes
 
 exports.readScheme = async (req, res, next) => {
-    let readSchemeData = await models.schemes.findAll({
-        include: [models.partner]
+    let readSchemeData = await models.partner.findAll({
+        include: [models.schemes]
     })
 
-    if (!readSchemeData[0]) {
+    if (!readSchemeData) {
         return res.status(404).json({ message: 'data not found' });
 
     }
@@ -61,12 +61,12 @@ exports.readSchemeById = async (req, res, next) => {
 
 exports.updateScheme = async (req, res, next) => {
     const schemeId = req.params.id;
-    const { schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateSixtyDaysMonthly,
-        interestRateNinetyDaysMonthly, interestRateThirtyDaysAnnually, interestRateSixtyDaysAnnually, interestRateNinetyDaysAnnually } = req.body;
+    const { schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+        interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually}= req.body;
     const updateSchemeData = await models.schemes.update({
-        schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateSixtyDaysMonthly,
-        interestRateNinetyDaysMonthly, interestRateThirtyDaysAnnually, interestRateSixtyDaysAnnually, interestRateNinetyDaysAnnually
-    }, { where: { id: schemeId, isActive: true } });
+        schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+        interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually
+   }, { where: { id: schemeId, isActive: true } });
 
     if (!updateSchemeData[0]) {
         return res.status(404).json({ message: 'data not found' });

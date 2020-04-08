@@ -13,25 +13,25 @@ module.exports=(sequelize,DATATYPES)=>{
             type:DATATYPES.FLOAT,
             field:'interest_rate_thirty_days_monthly'
         },
-        interestRateSixtyDaysMonthly:{
-            type:DATATYPES.FLOAT,
-            field:'nterest_rate_sixty_days_monthly'
-        },
         interestRateNinetyDaysMonthly:{
             type:DATATYPES.FLOAT,
-            field:'nterest_rate_ninety_days_monthly'
+            field:'interest_rate_ninety_days_monthly'
+        },
+        interestRateOneHundredEightyDaysMonthly:{
+            type:DATATYPES.FLOAT,
+            field:'interest_rate_one_hundred_eighty_days_monthly'
         },
         interestRateThirtyDaysAnnually:{
             type:DATATYPES.FLOAT,
             field:'interest_rate_thirty_days_annually'
         },
-        interestRateSixtyDaysAnnually:{
-            type:DATATYPES.FLOAT,
-            field:'interest_rate_sixty_days_annually'
-        },
         interestRateNinetyDaysAnnually:{
             type:DATATYPES.FLOAT,
             field:'interest_rate_ninety_days_annually'
+        },
+        interestRateOneHundredEightyDaysAnnually:{
+            type:DATATYPES.FLOAT,
+            field:'interest_rate_one_hundred_eighty_days_annually'
         },
         isActive:{
             type:DATATYPES.BOOLEAN,
