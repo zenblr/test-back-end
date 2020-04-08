@@ -52,6 +52,7 @@ export class UploadBannerComponent implements OnInit {
 
   ngOnInit() {
     this.initializeForm();
+    this.getBanners();
   }
 
   initializeForm() {
