@@ -22,8 +22,7 @@
 			<div class="form-group">
 				<mat-form-field>
 					<mat-label>Username</mat-label>
-					<input matInput type="email" placeholder="{{ 'AUTH.INPUT.EMAIL' | translate }}"
-						formControlName="username" autocomplete="off" />
+					<input matInput placeholder="Username" formControlName="username" autocomplete="off" />
 					<mat-error *ngIf="isControlHasError('username','required')">
 						<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
 					</mat-error>
