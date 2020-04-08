@@ -15,13 +15,13 @@
                         <div class="col-9">
                             <div class="row">
                                 <div class="col-6 amount">
-                                    <input type="number" class="form-control" formControlName="amount1"
-                                        [class.isError]="billingForm.get('amount1').touched && billingForm.get('amount1').invalid"
+                                    <input type="number" class="form-control" formControlName="schemeAmountStart"
+                                        [class.isError]="billingForm.get('schemeAmountStart').touched && billingForm.get('schemeAmountStart').invalid"
                                         placeholder="From e.g 1,00,000">
                                 </div>
                                 <div class="col-6 amount">
-                                    <input type="number" class="form-control" formControlName="amount2"
-                                        [class.isError]="billingForm.get('amount2').touched && billingForm.get('amount2').invalid"
+                                    <input type="number" class="form-control" formControlName="schemeAmountEnd"
+                                        [class.isError]="billingForm.get('schemeAmountEnd').touched && billingForm.get('schemeAmountEnd').invalid"
                                         placeholder="From e.g 2,00,000">
                                 </div>
                             </div>
@@ -46,16 +46,16 @@
                             </p>
                         </div>
                         <div class="col-3">
-                            <input type="number" class="form-control" formControlName="RIM30"
-                                [class.isError]="billingForm.get('RIM30').touched && billingForm.get('RIM30').invalid">
+                            <input type="number" class="form-control" formControlName="interestRateThirtyDaysMonthly"
+                                [class.isError]="billingForm.get('interestRateThirtyDaysMonthly').touched && billingForm.get('interestRateThirtyDaysMonthly').invalid">
                         </div>
                         <div class="col-3">
-                            <input type="number" class="form-control" formControlName="RIM90"
-                                [class.isError]="billingForm.get('RIM90').touched && billingForm.get('RIM90').invalid">
+                            <input type="number" class="form-control" formControlName="interestRateNinetyDaysMonthly"
+                                [class.isError]="billingForm.get('interestRateNinetyDaysMonthly').touched && billingForm.get('interestRateNinetyDaysMonthly').invalid">
                         </div>
                         <div class="col-3">
-                            <input type="number" class="form-control" formControlName="RIM180"
-                                [class.isError]="billingForm.get('RIM180').touched && billingForm.get('RIM180').invalid">
+                            <input type="number" class="form-control" formControlName="interestRateOneHundredEightyDaysMonthly"
+                                [class.isError]="billingForm.get('interestRateOneHundredEightyDaysMonthly').touched && billingForm.get('interestRateOneHundredEightyDaysMonthly').invalid">
                         </div>
                     </div>
                     <div class="row kt-padding-t-15">
@@ -77,16 +77,16 @@
                             </p>
                         </div>
                         <div class="col-3">
-                            <input type="number" class="form-control" formControlName="RIA30"
-                                [class.isError]="billingForm.get('RIA30').touched && billingForm.get('RIA30').invalid">
+                            <input type="number" class="form-control" formControlName="interestRateThirtyDaysAnnually"
+                                [class.isError]="billingForm.get('interestRateThirtyDaysAnnually').touched && billingForm.get('interestRateThirtyDaysAnnually').invalid">
                         </div>
                         <div class="col-3">
-                            <input type="number" class="form-control" formControlName="RIA90"
-                                [class.isError]="billingForm.get('RIA90').touched && billingForm.get('RIA90').invalid">
+                            <input type="number" class="form-control" formControlName="interestRateNinetyDaysAnnually"
+                                [class.isError]="billingForm.get('interestRateNinetyDaysAnnually').touched && billingForm.get('interestRateNinetyDaysAnnually').invalid">
                         </div>
                         <div class="col-3">
-                            <input type="number" class="form-control" formControlName="RIA180"
-                                [class.isError]="billingForm.get('RIA180').touched && billingForm.get('RIA180').invalid">
+                            <input type="number" class="form-control" formControlName="interestRateOneHundredEightyDaysAnnually"
+                                [class.isError]="billingForm.get('interestRateOneHundredEightyDaysAnnually').touched && billingForm.get('interestRateOneHundredEightyDaysAnnually').invalid">
                         </div>
                     </div>
                     <div class="row kt-margin-t-20">
@@ -94,8 +94,8 @@
                             <p class="text-color font-weight-bold">Select Partner ID</p>
                         </div>
                         <div class="col-9">
-                            <select name="" id="" class="form-control" formControlName="partner"
-                                [class.isError]="billingForm.get('partner').touched && billingForm.get('partner').invalid">
+                            <select name="" id="" class="form-control" formControlName="partnerId"
+                                [class.isError]="billingForm.get('partnerId').touched && billingForm.get('partnerId').invalid">
                                 <option value="test"></option>
                             </select>
 

@@ -2,6 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { LoanSettingsService } from "../../../../core/loan-setting";
 import { MatDialog } from "@angular/material"
 import { AddSchemeComponent } from "../add-scheme/add-scheme.component"
+import { map, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'kt-loan-scheme',
@@ -12,9 +14,12 @@ export class LoanSchemeComponent implements OnInit {
 
   schemes: String[] = []
   loader: boolean = true
+  destroy$ = new Subject()
+
   constructor(private loanSettingService: LoanSettingsService,
-    private dialog: MatDialog) {
-    this.loanSettingService.openModal$.subscribe(res => {
+    private dialog: MatDialog,
+    private ref: ChangeDetectorRef) {
+    this.loanSettingService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
         this.addScheme()
       }
@@ -22,13 +27,15 @@ export class LoanSchemeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.schemes = [
-      "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1"
-    ]
+    this.loanSettingService.getScheme().pipe(
+      map(res => {
+        this.schemes = res.data;
+        this.ref.detectChanges();
+      })).subscribe()
   }
 
   addScheme() {
-    const dialogRef = this.dialog.open(AddSchemeComponent,{
+    const dialogRef = this.dialog.open(AddSchemeComponent, {
       width: '650px'
     });
     dialogRef.afterClosed().subscribe(res => {
@@ -37,6 +44,10 @@ export class LoanSchemeComponent implements OnInit {
       }
       this.loanSettingService.openModal.next(false);
     });
+  }
+  ngDestroy() {
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 
 }

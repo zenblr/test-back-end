@@ -30,7 +30,7 @@ export class CustomerListComponent implements OnInit {
     private customerManagementService: CustomerManagementService,
     private layoutUtilsService: LayoutUtilsService,
   ) { 
-    
+    window.scrollTo(0, 0);
   }
 
   ngOnInit() {
