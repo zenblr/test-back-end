@@ -3,14 +3,16 @@ var router = express.Router();
 
 const { wrapper } = require('../utils/errorWrap')
 
-const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer , registerCustomerSendOtp } = require('../controllers/customer/customer')
+const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer , registerCustomerSendOtp,verifiedRegisterOtp } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 
 
 
 router.post('/', checkAuth, wrapper(addCustomer));
 
-router.post('/send-register-otp',registerCustomerSendOtp)
+router.post('/send-register-otp',checkAuth,registerCustomerSendOtp);
+
+router.post('/verified-register-otp',checkAuth,verifiedRegisterOtp);
 
 router.put('/', checkAuth, wrapper(editCustomer))
 

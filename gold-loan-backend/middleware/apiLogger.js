@@ -12,6 +12,7 @@ module.exports = (req, res, next) => {
     let skipUrls = [
         "/api/user",
         "/",
+        "/api/customer/verified-register-otp",
         "/api/customer/send-register-otp",
         "/api/auth/user-login",
         "/api/auth/customer-login",
