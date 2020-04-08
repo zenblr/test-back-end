@@ -19,26 +19,25 @@ export class PartnerDatasource extends BaseDataSource {
         super();
     }
 
-    loadPartners(from, to, fromDate, search, toDate, userId) {
-        this.loadingSubject.next(true);
+    loadPartners(search, from, to, fromDate, toDate, userId) {
+        // this.loadingSubject.next(true);
 
 
-        this.desserts = [
-            { name: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4 },
-            { name: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4 },
-            { name: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6 },
-            { name: 'Cupcake', calories: 305, fat: 4, carbs: 67, protein: 4 },
-            { name: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4 },
-        ];
+        // this.desserts = [
+        //     { name: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4 },
+        //     { name: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4 },
+        //     { name: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6 },
+        //     { name: 'Cupcake', calories: 305, fat: 4, carbs: 67, protein: 4 },
+        //     { name: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4 },
+        // ];
         // this.entitySubject.next(this.desserts);
 
-        this.PartnerService.getAllPartner(from, to, fromDate, search, toDate, userId)
+        this.PartnerService.getAllPartner(search, from, to, fromDate, toDate, userId)
             .pipe(
                 map(
                     report => {
-                        this.paginatorTotalSubject.next(report['length']);
-                        this.entitySubject.next(report);
-                        // console.log(this.entitySubject);
+                        this.paginatorTotalSubject.next(report.count);
+                        this.entitySubject.next(report.data);
                     }
                 ),
                 catchError(() => of([])),

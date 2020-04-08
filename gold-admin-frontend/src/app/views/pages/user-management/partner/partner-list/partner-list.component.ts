@@ -4,7 +4,7 @@ import { Component, OnInit, ElementRef, ViewChild, ChangeDetectionStrategy, OnDe
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material';
 // RXJS
-import { debounceTime, distinctUntilChanged, tap, skip, take, delay, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, tap, skip, take, delay, takeUntil, map } from 'rxjs/operators';
 import { fromEvent, merge, Observable, of, Subscription, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 // NGRX
@@ -20,6 +20,7 @@ import { PartnerDatasource } from '../../../../../core/user-management/partner/d
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
 import { PartnerModel } from '../../../../../core/user-management/partner/models/partner.model';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 
 // Components
 // import { RoleEditDialogComponent } from '../role-edit/role-edit.dialog.component';
@@ -47,6 +48,7 @@ export class PartnerListComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   partnerResult: PartnerModel[] = [];
   private destroy$ = new Subject();
+  searchValue = '';
 	/**
 	 * Component constructor
 	 *
@@ -60,7 +62,8 @@ export class PartnerListComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private partnerService: PartnerService) {
+    private partnerService: PartnerService,
+    private dataTableService: DataTableService) {
     this.partnerService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
         this.addRole()
@@ -107,6 +110,13 @@ export class PartnerListComponent implements OnInit {
     //   .subscribe();
     // this.subscriptions.push(searchSubscription);
 
+    const searchSubscription = this.dataTableService.searchInput$
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadPartnersPage();
+      });
+
     // Init DataSource
     this.dataSource = new PartnerDatasource(this.partnerService);
     // console.log(this.dataSource);
@@ -118,7 +128,7 @@ export class PartnerListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.loadPartners(1, 10, '', '', '', '');
+    this.dataSource.loadPartners(this.searchValue, 1, 10, '', '', '');
   }
 
 	/**
@@ -137,7 +147,7 @@ export class PartnerListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadPartners(from, to, '', '', '', '');
+    this.dataSource.loadPartners(this.searchValue, 1, 10, '', '', '');
   }
 
 	/**

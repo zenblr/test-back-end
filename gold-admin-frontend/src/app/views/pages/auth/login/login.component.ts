@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 	 * On init
 	 */
 	ngOnInit(): void {
-		localStorage.removeItem('accessToken')
+		localStorage.clear();
 		this.initLoginForm();
 
 		// redirect back to the returnUrl before login
