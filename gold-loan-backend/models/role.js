@@ -6,6 +6,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'role_name',
             allowNull: false,
         },
+        description:{
+            type: DataTypes.TEXT,
+            field: 'description',
+            allowNull: false,
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -24,8 +29,11 @@ module.exports = (sequelize, DataTypes) => {
     Roles.removeRole = (id) => Roles.update({ isActive: false }, { where: { id: id, isActive: true } });
 
     Roles.associate = function(models) {
-        Roles.hasMany(models.user_role, { foreignKey: 'roleId', as: 'role_user' });
-        Roles.hasMany(models.role_permission, { foreignKey: 'roleId', as: 'role_permission' });
+        // Roles.hasMany(models.user_role, { foreignKey: 'roleId', as: 'role_user' });
+        // Roles.hasMany(models.role_permission, { foreignKey: 'roleId', as: 'role_permission' });
+
+        Roles.belongsToMany(models.users,{through: models.user_role});
+        Roles.belongsToMany(models.permission,{through: models.role_permission})
     }
 
     return Roles;

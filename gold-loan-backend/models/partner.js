@@ -27,5 +27,11 @@ module.exports=(sequelize,DATATYPES)=>{
     );
 
 
+    Partner.associate = function(models) {
+     
+        Partner.belongsToMany(models.schemes, {through: models.partner_schemes})
+    }
+
+
     return Partner;
 }

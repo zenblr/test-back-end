@@ -1,9 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
-    const Address = sequelize.define('address', {
+    const UserAddress = sequelize.define('user_address', {
         // attributes
         userId: {
             type: DataTypes.INTEGER,
             field: 'user_id'
+        },
+        address:{
+            type: DataTypes.TEXT,
+            field: 'address',
+            allowNull:false
         },
         landMark: {
             type: DataTypes.STRING,
@@ -31,15 +36,15 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'address',
+        tableName: 'user_address',
     });
 
-    Address.associate = function(models) {
-        Address.belongsTo(models.users, { foreignKey: 'userId', as: 'singleUser' });
-        Address.belongsTo(models.states, { foreignKey: 'stateId', as: 'state' });
-        Address.belongsTo(models.cities, { foreignKey: 'cityId', as: 'city' });
+    UserAddress.associate = function(models) {
+        UserAddress.belongsTo(models.users, { foreignKey: 'userId', as: 'singleUser' });
+        UserAddress.belongsTo(models.states, { foreignKey: 'stateId', as: 'state' });
+        UserAddress.belongsTo(models.cities, { foreignKey: 'cityId', as: 'city' });
     }
 
-    return Address;
+    return UserAddress;
 
 }

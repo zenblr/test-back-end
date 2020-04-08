@@ -7,7 +7,7 @@ const check = require('../../lib/checkLib');
 
 
 
-exports.addStage = async(req, res) => {
+exports.addStage = async(req, res, next) => {
     let { stageName } = req.body;
     let stageExist = await models.stage.findOne({ where: { stageName: stageName } })
 
@@ -20,14 +20,14 @@ exports.addStage = async(req, res) => {
 
 }
 
-exports.getStage = async(req, res) => {
+exports.getStage = async(req, res, next) => {
     let allStage = await models.stage.findAll()
     return res.status(200).json(allStage)
 
 
 }
 
-exports.deactivateStage = async(req, res) => {
+exports.deactivateStage = async(req, res, next) => {
     const { stageId, isActive } = req.query;
     await models.stage.update({ isActive: isActive }, { where: { id: stageId } })
     return res.status(200).json({ message: `Updated` })
