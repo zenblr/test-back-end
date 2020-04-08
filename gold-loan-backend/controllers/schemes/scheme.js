@@ -9,7 +9,7 @@ exports.addScheme = async (req, res, next) => {
     await sequelize.transaction(async t => {
         const addSchemeData = await models.schemes.create({
             schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-            interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateSixtyDaysAnnually, interestRateOneHundredEightyDaysAnnually
+            interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually
        });
 
         for (let i = 0; i < partnerId.length; i++) {
