@@ -30,10 +30,7 @@ export class CustomerListComponent implements OnInit {
     private customerManagementService: CustomerManagementService,
     private layoutUtilsService: LayoutUtilsService,
   ) { 
-    this.customerManagementService.toggle$.subscribe(res =>{
-      this.toogler = res;
-      console.log(this.toogler)
-    })
+    
   }
 
   ngOnInit() {

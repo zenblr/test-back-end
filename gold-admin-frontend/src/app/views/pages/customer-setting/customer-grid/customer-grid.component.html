@@ -1,0 +1,12 @@
+<div class="row">
+    <div class="card" *ngFor="let customer of customers;index as i" [class.margin]="i%4==0">
+        <div class="bg-white">
+            <img src="../../../../../assets/media/users/default.jpg" alt="test " [class.d-none]="i%9!=0">
+            <img src="../../../../../assets/media/users/300_4.jpg" alt="test" [class.d-none]="i%9 ==0">
+            <p class="text-secondary">AG76895B</p>
+            <p class="text-color font-weight-bold">Kajal Thirtimare</p>
+            <p class="text-color">+918006555580</p>
+            <p class="text-primary">View Details</p>
+        </div>
+    </div>
+</div>

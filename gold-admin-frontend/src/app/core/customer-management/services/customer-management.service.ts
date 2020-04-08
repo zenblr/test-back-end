@@ -10,7 +10,7 @@ export class CustomerManagementService {
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
-  toggle = new BehaviorSubject<any>('grid');
+  toggle = new BehaviorSubject<any>('list');
   toggle$ = this.toggle.asObservable();
 
   constructor(private http: HttpClient) { }

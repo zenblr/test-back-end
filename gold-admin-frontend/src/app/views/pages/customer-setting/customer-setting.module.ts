@@ -13,16 +13,20 @@ import { AngularMaterialModule } from '../angular-material/angular-material.modu
 import { HttpUtilsService, TypesUtilsService, LayoutUtilsService, InterceptService } from '../../../core/_base/crud';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA } from '@angular/material';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CustomerSettingComponent } from './customer-setting.component';
+import { CustomerGridComponent } from './customer-grid/customer-grid.component';
 
 const routes: Routes = [
   {
     path: 'customer-list',
-    component: CustomerListComponent
+    component: CustomerSettingComponent
   }
 ];
 
 @NgModule({
-  declarations: [CustomerListComponent],
+  declarations: [CustomerListComponent,
+    CustomerSettingComponent,
+    CustomerGridComponent],
   imports: [
     CommonModule,
     FormsModule,
