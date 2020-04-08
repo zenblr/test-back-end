@@ -29,12 +29,13 @@ exports.addUpdateBanner = async (req, res, next) => {
 
 exports.readBanner = async (req, res, next) => {
     let banner = await models.banner.findAll()
-    const id = banner[0].id;
-    let bannerData = await models.banner.readBanner(id);
-    if (!bannerData) {
+    // const id = banner[0].id;
+    // return res.json(banner[0])
+    // let bannerData = await models.banner.findOne({ where: { id } });
+    if (!banner[0]) {
         res.status(404).json({ message: 'Data not found' });
     } else {
-        res.status(200).json(bannerData);
+        res.status(200).json(banner[0]);
     }
 };
 
