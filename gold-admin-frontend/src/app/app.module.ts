@@ -62,7 +62,6 @@ import * as xml from 'highlight.js/lib/languages/xml';
 import * as json from 'highlight.js/lib/languages/json';
 // Toastr Service
 import { ToastrModule } from 'ngx-toastr';
-import { CustomerSettingComponent } from './views/customer-setting/customer-setting.component';
 
 // tslint:disable-next-line:class-name
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -91,7 +90,7 @@ export function hljsLanguages(): HighlightLanguage[] {
 }
 
 @NgModule({
-	declarations: [AppComponent, CustomerSettingComponent],
+	declarations: [AppComponent],
 	imports: [
 		BrowserAnimationsModule,
 		BrowserModule,
