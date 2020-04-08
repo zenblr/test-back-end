@@ -1,4 +1,5 @@
 import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-customer-grid',
@@ -9,8 +10,9 @@ export class CustomerGridComponent implements OnInit {
 
   customers: number[] = []
   viewLoading: boolean = true
-  constructor(private ref: ChangeDetectorRef) {
-
+  constructor(private ref: ChangeDetectorRef,
+    private router: Router) {
+    window.scrollTo(0, 0)
   }
 
   @HostListener('window:scroll', [])
@@ -18,14 +20,14 @@ export class CustomerGridComponent implements OnInit {
 
     if (this.getDocHeight() === this.getScrollXY()[1] + window.innerHeight) {
       this.viewLoading = true
-      setTimeout(()=>{
+      setTimeout(() => {
         let array = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         Array.prototype.push.apply(this.customers, array)
         console.log(this.customers)
         this.ref.detectChanges()
         this.viewLoading = false;
-      },5000);
-      
+      }, 5000);
+
     }
   }
   ngOnInit() {
@@ -56,4 +58,7 @@ export class CustomerGridComponent implements OnInit {
     return [scrOfX, scrOfY];
   }
 
+  viewDetails(id: number) {
+    this.router.navigate(['/customer-setting/customer-list/' + id])
+  }
 }

@@ -15,18 +15,24 @@ import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA } from 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CustomerSettingComponent } from './customer-setting.component';
 import { CustomerGridComponent } from './customer-grid/customer-grid.component';
+import { CustomerDetailsComponent } from './customer-details/customer-details.component';
 
 const routes: Routes = [
   {
     path: 'customer-list',
     component: CustomerSettingComponent
+  },
+  {
+    path: 'customer-list/:id',
+    component: CustomerDetailsComponent
   }
 ];
 
 @NgModule({
   declarations: [CustomerListComponent,
     CustomerSettingComponent,
-    CustomerGridComponent],
+    CustomerGridComponent,
+    CustomerDetailsComponent],
   imports: [
     CommonModule,
     FormsModule,

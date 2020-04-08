@@ -16,7 +16,7 @@ export class PartnerService {
     return this.http.post<any>(`/api/partner`, data);
   }
 
-  getAllPartner(search, from, to, fromDate, toDate, userId): Observable<any> {
+  getAllPartner(search?, from?, to?, fromDate?, toDate?, userId?): Observable<any> {
     return this.http.get<any>(`/api/partner?search=${search}&from=${from}&to=${to}`);
   }
 

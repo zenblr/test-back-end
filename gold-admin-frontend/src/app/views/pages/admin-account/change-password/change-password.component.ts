@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmPasswordValidator } from './confirm-password-validator';
 import { AuthService } from '../../../../core/auth';
+import { ToastrService } from 'ngx-toastr';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-change-password',
@@ -13,7 +15,8 @@ export class ChangePasswordComponent implements OnInit {
   passwordForm: FormGroup
 
   constructor(private fb: FormBuilder,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private toast: ToastrService) {
     this.startForm();
   }
 
@@ -57,7 +60,16 @@ export class ChangePasswordComponent implements OnInit {
       this.passwordForm.markAllAsTouched()
       return
     }
-    this.authService.changePassword(this.passwordForm.value).subscribe()
-    this.form.resetForm()
+    this.authService.changePassword(this.passwordForm.value).pipe(
+      map((res) => {
+        if (res.message == " wrong credentials") {
+          this.toast.error("Wrong Credentials")
+        } else if (res.message == "Success") {
+          this.toast.success("Password Changed Successfully")
+          this.form.resetForm()
+        }
+      })
+    ).subscribe()
+
   }
 }

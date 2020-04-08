@@ -7,6 +7,7 @@
 .kt-header-base-light {
 	@import "sass/global/layout/header/skins/base/light.scss";
 }
+
 .kt-header-base-dark {
 	@import "sass/global/layout/header/skins/base/dark.scss";
 }
@@ -15,6 +16,7 @@
 .kt-header-menu-light {
 	@import "sass/global/layout/header/skins/menu/light.scss";
 }
+
 .kt-header-menu-dark {
 	@import "sass/global/layout/header/skins/menu/dark.scss";
 }
@@ -23,6 +25,7 @@
 .kt-brand-dark {
 	@import "sass/global/layout/brand/skins/dark.scss";
 }
+
 .kt-brand-light {
 	@import "sass/global/layout/brand/skins/light.scss";
 }
@@ -31,6 +34,7 @@
 .kt-aside-dark {
 	@import "sass/global/layout/aside/skins/dark.scss";
 }
+
 .kt-aside-light {
 	@import "sass/global/layout/aside/skins/light.scss";
 }
@@ -42,54 +46,64 @@
 
 .mat-table__wrapper--dashboard .mat-table {
 	min-width: 600px !important;
-	width: 100% !important;
+	width    : 100% !important;
 }
 
 .position-static {
 	position: static;
 }
-body{
+
+body {
 	color: #454D67 !important;
 }
-.text-color{
+
+.text-color {
 	color: #454D67 !important;
 }
+
+.text-gray {
+	color: #c5c6c6 !important;
+}
+
 .success-button {
-	color: #fff !important;
+	color           : #fff !important;
 	background-color: rgb(24, 179, 24) !important;
 }
-.form-control{
+
+.form-control {
 	background-color: rgb(230, 230, 230) !important;
 }
-.isError{
-border: 2px solid red !important;
-}
-::-webkit-input-placeholder { /* Edge */
-	font-weight: bold;
-  }
-  
-  :-ms-input-placeholder { /* Internet Explorer 10-11 */
-	font-weight: bold;
-  }
-  
-  ::placeholder {
-	font-weight: bold;
-  }
 
-  /* Chrome, Safari, Edge, Opera */
+.isError {
+	border: 2px solid red !important;
+}
+
+::-webkit-input-placeholder {
+	/* Edge */
+	font-weight: bold;
+}
+
+:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	font-weight: bold;
+}
+
+::placeholder {
+	font-weight: bold;
+}
+
+/* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin            : 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }
 
-.kt-pointer{
+.kt-pointer {
 	cursor: pointer
 }
-
-
