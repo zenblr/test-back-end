@@ -192,6 +192,9 @@ exports.getAllCustomers = async (req, res, next) => {
             model: models.status,
             as: 'status'
         }],
+        order: [
+            ['id', 'ASC']
+        ],
         offset: offset,
         limit: pageSize
     });

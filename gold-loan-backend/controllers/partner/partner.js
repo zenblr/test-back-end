@@ -4,6 +4,9 @@ const paginationFUNC = require('../../utils/pagination'); // importing paginatio
 const Sequelize=models.Sequelize;
 const Op=Sequelize.Op;
 
+const check = require('../../lib/checkLib')
+
+
 
 //add partner
 exports.addPartner = async(req, res, next) => {
@@ -31,8 +34,7 @@ exports.updatePartner = async(req, res, next) => {
     let pId = name.slice(0, 3).toUpperCase() + '-' + partnerId;
 
     let updatePartnerData = await models.partner.update({ name, partnerId: pId, commission, isActive }, { where: { id: partnerId, isActive: true } });
-    if (!updatePartnerData[0]) { return res.status(404).json({ message: 'Data not found' }) }
-
+   
     return res.status(200).json({ message: 'Success' });
 }
 
@@ -40,26 +42,33 @@ exports.updatePartner = async(req, res, next) => {
 
 exports.readPartner = async(req, res, next) => {
 
-    const { search, offset, pageSize } =
-    paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
-    const searchQuery = {
-        [Op.or]: {
-            name: { [Op.iLike]: search + '%' }
-        },
-        isActive: true 
+    if(req.query.from == 1 && req.query.to == -1){
+        let readPartnerData = await models.partner.findAll();
+        return res.status(200).json({data:readPartnerData});
+    }else{
+        const { search, offset, pageSize } =
+        paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+        const searchQuery = {
+            [Op.or]: {
+                name: { [Op.iLike]: search + '%' }
+            },
+            isActive: true 
+        }
+            let readPartnerData = await models.partner.findAll({
+                where: searchQuery,
+                order: [
+                    ['id', 'ASC']
+                ],
+                offset: offset,
+                limit: pageSize
+            });
+            let count = await models.partner.findAll({
+                where: {isActive:true}
+            });
+            if (!readPartnerData) { return res.status(404).json({ message: 'data not found' }) }
+            return res.status(200).json({data:readPartnerData, count:count.length});
     }
-        let readPartnerData = await models.partner.findAll({
-            where: searchQuery,
-            offset: offset,
-            limit: pageSize
-        });
-        let count = await models.partner.findAll({
-            where: {isActive:true},
-            offset: offset,
-            limit: pageSize
-        });
-        if (!readPartnerData) { return res.status(404).json({ message: 'data not found' }) }
-        return res.status(200).json({data:readPartnerData, count:count.length});
+   
       }
 
     //get partner by id
@@ -67,8 +76,8 @@ exports.readPartner = async(req, res, next) => {
 exports.readPartnerById = async(req, res, next) => {
     const partnerId = req.params.id;
     let partnerData = await models.partner.findOne({ where: { id:partnerId, isActive: true } });
-    if (!partnerData[0]) {
-        return res.status(404).json({ message: 'data not found' });
+    if (check.isEmpty(partnerData)) {
+        return res.status(404).json({ message: 'data not found' })
     }
     return res.status(200).json(partnerData);
 }
