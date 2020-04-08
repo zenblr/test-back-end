@@ -7,6 +7,6 @@ const checkAuth = require('../middleware/checkAuth');
 
 route.post('/', checkAuth, wrapper(addUpdateBanner));
 route.get('/', checkAuth, wrapper(readBanner));
-route.delete('/:id', checkAuth, wrapper(deleteBanner));
+// route.delete('/:id', checkAuth, wrapper(deleteBanner));
 
 module.exports = route;
