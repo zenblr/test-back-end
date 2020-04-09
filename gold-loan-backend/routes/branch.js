@@ -13,6 +13,6 @@ route.get('/:id', checkAuth, wrapper(readBranchById)); //get branch by id
 
 route.put('/:id', checkAuth, wrapper(updateBranch)); //update branch 
 
-route.delete('/:id', checkAuth, wrapper(deleteBranch)); //delete branch
+route.delete('/', checkAuth, wrapper(deleteBranch)); //delete branch
 
 module.exports = route;

@@ -8,7 +8,7 @@ exports.addUpdateBanner = async (req, res, next) => {
     let userId = req.userData.id
     let banner = await models.banner.findAll()
     if (banner.length == 0) {
-        let CreatedBanner = await models.banner.create({images, userId});
+        let CreatedBanner = await models.banner.create({ images, userId });
         if (!CreatedBanner) {
             res.status(422).json({ message: 'Banner not added' });
         } else {
@@ -18,10 +18,10 @@ exports.addUpdateBanner = async (req, res, next) => {
         let id = banner[0].id;
         let UpdateData = await models.banner.update({ images, userId }, { where: { id } })
         if (UpdateData[0] === 0) {
-            res.status(404).json({ message: 'Data not updated' });
-        } else {
-            res.status(200).json({ message: 'Success' });
+            return res.status(404).json({ message: 'Data not updated' });
         }
+        return res.status(200).json({ message: 'Success' });
+
     }
 }
 
@@ -32,7 +32,7 @@ exports.readBanner = async (req, res, next) => {
     // const id = banner[0].id;
     // return res.json(banner[0])
     // let bannerData = await models.banner.findOne({ where: { id } });
-    if (!banner[0]) {
+    if (!banner) {
         res.status(404).json({ message: 'Data not found' });
     } else {
         res.status(200).json(banner[0]);

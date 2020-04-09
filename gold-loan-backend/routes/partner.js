@@ -11,7 +11,7 @@ route.get('/', checkAuth, wrapper(readPartner)); // read partner
 
 route.put('/:id', checkAuth, wrapper(updatePartner)); // update partner
 
-route.delete('/:id', checkAuth, wrapper(deletePartner)); // delete partner
+route.delete('/', checkAuth, wrapper(deletePartner)); // delete partner
 
 route.get('/:id', checkAuth, wrapper(readPartnerById)); // read by id partner
 

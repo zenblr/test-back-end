@@ -119,17 +119,20 @@ exports.updateBranch = async (req, res, next) => {
 
 
     let branchData = await models.branch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pincode, commission, isActive }, { where: { id: branchId, isActive: true } });
-   
+    if (branchData[0] == 0) {
+        return res.status(404).json({ message: " Update failed" });
+    }
     return res.status(200).json({ message: "Success" });
 }
 
 // delete branch
 
 exports.deleteBranch = async (req, res, next) => {
-    const branchId = req.params.id;
-    let branchData = await models.branch.update({ isActive: false }, { where: { id: branchId, isActive: true } });
-    if (!branchData[0]) {
-        return res.status(404).json({ message: 'data not found' });
+    const { id, isActive } = req.query;
+    let branch = await models.branch.update({ isActive: isActive }, { where: { id: id } })
+    if (branch[0] == 0) {
+        return res.status(404).json({ message: "branch deleted failed" });
     }
-    return res.status(200).json({ message: 'Success' })
+    return res.status(200).json({ message: `Updated` })
+
 }
