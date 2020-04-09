@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BranchService {
+  openModal = new BehaviorSubject<any>(false);
+  openModal$ = this.openModal.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -13,8 +15,8 @@ export class BranchService {
     return this.http.post<any>(`/api/branch`, data);
   }
 
-  getAllBranch(from?, to?, fromDate?, text?, toDate?, userId?): Observable<any> {
-    return this.http.get<any>(`/api/branch`);
+  getAllBranch(from?, to?, search?, fromDate?, toDate?, userId?): Observable<any> {
+    return this.http.get<any>(`/api/branch?search=${search}&from=${from}&to=${to}`);
   }
 
   getBranchById(id): Observable<any> {

@@ -4,6 +4,7 @@
 
 
 
+
 // Desktop mode
 @include kt-desktop {
 	.kt-header-mobile {
@@ -21,13 +22,7 @@
 		min-height: kt-get($kt-header-config, base, mobile, self, default, height);
 		position: relative;
 		z-index: 1;
-		background-color: #fff;
-		box-shadow: 0px 0px 40px 0px rgba(82,63,105,0.1);
 
-		.kt-header__topbar--mobile-on & {
-			box-shadow: none;
-		}
-	
 		// Fixed
 		.kt-header-mobile--fixed & {
 			position: fixed;
@@ -50,19 +45,19 @@
 			align-items: center;
 			justify-content: flex-end;
 
-			@include kt-burger-icon-build(kt-header-mobile__toolbar-toggler, kt-get($kt-header-config, base, mobile, toolbar, toggler));
-			@include kt-burger-icon-skin(kt-header-mobile__toolbar-toggler, kt-get($kt-header-config, base, mobile, toolbar, toggler, color));
+			@include kt-burger-icon-build(kt-header-mobile__toggler, kt-get($kt-header-config, base, mobile, toolbar, toggler));
+			@include kt-burger-icon-skin(kt-header-mobile__toggler, kt-get($kt-header-config, base, mobile, toolbar, toggler, color));
 
-			.kt-header-mobile__toolbar-toggler {
+			.kt-header-mobile__toggler {
 				margin: 0 0 0 1.5rem;
 			}
 
-			.kt-header-mobile__toolbar-topbar-toggler {
+			.kt-header-mobile__topbar-toggler {
 				@include kt-button-reset();
 				display: flex;
 				align-items: center;
-				margin: 0 0.5rem 0 1.25rem;
-				
+				margin: 0 0.5rem 0 1rem;
+
 				i {
 					@include kt-transition();
 					color: kt-get($kt-header-config, base, mobile, toolbar, toggler, color, default);
@@ -70,11 +65,11 @@
 					line-height: 0;
 				}
 
-				&.kt-header-mobile__toolbar-topbar-toggler--active,
+				&.kt-header-mobile__topbar-toggler--active,
 				&:hover {
 					i {
 						@include kt-transition();
-						color: kt-get($kt-header-config, base, mobile, toolbar, toggler, color, hover)
+						color: kt-get($kt-header-config, base, mobile, toolbar, toggler, color, active);
 					}
 				}
 			}

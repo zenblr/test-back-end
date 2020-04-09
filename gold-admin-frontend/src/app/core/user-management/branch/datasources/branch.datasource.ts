@@ -18,15 +18,15 @@ export class BranchDatasource extends BaseDataSource {
         super();
     }
 
-    loadBranches(from, to, fromDate, search, toDate, userId) {
+    loadBranches(from, to, search, fromDate, toDate, userId) {
         this.loadingSubject.next(true);
 
-        this.branchService.getAllBranch(from, to, fromDate, search, toDate, userId)
+        this.branchService.getAllBranch(from, to, search, fromDate, toDate, userId)
             .pipe(
                 map(
                     report => {
-                        this.paginatorTotalSubject.next(report['length']);
-                        this.entitySubject.next(report);
+                        this.paginatorTotalSubject.next(report.count);
+                        this.entitySubject.next(report.data);
                     }
                 ),
                 catchError(() => of([])),

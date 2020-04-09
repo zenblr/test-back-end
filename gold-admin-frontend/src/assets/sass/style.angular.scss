@@ -12,10 +12,7 @@
 // 1: Include global config
 @import "config";
 
-// 2: Include demo config (that overrides the above global config)
-@import "global/layout/config";
-
-// 3: Bootstrap Include
+// 2: Bootstrap framework includes
 @import "global/integration/frameworks/bootstrap/variables";
 @import "~bootstrap/scss/bootstrap";
 @import "global/integration/frameworks/bootstrap/bootstrap.scss";
@@ -27,32 +24,30 @@
 
 // 3: Components include
 @import "global/include.angular";
+
 ////////////////////////////////////////////////////////////////
 ///////////// DO NOT MODIFY ABOVE INCLUDE ORDER ////////////////
 ////////////////////////////////////////////////////////////////
 
-// 5: Demo Configs
+// 4: Layout config
+@import "global/layout/config";
 @import "global/layout/header/config";
 @import "global/layout/brand/config";
 @import "global/layout/aside/config";
 @import "global/layout/footer/config";
 
 
-// 6: Demo Includes
-// Layout
+// 5: Layout includes
 @import "global/layout/base/base";
-
 @import "global/layout/header/header";
 @import "global/layout/header/base-mobile";
 @import "global/layout/header/menu";
 @import "global/layout/header/topbar";
-
-@import "global/layout/subheader/subheader";
-
 @import "global/layout/brand/brand";
-
 @import "global/layout/aside/aside";
-
 @import "global/layout/content/content";
-
 @import "global/layout/footer/footer";
+
+// 6:  User defined custom styles includes
+@import "custom/example-1";
+@import "custom/example-2";

@@ -396,18 +396,55 @@ export class MenuConfig {
 					submenu: [
 						{
 							title: 'Change Password',
-							page: '/material/form-controls/autocomplete',
+							page: '/admin-account/change-password',
 							bullet: 'dot',
 						},
 						{
 							title: 'Show Queries',
-							page: '/material/form-controls/autocomplete',
+							page: '/admin-account/show-queries',
 							bullet: 'dot',
 						},
 						{
 							title: 'Show Feedback',
-							page: '/material/form-controls/autocomplete',
+							page: '/admin-account/show-feedback',
 							bullet: 'dot',
+						},
+					]
+				},
+				{
+					title: 'Settings',
+					root: true,
+					icon: 'flaticon-web',
+					bullet: 'dot',
+					submenu: [
+						{
+							title: 'Loan Settings',
+							root: true,
+							bullet: 'dot',
+							submenu: [
+								{
+									title: 'Loan Status',
+									page: '/loan-setting/loan-status',
+									bullet: 'dot',
+								},
+								{
+									title: 'Scheme',
+									page: '/loan-setting/scheme',
+									bullet: 'dot',
+								},
+							]
+						},
+						{
+							title: 'Customer Settings',
+							root: true,
+							bullet: 'dot',
+							submenu: [
+								{
+									title: 'Customer list',
+									page: '/customer-setting/customer-list',
+									bullet: 'dot',
+								}
+							]
 						},
 					]
 				},
@@ -479,6 +516,19 @@ export class MenuConfig {
 						// },
 					]
 				},
+				{
+					title: 'Customer Management',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					page: '/customer-management',
+					bullet: 'dot',
+				},
+				{
+					title: 'Log Out',
+					root: true,
+					page: '/auth/login',
+					bullet: 'dot'
+				}
 				// {
 				// 	title: 'Layout Builder',
 				// 	root: true,

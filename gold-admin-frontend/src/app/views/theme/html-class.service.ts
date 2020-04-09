@@ -59,6 +59,8 @@ export class HtmlClassService {
 		// init footer
 		this.initFooter();
 
+		this.initSkins();
+
 		this.onClassesUpdated$.next(this.classes);
 	}
 
@@ -90,6 +92,7 @@ export class HtmlClassService {
 				bodyClasses.forEach(cssClass => document.body.classList.add(cssClass));
 			}
 		}
+
 		if (objectPath.get(this.config, 'self.layout') === 'boxed' && objectPath.has(this.config, 'self.body.background-image')) {
 			document.body.style.backgroundImage = 'url("' + objectPath.get(this.config, 'self.body.background-image') + '")';
 		}
@@ -184,6 +187,24 @@ export class HtmlClassService {
 		// Fixed header
 		if (objectPath.get(this.config, 'footer.self.fixed')) {
 			document.body.classList.add('kt-footer--fixed');
+		}
+	}
+
+	/**
+	 * Set the body class name based on page skin options
+	 */
+	private initSkins() {
+		if (objectPath.get(this.config, 'header.self.skin')) {
+			document.body.classList.add('kt-header-base-' + objectPath.get(this.config, 'header.self.skin'));
+		}
+		if (objectPath.get(this.config, 'header.menu.desktop.submenu.skin')) {
+			document.body.classList.add('kt-header-menu-' + objectPath.get(this.config, 'header.menu.desktop.submenu.skin'));
+		}
+		if (objectPath.get(this.config, 'brand.self.skin')) {
+			document.body.classList.add('kt-brand-' + objectPath.get(this.config, 'brand.self.skin'));
+		}
+		if (objectPath.get(this.config, 'aside.self.skin')) {
+			document.body.classList.add('kt-aside-' + objectPath.get(this.config, 'aside.self.skin'));
 		}
 	}
 }

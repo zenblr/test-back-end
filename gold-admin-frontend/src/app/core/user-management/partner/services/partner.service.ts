@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PartnerService {
+
+  openModal = new BehaviorSubject<any>(false);
+  openModal$ = this.openModal.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -13,8 +16,12 @@ export class PartnerService {
     return this.http.post<any>(`/api/partner`, data);
   }
 
-  getAllPartner(from?, to?, fromDate?, text?, toDate?, userId?): Observable<any> {
-    return this.http.get<any>(`/api/partner`);
+  getAllPartner(search?, from?, to?, fromDate?, toDate?, userId?): Observable<any> {
+    return this.http.get<any>(`/api/partner?search=${search}&from=${from}&to=${to}`);
+  }
+
+  getAllPartnerWithoutPagination(search?, from?, to?): Observable<any> {
+    return this.http.get<any>(`/api/partner?&from=${1}&to=${-1}`);
   }
 
   getPartnerById(id): Observable<any> {

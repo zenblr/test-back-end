@@ -1,0 +1,48 @@
+:host {
+    .heading {
+        font-weight: 600;
+        font-size  : 15px;
+    }
+
+    .border-right {
+        border-right: 1px solid #C5C6C6 !important;
+    }
+
+    .border-bottom {
+        border-bottom: 1px solid #C5C6C6;
+    }
+
+    .border-radius {
+        border       : 1px solid #C5C6C6;
+        border-radius: 20px;
+    }
+
+    .from-style {
+        align-self  : center;
+        padding-left: 30px;
+
+    }
+
+    .text-gray {
+        color      : #C5C6C6;
+        font-size  : 14px;
+        font-weight: 600;
+    }
+
+    .border-left-radius {
+        border-top-left-radius: 20px;
+    }
+
+    .border-right-radius {
+        border-top-right-radius: 20px;
+    }
+
+    .mat-tab-label.mat-tab-label-active {
+        color: #454D67;
+    }
+
+    /* Styles for the ink bar */
+    .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+        background-color: red !important;
+    }
+}

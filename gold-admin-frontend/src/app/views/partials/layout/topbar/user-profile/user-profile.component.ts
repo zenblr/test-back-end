@@ -7,7 +7,6 @@ import { select, Store } from '@ngrx/store';
 // State
 import { AppState } from '../../../../../core/reducers';
 import { currentUser, Logout, User } from '../../../../../core/auth';
-import { Router } from '@angular/router';
 
 @Component({
 	selector: 'kt-user-profile',
@@ -15,8 +14,7 @@ import { Router } from '@angular/router';
 })
 export class UserProfileComponent implements OnInit {
 	// Public properties
-	// user$: Observable<User>;
-	user$;
+	user$: Observable<User>;
 
 	@Input() avatar = true;
 	@Input() greeting = true;
@@ -28,7 +26,7 @@ export class UserProfileComponent implements OnInit {
 	 *
 	 * @param store: Store<AppState>
 	 */
-	constructor(private store: Store<AppState>, private router: Router) {
+	constructor(private store: Store<AppState>) {
 	}
 
 	/**
@@ -39,22 +37,13 @@ export class UserProfileComponent implements OnInit {
 	 * On init
 	 */
 	ngOnInit(): void {
-		const token = localStorage.getItem('accessToken');
-		// console.log(token);
-		const arr = token.split('.');
-		const payload = arr[1];
-		const decodedToken = atob(payload);
-		// console.log(decodedToken);
-		this.user$ = decodedToken;
-		// this.user$ = this.store.pipe(select(currentUser));
+		this.user$ = this.store.pipe(select(currentUser));
 	}
 
 	/**
 	 * Log out
 	 */
 	logout() {
-		// this.store.dispatch(new Logout());
-		localStorage.clear();
-		this.router.navigate(['/auth/login']);
+		this.store.dispatch(new Logout());
 	}
 }

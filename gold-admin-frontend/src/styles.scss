@@ -3,6 +3,42 @@
 @import "~material-design-icons/iconfont/material-icons.css";
 @import "~highlight.js/styles/googlecode.css";
 
+// header base skins
+.kt-header-base-light {
+	@import "sass/global/layout/header/skins/base/light.scss";
+}
+
+.kt-header-base-dark {
+	@import "sass/global/layout/header/skins/base/dark.scss";
+}
+
+// header menu skins
+.kt-header-menu-light {
+	@import "sass/global/layout/header/skins/menu/light.scss";
+}
+
+.kt-header-menu-dark {
+	@import "sass/global/layout/header/skins/menu/dark.scss";
+}
+
+// brand skins
+.kt-brand-dark {
+	@import "sass/global/layout/brand/skins/dark.scss";
+}
+
+.kt-brand-light {
+	@import "sass/global/layout/brand/skins/light.scss";
+}
+
+// aside skins
+.kt-aside-dark {
+	@import "sass/global/layout/aside/skins/dark.scss";
+}
+
+.kt-aside-light {
+	@import "sass/global/layout/aside/skins/light.scss";
+}
+
 // hide bootstrap dropdown arrow globally
 .dropdown-toggle::after {
 	display: none !important;
@@ -10,19 +46,72 @@
 
 .mat-table__wrapper--dashboard .mat-table {
 	min-width: 600px !important;
-	width: 100% !important;
+	width    : 100% !important;
 }
 
 .position-static {
 	position: static;
 }
 
-
-.fab-button {
-	background-color: pink;
-	transition: background-color 250ms ease-in-out;
+body {
+	color: #454D67 !important;
 }
 
-.fab-button:hover {
-	background-color: #fff;
+.text-color {
+	color: #454D67 !important;
+}
+
+.text-gray {
+	color: #c5c6c6 !important;
+}
+
+.success-button {
+	color           : #fff !important;
+	background-color: rgb(24, 179, 24) !important;
+}
+
+.form-control {
+	background-color: rgb(230, 230, 230) !important;
+}
+
+.isError {
+	border: 2px solid red !important;
+}
+
+::-webkit-input-placeholder {
+	/* Edge */
+	font-weight: bold;
+}
+
+:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	font-weight: bold;
+}
+
+::placeholder {
+	font-weight: bold;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin            : 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+.kt-pointer {
+	cursor: pointer
+}
+.mat-button-toggle-label-content{
+	padding: 0 !important
+}
+.mat-raised-button.filter{
+	min-width: auto !important;
+	padding: 5px !important;
+	line-height: inherit;
 }

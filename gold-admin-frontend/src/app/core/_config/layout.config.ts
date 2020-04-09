@@ -9,13 +9,13 @@ export class LayoutConfig {
 			body: {
 				'background-image': './assets/media/misc/bg-1.jpg',
 			},
-			logo: './assets/media/logos/logo-6.png',
+			logo: './assets/media/logos/header-logo.png',
 		},
 		// == Page Splash Screen loading
 		loader: {
 			enabled: true,
 			type: 'spinner-logo',
-			logo: './assets/media/logos/logo-mini-md.png',
+			logo: './assets/media/logos/logo.png',
 			message: 'Please wait...',
 		},
 		// == Colors for javascript

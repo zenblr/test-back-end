@@ -21,8 +21,10 @@ export class BranchAddComponent implements OnInit {
   partners = [];
   editData = false;
   viewOnly = false;
+  viewLoading: boolean = false;
 
-  constructor(public dialogRef: MatDialogRef<BranchAddComponent>,
+  constructor(
+    public dialogRef: MatDialogRef<BranchAddComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private sharedService: SharedService,
     private fb: FormBuilder,
@@ -34,7 +36,6 @@ export class BranchAddComponent implements OnInit {
     this.formInitialize();
     this.getAllPartners();
     this.getStates();
-    console.log(this.data);
     if (this.data['action'] !== 'add') {
       this.getPartnerById(this.data['partnerId']);
     }
@@ -47,14 +48,14 @@ export class BranchAddComponent implements OnInit {
       partnerId: ['', [Validators.required]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
-      pincode: ['', [Validators.required]],
+      pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       address: ['', [Validators.required]],
     });
   }
 
   getAllPartners() {
-    this.partnerService.getAllPartner().subscribe(res => {
-      this.partners = res;
+    this.partnerService.getAllPartnerWithoutPagination().subscribe(res => {
+      this.partners = res.data;
     })
   }
 
@@ -63,22 +64,20 @@ export class BranchAddComponent implements OnInit {
       this.states = res.message;
     },
       error => {
-        // console.error(error);
       });
   }
 
   getCities(event) {
-    // console.log(event);
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.message;
     },
       error => {
-        // console.error(error);
       });
   }
 
   getPartnerById(id) {
+    this.viewLoading = true
     this.branchService.getBranchById(id).subscribe(res => {
       console.log(res);
       this.branchForm.patchValue(res);
@@ -100,7 +99,19 @@ export class BranchAddComponent implements OnInit {
     return this.branchForm.controls;
   }
 
+  action(event: Event) {
+    if (event) {
+      this.onSubmit()
+    } else if (!event) {
+      this.dialogRef.close()
+    }
+  }
+
   onSubmit() {
+    if (this.branchForm.invalid) {
+      this.branchForm.markAllAsTouched()
+      return
+    }
     // console.log(this.branchForm.value);
     const partnerData = this.branchForm.value;
     const id = this.controls.id.value;

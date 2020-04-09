@@ -81,11 +81,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 		// header width fluid
 		this.fluid = objectPath.get(config, 'header.self.width') === 'fluid';
 
-		// animate the header minimize the height on scroll down
-		if (objectPath.get(config, 'header.self.fixed.desktop.enabled') || objectPath.get(config, 'header.self.fixed.desktop')) {
+		// animate the header minimize the height on scroll down. to be removed, not applicable for default demo
+		/*if (objectPath.get(config, 'header.self.fixed.desktop.enabled') || objectPath.get(config, 'header.self.fixed.desktop')) {
 			// header minimize on scroll down
 			this.ktHeader.nativeElement.setAttribute('data-ktheader-minimize', '1');
-		}
+		}*/
 	}
 
 	ngAfterViewInit(): void {
