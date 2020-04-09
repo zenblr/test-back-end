@@ -20,6 +20,7 @@ export class AddSchemeComponent implements OnInit {
   csvForm: FormGroup;
   billingForm: FormGroup;
   partnerData: [] = []
+  file: any;
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddSchemeComponent>,
@@ -34,9 +35,10 @@ export class AddSchemeComponent implements OnInit {
   }
 
   partner() {
-    this.partnerService.getAllPartner().pipe(
+    this.partnerService.getAllPartner('', 1, 50).pipe(
       map(res => {
         this.partnerData = res.data;
+        console.log(this.partnerData)
       })
     ).subscribe()
   }
@@ -56,7 +58,7 @@ export class AddSchemeComponent implements OnInit {
     })
 
     this.csvForm = this.fb.group({
-      partnerCSV: ['', Validators.required],
+      partnerId: ['', Validators.required],
       csv: ['', Validators.required]
     })
     // this.csvForm.get('csv').re()
@@ -78,20 +80,24 @@ export class AddSchemeComponent implements OnInit {
       }
       this.laonSettingService.saveScheme(this.billingForm.value).pipe(
         map((res) => {
-          if (res.message == 'sucess') {
-            this._toastr.success('Scheme Saved Sucessfully');
+          if (res.message == 'schemes created') {
+            this._toastr.success('Scheme Created Sucessfully');
+            this.dialogRef.close(res);
           }
         })).subscribe()
     } else if (this.tabGroup.selectedIndex == 1) {
       if (this.csvForm.invalid) {
         this.csvForm.markAllAsTouched()
+        return
       }
       var fb = new FormData()
-      fb.append
-      this.laonSettingService.uplaodCSV(this.csvForm.value).pipe(
+      fb.append('csv', this.file)
+      fb.append('partnerId', this.csvForm.controls.partnerId.value)
+      this.laonSettingService.uplaodCSV(fb).pipe(
         map((res) => {
-          if (res.message == 'sucess') {
-            this._toastr.success('Scheme Saved Sucessfully');
+          if (res.message == 'schemes created') {
+            this._toastr.success('Scheme Created Sucessfully');
+            this.dialogRef.close(res);
           }
         })).subscribe()
     }
@@ -101,8 +107,8 @@ export class AddSchemeComponent implements OnInit {
     var reader = new FileReader()
     console.log(event)
     if (event.target.files[0].type == "text/csv") {
+      this.file = event.target.files[0];
       this.csvForm.get('csv').patchValue(event.target.files[0].name);
-      
     }
   }
 }

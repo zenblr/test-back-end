@@ -1,6 +1,8 @@
-<kt-portlet>
+<mat-spinner [diameter]="40" *ngIf="viewLoading" class="spinner-center"></mat-spinner>
+<label class="text-color font-weight-bold translate-center" *ngIf="!viewLoading && schemes.length==0">No Schemes Available</label>
+<kt-portlet *ngIf="!viewLoading && schemes.length>0">
     <kt-portlet-body>
-        <mat-tab-group >
+        <mat-tab-group>
             <mat-tab [label]='scheme.name' *ngFor="let scheme of schemes">
                 <div class="row kt-padding-10" *ngFor="let schemeDeatils of scheme.schemes">
                     <div class="col-2 from-style">
