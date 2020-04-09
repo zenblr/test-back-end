@@ -20,7 +20,7 @@ exports.addPartner = async(req, res, next) => {
             await models.partner.update({ partnerId: partnerId }, { where: { id: id }, transaction: t });
             return partnerData;
         }).then((partnerData) => {
-            return res.status(201).json({ messgae: "partner created" });
+            return res.status(201).json({ message: "partner created" });
         }).catch((exception) => {
           next(exception)
         })

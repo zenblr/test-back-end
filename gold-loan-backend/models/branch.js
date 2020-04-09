@@ -25,7 +25,7 @@ module.exports=(sequelize,DATATYPES)=>{
             field:'address'
         },
         
-        pincode:{
+        pinCode:{
             type:DATATYPES.INTEGER,
             field:'pincode',
 
