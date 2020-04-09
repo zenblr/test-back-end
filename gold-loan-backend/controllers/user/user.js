@@ -127,7 +127,7 @@ exports.changePassword = async (req, res, next) => {
             { where: { id: userinfo.id, isActive: true } });
         res.status(200).json({ message: 'Success' })
     } else {
-        res.status(401).json({ message: ' wrong credentials' });
+        res.status(200).json({ message: ' wrong credentials' });
     }
 }
 

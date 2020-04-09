@@ -32,15 +32,15 @@
                 </ng-container>
                 <ng-container matColumnDef="partner">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Parnter name</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.partner.name | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="state">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.stateId }}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.states.name }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="city">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>City</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.cityId }}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.cities.name }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">

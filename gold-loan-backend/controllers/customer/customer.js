@@ -192,13 +192,14 @@ exports.getAllCustomers = async (req, res, next) => {
             model: models.status,
             as: 'status'
         }],
+        order: [
+            ['id', 'ASC']
+        ],
         offset: offset,
         limit: pageSize
     });
     let count = await models.customers.findAll({
         where: { isActive: true },
-        offset: offset,
-        limit: pageSize
     });
 
     return res.status(200).json({ data: allCustomers, count: count.length })
