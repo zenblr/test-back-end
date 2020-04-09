@@ -2,16 +2,12 @@ const csv=require('csvtojson');
 const models=require('../../models');
 const sequelize=models.sequelize;
 
-
+// upload schemes csv
 exports.uploadScheme=async(req,res,next)=>{
 
-// let checkIfCsvUploaded = await models.upload_scheme.findAll();
-// if (checkIfCsvUploaded.length > 0) {
-//     return res.status(404).json({ messgae: "scheme Csv is already Uploaded" })
-// }
 await sequelize.transaction(async t => {
     const csvFilePath = req.file.path;
-    const partnerId=req.query.partnerId;
+    const partnerId=req.body.partnerId.split(',');
 const jsonArray = await csv().fromFile(csvFilePath);
 
     for (var i = 0; i < jsonArray.length; i++) {
@@ -38,20 +34,5 @@ const jsonArray = await csv().fromFile(csvFilePath);
    next(exception)
 })
 
-//     for (let i = 0; i < partnerId.length; i++) {
-//         console.log(partnerId[i]);
-
-//         var data = await models.partner_schemes.create({
-//             schemeId: addSchemeData.id,
-//             partnerId: partnerId[i]
-
-//         }, { transaction: t })
-//     }
-//     console.log(data);
-// }).then((addSchemeData) => {
-//     return res.status(201).json({ messgae: "schemes created" })
-// }).catch((exception) => {
-//     next(exception)
-// })
 }
 

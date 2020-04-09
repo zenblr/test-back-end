@@ -67,7 +67,7 @@ router.use('/scheme',scheme);
 const partnerscheme=require('./partnerscheme'); // partner Scheme Route
 router.use('/partnerscheme',partnerscheme);
 
-const uploadScheme=require('./upload-schemes');
+const uploadScheme=require('./upload_schemes'); // upload Scheme Route
 router.use('/upload-scheme',uploadScheme);
 
 

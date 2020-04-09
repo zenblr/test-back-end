@@ -23,7 +23,7 @@ exports.addScheme = async (req, res, next) => {
         }
         console.log(data);
     }).then((addSchemeData) => {
-        return res.status(201).json({ messgae: "schemes created" })
+        return res.status(201).json({ message: "schemes created" })
     }).catch((exception) => {
         next(exception)
     })
@@ -49,8 +49,8 @@ exports.readScheme = async (req, res, next) => {
 exports.readSchemeById = async (req, res, next) => {
 
     const schemeId = req.params.id;
-    const readSchemeByIdData = await models.schemes.findOne({ where: { id: schemeId, isActive: true } });
-    if (!readSchemeByIdData[0]) {
+    const readSchemeByIdData = await models.schemes.findOne({ where: { id: schemeId, isActive: true     } });
+    if (!readSchemeByIdData) {
         return res.status(404).json({ message: 'data not found' });
     }
     return res.status(200).json({ data: readSchemeByIdData });
@@ -85,5 +85,5 @@ exports.deactiveScheme = async (req, res, next) => {
         return res.status(404).json({ message: 'data not found' });
     }
 
-    return res.status(200).json({ messsage: 'Success' });
+    return res.status(200).json({ message: 'Success' });
 } 
