@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
         firstName: {
             type: DataTypes.STRING,
             field: 'first_name',
-            allowNull: false,
             validate: {
                 len: {
                     args: [0, 30]
@@ -15,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
         lastName: {
             type: DataTypes.STRING,
             field: 'last_name',
-            allowNull: false,
             validate: {
                 len: {
                     args: [0, 30]
@@ -25,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             type: DataTypes.TEXT,
             field: 'password',
-            allowNull: false,
 
         },
         mobileNumber: {
@@ -37,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: "otp"
         },
-        isVerified:{
+        isVerified: {
             type: DataTypes.BOOLEAN,
             field: 'is_verified',
             defaultValue: false
@@ -45,7 +42,6 @@ module.exports = (sequelize, DataTypes) => {
         email: {
             type: DataTypes.STRING,
             field: 'email',
-            allowNull: false,
             validate: {
                 len: {
                     args: [0, 30]
@@ -55,22 +51,26 @@ module.exports = (sequelize, DataTypes) => {
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',
-            allowNull: false,
         },
         ratingId: {
             type: DataTypes.INTEGER,
             field: 'rating_id',
-            allowNull: false,
         },
         stageId: {
             type: DataTypes.INTEGER,
             field: 'stage_id',
-            allowNull: false,
         },
         statusId: {
             type: DataTypes.INTEGER,
             field: 'status_id',
-            allowNull: false,
+        },
+        stateId: {
+            type: DataTypes.INTEGER,
+            field: 'state_id',
+        },
+        cityId: {
+            type: DataTypes.INTEGER,
+            field: 'city_id',
         },
         isActive: {
             type: DataTypes.BOOLEAN,

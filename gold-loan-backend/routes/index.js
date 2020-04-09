@@ -25,6 +25,14 @@ const banner = require('./banner'); //Banner Route
 router.use('/banner', banner)
 
 
+const offer = require('./offer'); //Offer Route
+router.use('/offer', offer)
+
+
+const lenderBanner = require('./lender_banner'); //lenderBanner Route
+router.use('/lender-banner', lenderBanner)
+
+
 const uploadfile = require('./fileUpload'); //Uploadfile Route
 router.use('/upload-file', uploadfile)
 

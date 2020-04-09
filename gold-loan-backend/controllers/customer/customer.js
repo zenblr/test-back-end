@@ -6,6 +6,7 @@ const Op = Sequelize.Op;
 const { createRefrenceCode } = require('../../utils/refrenceCode');
 
 const request = require('request');
+const moment = require('moment')
 
 
 const check = require('../../lib/checkLib');
@@ -31,7 +32,6 @@ exports.addCustomer = async (req, res, next) => {
         const customer = await models.customers.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, ratingId, stageId, statusId, createdBy, modifiedBy }, { transaction: t })
         if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
-                console.log(address[i], customer.id)
                 let data = await models.customer_address.create({
                     customerId: customer.id,
                     address: address[i].address,
@@ -45,34 +45,80 @@ exports.addCustomer = async (req, res, next) => {
     }).then((customer) => {
         return res.status(200).json({ messgae: `Customer created` })
     }).catch((exception) => {
-        // return res.status(500).json({
-        //     message: "something went wrong",
-        //     data: exception.message
-        // });
         next(exception)
     })
 
 }
 
-// exports.registerCustomerSendOtp = async (req, res, next) => {
-//     try {
-//         const { mobileNumber } = req.body
-
-//         let customerExist = await models.customers.findOne({ where: { mobileNumber, isActive: true } })
-
-//         if (!check.isEmpty(customerExist)) {
-//             return res.status(200).json({ message: `Mobile number is already exist.` })
-//         }
-//         const refrenceCode = await createRefrenceCode(5);
-//         let otp = Math.floor(1000 + Math.random() * 9000);
-
-//         let customer = await models.customers.create({mobileNumber,otp})
+exports.registerCustomerSendOtp = async (req, res, next) => {
+    try {
+        const { mobileNumber } = req.body
 
 
-//     } catch (error) {
-//         return res.status(200).json({ message: `Internal server error` })
-//     }
-// }
+        let customerExist = await models.customers.findOne({ where: { mobileNumber, isActive: true } })
+
+        if (!check.isEmpty(customerExist)) {
+            return res.status(200).json({ message: `Mobile number is already exist.` })
+        }
+        const refrenceCode = await createRefrenceCode(5);
+        let otp = Math.floor(1000 + Math.random() * 9000);
+        let createdTime = new Date();
+        let expiryTime = moment.utc(createdTime).add(10, 'm')
+        await models.register_customer_otp.create({ mobileNumber, otp, createdTime, expiryTime })
+
+        return res.status(200).json({ message: `Otp send to your entered mobile number.` })
+
+    } catch (error) {
+        return res.status(200).json({ message: error.message })
+    }
+}
+
+exports.verifiedRegisterOtp = async (req, res, next) => {
+    try {
+        let { otp, mobileNumber } = req.body;
+        let createdBy = req.userData.id
+        let modifiedBy = req.userData.id
+        var todayDateTime = new Date();
+
+        let customerExist = await models.customers.findOne({ where: { mobileNumber, isActive: true } })
+        if (!check.isEmpty(customerExist)) {
+            if (customerExist.isActive) {
+                return res.status(200).json({ message: `Mobile number is already exist.` })
+            } else {
+                let getRegisterOtp = await models.register_customer_otp.findOne({
+                    where: {
+                        mobileNumber, otp,
+                        expiryTime: {
+                            [Op.gte]: todayDateTime
+                        }
+                    }
+                })
+                if (check.isEmpty(getRegisterOtp)) {
+                    return res.status(400).json({ message: `Your time is expired. Please click on resend otp` })
+                }
+                await models.customers.create({ mobileNumber, createdBy, modifiedBy, isVerified: true })
+                return res.status(200).json({ message: `Otp verification complete` })
+            }
+        } else {
+            let getRegisterOtp = await models.register_customer_otp.findOne({
+                where: {
+                    mobileNumber, otp,
+                    expiryTime: {
+                        [Op.gte]: todayDateTime
+                    }
+                }
+            })
+            if (check.isEmpty(getRegisterOtp)) {
+                return res.status(400).json({ message: `Your time is expired. Please click on resend otp` })
+            }
+
+            await models.customers.create({ mobileNumber, createdBy, modifiedBy, isVerified: true })
+            return res.status(200).json({ message: `Otp verification complete` })
+        }
+    } catch (error) {
+        return res.status(200).json({ message: error, message })
+    }
+}
 
 
 
@@ -107,7 +153,7 @@ exports.editCustomer = async (req, res, next) => {
     }).then((customer) => {
         return res.status(200).json({ messgae: `User Updated` })
     }).catch((exception) => {
-       next(exception)
+        next(exception)
     })
 
 }
@@ -146,6 +192,9 @@ exports.getAllCustomers = async (req, res, next) => {
             model: models.status,
             as: 'status'
         }],
+        order: [
+            ['id', 'ASC']
+        ],
         offset: offset,
         limit: pageSize
     });
