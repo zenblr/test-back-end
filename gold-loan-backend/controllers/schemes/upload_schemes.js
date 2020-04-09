@@ -24,8 +24,6 @@ const jsonArray = await csv().fromFile(csvFilePath);
         
                 }, { transaction: t })
             }
-          
-            
     }
 }).then(() => {
     res.status(201).json({ message: " Schemes Created" })
