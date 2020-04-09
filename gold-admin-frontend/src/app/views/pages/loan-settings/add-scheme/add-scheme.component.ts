@@ -36,7 +36,7 @@ export class AddSchemeComponent implements OnInit {
   partner() {
     this.partnerService.getAllPartner().pipe(
       map(res => {
-        this.partnerData = res;
+        this.partnerData = res.data;
       })
     ).subscribe()
   }

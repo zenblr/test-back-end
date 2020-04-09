@@ -21,7 +21,7 @@ export class BranchAddComponent implements OnInit {
   partners = [];
   editData = false;
   viewOnly = false;
-  viewLoading :boolean = false;
+  viewLoading: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<BranchAddComponent>,
@@ -36,7 +36,6 @@ export class BranchAddComponent implements OnInit {
     this.formInitialize();
     this.getAllPartners();
     this.getStates();
-    console.log(this.data);
     if (this.data['action'] !== 'add') {
       this.getPartnerById(this.data['partnerId']);
     }
@@ -49,14 +48,14 @@ export class BranchAddComponent implements OnInit {
       partnerId: ['', [Validators.required]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
-      pincode: ['', [Validators.required]],
+      pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       address: ['', [Validators.required]],
     });
   }
 
   getAllPartners() {
-    this.partnerService.getAllPartner().subscribe(res => {
-      this.partners = res;
+    this.partnerService.getAllPartnerWithoutPagination().subscribe(res => {
+      this.partners = res.data;
     })
   }
 
@@ -109,7 +108,7 @@ export class BranchAddComponent implements OnInit {
   }
 
   onSubmit() {
-    if(this.branchForm.invalid){
+    if (this.branchForm.invalid) {
       this.branchForm.markAllAsTouched()
       return
     }

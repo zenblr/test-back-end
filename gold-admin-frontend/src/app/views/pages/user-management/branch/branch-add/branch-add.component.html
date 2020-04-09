@@ -42,7 +42,8 @@
 
                             <div class="col-8">
                                 <select class="form-control" name="" id="" formControlName="partnerId"
-                                    [disabled]="viewOnly" [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
+                                    [disabled]="viewOnly"
+                                    [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
                                     <option *ngFor="let partner of partners" [value]="partner.id">{{partner.name}}
                                     </option>
                                 </select>
@@ -59,7 +60,8 @@
 
                             <div class="col-8">
                                 <select class="form-control" formControlName="stateId" (change)="getCities($event)"
-                                    [disabled]="viewOnly" [class.isError]="controls.stateId.touched && controls.stateId.invalid">
+                                    [disabled]="viewOnly"
+                                    [class.isError]="controls.stateId.touched && controls.stateId.invalid">
                                     <option *ngFor="let state of states" [value]="state.id">
                                         {{state.name}}
                                     </option>
@@ -75,8 +77,8 @@
                             </div>
 
                             <div class="col-8">
-                                <select class="form-control" formControlName="cityId" [disabled]="viewOnly" 
-                                [class.isError]="controls.cityId.touched && controls.cityId.invalid">
+                                <select class="form-control" formControlName="cityId" [disabled]="viewOnly"
+                                    [class.isError]="controls.cityId.touched && controls.cityId.invalid">
                                     <option *ngFor="let city of cities" [value]="city.id">
                                         {{city.name}}
                                     </option>
@@ -94,10 +96,14 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="pincode" placeholder="Enter Pin Code"
-                                    [readonly]="viewOnly" [class.isError]="controls.pincode.touched && controls.pincode.invalid">
+                                    [readonly]="viewOnly"
+                                    [class.isError]="controls.pincode.touched && controls.pincode.invalid"
+                                    maxlength="6">
                                 <small class="text-color">Enter pin code without spaces</small>
                                 <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.required">
                                     Required field</mat-error>
+                                <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.pattern">
+                                    Invalid Pin Code</mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
@@ -107,7 +113,8 @@
                             <!-- Address -->
                             <div class="col-8">
                                 <textarea class="form-control" rows="3" formControlName="address"
-                                    placeholder="Enter Address" [readonly]="viewOnly" [class.isError]="controls.address.touched && controls.address.invalid"></textarea>
+                                    placeholder="Enter Address" [readonly]="viewOnly"
+                                    [class.isError]="controls.address.touched && controls.address.invalid"></textarea>
                                 <mat-error *ngIf=" controls.address.touched &&controls.address.errors?.required">
                                     Required field</mat-error>
                             </div>

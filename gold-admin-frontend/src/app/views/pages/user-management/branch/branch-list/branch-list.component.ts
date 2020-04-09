@@ -10,6 +10,7 @@ import { BranchAddComponent } from '../branch-add/branch-add.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { BranchModel } from '../../../../../core/user-management/branch/models/branch.model';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 
 @Component({
   selector: 'kt-branch-list',
@@ -21,7 +22,7 @@ export class BranchListComponent implements OnInit {
   // Table fields
   dataSource: BranchDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ['branchId', 'name','partner','state','city', 'actions'];
+  displayedColumns = ['branchId', 'name', 'partner', 'state', 'city', 'actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
@@ -32,13 +33,16 @@ export class BranchListComponent implements OnInit {
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private destroy$ = new Subject();
+  private unsubscribeSearch$ = new Subject();
+  searchValue = '';
 
 
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private branchService: BranchService
+    private branchService: BranchService,
+    private dataTableService: DataTableService
   ) {
     this.branchService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
@@ -77,6 +81,13 @@ export class BranchListComponent implements OnInit {
     //   .subscribe();
     // this.subscriptions.push(searchSubscription);
 
+    const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadBranchPage();
+      });
+
     // Init DataSource
     this.dataSource = new BranchDatasource(this.branchService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
@@ -88,9 +99,9 @@ export class BranchListComponent implements OnInit {
     this.subscriptions.push(entitiesSubscription);
 
     // First load
-    this.loadBranchPage();
+    // this.loadBranchPage();
 
-    // this.dataSource.loadBranches(1, 10, '', '', '', '');
+    this.dataSource.loadBranches(1, 10, this.searchValue, '', '', '');
   }
 
 	/**
@@ -100,6 +111,8 @@ export class BranchListComponent implements OnInit {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.destroy$.next();
     this.destroy$.complete();
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 
 
@@ -109,7 +122,7 @@ export class BranchListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadBranches(from, to, '', '', '', '');
+    this.dataSource.loadBranches(from, to, this.searchValue, '', '', '');
   }
 
 	/**
@@ -153,9 +166,9 @@ export class BranchListComponent implements OnInit {
   }
 
   addRole() {
-    const dialogRef = this.dialog.open(BranchAddComponent, { 
+    const dialogRef = this.dialog.open(BranchAddComponent, {
       data: { action: 'add' },
-      width:'450px' 
+      width: '450px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -175,10 +188,10 @@ export class BranchListComponent implements OnInit {
     // const _saveMessage = `Role successfully has been saved.`;
     // const _messageType = role.id ? MessageType.Update : MessageType.Create;
     const dialogRef = this.dialog.open(BranchAddComponent,
-       { 
-         data: { partnerId: role.id, action: 'edit' },
-         width: '450px'
-       });
+      {
+        data: { partnerId: role.id, action: 'edit' },
+        width: '450px'
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadBranchPage();
@@ -187,7 +200,6 @@ export class BranchListComponent implements OnInit {
   }
 
   viewRole(role) {
-    console.log(role);
     const dialogRef = this.dialog.open(BranchAddComponent, {
       data: { partnerId: role.id, action: 'view' },
       width: '450px'
@@ -200,7 +212,7 @@ export class BranchListComponent implements OnInit {
     });
   }
 
-  
+
 
 
 }

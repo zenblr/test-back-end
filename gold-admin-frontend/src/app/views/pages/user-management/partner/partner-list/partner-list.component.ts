@@ -48,6 +48,8 @@ export class PartnerListComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   partnerResult: PartnerModel[] = [];
   private destroy$ = new Subject();
+  private unsubscribeSearch$ = new Subject();
+
   searchValue = '';
 	/**
 	 * Component constructor
@@ -110,7 +112,7 @@ export class PartnerListComponent implements OnInit {
     //   .subscribe();
     // this.subscriptions.push(searchSubscription);
 
-    const searchSubscription = this.dataTableService.searchInput$
+    const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
         this.paginator.pageIndex = 0;
@@ -138,6 +140,8 @@ export class PartnerListComponent implements OnInit {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.destroy$.next();
     this.destroy$.complete();
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 
 
@@ -147,7 +151,7 @@ export class PartnerListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadPartners(this.searchValue, 1, 10, '', '', '');
+    this.dataSource.loadPartners(this.searchValue, from, to, '', '', '');
   }
 
 	/**
