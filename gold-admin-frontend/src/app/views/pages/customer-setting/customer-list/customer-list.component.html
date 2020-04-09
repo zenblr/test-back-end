@@ -39,8 +39,8 @@
                     <mat-header-cell [ngClass]="'w-200'" *matHeaderCellDef mat-sort-header>Action</mat-header-cell>
                     <mat-cell *matCellDef="let role" [ngClass]="'w-200'">
                         <p>
-                            <span class="kt-pointer">Add New Loan</span>&nbsp;|&nbsp;
-                            <span class="kt-pointer" >View Loan</span>&nbsp;|&nbsp;
+                            <span class="kt-pointer" >Add New Loan</span>&nbsp;|&nbsp;
+                            <span class="kt-pointer" (click)="viewLoan(role.id)">View Loan</span>&nbsp;|&nbsp;
                             <span class="kt-pointer" (click)="editCustomer(role)">Edit</span>&nbsp;|&nbsp;
                             <span class="text-danger kt-pointer" (click)="deleteCustomer(role)">Delete</span>
                         </p>
