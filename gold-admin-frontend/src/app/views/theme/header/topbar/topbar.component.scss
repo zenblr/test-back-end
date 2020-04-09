@@ -1,5 +1,6 @@
 :host {
 	::ng-deep {
+
 		// override default version style
 		.kt-header__topbar {
 			> :last-child:not([role="tooltip"]) {
@@ -7,9 +8,33 @@
 					margin-right: 0 !important;
 				}
 			}
+
 			.kt-header__topbar-item {
 				margin-right: 0.36rem !important;
 			}
 		}
+	}
+
+	.mat-button-toggle-checked {
+		background: #454D67 !important;
+	}
+
+	mat-button-toggle-group {
+		height       : 35px;
+		border-radius: 4px;
+		padding      : 0px !important;
+	}
+
+	mat-button-toggle {
+		width     : 35px;
+		height    : 35px;
+		background: #c5c6c6 !important;
+
+		padding: 0 !important;
+	}
+	
+	.mat-button-toggle-label-content {
+		padding: 0 !important;
+		background: red
 	}
 }

@@ -107,3 +107,11 @@ input[type=number] {
 .kt-pointer {
 	cursor: pointer
 }
+.mat-button-toggle-label-content{
+	padding: 0 !important
+}
+.mat-raised-button.filter{
+	min-width: auto !important;
+	padding: 5px !important;
+	line-height: inherit;
+}
