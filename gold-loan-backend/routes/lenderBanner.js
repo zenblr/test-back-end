@@ -1,5 +1,5 @@
 const express = require('express');
-const { addUpdateLenderBanner, readLenderBanner } = require('../controllers/lender_banner/lender_banner');
+const { addUpdateLenderBanner, readLenderBanner } = require('../controllers/lenderBanner/lenderBanner');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 

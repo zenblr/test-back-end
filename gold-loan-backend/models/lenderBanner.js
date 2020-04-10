@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const lenderBanner = sequelize.define('lender_banner', {
+    const LenderBanner = sequelize.define('lender_banner', {
         // attributes
         images: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
@@ -15,5 +15,5 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'lender_banner',
     });
 
-    return lenderBanner;
+    return LenderBanner;
 }

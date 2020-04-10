@@ -2,7 +2,7 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const express = require("express");
 const app = express();
 
-const { BASEURLFORSWAGGER } = require('./config/baseurl')
+const { BASEURLFORSWAGGER } = require('./config/baseUrl')
 
 const swaggerDefinition = {
     info: {

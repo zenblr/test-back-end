@@ -1,6 +1,6 @@
-const check = require('./../lib/checkLib');
+const check = require('../lib/checkLib');
 
- let createRefrenceCode = (length) => {
+ let createReferenceCode = (length) => {
    let result           = '';
    let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
    let charactersLength = characters.length;
@@ -11,5 +11,5 @@ const check = require('./../lib/checkLib');
 }
 
  module.exports = {
-    createRefrenceCode:createRefrenceCode
+   createReferenceCode:createReferenceCode
 }

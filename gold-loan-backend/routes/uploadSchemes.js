@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const checkAuth=require('../middleware/checkAuth')
-const {uploadScheme}=require('../controllers/schemes/upload_schemes');
-const {wrapper}=require('../utils/errorWrap');
+const checkAuth = require('../middleware/checkAuth')
+const { uploadScheme } = require('../controllers/schemes/uploadSchemes');
+const { wrapper } = require('../utils/errorWrap');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: 'public/uploads/schemes',
@@ -16,6 +16,6 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage
 });
-router.post('/',checkAuth,upload.single('csv'), wrapper(uploadScheme));
+router.post('/', checkAuth, upload.single('schemecsv'), wrapper(uploadScheme));
 
-module.exports=router;
+module.exports = router;

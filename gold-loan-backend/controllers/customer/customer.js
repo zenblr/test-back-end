@@ -3,7 +3,7 @@ const sequelize = models.sequelize;
 
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
-const { createRefrenceCode } = require('../../utils/refrenceCode');
+const { createReferenceCode } = require('../../utils/referenceCode');
 
 const request = require('request');
 const moment = require('moment')
@@ -64,7 +64,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 
     await models.register_customer_otp.destroy({ where: { mobileNumber } })
 
-    const referenceCode = await createRefrenceCode(5);
+    const referenceCode = await createReferenceCode(5);
     let otp = Math.floor(1000 + Math.random() * 9000);
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, 'm')
@@ -87,7 +87,7 @@ exports.sendOtp = async (req, res, next) => {
 
     await models.register_customer_otp.destroy({ where: { mobileNumber } })
 
-    const referenceCode = await createRefrenceCode(5);
+    const referenceCode = await createReferenceCode(5);
     let otp = Math.floor(1000 + Math.random() * 9000);
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, 'm')

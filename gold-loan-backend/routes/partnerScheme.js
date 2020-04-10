@@ -1,4 +1,4 @@
-const {addPartnerScheme,readPartnerSchemeById,readPartnerScheme,deactivePartnerScheme,updatePartnerScheme}=require("../controllers/schemes/partner_schemes");
+const {addPartnerScheme,readPartnerSchemeById,readPartnerScheme,deactivePartnerScheme,updatePartnerScheme}=require("../controllers/schemes/partnerSchemes");
 
 const {wrapper}=require('../utils/errorWrap');
 

@@ -6,9 +6,9 @@ const Op = Sequelize.Op;
 
 const check = require('../../lib/checkLib');
 const request = require('request');
-const { createRefrenceCode } = require('../../utils/refrenceCode');
+const { createReferenceCode } = require('../../utils/referenceCode');
 //for email
-const { sendMail } = require('../../service/EmailService')
+const { sendMail } = require('../../service/emailService')
 const CONSTANT = require('../../utils/constant');
 
 exports.registerSendOtp = async (req, res, next) => {
@@ -18,7 +18,7 @@ exports.registerSendOtp = async (req, res, next) => {
     if (!check.isEmpty(userExist)) {
         return res.status(404).json({ message: 'This Mobile number is already Exist' });
     }
-    const refrenceCode = await createRefrenceCode(5);
+    const referenceCode = await createReferenceCode(5);
     let otp = Math.floor(1000 + Math.random() * 9000);
 
     await sequelize.transaction(async t => {
@@ -38,7 +38,7 @@ exports.registerSendOtp = async (req, res, next) => {
         }
         await models.user_role.create({ userId: user.id, roleId: roleId }, { transaction: t })
     })
-    request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${refrenceCode} your OTP is ${otp}`);
+    request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`);
 
     // //for email
     // const Emaildata = {
@@ -47,7 +47,7 @@ exports.registerSendOtp = async (req, res, next) => {
     // }
     // await sendMail(Emaildata)
     // //for email
-    return res.status(200).json({ message: 'Otp send to your Mobile number.', refrenceCode: refrenceCode });
+    return res.status(200).json({ message: 'Otp send to your Mobile number.', referenceCode: referenceCode });
 
 }
 
@@ -81,12 +81,12 @@ exports.sendOtp = async (req, res, next) => {
     let userDetails = await models.users.findOne({ where: { mobileNumber } });
     if (userDetails) {
         let otp = Math.floor(1000 + Math.random() * 9000);
-        const refrenceCode = await createRefrenceCode(5);
+        const referenceCode = await createReferenceCode(5);
         let otpAdded = await models.users.update({ otp }, { where: { id: userDetails.id } });
 
-        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${refrenceCode} your OTP is ${otp}`);
+        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`);
 
-        return res.status(200).json({ message: 'Otp send to your Mobile number.', refrenceCode: refrenceCode });
+        return res.status(200).json({ message: 'Otp send to your Mobile number.', referenceCode: referenceCode });
 
     } else {
         res.status(400).json({ message: 'User does not exists, please contact to Admin' });

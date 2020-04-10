@@ -29,7 +29,7 @@ const offer = require('./offer'); //Offer Route
 router.use('/offer', offer)
 
 
-const lenderBanner = require('./lender_banner'); //lenderBanner Route
+const lenderBanner = require('./lenderBanner'); //lenderBanner Route
 router.use('/lender-banner', lenderBanner)
 
 
@@ -64,10 +64,10 @@ router.use('/permission',permission);
 const scheme = require('./scheme'); // scheme Route
 router.use('/scheme',scheme);
 
-const partnerscheme=require('./partnerscheme'); // partner Scheme Route
+const partnerscheme=require('./partnerScheme'); // partner Scheme Route
 router.use('/partnerscheme',partnerscheme);
 
-const uploadScheme=require('./upload_schemes'); // upload Scheme Route
+const uploadScheme=require('./uploadSchemes'); // upload Scheme Route
 router.use('/upload-scheme',uploadScheme);
 
 
