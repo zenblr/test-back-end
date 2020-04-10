@@ -32,7 +32,7 @@ export class PartnerService {
     return this.http.put<any>(`/api/partner/${id}`, data);
   }
 
-  deletePartner(data): Observable<any> {
-    return this.http.delete<any>(`/api/partner/${data}`);
+  deletePartner(id): Observable<any> {
+    return this.http.delete<any>(`/api/partner?id=${id}&isActive=${false}`);
   }
 }
