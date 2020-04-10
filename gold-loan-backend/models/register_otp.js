@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'expiry_time',
         },
+        referenceCode:{
+            type: DataTypes.STRING,
+            field: 'reference_code',
+        },
         isVerified: {
             type: DataTypes.BOOLEAN,
             field: 'is_verified',

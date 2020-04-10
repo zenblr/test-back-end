@@ -30,15 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'mobile_number',
             allowNull: false,
         },
-        otp: {
-            type: DataTypes.INTEGER,
-            field: "otp"
-        },
-        isVerified: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_verified',
-            defaultValue: false
-        },
         email: {
             type: DataTypes.STRING,
             field: 'email',

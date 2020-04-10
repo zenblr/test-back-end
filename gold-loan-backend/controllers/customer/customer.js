@@ -13,12 +13,18 @@ const check = require('../../lib/checkLib');
 const { paginationWithFromTo } = require("../../utils/pagination");
 
 exports.addCustomer = async (req, res, next) => {
-
+    let { firstName, lastName, password, referenceCode, email, panCardNumber, stateId, cityIds, address, ratingId, statusId } = req.body
+    console.log(req.body)
     // cheanges needed here 
     let createdBy = req.userData.id
     let modifiedBy = req.userData.id
 
-    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, ratingId, statusId } = req.body
+    let getMobileNumber = await models.register_customer_otp.findOne({ where: { referenceCode, isVerified: true } })
+    if (check.isEmpty(getMobileNumber)) {
+        return res.status(404).json({ message: 'Registration Failed' });
+    }
+    let mobileNumber = getMobileNumber.mobileNumber;
+
     let customerExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
     if (!check.isEmpty(customerExist)) {
         return res.status(404).json({ message: 'This Mobile number already Exists' });
@@ -27,9 +33,8 @@ exports.addCustomer = async (req, res, next) => {
     let getStageId = await models.stage.findOne({ where: { stageName: 'lead' } });
     let stageId = getStageId.id;
 
-
     await sequelize.transaction(async t => {
-        const customer = await models.customers.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, ratingId, stageId, statusId, createdBy, modifiedBy }, { transaction: t })
+        const customer = await models.customers.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, ratingId, stageId, statusId, createdBy, modifiedBy, isActive: true }, { transaction: t })
         if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
                 let data = await models.customer_address.create({
@@ -42,94 +47,76 @@ exports.addCustomer = async (req, res, next) => {
                 }, { transaction: t })
             }
         }
-    }).then((customer) => {
-        return res.status(200).json({ messgae: `Customer created` })
-    }).catch((exception) => {
-        next(exception)
     })
+    return res.status(200).json({ messgae: `Customer created` })
 
 }
+
 
 exports.registerCustomerSendOtp = async (req, res, next) => {
-    try {
-        const { mobileNumber } = req.body
+    const { mobileNumber } = req.body
 
+    let customerExist = await models.customers.findOne({ where: { mobileNumber, isActive: true } })
 
-        let customerExist = await models.customers.findOne({ where: { mobileNumber, isActive: true } })
-
-        if (!check.isEmpty(customerExist)) {
-            return res.status(200).json({ message: `Mobile number is already exist.` })
-        }
-        const refrenceCode = await createRefrenceCode(5);
-        let otp = Math.floor(1000 + Math.random() * 9000);
-        let createdTime = new Date();
-        let expiryTime = moment.utc(createdTime).add(10, 'm')
-        await models.register_customer_otp.create({ mobileNumber, otp, createdTime, expiryTime })
-
-        return res.status(200).json({ message: `Otp send to your entered mobile number.` })
-
-    } catch (error) {
-        return res.status(200).json({ message: error.message })
+    if (!check.isEmpty(customerExist)) {
+        return res.status(200).json({ message: `Mobile number is already exist.` })
     }
-}
 
-exports.verifiedRegisterOtp = async (req, res, next) => {
-    try {
-        let { otp, mobileNumber } = req.body;
-        let createdBy = req.userData.id
-        let modifiedBy = req.userData.id
-        var todayDateTime = new Date();
+    await models.register_customer_otp.destroy({ where: { mobileNumber } })
 
-        let customerExist = await models.customers.findOne({ where: { mobileNumber, isActive: true } })
-        if (!check.isEmpty(customerExist)) {
-            if (customerExist.isActive) {
-                return res.status(200).json({ message: `Mobile number is already exist.` })
-            } else {
-                let getRegisterOtp = await models.register_customer_otp.findOne({
-                    where: {
-                        mobileNumber, otp,
-                        expiryTime: {
-                            [Op.gte]: todayDateTime
-                        }
-                    }
-                })
-                if (check.isEmpty(getRegisterOtp)) {
-                    return res.status(400).json({ message: `Your time is expired. Please click on resend otp` })
-                }
-                await models.customers.create({ mobileNumber, createdBy, modifiedBy, isVerified: true })
-                return res.status(200).json({ message: `Otp verification complete` })
-            }
-        } else {
-            let getRegisterOtp = await models.register_customer_otp.findOne({
-                where: {
-                    mobileNumber, otp,
-                    expiryTime: {
-                        [Op.gte]: todayDateTime
-                    }
-                }
-            })
-            if (check.isEmpty(getRegisterOtp)) {
-                return res.status(400).json({ message: `Your time is expired. Please click on resend otp` })
-            }
+    const referenceCode = await createRefrenceCode(5);
+    let otp = Math.floor(1000 + Math.random() * 9000);
+    let createdTime = new Date();
+    let expiryTime = moment.utc(createdTime).add(10, 'm')
+    await models.register_customer_otp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
 
-            await models.customers.create({ mobileNumber, createdBy, modifiedBy, isVerified: true })
-            return res.status(200).json({ message: `Otp verification complete` })
-        }
-    } catch (error) {
-        return res.status(200).json({ message: error, message })
-    }
+    return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode })
+
+
 }
 
 
+exports.sendOtp = async (req, res, next) => {
+    const { mobileNumber } = req.body
 
-exports.deactivateCustomer = async (req, res, next) => {
-    const { customerId, isActive } = req.query;
-    let customerExist = await models.customers.findOne({ where: { id: customerId } })
+    let customerExist = await models.customers.findOne({ where: { mobileNumber, isActive: true } })
+
     if (check.isEmpty(customerExist)) {
-        return res.status(404).json({ message: 'Customer is not exist' });
+        return res.status(200).json({ message: `Mobile number is not Exist.` })
     }
-    await models.customers.update({ isActive: isActive }, { where: { id: customerId } })
-    return res.status(200).json({ message: `Updated` })
+
+    await models.register_customer_otp.destroy({ where: { mobileNumber } })
+
+    const referenceCode = await createRefrenceCode(5);
+    let otp = Math.floor(1000 + Math.random() * 9000);
+    let createdTime = new Date();
+    let expiryTime = moment.utc(createdTime).add(10, 'm')
+    await models.register_customer_otp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
+
+    return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode })
+
+}
+
+exports.verifyOtp = async (req, res, next) => {
+    let { referenceCode, otp } = req.body
+    var todayDateTime = new Date();
+
+    let verifyUser = await models.register_customer_otp.findOne({
+        where: {
+            referenceCode, otp,
+            expiryTime: {
+                [Op.gte]: todayDateTime
+            }
+        }
+    })
+    console.log(todayDateTime)
+    if (check.isEmpty(verifyUser)) {
+        return res.status(400).json({ message: `Your time is expired. Please click on resend otp` })
+    }
+
+    let verifyFlag = await models.register_customer_otp.update({ isVerified: true }, { where: { id: verifyUser.id } })
+
+    return res.json({ message: "Success", referenceCode })
 
 }
 
@@ -150,13 +137,24 @@ exports.editCustomer = async (req, res, next) => {
     }
     await sequelize.transaction(async t => {
         const customer = await models.customers.update({ firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive, modifiedBy }, { where: { id: id }, transaction: t })
-    }).then((customer) => {
-        return res.status(200).json({ messgae: `User Updated` })
-    }).catch((exception) => {
-        next(exception)
     })
+    return res.status(200).json({ messgae: `User Updated` })
+
 
 }
+
+
+exports.deactivateCustomer = async (req, res, next) => {
+    const { customerId, isActive } = req.query;
+    let customerExist = await models.customers.findOne({ where: { id: customerId } })
+    if (check.isEmpty(customerExist)) {
+        return res.status(404).json({ message: 'Customer is not exist' });
+    }
+    await models.customers.update({ isActive: isActive }, { where: { id: customerId } })
+    return res.status(200).json({ message: `Updated` })
+
+}
+
 
 exports.getAllCustomers = async (req, res, next) => {
 
