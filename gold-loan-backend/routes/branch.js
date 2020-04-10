@@ -1,13 +1,13 @@
 const { addBranch, readBranch, readBranchById, updateBranch, deleteBranch } = require('../controllers/branch/branch');
 const express = require('express');
 const route = express.Router();
-const validationError =require('../middleware/validationError')
+const validationError = require('../middleware/validationError')
 const { wrapper } = require('../utils/errorWrap');
-const {branchValidation}=require('../validations/branch')
+const { branchValidation } = require('../validations/branch')
 
 const checkAuth = require('../middleware/checkAuth');
 
-route.post('/',branchValidation,validationError,checkAuth, wrapper(addBranch)); // add branch
+route.post('/', branchValidation, validationError, checkAuth, wrapper(addBranch)); // add branch
 
 route.get('/', checkAuth, wrapper(readBranch)); // get branch
 
