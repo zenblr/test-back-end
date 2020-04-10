@@ -8,10 +8,10 @@ const check = require('../../lib/checkLib')
 
 //Add branch
 exports.addBranch = async (req, res, next) => {
-    const { partnerId, name, cityId, stateId, address, pinCode, commission, isActive } = req.body;
+    const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
     await sequelize.transaction(async t => {
 
-        let addBranch = await models.branch.create({ partnerId, name, cityId, stateId, address, pinCode, commission, isActive }, { transaction: t });
+        let addBranch = await models.branch.create({ partnerId, name, cityId, stateId, address, pincode, commission, isActive }, { transaction: t });
         let id = addBranch.dataValues.id;
 
         let partnerdataid = await models.partner.findOne({ where: { id: addBranch.dataValues.partnerId }, transaction: t });
@@ -114,11 +114,11 @@ exports.readBranchById = async (req, res, next) => {
 exports.updateBranch = async (req, res, next) => {
     const branchId = req.params.id;
 
-    const { partnerId, name, cityId, stateId, address, pinCode, commission, isActive } = req.body;
+    const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
     let pId = name.slice(0, 3).toUpperCase() + '-' + branchId;
 
 
-    let branchData = await models.branch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pinCode, commission, isActive }, { where: { id: branchId, isActive: true } });
+    let branchData = await models.branch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pincode, commission, isActive }, { where: { id: branchId, isActive: true } });
     if (branchData[0] == 0) {
         return res.status(404).json({ message: " Update failed" });
     }
