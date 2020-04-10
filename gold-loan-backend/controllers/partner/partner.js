@@ -10,9 +10,7 @@ const check = require('../../lib/checkLib')
 
 //add partner
 exports.addPartner = async (req, res, next) => {
-
     const { name, commission } = req.body;
-
     let partnerExist = await models.partner.findOne({ where: { name } })
     if (!check.isEmpty(partnerExist)) {
         return res.status(404).json({ message: 'This Partner is already Exist' });
