@@ -1,12 +1,14 @@
 const {addScheme,readScheme,readSchemeById,deactiveScheme,updateScheme}=require("../controllers/schemes/scheme");
 
 const {wrapper}=require('../utils/errorWrap');
+const validationError=require('../middleware/validationError');
+const  {schemeValidation}=require('../validations/scheme');
 
 const express=require('express');
 
 const route=express.Router();
 
-route.post('/',wrapper(addScheme)); // add scheme route
+route.post('/',schemeValidation,validationError,wrapper(addScheme)); // add scheme route
 
 route.get('/',wrapper(readScheme)); // read Scheme route
 

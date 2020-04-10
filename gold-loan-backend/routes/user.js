@@ -5,12 +5,14 @@ const { wrapper } = require('../utils/errorWrap');
 
 const checkAuth = require('../middleware/checkAuth')
 
+const {userValidation}=require('../validations/user');
+const validationError=require('../middleware/validationError')
 
 const { registerSendOtp, verifyRegistrationOtp, sendOtp,changePassword,updatePassword,getUser } = require('../controllers/user/user')
 
 //Register User
 
-route.post('/register-otp', wrapper(registerSendOtp));
+route.post('/register-otp',userValidation,validationError, wrapper(registerSendOtp));
 
 route.post('/verify-otp', wrapper(verifyRegistrationOtp));
 
