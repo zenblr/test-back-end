@@ -1,17 +1,17 @@
-module.exports=(sequelize,DATATYPES)=>{
+module.exports=(sequelize,DataTypes)=>{
     const PartnerSchemes=sequelize.define('partnerSchemes',{
         //attribute
         schemeId:{
-           type:DATATYPES.INTEGER,
+           type:DataTypes.INTEGER,
            field:'scheme_id'
         },
         partnerId:{
-        type:DATATYPES.INTEGER,
+        type:DataTypes.INTEGER,
         field:'partner_id'
         },
 
         isActive:{
-            type:DATATYPES.BOOLEAN,
+            type:DataTypes.BOOLEAN,
             field:'is_active',
             defaultValue:true
 
