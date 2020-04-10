@@ -1,5 +1,5 @@
 module.exports=(sequelize,DATATYPES)=>{
-    const PartnerSchemes=sequelize.define('partner_schemes',{
+    const PartnerSchemes=sequelize.define('partnerSchemes',{
         //attribute
         schemeId:{
            type:DATATYPES.INTEGER,

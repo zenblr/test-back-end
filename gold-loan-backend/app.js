@@ -54,7 +54,7 @@ app.use(function (req, res, next) {
 // error handler
 app.use(function (err, req, res, next) {
 
-    models.error_logger.create({
+    models.errorLogger.create({
         message: err.message,
         url:req.url,
         method:req.method,

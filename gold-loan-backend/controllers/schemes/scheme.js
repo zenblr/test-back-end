@@ -15,7 +15,7 @@ exports.addScheme = async (req, res, next) => {
         for (let i = 0; i < partnerId.length; i++) {
             console.log(partnerId[i]);
 
-            var data = await models.partner_schemes.create({
+            var data = await models.partnerSchemes.create({
                 schemeId: addSchemeData.id,
                 partnerId: partnerId[i]
 

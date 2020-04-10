@@ -18,7 +18,7 @@ exports.addRole = async (req, res, next) => {
     await sequelize.transaction(async t => {
         let role = await models.roles.create({ roleName, description });
         for (let i = 0; i < permissionId.length; i++) {
-            let data = await models.role_permission.create({
+            let data = await models.rolePermission.create({
                 roleId: role.id,
                 permissionId: permissionId[i]
             }, { transaction: t })
@@ -33,16 +33,18 @@ exports.addRole = async (req, res, next) => {
 
 exports.readRole = async (req, res, next) => {
 
-    let { getAll } = req.query;
-    let whereCondition;
-    if (getAll == "true") {
-        whereCondition = { order: [['id', 'ASC']] }
-    } else {
-        whereCondition = { where: { isActive: true }, order: [['id', 'ASC']] }
+    // let { getAll } = req.query;
+    // let whereCondition;
+    // if (getAll == "true") {
+    //     whereCondition = { order: [['id', 'ASC']] }
+    // } else {
+    //     whereCondition = { where: { isActive: true }, order: [['id', 'ASC']] }
 
-    }
+    // }
 
-    let readRoleData = await models.roles.findAll(whereCondition);
+    // let readRoleData = await models.roles.findAll(whereCondition);
+    let readRoleData = await models.roles.findAll({include:[models.permission]});
+
     if (!readRoleData) {
         return res.status(404).json({ message: "Data not found" });
     }
@@ -63,7 +65,7 @@ exports.updateRole = async (req, res, next) => {
             return res.status(404).json({ message: 'This Role is already Exist' });
         }
     }
-    let permission = await models.role_permission.findAll({ where: { roleId }, attributes: ['permissionId'] });
+    let permission = await models.rolePermission.findAll({ where: { roleId }, attributes: ['permissionId'] });
     let permissionIdFromTable = await permission.map(singlePermission => {
         return singlePermission.permissionId
     })
@@ -77,7 +79,7 @@ exports.updateRole = async (req, res, next) => {
         let updateRoleData = await models.roles.update({ roleName, description }, { where: { id: roleId }, transaction: t });
 
         if (deletedId.length != 0) {
-            var data = await models.role_permission.destroy({
+            var data = await models.rolePermission.destroy({
                 where: {
                     roleId: roleId,
                     permissionId: { [Op.in]: deletedId }
@@ -92,7 +94,7 @@ exports.updateRole = async (req, res, next) => {
                 obj['permissionId'] = insertId[i]
                 insertedArray.push(obj)
             }
-            var bulkCreateRolePermission = await models.role_permission.bulkCreate(insertedArray, { returning: true, transaction: t });
+            var bulkCreateRolePermission = await models.rolePermission.bulkCreate(insertedArray, { returning: true, transaction: t });
         }
     })
     return res.status(200).json({ messgae: `Updated ` })

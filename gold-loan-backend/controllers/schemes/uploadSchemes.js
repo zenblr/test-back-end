@@ -20,7 +20,7 @@ exports.uploadScheme = async (req, res, next) => {
             for (let i = 0; i < partnerId.length; i++) {
                 console.log(partnerId[i]);
 
-                var schemedata = await models.partner_schemes.create({
+                var schemedata = await models.partnerSchemes.create({
                     schemeId: addSchemeData.id,
                     partnerId: partnerId[i]
 

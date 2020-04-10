@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const ErrorLogger = sequelize.define('error_logger', {
+    const ErrorLogger = sequelize.define('errorLogger', {
         message: {
             type: DataTypes.STRING,
             field: 'message'

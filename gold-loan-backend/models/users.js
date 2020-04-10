@@ -68,9 +68,9 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = function(models) {
         User.hasMany(models.user_address, { foreignKey: 'userId', as: 'address' });
-        // User.hasMany(models.user_role, { foreignKey: 'userId', as: 'user_role' });
+        // User.hasMany(models.userRole, { foreignKey: 'userId', as: 'userRole' });
 
-        User.belongsToMany(models.roles, {through: models.user_role})
+        User.belongsToMany(models.roles, {through: models.userRole})
     }
 
     // This hook is always run before create.

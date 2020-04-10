@@ -88,7 +88,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Customer.associate = function (models) {
-        Customer.hasMany(models.customer_address, { foreignKey: 'customerId', as: 'address' });
+        Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.belongsTo(models.rating, { foreignKey: 'ratingId', as: 'rating' });
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });

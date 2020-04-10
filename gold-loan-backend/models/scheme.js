@@ -48,7 +48,7 @@ module.exports=(sequelize,DATATYPES)=>{
     )
     Schemes.associate = function(models) {
 
-        Schemes.belongsToMany(models.partner, {through: models.partner_schemes})
+        Schemes.belongsToMany(models.partner, {through: models.partnerSchemes})
   
     }
     return Schemes;

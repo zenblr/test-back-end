@@ -19,7 +19,7 @@ exports.addCustomer = async (req, res, next) => {
     let createdBy = req.userData.id
     let modifiedBy = req.userData.id
 
-    let getMobileNumber = await models.register_customer_otp.findOne({ where: { referenceCode, isVerified: true } })
+    let getMobileNumber = await models.registerCustomerOtp.findOne({ where: { referenceCode, isVerified: true } })
     if (check.isEmpty(getMobileNumber)) {
         return res.status(404).json({ message: 'Registration Failed' });
     }
@@ -37,7 +37,7 @@ exports.addCustomer = async (req, res, next) => {
         const customer = await models.customers.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, ratingId, stageId, statusId, createdBy, modifiedBy, isActive: true }, { transaction: t })
         if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
-                let data = await models.customer_address.create({
+                let data = await models.customerAddress.create({
                     customerId: customer.id,
                     address: address[i].address,
                     landMark: address[i].landMark,
@@ -62,13 +62,13 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
         return res.status(200).json({ message: `Mobile number is already exist.` })
     }
 
-    await models.register_customer_otp.destroy({ where: { mobileNumber } })
+    await models.registerCustomerOtp.destroy({ where: { mobileNumber } })
 
     const referenceCode = await createReferenceCode(5);
     let otp = Math.floor(1000 + Math.random() * 9000);
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, 'm')
-    await models.register_customer_otp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
+    await models.registerCustomerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
 
     return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode })
 
@@ -85,13 +85,13 @@ exports.sendOtp = async (req, res, next) => {
         return res.status(200).json({ message: `Mobile number is not Exist.` })
     }
 
-    await models.register_customer_otp.destroy({ where: { mobileNumber } })
+    await models.registerCustomerOtp.destroy({ where: { mobileNumber } })
 
     const referenceCode = await createReferenceCode(5);
     let otp = Math.floor(1000 + Math.random() * 9000);
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, 'm')
-    await models.register_customer_otp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
+    await models.registerCustomerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
 
     return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode })
 
@@ -101,7 +101,7 @@ exports.verifyOtp = async (req, res, next) => {
     let { referenceCode, otp } = req.body
     var todayDateTime = new Date();
 
-    let verifyUser = await models.register_customer_otp.findOne({
+    let verifyUser = await models.registerCustomerOtp.findOne({
         where: {
             referenceCode, otp,
             expiryTime: {
@@ -114,7 +114,7 @@ exports.verifyOtp = async (req, res, next) => {
         return res.status(400).json({ message: `Your time is expired. Please click on resend otp` })
     }
 
-    let verifyFlag = await models.register_customer_otp.update({ isVerified: true }, { where: { id: verifyUser.id } })
+    let verifyFlag = await models.registerCustomerOtp.update({ isVerified: true }, { where: { id: verifyUser.id } })
 
     return res.json({ message: "Success", referenceCode })
 
@@ -175,6 +175,9 @@ exports.getAllCustomers = async (req, res, next) => {
     let allCustomers = await models.customers.findAll({
         where: searchQuery,
         include: [{
+            model: models.customerAddress,
+            as: 'address',
+        },{
             model: models.states,
             as: 'state',
         }, {

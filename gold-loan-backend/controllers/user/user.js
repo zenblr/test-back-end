@@ -36,7 +36,7 @@ exports.registerSendOtp = async (req, res, next) => {
                 }, { transaction: t })
             }
         }
-        await models.user_role.create({ userId: user.id, roleId: roleId }, { transaction: t })
+        await models.userRole.create({ userId: user.id, roleId: roleId }, { transaction: t })
     })
     request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`);
 

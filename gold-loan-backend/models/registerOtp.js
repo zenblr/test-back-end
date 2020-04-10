@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const RegisterCustomerOtp = sequelize.define('register_customer_otp', {
+    const RegisterCustomerOtp = sequelize.define('registerCustomerOtp', {
         // attributes
         mobileNumber: {
             type: DataTypes.BIGINT,

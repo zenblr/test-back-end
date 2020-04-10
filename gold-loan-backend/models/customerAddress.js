@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const CustomerAddress = sequelize.define('customer_address', {
+    const CustomerAddress = sequelize.define('customerAddress', {
         // attributes
         customerId: {
             type: DataTypes.INTEGER,

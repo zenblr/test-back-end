@@ -71,7 +71,7 @@ module.exports = (req, res, next) => {
 
 let apilogger = (req, token, createdDateTime) => {
 
-    models.api_logger.create({
+    models.apiLogger.create({
         userToken: token,
         url: req.url,
         method: req.method,

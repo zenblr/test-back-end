@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const ApiLogger = sequelize.define('api_logger', {
+    const ApiLogger = sequelize.define('apiLogger', {
         userToken: {
             type: DataTypes.TEXT,
             field: 'user_token'

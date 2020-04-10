@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const RolePermission = sequelize.define('role_permission', {
+    const RolePermission = sequelize.define('rolePermission', {
         // attributes
         roleId: {
             type: DataTypes.INTEGER,
