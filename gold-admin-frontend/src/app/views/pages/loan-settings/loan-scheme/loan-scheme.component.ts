@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { LoanSettingsService } from "../../../../core/loan-setting";
 import { MatDialog } from "@angular/material"
 import { AddSchemeComponent } from "../add-scheme/add-scheme.component"
-import { map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil, catchError } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -14,7 +14,7 @@ export class LoanSchemeComponent implements OnInit {
 
   schemes: String[] = []
   loader: boolean = true;
-  viewLoading:boolean = false;
+  viewLoading: boolean = false;
   destroy$ = new Subject()
 
   constructor(private loanSettingService: LoanSettingsService,
@@ -28,7 +28,7 @@ export class LoanSchemeComponent implements OnInit {
   }
 
   ngOnInit() {
-   
+
     this.getScheme()
   }
 
@@ -39,6 +39,11 @@ export class LoanSchemeComponent implements OnInit {
         this.schemes = res.data;
         this.viewLoading = false;
         this.ref.detectChanges();
+      }),
+      catchError(err => {
+        this.viewLoading = false;
+        this.ref.detectChanges();
+        throw (err)
       })).subscribe()
   }
 

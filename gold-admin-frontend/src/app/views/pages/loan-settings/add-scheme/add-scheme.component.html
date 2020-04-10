@@ -1,6 +1,10 @@
-<div class="kt-portlet">
+
+<div class="kt-portlet" >
     <kt-modal-header [title]="'Add Scheme'"></kt-modal-header>
-    <div class="kt-portlet__body position-relative">
+    <div class="spinner-center" *ngIf="viewLoading">
+            <mat-spinner [diameter]="40"></mat-spinner>
+        </div>
+    <div class="kt-portlet__body position-relative" *ngIf="!viewLoading">
         <div class="text-right">
             <a href="../../../../../assets/media/files/schemes.csv" download="schemes.csv"
                 *ngIf="tabGroup.selectedIndex == 1">
@@ -100,7 +104,8 @@
                         </div>
                         <div class="col-9">
                             <select name="" id="" class="form-control selectpicker" formControlName="partnerId"
-                                [class.isError]="billingForm.get('partnerId').touched && billingForm.get('partnerId').invalid" multiple>
+                                [class.isError]="billingForm.get('partnerId').touched && billingForm.get('partnerId').invalid"
+                                multiple>
                                 <option [value]="partner.id" *ngFor="let partner of partnerData">{{partner.name}}
                                 </option>
                             </select>
@@ -139,7 +144,8 @@
                         </div>
                         <div class="col-9">
                             <select name="" id="" class="form-control" formControlName="partnerId"
-                                [class.isError]="csvForm.get('partnerId').touched && csvForm.get('partnerId').invalid" multiple> 
+                                [class.isError]="csvForm.get('partnerId').touched && csvForm.get('partnerId').invalid"
+                                multiple>
                                 <option [value]="partner.id" *ngFor="let partner of partnerData">{{partner.name}}
                                 </option>
                             </select>
@@ -152,7 +158,7 @@
     </div>
     <kt-portlet-footer>
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [isDisabled]="loading"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 

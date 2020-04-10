@@ -1,5 +1,9 @@
-<mat-spinner [diameter]="40" *ngIf="viewLoading" class="spinner-center"></mat-spinner>
-<label class="text-color font-weight-bold translate-center" *ngIf="!viewLoading && schemes.length==0">No Schemes Available</label>
+<div class="spinner-center" *ngIf="viewLoading">
+        <mat-spinner [diameter]="40" ></mat-spinner>
+    </div>
+<label class="text-color font-weight-bold h-v-text-center" *ngIf="!viewLoading && schemes.length==0">No Schemes
+    Available</label>
+
 <kt-portlet *ngIf="!viewLoading && schemes.length>0">
     <kt-portlet-body>
         <mat-tab-group>

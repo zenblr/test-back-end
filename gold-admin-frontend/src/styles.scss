@@ -129,10 +129,21 @@ input[type=number] {
 
 // spinner
 .spinner-center {
-	position : absolute !important;
-	top      : 50%;
-	left     : 60%;
-	transform: translate(-50%, -50%);
+	display        : flex;
+	justify-content: center;
+	flex-direction : column;
+	padding-left   : 50%;
+	width          : 100%;
+	height         : 100%;
+}
+
+// vertical and horizontal center text
+.h-v-text-center {
+	display        : flex;
+	justify-content: center;
+	flex-direction : column;
+	text-align     : center;
+	height         : 100%;
 }
 
 // mat tab
