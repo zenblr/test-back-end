@@ -33,7 +33,7 @@ export class LoanSettingsService {
       }))
   }
   uplaodCSV(data): Observable<any> {
-    return this.http.post('api/scheme', data).pipe(
+    return this.http.post('api/upload-scheme', data).pipe(
       map(res => res),
       catchError(err => {
         this._toastr.error(err.message)

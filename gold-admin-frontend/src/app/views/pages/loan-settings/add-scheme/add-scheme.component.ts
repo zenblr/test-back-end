@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { PartnerService } from '../../../../core/user-management/partner/services/partner.service';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { LoanSettingsService } from '../../../../core/loan-setting';
 import { ToastrService } from 'ngx-toastr';
 
@@ -16,17 +16,20 @@ export class AddSchemeComponent implements OnInit {
 
   @ViewChild('tabGroup', { static: false }) tabGroup;
 
-
+  viewLoading: boolean
   csvForm: FormGroup;
   billingForm: FormGroup;
   partnerData: [] = []
+  file: any;
+  loading:boolean = false;
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddSchemeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private partnerService: PartnerService,
     private laonSettingService: LoanSettingsService,
-    private _toastr: ToastrService, ) { }
+    private _toastr: ToastrService,
+    private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.initForm()
@@ -34,9 +37,18 @@ export class AddSchemeComponent implements OnInit {
   }
 
   partner() {
-    this.partnerService.getAllPartner().pipe(
+    this.viewLoading = true
+    this.partnerService.getAllPartner('', 1, 50).pipe(
       map(res => {
         this.partnerData = res.data;
+        this.viewLoading = false;
+        this.ref.detectChanges();
+        console.log(this.partnerData)
+      }), catchError(err => {
+        this.viewLoading = false;
+        this._toastr.error('Some thing went wrong')
+        this.ref.detectChanges();
+        throw (err)
       })
     ).subscribe()
   }
@@ -56,7 +68,7 @@ export class AddSchemeComponent implements OnInit {
     })
 
     this.csvForm = this.fb.group({
-      partnerCSV: ['', Validators.required],
+      partnerId: ['', Validators.required],
       csv: ['', Validators.required]
     })
     // this.csvForm.get('csv').re()
@@ -76,23 +88,39 @@ export class AddSchemeComponent implements OnInit {
         this.billingForm.markAllAsTouched()
         return
       }
+      this.loading = true;
       this.laonSettingService.saveScheme(this.billingForm.value).pipe(
         map((res) => {
-          if (res.message == 'sucess') {
-            this._toastr.success('Scheme Saved Sucessfully');
+          if (res.message == 'schemes created') {
+            this._toastr.success('Scheme Created Sucessfully');
+            this.dialogRef.close(res);
           }
+        }),catchError(err => {
+          this.loading = false;
+          this._toastr.error('Some thing went wrong')
+          this.ref.detectChanges();
+          throw (err)
         })).subscribe()
     } else if (this.tabGroup.selectedIndex == 1) {
       if (this.csvForm.invalid) {
         this.csvForm.markAllAsTouched()
+        return
       }
+      this.loading = true;
       var fb = new FormData()
-      fb.append
-      this.laonSettingService.uplaodCSV(this.csvForm.value).pipe(
+      fb.append('csv', this.file)
+      fb.append('partnerId', this.csvForm.controls.partnerId.value)
+      this.laonSettingService.uplaodCSV(fb).pipe(
         map((res) => {
-          if (res.message == 'sucess') {
-            this._toastr.success('Scheme Saved Sucessfully');
+          if (res.message == 'schemes created') {
+            this._toastr.success('Scheme Created Sucessfully');
+            this.dialogRef.close(res);
           }
+        }), catchError(err => {
+          this.loading = false;
+          this._toastr.error('Some thing went wrong')
+          this.ref.detectChanges();
+          throw (err)
         })).subscribe()
     }
   }
@@ -101,8 +129,8 @@ export class AddSchemeComponent implements OnInit {
     var reader = new FileReader()
     console.log(event)
     if (event.target.files[0].type == "text/csv") {
+      this.file = event.target.files[0];
       this.csvForm.get('csv').patchValue(event.target.files[0].name);
-      
     }
   }
 }

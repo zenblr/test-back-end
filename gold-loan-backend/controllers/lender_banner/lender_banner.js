@@ -8,7 +8,7 @@ exports.addUpdateLenderBanner = async (req, res, next) => {
     let userId = req.userData.id
     let lenderBanner = await models.lender_banner.findAll()
     if (lenderBanner.length == 0) {
-        let createdLenderBanner = await models.lender_banner.create({images, userId});
+        let createdLenderBanner = await models.lender_banner.create({ images, userId });
         if (!createdLenderBanner) {
             res.status(422).json({ message: 'Lender Banner not added' });
         } else {
@@ -18,10 +18,10 @@ exports.addUpdateLenderBanner = async (req, res, next) => {
         let id = lenderBanner[0].id;
         let UpdateData = await models.lender_banner.update({ images, userId }, { where: { id } })
         if (UpdateData[0] === 0) {
-            res.status(404).json({ message: 'Data not updated' });
-        } else {
-            res.status(200).json({ message: 'Success' });
+            return res.status(404).json({ message: 'Data not updated' });
         }
+        return res.status(200).json({ message: 'Success' });
+
     }
 }
 

@@ -12,7 +12,7 @@ const { sendMail } = require('../../service/EmailService')
 const CONSTANT = require('../../utils/constant');
 
 exports.registerSendOtp = async (req, res, next) => {
-    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address } = req.body;
+    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address,roleId } = req.body;
     let userExist = await models.users.findOne({ where: { mobileNumber: mobileNumber } })
 
     if (!check.isEmpty(userExist)) {
@@ -26,7 +26,6 @@ exports.registerSendOtp = async (req, res, next) => {
         const user = await models.users.create({ firstName, lastName, password, mobileNumber, email, otp, panCardNumber }, { transaction: t })
         if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
-                console.log(address[i])
                 let data = await models.user_address.create({
                     userId: user.id,
                     address: address[i].address,
@@ -37,6 +36,8 @@ exports.registerSendOtp = async (req, res, next) => {
                 }, { transaction: t })
             }
         }
+        await models.user_role.create({userId: user.id, roleId: roleId}, { transaction: t })
+
     }).then(() => {
         request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${refrenceCode} your OTP is ${otp}`);
 

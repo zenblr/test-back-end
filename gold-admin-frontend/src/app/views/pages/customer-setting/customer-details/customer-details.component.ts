@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
   selector: 'kt-customer-details',
@@ -9,12 +9,18 @@ import { ActivatedRoute } from '@angular/router'
 export class CustomerDetailsComponent implements OnInit {
 
   loans: number[] = []
-  constructor(private rout: ActivatedRoute) { }
+  customerId: number;
+  constructor(private rout: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit() {
     this.loans = [1, 1, 1, 1];
-    let id = this.rout.snapshot.params.id
-    console.log(id)
+    this.customerId = this.rout.snapshot.params.id
+    console.log(this.customerId)
+  }
+
+  viewLoan(loanId: number) {
+    this.router.navigate(['/customer-setting/customer-list/' + this.customerId + '/loan-details/' + loanId])
   }
 
 }

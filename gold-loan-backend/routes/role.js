@@ -12,6 +12,6 @@ route.get('/',wrapper(readRole)); //read role
 
 route.put('/:id',wrapper(updateRole)); //update role
 
-route.delete('/:id',wrapper(deactiveRole)); //delete role
+route.delete('/',wrapper(deactiveRole)); //delete role
 
 module.exports=route;

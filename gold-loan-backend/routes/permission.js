@@ -10,7 +10,7 @@ route.post('/',wrapper(addPermission));// add  permission
 
 route.get('/',wrapper(readPermission)); //get permission
 
-route.delete('/:id',wrapper(deactivePermission)); // delete permission
+route.delete('/',wrapper(deactivePermission)); // delete permission
 
 route.put("/:id",wrapper(updatePermission)); // update permission
 

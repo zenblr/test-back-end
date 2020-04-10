@@ -1,0 +1,25 @@
+:host {
+    .card {
+        border-radius: 10px;
+    }
+
+    img {
+        border       : 1px solid transparent;
+        border-radius: 10px;
+    }
+
+    .packets {
+        height: 195px;
+        width: 100%;
+    }
+
+    .ornaments {
+        height: 210px;
+        width : 100%;
+    }
+
+    .pacekts-label {
+        font-size: 14px;
+        margin   : 15px 0;
+    }
+}
