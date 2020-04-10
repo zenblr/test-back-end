@@ -24,11 +24,9 @@ exports.addRole = async (req, res, next) => {
             }, { transaction: t })
         }
 
-    }).then(() => {
-        return res.status(200).json({ messgae: `Role created` })
-    }).catch((exception) => {
-        next(exception)
     })
+    return res.status(200).json({ messgae: `Role created` })
+
 }
 
 //get Role
@@ -57,13 +55,13 @@ exports.updateRole = async (req, res, next) => {
     const roleId = req.params.id;
     const { roleName, description, permissionId } = req.body;
 
-    const priName = await models.roles.findOne({where:{id: roleId}})
+    const priName = await models.roles.findOne({ where: { id: roleId } })
 
-    if(priName.roleName != roleName){
+    if (priName.roleName != roleName) {
         let roleExist = await models.roles.findOne({ where: { roleName } })
-            if (!check.isEmpty(roleExist)) {
-                return res.status(404).json({ message: 'This Role is already Exist' });
-            }
+        if (!check.isEmpty(roleExist)) {
+            return res.status(404).json({ message: 'This Role is already Exist' });
+        }
     }
     let permission = await models.role_permission.findAll({ where: { roleId }, attributes: ['permissionId'] });
     let permissionIdFromTable = await permission.map(singlePermission => {
@@ -96,11 +94,9 @@ exports.updateRole = async (req, res, next) => {
             }
             var bulkCreateRolePermission = await models.role_permission.bulkCreate(insertedArray, { returning: true, transaction: t });
         }
-    }).then(() => {
-        return res.status(200).json({ messgae: `Updated ` })
-    }).catch((exception) => {
-        next(exception)
     })
+    return res.status(200).json({ messgae: `Updated ` })
+
 
 }
 

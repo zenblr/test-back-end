@@ -12,7 +12,7 @@ const { sendMail } = require('../../service/EmailService')
 const CONSTANT = require('../../utils/constant');
 
 exports.registerSendOtp = async (req, res, next) => {
-    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address,roleId } = req.body;
+    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId } = req.body;
     let userExist = await models.users.findOne({ where: { mobileNumber: mobileNumber } })
 
     if (!check.isEmpty(userExist)) {
@@ -36,22 +36,18 @@ exports.registerSendOtp = async (req, res, next) => {
                 }, { transaction: t })
             }
         }
-        await models.user_role.create({userId: user.id, roleId: roleId}, { transaction: t })
-
-    }).then(() => {
-        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${refrenceCode} your OTP is ${otp}`);
-
-        // //for email
-        // const Emaildata = {
-        //     data: `Your otp is ${user.otp}`,
-        //     email: user.email
-        // }
-        // await sendMail(Emaildata)
-        // //for email
-        return res.status(200).json({ message: 'Otp send to your Mobile number.', refrenceCode: refrenceCode });
-    }).catch((exception) => {
-        next(exception)
+        await models.user_role.create({ userId: user.id, roleId: roleId }, { transaction: t })
     })
+    request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${refrenceCode} your OTP is ${otp}`);
+
+    // //for email
+    // const Emaildata = {
+    //     data: `Your otp is ${user.otp}`,
+    //     email: user.email
+    // }
+    // await sendMail(Emaildata)
+    // //for email
+    return res.status(200).json({ message: 'Otp send to your Mobile number.', refrenceCode: refrenceCode });
 
 }
 
