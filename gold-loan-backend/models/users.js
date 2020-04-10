@@ -43,10 +43,6 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
-        otp: {
-            type: DataTypes.INTEGER,
-            field: 'otp'
-        },
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',
@@ -129,7 +125,6 @@ module.exports = (sequelize, DataTypes) => {
     User.prototype.toJSON = function() {
         var values = Object.assign({}, this.get());
         delete values.password;
-        delete values.otp;
         return values;
     }
 
