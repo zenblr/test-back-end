@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 export class CustomerGridComponent implements OnInit {
 
   customers: number[] = []
-  viewLoading: boolean = true
+  viewLoading: boolean = false
   constructor(private ref: ChangeDetectorRef,
     private router: Router) {
     window.scrollTo(0, 0)

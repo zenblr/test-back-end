@@ -27,7 +27,7 @@ export class BranchService {
     return this.http.put<any>(`/api/branch/${id}`, data);
   }
 
-  deleteBranch(data): Observable<any> {
-    return this.http.delete<any>(`/api/branch/${data}`);
+  deleteBranch(id): Observable<any> {
+    return this.http.delete<any>(`/api/branch?id=${id}&isActive=${false}`);
   }
 }

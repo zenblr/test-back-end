@@ -1,8 +1,15 @@
-<div class="kt-portlet">
+
+<div class="kt-portlet" >
     <kt-modal-header [title]="'Add Scheme'"></kt-modal-header>
-    <div class="kt-portlet__body position-relative">
+    <div class="spinner-center" *ngIf="viewLoading">
+            <mat-spinner [diameter]="40"></mat-spinner>
+        </div>
+    <div class="kt-portlet__body position-relative" *ngIf="!viewLoading">
         <div class="text-right">
-            <p class="text-primary csv_pos" *ngIf="tabGroup.selectedIndex == 1">Download Sample CSV</p>
+            <a href="../../../../../assets/media/files/schemes.csv" download="schemes.csv"
+                *ngIf="tabGroup.selectedIndex == 1">
+                <span class="text-primary csv_pos">Download Sample CSV</span>
+            </a>
         </div>
 
         <mat-tab-group #tabGroup>
@@ -54,7 +61,8 @@
                                 [class.isError]="billingForm.get('interestRateNinetyDaysMonthly').touched && billingForm.get('interestRateNinetyDaysMonthly').invalid">
                         </div>
                         <div class="col-3">
-                            <input type="number" class="form-control" formControlName="interestRateOneHundredEightyDaysMonthly"
+                            <input type="number" class="form-control"
+                                formControlName="interestRateOneHundredEightyDaysMonthly"
                                 [class.isError]="billingForm.get('interestRateOneHundredEightyDaysMonthly').touched && billingForm.get('interestRateOneHundredEightyDaysMonthly').invalid">
                         </div>
                     </div>
@@ -85,7 +93,8 @@
                                 [class.isError]="billingForm.get('interestRateNinetyDaysAnnually').touched && billingForm.get('interestRateNinetyDaysAnnually').invalid">
                         </div>
                         <div class="col-3">
-                            <input type="number" class="form-control" formControlName="interestRateOneHundredEightyDaysAnnually"
+                            <input type="number" class="form-control"
+                                formControlName="interestRateOneHundredEightyDaysAnnually"
                                 [class.isError]="billingForm.get('interestRateOneHundredEightyDaysAnnually').touched && billingForm.get('interestRateOneHundredEightyDaysAnnually').invalid">
                         </div>
                     </div>
@@ -94,9 +103,11 @@
                             <p class="text-color font-weight-bold">Select Partner ID</p>
                         </div>
                         <div class="col-9">
-                            <select name="" id="" class="form-control" formControlName="partnerId"
-                                [class.isError]="billingForm.get('partnerId').touched && billingForm.get('partnerId').invalid">
-                                <option value="test"></option>
+                            <select name="" id="" class="form-control selectpicker" formControlName="partnerId"
+                                [class.isError]="billingForm.get('partnerId').touched && billingForm.get('partnerId').invalid"
+                                multiple>
+                                <option [value]="partner.id" *ngFor="let partner of partnerData">{{partner.name}}
+                                </option>
                             </select>
 
                         </div>
@@ -110,16 +121,19 @@
                             <p class="text-color font-weight-bold">Upload CSV</p>
                         </div>
                         <div class="col-9">
-                            <div class="input-group mb-3" [class.isError]="csvForm.get('csv').touched && csvForm.get('csv').invalid">
+                            <div class="input-group mb-3"
+                                [class.isError]="csvForm.get('csv').touched && csvForm.get('csv').invalid">
                                 <input type="text" class="form-control" placeholder="Sample.csv"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2" formControlName="csv" readonly>
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                    formControlName="csv" readonly>
                                 <div class="input-group-append">
-                                    <span class="input-group-text bg kt-pointer" id="basic-addon2"
+                                    <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                         (click)="file.click()">Attach</span>
                                 </div>
                             </div>
                             <label class="file d-none">
-                                <input type="file" id="file" aria-label="File browser example" #file (input)="getFileInfo($event)">
+                                <input type="file" id="file" aria-label="File browser example" #file
+                                    (input)="getFileInfo($event)">
                                 <span class="file-custom"></span>
                             </label>
                         </div>
@@ -129,9 +143,11 @@
                             <p class="text-color font-weight-bold">Select Partner ID</p>
                         </div>
                         <div class="col-9">
-                            <select name="" id="" class="form-control" formControlName="partnerCSV"
-                                [class.isError]="csvForm.get('partnerCSV').touched && csvForm.get('partnerCSV').invalid">
-                                <option [value]="partner.id" *ngFor="let partner of partnerData">{{partner.Name}}</option>
+                            <select name="" id="" class="form-control" formControlName="partnerId"
+                                [class.isError]="csvForm.get('partnerId').touched && csvForm.get('partnerId').invalid"
+                                multiple>
+                                <option [value]="partner.id" *ngFor="let partner of partnerData">{{partner.name}}
+                                </option>
                             </select>
 
                         </div>
@@ -142,7 +158,7 @@
     </div>
     <kt-portlet-footer>
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [isDisabled]="loading"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 
