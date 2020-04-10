@@ -15,3 +15,13 @@ exports.partnerValidation=[
       .isFloat()
       .withMessage('Commission should be number')
     ]
+    
+  // exports.partnerUpdate=[
+  //   body("name")
+  //     .exists()
+  //     .withMessage("partner name is required")
+  //     .custom(async (value)=>{
+
+  //     })
+  //   body("commission")
+  // ]  

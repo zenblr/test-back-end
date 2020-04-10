@@ -14,7 +14,7 @@ route.get('/',wrapper(readScheme)); // read Scheme route
 
 route.get('/:id',wrapper(readSchemeById)); // read scheme by id route
 
-route.put('/:id',wrapper(updateScheme));  // update scheme 
+route.put('/:id',schemeValidation,validationError,wrapper(updateScheme));  // update scheme 
 
 route.delete('/:id',wrapper(deactiveScheme)); // deactive scheme
 
