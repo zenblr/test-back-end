@@ -33,17 +33,17 @@ exports.addRole = async (req, res, next) => {
 
 exports.readRole = async (req, res, next) => {
 
-    // let { getAll } = req.query;
-    // let whereCondition;
-    // if (getAll == "true") {
-    //     whereCondition = { order: [['id', 'ASC']] }
-    // } else {
-    //     whereCondition = { where: { isActive: true }, order: [['id', 'ASC']] }
+    let { getAll } = req.query;
+    let whereCondition;
+    if (getAll == "true") {
+        whereCondition = { order: [['id', 'ASC']] }
+    } else if (getAll == "false") {
+        whereCondition = { where: { isActive: true }, order: [['id', 'ASC']] }
+    } else if (getAll == undefined) {
+        whereCondition = { order: [['id', 'ASC']] }
+    }
 
-    // }
-
-    // let readRoleData = await models.roles.findAll(whereCondition);
-    let readRoleData = await models.roles.findAll({include:[models.permission]});
+    let readRoleData = await models.roles.findAll(whereCondition);
 
     if (!readRoleData) {
         return res.status(404).json({ message: "Data not found" });

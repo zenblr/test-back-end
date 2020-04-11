@@ -23,12 +23,12 @@ exports.getStatus = async(req, res, next) => {
     let { getAll } = req.query;
 
     let whereCondition;
-    console.log(getAll)
     if (getAll == "true") {
         whereCondition = { order: [['id', 'ASC']] }
-    } else {
+    } else if (getAll == "false") {
         whereCondition = { where: { isActive: true }, order: [['id', 'ASC']] }
-
+    } else if (getAll == undefined) {
+        whereCondition = { order: [['id', 'ASC']] }
     }
     let allStatus = await models.status.findAll(whereCondition)
     return res.status(200).json(allStatus)
