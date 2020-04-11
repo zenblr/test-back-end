@@ -1,9 +1,9 @@
 /**
  * @swagger
- * /customer:
+ * /customer/send-register-otp:
  *   post:
  *     tags:
- *       - Customer By Admin
+ *       - Customer  By Admin
  *     name: add Customer
  *     summary: To add customer 
  *     security:
@@ -20,7 +20,7 @@
  *               type: string
  *             lastName:
  *               type: string
- *             password:
+ *             referenceCode:
  *               type: string
  *             mobileNumber:
  *               type: integer
@@ -28,39 +28,33 @@
  *               type: string
  *             panCardNumber:
  *               type: string  
- *             address:
- *               type: array
- *             cityId:
- *               type: number
  *             stateId:
  *               type: number
- *             postal code:
+ *             cityId:
  *               type: number
- *             ratingId:
- *               type: number
+ *             address:
+ *               type: array
  *             statusId:
  *               type: number 
   
  *         required:
  *           - firstName
  *           - lastName
- *           - password
+ *           - referenceCode
  *           - mobileNumber
  *           - email
  *           - panCardNumber
  *           - address
- *           - cityId
  *           - stateId
- *           - postal code
- *           - ratingId
+ *           - cityId
+ *           - address
  *           - statusId
  *     responses:
  *       200:
- *          description: User Created
+ *          description: Customer Created
  *       404:
- *          description: This Mobile number is already Exist
- *       500:
- *          description: Something went wrong/Internal server error
+ *          description: This Mobile number is already Exist/Registration Failed
+ * /customer:
  *   get:
  *     tags:
  *       - Customer By Admin
@@ -82,7 +76,7 @@
  *     - name: "to"
  *       in: "query"
  *       description: "Pagination ending point"
- *       type: "string"
+ *       typse: "string"
  *     responses:
  *       200:
  *          description: Success
@@ -109,8 +103,6 @@
  *               type: string
  *             lastName:
  *               type: string
- *             password:
- *               type: string
  *             mobileNumber:
  *               type: integer
  *             email:
@@ -118,12 +110,10 @@
  *             panCardNumber:
  *               type: string  
  *             address:
- *               type: string
+ *               type: array
  *             cityId:
  *               type: number
  *             stateId:
- *               type: number
- *             postal code:
  *               type: number
  *             ratingId:
  *               type: number
@@ -137,14 +127,12 @@
  *           - id
  *           - firstName
  *           - lastName
- *           - password
  *           - mobileNumber
  *           - email
  *           - panCardNumber
  *           - address
  *           - cityId
  *           - stateId
- *           - postal code
  *           - ratingId
  *           - statusId
  *           - stageId
@@ -154,8 +142,6 @@
  *          description: User Updated
  *       404:
  *          description: Customer is not exist/This Mobile number is already Exist
- *       500:
- *          description: something went wrong/Internal server error
  *   delete:
  *     tags:
  *       - Customer By Admin
@@ -180,8 +166,6 @@
  *         description: Updated.
  *       404:
  *         description: Customer is not exist
- *       500:
- *         description: Internal server error.
  * /{customerId}:
  *   get:
  *     tags:
@@ -202,6 +186,58 @@
  *         description: Success.
  *       404:
  *         description: Customer not found
- *       500:
- *         description: Internal server error.
+ * customer/send-otp:
+ *   post:
+ *     tags:
+ *       - Customer  By Admin
+ *     name: add Customer by otp
+ *     summary: To add customer by otp
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             mobileNumber:
+ *               type: string
+ *         required:
+ *           - mobileNumber
+ *     responses:
+ *       200:
+ *         description: Otp send to your entered mobile number.
+ *       404:
+ *         description: Mobile number is not Exist.
+ * customer/verify-otp:
+ *   post:
+ *     tags:
+ *       - Customer  By Admin
+ *     name: verify by otp
+ *     summary: To verify by otp
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             referenceCode:
+ *               type: string
+ *             otp:
+ *               type: number
+ *         required:
+ *           - referenceCode
+ *           - otp
+ *     responses:
+ *       200:
+ *         description: Success.
+ *       404:
+ *         description: Invalid otp..
+ *    
  */

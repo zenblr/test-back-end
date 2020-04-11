@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /customer:
+ * /scheme:
  *   post:
  *     tags:
  *       - Scheme
@@ -22,15 +22,15 @@
  *               type: number
  *             interestRateThirtyDaysMonthly:
  *               type: number
- *             interestRateSixtyDaysMonthly:
- *               type: number
  *             interestRateNinetyDaysMonthly:
+ *               type: number
+ *             interestRateOneHundredEightyDaysMonthly:
  *               type: number
  *             interestRateThirtyDaysAnnually:
  *               type: number
- *             interestRateSixtyDaysAnnually:
- *               type: number  
  *             interestRateNinetyDaysAnnually:
+ *               type: number  
+ *             interestRateOnehundredeightyDaysAnnually:
  *               type: number
  *             partnerId:
  *               type: number
@@ -38,17 +38,15 @@
  *           - schemeAmountStart
  *           - schemeAmountEnd
  *           - interestRateThirtyDaysMonthly
- *           - interestRateSixtyDaysMonthly
  *           - interestRateNinetyDaysMonthly
+ *           - interestRateOneHundredEightyDaysMonthly
  *           - interestRateThirtyDaysAnnually
- *           - interestRateSixtyDaysAnnually
  *           - interestRateNinetyDaysAnnually
+ *           - interestRateOneHundredEightyDaysAnnually
  *           - partnerId
  *     responses:
  *       201:
  *          description: schemes Created
- *       500:
- *          description: Something went wrong/Internal server error
  *   get:
  *     tags:
  *       - Scheme
@@ -90,15 +88,15 @@
  *               type: number
  *             interestRateThirtyDaysMonthly:
  *               type: number
- *             interestRateSixtyDaysMonthly:
- *               type: number
  *             interestRateNinetyDaysMonthly:
+ *               type: number
+ *             interestRateOneHundredEightyDaysMonthly:
  *               type: number
  *             interestRateThirtyDaysAnnually:
  *               type: number
- *             interestRateSixtyDaysAnnually:
- *               type: number  
  *             interestRateNinetyDaysAnnually:
+ *               type: number  
+ *             interestRateOneHundredEightyDaysAnnually:
  *               type: number
  *             partnerId:
  *               type: number
@@ -106,11 +104,11 @@
  *           - schemeAmountStart
  *           - schemeAmountEnd
  *           - interestRateThirtyDaysMonthly
- *           - interestRateSixtyDaysMonthly
  *           - interestRateNinetyDaysMonthly
- *           - interestRateThirtyDaysAnnually
- *           - interestRateSixtyDaysAnnually
+ *           - interestRateNinetyDaysMonthly
+ *           - interestRateOneHundredEightyDaysAnnually
  *           - interestRateNinetyDaysAnnually
+ *           - interestRateOneHundredEightyDaysAnnually
  *           - partnerId
  *     responses:
  *       200:

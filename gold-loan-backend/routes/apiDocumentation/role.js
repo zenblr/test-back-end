@@ -18,13 +18,19 @@
  *           properties:
  *             roleName:
  *               type: string
+ *             description:
+ *               type: string
+ *             permissionId:
+ *               type: integer
  *         required:
- *           - role
+ *           - roleName
+ *           - description
+ *           - permissionId
  *     responses:
  *       201:
  *         description: role created
- *       422:
- *         description: role not created
+ *       404:
+ *         description: This Role is already Exist
  *   get:
  *     tags:
  *       - Role
@@ -39,6 +45,30 @@
  *         description: Success
  *       404:
  *         description: data not found
+ *   delete:
+ *     tags:
+ *       - Role
+ *     summary: To delete by Id
+ *     parameters:
+ *     - name: "id"
+ *       in: "query"
+ *       description: "Id of role to delete"
+ *       required: true
+ *       type: "integer"
+ *     - name: "isActive"
+ *       in: "query"
+ *       description: "isActive of role to delete"
+ *       required: true
+ *       type: "boolean"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Updated.
+ *       404:
+ *         description: update failed.
  * /role/{id}:
  *   put:
  *     tags:
@@ -61,31 +91,18 @@
  *           properties:
  *             roleName:
  *               type: string
+ *             description:
+ *               type: string
+ *             permissionId:
+ *               type: string 
  *     required:
  *         - roleName
+ *         - description
+ *         - permissionId
  *     responses:
  *       200:
- *         description: success
+ *         description: Updated
  *       404:
- *         description: data not found
- *   delete:
- *     tags:
- *       - Role
- *     summary: To delete by Id
- *     parameters:
- *     - name: "id"
- *       in: "path"
- *       description: "Id of role to delete"
- *       required: true
- *       type: "integer"
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Success.
- *       404:
- *         description: data not found.
+ *         description: This Role is already Exist
  * 
  */

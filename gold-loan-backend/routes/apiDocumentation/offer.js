@@ -33,7 +33,9 @@
 *             images:
 *               type: array
 *               items: 
-*                type:string 
+*                type: string 
+*             goldRate:
+*                type: number
 *         required:
 *           - images
 *     responses:

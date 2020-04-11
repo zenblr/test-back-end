@@ -25,13 +25,17 @@
  *          description: Status Created 
  *       404:
  *          description: This Status is already Exist
- *       500:
- *          description: Internal server error
  *   get:
  *     tags:
  *       - Status
  *     name: read status
  *     summary: To read status
+ *     parameters:
+ *     - name: "getAll"
+ *       in: "query"
+ *       description: "getAll"
+ *       required: true
+ *       type: "boolean"
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -39,8 +43,6 @@
  *     responses:
  *       200:
  *          description: Success
- *       500:
- *          description: Internal server error
  *   delete:
  *     tags:
  *       - Status
@@ -49,12 +51,12 @@
  *     - name: "statusId"
  *       in: "query"
  *       description: "Id of status to delete"
- *       required: false
+ *       required: true
  *       type: "integer"
  *     - name: "isActive"
  *       in: "query"
  *       description: "isActive to delete"
- *       required: false
+ *       required: true
  *       type: "boolean"
  *     security:
  *       - bearerAuth: []
@@ -63,6 +65,35 @@
  *     responses:
  *       200:
  *         description: Updated.
- *       500:
- *         description: Internal server error.
+ *       404:
+ *         description: status deleted failed.
+ * /status/{id}:
+ *   put:
+ *     tags:
+ *       - Status
+ *     summary: To update status
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: "id"
+ *         in: "path"
+ *         description: "Id of status to update"
+ *         required: true
+ *         type: "integer"
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             statusName:
+ *               type: string
+ *     required:
+ *         - statusName
+ *     responses:
+ *       200:
+ *         description: Updated
+ *       404:
+ *         description: This status is already Exist
  */

@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /register-otp:
+ * /user/register-otp:
  *   post:
  *     tags:
  *       - Customer Registration
@@ -25,7 +25,11 @@
  *             email:
  *               type: string
  *             panCardNumber:
- *               type: string         
+ *               type: string  
+ *             address:
+ *               type: array
+ *             roleId:
+ *               type: number       
  *         required:
  *           - firstName
  *           - lastName
@@ -33,12 +37,15 @@
  *           - mobileNumber
  *           - email
  *           - panCardNumber
+ *           - address
+ *           - roleId
+ * 
  *     responses:
  *       200:
  *          description: Your otp send it on to the mobile number
- *       401:
- *          description: Something went wrong
- * /verify-otp:
+ *       404:
+ *          description: This Mobile number is already Exist
+ * /user/verify-otp:
  *   post:
  *     tags:
  *       - Customer Registration
@@ -52,13 +59,13 @@
  *         schema:
  *           type: object
  *           properties:
- *             mobileNumber:
- *               type: integer
+ *             referenceCode:
+ *               type: string
  *             otp:
  *               type: integer
  *               
  *         required:
- *           - mobileNumber
+ *           - referenceCode
  *           - otp
  *     responses:
  *       200:

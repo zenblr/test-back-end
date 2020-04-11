@@ -136,26 +136,31 @@
  *           - commission
  *     responses:
  *       200:
- *         description: success
+ *         description: Success
  *       404:
- *         description: data not found
+ *         description: Update failed
  *   delete:
  *     tags:
  *       - Branch
  *     summary: To delete by Id
  *     parameters:
  *     - name: "id"
- *       in: "path"
+ *       in: "query"
  *       description: "Id of branch to delete"
  *       required: true
  *       type: "integer"
+ *     - name: "isAcive"
+ *       in: "query"
+ *       description: "Value of isActive of branch to delete"
+ *       required: true
+ *       type: "boolean"
  *     security:
  *       - bearerAuth: []
  *     consumes:
  *       - application/json
  *     responses:
  *       200:
- *         description: Success.
+ *         description: Updated.
  *       404:
- *         description: data not found.
+ *         description: branch deleted failed.
  */

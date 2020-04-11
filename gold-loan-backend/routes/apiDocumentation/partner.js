@@ -55,7 +55,30 @@
  *          description: Success
  *       404:
  *          description: Data not found
- *
+ *   delete:
+ *     tags:
+ *       - Partner
+ *     summary: To delete by Id
+ *     parameters:
+ *     - name: "id"
+ *       in: "query"
+ *       description: "Id of partner to delete"
+ *       required: true
+ *       type: "integer"
+ *     - name: "isActive"
+ *       in: "query"
+ *       description: " value of isAcive of partner to delete"
+ *       required: true
+ *       type: "boolean"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
+ *       404:
+ *         description: data not found.
  * /partner/{id}:
  *   get:
  *     tags:
@@ -77,7 +100,6 @@
  *         description: Data found
  *       404:
  *         description: Data not found
- *
  *   put:
  *     tags:
  *       - Partner
@@ -109,23 +131,5 @@
  *         description: success
  *       404:
  *         description: data not found
- *   delete:
- *     tags:
- *       - Partner
- *     summary: To delete by Id
- *     parameters:
- *     - name: "id"
- *       in: "path"
- *       description: "Id of partner to delete"
- *       required: true
- *       type: "integer"
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Success.
- *       404:
- *         description: data not found.
+
  */

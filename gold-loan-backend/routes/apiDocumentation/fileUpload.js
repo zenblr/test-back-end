@@ -4,7 +4,7 @@
 * /upload-file:
 *   get:
 *     tags:
-*       - File-Upload
+*       - FileUpload
 *     name: file-upload APIs
 *     summary: To read file-upload 
 *     security:
@@ -13,7 +13,7 @@
 *       - application/json
 *     responses:
 *       200:
-*         description: Data found 
+*         description: Success
 *       404:
 *         description: Data not found
 *   post:

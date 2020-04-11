@@ -46,26 +46,5 @@
 *       200:
 *         description: Banner updated
 *       404:
-*         description: Data not found
-* /banner/{id}:
-*   delete:
-*     tags:
-*       - Banner
-*     summary: To delete by Id
-*     parameters:
-*     - name: "id"
-*       in: "path"
-*       description: "Id of banner to delete"
-*       required: true
-*       type: "integer"
-*     security:
-*       - bearerAuth: []
-*     consumes:
-*       - application/json
-*     responses:
-*       200:
-*         description: Success.
-*       404:
-*         description: Data not found.
- 
+*         description: Data not found 
 */
