@@ -56,6 +56,7 @@ exports.registerSendOtp = async (req, res, next) => {
 
 }
 
+
 exports.verifyRegistrationOtp = async (req, res, next) => {
     let { referenceCode, otp } = req.body
     var todayDateTime = new Date();
@@ -69,7 +70,7 @@ exports.verifyRegistrationOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Your time is expired. Please click on resend otp` })
+        return res.status(400).json({ message: `Invalid Otp` })
     }
     await sequelize.transaction(async t => {
 
@@ -78,11 +79,8 @@ exports.verifyRegistrationOtp = async (req, res, next) => {
         let user = await models.users.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
 
         await models.users.update({ isActive: true }, { where: { id: user.id }, transaction: t });
-        
+
     })
-
-
-
     return res.json({ message: "Success", referenceCode })
 }
 
@@ -123,7 +121,7 @@ exports.verifyOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Your time is expired. Please click on resend otp` })
+        return res.status(400).json({ message: `Invalid otp` })
     }
     await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
@@ -133,21 +131,27 @@ exports.verifyOtp = async (req, res, next) => {
 }
 
 exports.updatePassword = async (req, res, next) => {
-    const { mobileNumber, otp, newPassword } = req.body
+    const { referenceCode, otp, newPassword } = req.body
+    var todayDateTime = new Date();
 
-    let user = await models.users.findOne({ where: { mobileNumber: mobileNumber } });
+    let verifyUser = await models.registerCustomerOtp.findOne({ where: { referenceCode, isVerified: true } })
+    if (check.isEmpty(verifyUser)) {
+        return res.status(404).json({ message: 'change password Failed' });
+    }
+
+    if (check.isEmpty(verifyUser)) {
+        return res.status(400).json({ message: `Invalid otp.` })
+    }
+    let user = await models.users.findOne({ where: { mobileNumber: verifyUser.mobileNumber } });
+
     if (check.isEmpty(user)) {
         return res.status(404).json({ message: 'User not found' });
     }
-    if (user.dataValues.otp === otp) {
-        let verifyUser = await user.update({ otp: null, password: newPassword }, { where: { id: user.dataValues.id } });
-
-        return res.status(200).json({ message: 'Password Updated.' });
+    let updatePassword = await user.update({ otp: null, password: newPassword }, { where: { id: user.dataValues.id } });
+    if(updatePassword[0] == 0){
+        return res.status(400).json({message: `Password update failed.`})
     }
-
-    return res.json({ message: `not match` })
-
-
+    return res.status(200).json({ message: 'Password Updated.' });
 }
 
 exports.changePassword = async (req, res, next) => {
