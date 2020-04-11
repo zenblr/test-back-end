@@ -90,6 +90,7 @@ export class AddLeadComponent implements OnInit {
       cityId: ['', [Validators.required]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
+      address: this.fb.array([])
     });
   }
 
@@ -123,7 +124,7 @@ export class AddLeadComponent implements OnInit {
 
   verifyOTP() {
     const params = {
-      mobileNumber: this.controls.mobileNumber.value,
+      otp: this.controls.otp.value,
       referenceCode: this.controls.referenceCode.value,
     };
     this.customerManagementService.verifyOtp(params).subscribe(res => {
@@ -135,19 +136,20 @@ export class AddLeadComponent implements OnInit {
 
   verifyPAN() {
     const panCardNumber = this.controls.panCardNumber.value;
-    this.customerManagementService.verifyPAN({ panCardNumber }).subscribe(res => {
-      if (res) {
-        this.isPanVerified = true;
-      }
-    });
-    // setTimeout(() => {
-    //   this.isPanVerified = true;
-    // }, 1000);
+    // this.customerManagementService.verifyPAN({ panCardNumber }).subscribe(res => {
+    //   if (res) {
+    //     this.isPanVerified = true;
+    //   }
+    // });
+    setTimeout(() => {
+      this.isPanVerified = true;
+    }, 1000);
   }
 
   resendOTP() {
     const mobileNumber = +(this.controls.mobileNumber.value);
-    this.customerManagementService.resendOtp({ mobileNumber }).subscribe(res => {
+    // use send function OTP for resend OTP
+    this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res) {
         this.otpSent = true;
         this.refCode = res.referenceCode;
@@ -168,19 +170,19 @@ export class AddLeadComponent implements OnInit {
     console.log(this.leadForm.value);
     const leadData = this.leadForm.value;
 
-    // this.customerManagementService.addLead(leadData).subscribe(res => {
-    //   // console.log(res);
-    //   if (res) {
-    //     const msg = 'Lead Added Successfully';
-    //     this.toastr.successToastr(msg);
-    //     this.dialogRef.close(true);
-    //   }
-    // },
-    //   error => {
-    //     console.log(error.error.message);
-    //     const msg = error.error.message;
-    //     this.toastr.errorToastr(msg);
-    //   });
+    this.customerManagementService.addLead(leadData).subscribe(res => {
+      // console.log(res);
+      if (res) {
+        const msg = 'Lead Added Successfully';
+        this.toastr.successToastr(msg);
+        this.dialogRef.close(true);
+      }
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 
   closeModal() {

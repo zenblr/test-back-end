@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router'
-import { AngularMaterialModule} from '../angular-material/angular-material.module'
-import { PartialsModule} from '../../partials/partials.module'
+import { AngularMaterialModule } from '../angular-material/angular-material.module'
+import { PartialsModule } from '../../partials/partials.module'
 import { LoanStatusComponent } from './loan-status/loan-status.component';
 import { LoanSchemeComponent } from './loan-scheme/loan-scheme.component';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../core/_base/crud';
@@ -14,6 +14,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddSchemeComponent } from './add-scheme/add-scheme.component';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 const routes: Routes = [
   { path: 'loan-status', component: LoanStatusComponent },
@@ -22,7 +23,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    LoanStatusComponent, 
+    LoanStatusComponent,
     LoanSchemeComponent, AddSchemeComponent
   ],
   imports: [
@@ -44,6 +45,8 @@ const routes: Routes = [
       useClass: InterceptService,
       multi: true
     },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
     HttpUtilsService,
     TypesUtilsService,
     LayoutUtilsService

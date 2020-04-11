@@ -16,30 +16,30 @@ export class CustomerManagementService {
   constructor(private http: HttpClient) { }
 
   getAllLeads(from, to, fromDate, search, toDate, userId): Observable<any> {
-    return this.http.get<any>(`/api/leads`);
+    return this.http.get<any>(`/api/customer?search=${search}&from=${from}&to=${to}`); // stageName=lead in queryParams
   }
 
   addLead(data): Observable<any> {
-    return this.http.post<any>(`/api/leads`, data);
+    return this.http.post<any>(`/api/customer`, data);
   }
 
   sendOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/user/register-otp`, data);
+    return this.http.post<any>(`/api/customer/send-register-otp`, data); //mobile
   }
 
   verifyOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/user/verify-otp`, data);
+    return this.http.post<any>(`/api/customer/verify-otp`, data); // ref,otp
   }
 
   resendOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/user/resend-otp`, data);
+    return this.http.post<any>(`/api/customer/resend-otp`, data);
   }
 
   verifyPAN(data): Observable<any> {
-    return this.http.post<any>(`/api/user/verify-pan`, data);
+    return this.http.post<any>(`/api/customer/verify-pan`, data);
   }
 
   deleteCustomer(id): Observable<any> {
-    return this.http.delete<any>(`/api/user/delete/${id}`);
+    return this.http.delete<any>(`/api/customer/delete/${id}`);
   }
 }
