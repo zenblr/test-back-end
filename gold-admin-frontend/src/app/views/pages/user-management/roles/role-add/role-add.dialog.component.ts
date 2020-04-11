@@ -2,7 +2,7 @@
 import { Component, OnInit, Inject, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 // RxJS
-import { Observable, of, Subscription} from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 // Lodash
 import { each, find, some } from 'lodash';
 // NGRX
@@ -22,13 +22,14 @@ import {
 	RoleOnServerCreated
 } from '../../../../../core/auth';
 import { delay } from 'rxjs/operators';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
-	selector: 'kt-role-edit-dialog',
-	templateUrl: './role-edit.dialog.component.html',
+	selector: 'kt-role-add-dialog',
+	templateUrl: './role-add.dialog.component.html',
 	changeDetection: ChangeDetectionStrategy.Default,
 })
-export class RoleEditDialogComponent implements OnInit, OnDestroy {
+export class RoleAddDialogComponent implements OnInit, OnDestroy {
 	// Public properties
 	role: Role;
 	role$: Observable<Role>;
@@ -37,8 +38,10 @@ export class RoleEditDialogComponent implements OnInit, OnDestroy {
 	loadingAfterSubmit = false;
 	allPermissions$: Observable<Permission[]>;
 	rolePermissions: Permission[] = [];
+	roleForm: FormGroup;
 	// Private properties
 	private componentSubscriptions: Subscription;
+	title: string;
 
 	/**
 	 * Component constructor
@@ -47,45 +50,46 @@ export class RoleEditDialogComponent implements OnInit, OnDestroy {
 	 * @param data: any
 	 * @param store: Store<AppState>
 	 */
-	constructor(public dialogRef: MatDialogRef<RoleEditDialogComponent>,
-		           @Inject(MAT_DIALOG_DATA) public data: any,
-		           private store: Store<AppState>) { }
+	constructor(public dialogRef: MatDialogRef<RoleAddDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: any,
+		private store: Store<AppState>,
+		private fb: FormBuilder) { }
 
-	/**
-	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
-	 */
-
-	/**
-	 * On init
-	 */
 	ngOnInit() {
-		if (this.data.roleId) {
-			this.role$ = this.store.pipe(select(selectRoleById(this.data.roleId)));
+		this.initForm()
+		console.log(this.data)
+		if (this.data.action == 'add') {
+			this.title = 'Add Role'
 		} else {
-			const newRole = new Role();
-			newRole.clear();
-			this.role$ = of(newRole);
+			this.title = 'Edit Role'
+			this.roleForm.patchValue(this.data.role)
+			this.roleForm.controls.cloneRoles.disable()
 		}
 
-		this.role$.subscribe(res => {
-			if (!res) {
-				return;
-			}
-
-			this.role = new Role();
-			this.role.id = res.id;
-			this.role.title = res.title;
-			this.role.permissions = res.permissions;
-			this.role.isCoreRole = res.isCoreRole;
-
-			this.allPermissions$ = this.store.pipe(select(selectAllPermissions));
-			this.loadPermissions();
-		});
 	}
 
-	/**
-	 * On destroy
-	 */
+	initForm() {
+		this.roleForm = this.fb.group({
+			name: ['', Validators.required],
+			cloneRoles: ['', Validators.required],
+			roleDescription: ['']
+		})
+	}
+
+	get controls() {
+		return this.roleForm.controls;
+	}
+
+	action(event: Event) {
+		if (event) {
+			if (this.roleForm.invalid) {
+				this.roleForm.markAllAsTouched()
+			}
+		} else if (!event) {
+			this.dialogRef.close()
+		}
+	}
+
 	ngOnDestroy() {
 		if (this.componentSubscriptions) {
 			this.componentSubscriptions.unsubscribe();
@@ -194,7 +198,7 @@ export class RoleEditDialogComponent implements OnInit, OnDestroy {
 		const updateRole: Update<Role> = {
 			id: this.role.id,
 			changes: _role
-		  };
+		};
 		this.store.dispatch(new RoleUpdated({
 			partialrole: updateRole,
 			role: _role

@@ -6,6 +6,7 @@ import { Subscription, merge } from 'rxjs';
 import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
 import { tap, distinctUntilChanged, skip } from 'rxjs/operators';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-customer-list',
@@ -29,6 +30,7 @@ export class CustomerListComponent implements OnInit {
   constructor(
     private customerManagementService: CustomerManagementService,
     private layoutUtilsService: LayoutUtilsService,
+    private router:Router
   ) { 
     window.scrollTo(0, 0);
   }
@@ -100,6 +102,10 @@ export class CustomerListComponent implements OnInit {
         //   });
       }
     });
+  }
+
+  viewLoan(id: number) {
+    this.router.navigate(['/customer-setting/customer-list/' + id])
   }
 
 }

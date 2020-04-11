@@ -5,27 +5,29 @@
 
 
 .kt-aside__brand {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	flex-direction: row;
-	padding: 8px kt-get($kt-page-padding, desktop) 0;
-	height: kt-get($kt-header-config, base, desktop, default, height);
+	display         : flex;
+	justify-content : space-between;
+	align-items     : center;
+	flex-direction  : row;
+	padding         : 15px 15px 0;
+	height          : 130px;
 	background-color: kt-get($kt-header-config, base, desktop, default, bg-color);
 
 	.kt-aside__brand-logo {
-		display: flex;
+		display        : flex;
 		justify-content: flex-begin;
 
 		img {
 			.kt-aside--minimize & {
 				display: none;
+				transition: kt-get($kt-aside-config, base, minimize, transition);
+
 			}
 		}
 	}
 
 	.kt-aside__brand-tools {
-		display: flex;
+		display        : flex;
 		justify-content: flex-end;
 
 		.kt-aside__brand-aside-toggler {
@@ -33,7 +35,7 @@
 			padding: 0;
 			@include kt-input-reset();
 
-			> span {
+			>span {
 				display: inline-block;
 
 				&:nth-child(2) {
@@ -42,8 +44,8 @@
 			}
 
 			svg {
-				height: 26px;
-				width: 26px;
+				height      : 26px;
+				width       : 26px;
 				margin-right: -2px;
 			}
 		}
@@ -57,10 +59,10 @@
 		// Header fixed & aside static mode
 		.kt-header--fixed.kt-aside--static & {
 			position: fixed;
-			top: 0;
-			left: 0;
-			width: kt-get($kt-aside-config, base, default, width);
-			z-index: kt-get($kt-header-config, base, desktop, fixed, zindex);
+			top     : 0;
+			left    : 0;
+			width   : kt-get($kt-aside-config, base, default, width);
+			z-index : kt-get($kt-header-config, base, desktop, fixed, zindex);
 		}
 
 		// Aside minimize mode
@@ -71,7 +73,7 @@
 				justify-content: center;
 
 				.kt-aside__brand-aside-toggler {
-					> span {
+					>span {
 						&:nth-child(1) {
 							display: none;
 						}
@@ -87,7 +89,7 @@
 		// Aside minimize, header fixed & aside static mode
 		.kt-header--fixed.kt-aside--static.kt-aside--minimize & {
 			transition: kt-get($kt-aside-config, base, minimize, transition);
-			width: kt-get($kt-aside-config, base, minimize, width);
+			width     : kt-get($kt-aside-config, base, minimize, width);
 		}
 	}
 }

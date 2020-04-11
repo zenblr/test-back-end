@@ -25,11 +25,12 @@
         right      : 30px;
         font-weight: 500;
         font-size  : 16px;
+        z-index    : 99999999999999999999999999999999999;
     }
 
-    .bg{
+    .bg {
         background-color: #454D67 !important;
-        color: rgb(193, 193, 193) !important;
+        color           : rgb(193, 193, 193) !important;
 
     }
 

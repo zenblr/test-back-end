@@ -1,0 +1,10 @@
+<div *ngFor="let image of images;index as idx">
+    <img [src]="image.value" *ngIf="image.showImg">
+    <input type="file" accept="image/*" class="form-control" (change)="uploadImages($event,idx)" *ngIf="!image.showImg">
+    <div>
+        <button (click)="delete(i)" *ngIf="image.isRemoved"> Delete</button>
+        <button (click)=fileInput.click() *ngIf="image.isEditable"> Edit</button>
+    </div>
+</div>
+
+<button (click)="addImages()">+ Add</button>

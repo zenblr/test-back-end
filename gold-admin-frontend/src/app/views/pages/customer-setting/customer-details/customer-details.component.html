@@ -100,11 +100,11 @@
 </div>
 <div class="row kt-margin-t-20">
     <div class="col-3 p-0" *ngFor="let loan of loans;index as i">
-        <div class="card kt-padding-10" [class.kt-margin-r-10]="(i+1)%4!=0">
+        <div class="card kt-padding-15" [class.kt-margin-r-10]="(i+1)%4!=0">
             <div class="text-gray font-weight-500 kt-margin-b-5">KYC Document</div>
             <div class="text-color font-weight-500 kt-margin-b-5">KYC Document</div>
-            <mat-divider></mat-divider>
-            <div class="row">
+            <mat-divider class="kt-margin-b-10 kt-margin-t-10"></mat-divider>
+            <div class="row kt-margin-b-15">
                 <div class="col-6">
                     <div class="text-gray font-weight-500">Loan Amount</div>
                     <div class="text-color font-weight-500">5,00,000</div>
@@ -114,7 +114,7 @@
                     <div class="text-color font-weight-500">5 Years</div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row kt-margin-b-15">
                 <div class="col-6">
                     <div class="text-gray font-weight-500">Start Date</div>
                     <div class="text-color font-weight-500">14 May 2020</div>
@@ -124,91 +124,7 @@
                     <div class="text-color font-weight-500">15 May 2025</div>
                 </div>
             </div>
-            <div class="text-primary font-weight-500">View Details</div>
+            <div class="text-primary font-weight-500 kt-pointer" (click)="viewLoan(1)">View Details</div>
         </div>
     </div>
-    <!-- <div class="col-3 p-0">
-        <div class="card kt-margin-r-10 kt-margin-l-10">
-            <div class="text-gray font-weight-500 kt-margin-b-5">KYC Document</div>
-            <div class="text-color font-weight-500 kt-margin-b-5">KYC Document</div>
-            <mat-divider></mat-divider>
-            <div class="row">
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">Loan Amount</div>
-                    <div class="text-color font-weight-500">5,00,000</div>
-                </div>
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">Loan Tennure</div>
-                    <div class="text-color font-weight-500">5 Years</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">Start Date</div>
-                    <div class="text-color font-weight-500">14 May 2020</div>
-                </div>
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">End Date</div>
-                    <div class="text-color font-weight-500">15 May 2025</div>
-                </div>
-            </div>
-            <div class="text-primary font-weight-500">View Details</div>
-        </div>
-    </div>
-    <div class="col-3 p-0">
-        <div class="card kt-margin-r-10">
-            <div class="text-gray font-weight-500 kt-margin-b-5">KYC Document</div>
-            <div class="text-color font-weight-500 kt-margin-b-5">KYC Document</div>
-            <mat-divider></mat-divider>
-            <div class="row">
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">Loan Amount</div>
-                    <div class="text-color font-weight-500">5,00,000</div>
-                </div>
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">Loan Tennure</div>
-                    <div class="text-color font-weight-500">5 Years</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">Start Date</div>
-                    <div class="text-color font-weight-500">14 May 2020</div>
-                </div>
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">End Date</div>
-                    <div class="text-color font-weight-500">15 May 2025</div>
-                </div>
-            </div>
-            <div class="text-primary font-weight-500">View Details</div>
-        </div>
-    </div>
-    <div class="col-3 p-0">
-        <div class="card">
-            <div class="text-gray font-weight-500 kt-margin-b-5">KYC Document</div>
-            <div class="text-color font-weight-500 kt-margin-b-5">KYC Document</div>
-            <mat-divider></mat-divider>
-            <div class="row">
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">Loan Amount</div>
-                    <div class="text-color font-weight-500">5,00,000</div>
-                </div>
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">Loan Tennure</div>
-                    <div class="text-color font-weight-500">5 Years</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">Start Date</div>
-                    <div class="text-color font-weight-500">14 May 2020</div>
-                </div>
-                <div class="col-6">
-                    <div class="text-gray font-weight-500">End Date</div>
-                    <div class="text-color font-weight-500">15 May 2025</div>
-                </div>
-            </div>
-            <div class="text-primary font-weight-500">View Details</div>
-        </div>
-    </div> -->
 </div>

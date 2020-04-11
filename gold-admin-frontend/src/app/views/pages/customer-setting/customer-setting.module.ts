@@ -16,6 +16,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CustomerSettingComponent } from './customer-setting.component';
 import { CustomerGridComponent } from './customer-grid/customer-grid.component';
 import { CustomerDetailsComponent } from './customer-details/customer-details.component';
+import { LoanDetailsComponent } from './loan-details/loan-details.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'customer-list/:id',
     component: CustomerDetailsComponent
+  },
+  {
+    path: 'customer-list/:id/loan-details/:loanId',
+    component: LoanDetailsComponent
   }
 ];
 
@@ -32,7 +37,8 @@ const routes: Routes = [
   declarations: [CustomerListComponent,
     CustomerSettingComponent,
     CustomerGridComponent,
-    CustomerDetailsComponent],
+    CustomerDetailsComponent,
+    LoanDetailsComponent],
   imports: [
     CommonModule,
     FormsModule,
