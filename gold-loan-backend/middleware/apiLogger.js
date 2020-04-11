@@ -19,7 +19,8 @@ module.exports = (req, res, next) => {
         "/api/user/register-otp",
         "/api/user/verify-otp",
         "/api/user/send-otp",
-        "/api/user/update-password"
+        "/api/user/update-password",
+        "/api/auth/verify-login"
     ];
     if (!skipUrls.includes(req.originalUrl)) {
         try {
