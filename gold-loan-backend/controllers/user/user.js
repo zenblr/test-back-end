@@ -135,9 +135,6 @@ exports.updatePassword = async (req, res, next) => {
     var todayDateTime = new Date();
 
     let verifyUser = await models.registerCustomerOtp.findOne({ where: { referenceCode, isVerified: true } })
-    if (check.isEmpty(verifyUser)) {
-        return res.status(404).json({ message: 'change password Failed' });
-    }
 
     if (check.isEmpty(verifyUser)) {
         return res.status(400).json({ message: `Invalid otp.` })
