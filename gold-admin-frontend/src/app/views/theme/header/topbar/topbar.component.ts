@@ -6,6 +6,7 @@ import { CustomerManagementService } from '../../../../core/customer-management/
 import { LoanSettingsService } from '../.././../../core/loan-setting'
 import { PartnerService } from '../.././../../core/user-management/partner/services/partner.service';
 import { BranchService } from '../.././../../core/user-management/branch/services/branch.service';
+import { RolesService } from '../.././../../core/user-management/roles';
 
 @Component({
 	selector: 'kt-topbar',
@@ -24,15 +25,16 @@ export class TopbarComponent implements OnInit {
 	type3: string;
 	value3: string;
 	showInput: boolean;
-	toogle:boolean;
-	toogler:string;
+	toogle: boolean;
+	toogler: string;
 	path: string;
 	constructor(private router: Router,
 		private location: Location,
 		private customerManagementServiceCustomer: CustomerManagementService,
-		private loanSettingService:LoanSettingsService,
-		private partnerService :PartnerService,
-		private branchService:BranchService) {
+		private loanSettingService: LoanSettingsService,
+		private partnerService: PartnerService,
+		private branchService: BranchService,
+		private rolesService: RolesService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -95,6 +97,14 @@ export class TopbarComponent implements OnInit {
 			this.value2 = 'Add New Branch';
 			this.type2 = 'button';
 		}
+		if (this.path == 'roles') {
+			this.showInput = true;
+			this.rightButton = true
+			this.type3 = 'button';
+			this.value3 = 'Add New Role';
+			this.value1 = 'Search';
+			this.type1 = 'button';
+		}
 	}
 
 	action(event: Event) {
@@ -111,9 +121,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'branch') {
 			this.branchService.openModal.next(true)
 		}
+		if (this.path == 'roles') {
+			this.rolesService.openModal.next(true)
+		}
 	}
 
-	check(val){
+	check(val) {
 		this.customerManagementServiceCustomer.toggle.next(val)
 		console.log('hi1');
 	}

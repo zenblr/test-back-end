@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 // Services
 import { UploadBannerService } from '../../../../core/upload-data/upload-banner/services/upload-banner.service';
@@ -13,6 +13,9 @@ export class UploadBannerComponent implements OnInit {
   imageUrl1: any = '/assets/media/bg/sc-home1-bg.png';
   imageUrl2: any = '/assets/media/bg/sc-home1-bg.png';
   imageUrl3: any = '/assets/media/bg/sc-home1-bg.png';
+  @ViewChild('fileInput2', { static: false }) fileInput2: ElementRef
+  @ViewChild('fileInput1',{static:false}) fileInput1:ElementRef
+  @ViewChild('fileInput3',{static:false}) fileInput3:ElementRef
 
   public categoryData: any;
   public imageFile: any;
@@ -99,7 +102,6 @@ export class UploadBannerComponent implements OnInit {
   }
 
   singleProductImageChangenew(event, num) {
-    debugger
     if (num == 1) {
       if (event.target.files.length && event.target.files[0]) {
         let imgSize = event.target.files[0].size;
@@ -367,6 +369,7 @@ export class UploadBannerComponent implements OnInit {
       this.url = '';
       this.images[num - 1] = '';
       this.urlCheck = true;
+      this.fileInput1.nativeElement.value = ''
       // this.spinnerValue = true;
       this.uploadBannerService.uploadBanners(this.images).subscribe(
         res => {
@@ -401,6 +404,7 @@ export class UploadBannerComponent implements OnInit {
       this.url2 = '';
       this.images[num - 1] = '';
       this.urlCheck2 = true;
+      this.fileInput2.nativeElement.value = ''
       // this.spinnerValue = true;
       this.ref.detectChanges();
       this.uploadBannerService.uploadBanners(this.images).subscribe(
@@ -436,6 +440,7 @@ export class UploadBannerComponent implements OnInit {
       this.url3 = '';
       this.images[num - 1] = '';
       this.urlCheck3 = true;
+      this.fileInput3.nativeElement.value = ''
       // this.spinnerValue = true;
       this.uploadBannerService.uploadBanners(this.images).subscribe(
         res => {
