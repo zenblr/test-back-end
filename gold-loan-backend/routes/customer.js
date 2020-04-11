@@ -13,10 +13,9 @@ const checkAuth = require('../middleware/checkAuth');
 router.post('/',customerValidation,validationError, checkAuth, wrapper(addCustomer));
 // router.post('/', checkAuth, wrapper(addCustomer));
 
-
 router.post('/send-register-otp', checkAuth, registerCustomerSendOtp);
 
-router.post('/send-otp', checkAuth, sendOtp)
+router.post('/send-otp', checkAuth, sendOtp);
 
 router.post('/verify-otp', checkAuth, verifyOtp);
 
