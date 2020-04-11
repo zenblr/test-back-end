@@ -33,25 +33,25 @@ exports.userValidation=[
     //   .withMessage('email id is required')
     //   .custom(async value=>{
     //   }),
-    body('panCardNumber')
-      .exists()
-      .withMessage('pan card is required')
-      .custom(async value=>{
-          if(!/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/i.test(value)){
-              return Promise.reject('Invalid Pan Card Number')
-          }
-      }),
+    // body('panCardNumber')
+    //   .exists()
+    //   .withMessage('pan card is required')
+    //   .custom(async value=>{
+    //       if(!/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/i.test(value)){
+    //           return Promise.reject('Invalid Pan Card Number')
+    //       }
+    //   }),
 
-    body('address')
-      .exists()
-      .withMessage("Address is required"),
+    // body('address')
+    //   .exists()
+    //   .withMessage("Address is required"),
   
-    body("roleId")
-      .exists()
-      .isInt()
-      .withMessage("role Id is required"),
+    // body("roleId")
+    //   .exists()
+    //   .isInt()
+    //   .withMessage("role Id is required"),
+    // 
     ]
-
 
     // exports.userUpdateValidation=[
     //   body('mobileNumber')

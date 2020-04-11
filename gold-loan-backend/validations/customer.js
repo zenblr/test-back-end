@@ -13,9 +13,12 @@ exports.customerValidation=[
       .exists()
       .withMessage('last name is required'),
     
-    body('password')
+    // body('password')
+    //   .exists()
+    //   .withMessage('password is requires'),
+     body('refrenceCode')
       .exists()
-      .withMessage('password is requires'),
+      .withMessage('referenceCode is required'),  
     
     body('mobileNumber')
       .exists()
@@ -33,24 +36,24 @@ exports.customerValidation=[
     //   .withMessage('email id is required')
     //   .custom(async value=>{
     //   }),
-    body('panCardNumber')
-      .exists()
-      .withMessage('pan card is required')
-      .custom(async value=>{
-          if(!/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/i.test(value)){
-              return Promise.reject('Invalid Pan Card Number')
-          }
-      }),
-     body('address')
-      .exists()
-      .withMessage("Address is required")
-      .isLength({min:3},{max:250})
-      .withMessage('Maximum length is 250 and minimum length is 3'),
+    // body('panCardNumber')
+    //   .exists()
+    //   .withMessage('pan card is required')
+    //   .custom(async value=>{
+    //       if(!/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/i.test(value)){
+    //           return Promise.reject('Invalid Pan Card Number')
+    //       }
+    //   }),
+    //  body('address')
+      // .exists()
+      // .withMessage("Address is required")
+      // .isLength({min:3},{max:250})
+      // .withMessage('Maximum length is 250 and minimum length is 3'),
   
-    body("ratingId")
-      .exists()
-      .isInt()
-      .withMessage("ratingId is required"),
+    // body("ratingId")
+    //   .exists()
+    //   .isInt()
+    //   .withMessage("ratingId is required"),
     
     body("statusId")
       .exists()
