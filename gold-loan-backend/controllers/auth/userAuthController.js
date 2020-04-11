@@ -49,7 +49,6 @@ exports.userLogin = async (req, res, next) => {
 
 }
 
-
 exports.verifyLoginOtp = async (req, res, next) => {
     let { referenceCode, otp } = req.body
     var todayDateTime = new Date();
@@ -64,7 +63,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Your time is expired. Please click on resend otp` })
+        return res.status(400).json({ message: `Invalid Otp` })
     }
 
     var token = await sequelize.transaction(async t => {
