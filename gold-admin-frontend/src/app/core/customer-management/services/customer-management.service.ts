@@ -24,15 +24,19 @@ export class CustomerManagementService {
   }
 
   sendOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/user/registerOtp`, data);
+    return this.http.post<any>(`/api/user/register-otp`, data);
   }
 
   verifyOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/user/verifyOtp`, data);
+    return this.http.post<any>(`/api/user/verify-otp`, data);
   }
 
   resendOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/user/resendOtp`, data);
+    return this.http.post<any>(`/api/user/resend-otp`, data);
+  }
+
+  verifyPAN(data): Observable<any> {
+    return this.http.post<any>(`/api/user/verify-pan`, data);
   }
 
   deleteCustomer(id): Observable<any> {
