@@ -12,7 +12,10 @@ exports.userLogin = async (req, res, next) => {
 
     const { firstName, password } = req.body;
 
-    let checkUser = await models.users.findOne({ where: { firstName: firstName, isActive: true } });
+    let checkUser = await models.users.findOne({
+         where: { firstName: firstName, isActive: true },
+         include:[{model: models.roles}] 
+        });
     if (!checkUser) {
         return res.status(404).json({ message: 'Wrong Credentials' })
     }
@@ -23,6 +26,8 @@ exports.userLogin = async (req, res, next) => {
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
+            roleId: checkUser.dataValues.roles[0].id,
+            roleName: checkUser.dataValues.roles[0].roleName,
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -69,18 +74,24 @@ exports.verifyLoginOtp = async (req, res, next) => {
     var token = await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
         let user = await models.users.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
-        let checkUser = await models.users.findOne({ where: { id: user.id, isActive: true }, transaction: t });
+        let checkUser = await models.users.findOne({
+             where: { id: user.id, isActive: true },
+             include:[{model: models.roles}] ,
+              transaction: t });
         Token = jwt.sign({
             id: checkUser.dataValues.id,
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
+            roleId: checkUser.dataValues.roles[0].id,
+            roleName: checkUser.dataValues.roles[0].roleName,
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
         });
 
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
+        console.log(decoded)
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
