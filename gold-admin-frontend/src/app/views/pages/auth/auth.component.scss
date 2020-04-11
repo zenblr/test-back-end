@@ -1,8 +1,9 @@
 // import login css
 @import "sass/pages/login/login-1";
 
-kt-auth, .kt-login {
-	height: 100%;
+kt-auth,
+.kt-login {
+	// height: 100%;
 
 	.mat-form-field {
 		width: 100%;
@@ -12,4 +13,164 @@ kt-auth, .kt-login {
 	.kt-spinner {
 		padding-right: 3rem !important;
 	}
+
+	.login {
+		overflow-x         : hidden;
+		height             : 100vh;
+		background-image   : url('../../../../assets/media/bg/login-bg.jpg');
+		background-position: center;
+		background-repeat  : no-repeat;
+		background-size    : cover;
+		padding-top        : 4rem;
+	}
+
+	.header {
+		font-weight: 700;
+		color      : #d7b56d;
+		font-size  : 65px;
+	}
+
+	.sub-header {
+		color        : #c6c6c6;
+		font-size    : 32px !important;
+		font-weight  : 400;
+		margin-top   : -15px;
+		margin-bottom: 25px;
+	}
+
+	.li {
+		color      : #454c67;
+		font-size  : 24px;
+		display    : inline-block;
+		font-weight: 500;
+	}
+
+	.custom-bullet {
+		background    : #d7b56d;
+		border        : 1px solid #d7b56d;
+		border-radius : 50%;
+		display       : inline-block;
+		padding       : 5px;
+		vertical-align: text-top;
+		margin-right  : 10px;
+	}
+
+	.login-card {
+		margin       : auto;
+		border       : 1px solid #454c67;
+		border-radius: 25px;
+		background   : #454c67;
+		width        : 75%;
+		min-height   : 450px;
+	}
+
+	.login-card .logo img {
+		height       : 120px;
+		margin-left  : auto;
+		margin-right : auto;
+		display      : block;
+		margin-bottom: 20px;
+	}
+}
+
+.login-form-input {
+	display         : block;
+	width           : 100%;
+	height          : calc(1.8em + 1.8rem + 2px);
+	padding         : 0.65rem 1rem;
+	font-size       : 1rem;
+	font-weight     : 600;
+	line-height     : 1.5;
+	color           : #d7b56d;
+	background-color: rgba(255, 255, 255, 0.2) !important;
+	background-clip : padding-box;
+	border          : 1px solid #d7b56d;
+	border-radius   : 8px;
+	transition      : border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+::-webkit-input-placeholder {
+	/* Edge */
+	font-weight: 400 !important;
+	color      : #d7b56d;
+	opacity    : .5;
+
+}
+
+:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	font-weight: 400 !important;
+	color      : #d7b56d;
+	opacity    : .5;
+
+
+}
+
+::placeholder {
+	font-weight: 400 !important;
+	color      : #d7b56d;
+	opacity    : .5;
+}
+
+.forgot {
+	color      : #d7b56d;
+	font-weight: 600;
+}
+
+.btn-login {
+	background    : #d7b56d;
+	outline       : none !important;
+	vertical-align: middle;
+	border-radius : 8px;
+	padding       : 10px;
+	font-weight   : bold;
+	font-size     : 15px;
+	color         : #f5d39f;
+}
+
+.btn-login:hover {
+	background: transparent;
+	color     : #d7b56d;
+	border    : 1px solid #d7b56d !important;
+}
+
+.btn-sign-otp {
+	background    : #c6c6c699;
+	outline       : none !important;
+	vertical-align: middle;
+	border-radius : 8px;
+	padding       : 10px;
+	font-weight   : bold;
+	font-size     : 15px;
+	color         : #c6c6c6;
+}
+
+.btn-sign-otp:hover {
+	background: #c6c6c6;
+	color     : #454c67;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+	border : 2px solid #d7b56d;
+	outline: 0 none;
+}
+
+.forgot-title {
+	color      : #d7b56d;
+	font-size  : 18px;
+	font-weight: 500;
+}
+
+.forgot-sub-title {
+	font-weight  : 400;
+	margin-bottom: 10px;
+}
+
+.text-yellowish {
+	color: #d7b56d;
+}
+
+.footer {
+	padding: 50px 0 20px
 }

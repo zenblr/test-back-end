@@ -1,9 +1,9 @@
-<div class="kt-grid kt-grid--hor kt-grid--root kt-login kt-login--v1" id="kt_login">
+<!-- <div class="kt-grid kt-grid--hor kt-grid--root kt-login kt-login--v1 login-bg" id="kt_login">
 	<div
-		class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--desktop kt-grid--ver-desktop kt-grid--hor-tablet-and-mobile">
-		<!--begin::Aside-->
-		<div class="kt-grid__item kt-grid__item--order-tablet-and-mobile-2 kt-grid kt-grid--hor kt-login__aside"
-			style="background-image: url(./assets/media//bg/bg-4.jpg);">
+		class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--desktop kt-grid--ver-desktop kt-grid--hor-tablet-and-mobile ">
+		begin::Aside
+		<div
+			class="kt-grid__item kt-grid__item--order-tablet-and-mobile-2 kt-grid kt-grid--hor kt-login__aside d-none d-md-block">
 			<div class="kt-grid__item">
 				<a href="javascript:;" class="kt-login__logo">
 					<img src="./assets/media/logos/logo-4.png" alt="">
@@ -12,7 +12,7 @@
 			<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver">
 				<div class="kt-grid__item kt-grid__item--middle">
 					<h3 class="kt-login__title">Welcome to Augmont Gold Loan!</h3>
-					<!-- <h4 class="kt-login__subtitle">The ultimate Bootstrap &amp; Angular 8 admin theme framework for next generation web apps.</h4> -->
+					<h4 class="kt-login__subtitle">The ultimate Bootstrap &amp; Angular 8 admin theme framework for next generation web apps.</h4>
 				</div>
 			</div>
 			<div class="kt-grid__item">
@@ -28,12 +28,50 @@
 				</div>
 			</div>
 		</div>
-		<!--begin::Aside-->
+		begin::Aside
 
-		<!--begin::Content-->
+		begin::Content
 		<div class="kt-grid__item kt-grid__item--fluid  kt-grid__item--order-tablet-and-mobile-1 kt-login__wrapper">
 			<router-outlet></router-outlet>
 		</div>
-		<!--end::Content-->
+		end::Content
 	</div>
+</div> -->
+<div class="login">
+	<!-- <div class="container"> -->
+	<div class="row justify-content-around">
+		<div class="col-md-5  d-none d-md-block align-self-center">
+			<div class="header">GOLD FOR ALL</div>
+			<div class="sub-header">THE AUGMONT GOLD ECOSYSTEM</div>
+			<div>
+				<div class="custom-bullet"></div>
+				<div class="li">Leadership with Integrity</div>
+			</div>
+			<div>
+				<div class="custom-bullet"></div>
+				<div class="li">Innovative Engineering</div>
+			</div>
+			<div>
+				<div class="custom-bullet"></div>
+				<div class="li">Responsible Goverance</div>
+			</div>
+			<div>
+				<div class="custom-bullet"></div>
+				<div class="li"> Sustainable Growth</div>
+			</div>
+		</div>
+		<div class="col-md-5 col-12">
+			<div class="login-card">
+				<div class="logo" style="padding: 25px 60px 0;">
+					<img src="../../../../assets/media/logos/header-logo.png" alt="">
+					<router-outlet></router-outlet>
+				</div>
+				<div class="footer" *ngIf="router.url != '/auth/login'">
+					<img src="../../../../assets/media/icons/back.svg" alt="" class="m-auto d-block" height="40"
+						(click)="back()">
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- </div> -->
 </div>
