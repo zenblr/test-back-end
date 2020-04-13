@@ -1,5 +1,5 @@
 const { body } = require("express-validator");
-const models=require('../models');
+const models = require('../models');
 const sequelize = models.Sequelize;
 const op = sequelize.Op;
 
@@ -8,7 +8,7 @@ exports.branchValidation = [
   body("name")
     .exists()
     .withMessage("name is required"),
-            
+
   body("cityId")
     .exists()
     .withMessage("CityId is required")
@@ -26,12 +26,12 @@ exports.branchValidation = [
     .withMessage("Pin code is required")
     .custom((value) => {
 
-        if(!/^([0-9]{6}|[0-9]{3}\s[0-9]{3})/i.test(value)){
-          return Promise.reject("Invalid pincode code")
-        }  else{
-          return true;
-        }
-        }),
+      if (!/^([0-9]{6}|[0-9]{3}\s[0-9]{3})/i.test(value)) {
+        return Promise.reject("Invalid pincode code")
+      } else {
+        return true;
+      }
+    }),
 
   body("address")
     .exists()
