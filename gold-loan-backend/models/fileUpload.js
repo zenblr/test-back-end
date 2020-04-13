@@ -1,4 +1,4 @@
-const BaseUrl = require('../config/baseurl').BASEURL;
+const BaseUrl = require('../config/baseUrl').BASEURL;
 
 
 module.exports = (sequelize, DataTypes) => {

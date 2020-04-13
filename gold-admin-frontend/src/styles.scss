@@ -76,7 +76,7 @@ body {
 }
 
 .isError {
-	border: 2px solid red !important;
+	border: 1px solid red !important;
 }
 
 ::-webkit-input-placeholder {
@@ -146,6 +146,11 @@ input[type=number] {
 	height         : 100%;
 }
 
+// mat-table
+.mat-table__wrapper {
+	overflow-x: unset !important;
+}
+
 // mat tab
 .mat-tab-label,
 .mat-tab-link {
@@ -159,4 +164,71 @@ input[type=number] {
 
 .mat-tab-group.mat-primary .mat-ink-bar {
 	background-color: #454D67 !important;
+}
+
+// custom checkbox
+
+/* Hide the browser's default checkbox */
+.custom-checkbox input {
+	position: absolute;
+	opacity : 0;
+	cursor  : pointer;
+	height  : 0;
+	width   : 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+	position        : absolute;
+	top             : 35px;
+	left            : 0;
+	height          : 25px;
+	width           : 25px;
+	background-color: #eee;
+	border-radius   : 5px;
+}
+
+.label-checkbox {
+	margin-left: 25px;
+}
+
+/* On mouse-over, add a background color */
+.custom-checkbox :hover input~.checkmark {
+	background-color: #ffffff;
+}
+
+/* When the checkbox is checked, add a background */
+.custom-checkbox input:checked~.checkmark {
+	background-color: #969696;
+}
+
+.custom-checkbox input:disabled~.checkmark {
+	background-color: #eee;
+	opacity         : 0.5;
+	cursor          : not-allowed;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+	content : "";
+	position: absolute;
+	display : none;
+}
+
+/* Show the checkmark when checked */
+.custom-checkbox input:checked~.checkmark:after {
+	display: block;
+}
+
+/* Style the checkmark/indicator */
+.custom-checkbox .checkmark:after {
+	left             : 10px;
+	top              : 5px;
+	width            : 6px;
+	height           : 13px;
+	border           : solid white;
+	border-width     : 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform    : rotate(45deg);
+	transform        : rotate(45deg);
 }

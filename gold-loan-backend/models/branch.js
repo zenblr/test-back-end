@@ -1,41 +1,41 @@
-module.exports=(sequelize,DATATYPES)=>{
+module.exports=(sequelize,DataTypes)=>{
     const Branch=sequelize.define('branch',{
         partnerId:{
-            type:DATATYPES.INTEGER,
+            type:DataTypes.INTEGER,
             field:'partner_id'
         },
         branchId:{
-            type:DATATYPES.STRING,
+            type:DataTypes.STRING,
             field:'branch_id'
         },
         name:{
-            type:DATATYPES.STRING,
+            type:DataTypes.STRING,
             field:'name'
         },
         cityId:{
-            type:DATATYPES.INTEGER,
+            type:DataTypes.INTEGER,
             field:'city_id'
         },
         stateId:{
-            type:DATATYPES.INTEGER,
+            type:DataTypes.INTEGER,
             field:'state_id'
         },
         address:{
-            type:DATATYPES.TEXT,
+            type:DataTypes.TEXT,
             field:'address'
         },
         
         pincode:{
-            type:DATATYPES.INTEGER,
+            type:DataTypes.INTEGER,
             field:'pincode',
 
         },
         commission:{
-            type:DATATYPES.FLOAT,
+            type:DataTypes.FLOAT,
             field:'commission'
         },
     isActive:{
-        type:DATATYPES.BOOLEAN,
+        type:DataTypes.BOOLEAN,
         field:'is_active',
         defaultValue:true
     }},

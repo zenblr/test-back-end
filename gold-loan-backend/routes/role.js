@@ -1,17 +1,19 @@
-const {addRole,readRole,updateRole,deactiveRole}=require("../controllers/role/role");
+const { addRole, readRole, updateRole, deactiveRole } = require("../controllers/role/role");
 
-const{wrapper}=require("../utils/errorWrap");
+const { wrapper } = require("../utils/errorWrap");
 
-const express=require("express");
+const express = require("express");
+const checkAuth = require('../middleware/checkAuth');
 
-const route=express.Router();
 
-route.post('/',wrapper(addRole)); // add role
+const route = express.Router();
 
-route.get('/',wrapper(readRole)); //read role
+route.post('/', checkAuth, wrapper(addRole)); // add role
 
-route.put('/:id',wrapper(updateRole)); //update role
+route.get('/', checkAuth, wrapper(readRole)); //read role
 
-route.delete('/',wrapper(deactiveRole)); //delete role
+route.put('/:id', checkAuth, wrapper(updateRole)); //update role
 
-module.exports=route;
+route.delete('/', checkAuth, wrapper(deactiveRole)); //delete role
+
+module.exports = route;

@@ -43,10 +43,6 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
-        otp: {
-            type: DataTypes.INTEGER,
-            field: 'otp'
-        },
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',
@@ -68,9 +64,9 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = function(models) {
         User.hasMany(models.user_address, { foreignKey: 'userId', as: 'address' });
-        // User.hasMany(models.user_role, { foreignKey: 'userId', as: 'user_role' });
+        // User.hasMany(models.userRole, { foreignKey: 'userId', as: 'userRole' });
 
-        User.belongsToMany(models.roles, {through: models.user_role})
+        User.belongsToMany(models.roles, {through: models.userRole})
     }
 
     // This hook is always run before create.
@@ -129,7 +125,6 @@ module.exports = (sequelize, DataTypes) => {
     User.prototype.toJSON = function() {
         var values = Object.assign({}, this.get());
         delete values.password;
-        delete values.otp;
         return values;
     }
 

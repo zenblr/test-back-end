@@ -1,20 +1,20 @@
-module.exports=(sequelize,DATATYPES)=>{
+module.exports=(sequelize,DataTypes)=>{
     const Partner=sequelize.define('partner',{
         partnerId:{
-            type:DATATYPES.STRING,
+            type:DataTypes.STRING,
             field:'partner_id'
         },
         name:{
-            type:DATATYPES.STRING,
+            type:DataTypes.STRING,
             field:'name'
         },
         commission:{
-            type:DATATYPES.FLOAT,
+            type:DataTypes.FLOAT,
             field:'commission'
         },
     
     isActive:{
-        type:DATATYPES.BOOLEAN,
+        type:DataTypes.BOOLEAN,
         field:'is_active',
         defaultValue:true,
 
@@ -29,7 +29,7 @@ module.exports=(sequelize,DATATYPES)=>{
 
     Partner.associate = function(models) {
      
-        Partner.belongsToMany(models.schemes, {through: models.partner_schemes})
+        Partner.belongsToMany(models.schemes, {through: models.partnerSchemes})
     }
 
 

@@ -11,7 +11,7 @@ const check = require('../../lib/checkLib')
 //add partner
 exports.addPartner = async (req, res, next) => {
     const { name, commission } = req.body;
-    let partnerExist = await models.partner.findOne({ where: { name } })
+    let partnerExist = await models.partner.findOne({ where: { name ,isActive:true}})
     if (!check.isEmpty(partnerExist)) {
         return res.status(404).json({ message: 'This Partner is already Exist' });
     }
@@ -22,11 +22,9 @@ exports.addPartner = async (req, res, next) => {
         let partnerId = partnerData.dataValues.name.slice(0, 3).toUpperCase() + '-' + id;
         await models.partner.update({ partnerId: partnerId }, { where: { id: id }, transaction: t });
         return partnerData;
-    }).then((partnerData) => {
-        return res.status(201).json({ messgae: "partner created" });
-    }).catch((exception) => {
-        next(exception)
     })
+    return res.status(201).json({ messgae: "partner created" });
+
 
 }
 //update partner

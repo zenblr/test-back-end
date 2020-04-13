@@ -20,11 +20,9 @@ exports.addBranch = async (req, res, next) => {
         let newId = pqid.slice(0, 2) + addBranch.dataValues.name.slice(0, 3).toUpperCase() + '-' + id;
         await models.branch.update({ branchId: newId }, { where: { id }, transaction: t });
         return addBranch;
-    }).then((addBranch) => {
-        return res.status(201).json({ message: "branch created" })
-    }).catch((exception) => {
-        next(exception)
     })
+    return res.status(201).json({ message: "branch created" })
+
 }
 
 //get branch

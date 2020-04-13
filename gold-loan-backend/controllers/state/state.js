@@ -6,7 +6,7 @@ const Op = Sequelize.Op;
 const csv = require('csvtojson')
 
 
-exports.postState = async(req, res, next) => {
+exports.postState = async (req, res, next) => {
     const csvFilePath = req.file.path;
     const jsonArray = await csv().fromFile(csvFilePath);
     let checkIfCsvUploaded = await models.states.findAll();
@@ -18,19 +18,17 @@ exports.postState = async(req, res, next) => {
         for (var i = 0; i < jsonArray.length; i++) {
             let data = await models.states.create({ id: jsonArray[i].id, name: jsonArray[i].name }, { transaction: t })
         }
-    }).then(() => {
-        res.status(200).json({
-            message: "success"
-        })
-
-    }).catch((exception) => {
-       next(exception)
     })
+    return res.status(200).json({
+        message: "success"
+    })
+
+
 
 
 }
 
-exports.getState = async(req, res, next) => {
+exports.getState = async (req, res, next) => {
 
     let states = await models.states.findAll({
         where: { isActive: true },

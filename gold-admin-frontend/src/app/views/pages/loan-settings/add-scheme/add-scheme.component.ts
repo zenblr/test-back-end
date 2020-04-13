@@ -108,7 +108,7 @@ export class AddSchemeComponent implements OnInit {
       }
       this.loading = true;
       var fb = new FormData()
-      fb.append('csv', this.file)
+      fb.append('schemecsv', this.file)
       fb.append('partnerId', this.csvForm.controls.partnerId.value)
       this.laonSettingService.uplaodCSV(fb).pipe(
         map((res) => {

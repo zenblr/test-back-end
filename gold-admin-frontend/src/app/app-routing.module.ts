@@ -40,10 +40,6 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/customer-management/customer-management.module').then(m => m.CustomerManagementModule)
 			},
 			{
-				path: 'roles',
-				loadChildren: () => import('./views/pages/roles/roles.module').then(m => m.RolesModule)
-			},
-			{
 				path: 'mail',
 				loadChildren: () => import('../app/views/pages/apps/mail/mail.module').then(m => m.MailModule)
 			},

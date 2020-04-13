@@ -6,24 +6,27 @@ const Op = Sequelize.Op;
 
 const check = require('../../lib/checkLib');
 const request = require('request');
-const { createRefrenceCode } = require('../../utils/refrenceCode');
+const { createReferenceCode } = require('../../utils/referenceCode');
 //for email
-const { sendMail } = require('../../service/EmailService')
+const { sendMail } = require('../../service/emailService')
 const CONSTANT = require('../../utils/constant');
+const moment = require('moment')
 
 exports.registerSendOtp = async (req, res, next) => {
-    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address,roleId } = req.body;
+    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId } = req.body;
     let userExist = await models.users.findOne({ where: { mobileNumber: mobileNumber } })
 
     if (!check.isEmpty(userExist)) {
         return res.status(404).json({ message: 'This Mobile number is already Exist' });
     }
-    const refrenceCode = await createRefrenceCode(5);
+    const referenceCode = await createReferenceCode(5);
     let otp = Math.floor(1000 + Math.random() * 9000);
+    let createdTime = new Date();
+    let expiryTime = moment.utc(createdTime).add(10, 'm')
 
     await sequelize.transaction(async t => {
 
-        const user = await models.users.create({ firstName, lastName, password, mobileNumber, email, otp, panCardNumber }, { transaction: t })
+        const user = await models.users.create({ firstName, lastName, password, mobileNumber, email, panCardNumber }, { transaction: t })
         if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
                 let data = await models.user_address.create({
@@ -36,48 +39,49 @@ exports.registerSendOtp = async (req, res, next) => {
                 }, { transaction: t })
             }
         }
-        await models.user_role.create({userId: user.id, roleId: roleId}, { transaction: t })
+        await models.userRole.create({ userId: user.id, roleId: roleId }, { transaction: t })
+        await models.userOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
 
-    }).then(() => {
-        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${refrenceCode} your OTP is ${otp}`);
-
-        // //for email
-        // const Emaildata = {
-        //     data: `Your otp is ${user.otp}`,
-        //     email: user.email
-        // }
-        // await sendMail(Emaildata)
-        // //for email
-        return res.status(200).json({ message: 'Otp send to your Mobile number.', refrenceCode: refrenceCode });
-    }).catch((exception) => {
-        next(exception)
     })
+    request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`);
+
+    // //for email
+    // const Emaildata = {
+    //     data: `Your otp is ${user.otp}`,
+    //     email: user.email
+    // }
+    // await sendMail(Emaildata)
+    // //for email
+    return res.status(200).json({ message: 'Otp send to your Mobile number.', referenceCode: referenceCode });
 
 }
 
+
 exports.verifyRegistrationOtp = async (req, res, next) => {
-    const { mobileNumber, otp } = req.body;
-    let user = await models.users.findOne({ where: { mobileNumber: mobileNumber } });
+    let { referenceCode, otp } = req.body
+    var todayDateTime = new Date();
 
-    if (check.isEmpty(user)) {
-        return res.status(404).json({ message: 'User not found' });
+    let verifyUser = await models.userOtp.findOne({
+        where: {
+            referenceCode, otp,
+            expiryTime: {
+                [Op.gte]: todayDateTime
+            }
+        }
+    })
+    if (check.isEmpty(verifyUser)) {
+        return res.status(400).json({ message: `Invalid Otp` })
     }
-    if (user.dataValues.otp === otp) {
-        let verifyUser = await models.users.update({ otp: null, isActive: true }, { where: { id: user.dataValues.id } });
+    await sequelize.transaction(async t => {
 
-        ////for Email    
-        // const Emaildata = {
-        //     data: `Your Login Credentials userName: ${user.firstName} & password: ${password}`,
-        //     email: user.email
-        // }
-        // await sendMail(Emaildata)
-        ////for Email    
+        let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
 
-        return res.status(200).json({ message: 'Success' });
-    } else {
-        return res.status(400).json({ message: 'Invalid OTP' });
-    }
+        let user = await models.users.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
 
+        await models.users.update({ isActive: true }, { where: { id: user.id }, transaction: t });
+
+    })
+    return res.json({ message: "Success", referenceCode })
 }
 
 exports.sendOtp = async (req, res, next) => {
@@ -85,34 +89,66 @@ exports.sendOtp = async (req, res, next) => {
     let userDetails = await models.users.findOne({ where: { mobileNumber } });
     if (userDetails) {
         let otp = Math.floor(1000 + Math.random() * 9000);
-        const refrenceCode = await createRefrenceCode(5);
-        let otpAdded = await models.users.update({ otp }, { where: { id: userDetails.id } });
+        const referenceCode = await createReferenceCode(5);
+        let createdTime = new Date();
+        let expiryTime = moment.utc(createdTime).add(10, 'm');
 
-        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${refrenceCode} your OTP is ${otp}`);
 
-        return res.status(200).json({ message: 'Otp send to your Mobile number.', refrenceCode: refrenceCode });
+        await sequelize.transaction(async t => {
+            await models.userOtp.destroy({ where: { mobileNumber }, transaction: t })
+            await models.userOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
+        })
+
+        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`);
+
+        return res.status(200).json({ message: 'Otp send to your Mobile number.', referenceCode: referenceCode });
 
     } else {
         res.status(400).json({ message: 'User does not exists, please contact to Admin' });
     }
 }
 
-exports.updatePassword = async (req, res, next) => {
-    const { mobileNumber, otp, newPassword } = req.body
+exports.verifyOtp = async (req, res, next) => {
+    let { referenceCode, otp } = req.body
+    var todayDateTime = new Date();
 
-    let user = await models.users.findOne({ where: { mobileNumber: mobileNumber } });
+    let verifyUser = await models.userOtp.findOne({
+        where: {
+            referenceCode, otp,
+            expiryTime: {
+                [Op.gte]: todayDateTime
+            }
+        }
+    })
+    if (check.isEmpty(verifyUser)) {
+        return res.status(400).json({ message: `Invalid otp` })
+    }
+    await sequelize.transaction(async t => {
+        let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
+    })
+
+    return res.json({ message: "Success", referenceCode })
+}
+
+exports.updatePassword = async (req, res, next) => {
+    const { referenceCode, otp, newPassword } = req.body
+    var todayDateTime = new Date();
+
+    let verifyUser = await models.registerCustomerOtp.findOne({ where: { referenceCode, isVerified: true } })
+
+    if (check.isEmpty(verifyUser)) {
+        return res.status(400).json({ message: `Invalid otp.` })
+    }
+    let user = await models.users.findOne({ where: { mobileNumber: verifyUser.mobileNumber } });
+
     if (check.isEmpty(user)) {
         return res.status(404).json({ message: 'User not found' });
     }
-    if (user.dataValues.otp === otp) {
-        let verifyUser = await user.update({ otp: null, password: newPassword }, { where: { id: user.dataValues.id } });
-
-        return res.status(200).json({ message: 'Password Updated.' });
+    let updatePassword = await user.update({ otp: null, password: newPassword }, { where: { id: user.dataValues.id } });
+    if(updatePassword[0] == 0){
+        return res.status(400).json({message: `Password update failed.`})
     }
-
-    return res.json({ message: `not match` })
-
-
+    return res.status(200).json({ message: 'Password Updated.' });
 }
 
 exports.changePassword = async (req, res, next) => {
@@ -128,7 +164,7 @@ exports.changePassword = async (req, res, next) => {
             { where: { id: userinfo.id, isActive: true } });
         res.status(200).json({ message: 'Success' })
     } else {
-        res.status(200).json({ message: ' wrong credentials' });
+        res.status(401).json({ message: ' wrong credentials' });
     }
 }
 

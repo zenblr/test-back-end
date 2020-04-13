@@ -22,6 +22,7 @@ import { AuthNoticeComponent } from './auth-notice/auth-notice.component';
 // Auth
 import { AuthEffects, AuthGuard, authReducer, AuthService } from '../../../core/auth';
 import { PartialsModule } from '../../partials/partials.module';
+import { SignInWithOtpComponent } from './sign-in-with-otp/sign-in-with-otp.component';
 
 const routes: Routes = [
 	{
@@ -39,8 +40,8 @@ const routes: Routes = [
 				data: { returnUrl: window.location.pathname }
 			},
 			{
-				path: 'register',
-				component: RegisterComponent
+				path: 'sign-in-otp',
+				component: SignInWithOtpComponent
 			},
 			{
 				path: 'forgot-password',
@@ -80,7 +81,8 @@ const routes: Routes = [
 		LoginComponent,
 		RegisterComponent,
 		ForgotPasswordComponent,
-		AuthNoticeComponent
+		AuthNoticeComponent,
+		SignInWithOtpComponent
 	]
 })
 

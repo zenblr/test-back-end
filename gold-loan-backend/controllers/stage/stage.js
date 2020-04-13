@@ -27,9 +27,10 @@ exports.getStage = async (req, res, next) => {
     console.log(getAll)
     if (getAll == "true") {
         whereCondition = { order: [['id', 'ASC']] }
-    } else {
+    } else if (getAll == "false") {
         whereCondition = { where: { isActive: true }, order: [['id', 'ASC']] }
-
+    } else if (getAll == undefined) {
+        whereCondition = { order: [['id', 'ASC']] }
     }
     let allStage = await models.stage.findAll(whereCondition)
     return res.status(200).json(allStage)
@@ -38,7 +39,7 @@ exports.getStage = async (req, res, next) => {
 }
 
 exports.updateStage = async (req, res, next) => {
-    let {  stageName } = req.body;
+    let { stageName } = req.body;
     let { id } = req.params;
 
     let stageExist = await models.stage.findOne({ where: { stageName } })

@@ -31,7 +31,8 @@
                             <input style="display: none;" #fileInput accept="image/*" type="file"
                                 (change)="singleProductImageChangenew($event, 1)" />
                         </div>
-
+                        <mat-error *ngIf="img1Error">Image size should be less than 150 KB</mat-error>
+                        <mat-error *ngIf="widthHeightError">Image height and width should be less than 600 pixels</mat-error>
                         <div class="actionContainer text-center">
                             <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item"
                                 (click)="fileInput.click()">
@@ -58,8 +59,9 @@
                             </div>
                             <input style="display: none;" #fileInput2 accept="image/*" type="file"
                                 (change)="singleProductImageChangenew($event, 2)" />
-
                         </div>
+                        <mat-error *ngIf="img2Error">Image size should be less than 150 KB</mat-error>
+                        <mat-error *ngIf="widthHeightError2">Image height and width should be less than 600 pixels</mat-error>
 
                         <div class="actionContainer text-center">
                             <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item"
@@ -87,8 +89,9 @@
                             </div>
                             <input style="display: none;" #fileInput3 accept="image/*" type="file"
                                 (change)="singleProductImageChangenew($event, 3)" />
-
                         </div>
+                        <mat-error *ngIf="img3Error">Image size should be less than 150 KB</mat-error>
+                        <mat-error *ngIf="widthHeightError3">Image height and width should be less than 600 pixels</mat-error>
 
                         <div class="actionContainer text-center">
                             <button class="m-2" mat-mini-fab mat-icon-button color="primary" matTooltip="Edit item"

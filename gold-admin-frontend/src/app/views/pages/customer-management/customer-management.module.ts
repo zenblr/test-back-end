@@ -11,7 +11,7 @@ import { AddLeadComponent } from './add-lead/add-lead.component';
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
 import { HttpUtilsService, TypesUtilsService, LayoutUtilsService, InterceptService } from '../../../core/_base/crud';
-import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA } from '@angular/material';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA, MatDialogRef } from '@angular/material';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 const routes: Routes = [
@@ -55,6 +55,8 @@ const routes: Routes = [
         width: '600px'
       }
     },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
     HttpUtilsService,
     TypesUtilsService,
     LayoutUtilsService

@@ -462,22 +462,22 @@ export class MenuConfig {
 						},
 						{
 							title: 'Upload Gold Rate',
-							// page: '/material/form-controls/autocomplete',
+							page: '/upload-data/upload-gold-rate',
 							bullet: 'dot',
 						},
 						{
 							title: 'Upload Offer',
-							// page: '/material/form-controls/autocomplete',
+							page: '/upload-data/upload-offer',
 							bullet: 'dot',
 						},
 						{
 							title: 'Upload Lender Banner',
-							// page: '/material/form-controls/autocomplete',
+							page: '/upload-data/upload-lender-banner',
 							bullet: 'dot',
 						},
 						{
 							title: 'Upload Scheme',
-							// page: '/material/form-controls/autocomplete',
+							page: '/upload-data/upload-scheme',
 							bullet: 'dot',
 						},
 					]
@@ -502,6 +502,11 @@ export class MenuConfig {
 						{
 							title: 'Branch Details',
 							page: '/user-management/branch',
+							bullet: 'dot',
+						},
+						{
+							title: 'Roles',
+							page: '/user-management/roles',
 							bullet: 'dot',
 						},
 						// {

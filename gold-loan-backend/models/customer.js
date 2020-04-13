@@ -30,15 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'mobile_number',
             allowNull: false,
         },
-        otp: {
-            type: DataTypes.INTEGER,
-            field: "otp"
-        },
-        isVerified: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_verified',
-            defaultValue: false
-        },
         email: {
             type: DataTypes.STRING,
             field: 'email',
@@ -97,7 +88,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Customer.associate = function (models) {
-        Customer.hasMany(models.customer_address, { foreignKey: 'customerId', as: 'address' });
+        Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.belongsTo(models.rating, { foreignKey: 'ratingId', as: 'rating' });
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
@@ -163,7 +154,6 @@ module.exports = (sequelize, DataTypes) => {
     Customer.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
         delete values.password;
-        delete values.otp;
         return values;
     }
 

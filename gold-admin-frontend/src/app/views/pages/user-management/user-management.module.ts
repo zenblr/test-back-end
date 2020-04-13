@@ -19,39 +19,14 @@ import { UserManagementComponent } from './user-management.component';
 import { UsersListComponent } from './users/users-list/users-list.component';
 import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { RolesListComponent } from './roles/roles-list/roles-list.component';
-import { RoleEditDialogComponent } from './roles/role-edit/role-edit.dialog.component';
+import { RoleAddDialogComponent } from './roles/role-add/role-add.dialog.component';
 import { UserRolesListComponent } from './users/_subs/user-roles/user-roles-list.component';
 import { ChangePasswordComponent } from './users/_subs/change-password/change-password.component';
 import { AddressComponent } from './users/_subs/address/address.component';
 import { SocialNetworksComponent } from './users/_subs/social-networks/social-networks.component';
 
 // Material
-import {
-	MatInputModule,
-	MatPaginatorModule,
-	MatProgressSpinnerModule,
-	MatSortModule,
-	MatTableModule,
-	MatSelectModule,
-	MatMenuModule,
-	MatProgressBarModule,
-	MatButtonModule,
-	MatCheckboxModule,
-	MatDialogModule,
-	MatTabsModule,
-	MatNativeDateModule,
-	MatCardModule,
-	MatRadioModule,
-	MatIconModule,
-	MatDatepickerModule,
-	MatExpansionModule,
-	MatAutocompleteModule,
-	MAT_DIALOG_DEFAULT_OPTIONS,
-	MAT_DIALOG_DATA,
-	MatSnackBarModule,
-	MatTooltipModule,
-	MAT_SNACK_BAR_DATA,
-} from '@angular/material';
+import { AngularMaterialModule } from '../angular-material/angular-material.module';
 import {
 	usersReducer,
 	UserEffects
@@ -60,6 +35,7 @@ import { PartnerListComponent } from './partner/partner-list/partner-list.compon
 import { BranchListComponent } from './branch/branch-list/branch-list.component';
 import { BranchAddComponent } from './branch/branch-add/branch-add.component';
 import { PartnerAddComponent } from './partner/partner-add/partner-add.component';
+import { PermissionsComponent } from './permissions/permissions.component';
 
 const routes: Routes = [
 	{
@@ -74,6 +50,10 @@ const routes: Routes = [
 			{
 				path: 'roles',
 				component: RolesListComponent
+			},
+			{
+				path: 'roles/:id',
+				component: PermissionsComponent
 			},
 			{
 				path: 'partner',
@@ -122,28 +102,7 @@ const routes: Routes = [
 		FormsModule,
 		ReactiveFormsModule,
 		TranslateModule.forChild(),
-		MatButtonModule,
-		MatMenuModule,
-		MatSelectModule,
-		MatInputModule,
-		MatTableModule,
-		MatAutocompleteModule,
-		MatRadioModule,
-		MatIconModule,
-		MatNativeDateModule,
-		MatProgressBarModule,
-		MatDatepickerModule,
-		MatCardModule,
-		MatPaginatorModule,
-		MatSortModule,
-		MatCheckboxModule,
-		MatProgressSpinnerModule,
-		MatSnackBarModule,
-		MatExpansionModule,
-		MatTabsModule,
-		MatTooltipModule,
-		MatDialogModule
-	],
+		AngularMaterialModule	],
 	providers: [
 		InterceptService,
 		{
@@ -151,24 +110,14 @@ const routes: Routes = [
 			useClass: InterceptService,
 			multi: true
 		},
-		{ provide: MAT_DIALOG_DATA, useValue: {} },
-		{ provide: MAT_SNACK_BAR_DATA, useValue: {} },
-		{
-			provide: MAT_DIALOG_DEFAULT_OPTIONS,
-			useValue: {
-				hasBackdrop: true,
-				panelClass: 'kt-mat-dialog-container__wrapper',
-				height: 'auto',
-				width: '900px'
-			}
-		},
+		
 		HttpUtilsService,
 		TypesUtilsService,
 		LayoutUtilsService
 	],
 	entryComponents: [
 		ActionNotificationComponent,
-		RoleEditDialogComponent,
+		RoleAddDialogComponent,
 		BranchAddComponent,
 		PartnerAddComponent
 	],
@@ -177,7 +126,7 @@ const routes: Routes = [
 		UsersListComponent,
 		UserEditComponent,
 		RolesListComponent,
-		RoleEditDialogComponent,
+		RoleAddDialogComponent,
 		UserRolesListComponent,
 		ChangePasswordComponent,
 		AddressComponent,
@@ -185,7 +134,8 @@ const routes: Routes = [
 		PartnerListComponent,
 		BranchListComponent,
 		BranchAddComponent,
-		PartnerAddComponent
+		PartnerAddComponent,
+		PermissionsComponent
 	]
 })
 export class UserManagementModule { }
