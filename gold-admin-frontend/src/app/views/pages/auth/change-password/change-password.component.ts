@@ -1,28 +1,31 @@
 // Angular
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 // RxJS
-import { finalize, takeUntil, tap } from 'rxjs/operators';
+import { finalize, takeUntil, tap, catchError } from 'rxjs/operators';
 // Translate
 import { TranslateService } from '@ngx-translate/core';
 // NGRX
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../core/reducers';
 // Auth
-import { AuthNoticeService, AuthService, Register, User } from '../../../../core/auth/';
+import { AuthNoticeService, AuthService, Register, User } from '../../../../core/auth';
 import { Subject } from 'rxjs';
 import { ConfirmPasswordValidator } from './confirm-password.validator';
+import { ToastrComponent } from '../../../../views/partials/components';
 
 @Component({
-	selector: 'kt-register',
-	templateUrl: './register.component.html',
+	selector: 'kt-change-password',
+	templateUrl: './change-password.component.html',
 	encapsulation: ViewEncapsulation.None
 })
-export class RegisterComponent implements OnInit, OnDestroy {
-	registerForm: FormGroup;
+export class ChangePassword implements OnInit, OnDestroy {
+	changePasswordForm: FormGroup;
 	loading = false;
 	errors: any = [];
+	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+
 
 	private unsubscribe: Subject<any>; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
@@ -47,6 +50,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
 		private cdr: ChangeDetectorRef
 	) {
 		this.unsubscribe = new Subject();
+		var referenceCode = localStorage.getItem('reference')
+		if (!referenceCode) {
+			this.router.navigate(['/auth/login'])
+		}
 	}
 
 	/*
@@ -74,27 +81,27 @@ export class RegisterComponent implements OnInit, OnDestroy {
 	 * Default params, validators
 	 */
 	initRegisterForm() {
-		this.registerForm = this.fb.group({
-			fullname: ['', Validators.compose([
-				Validators.required,
-				Validators.minLength(3),
-				Validators.maxLength(100)
-			])
-			],
-			email: ['', Validators.compose([
-				Validators.required,
-				Validators.email,
-				Validators.minLength(3),
-				// https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
-				Validators.maxLength(320)
-			]),
-			],
-			username: ['', Validators.compose([
-				Validators.required,
-				Validators.minLength(3),
-				Validators.maxLength(100)
-			]),
-			],
+		this.changePasswordForm = this.fb.group({
+			// fullname: ['', Validators.compose([
+			// 	Validators.required,
+			// 	Validators.minLength(3),
+			// 	Validators.maxLength(100)
+			// ])
+			// ],
+			// email: ['', Validators.compose([
+			// 	Validators.required,
+			// 	Validators.email,
+			// 	Validators.minLength(3),
+			// 	// https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
+			// 	Validators.maxLength(320)
+			// ]),
+			// ],
+			// username: ['', Validators.compose([
+			// 	Validators.required,
+			// 	Validators.minLength(3),
+			// 	Validators.maxLength(100)
+			// ]),
+			// ],
 			password: ['', Validators.compose([
 				Validators.required,
 				Validators.minLength(3),
@@ -107,20 +114,20 @@ export class RegisterComponent implements OnInit, OnDestroy {
 				Validators.maxLength(100)
 			])
 			],
-			agree: [false, Validators.compose([Validators.required])]
+			// agree: [false, Validators.compose([Validators.required])]
 		}, {
-			validator: ConfirmPasswordValidator.MatchPassword
-		});
+				validator: ConfirmPasswordValidator.MatchPassword
+			});
 	}
 
 	/**
 	 * Form Submit
 	 */
 	submit() {
-		const controls = this.registerForm.controls;
+		const controls = this.changePasswordForm.controls;
 
 		// check form
-		if (this.registerForm.invalid) {
+		if (this.changePasswordForm.invalid) {
 			Object.keys(controls).forEach(controlName =>
 				controls[controlName].markAsTouched()
 			);
@@ -128,31 +135,24 @@ export class RegisterComponent implements OnInit, OnDestroy {
 		}
 
 		this.loading = true;
+		var referenceCode = atob(localStorage.getItem('reference'))
+		var newPassword = controls.password.value
 
-		if (!controls.agree.value) {
-			// you must agree the terms and condition
-			// checkbox cannot work inside mat-form-field https://github.com/angular/material2/issues/7891
-			this.authNoticeService.setNotice('You must agree the terms and condition', 'danger');
-			return;
-		}
-
-		const _user: User = new User();
-		_user.clear();
-		_user.email = controls.email.value;
-		_user.username = controls.username.value;
-		_user.fullname = controls.fullname.value;
-		_user.password = controls.password.value;
-		_user.roles = [];
-		this.auth.register(_user).pipe(
+		this.auth.changeforgotpassword(newPassword, referenceCode).pipe(
 			tap(user => {
 				if (user) {
-					this.store.dispatch(new Register({authToken: user.accessToken}));
 					// pass notice message to the login page
-					this.authNoticeService.setNotice(this.translate.instant('AUTH.REGISTER.SUCCESS'), 'success');
+					this.toastr.successToastr(user.message);
+					localStorage.removeItem('mobile')
+					localStorage.removeItem('reference')
 					this.router.navigateByUrl('/auth/login');
 				} else {
 					this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.INVALID_LOGIN'), 'danger');
 				}
+			}),
+			catchError(err => {
+				this.toastr.successToastr(err.error.message);
+				throw (err)
 			}),
 			takeUntil(this.unsubscribe),
 			finalize(() => {
@@ -169,7 +169,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 	 * @param validationType: string => Equals to valitors name
 	 */
 	isControlHasError(controlName: string, validationType: string): boolean {
-		const control = this.registerForm.controls[controlName];
+		const control = this.changePasswordForm.controls[controlName];
 		if (!control) {
 			return false;
 		}
