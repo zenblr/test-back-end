@@ -2,8 +2,8 @@
     <img [src]="image.value" *ngIf="image.showImg">
     <input type="file" accept="image/*" class="form-control" (change)="uploadImages($event,idx)" *ngIf="!image.showImg">
     <div>
-        <button (click)="delete(i)" *ngIf="image.isRemoved"> Delete</button>
-        <button (click)=fileInput.click() *ngIf="image.isEditable"> Edit</button>
+        <!-- <button (click)="delete(i)" *ngIf="image.isRemoved"> Delete</button> -->
+        <!-- <button (click)=fileInput.click() *ngIf="image.isEditable"> Edit</button> -->
     </div>
 </div>
 

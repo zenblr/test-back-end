@@ -13,6 +13,8 @@ export class SignInWithOtpComponent implements OnInit {
   @ViewChild('three', { static: false }) three: ElementRef
   @ViewChild('four', { static: false }) four: ElementRef
 
+  loading = false;
+
   constructor(private fb: FormBuilder) { }
 
   singInOtp: FormGroup
@@ -58,7 +60,16 @@ export class SignInWithOtpComponent implements OnInit {
       this.one.nativeElement.focus()
       return
     }
+
+
     console.log(Number(Object.values(this.singInOtp.value).join("")))
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.loading = false;
+
   }
 
 }

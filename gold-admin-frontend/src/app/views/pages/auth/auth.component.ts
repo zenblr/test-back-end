@@ -36,7 +36,7 @@ export class AuthComponent implements OnInit {
 		public authNoticeService: AuthNoticeService,
 		private translationService: TranslationService,
 		private splashScreenService: SplashScreenService,
-		private router: Router,
+		public router: Router,
 		private location: Location) {
 		this.router.events.subscribe(val => {
 			console.log(this.router.url)
