@@ -12,15 +12,18 @@ module.exports = (req, res, next) => {
     let skipUrls = [
         "/api/user",
         "/",
-        "/api/customer/verified-register-otp",
+        "/api/customer/verify-register-otp",
         "/api/customer/send-register-otp",
+
         "/api/auth/user-login",
         "/api/auth/customer-login",
+        "/api/auth/verify-login",
+
         "/api/user/register-otp",
         "/api/user/verify-otp",
         "/api/user/send-otp",
         "/api/user/update-password",
-        "/api/auth/verify-login"
+        "/api/user/verify-register-otp",
     ];
     if (!skipUrls.includes(req.originalUrl)) {
         try {
