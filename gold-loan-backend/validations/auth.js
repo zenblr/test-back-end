@@ -13,3 +13,13 @@ exports.authValidation=[
       .exists()
       .withMessage('password required')
     ]
+
+    exports.loginWithOtpValidation=[
+      body('referenceCode')
+      .exists()
+      .withMessage('reference code is required'),
+
+      body("otp")
+      .exists()
+      .withMessage('otp is required')
+    ]

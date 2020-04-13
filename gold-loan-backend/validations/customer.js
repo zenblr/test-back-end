@@ -16,7 +16,7 @@ exports.customerValidation=[
     // body('password')
     //   .exists()
     //   .withMessage('password is requires'),
-     body('refrenceCode')
+     body('referenceCode')
       .exists()
       .withMessage('referenceCode is required'),  
     
