@@ -95,9 +95,9 @@
 
                                 <ng-container *ngIf="otpSent && !isMobileVerified">
                                     <!-- OTP -->
-                                    <div class="col-4"></div>
+                                    <div class="col-4 kt-padding-t-15"></div>
 
-                                    <div class="col-5">
+                                    <div class="col-5 kt-padding-t-15">
                                         <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                         <input class="form-control" formControlName="otp" autocomplete="off"
                                             placeholder="Enter OTP"
@@ -111,7 +111,7 @@
                                         <!-- </mat-form-field> -->
                                     </div>
 
-                                    <div class="col-3">
+                                    <div class="col-3 kt-padding-t-15">
                                         <div *ngIf="!isMobileVerified">
                                             <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Sumbit'"
                                                 [isDisabled]="isOpverified" (action)="verifyOTP()">
