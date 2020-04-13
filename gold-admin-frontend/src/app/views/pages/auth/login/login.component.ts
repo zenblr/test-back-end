@@ -70,6 +70,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 		private route: ActivatedRoute,
 	) {
 		this.unsubscribe = new Subject();
+
 	}
 
 	/**
@@ -113,7 +114,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 		}
 
 		this.loginForm = this.fb.group({
-			username: [DEMO_PARAMS.EMAIL, Validators.compose([
+			mobileNo: [DEMO_PARAMS.EMAIL, Validators.compose([
 				Validators.required // https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
 			])
 			],
@@ -142,11 +143,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 		this.loading = true;
 
 		const authData = {
-			username: controls.username.value,
+			mobileNo: controls.mobileNo.value,
 			password: controls.password.value
 		};
 		this.auth
-			.login(authData.username, authData.password)
+			.login(Number(authData.mobileNo), authData.password)
 			.pipe(
 				tap(user => {
 					// console.log(user);
@@ -182,7 +183,35 @@ export class LoginComponent implements OnInit, OnDestroy {
 			)
 			.subscribe();
 	}
+	signInWithOtp() {
+		if (this.loginForm.controls.mobileNo.invalid) {
+			this.loginForm.controls.mobileNo.markAsTouched();
+			return
+		}
 
+		this.auth.generateOtp(this.loginForm.controls.mobileNo.value).pipe(
+			tap(response => {
+				if (response) {
+					this.authNoticeService.setNotice(this.translate.instant('AUTH.FORGOT.SUCCESS'), 'success');
+					localStorage.setItem('reference', btoa(response.referenceCode))
+					localStorage.setItem('mobile', this.loginForm.controls.mobileNo.value)
+					this.router.navigate(['/auth/sign-in-otp'])
+				} else {
+					this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.NOT_FOUND', { name: this.translate.instant('AUTH.INPUT.EMAIL') }), 'danger');
+				}
+			}),
+			catchError(err => {
+				this.toastr.errorToastr(err.error.message);
+				throw err;
+			}),
+			takeUntil(this.unsubscribe),
+			finalize(() => {
+				this.loading = false;
+				this.cdr.markForCheck();
+			})
+		).subscribe();
+
+	}
 	/**
 	 * Checking control validation
 	 *
