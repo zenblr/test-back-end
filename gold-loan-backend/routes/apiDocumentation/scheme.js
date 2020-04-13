@@ -30,7 +30,7 @@
  *               type: number
  *             interestRateNinetyDaysAnnually:
  *               type: number  
- *             interestRateOnehundredeightyDaysAnnually:
+ *             interestRateOnehundredEightyDaysAnnually:
  *               type: number
  *             partnerId:
  *               type: number
@@ -61,7 +61,7 @@
  *          description: Success
  *       404:
  *          description: data not found
- * /{id}:
+ * /scheme/{id}:
  *   put:
  *     tags:
  *       - Scheme
@@ -105,8 +105,8 @@
  *           - schemeAmountEnd
  *           - interestRateThirtyDaysMonthly
  *           - interestRateNinetyDaysMonthly
- *           - interestRateNinetyDaysMonthly
- *           - interestRateOneHundredEightyDaysAnnually
+ *           - interestRateOneHundredEightyDaysMonthly
+ *           - interestRateThirtyDaysAnnually
  *           - interestRateNinetyDaysAnnually
  *           - interestRateOneHundredEightyDaysAnnually
  *           - partnerId

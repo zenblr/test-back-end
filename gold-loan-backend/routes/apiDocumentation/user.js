@@ -28,6 +28,13 @@
  *               type: string  
  *             address:
  *               type: array
+ *               items:
+ *                type: object
+ *                properties:
+ *                 stateId:
+ *                   type: number
+ *                 cityId:
+ *                   type: number
  *             roleId:
  *               type: number       
  *         required:
@@ -97,5 +104,106 @@
  *          description: Otp send to your Mobile number
  *       400:
  *          description: User does not exists, please contact to Admin
+ * /user/verify-register-otp:
+ *   post:
+ *     tags:
+ *       - Customer Registration
+ *     name: Verification  Registration Otp
+ *     summary: To Verify Registration Otp
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             referenceCode:
+ *               type: string
+ *             otp:
+ *               type: integer
+ *               
+ *         required:
+ *           - referenceCode
+ *           - otp
+ *     responses:
+ *       200:
+ *          description: Success
+ *       400:
+ *          description: Invalid Otp
+ * /user/change-password:
+ *   post:
+ *     tags:
+ *       - Customer Registration
+ *     name: Change password
+ *     summary: To change password
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             oldPassword:
+ *               type: string
+ *             newPassword:
+ *               type: string
+ *               
+ *         required:
+ *           - oldPassword
+ *           - newpassword
+ *     responses:
+ *       200:
+ *          description: Success
+ *       404:
+ *          description: User not found . Please contact Admin.
+ *       401:
+ *          description: wrong credentials
+ * /user/update-password:
+ *   post:
+ *     tags:
+ *       - Customer Registration
+ *     name: Update Password
+ *     summary: To update  password
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             referenceCode:
+ *               type: string
+ *             otp:
+ *               type: number
+ *             newPassword:
+ *               type: string  
+ *         required:
+ *           - referenceCode
+ *           - otp
+ *           - new Password
+ *     responses:
+ *       200:
+ *          description: Success
+ *       404:
+ *          description: User not found . Please contact Admin.
+ *       401:
+ *          description: wrong credentials
+ * /user:
+ *  get:
+ *     tags:
+ *      - Customer Registration
+ *     name: read user
+ *     summary: To read user 
+ *     responses:
+ *       200:
+ *          description: Success
+ *       500:
+ *          description: Internal Server Error
+ *    
  * 
  */

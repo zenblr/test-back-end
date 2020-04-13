@@ -5,7 +5,7 @@
  *     tags:
  *       - Permission
  *     name: permission
- *     summary: To  add permission
+ *     summary: To add permission
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -49,7 +49,7 @@
  *     name: permission
  *     summary: To delete by Id
  *     parameters:
- *     - name: "id"
+ *     - name: "permissionId"
  *       in: "query"
  *       description: "Id of permission to delete"
  *       required: true

@@ -94,7 +94,7 @@
  *             description:
  *               type: string
  *             permissionId:
- *               type: string 
+ *               type: number
  *     required:
  *         - roleName
  *         - description
