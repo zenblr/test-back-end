@@ -7,18 +7,18 @@
 <form [formGroup]="singInOtp">
     <div class="row justify-content-center kt-margin-b-20">
         <div class="col">
-            <input type="text" class="login-form-input text-center" 
+            <input type="number" class="login-form-input text-center" 
             maxlength="1" #one (input)="input($event,'one')" formControlName="one">
         </div>
         <div class="col">
-            <input type="text" class="login-form-input text-center"  maxlength="1" #two (input)="input($event,'two')" formControlName="two">
+            <input type="number" class="login-form-input text-center"  maxlength="1" #two (input)="input($event,'two')" formControlName="two">
         </div>
         <div class="col">
-            <input type="text" class="login-form-input text-center"  maxlength="1" #three (input)="input($event,'three')"
+            <input type="number" class="login-form-input text-center"  maxlength="1" #three (input)="input($event,'three')"
                 formControlName="three">
         </div>
         <div class="col">
-            <input type="text" class="login-form-input text-center"  maxlength="1" #four  (input)="input($event,'four')" formControlName="four">
+            <input type="number" class="login-form-input text-center"  maxlength="1" #four  (input)="input($event,'four')" formControlName="four">
         </div>
     </div>
     <div class="row">
