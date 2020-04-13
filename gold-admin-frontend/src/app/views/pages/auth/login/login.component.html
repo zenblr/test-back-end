@@ -21,9 +21,9 @@
 <form class="kt-form" [formGroup]="loginForm" autocomplete="off">
 	<div class="form-group">
 		<div class="kt-margin-t-10 kt-margin-b-10">
-			<input type="text" class="login-form-input" placeholder="Email ID / Mobile Number"
-				formControlName="username" autocomplete="off">
-			<mat-error *ngIf="isControlHasError('username','required')">
+			<input type="text" class="login-form-input" placeholder="Mobile Number" formControlName="mobileNo"
+				autocomplete="off" numbersOnly/>
+			<mat-error *ngIf="isControlHasError('mobileNo','required')">
 				<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
 			</mat-error>
 			<mat-error *ngIf="isControlHasError('email','email')">
@@ -57,12 +57,12 @@
 			<p class="text-center forgot kt-pointer" routerLink="/auth/forgot-password">Forgot Password?</p>
 		</div>
 		<div>
-			<button class="btn btn-sign-otp w-100" routerLink="/auth/sign-in-otp">Sign In With Otp</button>
+			<button class="btn btn-sign-otp w-100" (click)="signInWithOtp()">Sign In With Otp</button>
 		</div>
 		<!-- <mat-form-field>
 			<mat-label>Username</mat-label>
-			<input matInput placeholder="Username" formControlName="username" autocomplete="off" />
-			<mat-error *ngIf="isControlHasError('username','required')">
+			<input matInput placeholder="Username" formControlName="mobileNo" autocomplete="off" />
+			<mat-error *ngIf="isControlHasError('mobileNo','required')">
 				<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
 			</mat-error>
 			<mat-error *ngIf="isControlHasError('email','email')">
