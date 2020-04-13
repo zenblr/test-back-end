@@ -7,35 +7,26 @@ import { PartialsModule } from '../../partials/partials.module';
 import { CommonModule } from '@angular/common';
 // Components
 import { UploadBannerComponent } from './upload-banner/upload-banner.component';
-import { UploadDataComponent } from './upload-data.component';
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
+import { UploadOfferComponent } from './upload-offer/upload-offer.component';
 
 const routes: Routes = [
   {
-    path: '',
-    component: UploadDataComponent,
-    children: [
-      {
-        path: '',
-        redirectTo: 'upload-banner',
-        pathMatch: 'full'
-      },
-      {
-        path: 'upload-banner',
-        component: UploadBannerComponent
-      },
-      {
-        path: '**',
-        redirectTo: 'upload-banner',
-        pathMatch: 'full'
-      },
-    ]
+
+    path: 'upload-banner',
+    component: UploadBannerComponent
+
+  },
+  {
+    path: 'upload-offer',
+    component: UploadOfferComponent
   }
 ]
 
 @NgModule({
-  declarations: [UploadBannerComponent, UploadDataComponent],
+  declarations: [UploadBannerComponent,
+    UploadOfferComponent],
   imports: [
     CommonModule,
     CoreModule,

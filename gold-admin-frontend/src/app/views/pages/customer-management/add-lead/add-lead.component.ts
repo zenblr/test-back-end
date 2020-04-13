@@ -34,6 +34,10 @@ export class AddLeadComponent implements OnInit {
   isOpverified = true;
   currentDate = new Date();
 
+  viewOnly = false;
+
+  refCode: number; //reference code
+
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -76,14 +80,17 @@ export class AddLeadComponent implements OnInit {
 
   formInitialize() {
     this.leadForm = this.fb.group({
-      name: ['', [Validators.required]],
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
       mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
+      referenceCode: [this.refCode],
       panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
+      address: this.fb.array([])
     });
   }
 
@@ -105,6 +112,8 @@ export class AddLeadComponent implements OnInit {
     this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res) {
         this.otpSent = true;
+        this.refCode = res.referenceCode;
+        this.controls.referenceCode.patchValue(this.refCode);
         const msg = 'Otp has been sent to the registered mobile number';
         this.toastr.successToastr(msg);
       }
@@ -115,8 +124,8 @@ export class AddLeadComponent implements OnInit {
 
   verifyOTP() {
     const params = {
-      mobileNumber: this.controls.mobileNumber.value,
       otp: this.controls.otp.value,
+      referenceCode: this.controls.referenceCode.value,
     };
     this.customerManagementService.verifyOtp(params).subscribe(res => {
       if (res) {
@@ -126,10 +135,31 @@ export class AddLeadComponent implements OnInit {
   }
 
   verifyPAN() {
-    const mobileNumber = this.controls.panCardNumber.value;
+    const panCardNumber = this.controls.panCardNumber.value;
+    // this.customerManagementService.verifyPAN({ panCardNumber }).subscribe(res => {
+    //   if (res) {
+    //     this.isPanVerified = true;
+    //   }
+    // });
     setTimeout(() => {
       this.isPanVerified = true;
     }, 1000);
+  }
+
+  resendOTP() {
+    const mobileNumber = +(this.controls.mobileNumber.value);
+    // use send function OTP for resend OTP
+    this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
+      if (res) {
+        this.otpSent = true;
+        this.refCode = res.referenceCode;
+        this.controls.referenceCode.patchValue(this.refCode);
+        const msg = 'Otp has been sent to the registered mobile number';
+        this.toastr.successToastr(msg);
+      }
+    }, error => {
+      this.toastr.errorToastr(error.error.message);
+    });
   }
 
   get controls() {
@@ -140,19 +170,19 @@ export class AddLeadComponent implements OnInit {
     console.log(this.leadForm.value);
     const leadData = this.leadForm.value;
 
-    // this.customerManagementService.addLead(leadData).subscribe(res => {
-    //   // console.log(res);
-    //   if (res) {
-    //     const msg = 'Lead Added Successfully';
-    //     this.toastr.successToastr(msg);
-    //     this.dialogRef.close(true);
-    //   }
-    // },
-    //   error => {
-    //     console.log(error.error.message);
-    //     const msg = error.error.message;
-    //     this.toastr.errorToastr(msg);
-    //   });
+    this.customerManagementService.addLead(leadData).subscribe(res => {
+      // console.log(res);
+      if (res) {
+        const msg = 'Lead Added Successfully';
+        this.toastr.successToastr(msg);
+        this.dialogRef.close(true);
+      }
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 
   closeModal() {

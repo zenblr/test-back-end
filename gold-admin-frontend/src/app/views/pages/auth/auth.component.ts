@@ -4,6 +4,9 @@ import { Component, ElementRef, OnInit, Renderer2, ViewEncapsulation } from '@an
 import { LayoutConfigService, SplashScreenService, TranslationService } from '../../../core/_base/layout';
 // Auth
 import { AuthNoticeService } from '../../../core/auth';
+import { Router } from '@angular/router';
+import { Location } from "@angular/common";
+
 
 @Component({
 	selector: 'kt-auth',
@@ -32,7 +35,12 @@ export class AuthComponent implements OnInit {
 		private layoutConfigService: LayoutConfigService,
 		public authNoticeService: AuthNoticeService,
 		private translationService: TranslationService,
-		private splashScreenService: SplashScreenService) {
+		private splashScreenService: SplashScreenService,
+		public router: Router,
+		private location: Location) {
+		this.router.events.subscribe(val => {
+			console.log(this.router.url)
+		})
 	}
 
 	/**
@@ -62,5 +70,9 @@ export class AuthComponent implements OnInit {
 			styleElement.onload = resolve;
 			this.render.appendChild(this.el.nativeElement, styleElement);
 		});
+	}
+
+	back() {
+		this.location.back()
 	}
 }
