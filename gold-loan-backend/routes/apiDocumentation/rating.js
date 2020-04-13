@@ -70,38 +70,37 @@
  *         description: Updated.
  *       404:
  *         description: rating deleted failed.
+ * 
  * /rating/{id}:
  *    put:
  *     tags:
  *       - Rating
- *     name: rating
- *     summary: To update by Id
+ *     summary: To update Rating
+ *     security:
+ *       - bearerAuth: []  
+ *     consumes:
+ *       - application/json 
  *     parameters:
- *     - name: "ratingId"
- *       in: "params"
- *       description: "Id of rating to update"
- *       required: true
- *       type: "integer"
- *     - name: body
- *       in: body
- *       schema:
- *       type: object
- *       properties:
- *        ratingName:
- *            type: string
- *        ratingPoint:
- *            type: number
- *       requires:
+ *       - name: "id"
+ *         in: "path"
+ *         description: "Id of Rating to update"
+ *         required: true
+ *         type: "integer"
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             ratingName:
+ *               type: string
+ *             ratingPoint:
+ *               type: integer
+ *         required:
  *           - ratingName
  *           - ratingPoint
- *     security:
- *      - bearerAuth: []
- *     consumes:
- *      - application/json
  *     responses:
  *       200:
- *         description: Success.
+ *         description: Category updated
  *       404:
- *         description: This Rating is already Exist/Data not found.
- * 
+ *         description: Category you are updating does not exit
  */

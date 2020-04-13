@@ -17,9 +17,7 @@
  *       - application/json
  *     responses:
  *       200:
- *         description: success. 
- *       500:    
- *         description: Internal server error..
+ *         description: success.
  * /city:
  *   post:
  *     tags:

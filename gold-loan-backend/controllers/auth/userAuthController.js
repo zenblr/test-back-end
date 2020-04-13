@@ -10,10 +10,10 @@ let check = require('../../lib/checkLib');
 
 exports.userLogin = async (req, res, next) => {
 
-    const { firstName, password } = req.body;
+    const { mobileNumber, password } = req.body;
 
     let checkUser = await models.users.findOne({
-         where: { firstName: firstName, isActive: true },
+         where: { mobileNumber, isActive: true },
          include:[{model: models.roles}] 
         });
     if (!checkUser) {

@@ -5,7 +5,7 @@
 *   get:
 *     tags:
 *       - FileUpload
-*     name: file-upload APIs
+*     name: file-upload 
 *     summary: To read file-upload 
 *     security:
 *       - bearerAuth: [] 
@@ -18,12 +18,13 @@
 *         description: Data not found
 *   post:
 *     tags:
-*       - File-Upload
-*     summary: api for File Upload
+*       - FileUpload
+*     name: file-upload
+*     summary: To add File Upload
 *     security:
-*       - bearerAuth: []  
+*       - bearerAuth: []
 *     consumes:
-*       - multipart/form-data       
+*       - multipart/form-data
 *     parameters:
 *       - name: upfile
 *         in: body

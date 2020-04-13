@@ -3,7 +3,86 @@
  * /customer/send-register-otp:
  *   post:
  *     tags:
- *       - Customer  By Admin
+ *       - Customer By Admin
+ *     name: add Customer by mobile otp
+ *     summary: To add customer by  mobile otp
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             mobileNumber:
+ *               type: number
+ *         required:
+ *           - mobileNumber
+ *     responses:
+ *       200:
+ *         description: Otp send to your entered mobile number.
+ *       404:
+ *         description: Mobile number is not Exist.
+ * /customer/send-otp:
+ *   post:
+ *     tags:
+ *       - Customer By Admin
+ *     name: add Customer by otp
+ *     summary: To add customer by otp
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             mobileNumber:
+ *               type: number
+ *         required:
+ *           - mobileNumber
+ *     responses:
+ *       200:
+ *         description: Otp send to your entered mobile number.
+ *       404:
+ *         description: Mobile number is not Exist.
+ * /customer/verify-otp:
+ *   post:
+ *     tags:
+ *       - Customer By Admin
+ *     name: verify by otp
+ *     summary: To verify by otp
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             referenceCode:
+ *               type: string
+ *             otp:
+ *               type: number
+ *         required:
+ *           - referenceCode
+ *           - otp
+ *     responses:
+ *       200:
+ *         description: Success.
+ *       404:
+ *         description: Invalid otp.
+ *
+ * /customer:
+ *   post:
+ *     tags:
+ *       - Customer By Admin
  *     name: add Customer
  *     summary: To add customer 
  *     security:
@@ -22,27 +101,23 @@
  *               type: string
  *             referenceCode:
  *               type: string
- *             mobileNumber:
- *               type: integer
- *             email:
- *               type: string
  *             panCardNumber:
  *               type: string  
- *             stateId:
- *               type: number
- *             cityId:
- *               type: number
  *             address:
  *               type: array
+ *               items:
+ *                type: object
+ *                properties:
+ *                 stateId:
+ *                   type: number
+ *                 cityId:
+ *                   type: number
  *             statusId:
- *               type: number 
-  
+ *               type: number  
  *         required:
  *           - firstName
  *           - lastName
  *           - referenceCode
- *           - mobileNumber
- *           - email
  *           - panCardNumber
  *           - address
  *           - stateId
@@ -54,7 +129,6 @@
  *          description: Customer Created
  *       404:
  *          description: This Mobile number is already Exist/Registration Failed
- * /customer:
  *   get:
  *     tags:
  *       - Customer By Admin
@@ -85,7 +159,7 @@
  *   put:
  *     tags:
  *       - Customer By Admin
- *     name: update customer
+ *     name: update customers
  *     summary: To update customer
  *     security:
  *       - bearerAuth: []
@@ -111,10 +185,13 @@
  *               type: string  
  *             address:
  *               type: array
- *             cityId:
- *               type: number
- *             stateId:
- *               type: number
+ *               items:
+ *                type: object
+ *                properties:
+ *                 stateId:
+ *                   type: number
+ *                 cityId:
+ *                   type: number 
  *             ratingId:
  *               type: number
  *             statusId:
@@ -150,7 +227,7 @@
  *     - name: "customerId"
  *       in: "query"
  *       description: "Id of customer to delete"
- *       required: false
+ *       required: true
  *       type: "integer"
  *     - name: "isActive"
  *       in: "query"
@@ -166,7 +243,7 @@
  *         description: Updated.
  *       404:
  *         description: Customer is not exist
- * /{customerId}:
+ * /customer/{customerId}:
  *   get:
  *     tags:
  *       - Customer By Admin
@@ -185,59 +262,5 @@
  *       200:
  *         description: Success.
  *       404:
- *         description: Customer not found
- * customer/send-otp:
- *   post:
- *     tags:
- *       - Customer  By Admin
- *     name: add Customer by otp
- *     summary: To add customer by otp
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         schema:
- *           type: object
- *           properties:
- *             mobileNumber:
- *               type: string
- *         required:
- *           - mobileNumber
- *     responses:
- *       200:
- *         description: Otp send to your entered mobile number.
- *       404:
- *         description: Mobile number is not Exist.
- * customer/verify-otp:
- *   post:
- *     tags:
- *       - Customer  By Admin
- *     name: verify by otp
- *     summary: To verify by otp
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         schema:
- *           type: object
- *           properties:
- *             referenceCode:
- *               type: string
- *             otp:
- *               type: number
- *         required:
- *           - referenceCode
- *           - otp
- *     responses:
- *       200:
- *         description: Success.
- *       404:
- *         description: Invalid otp..
- *    
+ *         description: Customer not found    
  */

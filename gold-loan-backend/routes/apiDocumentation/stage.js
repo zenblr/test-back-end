@@ -50,12 +50,12 @@
  *     parameters:
  *     - name: "stageId"
  *       in: "query"
- *       description: "Id of status to delete"
+ *       description: "Id of stage to delete"
  *       required: true
  *       type: "integer"
  *     - name: "isActive"
  *       in: "query"
- *       description: "isActive to delete"
+ *       description: "isActive to deactived"
  *       required: true
  *       type: "boolean"
  *     security:
