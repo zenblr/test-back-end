@@ -14,13 +14,13 @@
  *         schema:
  *           type: object
  *           properties:
- *             firstName:
- *               type: string
+ *             mobileNumber:
+ *               type: number
  *             password:
  *               type: string
  *               format: password
  *         required:
- *           - firstName
+ *           - mobileNumber
  *           - password
  *     responses:
  *       200:
