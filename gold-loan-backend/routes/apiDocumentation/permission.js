@@ -18,11 +18,15 @@
  *           properties:
  *             permissionName:
  *               type: string
+ *             description:
+ *               type: string
  *         required:
  *           - permissionName
  *     responses:
  *       201:
  *         description: permission created
+ *       404:
+ *         description: This Permission is already Exist
  *       422:
  *         description: permission not created
  *   get:
@@ -39,6 +43,31 @@
  *         description: Success
  *       404:
  *         description: data not found
+ *   delete:
+ *     tags:
+ *       - Permission
+ *     name: permission
+ *     summary: To delete by Id
+ *     parameters:
+ *     - name: "id"
+ *       in: "query"
+ *       description: "Id of permission to delete"
+ *       required: true
+ *       type: "integer"
+ *     - name: "isActive"
+ *       in: "query"
+ *       description: "Id of permission to delete"
+ *       required: true
+ *       type: "boolean"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
+ *       404:
+ *         description: data not found.
  * /permission/{id}:
  *   put:
  *     tags:
@@ -62,32 +91,15 @@
  *           properties:
  *             permissionName:
  *               type: string
+ *             description:
+ *               type: string
  *     required:
  *         - permissionName
+ *         - description
  *     responses:
  *       200:
- *         description: Success
+ *         description: Updated
  *       404:
- *         description: data not found
- *   delete:
- *     tags:
- *       - Permission
- *     name: permission
- *     summary: To delete by Id
- *     parameters:
- *     - name: "id"
- *       in: "path"
- *       description: "Id of permission to delete"
- *       required: true
- *       type: "integer"
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Success.
- *       404:
- *         description: data not found.
+ *         description: permission update failed/This Permission is already Exist
  * 
  */
