@@ -5,9 +5,9 @@ const op = sequelize.Op;
 
 
 exports.authValidation=[
-    body('firstName')
+    body('mobileNumber')
       .exists()
-      .withMessage('first name is required'),
+      .withMessage('Mobile number is required'),
     
     body('password')
       .exists()
