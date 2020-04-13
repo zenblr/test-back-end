@@ -21,6 +21,8 @@
 *               type: file
 *             partnerId:
 *               type: array
+*               items:
+*                types: integer
 *     responses:
 *       201:
 *         description: Schemes Created

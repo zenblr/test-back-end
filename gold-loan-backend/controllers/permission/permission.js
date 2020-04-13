@@ -1,4 +1,5 @@
 const models = require("../../models");
+const check= require('../../lib/checkLib');
 
 //add permission
 exports.addPermission = async (req, res, next) => {

@@ -26,18 +26,15 @@
  *               type: number
  *             address:
  *               type: string
- *             pinCode:
+ *             pincode:
  *               type:number
- *             commission:
- *               type: number
  *         required:
  *           - name
  *           - partnerId
  *           - cityId
  *           - stateId
  *           - address
- *           - pinCode
- *           - commission
+ *           - pincode
  *     responses:
  *       201:
  *          description: branch created
@@ -124,8 +121,6 @@
  *               type: string
  *             pincode:
  *               type: number
- *             commission:
- *               type: number
  *         required:
  *           - name
  *           - partnerId
@@ -133,7 +128,6 @@
  *           - stateId
  *           - addresss
  *           - pincode
- *           - commission
  *     responses:
  *       200:
  *         description: Success
