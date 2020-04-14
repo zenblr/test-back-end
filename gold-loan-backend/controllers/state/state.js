@@ -15,9 +15,11 @@ exports.postState = async (req, res, next) => {
     }
 
     await sequelize.transaction(async t => {
-        for (var i = 0; i < jsonArray.length; i++) {
-            let data = await models.states.create({ id: jsonArray[i].id, name: jsonArray[i].name }, { transaction: t })
-        }
+        await models.states.bulkCreate(jsonArray, { returning: true, transaction: t });
+
+        // for (var i = 0; i < jsonArray.length; i++) {
+        //     let data = await models.states.create({ id: jsonArray[i].id, name: jsonArray[i].name }, { transaction: t })
+        // }
     })
     return res.status(200).json({
         message: "success"
