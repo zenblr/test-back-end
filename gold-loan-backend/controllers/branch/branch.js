@@ -44,6 +44,16 @@ exports.readBranch = async (req, res, next) => {
                 {
                   [Op.iLike]: search + "%"
                 }),
+            city_name:sequelize.where(
+                sequelize.cast(sequelize.col("cities.name"), "varchar"),
+                {
+                  [Op.iLike]: search + "%"
+                }),
+            state_name:sequelize.where(
+                sequelize.cast(sequelize.col("states.name"), "varchar"),
+                {
+                  [Op.iLike]: search + "%"
+                }),
         },
         isActive: true
     }
