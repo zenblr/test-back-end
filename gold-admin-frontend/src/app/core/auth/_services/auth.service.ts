@@ -18,25 +18,38 @@ export class AuthService {
 
     constructor(private http: HttpClient) { }
     // Authentication/Authorization
-    login(username: string, password: string): Observable<User> {
-        return this.http.post<User>(`/api/auth/user-login`, { firstName: username, password });
+    login(mobileNumber: number, password: string): Observable<User> {
+        return this.http.post<User>(`/api/auth/user-login`, { mobileNumber, password }).pipe(
+            map(res => res)
+        );
     }
 
-    generateOtp(userName: string) {
-        return this.http.post<any>(`/api/auth/send-otp`, { userName })
+    generateOtp(mobileNumber: string): Observable<any> {
+        return this.http.post<any>(`/api/user/send-otp`, { mobileNumber }).pipe(
+            map(res => res),
+        )
     }
 
-    verifyotp(userId, otp: number) {
+    verifyotp(referenceCode, otp: number): Observable<any> {
 
-        return this.http.post<any>(`/api/auth/verify-otp`, { userId, otp })
+        return this.http.post<any>(`/api/user/verify-otp`, { referenceCode, otp }).pipe(
+            map(res => res),
+        )
+    }
+
+    signInWithOtp(referenceCode, otp: number): Observable<any> {
+
+        return this.http.post<any>(`/api/auth/verify-login`, { referenceCode, otp }).pipe(
+            map(res => res),
+        )
     }
 
     resendotp(userId) {
         return this.http.post<any>(`/api/auth/resend-otp`, { userId })
     }
 
-    changeforgotpassword(userdata) {
-        return this.http.post<any>(`/api/auth/update-password`, userdata);
+    changeforgotpassword(newPassword, referenceCode) {
+        return this.http.post<any>(`/api/user/update-password`, { newPassword, referenceCode });
     }
 
     // checking authentication state

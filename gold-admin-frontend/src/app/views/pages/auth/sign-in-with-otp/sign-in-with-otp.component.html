@@ -1,24 +1,27 @@
+<kt-toastr #toastr></kt-toastr>
 <div class="text-center">
-    <p class="forgot-title">Sign in with OTP</p>
+    <p class="forgot-title">{{title}}</p>
     <p class="forgot-sub-title text-gray m-0">OTP has been sent to your Registered</p>
-    <p class="forgot-sub-title text-gray">Mobile number which end with xxxxx x5581</p>
+    <p class="forgot-sub-title text-gray">Mobile number which end with xxxxx x{{mobile | slice:6:10}}</p>
 </div>
 
 <form [formGroup]="singInOtp">
     <div class="row justify-content-center kt-margin-b-20">
         <div class="col">
-            <input type="number" class="login-form-input text-center" 
-            maxlength="1" #one (input)="input($event,'one')" formControlName="one">
+            <input type="text" class="login-form-input text-center" numbersOnly maxlength="1" #one
+                (input)="input($event,'one')" formControlName="one">
         </div>
         <div class="col">
-            <input type="number" class="login-form-input text-center"  maxlength="1" #two (input)="input($event,'two')" formControlName="two">
+            <input type="text" class="login-form-input text-center" numbersOnly maxlength="1" #two
+                (input)="input($event,'two')" formControlName="two">
         </div>
         <div class="col">
-            <input type="number" class="login-form-input text-center"  maxlength="1" #three (input)="input($event,'three')"
-                formControlName="three">
+            <input type="text" class="login-form-input text-center" numbersOnly maxlength="1" #three
+                (input)="input($event,'three')" formControlName="three">
         </div>
         <div class="col">
-            <input type="number" class="login-form-input text-center"  maxlength="1" #four  (input)="input($event,'four')" formControlName="four">
+            <input type="text" class="login-form-input text-center" numbersOnly maxlength="1" #four
+                (input)="input($event,'four')" formControlName="four">
         </div>
     </div>
     <div class="row">
@@ -31,6 +34,6 @@
 <div class="row justify-content-center">
     <div class="col-12 kt-padding-t-5 text-center">
         <span class="text-gray forgot-sub-title ">Didn't get OTP?</span>
-        <span class="text-yellowish">Resend</span>
+        <span class="text-yellowish kt-pointer" (click)="reSend()">Resend</span>
     </div>
 </div>

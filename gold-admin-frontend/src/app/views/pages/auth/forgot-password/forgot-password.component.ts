@@ -1,14 +1,15 @@
 // Angular
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 // RxJS
-import { finalize, takeUntil, tap } from 'rxjs/operators';
+import { finalize, takeUntil, tap, catchError } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 // Translate
 import { TranslateService } from '@ngx-translate/core';
 // Auth
 import { AuthNoticeService, AuthService } from '../../../../core/auth';
+import { ToastrComponent } from '../../../partials/components';
 
 @Component({
 	selector: 'kt-forgot-password',
@@ -20,6 +21,8 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 	forgotPasswordForm: FormGroup;
 	loading = false;
 	errors: any = [];
+	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+
 
 	private unsubscribe: Subject<any>; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
@@ -72,9 +75,9 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 		this.forgotPasswordForm = this.fb.group({
 			email: ['', Validators.compose([
 				Validators.required,
-				Validators.email,
-				Validators.minLength(3),
-				Validators.maxLength(320) // https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
+				// Validators.email,
+				// Validators.minLength(3),
+				// Validators.maxLength(320) // https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
 			])
 			]
 		});
@@ -96,14 +99,20 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 		this.loading = true;
 
 		const email = controls.email.value;
-		this.authService.requestPassword(email).pipe(
+		this.authService.generateOtp(email).pipe(
 			tap(response => {
 				if (response) {
 					this.authNoticeService.setNotice(this.translate.instant('AUTH.FORGOT.SUCCESS'), 'success');
-					this.router.navigateByUrl('/auth/login');
+					localStorage.setItem('reference', btoa(response.referenceCode))
+					localStorage.setItem('mobile', controls.email.value)
+					this.router.navigateByUrl('/auth/otp');
 				} else {
-					this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.NOT_FOUND', {name: this.translate.instant('AUTH.INPUT.EMAIL')}), 'danger');
+					this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.NOT_FOUND', { name: this.translate.instant('AUTH.INPUT.EMAIL') }), 'danger');
 				}
+			}),
+			catchError(err => {
+				this.toastr.errorToastr(err.error.message);
+				throw err;
 			}),
 			takeUntil(this.unsubscribe),
 			finalize(() => {

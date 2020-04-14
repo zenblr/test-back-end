@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 // Material
-import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule ,MatProgressSpinnerModule} from '@angular/material';
 // Translate
 import { TranslateModule } from '@ngx-translate/core';
 // NGRX
@@ -16,13 +16,16 @@ import { InterceptService } from '../../../core/_base/crud/';
 // Module components
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
+import { ChangePassword } from './change-password/change-password.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { AuthNoticeComponent } from './auth-notice/auth-notice.component';
+import { CoreModule } from '../../../core/core.module';
+
 // Auth
 import { AuthEffects, AuthGuard, authReducer, AuthService } from '../../../core/auth';
 import { PartialsModule } from '../../partials/partials.module';
 import { SignInWithOtpComponent } from './sign-in-with-otp/sign-in-with-otp.component';
+
 
 const routes: Routes = [
 	{
@@ -44,6 +47,14 @@ const routes: Routes = [
 				component: SignInWithOtpComponent
 			},
 			{
+				path: 'otp',
+				component: SignInWithOtpComponent
+			},
+			{
+				path: 'change-password',
+				component: ChangePassword,
+			},
+			{
 				path: 'forgot-password',
 				component: ForgotPasswordComponent,
 			}
@@ -62,10 +73,12 @@ const routes: Routes = [
 		MatInputModule,
 		MatFormFieldModule,
 		MatCheckboxModule,
+		MatProgressSpinnerModule,
 		TranslateModule.forChild(),
 		StoreModule.forFeature('auth', authReducer),
 		EffectsModule.forFeature([AuthEffects]),
-		PartialsModule
+		PartialsModule,
+		CoreModule
 	],
 	providers: [
 		InterceptService,
@@ -79,7 +92,7 @@ const routes: Routes = [
 	declarations: [
 		AuthComponent,
 		LoginComponent,
-		RegisterComponent,
+		ChangePassword,
 		ForgotPasswordComponent,
 		AuthNoticeComponent,
 		SignInWithOtpComponent

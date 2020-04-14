@@ -17,7 +17,8 @@ import {
 	StickyDirective,
 	TabClickEventDirective,
 	TimeElapsedPipe,
-	ToggleDirective
+	ToggleDirective,
+	NumberDirective
 } from './_base/layout';
 // Services
 import { AuthService } from './auth/_services/auth.service';
@@ -35,6 +36,7 @@ import { AuthService } from './auth/_services/auth.service';
 		SparklineChartDirective,
 		ContentAnimateDirective,
 		StickyDirective,
+		NumberDirective,
 		// pipes
 		TimeElapsedPipe,
 		JoinPipe,
@@ -53,6 +55,7 @@ import { AuthService } from './auth/_services/auth.service';
 		SparklineChartDirective,
 		ContentAnimateDirective,
 		StickyDirective,
+		NumberDirective,
 		// pipes
 		TimeElapsedPipe,
 		JoinPipe,
