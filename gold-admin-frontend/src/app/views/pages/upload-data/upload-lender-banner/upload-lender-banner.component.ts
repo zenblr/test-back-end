@@ -1,21 +1,19 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-// Services
-import { UploadBannerService } from '../../../../core/upload-data/upload-banner/services/upload-banner.service';
-import { ToastrService } from 'ngx-toastr';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { UploadLenderBannerService } from '../../../../core/upload-data';
 import { map } from 'rxjs/operators';
+
 @Component({
-  selector: 'kt-upload-banner',
-  templateUrl: './upload-banner.component.html',
-  styleUrls: ['./upload-banner.component.scss']
+  selector: 'kt-upload-lender-banner',
+  templateUrl: './upload-lender-banner.component.html',
+  styleUrls: ['./upload-lender-banner.component.scss']
 })
-export class UploadBannerComponent implements OnInit {
+export class UploadLenderBannerComponent implements OnInit {
   images: any[] = []
   index: number = null
   @ViewChild("file", { static: false }) file;
 
 
-  constructor(private UploadBannerService: UploadBannerService,
+  constructor(private uploadLenderBannerService: UploadLenderBannerService,
     private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
@@ -23,7 +21,7 @@ export class UploadBannerComponent implements OnInit {
   }
 
   getData() {
-    this.UploadBannerService.getBanners().pipe(
+    this.uploadLenderBannerService.getLenderBanners().pipe(
       map(res => {
         if (res.images.length > 0) {
           Array.prototype.push.apply(this.images, res.images)
@@ -42,7 +40,7 @@ export class UploadBannerComponent implements OnInit {
       reader.readAsDataURL(event.target.files[0]);
       var fd = new FormData()
       fd.append('avatar', event.target.files[0])
-      this.UploadBannerService.uploadFile(fd).subscribe(
+      this.uploadLenderBannerService.uploadFile(fd).subscribe(
         res => {
           
           if (this.index != null) {
@@ -60,7 +58,7 @@ export class UploadBannerComponent implements OnInit {
 
   uploadLenderBanners() {
 
-    this.UploadBannerService.uploadBanners(this.images).pipe(
+    this.uploadLenderBannerService.uploadLenderBanners(this.images).pipe(
       (map(res => {
 
       }))

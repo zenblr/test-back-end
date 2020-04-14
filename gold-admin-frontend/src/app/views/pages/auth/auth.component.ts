@@ -38,9 +38,7 @@ export class AuthComponent implements OnInit {
 		private splashScreenService: SplashScreenService,
 		public router: Router,
 		private location: Location) {
-		this.router.events.subscribe(val => {
-			console.log(this.router.url)
-		})
+		
 	}
 
 	/**

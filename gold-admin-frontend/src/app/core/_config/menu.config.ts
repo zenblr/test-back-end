@@ -461,11 +461,6 @@ export class MenuConfig {
 							bullet: 'dot',
 						},
 						{
-							title: 'Upload Gold Rate',
-							page: '/upload-data/upload-gold-rate',
-							bullet: 'dot',
-						},
-						{
 							title: 'Upload Offer',
 							page: '/upload-data/upload-offer',
 							bullet: 'dot',
