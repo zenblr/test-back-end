@@ -27,7 +27,7 @@
  *             address:
  *               type: string
  *             pincode:
- *               type:number
+ *               type: number
  *         required:
  *           - name
  *           - partnerId
