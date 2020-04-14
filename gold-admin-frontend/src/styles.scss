@@ -232,3 +232,16 @@ input[type=number] {
 	-ms-transform    : rotate(45deg);
 	transform        : rotate(45deg);
 }
+
+// over-ridden bootstrap colors
+.text-success {
+	color: #8ddb5d;
+}
+
+.text-warning {
+	color: #f8b150;
+}
+
+.text-danger {
+	color: #ff7272
+}
