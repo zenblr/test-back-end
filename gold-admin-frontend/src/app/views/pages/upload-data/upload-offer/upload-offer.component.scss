@@ -1,0 +1,27 @@
+:host {
+    .img-add {
+        background   : #F0F8FB;
+        height       : 100%;
+        width        : 75%;
+        border       : transparent;
+        border-radius: 20px;
+        margin       : auto;
+        display      : block;
+    }
+
+    .div-height {
+        height: 120px;
+    }
+
+    .pos {
+        position : absolute;
+        top      : 0;
+        right    : 0;
+        font-size: -webkit-xxx-large;
+    }
+
+    .border-radius {
+        border       : transparent;
+        border-radius: 20px;
+    }
+}

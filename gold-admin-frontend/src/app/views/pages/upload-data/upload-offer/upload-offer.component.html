@@ -1,10 +1,20 @@
-<div *ngFor="let image of images;index as idx">
-    <img [src]="image.value" *ngIf="image.showImg">
-    <input type="file" accept="image/*" class="form-control" (change)="uploadImages($event,idx)" *ngIf="!image.showImg">
-    <div>
-        <!-- <button (click)="delete(i)" *ngIf="image.isRemoved"> Delete</button> -->
-        <!-- <button (click)=fileInput.click() *ngIf="image.isEditable"> Edit</button> -->
-    </div>
-</div>
+<kt-portlet>
+    <kt-portlet-header [title]="'Upload Offer'"></kt-portlet-header>
+    <kt-portlet-body>
+        <div class="row">
+            <div class="col-4" *ngFor="let image of images;index as idx">
+                <div class="position-relative">
+                    <span class="pos" (click)="delete(idx);">&times;</span>
+                    <img [src]="image" *ngIf="image" class="w-100 div-height border-radius" (click)="upload(idx)">
+                </div>
+            </div>
+            <div class="col-2 div-height">
+                <input type="file" accept="image/*" class="d-none" #file (change)="uploadImages($event)">
+                <button (click)="file.click()" class="img-add">+</button>
+            </div>
+        </div>
 
-<button (click)="addImages()">+ Add</button>
+
+
+    </kt-portlet-body>
+</kt-portlet>
