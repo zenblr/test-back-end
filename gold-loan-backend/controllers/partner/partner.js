@@ -58,7 +58,13 @@ exports.readPartner = async (req, res, next) => {
             paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
         const searchQuery = {
             [Op.or]: {
-                name: { [Op.iLike]: search + '%' }
+                name: { [Op.iLike]: search + '%' },
+                partnerId:{[Op.iLike]: search + '%'},
+                commission: sequelize.where(
+                    sequelize.cast(sequelize.col("partner.commission"), "varchar"),
+                    {
+                      [Op.iLike]: search + "%"
+                    }),
             },
             isActive: true
         }
@@ -70,11 +76,8 @@ exports.readPartner = async (req, res, next) => {
             offset: offset,
             limit: pageSize
         });
-        let count = await models.partner.findAll({
-            where: { isActive: true }
-        });
         if (!readPartnerData) { return res.status(404).json({ message: 'data not found' }) }
-        return res.status(200).json({ data: readPartnerData, count: count.length });
+        return res.status(200).json({ data: readPartnerData, count: readPartnerData.length });
     }
 
 }
