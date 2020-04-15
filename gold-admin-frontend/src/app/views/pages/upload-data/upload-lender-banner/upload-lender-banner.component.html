@@ -6,7 +6,7 @@
             <div class="col-4 kt-padding-10" *ngFor="let image of images;index as idx">
                 <div class="position-relative">
                         <span class="pos" (click)="delete(idx);">
-                                <img src="../../../../../assets/media/icons/cancel.svg" alt="">
+                                <img src="../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer">
                             </span>
                     <img [src]="image" *ngIf="image" class="w-100 div-height border-radius" (click)="upload(idx)">
                 </div>
