@@ -18,12 +18,12 @@ export class MenuConfig {
 				// 	submenu: [
 				// 		{
 				// 			title: 'Google Material',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon-interface-7',
 				// 			submenu: [
 				// 				{
 				// 					title: 'Form Controls',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Auto Complete',
@@ -66,7 +66,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Navigation',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Menu',
@@ -84,7 +84,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Layout',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Card',
@@ -126,7 +126,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Buttons & Indicators',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Button',
@@ -160,7 +160,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Popups & Modals',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Bottom sheet',
@@ -182,7 +182,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Data table',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Paginator',
@@ -202,7 +202,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Ng-Bootstrap',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon-web',
 				// 			submenu: [
 				// 				{
@@ -281,7 +281,7 @@ export class MenuConfig {
 				// 	submenu: [
 				// 		{
 				// 			title: 'eCommerce',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon-business',
 				// 			permission: 'accessToECommerceModule',
 				// 			submenu: [
@@ -297,7 +297,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'User Management',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon-user',
 				// 			submenu: [
 				// 				{
@@ -320,7 +320,7 @@ export class MenuConfig {
 				// 	submenu: [
 				// 		{
 				// 			title: 'Error Pages',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon2-list-2',
 				// 			submenu: [
 				// 				{
@@ -351,7 +351,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Wizard',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon2-mail-1',
 				// 			submenu: [
 				// 				{
@@ -385,29 +385,29 @@ export class MenuConfig {
 					icon: 'flaticon2-architecture-and-city',
 					page: '/dashboard',
 					translate: 'MENU.DASHBOARD',
-					bullet: 'dot',
+					
 				},
 				{
 					title: 'Admin Account',
 					root: true,
 					icon: 'flaticon2-expand',
 					page: '/dashboard',
-					bullet: 'dot',
+					
 					submenu: [
 						{
 							title: 'Change Password',
 							page: '/admin-account/change-password',
-							bullet: 'dot',
+							
 						},
 						{
 							title: 'Show Queries',
 							page: '/admin-account/show-queries',
-							bullet: 'dot',
+							
 						},
 						{
 							title: 'Show Feedback',
 							page: '/admin-account/show-feedback',
-							bullet: 'dot',
+							
 						},
 					]
 				},
@@ -415,61 +415,61 @@ export class MenuConfig {
 					title: 'Admin-Settings',
 					root: true,
 					icon: 'flaticon-web',
-					bullet: 'dot',
+					
 					submenu: [
 						{
 							title: 'Upload Data',
 							root: true,
-							bullet: 'dot',
+							
 							submenu: [
 								{
-									title: 'Upload Gold Loan Promotional Augmont Banners',
+									title: 'Upload Promotional Banners',
 									page: '/upload-data/upload-banner',
-									bullet: 'dot',
+									
 								},
 								{
-									title: 'Upload Gold Loan Offer Banners',
+									title: 'Upload Offer Banners',
 									page: '/upload-data/upload-offer',
-									bullet: 'dot',
+									
 								},
 								{
 									title: 'Upload Lending Partner Banners',
 									page: '/upload-data/upload-lender-banner',
-									bullet: 'dot',
+									
 								},
 								// {
-								// 	title: 'Upload Gold Loan Scheme',
+								// 	title: 'Upload Scheme',
 								// 	page: '/upload-data/upload-scheme',
-								// 	bullet: 'dot',
+								// 	
 								// },
 							]
 						},
 						{
 							title: 'Loan Settings',
 							root: true,
-							bullet: 'dot',
+							
 							submenu: [
 								{
 									title: 'Loan Status',
 									page: '/loan-setting/loan-status',
-									bullet: 'dot',
+									
 								},
 								{
 									title: 'Scheme',
 									page: '/loan-setting/scheme',
-									bullet: 'dot',
+									
 								},
 							]
 						},
 						{
 							title: 'Customer Settings',
 							root: true,
-							bullet: 'dot',
+							
 							submenu: [
 								{
 									title: 'Customer list',
 									page: '/customer-setting/customer-list',
-									bullet: 'dot',
+									
 								}
 							]
 						},
@@ -481,37 +481,37 @@ export class MenuConfig {
 					root: true,
 					icon: 'flaticon-users-1',
 					// page: '/user-management',
-					bullet: 'dot',
+					
 					submenu: [
 						// {
 						// 	title: 'Upload Banner',
 						// 	page: '/upload-data/upload-banner',
-						// 	bullet: 'dot',
+						// 	
 						// },
 						{
 							title: 'Partner Details',
 							page: '/user-management/partner',
-							bullet: 'dot',
+							
 						},
 						{
 							title: 'Branch Details',
 							page: '/user-management/branch',
-							bullet: 'dot',
+							
 						},
 						{
 							title: 'Roles',
 							page: '/user-management/roles',
-							bullet: 'dot',
+							
 						},
 						// {
 						// 	title: 'Upload Lender Banner',
 						// 	// page: '/material/form-controls/autocomplete',
-						// 	bullet: 'dot',
+						// 	
 						// },
 						// {
 						// 	title: 'Upload Scheme',
 						// 	// page: '/material/form-controls/autocomplete',
-						// 	bullet: 'dot',
+						// 	
 						// },
 					]
 				},
@@ -520,7 +520,7 @@ export class MenuConfig {
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/customer-management',
-					bullet: 'dot',
+					
 				},
 				{
 					title: 'Log Out',
@@ -538,12 +538,12 @@ export class MenuConfig {
 				// {
 				// 	title: 'Google Material',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-browser-2',
 				// 	submenu: [
 				// 		{
 				// 			title: 'Form Controls',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Auto Complete',
@@ -586,7 +586,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Navigation',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Menu',
@@ -604,7 +604,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Layout',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Card',
@@ -646,7 +646,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Buttons & Indicators',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Button',
@@ -680,7 +680,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Popups & Modals',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Bottom sheet',
@@ -702,7 +702,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Data table',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Paginator',
@@ -723,7 +723,7 @@ export class MenuConfig {
 				// {
 				// 	title: 'Ng-Bootstrap',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-digital-marketing',
 				// 	submenu: [
 				// 		{
@@ -795,7 +795,7 @@ export class MenuConfig {
 				// {section: 'Applications'},
 				// {
 				// 	title: 'eCommerce',
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-list-2',
 				// 	root: true,
 				// 	permission: 'accessToECommerceModule',
@@ -813,7 +813,7 @@ export class MenuConfig {
 				// {
 				// 	title: 'User Management',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-user-outline-symbol',
 				// 	submenu: [
 				// 		{
@@ -830,7 +830,7 @@ export class MenuConfig {
 				// {
 				// 	title: 'Error Pages',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-list-2',
 				// 	submenu: [
 				// 		{
@@ -862,7 +862,7 @@ export class MenuConfig {
 				// {
 				// 	title: 'Wizard',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-mail-1',
 				// 	submenu: [
 				// 		{
