@@ -22,7 +22,7 @@
 	<div class="form-group">
 		<div class="kt-margin-t-10 kt-margin-b-10">
 			<input type="text" class="login-form-input" placeholder="Mobile Number" formControlName="mobileNo"
-				autocomplete="off" numbersOnly/>
+				autocomplete="off" maxlength="10" numbersOnly/>
 			<mat-error *ngIf="isControlHasError('mobileNo','required')">
 				<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
 			</mat-error>

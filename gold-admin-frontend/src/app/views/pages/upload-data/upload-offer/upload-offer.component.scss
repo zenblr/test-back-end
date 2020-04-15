@@ -1,0 +1,41 @@
+:host {
+    .img-add {
+        background   : #f0f8fc;
+        height       : 100%;
+        width        : 75%;
+        border       : transparent;
+        border-radius: 20px;
+        margin       : auto;
+        display      : block;
+    }
+
+    .div-height {
+        height: 120px;
+    }
+
+    .pos {
+        position : absolute;
+        top      : 5px;
+        right    : 10px;
+    }
+
+    .border-radius {
+        border       : transparent;
+        border-radius: 20px !important;
+    }
+    .per-gram {
+        display : inline-block;
+        position: relative;
+    }
+
+    /* position the unit to the right of the wrapper */
+    .per-gram::after {
+        position   : absolute;
+        top        : 11px;
+        right      : 1em;
+        transition : all .05s ease-in-out;
+        content    : 'Per gram';
+        color      : #707480;
+        font-weight: bold;
+    }
+}

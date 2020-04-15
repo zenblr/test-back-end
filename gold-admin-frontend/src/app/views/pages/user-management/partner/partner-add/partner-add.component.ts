@@ -30,12 +30,11 @@ export class PartnerAddComponent implements OnInit {
   partnerForm: FormGroup;
   states: any;
   cities: any;
-  viewOnly = false;
-  editData = false;
+  title: string;
 
   constructor(
     public dialogRef: MatDialogRef<PartnerAddComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private sharedService: SharedService,
     private fb: FormBuilder,
     private partnerService: PartnerService,
@@ -45,8 +44,11 @@ export class PartnerAddComponent implements OnInit {
     this.formInitialize();
     // this.getStates();
     // console.log(this.data);
-    if (this.data['action'] !== 'add') {
+    if (this.data.action !== 'add') {
       this.getPartnerById(this.data['partnerId']);
+      this.title = 'Edit Partner'
+    } else {
+      this.title = 'Add Partner'
     }
   }
 
@@ -87,12 +89,6 @@ export class PartnerAddComponent implements OnInit {
     this.partnerService.getPartnerById(id).subscribe(res => {
       console.log(res);
       this.partnerForm.patchValue(res);
-      if (this.data['action'] === 'view') {
-        this.viewOnly = true;
-      }
-      if (this.data['action'] === 'edit') {
-        this.editData = true;
-      }
     },
       error => {
         console.log(error.error.message);
@@ -122,7 +118,7 @@ export class PartnerAddComponent implements OnInit {
     const partnerData = this.partnerForm.value;
 
 
-    if (this.editData) {
+    if (this.data.action == 'edit') {
       const id = this.controls.id.value;
       this.partnerService.updatePartner(id, partnerData).subscribe(res => {
         // console.log(res);
@@ -133,8 +129,8 @@ export class PartnerAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.message);
-          const msg = error.message;
+          console.log(error.error.message);
+          const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
     } else {

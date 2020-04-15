@@ -2,10 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ToastrComponent } from '../../partials/components/toastr/toastr.component';
 import { CustomerManagementDatasource } from '../../../core/customer-management/datasources/customer-management.datasource';
-import { Subscription, merge } from 'rxjs';
+import { Subscription, merge, Subject } from 'rxjs';
 import { CustomerManagementService } from '../../../core/customer-management/services/customer-management.service';
-import { tap, distinctUntilChanged, skip } from 'rxjs/operators';
+import { tap, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { AddLeadComponent } from './add-lead/add-lead.component';
+import { DataTableService } from '../../../core/shared/services/data-table.service';
 
 @Component({
   selector: 'kt-customer-management',
@@ -25,9 +26,14 @@ export class CustomerManagementComponent implements OnInit {
   // Subscriptions
   private subscriptions: Subscription[] = [];
 
+  stageName = 'lead'
+  private unsubscribeSearch$ = new Subject();
+  searchValue = '';
+
   constructor(
     public dialog: MatDialog,
-    private customerManagementService: CustomerManagementService
+    private customerManagementService: CustomerManagementService,
+    private dataTableService: DataTableService
   ) {
     this.customerManagementService.openModal$.subscribe(res => {
       if (res) {
@@ -48,6 +54,13 @@ export class CustomerManagementComponent implements OnInit {
       .subscribe();
     this.subscriptions.push(paginatorSubscriptions);
 
+    const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadLeadsPage();
+      });
+
     // Init DataSource
     this.dataSource = new CustomerManagementDatasource(this.customerManagementService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
@@ -59,13 +72,15 @@ export class CustomerManagementComponent implements OnInit {
     this.subscriptions.push(entitiesSubscription);
 
     // First load
-    this.loadLeadsPage();
+    // this.loadLeadsPage();
 
-    this.dataSource.loadLeads(1, 10, '', '', '', '');
+    this.dataSource.loadLeads(1, 10, this.searchValue, this.stageName);
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 
 
@@ -75,7 +90,7 @@ export class CustomerManagementComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadLeads(from, to, '', '', '', '');
+    this.dataSource.loadLeads(from, to, this.searchValue, this.stageName);
   }
 
   addLead() {

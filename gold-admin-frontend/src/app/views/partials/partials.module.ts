@@ -80,6 +80,10 @@ import { SearchComponent } from './components/search/search.component';
 import { ModalHeaderComponent } from './components/modal/modal-header/modal-header.component';
 import { ModalFooterComponent } from './components/modal/modal-footer/modal-footer.component';
 
+// spinner
+import { NgxSpinnerModule } from "ngx-spinner";
+
+
 @NgModule({
 	declarations: [
 		ScrollTopComponent,
@@ -171,6 +175,9 @@ import { ModalFooterComponent } from './components/modal/modal-footer/modal-foot
 		SearchComponent,
 		ModalHeaderComponent,
 		ModalFooterComponent,
+
+		// spinner
+		NgxSpinnerModule
 	],
 	imports: [
 		CommonModule,
@@ -209,6 +216,9 @@ import { ModalFooterComponent } from './components/modal/modal-footer/modal-foot
 		NgbDropdownModule,
 		NgbTabsetModule,
 		NgbTooltipModule,
+
+		// spinner
+		NgxSpinnerModule
 	],
 })
 export class PartialsModule {

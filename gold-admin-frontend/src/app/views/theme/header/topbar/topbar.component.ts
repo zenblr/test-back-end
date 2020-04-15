@@ -28,7 +28,8 @@ export class TopbarComponent implements OnInit {
 	toogle: boolean;
 	toogler: string;
 	path: string;
-	constructor(private router: Router,
+	constructor(
+		private router: Router,
 		private location: Location,
 		private customerManagementServiceCustomer: CustomerManagementService,
 		private loanSettingService: LoanSettingsService,

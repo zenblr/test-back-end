@@ -3,7 +3,7 @@
 <kt-toastr #toastr></kt-toastr>
 
 <div class="kt-portlet">
-    <kt-modal-header [title]="'Add Partner'"></kt-modal-header>
+    <kt-modal-header [title]="title"></kt-modal-header>
     <div class="kt-portlet__body">
         <div class="kt-form">
             <form [formGroup]="partnerForm">
@@ -28,7 +28,7 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="name" autocomplete="off"
-                                    placeholder="Enter Partner Name" [readonly]="viewOnly"
+                                    placeholder="Enter Partner Name" 
                                     [class.isError]="controls.name.touched && controls.name.invalid">
                                 <mat-error *ngIf="controls.name.touched && controls.name.errors?.required">
                                     Required
@@ -42,7 +42,7 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="commission" type="number"
-                                    placeholder="Enter Commission" min="0" max="100" [readonly]="viewOnly"
+                                    placeholder="Enter Commission" min="0" max="100" 
                                     [class.isError]="controls.commission.touched && controls.commission.invalid">
                                 <mat-error *ngIf="controls.commission.errors?.required && controls.commission.touched">
                                     Required field
@@ -59,7 +59,7 @@
     </div>
     <kt-portlet-footer>
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="data.action"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 </div>
