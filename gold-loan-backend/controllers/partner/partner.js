@@ -40,7 +40,7 @@ exports.updatePartner = async (req, res, next) => {
   let pId = name.slice(0, 3).toUpperCase() + "-" + partnerId;
   let updatePartnerData = await models.partner.update(
     { name, partnerId: pId, commission },
-    { where: { id: partnerId } }
+    { where: { id: partnerId,isActive:true } }
   );
 
   if (updatePartnerData[0] === 0) {
