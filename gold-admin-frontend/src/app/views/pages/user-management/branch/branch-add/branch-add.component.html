@@ -58,7 +58,7 @@
                             </div>
 
                             <div class="col-8">
-                                <select class="form-control" formControlName="stateId" (change)="getCities($event)"
+                                <select class="form-control" formControlName="stateId" (change)="getCities()"
                                     [class.isError]="controls.stateId.touched && controls.stateId.invalid">
                                     <option *ngFor="let state of states" [value]="state.id">
                                         {{state.name}}
