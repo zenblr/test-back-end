@@ -23,8 +23,8 @@ export class AddLeadComponent implements OnInit {
   cities: any;
   status = [
     { id: 1, status: 'Confirm' },
-    { id: 2, status: 'Not Interested' },
-    { id: 3, status: 'Future Perspective' }
+    { id: 2, status: 'Future Perspective' },
+    { id: 3, status: 'Not Interested' },
   ];
   otpButton = true;
   panButton = true;
@@ -110,7 +110,11 @@ export class AddLeadComponent implements OnInit {
   sendOTP() {
     const mobileNumber = +(this.controls.mobileNumber.value);
     this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
-      if (res) {
+      if (res.message == 'Mobile number is already exist.') {
+        this.toastr.errorToastr('Mobile Number already exists');
+        this.controls.mobileNumber.markAsTouched();
+        this.controls.mobileNumber.markAsDirty()
+      } else {
         this.otpSent = true;
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
@@ -167,6 +171,10 @@ export class AddLeadComponent implements OnInit {
   }
 
   onSubmit() {
+    if (this.leadForm.invalid) {
+      this.leadForm.markAllAsTouched()
+      return
+    }
     console.log(this.leadForm.value);
     const leadData = this.leadForm.value;
 
