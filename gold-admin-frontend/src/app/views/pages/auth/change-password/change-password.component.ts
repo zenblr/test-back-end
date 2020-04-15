@@ -82,42 +82,26 @@ export class ChangePassword implements OnInit, OnDestroy {
 	 */
 	initRegisterForm() {
 		this.changePasswordForm = this.fb.group({
-			// fullname: ['', Validators.compose([
-			// 	Validators.required,
-			// 	Validators.minLength(3),
-			// 	Validators.maxLength(100)
-			// ])
-			// ],
-			// email: ['', Validators.compose([
-			// 	Validators.required,
-			// 	Validators.email,
-			// 	Validators.minLength(3),
-			// 	// https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
-			// 	Validators.maxLength(320)
-			// ]),
-			// ],
-			// username: ['', Validators.compose([
-			// 	Validators.required,
-			// 	Validators.minLength(3),
-			// 	Validators.maxLength(100)
-			// ]),
-			// ],
-			password: ['', Validators.compose([
+			password: ["", Validators.compose([
 				Validators.required,
-				Validators.minLength(3),
+				Validators.minLength(8),
 				Validators.maxLength(100)
 			])
 			],
-			confirmPassword: ['', Validators.compose([
+			confirmPassword: ["", Validators.compose([
 				Validators.required,
-				Validators.minLength(3),
+				Validators.minLength(8),
 				Validators.maxLength(100)
 			])
-			],
-			// agree: [false, Validators.compose([Validators.required])]
-		}, {
+			]
+		},
+			{
 				validator: ConfirmPasswordValidator.MatchPassword
 			});
+	}
+	get controls() {
+		if (this.changePasswordForm)
+			return this.changePasswordForm.controls;
 	}
 
 	/**
@@ -162,18 +146,11 @@ export class ChangePassword implements OnInit, OnDestroy {
 		).subscribe();
 	}
 
-	/**
-	 * Checking control validation
-	 *
-	 * @param controlName: string => Equals to formControlName
-	 * @param validationType: string => Equals to valitors name
-	 */
 	isControlHasError(controlName: string, validationType: string): boolean {
 		const control = this.changePasswordForm.controls[controlName];
 		if (!control) {
 			return false;
 		}
-
 		const result = control.hasError(validationType) && (control.dirty || control.touched);
 		return result;
 	}

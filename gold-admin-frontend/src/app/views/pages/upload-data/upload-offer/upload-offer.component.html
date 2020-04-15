@@ -1,10 +1,42 @@
-<div *ngFor="let image of images;index as idx">
-    <img [src]="image.value" *ngIf="image.showImg">
-    <input type="file" accept="image/*" class="form-control" (change)="uploadImages($event,idx)" *ngIf="!image.showImg">
-    <div>
-        <!-- <button (click)="delete(i)" *ngIf="image.isRemoved"> Delete</button> -->
-        <!-- <button (click)=fileInput.click() *ngIf="image.isEditable"> Edit</button> -->
-    </div>
-</div>
+<kt-toastr #toastr></kt-toastr>
+<ngx-spinner type="ball-clip-rotate" size="medium" color="#3F56B5"></ngx-spinner>
+<kt-portlet>
+    <kt-portlet-header [title]="'Upload Offer'"></kt-portlet-header>
+    <kt-portlet-body>
+        <div class="row">
+            <div class="col-3 font-weight-bold text-color d-flex align-items-center" placeholder="">Upload Gold Rate
+            </div>
+            <div class="col-3 per-gram">
+                <input type="text" class="form-control" numbersOnly [formControl]="goldRate"
+                    [class.isError]="goldRate.invalid && goldRate.touched">
+                <mat-error *ngIf="goldRate.invalid && goldRate.touched">Field required</mat-error>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4 kt-padding-10" *ngFor="let image of images;index as idx">
+                <div class="position-relative">
+                    <span class="pos" (click)="delete(idx);">
+                        <img src="../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer">
+                    </span>
+                    <img [src]="image" *ngIf="image" class="w-100 div-height border-radius" (click)="upload(idx)">
+                </div>
+            </div>
+            <div class="col-2 div-height kt-padding-10">
+                <input type="file" accept="image/*" class="d-none" #file (change)="uploadImages($event)">
+                <button (click)="file.click()" class="img-add">
+                    <img src="../../../../../assets/media/icons/add.svg" alt="">
+                </button>
+            </div>
+        </div>
+    </kt-portlet-body>
+    <kt-portlet-footer>
+        <div class="row p-3">
+            <div class="col-lg-12">
+                <kt-button [type]="'button'" [value]="'Save'" [isDisabled]="isDisabled" (click)="save()">
+                </kt-button>
+            </div>
+        </div>
+    </kt-portlet-footer>
 
-<button (click)="addImages()">+ Add</button>
+
+</kt-portlet>

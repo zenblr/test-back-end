@@ -147,9 +147,9 @@ input[type=number] {
 }
 
 // mat-table
-.mat-table__wrapper {
-	overflow-x: unset !important;
-}
+// .mat-table__wrapper {
+// 	overflow: unset !important;
+// }
 
 // mat tab
 .mat-tab-label,
@@ -192,6 +192,8 @@ input[type=number] {
 	margin-left: 25px;
 }
 
+
+
 /* On mouse-over, add a background color */
 .custom-checkbox :hover input~.checkmark {
 	background-color: #ffffff;
@@ -231,4 +233,17 @@ input[type=number] {
 	-webkit-transform: rotate(45deg);
 	-ms-transform    : rotate(45deg);
 	transform        : rotate(45deg);
+}
+
+// over-ridden bootstrap colors
+.text-success {
+	color: #8ddb5d;
+}
+
+.text-warning {
+	color: #f8b150;
+}
+
+.text-danger {
+	color: #ff7272
 }

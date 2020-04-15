@@ -29,6 +29,7 @@ export class PartnerService {
   }
 
   updatePartner(id, data): Observable<any> {
+    delete data.id
     return this.http.put<any>(`/api/partner/${id}`, data);
   }
 

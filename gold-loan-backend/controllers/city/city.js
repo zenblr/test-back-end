@@ -15,9 +15,11 @@ exports.postCity = async (req, res, next) => {
         return res.status(404).json({ messgae: "Cities Csv is already Uploaded" })
     }
     await sequelize.transaction(async t => {
-        for (var i = 0; i < jsonArray.length; i++) {
-            let data = await models.cities.create({ name: jsonArray[i].name, stateId: jsonArray[i].state_id }, { transaction: t })
-        }
+        await models.cities.bulkCreate(jsonArray, { returning: true, transaction: t });
+
+        // for (var i = 0; i < jsonArray.length; i++) {
+        //     let data = await models.cities.create({ name: jsonArray[i].name, stateId: jsonArray[i].state_id }, { transaction: t })
+        // }
     })
     return res.status(200).json({ message: "success" })
 

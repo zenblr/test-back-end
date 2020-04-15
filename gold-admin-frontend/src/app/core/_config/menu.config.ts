@@ -18,12 +18,12 @@ export class MenuConfig {
 				// 	submenu: [
 				// 		{
 				// 			title: 'Google Material',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon-interface-7',
 				// 			submenu: [
 				// 				{
 				// 					title: 'Form Controls',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Auto Complete',
@@ -66,7 +66,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Navigation',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Menu',
@@ -84,7 +84,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Layout',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Card',
@@ -126,7 +126,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Buttons & Indicators',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Button',
@@ -160,7 +160,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Popups & Modals',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Bottom sheet',
@@ -182,7 +182,7 @@ export class MenuConfig {
 				// 				},
 				// 				{
 				// 					title: 'Data table',
-				// 					bullet: 'dot',
+				// 					
 				// 					submenu: [
 				// 						{
 				// 							title: 'Paginator',
@@ -202,7 +202,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Ng-Bootstrap',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon-web',
 				// 			submenu: [
 				// 				{
@@ -281,7 +281,7 @@ export class MenuConfig {
 				// 	submenu: [
 				// 		{
 				// 			title: 'eCommerce',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon-business',
 				// 			permission: 'accessToECommerceModule',
 				// 			submenu: [
@@ -297,7 +297,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'User Management',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon-user',
 				// 			submenu: [
 				// 				{
@@ -320,7 +320,7 @@ export class MenuConfig {
 				// 	submenu: [
 				// 		{
 				// 			title: 'Error Pages',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon2-list-2',
 				// 			submenu: [
 				// 				{
@@ -351,7 +351,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Wizard',
-				// 			bullet: 'dot',
+				// 			
 				// 			icon: 'flaticon2-mail-1',
 				// 			submenu: [
 				// 				{
@@ -385,139 +385,148 @@ export class MenuConfig {
 					icon: 'flaticon2-architecture-and-city',
 					page: '/dashboard',
 					translate: 'MENU.DASHBOARD',
-					bullet: 'dot',
+
 				},
 				{
 					title: 'Admin Account',
 					root: true,
 					icon: 'flaticon2-expand',
 					page: '/dashboard',
-					bullet: 'dot',
+
 					submenu: [
 						{
 							title: 'Change Password',
 							page: '/admin-account/change-password',
-							bullet: 'dot',
+
 						},
 						{
 							title: 'Show Queries',
 							page: '/admin-account/show-queries',
-							bullet: 'dot',
+
 						},
 						{
 							title: 'Show Feedback',
 							page: '/admin-account/show-feedback',
-							bullet: 'dot',
+
 						},
 					]
 				},
 				{
-					title: 'Settings',
+					title: 'Admin-Settings',
 					root: true,
 					icon: 'flaticon-web',
-					bullet: 'dot',
+
 					submenu: [
+						{
+							title: 'Upload Data',
+							root: true,
+
+							submenu: [
+								{
+									title: 'Upload Promotional Banners',
+									page: '/upload-data/upload-banner',
+
+								},
+								{
+									title: 'Upload Offer Banners',
+									page: '/upload-data/upload-offer',
+
+								},
+								{
+									title: 'Upload Lending Partner Banners',
+									page: '/upload-data/upload-lender-banner',
+
+								},
+								// {
+								// 	title: 'Upload Scheme',
+								// 	page: '/upload-data/upload-scheme',
+								// 	
+								// },
+							]
+						},
 						{
 							title: 'Loan Settings',
 							root: true,
-							bullet: 'dot',
+
 							submenu: [
-								{
-									title: 'Loan Status',
-									page: '/loan-setting/loan-status',
-									bullet: 'dot',
-								},
 								{
 									title: 'Scheme',
 									page: '/loan-setting/scheme',
-									bullet: 'dot',
+
+								},
+								{
+									title: 'Packet',
+									page: '/loan-setting/packet',
+
 								},
 							]
 						},
 						{
-							title: 'Customer Settings',
+							title: 'Notification Settings',
 							root: true,
-							bullet: 'dot',
+
 							submenu: [
 								{
-									title: 'Customer list',
-									page: '/customer-setting/customer-list',
-									bullet: 'dot',
-								}
+									title: 'Email Alerts',
+									page: '/loan-setting/email-alerts',
+
+								},
+								{
+									title: 'SMS Alerts',
+									page: '/loan-setting/sms-alerts'
+
+								},
 							]
 						},
+
 					]
 				},
-				{
-					title: 'Upload Data',
-					root: true,
-					icon: 'flaticon2-expand',
-					page: '/upload-data',
-					bullet: 'dot',
-					submenu: [
-						{
-							title: 'Upload Banner',
-							page: '/upload-data/upload-banner',
-							bullet: 'dot',
-						},
-						{
-							title: 'Upload Gold Rate',
-							page: '/upload-data/upload-gold-rate',
-							bullet: 'dot',
-						},
-						{
-							title: 'Upload Offer',
-							page: '/upload-data/upload-offer',
-							bullet: 'dot',
-						},
-						{
-							title: 'Upload Lender Banner',
-							page: '/upload-data/upload-lender-banner',
-							bullet: 'dot',
-						},
-						{
-							title: 'Upload Scheme',
-							page: '/upload-data/upload-scheme',
-							bullet: 'dot',
-						},
-					]
-				},
+
 				{
 					title: 'User Management',
 					root: true,
 					icon: 'flaticon-users-1',
 					// page: '/user-management',
-					bullet: 'dot',
+
 					submenu: [
 						// {
 						// 	title: 'Upload Banner',
 						// 	page: '/upload-data/upload-banner',
-						// 	bullet: 'dot',
+						// 	
 						// },
 						{
 							title: 'Partner Details',
 							page: '/user-management/partner',
-							bullet: 'dot',
+
 						},
 						{
 							title: 'Branch Details',
 							page: '/user-management/branch',
-							bullet: 'dot',
+
 						},
 						{
-							title: 'Roles',
+							title: 'Internal User Details',
+							page: '/user-management/internal-user-details',
+
+						}, {
+							title: 'Assign Appraiser',
+							page: '/user-management/assign-appraiser',
+
+						},
+						{
+							title: 'Roles and permissions',
 							page: '/user-management/roles',
-							bullet: 'dot',
+
 						},
 						// {
 						// 	title: 'Upload Lender Banner',
 						// 	// page: '/material/form-controls/autocomplete',
-						// 	bullet: 'dot',
+						// 	
 						// },
 						// {
 						// 	title: 'Upload Scheme',
 						// 	// page: '/material/form-controls/autocomplete',
-						// 	bullet: 'dot',
+						// 	
 						// },
 					]
 				},
@@ -526,13 +535,110 @@ export class MenuConfig {
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/customer-management',
-					bullet: 'dot',
+
+				},
+				{
+					title: 'Customer Setting',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					submenu: [
+						{
+							title: 'KYC Setting',
+							page: '/kyc-setting'
+						}
+					]
+				},
+				{
+					title: 'Loan Managment',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					submenu: [
+						{
+							title: 'Loan Calculator',
+							page: '/loan-calculator'
+						},
+						{
+							title: 'Loan Application Form',
+							page: '/loan-application-form'
+						},
+						{
+							title: 'Applied Loan',
+							page: '/applied-loan'
+						},
+						{
+							title: 'Package Image Upload',
+							page: '/package-image-upload'
+						},
+
+					]
+				},
+				{
+					title: 'Customer Settings',
+					root: true,
+					icon: 'flaticon-users-1',
+					page: '/customer-setting/customer-list',
+				},
+				{
+					title: 'Repayment Structure',
+					root: true,
+					icon: 'flaticon-users-1',
+					submenu: [
+						{
+							title: 'Montly Payment',
+							path: '/montly-payment'
+						},
+						{
+							title: 'One Shot Payment',
+							path: '/one-shot-payment',
+						}
+					]
+				},
+				{
+					title: 'Account',
+					root: true,
+					icon: 'flaticon-users-1',
+					submenu: [
+						{
+							title: 'Loan Disbursed Details',
+							path: '/Loan-disbursed-detail'
+						},
+						{
+							title: 'Loan Repayment Details',
+							path: '/Loan-repayment-detail',
+						}
+					]
+				},
+				{
+					title: 'Report',
+					root: true,
+					icon: 'flaticon-users-1',
+					submenu: [
+						{
+							title: 'KYC',
+							path: '/kyc'
+						},
+						{
+							title: 'Loan Status Report',
+							path: '/loan-status',
+						},
+						{
+							title: 'Branch Report',
+							path: '/branch',
+						},
+						{
+							title: 'Loan Type Reports',
+							path: '/loan-type'
+						},
+						{
+							title: 'Margin Reports',
+							path: '/marign'
+						}
+					]
 				},
 				{
 					title: 'Log Out',
 					root: true,
 					page: '/auth/login',
-					bullet: 'dot'
 				}
 				// {
 				// 	title: 'Layout Builder',
@@ -544,12 +650,12 @@ export class MenuConfig {
 				// {
 				// 	title: 'Google Material',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-browser-2',
 				// 	submenu: [
 				// 		{
 				// 			title: 'Form Controls',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Auto Complete',
@@ -592,7 +698,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Navigation',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Menu',
@@ -610,7 +716,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Layout',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Card',
@@ -652,7 +758,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Buttons & Indicators',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Button',
@@ -686,7 +792,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Popups & Modals',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Bottom sheet',
@@ -708,7 +814,7 @@ export class MenuConfig {
 				// 		},
 				// 		{
 				// 			title: 'Data table',
-				// 			bullet: 'dot',
+				// 			
 				// 			submenu: [
 				// 				{
 				// 					title: 'Paginator',
@@ -729,7 +835,7 @@ export class MenuConfig {
 				// {
 				// 	title: 'Ng-Bootstrap',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-digital-marketing',
 				// 	submenu: [
 				// 		{
@@ -801,7 +907,7 @@ export class MenuConfig {
 				// {section: 'Applications'},
 				// {
 				// 	title: 'eCommerce',
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-list-2',
 				// 	root: true,
 				// 	permission: 'accessToECommerceModule',
@@ -819,7 +925,7 @@ export class MenuConfig {
 				// {
 				// 	title: 'User Management',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-user-outline-symbol',
 				// 	submenu: [
 				// 		{
@@ -836,7 +942,7 @@ export class MenuConfig {
 				// {
 				// 	title: 'Error Pages',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-list-2',
 				// 	submenu: [
 				// 		{
@@ -868,7 +974,7 @@ export class MenuConfig {
 				// {
 				// 	title: 'Wizard',
 				// 	root: true,
-				// 	bullet: 'dot',
+				// 	
 				// 	icon: 'flaticon2-mail-1',
 				// 	submenu: [
 				// 		{

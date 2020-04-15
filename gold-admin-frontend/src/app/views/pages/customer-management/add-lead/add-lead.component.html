@@ -108,6 +108,8 @@
                                         <mat-error *ngIf="controls.otp.errors?.pattern && controls.otp.touched">Invalid
                                             Input
                                         </mat-error>
+                                        <mat-hint class="kt-pointer" (click)="resendOTP()">Didn't get an OTP?
+                                            <strong>Resend</strong></mat-hint>
                                         <!-- </mat-form-field> -->
                                     </div>
 

@@ -1,28 +1,25 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-// Services
-import { UploadBannerService } from '../../../../core/upload-data/upload-banner/services/upload-banner.service';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { UploadLenderBannerService } from '../../../../core/upload-data';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../views/partials/components';
-import { NgxSpinnerService } from "ngx-spinner";
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
-  selector: 'kt-upload-banner',
-  templateUrl: './upload-banner.component.html',
-  styleUrls: ['./upload-banner.component.scss']
+  selector: 'kt-upload-lender-banner',
+  templateUrl: './upload-lender-banner.component.html',
+  styleUrls: ['./upload-lender-banner.component.scss']
 })
-export class UploadBannerComponent implements OnInit {
+export class UploadLenderBannerComponent implements OnInit {
   images: any[] = []
-  index: number = null;
-  viewLoading = false;
+  index: number = null
   @ViewChild("file", { static: false }) file;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
 
 
   constructor(
-    private UploadBannerService: UploadBannerService,
+    private uploadLenderBannerService: UploadLenderBannerService,
     private ref: ChangeDetectorRef,
     private spinner: NgxSpinnerService
   ) { }
@@ -32,16 +29,13 @@ export class UploadBannerComponent implements OnInit {
   }
 
   getData() {
-    this.spinner.show();
-    this.UploadBannerService.getBanners().pipe(
+    this.uploadLenderBannerService.getLenderBanners().pipe(
       map(res => {
         if (res.images.length > 0) {
           Array.prototype.push.apply(this.images, res.images)
           this.ref.detectChanges();
         }
-      }),
-      finalize(() => {
-        this.spinner.hide();
+        console.log(this.images)
       })).subscribe()
   }
 
@@ -54,8 +48,7 @@ export class UploadBannerComponent implements OnInit {
       reader.readAsDataURL(event.target.files[0]);
       var fd = new FormData()
       fd.append('avatar', event.target.files[0])
-      this.spinner.show()
-      this.UploadBannerService.uploadFile(fd).pipe(map(res => {
+      this.uploadLenderBannerService.uploadFile(fd).pipe(map(res => {
         if (this.index != null) {
           this.images.splice(this.index, 1, res.uploadFile.URL)
           this.index = null;
@@ -73,9 +66,10 @@ export class UploadBannerComponent implements OnInit {
     }
   }
 
-  uploadBanners() {
+  uploadLenderBanners() {
+
     this.spinner.show()
-    this.UploadBannerService.uploadBanners(this.images).pipe(
+    this.uploadLenderBannerService.uploadLenderBanners(this.images).pipe(
       (map(res => {
         this.toastr.successToastr('Uploaded Sucessfully');
       })),
