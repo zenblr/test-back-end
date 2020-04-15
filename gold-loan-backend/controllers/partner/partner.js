@@ -32,13 +32,11 @@ exports.addPartner = async (req, res, next) => {
 exports.updatePartner = async (req, res, next) => {
     const partnerId = req.params.id;
     const { name, commission } = req.body;
-    let partnerExist = await models.partner.findOne({ where: { name } })
-    if (!check.isEmpty(partnerExist)) {
-        return res.status(404).json({ message: 'This Partner is already Exist' });
-    }
-    let pId = name.slice(0, 3).toUpperCase() + '-' + partnerId;
+  
+    let pId = name.slice(0, 3).toUpperCase()+'-'+partnerId ; 
+    let updatePartnerData = await models.partner.update({ name,partnerId:pId, commission }, { where: { id: partnerId } });
+    
 
-    let updatePartnerData = await models.partner.update({ name, partnerId: pId, commission, isActive }, { where: { id: partnerId } });
     if (updatePartnerData[0] === 0) {
         return res.status(404).json({ message: 'Data not updated' });
     }
