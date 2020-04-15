@@ -3,7 +3,7 @@ var router = express.Router();
 
 const { userLogin, verifyLoginOtp } = require('../controllers/auth/userAuthController');
 const { wrapper } = require('../utils/errorWrap');
-const { authValidation,loginWithOtpValidation } = require('../validations/auth');
+const { authValidation,loginWithOtpValidation,customerLoginValidation } = require('../validations/auth');
 const validationError = require('../middleware/validationError');
 const { customerLogin } = require('../controllers/auth/customerAuthController');
 
@@ -15,6 +15,6 @@ router.post('/verify-login', loginWithOtpValidation,validationError,wrapper(veri
 
 
 //Customer Login
-router.post('/customer-login', authValidation, validationError, wrapper(customerLogin));
+router.post('/customer-login', customerLoginValidation, validationError, wrapper(customerLogin));
 
 module.exports = router;
