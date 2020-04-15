@@ -5,7 +5,7 @@ color="#3F56B5"></ngx-spinner>
     <kt-portlet-header [title]="'Upload Banner'"></kt-portlet-header>
     <kt-portlet-body>
         <div class="row">
-            <div class="col-4 kt-padding-10" *ngFor="let image of images;index as idx">
+            <div class="col-4 kt-margin-10" *ngFor="let image of images;index as idx">
                 <div class="position-relative">
 
                     <span class="pos" (click)="delete(idx);">
@@ -14,7 +14,7 @@ color="#3F56B5"></ngx-spinner>
                     <img [src]="image" *ngIf="image" class="w-100 div-height border-radius" (click)="upload(idx)">
                 </div>
             </div>
-            <div class="col-2 div-height kt-padding-10">
+            <div class="col-2 div-height kt-margin-10">
                 <input type="file" accept="image/*" class="d-none" #file (change)="uploadImages($event)">
                 <button (click)="file.click()" class="img-add">
                     <img src="../../../../../assets/media/icons/add.svg" alt="">
