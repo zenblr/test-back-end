@@ -22,10 +22,11 @@ export class BranchAddComponent implements OnInit {
   editData = false;
   viewOnly = false;
   viewLoading: boolean = false;
+  title: string;
 
   constructor(
     public dialogRef: MatDialogRef<BranchAddComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private sharedService: SharedService,
     private fb: FormBuilder,
     private branchService: BranchService,
@@ -33,11 +34,28 @@ export class BranchAddComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
     this.formInitialize();
+    this.setForm()
     this.getAllPartners();
     this.getStates();
-    if (this.data['action'] !== 'add') {
-      this.getPartnerById(this.data['partnerId']);
+    if (this.data.action !== 'add') {
+
+    }
+
+  }
+
+  setForm() {
+    if (this.data.action == 'add') {
+      this.title = 'Add New Branch'
+
+    } else if (this.data.action == 'edit') {
+      this.title = 'Edit Branch'
+      this.getPartnerById(this.data.partnerId);
+    } else {
+      this.title = 'View Branch'
+      this.branchForm.disable();
+      this.getPartnerById(this.data.partnerId);
     }
   }
 
@@ -67,7 +85,7 @@ export class BranchAddComponent implements OnInit {
       });
   }
 
-  getCities(event) {
+  getCities() {
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.message;
@@ -81,12 +99,7 @@ export class BranchAddComponent implements OnInit {
     this.branchService.getBranchById(id).subscribe(res => {
       console.log(res);
       this.branchForm.patchValue(res);
-      if (this.data['action'] === 'view') {
-        this.viewOnly = true;
-      }
-      if (this.data['action'] === 'edit') {
-        this.editData = true;
-      }
+      this.getCities()
     },
       error => {
         console.log(error.error.message);
@@ -116,7 +129,7 @@ export class BranchAddComponent implements OnInit {
     const partnerData = this.branchForm.value;
     const id = this.controls.id.value;
 
-    if (this.editData) {
+    if (this.data.action == 'edit') {
       this.branchService.updateBranch(id, partnerData).subscribe(res => {
         // console.log(res);
         if (res) {

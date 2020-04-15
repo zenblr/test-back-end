@@ -412,11 +412,38 @@ export class MenuConfig {
 					]
 				},
 				{
-					title: 'Settings',
+					title: 'Admin-Settings',
 					root: true,
 					icon: 'flaticon-web',
 					bullet: 'dot',
 					submenu: [
+						{
+							title: 'Upload Data',
+							root: true,
+							bullet: 'dot',
+							submenu: [
+								{
+									title: 'Upload Gold Loan Promotional Augmont Banners',
+									page: '/upload-data/upload-banner',
+									bullet: 'dot',
+								},
+								{
+									title: 'Upload Gold Loan Offer Banners',
+									page: '/upload-data/upload-offer',
+									bullet: 'dot',
+								},
+								{
+									title: 'Upload Lending Partner Banners',
+									page: '/upload-data/upload-lender-banner',
+									bullet: 'dot',
+								},
+								// {
+								// 	title: 'Upload Gold Loan Scheme',
+								// 	page: '/upload-data/upload-scheme',
+								// 	bullet: 'dot',
+								// },
+							]
+						},
 						{
 							title: 'Loan Settings',
 							root: true,
@@ -448,35 +475,7 @@ export class MenuConfig {
 						},
 					]
 				},
-				{
-					title: 'Upload Data',
-					root: true,
-					icon: 'flaticon2-expand',
-					page: '/upload-data',
-					bullet: 'dot',
-					submenu: [
-						{
-							title: 'Upload Banner',
-							page: '/upload-data/upload-banner',
-							bullet: 'dot',
-						},
-						{
-							title: 'Upload Offer',
-							page: '/upload-data/upload-offer',
-							bullet: 'dot',
-						},
-						{
-							title: 'Upload Lender Banner',
-							page: '/upload-data/upload-lender-banner',
-							bullet: 'dot',
-						},
-						{
-							title: 'Upload Scheme',
-							page: '/upload-data/upload-scheme',
-							bullet: 'dot',
-						},
-					]
-				},
+
 				{
 					title: 'User Management',
 					root: true,

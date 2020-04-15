@@ -3,7 +3,7 @@
 <kt-toastr #toastr></kt-toastr>
 
 <div class="kt-portlet">
-    <kt-modal-header [title]="'Add New Branch'"></kt-modal-header>
+    <kt-modal-header [title]="title"></kt-modal-header>
     <div class="kt-portlet__body">
         <div class="kt-form">
             <form [formGroup]="branchForm">
@@ -29,7 +29,7 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="name" autocomplete="off"
-                                    placeholder="Enter Partner Name" [readonly]="viewOnly"
+                                    placeholder="Enter Partner Name"
                                     [class.isError]="controls.name.touched && controls.name.invalid">
                                 <mat-error *ngIf="controls.name.touched && controls.name.errors?.required">Required
                                     field</mat-error>
@@ -42,7 +42,6 @@
 
                             <div class="col-8">
                                 <select class="form-control" name="" id="" formControlName="partnerId"
-                                    [disabled]="viewOnly"
                                     [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
                                     <option *ngFor="let partner of partners" [value]="partner.id">{{partner.name}}
                                     </option>
@@ -60,7 +59,6 @@
 
                             <div class="col-8">
                                 <select class="form-control" formControlName="stateId" (change)="getCities($event)"
-                                    [disabled]="viewOnly"
                                     [class.isError]="controls.stateId.touched && controls.stateId.invalid">
                                     <option *ngFor="let state of states" [value]="state.id">
                                         {{state.name}}
@@ -77,7 +75,7 @@
                             </div>
 
                             <div class="col-8">
-                                <select class="form-control" formControlName="cityId" [disabled]="viewOnly"
+                                <select class="form-control" formControlName="cityId"
                                     [class.isError]="controls.cityId.touched && controls.cityId.invalid">
                                     <option *ngFor="let city of cities" [value]="city.id">
                                         {{city.name}}
@@ -96,10 +94,10 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="pincode" placeholder="Enter Pin Code"
-                                    [readonly]="viewOnly"
                                     [class.isError]="controls.pincode.touched && controls.pincode.invalid"
                                     maxlength="6">
-                                <small class="text-color">Enter pin code without spaces</small>
+                                <small *ngIf="data.action != 'view'" class="text-color">Enter pin code without
+                                    spaces</small>
                                 <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.required">
                                     Required field</mat-error>
                                 <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.pattern">
@@ -113,7 +111,7 @@
                             <!-- Address -->
                             <div class="col-8">
                                 <textarea class="form-control" rows="3" formControlName="address"
-                                    placeholder="Enter Address" [readonly]="viewOnly"
+                                    placeholder="Enter Address"
                                     [class.isError]="controls.address.touched && controls.address.invalid"></textarea>
                                 <mat-error *ngIf=" controls.address.touched &&controls.address.errors?.required">
                                     Required field</mat-error>
@@ -124,9 +122,9 @@
             </form>
         </div>
     </div>
-    <kt-portlet-footer>
+    <kt-portlet-footer *ngIf="data.action != 'view'">
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="data.action"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 </div>

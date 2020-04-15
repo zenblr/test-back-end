@@ -133,8 +133,8 @@ export class PartnerAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.message);
-          const msg = error.message;
+          console.log(error.error.message);
+          const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
     } else {

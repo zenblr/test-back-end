@@ -2,8 +2,11 @@ import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@an
 import { FormGroup, FormBuilder } from '@angular/forms';
 // Services
 import { UploadBannerService } from '../../../../core/upload-data/upload-banner/services/upload-banner.service';
-import { ToastrService } from 'ngx-toastr';
-import { map } from 'rxjs/operators';
+import { map, catchError, finalize } from 'rxjs/operators';
+import { ToastrComponent } from '../../../../views/partials/components';
+import { NgxSpinnerService } from "ngx-spinner";
+
+
 @Component({
   selector: 'kt-upload-banner',
   templateUrl: './upload-banner.component.html',
@@ -11,25 +14,34 @@ import { map } from 'rxjs/operators';
 })
 export class UploadBannerComponent implements OnInit {
   images: any[] = []
-  index: number = null
+  index: number = null;
+  viewLoading = false;
   @ViewChild("file", { static: false }) file;
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
 
-  constructor(private UploadBannerService: UploadBannerService,
-    private ref: ChangeDetectorRef) { }
+
+  constructor(
+    private UploadBannerService: UploadBannerService,
+    private ref: ChangeDetectorRef,
+    private spinner: NgxSpinnerService
+  ) { }
 
   ngOnInit() {
     this.getData()
   }
 
   getData() {
+    this.spinner.show();
     this.UploadBannerService.getBanners().pipe(
       map(res => {
         if (res.images.length > 0) {
           Array.prototype.push.apply(this.images, res.images)
           this.ref.detectChanges();
         }
-        console.log(this.images)
+      }),
+      finalize(() => {
+        this.spinner.hide();
       })).subscribe()
   }
 
@@ -42,35 +54,44 @@ export class UploadBannerComponent implements OnInit {
       reader.readAsDataURL(event.target.files[0]);
       var fd = new FormData()
       fd.append('avatar', event.target.files[0])
-      this.UploadBannerService.uploadFile(fd).subscribe(
-        res => {
-          
-          if (this.index != null) {
-            this.images.splice(this.index, 1, res.uploadFile.URL)
-            this.index = null;
-          } else {
-            this.images.push(res.uploadFile.URL)
-          }
-          this.uploadLenderBanners()
-          console.log(this.images)
-          this.ref.detectChanges();
-        })
+      this.spinner.show()
+      this.UploadBannerService.uploadFile(fd).pipe(map(res => {
+        if (this.index != null) {
+          this.images.splice(this.index, 1, res.uploadFile.URL)
+          this.index = null;
+        } else {
+          this.images.push(res.uploadFile.URL)
+        }
+        this.ref.detectChanges();
+      }),
+        catchError(err => {
+          this.toastr.errorToastr('Please try Again');
+          throw err
+        }), finalize(() => {
+          this.spinner.hide();
+        })).subscribe()
     }
   }
 
-  uploadLenderBanners() {
-
+  uploadBanners() {
+    this.spinner.show()
     this.UploadBannerService.uploadBanners(this.images).pipe(
       (map(res => {
-
-      }))
+        this.toastr.successToastr('Uploaded Sucessfully');
+      })),
+      catchError(err => {
+        this.toastr.errorToastr('Please try Again');
+        throw err
+      }),
+      finalize(() => {
+        this.spinner.hide()
+      })
     ).subscribe();
 
   }
 
   delete(index: number) {
     this.images.splice(index, 1)
-    this.uploadLenderBanners()
     this.ref.detectChanges();
   }
 

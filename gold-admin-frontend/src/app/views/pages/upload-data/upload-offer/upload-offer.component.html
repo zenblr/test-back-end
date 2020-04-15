@@ -1,3 +1,4 @@
+<kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-header [title]="'Upload Offer'"></kt-portlet-header>
     <kt-portlet-body>
@@ -13,23 +14,27 @@
         <div class="row">
             <div class="col-4 kt-padding-10" *ngFor="let image of images;index as idx">
                 <div class="position-relative">
-                    <span class="pos" (click)="delete(idx);">&times;</span>
+                    <span class="pos" (click)="delete(idx);">
+                        <img src="../../../../../assets/media/icons/cancel.svg" alt="">
+                    </span>
                     <img [src]="image" *ngIf="image" class="w-100 div-height border-radius" (click)="upload(idx)">
                 </div>
             </div>
             <div class="col-2 div-height kt-padding-10">
                 <input type="file" accept="image/*" class="d-none" #file (change)="uploadImages($event)">
-                <button (click)="file.click()" class="img-add">+</button>
+                <button (click)="file.click()" class="img-add">
+                    <img src="../../../../../assets/media/icons/add.svg" alt="">
+                </button>
             </div>
         </div>
 
         <kt-portlet-footer>
-                <div class="row text-center p-3">
-                        <div class="col-lg-12">
-                            <kt-button [type]="'button'" [value]="'Save'" [isDisabled]="isDisabled" (click)="save()">
-                            </kt-button>
-                        </div>
-                    </div>
+            <div class="row text-center p-3">
+                <div class="col-lg-12">
+                    <kt-button [type]="'button'" [value]="'Save'" [isDisabled]="isDisabled" (click)="save()">
+                    </kt-button>
+                </div>
+            </div>
         </kt-portlet-footer>
 
     </kt-portlet-body>

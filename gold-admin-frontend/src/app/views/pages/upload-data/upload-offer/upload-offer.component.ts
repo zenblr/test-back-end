@@ -1,7 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { UploadOfferService } from '../../../../core/upload-data';
-import { map } from 'rxjs/operators';
+import { map, catchError, finalize } from 'rxjs/operators';
 import { FormControl, Validators } from '@angular/forms';
+import { ToastrComponent } from '../../../../views/partials/components';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'kt-upload-offer',
@@ -13,11 +15,16 @@ export class UploadOfferComponent implements OnInit {
   index: number = null
   viewLoading: boolean = false;
   @ViewChild("file", { static: false }) file;
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+
   goldRate = new FormControl(null, Validators.required);
 
 
-  constructor(private uploadOfferService: UploadOfferService,
-    private ref: ChangeDetectorRef) { }
+  constructor(
+    private uploadOfferService: UploadOfferService,
+    private ref: ChangeDetectorRef,
+    private spinner: NgxSpinnerService
+    ) { }
 
   ngOnInit() {
     this.getData()
@@ -44,17 +51,21 @@ export class UploadOfferComponent implements OnInit {
       reader.readAsDataURL(event.target.files[0]);
       var fd = new FormData()
       fd.append('avatar', event.target.files[0])
-      this.uploadOfferService.uploadFile(fd).subscribe(
-        res => {
-          if (this.index != null) {
-            this.images.splice(this.index, 1, res.uploadFile.URL)
-            this.index = null;
-          } else {
-            this.images.push(res.uploadFile.URL)
-          }
-          console.log(this.images)
-          this.ref.detectChanges();
-        })
+      this.uploadOfferService.uploadFile(fd).pipe(map(res => {
+        if (this.index != null) {
+          this.images.splice(this.index, 1, res.uploadFile.URL)
+          this.index = null;
+        } else {
+          this.images.push(res.uploadFile.URL)
+        }
+        this.ref.detectChanges();
+      }),
+        catchError(err => {
+          this.toastr.errorToastr('Please try Again');
+          throw err
+        }), finalize(() => {
+          this.spinner.hide();
+        })).subscribe()
     }
   }
 
@@ -68,11 +79,18 @@ export class UploadOfferComponent implements OnInit {
       this.goldRate.markAsTouched()
       return
     }
-    this.viewLoading = true;
+    this.spinner.show()
     this.uploadOfferService.uploadOffers(Number(this.goldRate.value), this.images).pipe(
-      map((res => {
-        res
-      }))
+      (map(res => {
+        this.toastr.successToastr('Uploaded Sucessfully');
+      })),
+      catchError(err => {
+        this.toastr.errorToastr('Please try Again');
+        throw err
+      }),
+      finalize(() => {
+        this.spinner.hide()
+      })
     ).subscribe();
   }
 
