@@ -385,29 +385,29 @@ export class MenuConfig {
 					icon: 'flaticon2-architecture-and-city',
 					page: '/dashboard',
 					translate: 'MENU.DASHBOARD',
-					
+
 				},
 				{
 					title: 'Admin Account',
 					root: true,
 					icon: 'flaticon2-expand',
 					page: '/dashboard',
-					
+
 					submenu: [
 						{
 							title: 'Change Password',
 							page: '/admin-account/change-password',
-							
+
 						},
 						{
 							title: 'Show Queries',
 							page: '/admin-account/show-queries',
-							
+
 						},
 						{
 							title: 'Show Feedback',
 							page: '/admin-account/show-feedback',
-							
+
 						},
 					]
 				},
@@ -415,27 +415,27 @@ export class MenuConfig {
 					title: 'Admin-Settings',
 					root: true,
 					icon: 'flaticon-web',
-					
+
 					submenu: [
 						{
 							title: 'Upload Data',
 							root: true,
-							
+
 							submenu: [
 								{
 									title: 'Upload Promotional Banners',
 									page: '/upload-data/upload-banner',
-									
+
 								},
 								{
 									title: 'Upload Offer Banners',
 									page: '/upload-data/upload-offer',
-									
+
 								},
 								{
 									title: 'Upload Lending Partner Banners',
 									page: '/upload-data/upload-lender-banner',
-									
+
 								},
 								// {
 								// 	title: 'Upload Scheme',
@@ -447,32 +447,38 @@ export class MenuConfig {
 						{
 							title: 'Loan Settings',
 							root: true,
-							
+
 							submenu: [
-								{
-									title: 'Loan Status',
-									page: '/loan-setting/loan-status',
-									
-								},
 								{
 									title: 'Scheme',
 									page: '/loan-setting/scheme',
-									
+
+								},
+								{
+									title: 'Packet',
+									page: '/loan-setting/packet',
+
 								},
 							]
 						},
 						{
-							title: 'Customer Settings',
+							title: 'Notification Settings',
 							root: true,
-							
+
 							submenu: [
 								{
-									title: 'Customer list',
-									page: '/customer-setting/customer-list',
-									
-								}
+									title: 'Email Alerts',
+									page: '/loan-setting/email-alerts',
+
+								},
+								{
+									title: 'SMS Alerts',
+									page: '/loan-setting/sms-alerts'
+
+								},
 							]
 						},
+
 					]
 				},
 
@@ -481,7 +487,7 @@ export class MenuConfig {
 					root: true,
 					icon: 'flaticon-users-1',
 					// page: '/user-management',
-					
+
 					submenu: [
 						// {
 						// 	title: 'Upload Banner',
@@ -491,17 +497,26 @@ export class MenuConfig {
 						{
 							title: 'Partner Details',
 							page: '/user-management/partner',
-							
+
 						},
 						{
 							title: 'Branch Details',
 							page: '/user-management/branch',
-							
+
 						},
 						{
-							title: 'Roles',
+							title: 'Internal User Details',
+							page: '/user-management/internal-user-details',
+
+						}, {
+							title: 'Assign Appraiser',
+							page: '/user-management/assign-appraiser',
+
+						},
+						{
+							title: 'Roles and permissions',
 							page: '/user-management/roles',
-							
+
 						},
 						// {
 						// 	title: 'Upload Lender Banner',
@@ -520,13 +535,110 @@ export class MenuConfig {
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/customer-management',
-					
+
+				},
+				{
+					title: 'Customer Setting',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					submenu: [
+						{
+							title: 'KYC Setting',
+							page: '/kyc-setting'
+						}
+					]
+				},
+				{
+					title: 'Loan Managment',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					submenu: [
+						{
+							title: 'Loan Calculator',
+							page: '/loan-calculator'
+						},
+						{
+							title: 'Loan Application Form',
+							page: '/loan-application-form'
+						},
+						{
+							title: 'Applied Loan',
+							page: '/applied-loan'
+						},
+						{
+							title: 'Package Image Upload',
+							page: '/package-image-upload'
+						},
+
+					]
+				},
+				{
+					title: 'Customer Settings',
+					root: true,
+					icon: 'flaticon-users-1',
+					page: '/customer-setting/customer-list',
+				},
+				{
+					title: 'Repayment Structure',
+					root: true,
+					icon: 'flaticon-users-1',
+					submenu: [
+						{
+							title: 'Montly Payment',
+							path: '/montly-payment'
+						},
+						{
+							title: 'One Shot Payment',
+							path: '/one-shot-payment',
+						}
+					]
+				},
+				{
+					title: 'Account',
+					root: true,
+					icon: 'flaticon-users-1',
+					submenu: [
+						{
+							title: 'Loan Disbursed Details',
+							path: '/Loan-disbursed-detail'
+						},
+						{
+							title: 'Loan Repayment Details',
+							path: '/Loan-repayment-detail',
+						}
+					]
+				},
+				{
+					title: 'Report',
+					root: true,
+					icon: 'flaticon-users-1',
+					submenu: [
+						{
+							title: 'KYC',
+							path: '/kyc'
+						},
+						{
+							title: 'Loan Status Report',
+							path: '/loan-status',
+						},
+						{
+							title: 'Branch Report',
+							path: '/branch',
+						},
+						{
+							title: 'Loan Type Reports',
+							path: '/loan-type'
+						},
+						{
+							title: 'Margin Reports',
+							path: '/marign'
+						}
+					]
 				},
 				{
 					title: 'Log Out',
 					root: true,
 					page: '/auth/login',
-					bullet: 'dot'
 				}
 				// {
 				// 	title: 'Layout Builder',
