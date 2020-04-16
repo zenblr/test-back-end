@@ -24,6 +24,21 @@ exports.userLogin = async (req, res, next) => {
         where: { mobileNumber, isActive: true },
         include: [{ model: models.roles }]
     });
+
+    // let checkUser = await models.users.findOne({
+    //     where: {
+    //           [Op.or]: [
+    //             {
+    //               email: mobileNumber,
+    //             },
+    //             {
+    //               mobileNumber: mobileNumber,
+    //             }
+    //           ]
+    //       },
+    //       include: [{ model: models.roles }]
+    // })
+
     if (!checkUser) {
         return res.status(404).json({ message: 'Wrong Credentials' })
     }
