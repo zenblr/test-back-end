@@ -39,7 +39,7 @@
  *       201:
  *          description: branch created
  *       400:
- *          description: Something went wrong
+ *          description: Invalid pincode
  *   get:
  *     tags:
  *       - Branch

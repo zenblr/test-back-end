@@ -27,10 +27,10 @@
  *             panCardNumber:
  *               type: string  
  *             address:
- *               type: array
- *               items:
  *                type: object
  *                properties:
+ *                 landMark:
+ *                   type: string
  *                 stateId:
  *                   type: number
  *                 cityId:
@@ -128,7 +128,8 @@
  *           - otp
  *     responses:
  *       200:
- *          description: Success
+ *          description: Success 
+ *                       referenceCode
  *       400:
  *          description: Invalid Otp
  * /user/change-password:
@@ -188,7 +189,7 @@
  *           - new Password
  *     responses:
  *       200:
- *          description: Success
+ *          description: Password Updated
  *       404:
  *          description: User not found . Please contact Admin.
  *       401:
@@ -202,8 +203,6 @@
  *     responses:
  *       200:
  *          description: Success
- *       500:
- *          description: Internal Server Error
  *    
  * 
  */

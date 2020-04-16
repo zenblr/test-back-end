@@ -67,7 +67,7 @@
  *       200:
  *         description: Success.
  *       404:
- *         description: data not found.
+ *         description: permission deleted failed.
  * /permission/{id}:
  *   put:
  *     tags:

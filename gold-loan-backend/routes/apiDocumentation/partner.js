@@ -76,9 +76,9 @@
  *       - application/json
  *     responses:
  *       200:
- *         description: Success.
+ *         description: Updated.
  *       404:
- *         description: data not found.
+ *         description: partner deleted failed.
  * /partner/{id}:
  *   get:
  *     tags:
@@ -97,9 +97,9 @@
  *       - application/json
  *     responses:
  *       200:
- *         description: Data found
+ *         description: Success
  *       404:
- *         description: Data not found
+ *         description: data not found
  *   put:
  *     tags:
  *       - Partner

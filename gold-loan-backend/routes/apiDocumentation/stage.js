@@ -37,7 +37,7 @@
  *     parameters:
  *       - name: "getAll"
  *         in: "query"
- *         description: "isActive to delete"
+ *         description: "isActive to get "
  *         required: true
  *         type: "boolean"
  *     responses:
@@ -65,8 +65,8 @@
  *     responses:
  *       200:
  *         description: Updated.
- *       500:
- *         description: Internal server error.
+ *       404:
+ *         description: stage deleted failed.
  * /stage/{id}:
  *    put:
  *     tags:
@@ -93,7 +93,7 @@
  *           - stageName
  *     responses:
  *       200:
- *          description: Stage Created 
+ *          description: Success
  *       404:
- *          description: This Stage is already Exist
+ *          description: This Stage is already Exist/Data not updated
  */

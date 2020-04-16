@@ -108,6 +108,10 @@
  *               items:
  *                type: object
  *                properties:
+ *                 address:
+ *                   type: string
+ *                 landMark:
+ *                   type: string
  *                 stateId:
  *                   type: number
  *                 cityId:
@@ -188,6 +192,10 @@
  *               items:
  *                type: object
  *                properties:
+ *                 address:
+ *                   type: string
+ *                 landMark:
+ *                   type: string
  *                 stateId:
  *                   type: number
  *                 cityId:
@@ -231,8 +239,8 @@
  *       type: "integer"
  *     - name: "isActive"
  *       in: "query"
- *       description: "isActive to delete"
- *       required: false
+ *       description: "isActive customer to delete"
+ *       required: true
  *       type: "boolean"
  *     security:
  *       - bearerAuth: []
