@@ -16,4 +16,10 @@ export class SharedService {
   getCities(id): Observable<any> {
     return this.http.get(`/api/city/${id}`);
   }
+
+  uploadFile(files): Observable<any> {
+    var fd = new FormData()
+    fd.append('avatar', files)
+    return this.http.post<any>(`/api/upload-file`, fd);
+  }
 }
