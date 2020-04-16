@@ -5,6 +5,7 @@ import { UploadBannerService } from '../../../../core/upload-data/upload-banner/
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../views/partials/components';
 import { NgxSpinnerService } from "ngx-spinner";
+import { SharedService } from '../../../../core/shared/services/shared.service';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class UploadBannerComponent implements OnInit {
 
 
   constructor(
+    private sharedService: SharedService,
     private UploadBannerService: UploadBannerService,
     private ref: ChangeDetectorRef,
     private spinner: NgxSpinnerService
@@ -50,12 +52,8 @@ export class UploadBannerComponent implements OnInit {
     if (event.target.files.length == 0) {
       this.index == null
     } else {
-      var reader = new FileReader()
-      reader.readAsDataURL(event.target.files[0]);
-      var fd = new FormData()
-      fd.append('avatar', event.target.files[0])
       this.spinner.show()
-      this.UploadBannerService.uploadFile(fd).pipe(map(res => {
+      this.sharedService.uploadFile(event.target.files[0]).pipe(map(res => {
         if (this.index != null) {
           this.images.splice(this.index, 1, res.uploadFile.URL)
           this.index = null;
@@ -69,6 +67,7 @@ export class UploadBannerComponent implements OnInit {
           throw err
         }), finalize(() => {
           this.spinner.hide();
+          this.file.nativeElement.value = '';
         })).subscribe()
     }
   }

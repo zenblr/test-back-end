@@ -11,10 +11,7 @@ export class UploadOfferService {
   constructor(private http: HttpClient) { }
 
 
-  uploadFile(fd): Observable<any> {
-    return this.http.post<any>(`/api/upload-file`, fd).pipe(
-      map(res => res));
-  }
+
 
   uploadOffers(goldRate, fd): Observable<any> {
     return this.http.post<any>(`/api/offer`, { goldRate, images: fd });

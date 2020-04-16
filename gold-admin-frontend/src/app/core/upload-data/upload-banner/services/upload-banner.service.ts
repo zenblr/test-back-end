@@ -15,9 +15,7 @@ export class UploadBannerService {
   constructor(private http: HttpClient) { }
 
 
-  uploadFile(fd): Observable<any> {
-    return this.http.post<any>(`/api/upload-file`, fd);
-  }
+  
 
   uploadBanners(fd): Observable<any> {
     return this.http.post<any>(`/api/banner`, { images: fd });
