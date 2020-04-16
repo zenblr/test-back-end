@@ -27,7 +27,7 @@ exports.branchValidation = [
     .custom((value) => {
 
       if (!/^([0-9]{6}|[0-9]{3}\s[0-9]{3})/i.test(value)) {
-        return Promise.reject("Invalid pincode code")
+        return Promise.reject("Invalid pincode")
       } else {
         return true;
       }
