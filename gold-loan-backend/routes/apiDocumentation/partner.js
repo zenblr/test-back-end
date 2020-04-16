@@ -26,8 +26,8 @@
  *     responses:
  *       201:
  *          description: partner created
- *       500:
- *          description: Something went wrong
+ *       404:
+ *          description: This Partner is already Exist
  *   get:
  *     tags:
  *       - Partner
@@ -130,6 +130,7 @@
  *       200:
  *         description: success
  *       404:
- *         description: data not found
-
+ *         description: Data not Updated
+ *       400:
+ *         description: This Partner is already Exist
  */

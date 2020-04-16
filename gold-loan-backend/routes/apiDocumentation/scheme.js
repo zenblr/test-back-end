@@ -30,7 +30,7 @@
  *               type: number
  *             interestRateNinetyDaysAnnually:
  *               type: number  
- *             interestRateOnehundredEightyDaysAnnually:
+ *             interestRateOneHundredEightyDaysAnnually:
  *               type: number
  *             partnerId:
  *               type: number

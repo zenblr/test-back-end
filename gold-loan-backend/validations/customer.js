@@ -20,16 +20,16 @@ exports.customerValidation = [
     .exists()
     .withMessage('referenceCode is required'),
 
-  body('mobileNumber')
-    .exists()
-    .withMessage('mobile number is require')
-    .custom(async value => {
+  // body('mobileNumber')
+  //   .exists()
+  //   .withMessage('mobile number is require')
+  //   .custom(async value => {
 
-      if (!/^[0-9]{10}$/i.test(value)) {
-        return Promise.reject("Invalid mobile number");
-      }
+  //     if (!/^[0-9]{10}$/i.test(value)) {
+  //       return Promise.reject("Invalid mobile number");
+  //     }
 
-    }),
+  //   }),
 
   // body('email')
   //   .exists()
