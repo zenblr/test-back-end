@@ -32,7 +32,8 @@ exports.addScheme = async (req, res, next) => {
 
 exports.readScheme = async (req, res, next) => {
     let readSchemeData = await models.partner.findAll({
-        include: [models.schemes]
+        where: { isActive: true },
+        include: [models.schemes],
     })
 
     if (!readSchemeData) {

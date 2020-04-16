@@ -1,9 +1,17 @@
-const models = require('../../models');
-const jwt = require('jsonwebtoken');
-const sequelize = models.sequelize;
 
+
+
+const models = require('../../models');
+const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
+const jwt = require('jsonwebtoken');
+const redisConn = require('../../config/redis');
+const redis = require('redis');
+
+const client = redis.createClient(redisConn.PORT, redisConn.HOST);
+
+
 
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
@@ -13,9 +21,9 @@ exports.userLogin = async (req, res, next) => {
     const { mobileNumber, password } = req.body;
 
     let checkUser = await models.users.findOne({
-         where: { mobileNumber, isActive: true },
-         include:[{model: models.roles}] 
-        });
+        where: { mobileNumber, isActive: true },
+        include: [{ model: models.roles }]
+    });
     if (!checkUser) {
         return res.status(404).json({ message: 'Wrong Credentials' })
     }
@@ -54,6 +62,15 @@ exports.userLogin = async (req, res, next) => {
 
 }
 
+exports.logout = async (req, res, next) => {
+    let token = await req.headers.authorization.split(" ")[1];
+    let logout = await models.logger.destroy({ where: { token: token } });
+    client.del(token, JSON.stringify(token));
+
+    return res.status(202).json({ message: `logout successfull` })
+
+}
+
 exports.verifyLoginOtp = async (req, res, next) => {
     let { referenceCode, otp } = req.body
     var todayDateTime = new Date();
@@ -75,9 +92,10 @@ exports.verifyLoginOtp = async (req, res, next) => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
         let user = await models.users.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
         let checkUser = await models.users.findOne({
-             where: { id: user.id, isActive: true },
-             include:[{model: models.roles}] ,
-              transaction: t });
+            where: { id: user.id, isActive: true },
+            include: [{ model: models.roles }],
+            transaction: t
+        });
         Token = jwt.sign({
             id: checkUser.dataValues.id,
             mobile: checkUser.dataValues.mobileNumber,
