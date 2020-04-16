@@ -86,10 +86,8 @@ export class AddSchemeComponent implements OnInit {
       }
       this.laonSettingService.saveScheme(this.billingForm.value).pipe(
         map((res) => {
-          if (res.message == 'schemes created') {
             this._toastr.success('Scheme Created Sucessfully');
             this.dialogRef.close(res);
-          }
         }),catchError(err => {
           this._toastr.error('Some thing went wrong')
           this.ref.detectChanges();
@@ -105,10 +103,8 @@ export class AddSchemeComponent implements OnInit {
       fb.append('partnerId', this.csvForm.controls.partnerId.value)
       this.laonSettingService.uplaodCSV(fb).pipe(
         map((res) => {
-          if (res.message == 'schemes created') {
             this._toastr.success('Scheme Created Sucessfully');
             this.dialogRef.close(res);
-          }
         }), catchError(err => {
           this._toastr.error('Some thing went wrong')
           this.ref.detectChanges();
@@ -118,11 +114,7 @@ export class AddSchemeComponent implements OnInit {
   }
 
   getFileInfo(event) {
-    var reader = new FileReader()
-    console.log(event)
-    if (event.target.files[0].type == "text/csv") {
       this.file = event.target.files[0];
       this.csvForm.get('csv').patchValue(event.target.files[0].name);
-    }
   }
 }
