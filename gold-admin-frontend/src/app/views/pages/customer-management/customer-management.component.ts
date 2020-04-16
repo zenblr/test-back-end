@@ -4,7 +4,7 @@ import { ToastrComponent } from '../../partials/components/toastr/toastr.compone
 import { CustomerManagementDatasource } from '../../../core/customer-management/datasources/customer-management.datasource';
 import { Subscription, merge, Subject } from 'rxjs';
 import { CustomerManagementService } from '../../../core/customer-management/services/customer-management.service';
-import { tap, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
+import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { AddLeadComponent } from './add-lead/add-lead.component';
 import { DataTableService } from '../../../core/shared/services/data-table.service';
 
@@ -23,6 +23,8 @@ export class CustomerManagementComponent implements OnInit {
   // Filter fields
   // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  destroy$ = new Subject();
+
   // Subscriptions
   private subscriptions: Subscription[] = [];
 
@@ -35,11 +37,13 @@ export class CustomerManagementComponent implements OnInit {
     private customerManagementService: CustomerManagementService,
     private dataTableService: DataTableService
   ) {
-    this.customerManagementService.openModal$.subscribe(res => {
-      if (res) {
-        this.addLead();
-      }
-    });
+    this.customerManagementService.openModal$.pipe(
+      map(res => {
+        if (res) {
+          this.addLead();
+        }
+      }),
+      takeUntil(this.destroy$)).subscribe();
   }
 
   ngOnInit() {
@@ -81,6 +85,8 @@ export class CustomerManagementComponent implements OnInit {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 
@@ -95,7 +101,9 @@ export class CustomerManagementComponent implements OnInit {
 
   addLead() {
     // console.log(event);
-    const dialogRef = this.dialog.open(AddLeadComponent);
+    const dialogRef = this.dialog.open(AddLeadComponent, {
+      data: { action: 'add' }
+    });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();
