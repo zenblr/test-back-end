@@ -40,7 +40,7 @@ exports.updatePartner = async (req, res, next) => {
   let pId = name.slice(0, 3).toUpperCase() + "-" + partnerId;
   let updatePartnerData = await models.partner.update(
     { name, partnerId: pId, commission },
-    { where: { id: partnerId } }
+    { where: { id: partnerId, isActive: true } }
   );
 
   if (updatePartnerData[0] === 0) {
@@ -81,12 +81,16 @@ exports.readPartner = async (req, res, next) => {
       offset: offset,
       limit: pageSize,
     });
+
+    let count = await models.partner.findAll({
+      where: searchQuery,
+      order: [["id", "ASC"]],
+    });
+
     if (!readPartnerData) {
       return res.status(404).json({ message: "data not found" });
     }
-    return res
-      .status(200)
-      .json({ data: readPartnerData, count: readPartnerData.length });
+    return res.status(200).json({ data: readPartnerData, count: count.length });
   }
 };
 
