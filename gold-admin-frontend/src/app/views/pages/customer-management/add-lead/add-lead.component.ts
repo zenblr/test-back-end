@@ -40,7 +40,7 @@ export class AddLeadComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private sharedService: SharedService,
     private fb: FormBuilder,
     private customerManagementService: CustomerManagementService
@@ -112,8 +112,6 @@ export class AddLeadComponent implements OnInit {
     this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
-        this.controls.mobileNumber.markAsTouched();
-        this.controls.mobileNumber.markAsDirty()
       } else {
         this.otpSent = true;
         this.refCode = res.referenceCode;
