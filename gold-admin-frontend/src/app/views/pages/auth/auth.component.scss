@@ -150,8 +150,8 @@ kt-auth,
 	color     : #454c67;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus,
+input[type="text"]:focus.login-form-input,
+input[type="password"]:focus.login-form-input,
 input[type="number"]:focus.login-form-input {
 	border : 2px solid #d7b56d;
 	outline: 0 none;

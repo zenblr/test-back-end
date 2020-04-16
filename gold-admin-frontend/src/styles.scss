@@ -235,6 +235,12 @@ input[type=number] {
 	transform        : rotate(45deg);
 }
 
+// modal
+.mat-dialog-container {
+	border       : transparent !important;
+	border-radius: 20px !important;
+}
+
 // over-ridden bootstrap colors
 .text-success {
 	color: #8ddb5d;
