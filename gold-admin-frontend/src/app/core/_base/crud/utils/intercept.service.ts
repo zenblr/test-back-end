@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
 // RxJS
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, finalize } from 'rxjs/operators';
 import { AuthService } from '../../../../core/auth/_services/auth.service';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 
 /**
  * More information there => https://medium.com/@MetonymyQT/angular-http-interceptors-what-are-they-and-how-to-use-them-52e060321088
@@ -12,7 +13,11 @@ import { AuthService } from '../../../../core/auth/_services/auth.service';
 @Injectable()
 export class InterceptService implements HttpInterceptor {
 
-	constructor(private authService: AuthService) {
+	constructor(
+		private authService: AuthService,
+		private sharedSerivce:SharedService,
+		) {
+			this.sharedSerivce.loader$.subscribe()
 	}
 	// intercept request and add token
 	intercept(
@@ -34,7 +39,7 @@ export class InterceptService implements HttpInterceptor {
 		// console.log('----request----');
 		// console.log(request);
 		// console.log('--- end of request---');
-
+		this.sharedSerivce.loader.next(true)
 		return next.handle(request).pipe(
 			tap(
 				event => {
@@ -53,7 +58,9 @@ export class InterceptService implements HttpInterceptor {
 					console.error(error.message);
 					// console.log('--- end of response---');
 				}
-			)
+			),finalize(()=>{
+				this.sharedSerivce.loader.next(false)
+			})
 		);
 	}
 }

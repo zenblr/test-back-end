@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfirmPasswordValidator } from './confirm-password-validator';
 import { AuthService } from '../../../../core/auth';
 import { ToastrService } from 'ngx-toastr';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-change-password',
@@ -14,9 +15,12 @@ export class ChangePasswordComponent implements OnInit {
   @ViewChild('form', { static: false }) form;
   passwordForm: FormGroup
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private authService: AuthService,
-    private toast: ToastrService) {
+    private toast: ToastrService,
+    public router:Router
+    ) {
     this.startForm();
   }
 
@@ -62,14 +66,27 @@ export class ChangePasswordComponent implements OnInit {
     }
     this.authService.changePassword(this.passwordForm.value).pipe(
       map((res) => {
-        if (res.message == " wrong credentials") {
-          this.toast.error("Wrong Credentials")
-        } else if (res.message == "Success") {
-          this.toast.success("Password Changed Successfully")
+         if (res.message == "Success") {
+          this.toast.success("Password Changed Successfully");
+          this.logout()
           this.form.resetForm()
         }
+      }),catchError(err =>{
+        if (err.error.message == " wrong credentials") {
+          this.toast.error("Wrong Credentials")
+        } 
+        throw err
       })
     ).subscribe()
 
+  }
+  logout(){
+    this.authService.logout().pipe(
+      map(res =>{
+        localStorage.clear()
+        this.router.navigate(['/auth/login'])
+    }),catchError(err =>{
+      throw err
+    })).subscribe()
   }
 }

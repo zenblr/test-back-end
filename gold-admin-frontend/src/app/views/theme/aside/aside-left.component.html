@@ -101,7 +101,7 @@
 	</i>
 
 	<!-- menu item title text -->
-	<span class="kt-menu__link-text" [translate]="item.translate">{{item.title}}</span>
+	<span class="kt-menu__link-text" [translate]="item.translate" (click)="item.title == 'Log Out' ? logout() : ''">{{item.title}}</span>
 	<!-- menu item with badge -->
 	<span *ngIf="item.badge" class="kt-menu__link-badge">
 		<span class="kt-badge" [ngClass]="item.badge.type">{{item.badge.value}}</span>

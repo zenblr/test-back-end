@@ -1,10 +1,7 @@
 
 <div class="kt-portlet" >
     <kt-modal-header [title]="'Add Scheme'"></kt-modal-header>
-    <div class="spinner-center" *ngIf="viewLoading">
-            <mat-spinner [diameter]="40"></mat-spinner>
-        </div>
-    <div class="kt-portlet__body position-relative" *ngIf="!viewLoading">
+    <div class="kt-portlet__body position-relative">
         <div class="text-right">
             <a href="../../../../../assets/media/files/schemes.csv" download="schemes.csv"
                 *ngIf="tabGroup.selectedIndex == 1">

@@ -3,7 +3,6 @@ import { UploadOfferService } from '../../../../core/upload-data';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { FormControl, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../views/partials/components';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 
 @Component({
@@ -23,9 +22,7 @@ export class UploadOfferComponent implements OnInit {
 
   constructor(
     private uploadOfferService: UploadOfferService,
-    private sharedService: SharedService,
     private ref: ChangeDetectorRef,
-    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit() {
@@ -44,41 +41,11 @@ export class UploadOfferComponent implements OnInit {
       })).subscribe()
   }
 
-  uploadImages(event) {
-
-    if (event.target.files.length == 0) {
-      this.index == null
-    } else {
-      this.sharedService.uploadFile(event.target.files[0]).pipe(map(res => {
-        if (this.index != null) {
-          this.images.splice(this.index, 1, res.uploadFile.URL)
-          this.index = null;
-        } else {
-          this.images.push(res.uploadFile.URL)
-        }
-        this.ref.detectChanges();
-      }),
-        catchError(err => {
-          this.toastr.errorToastr('Please try Again');
-          throw err
-        }), finalize(() => {
-          this.spinner.hide();
-          this.file.nativeElement.value = ''
-        })).subscribe()
-    }
-  }
-
-  delete(index: number) {
-    this.images.splice(index, 1)
-    this.ref.detectChanges();
-  }
-
   save() {
     if (this.goldRate.invalid) {
       this.goldRate.markAsTouched()
       return
     }
-    this.spinner.show()
     this.uploadOfferService.uploadOffers(Number(this.goldRate.value), this.images).pipe(
       (map(res => {
         this.toastr.successToastr('Uploaded Sucessfully');
@@ -88,13 +55,9 @@ export class UploadOfferComponent implements OnInit {
         throw err
       }),
       finalize(() => {
-        this.spinner.hide()
       })
     ).subscribe();
   }
 
-  upload(idx) {
-    this.file.nativeElement.click()
-    this.index = idx;
-  }
+  
 }

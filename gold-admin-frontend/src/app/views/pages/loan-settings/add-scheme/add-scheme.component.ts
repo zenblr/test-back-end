@@ -16,12 +16,10 @@ export class AddSchemeComponent implements OnInit {
 
   @ViewChild('tabGroup', { static: false }) tabGroup;
 
-  viewLoading: boolean
   csvForm: FormGroup;
   billingForm: FormGroup;
   partnerData: [] = []
   file: any;
-  loading:boolean = false;
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddSchemeComponent>,
@@ -37,15 +35,13 @@ export class AddSchemeComponent implements OnInit {
   }
 
   partner() {
-    this.viewLoading = true
+   
     this.partnerService.getAllPartner('', 1, 50).pipe(
       map(res => {
         this.partnerData = res.data;
-        this.viewLoading = false;
         this.ref.detectChanges();
         console.log(this.partnerData)
       }), catchError(err => {
-        this.viewLoading = false;
         this._toastr.error('Some thing went wrong')
         this.ref.detectChanges();
         throw (err)
@@ -88,7 +84,6 @@ export class AddSchemeComponent implements OnInit {
         this.billingForm.markAllAsTouched()
         return
       }
-      this.loading = true;
       this.laonSettingService.saveScheme(this.billingForm.value).pipe(
         map((res) => {
           if (res.message == 'schemes created') {
@@ -96,7 +91,6 @@ export class AddSchemeComponent implements OnInit {
             this.dialogRef.close(res);
           }
         }),catchError(err => {
-          this.loading = false;
           this._toastr.error('Some thing went wrong')
           this.ref.detectChanges();
           throw (err)
@@ -106,7 +100,6 @@ export class AddSchemeComponent implements OnInit {
         this.csvForm.markAllAsTouched()
         return
       }
-      this.loading = true;
       var fb = new FormData()
       fb.append('schemecsv', this.file)
       fb.append('partnerId', this.csvForm.controls.partnerId.value)
@@ -117,7 +110,6 @@ export class AddSchemeComponent implements OnInit {
             this.dialogRef.close(res);
           }
         }), catchError(err => {
-          this.loading = false;
           this._toastr.error('Some thing went wrong')
           this.ref.detectChanges();
           throw (err)
