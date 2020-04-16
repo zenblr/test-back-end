@@ -10,9 +10,6 @@ export class UploadLenderBannerService {
   constructor(private http: HttpClient) { }
 
 
-  uploadFile(fd): Observable<any> {
-    return this.http.post<any>(`/api/upload-file`, fd);
-  }
 
   uploadLenderBanners(fd): Observable<any> {
     return this.http.post<any>(`/api/lender-banner`, { images: fd });
