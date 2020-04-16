@@ -23,3 +23,14 @@ exports.loginWithOtpValidation = [
     .exists()
     .withMessage('otp is required')
 ]
+
+exports.customerLoginValidation = [
+  body('firstName')
+  .exists()
+  .withMessage('first Name is required'),
+
+body('password')
+  .exists()
+  .withMessage('password required')
+]
+

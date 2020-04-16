@@ -67,6 +67,30 @@
  *          description: Success
  *       404:
  *          description: data not found
+ *   delete:
+ *     tags:
+ *       - Branch
+ *     summary: To delete by Id
+ *     parameters:
+ *     - name: "id"
+ *       in: "query"
+ *       description: "Id of branch to delete"
+ *       required: true
+ *       type: "integer"
+ *     - name: "isActive"
+ *       in: "query"
+ *       description: "Value of isActive of branch to delete"
+ *       required: true
+ *       type: "boolean"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Updated.
+ *       404:
+ *         description: branch deleted failed.
  *
  * /branch/{id}:
  *   get:
@@ -133,28 +157,4 @@
  *         description: Success
  *       404:
  *         description: Update failed
- *   delete:
- *     tags:
- *       - Branch
- *     summary: To delete by Id
- *     parameters:
- *     - name: "id"
- *       in: "query"
- *       description: "Id of branch to delete"
- *       required: true
- *       type: "integer"
- *     - name: "isAcive"
- *       in: "query"
- *       description: "Value of isActive of branch to delete"
- *       required: true
- *       type: "boolean"
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Updated.
- *       404:
- *         description: branch deleted failed.
  */
