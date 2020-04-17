@@ -14,6 +14,7 @@ import { UploadLenderBannerComponent } from './upload-lender-banner/upload-lende
 
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 
+
 const routes: Routes = [
   {
 
@@ -44,7 +45,8 @@ const routes: Routes = [
     AngularMaterialModule,
     RouterModule.forChild(routes),
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    
   ]
 })
 export class UploadDataModule { }

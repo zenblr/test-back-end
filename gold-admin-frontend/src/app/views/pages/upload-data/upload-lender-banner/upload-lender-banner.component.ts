@@ -2,14 +2,12 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { UploadLenderBannerService } from '../../../../core/upload-data';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../views/partials/components';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 
 
 @Component({
   selector: 'kt-upload-lender-banner',
   templateUrl: './upload-lender-banner.component.html',
-  styleUrls: ['./upload-lender-banner.component.scss']
 })
 export class UploadLenderBannerComponent implements OnInit {
   images: any[] = []
@@ -21,9 +19,7 @@ export class UploadLenderBannerComponent implements OnInit {
 
   constructor(
     private uploadLenderBannerService: UploadLenderBannerService,
-    private sharedService: SharedService,
     private ref: ChangeDetectorRef,
-    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit() {
@@ -41,34 +37,10 @@ export class UploadLenderBannerComponent implements OnInit {
       })).subscribe()
   }
 
-  uploadImages(event) {
-
-    if (event.target.files.length == 0) {
-      this.index == null
-    } else {
-      this.sharedService.uploadFile(event.target.files[0]).pipe(map(res => {
-        if (this.index != null) {
-          this.images.splice(this.index, 1, res.uploadFile.URL)
-          this.index = null;
-        } else {
-          this.images.push(res.uploadFile.URL)
-        }
-        this.ref.detectChanges();
-      }),
-        catchError(err => {
-          this.toastr.errorToastr('Please try Again');
-          throw err
-        }), finalize(() => {
-          this.spinner.hide();
-          this.file.nativeElement.value = '';
-
-        })).subscribe()
-    }
-  }
+  
 
   uploadLenderBanners() {
 
-    this.spinner.show()
     this.uploadLenderBannerService.uploadLenderBanners(this.images).pipe(
       (map(res => {
         this.toastr.successToastr('Uploaded Sucessfully');
@@ -78,20 +50,10 @@ export class UploadLenderBannerComponent implements OnInit {
         throw err
       }),
       finalize(() => {
-        this.spinner.hide()
       })
     ).subscribe();
 
   }
 
-  delete(index: number) {
-    this.images.splice(index, 1)
-    this.ref.detectChanges();
-  }
-
-  upload(idx) {
-    this.file.nativeElement.click()
-    this.index = idx;
-  }
 }
 

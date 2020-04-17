@@ -637,9 +637,8 @@ export class MenuConfig {
 				},
 				{
 					title: 'Log Out',
-					root: true,
-					page: '/auth/login',
-				}
+					icon:'flaticon-logout'
+				}				
 				// {
 				// 	title: 'Layout Builder',
 				// 	root: true,

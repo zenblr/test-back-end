@@ -81,7 +81,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 	 * On init
 	 */
 	ngOnInit(): void {
-		localStorage.clear();
 		this.initLoginForm();
 
 		// redirect back to the returnUrl before login
@@ -114,10 +113,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 		}
 
 		this.loginForm = this.fb.group({
-			mobileNo: [DEMO_PARAMS.EMAIL, Validators.compose([
-				Validators.required // https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
-			])
-			],
+			mobileNo: [null, Validators.compose([Validators.required, 
+				Validators.pattern(/^(\d{10}|\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3}))$/),
+				Validators.minLength(10),
+				Validators.maxLength(10)]
+				)],
 			password: [DEMO_PARAMS.PASSWORD, Validators.compose([
 				Validators.required,
 				// Validators.minLength(3),
@@ -225,6 +225,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 		}
 
 		const result = control.hasError(validationType) && (control.dirty || control.touched);
+		console.log(control.hasError(validationType),validationType)
 		return result;
 	}
 }
