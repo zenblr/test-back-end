@@ -204,7 +204,7 @@ exports.getAllCustomers = async (req, res, next) => {
             as: 'status'
         }],
         order: [
-            ['id', 'ASC']
+            ['id', 'DESC']
         ],
         offset: offset,
         limit: pageSize
