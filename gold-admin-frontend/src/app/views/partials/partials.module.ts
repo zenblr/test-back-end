@@ -24,6 +24,7 @@ import {
 	MatTableModule,
 	MatTabsModule,
 	MatTooltipModule,
+	MatDividerModule,
 } from '@angular/material';
 // NgBootstrap
 import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -82,6 +83,8 @@ import { ModalFooterComponent } from './components/modal/modal-footer/modal-foot
 
 // spinner
 import { NgxSpinnerModule } from "ngx-spinner";
+import { UplodDataImageComponent } from './components/uplod-data-image/uplod-data-image.component';
+import { ImagePreviewDialogComponent } from './components/image-preview-dialog/image-preview-dialog.component';
 
 
 @NgModule({
@@ -131,6 +134,10 @@ import { NgxSpinnerModule } from "ngx-spinner";
 		ModalHeaderComponent,
 
 		ModalFooterComponent,
+
+		UplodDataImageComponent,
+
+		ImagePreviewDialogComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -176,6 +183,9 @@ import { NgxSpinnerModule } from "ngx-spinner";
 		ModalHeaderComponent,
 		ModalFooterComponent,
 
+		UplodDataImageComponent,
+		ImagePreviewDialogComponent,
+
 		// spinner
 		NgxSpinnerModule
 	],
@@ -211,6 +221,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 		MatTabsModule,
 		MatTooltipModule,
 		MatDialogModule,
+		MatDividerModule,
 
 		// ng-bootstrap modules
 		NgbDropdownModule,
@@ -220,6 +231,9 @@ import { NgxSpinnerModule } from "ngx-spinner";
 		// spinner
 		NgxSpinnerModule
 	],
+	entryComponents:[
+		ImagePreviewDialogComponent
+	]
 })
 export class PartialsModule {
 }

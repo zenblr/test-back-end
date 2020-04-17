@@ -8,12 +8,13 @@ import {
 	Renderer2,
 	ViewChild
 } from '@angular/core';
-import { filter } from 'rxjs/operators';
+import { filter, catchError, map } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
 import * as objectPath from 'object-path';
 // Layout
 import { LayoutConfigService, MenuAsideService, MenuOptions, OffcanvasOptions } from '../../../core/_base/layout';
 import { HtmlClassService } from '../html-class.service';
+import { AuthService } from '../../../core/auth';
 
 @Component({
 	selector: 'kt-aside-left',
@@ -75,7 +76,8 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		public layoutConfigService: LayoutConfigService,
 		private router: Router,
 		private render: Renderer2,
-		private cdr: ChangeDetectorRef
+		private cdr: ChangeDetectorRef,
+		private auth:AuthService
 	) {
 	}
 
@@ -222,5 +224,15 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		}
 
 		return toggle;
+	}
+	logout(){
+		this.auth.logout().pipe(map(
+			res=>{
+				localStorage.clear();
+				this.router.navigate(['/auth/login']);
+			}
+		),catchError(err=>{
+			throw err
+		})).subscribe()
 	}
 }

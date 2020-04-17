@@ -55,6 +55,22 @@ exports.readSchemeById = async (req, res, next) => {
     return res.status(200).json({ data: readSchemeByIdData });
 }
 
+//read schema by partnerId
+
+exports.readSchemeByPartnerId = async (req, res, next) => {
+
+    const partnerId = req.params.id;
+
+    let readSchemeByPartner = await models.partner.findOne({
+        where: { isActive: true, id: partnerId },
+        include: [models.schemes],
+    })
+    if (!readSchemeByPartner) {
+        return res.status(404).json({ message: 'data not found' });
+    }
+    return res.status(200).json({ data: readSchemeByPartner });
+}
+
 
 // update Scheme By id
 
