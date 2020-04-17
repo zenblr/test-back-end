@@ -78,7 +78,7 @@ exports.readBranch = async (req, res, next) => {
             }
         ],
         order: [
-            ['id', 'ASC']
+            ['id', 'DESC']
         ],
         offset: offset,
         limit: pageSize

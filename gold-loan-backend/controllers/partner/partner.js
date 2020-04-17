@@ -77,7 +77,7 @@ exports.readPartner = async (req, res, next) => {
     };
     let readPartnerData = await models.partner.findAll({
       where: searchQuery,
-      order: [["id", "ASC"]],
+      order: [["id", "DESC"]],
       offset: offset,
       limit: pageSize,
     });
