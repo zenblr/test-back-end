@@ -253,3 +253,16 @@ input[type=number] {
 .text-danger {
 	color: #ff7272
 }
+.kt-portlet .kt-portlet__body{
+	padding: 5px 15px !important;
+}
+
+.kt-mat-dialog-container__wrapper .mat-dialog-container .kt-portlet .kt-portlet__body{
+	max-height: 75vh !important;
+}
+
+@media (min-width: 1025px){
+.kt-container {
+    padding: 0 10px !important;
+	}
+}
