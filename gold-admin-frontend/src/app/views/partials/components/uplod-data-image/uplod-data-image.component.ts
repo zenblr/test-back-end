@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetect
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { finalize, catchError, map } from 'rxjs/operators';
 import { ToastrComponent } from '../toastr/toastr.component';
+import { LayoutUtilsService } from '../../../../core/_base/crud';
 @Component({
   selector: 'kt-uplod-data-image',
   templateUrl: './uplod-data-image.component.html',
@@ -9,7 +10,7 @@ import { ToastrComponent } from '../toastr/toastr.component';
 })
 export class UplodDataImageComponent implements OnInit {
 
-  
+
   index: number = null;
   @Input() title;
   @Input() images;
@@ -20,9 +21,10 @@ export class UplodDataImageComponent implements OnInit {
 
 
   constructor(
-    private ref:ChangeDetectorRef,
+    private ref: ChangeDetectorRef,
     private sharedService: SharedService,
-    ) { }
+    private layoutUtilsService: LayoutUtilsService
+  ) { }
 
   ngOnInit() {
   }
@@ -54,9 +56,26 @@ export class UplodDataImageComponent implements OnInit {
     this.file.nativeElement.click()
     this.index = index;
   }
+
   removeImages(index) {
-    this.images.splice(index,1)
-    this.ref.detectChanges();
+
+    const _title = 'Delete Banner';
+    const _description = 'Are you sure to permanently delete this banner?';
+    const _waitDesciption = 'Banner is deleting...';
+    const _deleteMessage = `Banner has been deleted`;
+
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+        this.images.splice(index, 1)
+        this.ref.detectChanges();
+        this.toastr.successToastr(_deleteMessage)
+      }
+    });
+
+
+
   }
 
 

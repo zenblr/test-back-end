@@ -5,10 +5,13 @@
             <div class="col-4 kt-margin-t-10" *ngFor="let image of images;index as idx">
                 <div class="position-relative">
 
-                    <span class="pos" (click)="removeImages(idx);">
+                    <span class="pos-edit" (click)="edit(idx)">
+                        <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer">
+                    </span>
+                    <span class="pos-remove" (click)="removeImages(idx);">
                         <img src="../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer">
                     </span>
-                    <img [src]="image" *ngIf="image" class="w-100 div-height border-radius" (click)="edit(idx)">
+                    <img [src]="image" *ngIf="image" class="w-100 div-height border-radius">
                 </div>
             </div>
             <div class="col-2 div-height kt-margin-t-10">

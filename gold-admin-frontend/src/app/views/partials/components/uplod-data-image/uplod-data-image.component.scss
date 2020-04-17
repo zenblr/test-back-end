@@ -13,7 +13,13 @@
         height: 120px;
     }
 
-    .pos {
+    .pos-edit {
+        position: absolute;
+        top     : 35px;
+        right   : 10px;
+    }
+
+    .pos-remove {
         position: absolute;
         top     : 5px;
         right   : 10px;
