@@ -84,6 +84,7 @@ import { ModalFooterComponent } from './components/modal/modal-footer/modal-foot
 // spinner
 import { NgxSpinnerModule } from "ngx-spinner";
 import { UplodDataImageComponent } from './components/uplod-data-image/uplod-data-image.component';
+import { ImagePreviewDialogComponent } from './components/image-preview-dialog/image-preview-dialog.component';
 
 
 @NgModule({
@@ -135,6 +136,8 @@ import { UplodDataImageComponent } from './components/uplod-data-image/uplod-dat
 		ModalFooterComponent,
 
 		UplodDataImageComponent,
+
+		ImagePreviewDialogComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -181,6 +184,7 @@ import { UplodDataImageComponent } from './components/uplod-data-image/uplod-dat
 		ModalFooterComponent,
 
 		UplodDataImageComponent,
+		ImagePreviewDialogComponent,
 
 		// spinner
 		NgxSpinnerModule
@@ -227,6 +231,9 @@ import { UplodDataImageComponent } from './components/uplod-data-image/uplod-dat
 		// spinner
 		NgxSpinnerModule
 	],
+	entryComponents:[
+		ImagePreviewDialogComponent
+	]
 })
 export class PartialsModule {
 }

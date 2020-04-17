@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetect
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { finalize, catchError, map } from 'rxjs/operators';
 import { ToastrComponent } from '../toastr/toastr.component';
+import {MatDialog } from '@angular/material'
+import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 @Component({
   selector: 'kt-uplod-data-image',
   templateUrl: './uplod-data-image.component.html',
@@ -22,6 +24,7 @@ export class UplodDataImageComponent implements OnInit {
   constructor(
     private ref:ChangeDetectorRef,
     private sharedService: SharedService,
+    public dilaog:MatDialog
     ) { }
 
   ngOnInit() {
@@ -59,6 +62,15 @@ export class UplodDataImageComponent implements OnInit {
     this.ref.detectChanges();
   }
 
+  open(index){
+    this.dilaog.open(ImagePreviewDialogComponent,{
+      data:{
+        images:this.images,
+        index:index
+      },
+      width:"75%"
+    })
+  }
 
 
 }
