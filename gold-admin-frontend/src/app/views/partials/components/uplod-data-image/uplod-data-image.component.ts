@@ -20,7 +20,7 @@ export class UplodDataImageComponent implements OnInit {
   @Output() upload = new EventEmitter();
 
   @ViewChild("file", { static: false }) file;
-  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  @ViewChild(ToastrComponent, { static: false }) toastr: ToastrComponent;
 
 
   constructor(
@@ -67,15 +67,15 @@ export class UplodDataImageComponent implements OnInit {
     const _title = 'Delete Banner';
     const _description = 'Are you sure to permanently delete this banner?';
     const _waitDesciption = 'Banner is deleting...';
-    const _deleteMessage = `Banner has been deleted`;
+    const _deleteMessage = 'Banner has been deleted';
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         console.log(res);
         this.images.splice(index, 1)
+        this.toastr.successToastr('Banner has been deleted')
         this.ref.detectChanges();
-        this.toastr.successToastr(_deleteMessage)
       }
     });
 
