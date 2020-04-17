@@ -261,6 +261,10 @@ input[type=number] {
 	max-height: 75vh !important;
 }
 
+mat-header-row{
+	min-height: 30px !important;
+}
+
 @media (min-width: 1025px){
 .kt-container {
     padding: 0 10px !important;
