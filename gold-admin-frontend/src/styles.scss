@@ -265,6 +265,10 @@ mat-header-row{
 	min-height: 30px !important;
 }
 
+.mat-table__wrapper {
+	min-height: 70vh !important; //set table height
+}
+
 @media (min-width: 1025px){
 .kt-container {
     padding: 0 10px !important;

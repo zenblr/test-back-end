@@ -31,7 +31,11 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/loan-settings/loan-settings.module').then(m => m.LoanSettingsModule)
 			},
 			{
+<<<<<<< HEAD
 				path: 'customer-management',
+=======
+				path: 'customer-setting',
+>>>>>>> bhushan
 				loadChildren: () => import('../app/views/pages/customer-management/customer-management.module').then(m => m.CustomerManagementModule)
 			},
 			{
@@ -39,7 +43,11 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/kyc-settings/kyc-settings.module').then(m => m.KycSettingsModule)
 			},
 			{
+<<<<<<< HEAD
 				path: 'lead-management',
+=======
+				path: 'customer-management',
+>>>>>>> bhushan
 				loadChildren: () => import('../app/views/pages/lead-management/lead-management.module').then(m => m.LeadManagementModule)
 			},
 			{

@@ -31,7 +31,12 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     LeadManagementComponent, 
+<<<<<<< HEAD:gold-admin-frontend/src/app/views/pages/lead-management/lead-management.module.ts
     AddLeadComponent],
+=======
+    AddLeadComponent
+  ],
+>>>>>>> bhushan:gold-admin-frontend/src/app/views/pages/customer-setting/customer-setting.module.ts
   imports: [
     CommonModule,
     FormsModule,
