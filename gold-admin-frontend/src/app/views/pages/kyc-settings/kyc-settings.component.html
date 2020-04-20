@@ -11,12 +11,7 @@
         </a>
 
         <ng-template ngbNavContent>
-            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro
-                synth
-                master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro
-                keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip
-                placeat
-                salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+            <kt-user-details></kt-user-details>
         </ng-template>
     </ng-container>
 
@@ -32,7 +27,7 @@
         </a>
 
         <ng-template ngbNavContent>
-            <kt-user-details></kt-user-details>
+            <kt-user-address></kt-user-address>
         </ng-template>
     </ng-container>
 
@@ -48,7 +43,7 @@
         </a>
 
         <ng-template ngbNavContent>
-            <kt-user-address></kt-user-address>
+           <kt-user-personal></kt-user-personal>
         </ng-template>
     </ng-container>
 
@@ -64,16 +59,19 @@
         </a>
 
         <ng-template ngbNavContent>
-           <kt-user-personal></kt-user-personal>
-        </ng-template>
-    </ng-container>
-    <ng-container ngbNavItem>
-        <a ngbNavLink>Four</a>
-        <ng-template ngbNavContent>
            <kt-user-banks></kt-user-banks>
         </ng-template>
-    </ng-container> <ng-container ngbNavItem>
-        <a ngbNavLink>Five</a>
+    </ng-container>
+     <ng-container ngbNavItem>
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    5
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
+            </div>
+        </a>
         <ng-template ngbNavContent>
            <kt-user-review></kt-user-review>
         </ng-template>
