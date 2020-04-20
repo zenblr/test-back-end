@@ -1,26 +1,68 @@
 <nav ngbNav #nav="ngbNav" class="nav-tabs">
     <ng-container ngbNavItem>
-        <a ngbNavLink>
+        <a ngbNavLink class="tab-link">
             <div>
-                <p>one</p>
-                <p>one</p>
-                <p>one</p>
+                <div class="step-number">
+                    1
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
             </div>
         </a>
 
+        <ng-template ngbNavContent>
+            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro
+                synth
+                master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro
+                keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip
+                placeat
+                salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+        </ng-template>
+    </ng-container>
+
+    <ng-container ngbNavItem>
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    2
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
+            </div>
+        </a>
 
         <ng-template ngbNavContent>
             <kt-user-details></kt-user-details>
         </ng-template>
     </ng-container>
+
     <ng-container ngbNavItem>
-        <a ngbNavLink>Two</a>
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    3
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
+            </div>
+        </a>
+
         <ng-template ngbNavContent>
             <kt-user-address></kt-user-address>
         </ng-template>
     </ng-container>
+
     <ng-container ngbNavItem>
-        <a ngbNavLink>Three</a>
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    4
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
+            </div>
+        </a>
+
         <ng-template ngbNavContent>
            <kt-user-personal></kt-user-personal>
         </ng-template>
