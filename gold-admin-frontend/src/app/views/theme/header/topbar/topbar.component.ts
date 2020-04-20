@@ -67,7 +67,7 @@ export class TopbarComponent implements OnInit {
 			this.value3 = 'Add New Scheme';
 			this.type3 = 'button';
 		}
-		if (this.path == 'customer-management') {
+		if (this.path == 'lead-management') {
 			this.showfilter = true;
 			this.showInput = true;
 			this.value1 = 'Search';
@@ -110,7 +110,7 @@ export class TopbarComponent implements OnInit {
 
 	action(event: Event) {
 
-		if (this.path == 'customer-management') {
+		if (this.path == 'lead-management') {
 			this.customerManagementServiceCustomer.openModal.next(true);
 		}
 		if (this.path == 'scheme') {
