@@ -32,7 +32,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'customer-setting',
-				loadChildren: () => import('../app/views/pages/customer-setting/customer-setting.module').then(m => m.CustomerSettingModule)
+				loadChildren: () => import('../app/views/pages/customer-management/customer-management.module').then(m => m.CustomerManagementModule)
 			},
 			{
 				path: 'upload-data',
@@ -40,7 +40,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'customer-management',
-				loadChildren: () => import('../app/views/pages/customer-management/customer-management.module').then(m => m.CustomerManagementModule)
+				loadChildren: () => import('../app/views/pages/lead-management/lead-management.module').then(m => m.LeadManagementModule)
 			},
 			{
 				path: 'mail',

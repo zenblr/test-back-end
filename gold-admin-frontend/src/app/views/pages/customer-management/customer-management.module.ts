@@ -1,35 +1,44 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // Modules
 import { CoreModule } from '../../../core/core.module';
 import { PartialsModule } from '../../partials/partials.module';
 // Components
-import { CustomerManagementComponent } from './customer-management.component';
-import { AddLeadComponent } from './add-lead/add-lead.component';
+import { CustomerListComponent } from './customer-list/customer-list.component';
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
 import { HttpUtilsService, TypesUtilsService, LayoutUtilsService, InterceptService } from '../../../core/_base/crud';
-import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA } from '@angular/material';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CustomerManagementComponent } from './customer-management.component';
+import { CustomerGridComponent } from './customer-grid/customer-grid.component';
+import { CustomerDetailsComponent } from './customer-details/customer-details.component';
+import { LoanDetailsComponent } from './loan-details/loan-details.component';
 
 const routes: Routes = [
   {
-    path: '',
-    component: CustomerManagementComponent,
-    children: [
-      // {
-      //   path: '',
-      //   redirectTo: 'upload-banner',
-      //   pathMatch: 'full'
-      // },
-    ]
+    path: 'customer-list',
+    component: CustomerManagementComponent
+  },
+  {
+    path: 'customer-list/:id',
+    component: CustomerDetailsComponent
+  },
+  {
+    path: 'customer-list/:id/loan-details/:loanId',
+    component: LoanDetailsComponent
   }
-]
+];
 
 @NgModule({
-  declarations: [CustomerManagementComponent, AddLeadComponent],
+  declarations: [CustomerListComponent,
+    CustomerManagementComponent,
+    CustomerGridComponent,
+    CustomerDetailsComponent,
+    LoanDetailsComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -55,14 +64,10 @@ const routes: Routes = [
         width: '600px'
       }
     },
-    { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatDialogRef, useValue: {} },
     HttpUtilsService,
     TypesUtilsService,
     LayoutUtilsService
   ],
-  entryComponents: [
-    AddLeadComponent
-  ]
+  entryComponents: []
 })
 export class CustomerManagementModule { }
