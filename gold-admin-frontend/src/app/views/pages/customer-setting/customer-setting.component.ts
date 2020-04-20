@@ -3,8 +3,8 @@ import { CustomerManagementService } from '../../../core/customer-management/ser
 
 @Component({
   selector: 'kt-customer-setting',
-  templateUrl: './customer-setting.component.html',
-  styleUrls: ['./customer-setting.component.scss']
+  template: `<kt-customer-list *ngIf="toogler=='list'"></kt-customer-list>
+                <kt-customer-grid *ngIf="toogler=='grid'"></kt-customer-grid>`,
 })
 export class CustomerSettingComponent implements OnInit {
 

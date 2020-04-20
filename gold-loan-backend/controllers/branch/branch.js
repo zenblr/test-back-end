@@ -33,26 +33,26 @@ exports.readBranch = async (req, res, next) => {
     const searchQuery = {
         [Op.or]: {
             name: { [Op.iLike]: search + '%' },
-            branchId:{[Op.iLike]: search + '%'},
-            name:sequelize.where(
+            branchId: { [Op.iLike]: search + '%' },
+            name: sequelize.where(
                 sequelize.cast(sequelize.col("partner.name"), "varchar"),
                 {
-                  [Op.iLike]: search + "%"
+                    [Op.iLike]: search + "%"
                 }),
-            pincode:sequelize.where(
+            pincode: sequelize.where(
                 sequelize.cast(sequelize.col("branch.pincode"), "varchar"),
                 {
-                  [Op.iLike]: search + "%"
+                    [Op.iLike]: search + "%"
                 }),
-            city_name:sequelize.where(
+            city_name: sequelize.where(
                 sequelize.cast(sequelize.col("cities.name"), "varchar"),
                 {
-                  [Op.iLike]: search + "%"
+                    [Op.iLike]: search + "%"
                 }),
-            state_name:sequelize.where(
+            state_name: sequelize.where(
                 sequelize.cast(sequelize.col("states.name"), "varchar"),
                 {
-                  [Op.iLike]: search + "%"
+                    [Op.iLike]: search + "%"
                 }),
         },
         isActive: true
@@ -78,16 +78,34 @@ exports.readBranch = async (req, res, next) => {
             }
         ],
         order: [
-            ['id', 'ASC']
+            ['id', 'DESC']
         ],
         offset: offset,
         limit: pageSize
     });
-    // let count = await models.branch.findAll({
-    //     where: { isActive: true }
-    // });
+    let count = await models.branch.findAll({
+        where: searchQuery,
+        include: [
+            {
+                model: models.partner,
+                as: 'partner'
+            }, {
+                model: models.cities,
+                as: "cities",
+                where: {
+                    isActive: true
+                }
+            }, {
+                model: models.states,
+                as: "states",
+                where: {
+                    isActive: true
+                }
+            }
+        ],
+    });
     if (!readBranchData) { return res.status(404).json({ message: 'data not found' }) }
-    return res.status(200).json({ data: readBranchData, count: readBranchData.length });
+    return res.status(200).json({ data: readBranchData, count: count.length });
 }
 
 //get branch by id

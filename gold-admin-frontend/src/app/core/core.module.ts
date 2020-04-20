@@ -22,6 +22,7 @@ import {
 } from './_base/layout';
 // Services
 import { AuthService } from './auth/_services/auth.service';
+import { AlphabetsDirective } from './_base/layout/directives/alphabets.directive';
 
 @NgModule({
 	imports: [CommonModule],
@@ -43,6 +44,7 @@ import { AuthService } from './auth/_services/auth.service';
 		GetObjectPipe,
 		SafePipe,
 		FirstLetterPipe,
+		AlphabetsDirective,
 	],
 	exports: [
 		// directives
@@ -62,6 +64,7 @@ import { AuthService } from './auth/_services/auth.service';
 		GetObjectPipe,
 		SafePipe,
 		FirstLetterPipe,
+		AlphabetsDirective
 	],
 	providers: [AuthService]
 })

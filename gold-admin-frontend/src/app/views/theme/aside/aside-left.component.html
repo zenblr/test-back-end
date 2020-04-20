@@ -6,10 +6,11 @@
 	<!-- end:: Brand -->
 
 	<!-- BEGIN: Aside Menu -->
-	<div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper" [ngStyle]="{'background':'#454D67'}">
+	<div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper"
+		[ngStyle]="{'background':'#454D67'}">
 		<div #asideMenu ktMenu [options]="menuOptions" [perfectScrollbar]="{wheelPropagation: false}"
-			[ngStyle]="{'max-height': '100vh', 'position': 'relative','background':'#454D67','padding-bottom':'50px'}" id="kt_aside_menu" class="kt-aside-menu"
-			[ngClass]="htmlClassService.getClasses('aside_menu', true)">
+			[ngStyle]="{'max-height': '100vh', 'position': 'relative','background':'#454D67','padding-bottom':'120px'}"
+			id="kt_aside_menu" class="kt-aside-menu" [ngClass]="htmlClassService.getClasses('aside_menu', true)">
 			<ul class="kt-menu__nav" [ngClass]="htmlClassService.getClasses('aside_menu_nav', true)">
 				<ng-container [ngTemplateOutlet]="menuListTemplate"></ng-container>
 			</ul>
@@ -100,7 +101,7 @@
 	</i>
 
 	<!-- menu item title text -->
-	<span class="kt-menu__link-text" [translate]="item.translate">{{item.title}}</span>
+	<span class="kt-menu__link-text" [translate]="item.translate" (click)="item.title == 'Log Out' ? logout() : ''">{{item.title}}</span>
 	<!-- menu item with badge -->
 	<span *ngIf="item.badge" class="kt-menu__link-badge">
 		<span class="kt-badge" [ngClass]="item.badge.type">{{item.badge.value}}</span>

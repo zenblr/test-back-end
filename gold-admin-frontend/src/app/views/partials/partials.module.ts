@@ -24,6 +24,7 @@ import {
 	MatTableModule,
 	MatTabsModule,
 	MatTooltipModule,
+	MatDividerModule,
 } from '@angular/material';
 // NgBootstrap
 import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -80,6 +81,12 @@ import { SearchComponent } from './components/search/search.component';
 import { ModalHeaderComponent } from './components/modal/modal-header/modal-header.component';
 import { ModalFooterComponent } from './components/modal/modal-footer/modal-footer.component';
 
+// spinner
+import { NgxSpinnerModule } from "ngx-spinner";
+import { UplodDataImageComponent } from './components/uplod-data-image/uplod-data-image.component';
+import { ImagePreviewDialogComponent } from './components/image-preview-dialog/image-preview-dialog.component';
+
+
 @NgModule({
 	declarations: [
 		ScrollTopComponent,
@@ -127,6 +134,10 @@ import { ModalFooterComponent } from './components/modal/modal-footer/modal-foot
 		ModalHeaderComponent,
 
 		ModalFooterComponent,
+
+		UplodDataImageComponent,
+
+		ImagePreviewDialogComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -171,6 +182,12 @@ import { ModalFooterComponent } from './components/modal/modal-footer/modal-foot
 		SearchComponent,
 		ModalHeaderComponent,
 		ModalFooterComponent,
+
+		UplodDataImageComponent,
+		ImagePreviewDialogComponent,
+
+		// spinner
+		NgxSpinnerModule
 	],
 	imports: [
 		CommonModule,
@@ -204,12 +221,19 @@ import { ModalFooterComponent } from './components/modal/modal-footer/modal-foot
 		MatTabsModule,
 		MatTooltipModule,
 		MatDialogModule,
+		MatDividerModule,
 
 		// ng-bootstrap modules
 		NgbDropdownModule,
 		NgbTabsetModule,
 		NgbTooltipModule,
+
+		// spinner
+		NgxSpinnerModule
 	],
+	entryComponents:[
+		ImagePreviewDialogComponent
+	]
 })
 export class PartialsModule {
 }

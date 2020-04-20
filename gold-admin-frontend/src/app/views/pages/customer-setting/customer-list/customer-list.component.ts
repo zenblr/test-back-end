@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 })
 export class CustomerListComponent implements OnInit {
 
-  toogler:string;
+  toogler: string;
   dataSource: CustomerManagementDatasource;
   displayedColumns = ['fullName', 'customerId', 'mobile', 'pan', 'state', 'city', 'actions'];
   leadsResult = [];
@@ -30,8 +30,8 @@ export class CustomerListComponent implements OnInit {
   constructor(
     private customerManagementService: CustomerManagementService,
     private layoutUtilsService: LayoutUtilsService,
-    private router:Router
-  ) { 
+    private router: Router
+  ) {
     window.scrollTo(0, 0);
   }
 
@@ -60,7 +60,7 @@ export class CustomerListComponent implements OnInit {
     // First load
     this.loadLeadsPage();
 
-    this.dataSource.loadLeads(1, 10, '', '', '', '');
+    this.dataSource.loadLeads(1, 10, '', '');
   }
 
   ngOnDestroy() {
@@ -74,7 +74,7 @@ export class CustomerListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadLeads(from, to, '', '', '', '');
+    this.dataSource.loadLeads(from, to, '', '');
   }
 
   editCustomer(role) {

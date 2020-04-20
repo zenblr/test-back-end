@@ -1,14 +1,12 @@
 
 <div class="kt-portlet" >
     <kt-modal-header [title]="'Add Scheme'"></kt-modal-header>
-    <div class="spinner-center" *ngIf="viewLoading">
-            <mat-spinner [diameter]="40"></mat-spinner>
-        </div>
-    <div class="kt-portlet__body position-relative" *ngIf="!viewLoading">
+    <div class="kt-portlet__body position-relative">
         <div class="text-right">
             <a href="../../../../../assets/media/files/schemes.csv" download="schemes.csv"
                 *ngIf="tabGroup.selectedIndex == 1">
-                <span class="text-primary csv_pos">Download Sample CSV</span>
+                <span class="text-primary csv_pos">
+                    <img src="../../../../../assets/media/icons/download.svg" alt="download" height="24"> Download Sample CSV</span>
             </a>
         </div>
 
@@ -158,7 +156,7 @@
     </div>
     <kt-portlet-footer>
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)" [isDisabled]="loading"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="'Add'"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 

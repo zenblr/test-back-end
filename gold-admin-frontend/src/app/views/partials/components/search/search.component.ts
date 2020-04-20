@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-search',
@@ -13,7 +14,14 @@ export class SearchComponent implements OnInit {
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   searchValue = '';
 
-  constructor(private dataTableService: DataTableService) { }
+  constructor(
+    private dataTableService: DataTableService,
+    public router:Router
+    ) {
+    this.router.events.subscribe(() => {
+			this.searchInput.nativeElement.value = ''
+		})
+   }
 
   ngOnInit() {
     const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(

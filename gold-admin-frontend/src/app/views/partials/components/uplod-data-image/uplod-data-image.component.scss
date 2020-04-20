@@ -1,0 +1,32 @@
+:host {
+    .img-add {
+        background   : #f0f8fc;
+        height       : 100%;
+        width        : 75%;
+        border       : transparent;
+        border-radius: 20px;
+        margin       : auto;
+        display      : block;
+    }
+
+    .div-height {
+        height: 120px;
+    }
+
+    .pos-edit {
+        position: absolute;
+        top     : 35px;
+        right   : 10px;
+    }
+
+    .pos-remove {
+        position: absolute;
+        top     : 5px;
+        right   : 10px;
+    }
+
+    .border-radius {
+        border       : transparent;
+        border-radius: 20px !important;
+    }
+}

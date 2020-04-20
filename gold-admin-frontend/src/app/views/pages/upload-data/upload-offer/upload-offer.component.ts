@@ -1,5 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { UploadBannerService } from '../../../../core/upload-data/upload-banner/services/upload-banner.service';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { UploadOfferService } from '../../../../core/upload-data';
+import { map, catchError, finalize } from 'rxjs/operators';
+import { FormControl, Validators } from '@angular/forms';
+import { ToastrComponent } from '../../../../views/partials/components';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-upload-offer',
@@ -8,40 +12,52 @@ import { UploadBannerService } from '../../../../core/upload-data/upload-banner/
 })
 export class UploadOfferComponent implements OnInit {
   images: any[] = []
+  index: number = null
+  viewLoading: boolean = false;
+  @ViewChild("file", { static: false }) file;
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
-  constructor(private uploadBannerService: UploadBannerService,
-    private ref: ChangeDetectorRef) { }
+  goldRate = new FormControl(null, Validators.required);
+
+
+  constructor(
+    private uploadOfferService: UploadOfferService,
+    private ref: ChangeDetectorRef,
+  ) { }
 
   ngOnInit() {
+    this.getData()
   }
 
-  addImages() {
-    var data =
-    {
-      value: '',
-      isRemoved: false,
-      isEditable: false,
-      showImg: false,
+  getData() {
+    this.uploadOfferService.getOffers().pipe(
+      map(res => {
+        if (res.images.length > 0) {
+          Array.prototype.push.apply(this.images, res.images)
+          this.goldRate.patchValue(res.goldRate)
+          this.ref.detectChanges();
+        }
+        console.log(this.images)
+      })).subscribe()
+  }
+
+  save() {
+    if (this.goldRate.invalid) {
+      this.goldRate.markAsTouched()
+      return
     }
-    this.images.push(data)
-    console.log(this.images)
+    this.uploadOfferService.uploadOffers(Number(this.goldRate.value), this.images).pipe(
+      (map(res => {
+        this.toastr.successToastr('Uploaded Sucessfully');
+      })),
+      catchError(err => {
+        this.toastr.errorToastr('Please try Again');
+        throw err
+      }),
+      finalize(() => {
+      })
+    ).subscribe();
   }
 
-  uploadImages(event, index: number) {
-    var reader = new FileReader()
-    this.images[index].value = event.target.files[0]
-    this.images[index].isEditable = true;
-    this.images[index].isRemoved = true;
-    console.log(this.images[index])
-    reader.readAsDataURL(event.target.files[0]);
-    var fd = new FormData()
-    fd.append('avatar', this.images[index].value)
-    this.uploadBannerService.uploadFile(fd).subscribe(
-      res => {
-        console.log(reader.result);
-        this.images[index].value = res.uploadFile.URL
-        this.images[index].showImg = true;
-        this.ref.detectChanges()
-      })
-  }
+  
 }

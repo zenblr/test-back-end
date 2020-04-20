@@ -51,6 +51,7 @@
         "ngx-highlightjs": "^3.0.3",
         "ngx-perfect-scrollbar": "^8.0.0",
         "ngx-permissions": "^7.0.3",
+        "ngx-spinner": "^8.1.0",
         "ngx-toastr": "^10.0.4",
         "object-path": "^0.11.4",
         "perfect-scrollbar": "^1.4.0",

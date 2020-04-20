@@ -1,9 +1,9 @@
-.w-200 {
-    max-width: 300px;
-}
-.mat-column-actions {
-    flex: 0 0 300px;
-}
-.pointer {
-    cursor: pointer;
+:host {
+    .mat-column-actions {
+        flex: 0 0 300px;
+    }
+
+    .mat-table__wrapper .mat-table .mat-header-cell {
+        padding-right: 0%;
+    }
 }

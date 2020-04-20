@@ -8,6 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class ModalFooterComponent implements OnInit {
 
   @Input() isDisabled: boolean;
+  @Input() value
   @Output() action = new EventEmitter();
   constructor() { }
 

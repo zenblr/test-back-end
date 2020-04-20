@@ -38,6 +38,7 @@
               "src/assets/plugins/flaticon2/flaticon.css",
               "src/assets/sass/style.angular.scss",
               "node_modules/ngx-toastr/toastr.css"
+
             ],
             "scripts": [
               "node_modules/popper.js/dist/umd/popper.js",

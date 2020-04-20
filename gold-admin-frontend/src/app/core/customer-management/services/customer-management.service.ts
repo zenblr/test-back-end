@@ -15,8 +15,8 @@ export class CustomerManagementService {
 
   constructor(private http: HttpClient) { }
 
-  getAllLeads(from, to, fromDate, search, toDate, userId): Observable<any> {
-    return this.http.get<any>(`/api/customer?search=${search}&from=${from}&to=${to}`); // stageName=lead in queryParams
+  getAllLeads(from, to, search, stageName): Observable<any> {
+    return this.http.get<any>(`/api/customer?search=${search}&from=${from}&to=${to}&stageName=${stageName}`); // stageName=lead in queryParams
   }
 
   addLead(data): Observable<any> {

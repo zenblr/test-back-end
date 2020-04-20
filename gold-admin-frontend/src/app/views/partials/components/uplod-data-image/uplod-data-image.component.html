@@ -1,0 +1,27 @@
+<!-- <kt-portlet> -->
+    <!-- <kt-portlet-header [title]="title"></kt-portlet-header>
+    <kt-portlet-body> -->
+        <div class="row">
+            <div class="col-4 kt-margin-t-10" *ngFor="let image of images;index as idx">
+                <div class="position-relative">
+
+                    <span class="pos-edit" (click)="edit(idx)">
+                        <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer">
+                    </span>
+                    <span class="pos-remove" (click)="removeImages(idx);">
+                        <img src="../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer">
+                    </span>
+                    <img [src]="image" *ngIf="image" class="w-100 div-height border-radius" (click)="open(idx)">
+
+                </div>
+            </div>
+            <div class="col-2 div-height kt-margin-t-10">
+                <input type="file" accept="image/*" class="d-none" #file (change)="uploadImages($event)">
+                <button (click)="file.click();index = null" class="img-add">
+                    <img src="../../../../../assets/media/icons/add.svg" alt="">
+                </button>
+            </div>
+        </div>
+    <!-- </kt-portlet-body> -->
+    
+<!-- </kt-portlet> -->

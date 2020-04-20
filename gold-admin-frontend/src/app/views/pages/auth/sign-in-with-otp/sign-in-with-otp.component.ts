@@ -127,12 +127,13 @@ export class SignInWithOtpComponent implements OnInit {
           console.log(response)
           this.router.navigate(['/auth/change-password'])
         }), catchError(err => {
-
+          console.log(err.error.message)
           this.toastr.errorToastr(err.error.message);
           throw err;
         }), finalize(() => {
           this.loading = false;
-          this.cdr.markForCheck();
+          console.log(this.loading)
+          this.cdr.detectChanges();
         })).subscribe()
     }
 
@@ -162,13 +163,13 @@ export class SignInWithOtpComponent implements OnInit {
         }),
         catchError(err => {
           console.log(err)
-          let showError = JSON.stringify(err.message);
+          let showError = err.error.message;
           this.toastr.errorToastr(showError);
           throw err;
 
         }),
         finalize(() => {
-          this.loading = true;
+          this.loading = false;
           this.cdr.markForCheck();
         })).subscribe()
     }
