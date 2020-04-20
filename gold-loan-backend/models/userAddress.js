@@ -40,9 +40,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     UserAddress.associate = function(models) {
-        UserAddress.belongsTo(models.users, { foreignKey: 'userId', as: 'singleUser' });
-        UserAddress.belongsTo(models.states, { foreignKey: 'stateId', as: 'state' });
-        UserAddress.belongsTo(models.cities, { foreignKey: 'cityId', as: 'city' });
+        UserAddress.belongsTo(models.user, { foreignKey: 'userId', as: 'singleUser' });
+        UserAddress.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
+        UserAddress.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
     }
 
     return UserAddress;

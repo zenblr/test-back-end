@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
-    const Customer = sequelize.define('customers', {
+    const Customer = sequelize.define('customer', {
         // attributes
         firstName: {
             type: DataTypes.STRING,
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 
         },
         mobileNumber: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.STRING,
             field: 'mobile_number',
             allowNull: false,
         },
@@ -84,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'customers',
+        tableName: 'customer',
     });
 
     Customer.associate = function (models) {
@@ -92,10 +92,10 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.rating, { foreignKey: 'ratingId', as: 'rating' });
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
-        Customer.belongsTo(models.states, { foreignKey: 'stateId', as: 'state' });
-        Customer.belongsTo(models.cities, { foreignKey: 'cityId', as: 'city' });
-        Customer.belongsTo(models.users, { foreignKey: 'createdBy', as: 'Createdby' });
-        Customer.belongsTo(models.users, { foreignKey: 'modifiedBy', as: 'modifiedby' });
+        Customer.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
+        Customer.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
+        Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // This hook is always run before create.

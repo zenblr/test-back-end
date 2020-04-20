@@ -9,9 +9,10 @@ module.exports = (req, res, next) => {
 
     const createdDateTime = new Date();
 
-    let skipUrls = [
-        "/api/user",
+    let skipUrls = [        
+        "/api/user/addadmin",
         "/",
+
         "/api/customer/verify-register-otp",
         "/api/customer/send-register-otp",
 
@@ -19,6 +20,7 @@ module.exports = (req, res, next) => {
         "/api/auth/customer-login",
         "/api/auth/verify-login",
 
+        "/api/user/",
         "/api/user/register-otp",
         "/api/user/verify-otp",
         "/api/user/send-otp",

@@ -20,12 +20,13 @@ exports.userLogin = async (req, res, next) => {
 
     const { mobileNumber, password } = req.body;
 
-    let checkUser = await models.users.findOne({
+    let checkUser = await models.user.findOne({
         where: { mobileNumber, isActive: true },
-        include: [{ model: models.roles }]
+        include: [{ model: models.role }]
     });
 
-    // let checkUser = await models.users.findOne({
+
+    // let checkUser = await models.user.findOne({
     //     where: {
     //           [Op.or]: [
     //             {
@@ -36,7 +37,7 @@ exports.userLogin = async (req, res, next) => {
     //             }
     //           ]
     //       },
-    //       include: [{ model: models.roles }]
+    //       include: [{ model: models.role }]
     // })
 
     if (!checkUser) {
@@ -60,7 +61,7 @@ exports.userLogin = async (req, res, next) => {
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
-        await models.users.update({ lastLogin: createdTime }, {
+        await models.user.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }
         });
         models.logger.create({
@@ -83,13 +84,11 @@ exports.logout = async (req, res, next) => {
     client.del(token, JSON.stringify(token));
 
     return res.status(202).json({ message: `logout successfull` })
-
 }
 
 exports.verifyLoginOtp = async (req, res, next) => {
     let { referenceCode, otp } = req.body
     var todayDateTime = new Date();
-
 
     let verifyUser = await models.userOtp.findOne({
         where: {
@@ -105,10 +104,10 @@ exports.verifyLoginOtp = async (req, res, next) => {
 
     var token = await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
-        let user = await models.users.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
-        let checkUser = await models.users.findOne({
+        let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
+        let checkUser = await models.user.findOne({
             where: { id: user.id, isActive: true },
-            include: [{ model: models.roles }],
+            include: [{ model: models.role }],
             transaction: t
         });
         Token = jwt.sign({
@@ -116,19 +115,18 @@ exports.verifyLoginOtp = async (req, res, next) => {
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
-            roleId: checkUser.dataValues.roles[0].id,
-            roleName: checkUser.dataValues.roles[0].roleName,
+            roleId: checkUser.dataValues.role[0].id,
+            roleName: checkUser.dataValues.role[0].roleName,
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
         });
 
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
-        console.log(decoded)
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
-        await models.users.update({ lastLogin: createdTime }, {
+        await models.user.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }, transaction: t
         });
         await models.logger.create({

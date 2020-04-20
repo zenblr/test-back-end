@@ -1,13 +1,13 @@
 const models = require('../../models');
 const sequelize = models.sequelize;
 
-// add schemes
+// add scheme
 exports.addScheme = async (req, res, next) => {
     const { schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually, partnerId } = req.body;
 
     await sequelize.transaction(async t => {
-        const addSchemeData = await models.schemes.create({
+        const addSchemeData = await models.scheme.create({
             schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
             interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually
         });
@@ -15,7 +15,7 @@ exports.addScheme = async (req, res, next) => {
         for (let i = 0; i < partnerId.length; i++) {
             console.log(partnerId[i]);
 
-            var data = await models.partnerSchemes.create({
+            var data = await models.partnerScheme.create({
                 schemeId: addSchemeData.id,
                 partnerId: partnerId[i]
 
@@ -23,17 +23,17 @@ exports.addScheme = async (req, res, next) => {
         }
         console.log(data);
     })
-    return res.status(201).json({ message: "schemes created" })
+    return res.status(201).json({ message: "scheme created" })
 
 }
 
 
-//read Schemes
+//read scheme
 
 exports.readScheme = async (req, res, next) => {
     let readSchemeData = await models.partner.findAll({
         where: { isActive: true },
-        include: [models.schemes],
+        include: [models.scheme],
     })
 
     if (!readSchemeData) {
@@ -48,7 +48,7 @@ exports.readScheme = async (req, res, next) => {
 exports.readSchemeById = async (req, res, next) => {
 
     const schemeId = req.params.id;
-    const readSchemeByIdData = await models.schemes.findOne({ where: { id: schemeId, isActive: true } });
+    const readSchemeByIdData = await models.scheme.findOne({ where: { id: schemeId, isActive: true } });
     if (!readSchemeByIdData) {
         return res.status(404).json({ message: 'data not found' });
     }
@@ -63,7 +63,7 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
 
     let readSchemeByPartner = await models.partner.findOne({
         where: { isActive: true, id: partnerId },
-        include: [models.schemes],
+        include: [models.scheme],
     })
     if (!readSchemeByPartner) {
         return res.status(404).json({ message: 'data not found' });
@@ -78,7 +78,7 @@ exports.updateScheme = async (req, res, next) => {
     const schemeId = req.params.id;
     const { schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually } = req.body;
-    const updateSchemeData = await models.schemes.update({
+    const updateSchemeData = await models.scheme.update({
         schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually
     }, { where: { id: schemeId, isActive: true } });
@@ -94,7 +94,7 @@ exports.updateScheme = async (req, res, next) => {
 exports.deactiveScheme = async (req, res, next) => {
     const schemeId = req.params.id;
 
-    const deactiveSchemeData = await models.schemes.update({ isActive: false }, { where: { id: schemeId, isActive: true } });
+    const deactiveSchemeData = await models.scheme.update({ isActive: false }, { where: { id: schemeId, isActive: true } });
 
     if (!deactiveSchemeData[0]) {
         return res.status(404).json({ message: 'data not found' });

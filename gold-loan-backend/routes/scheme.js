@@ -1,4 +1,4 @@
-const { addScheme, readScheme, readSchemeById, readSchemeByPartnerId, deactiveScheme, updateScheme } = require("../controllers/schemes/scheme");
+const { addScheme, readScheme, readSchemeById, readSchemeByPartnerId, deactiveScheme, updateScheme } = require("../controllers/scheme/scheme");
 
 const { wrapper } = require('../utils/errorWrap');
 const validationError = require('../middleware/validationError');

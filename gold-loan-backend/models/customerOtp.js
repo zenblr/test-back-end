@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
-    const RegisterCustomerOtp = sequelize.define('registerCustomerOtp', {
+    const CustomerOtp = sequelize.define('customerOtp', {
         // attributes
         mobileNumber: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.STRING,
             field: 'mobile_number',
             allowNull: false,
         },
@@ -31,9 +31,9 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'register_customer_otp',
+        tableName: 'customer_otp',
         timestamps: false
     });
 
-    return RegisterCustomerOtp;
+    return CustomerOtp;
 }

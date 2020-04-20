@@ -22,14 +22,14 @@ module.exports=(sequelize,DataTypes)=>{
 },
         {
             freezeTableName: true,
-            tableName: 'partner',
+            tableName: 'loan_partner',
         }
     );
 
 
     Partner.associate = function(models) {
      
-        Partner.belongsToMany(models.schemes, {through: models.partnerSchemes})
+        Partner.belongsToMany(models.scheme, {through: models.partnerScheme})
     }
 
 

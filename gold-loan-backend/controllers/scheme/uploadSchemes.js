@@ -2,7 +2,7 @@ const csv = require('csvtojson');
 const models = require('../../models');
 const sequelize = models.sequelize;
 
-// upload schemes csv
+// upload scheme csv
 exports.uploadScheme = async (req, res, next) => {
 
     await sequelize.transaction(async t => {
@@ -13,7 +13,7 @@ exports.uploadScheme = async (req, res, next) => {
         // console.log(jsonArray)
 
         for (var i = 0; i < jsonArray.length; i++) {
-            let addSchemeData = await models.schemes.create({
+            let addSchemeData = await models.scheme.create({
                 schemeAmountStart: jsonArray[i].AmountStart, schemeAmountEnd: jsonArray[i].AmountEnd,
                 interestRateThirtyDaysMonthly: jsonArray[i].InterestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly: jsonArray[i].InterestRateNinetyDaysMonthly,
                 interestRateOneHundredEightyDaysMonthly: jsonArray[i].InterestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually: jsonArray[i].InterestRateThirtyDaysAnnually,
@@ -21,7 +21,7 @@ exports.uploadScheme = async (req, res, next) => {
             }, { transaction: t });
             for (let i = 0; i < partnerId.length; i++) {
 
-                var schemedata = await models.partnerSchemes.create({
+                var schemedata = await models.partnerScheme.create({
                     schemeId: addSchemeData.id,
                     partnerId: partnerId[i]
 

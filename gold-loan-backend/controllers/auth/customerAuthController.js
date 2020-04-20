@@ -6,7 +6,7 @@ let check = require('../../lib/checkLib');
 
 exports.customerLogin = async (req, res, next) => {
     const { firstName, password } = req.body;
-    let checkCustomer = await models.customers.findOne({ where: { firstName: firstName } });
+    let checkCustomer = await models.customer.findOne({ where: { firstName: firstName } });
     if (!checkCustomer) {
         return res.status(404).json({ message: 'Wrong Credentials' })
     }
@@ -23,7 +23,7 @@ exports.customerLogin = async (req, res, next) => {
         });
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
-        await models.customers.update({ lastLogin: createdTime }, {
+        await models.customer.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }
         });
 

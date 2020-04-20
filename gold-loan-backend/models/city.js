@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Cities = sequelize.define('cities', {
+    const City = sequelize.define('city', {
         // attributes
         name: {
             type: DataTypes.STRING,
@@ -19,12 +19,12 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'cities',
+        tableName: 'city',
         timestamps: false
     });
 
-    Cities.associate = function(models) {
-        Cities.belongsTo(models.states, { foreignKey: 'stateId', as: 'state' });
+    City.associate = function(models) {
+        City.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
     }
-    return Cities;
+    return City;
 }

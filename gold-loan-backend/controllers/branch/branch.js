@@ -45,12 +45,12 @@ exports.readBranch = async (req, res, next) => {
                     [Op.iLike]: search + "%"
                 }),
             city_name: sequelize.where(
-                sequelize.cast(sequelize.col("cities.name"), "varchar"),
+                sequelize.cast(sequelize.col("city.name"), "varchar"),
                 {
                     [Op.iLike]: search + "%"
                 }),
             state_name: sequelize.where(
-                sequelize.cast(sequelize.col("states.name"), "varchar"),
+                sequelize.cast(sequelize.col("state.name"), "varchar"),
                 {
                     [Op.iLike]: search + "%"
                 }),
@@ -64,14 +64,14 @@ exports.readBranch = async (req, res, next) => {
                 model: models.partner,
                 as: 'partner'
             }, {
-                model: models.cities,
-                as: "cities",
+                model: models.city,
+                as: "city",
                 where: {
                     isActive: true
                 }
             }, {
-                model: models.states,
-                as: "states",
+                model: models.state,
+                as: "state",
                 where: {
                     isActive: true
                 }
@@ -90,14 +90,14 @@ exports.readBranch = async (req, res, next) => {
                 model: models.partner,
                 as: 'partner'
             }, {
-                model: models.cities,
-                as: "cities",
+                model: models.city,
+                as: "city",
                 where: {
                     isActive: true
                 }
             }, {
-                model: models.states,
-                as: "states",
+                model: models.state,
+                as: "state",
                 where: {
                     isActive: true
                 }
@@ -122,15 +122,15 @@ exports.readBranchById = async (req, res, next) => {
             }
         },
         {
-            model: models.cities,
-            as: "cities",
+            model: models.city,
+            as: "city",
             where: {
                 isActive: true
             }
         },
         {
-            model: models.states,
-            as: "states",
+            model: models.state,
+            as: "state",
             where: {
                 isActive: true
             }

@@ -1,9 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
-    const State = sequelize.define('state', {
+    const UserType = sequelize.define('userType', {
         // attributes
-        name: {
+        userType: {
             type: DataTypes.STRING,
-            field: 'name',
+            field: 'user_type',
             allowNull: false,
         },
         isActive: {
@@ -14,14 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'state',
-        timestamps: false
+        tableName: 'user_type',
     });
 
-    State.associate = function(models) {
-        State.hasMany(models.city, { foreignKey: 'stateId', as: 'city' });
-    }
-
-
-    return State;
+    return UserType;
 }

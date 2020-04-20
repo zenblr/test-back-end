@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define('users', {
+    const User = sequelize.define('user', {
         // attributes
         firstName: {
             type: DataTypes.STRING,
@@ -26,10 +26,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'password',
             allowNull: false,
-
         },
         mobileNumber: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.STRING,
             field: 'mobile_number',
             allowNull: false,
         },
@@ -48,10 +47,23 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_card_number',
             allowNull: false,
         },
+        userTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'user_type_id',
+            allowNull: false,
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by',
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         },
         lastLogin: {
             type: DataTypes.DATE,
@@ -59,14 +71,19 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'users',
+        tableName: 'user',
     });
 
     User.associate = function(models) {
         User.hasMany(models.user_address, { foreignKey: 'userId', as: 'address' });
         // User.hasMany(models.userRole, { foreignKey: 'userId', as: 'userRole' });
 
-        User.belongsToMany(models.roles, {through: models.userRole})
+        User.belongsToMany(models.role, {through: models.userRole});
+
+        User.belongsTo(models.userType, { foreignKey: 'userTypeId', as: 'Usertype' });
+
+        User.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        User.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // This hook is always run before create.
