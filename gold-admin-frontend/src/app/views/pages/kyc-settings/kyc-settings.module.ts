@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {Routes, RouterModule} from '@angular/router'
+import { Routes, RouterModule } from '@angular/router'
 
 // component
-import {KycSettingsComponent } from './kyc-settings.component'
+import { KycSettingsComponent } from './kyc-settings.component'
 
 // Module
 import { PartialsModule } from '../../partials/partials.module';
@@ -13,11 +13,13 @@ import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsServi
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-const rout:Routes=[
+
+const rout: Routes = [
   {
-    path:'',
-    component:KycSettingsComponent
+    path: '',
+    component: KycSettingsComponent
   }
 ]
 
@@ -31,6 +33,7 @@ const rout:Routes=[
     CoreModule,
     AngularMaterialModule,
     RouterModule.forChild(rout),
+    NgbModule
   ],
   providers: [
     InterceptService,
