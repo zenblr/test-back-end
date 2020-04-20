@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router'
+import { ReactiveFormsModule,FormsModule } from "@angular/forms";
 
 // component
 import { KycSettingsComponent } from './kyc-settings.component'
@@ -14,6 +15,11 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { UserDetailsComponent } from './tabs/user-details/user-details.component';
+import { UserAddressComponent } from './tabs/user-address/user-address.component';
+import { UserPersonalComponent } from './tabs/user-personal/user-personal.component';
+import { UserBanksComponent } from './tabs/user-banks/user-banks.component';
+import { UserReviewComponent } from './tabs/user-review/user-review.component';
 
 
 const rout: Routes = [
@@ -26,6 +32,11 @@ const rout: Routes = [
 @NgModule({
   declarations: [
     KycSettingsComponent,
+    UserDetailsComponent,
+    UserAddressComponent,
+    UserPersonalComponent,
+    UserBanksComponent,
+    UserReviewComponent,
   ],
   imports: [
     CommonModule,
@@ -33,7 +44,9 @@ const rout: Routes = [
     CoreModule,
     AngularMaterialModule,
     RouterModule.forChild(rout),
-    NgbModule
+    NgbModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [
     InterceptService,
