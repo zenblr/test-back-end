@@ -20,7 +20,7 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   viewLoan(loanId: number) {
-    this.router.navigate(['/customer-setting/customer-list/' + this.customerId + '/loan-details/' + loanId])
+    this.router.navigate(['/customer-management/customer-list/' + this.customerId + '/loan-details/' + loanId])
   }
 
 }
