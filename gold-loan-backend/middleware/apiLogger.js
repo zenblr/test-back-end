@@ -47,7 +47,7 @@ module.exports = (req, res, next) => {
                         })
                         .then(loggedInUser => {
                             if (!loggedInUser) {
-                                res.status(400).json({
+                                res.status(401).json({
                                     messgage: "You are not login user"
                                 })
                             } else {
@@ -58,14 +58,14 @@ module.exports = (req, res, next) => {
                                 next();
                             }
                         }).catch(error => {
-                            res.status(400).json({
+                            res.status(401).json({
                                 messgage: "Wrong Credential"
                             })
                         })
                 }
             })
         } catch (error) {
-            res.status(400).json({
+            res.status(401).json({
                 message: "please login first"
             })
         }

@@ -203,9 +203,9 @@ exports.changePassword = async (req, res, next) => {
     if (checkPassword === true) {
         await userinfo.update({ password: newPassword },
             { where: { id: userinfo.id, isActive: true } });
-        res.status(200).json({ message: 'Success' })
+       return res.status(200).json({ message: 'Success' })
     } else {
-        res.status(401).json({ message: ' wrong credentials' });
+       return res.status(400).json({ message: ' The password you entered is incorrect Please retype your current password.' });
     }
 }
 

@@ -20,28 +20,28 @@ exports.userLogin = async (req, res, next) => {
 
     const { mobileNumber, password } = req.body;
 
-    let checkUser = await models.user.findOne({
-        where: { mobileNumber, isActive: true },
-        include: [{ model: models.role }]
-    });
-
-
     // let checkUser = await models.user.findOne({
-    //     where: {
-    //           [Op.or]: [
-    //             {
-    //               email: mobileNumber,
-    //             },
-    //             {
-    //               mobileNumber: mobileNumber,
-    //             }
-    //           ]
-    //       },
-    //       include: [{ model: models.role }]
-    // })
+    //     where: { mobileNumber, isActive: true },
+    //     include: [{ model: models.role }]
+    // });
+
+
+    let checkUser = await models.user.findOne({
+        where: {
+              [Op.or]: [
+                {
+                  email: mobileNumber,
+                },
+                {
+                  mobileNumber: mobileNumber,
+                }
+              ]
+          },
+          include: [{ model: models.role }]
+    })
 
     if (!checkUser) {
-        return res.status(404).json({ message: 'Wrong Credentials' })
+        return res.status(401).json({ message: 'Wrong Credentials' })
     }
     let userDetails = await checkUser.comparePassword(password);
     if (userDetails === true) {
@@ -61,6 +61,7 @@ exports.userLogin = async (req, res, next) => {
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
+
         await models.user.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }
         });
@@ -71,9 +72,10 @@ exports.userLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
+        
         return res.status(200).json({ message: 'login successful', Token });
     } else {
-        res.status(401).json({ message: 'Wrong Credentials' });
+       return res.status(401).json({ message: 'Wrong Credentials' });
     }
 
 }
@@ -99,7 +101,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid Otp` })
+        return res.status(401).json({ message: `Invalid Otp` })
     }
 
     var token = await sequelize.transaction(async t => {
@@ -139,7 +141,5 @@ exports.verifyLoginOtp = async (req, res, next) => {
 
     })
     return res.status(200).json({ message: 'login successful', token });
-
-
 
 }
