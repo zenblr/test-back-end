@@ -1,6 +1,6 @@
 
 <div class="kt-portlet" >
-    <kt-modal-header [title]="'Add Scheme'"></kt-modal-header>
+    <kt-modal-header [title]="'Add Scheme'" (action)="action($event)"></kt-modal-header>
     <div class="kt-portlet__body position-relative">
         <div class="text-right">
             <a href="../../../../../assets/media/files/schemes.csv" download="schemes.csv"
