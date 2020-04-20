@@ -1,0 +1,11 @@
+:host {
+    .mat-table {
+        overflow: hidden;
+    }
+    .mat-column-mobile{
+        flex: 0 0 13% !important;
+    }
+    .mat-column-date{
+        flex: 0 0 16% !important;
+    }
+}

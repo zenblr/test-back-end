@@ -16,7 +16,7 @@ import { DataTableService } from '../../../core/shared/services/data-table.servi
 export class CustomerManagementComponent implements OnInit {
 
   dataSource: CustomerManagementDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'time', 'status'];
+  displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'status'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -78,7 +78,7 @@ export class CustomerManagementComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadLeads(1, 10, this.searchValue, this.stageName);
+    this.dataSource.loadLeads(1, 25, this.searchValue, this.stageName);
   }
 
   ngOnDestroy() {
