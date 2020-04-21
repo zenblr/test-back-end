@@ -113,11 +113,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 		}
 
 		this.loginForm = this.fb.group({
-			mobileNo: [null, Validators.compose([Validators.required, 
-				Validators.pattern(/^(\d{10}|\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3}))$/),
-				Validators.minLength(10),
-				Validators.maxLength(10)]
-				)],
+			mobileNo: [null, Validators.compose([Validators.required,
+			Validators.pattern(/^(\d{10}|\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3}))$/),]
+			)],
 			password: [DEMO_PARAMS.PASSWORD, Validators.compose([
 				Validators.required,
 				// Validators.minLength(3),
@@ -147,7 +145,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 			password: controls.password.value
 		};
 		this.auth
-			.login(Number(authData.mobileNo), authData.password)
+			.login(authData.mobileNo, authData.password)
 			.pipe(
 				tap(user => {
 					// console.log(user);
@@ -188,7 +186,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 			this.loginForm.controls.mobileNo.markAsTouched();
 			return
 		}
-
 		this.auth.generateOtp(this.loginForm.controls.mobileNo.value).pipe(
 			tap(response => {
 				if (response) {
@@ -225,7 +222,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 		}
 
 		const result = control.hasError(validationType) && (control.dirty || control.touched);
-		console.log(control.hasError(validationType),validationType)
 		return result;
 	}
 }
