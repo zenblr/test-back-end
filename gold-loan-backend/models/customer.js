@@ -43,10 +43,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'pan_card_number',
         },
-        ratingId: {
-            type: DataTypes.INTEGER,
-            field: 'rating_id',
-        },
         stageId: {
             type: DataTypes.INTEGER,
             field: 'stage_id',
@@ -89,7 +85,6 @@ module.exports = (sequelize, DataTypes) => {
 
     Customer.associate = function (models) {
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
-        Customer.belongsTo(models.rating, { foreignKey: 'ratingId', as: 'rating' });
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
         Customer.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
