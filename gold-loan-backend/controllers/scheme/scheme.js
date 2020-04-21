@@ -6,6 +6,10 @@ exports.addScheme = async (req, res, next) => {
     const { schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually, partnerId } = req.body;
 
+    if (schemeAmountStart >= schemeAmountEnd) {
+        return res.status(400).json({ message: `Your Scheme start amount is must be greater than your Scheme end amount` })
+    }
+
     await sequelize.transaction(async t => {
         const addSchemeData = await models.scheme.create({
             schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
@@ -21,7 +25,6 @@ exports.addScheme = async (req, res, next) => {
 
             }, { transaction: t })
         }
-        console.log(data);
     })
     return res.status(201).json({ message: "scheme created" })
 
@@ -78,6 +81,11 @@ exports.updateScheme = async (req, res, next) => {
     const schemeId = req.params.id;
     const { schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually } = req.body;
+
+    if (schemeAmountStart >= schemeAmountEnd) {
+        return res.status(400).json({ message: `Your Scheme start amount is must be greater than your Scheme end amount` })
+    }
+
     const updateSchemeData = await models.scheme.update({
         schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually

@@ -21,18 +21,19 @@
 <form class="kt-form" [formGroup]="loginForm" autocomplete="off">
 	<div class="form-group">
 		<div class="kt-margin-t-10 kt-margin-b-10">
-			<input type="text" class="login-form-input" placeholder="Mobile Number" formControlName="mobileNo"
-				autocomplete="off" numbersOnly maxlength="10"/>
-				<div *ngIf="loginForm.controls.mobileNo.touched && loginForm.controls.mobileNo.invalid">
-					<mat-error *ngIf="isControlHasError('mobileNo','required')">
-						<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
-					</mat-error>
-					<!-- <mat-error *ngIf="isControlHasError('mobileNo','pattern')">
-						<strong>{{ 'AUTH.VALIDATION.INVALID_FIELD' | translate }}</strong>
-					</mat-error> -->
-							<mat-error *ngIf="isControlHasError('mobileNo','maxlength') || isControlHasError('mobileNo','minlength')">
-				<strong>{{ 'AUTH.VALIDATION.MAX_LENGTH_FIELD' | translate }} 10</strong>
-			</mat-error>
+			<input type="text" class="login-form-input" placeholder="Email ID / Mobile Number" formControlName="mobileNo"
+				autocomplete="off" />
+			<div *ngIf="loginForm.controls.mobileNo.touched && loginForm.controls.mobileNo.invalid">
+				<mat-error *ngIf="isControlHasError('mobileNo','required')">
+					<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
+				</mat-error>
+				<mat-error *ngIf="isControlHasError('mobileNo','pattern')">
+					<strong>{{ 'AUTH.VALIDATION.INVALID_FIELD' | translate }}</strong>
+				</mat-error>
+				<mat-error
+					*ngIf="isControlHasError('mobileNo','maxlength') || isControlHasError('mobileNo','minlength')">
+					<strong>{{ 'AUTH.VALIDATION.MAX_LENGTH_FIELD' | translate }} 10</strong>
+				</mat-error>
 			</div>
 		</div>
 		<div class="kt-margin-b-10">

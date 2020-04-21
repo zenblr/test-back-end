@@ -3,7 +3,7 @@
 <kt-toastr #toastr></kt-toastr>
 
 <div class="kt-portlet">
-    <kt-modal-header [title]="title"></kt-modal-header>
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
     <div class="kt-portlet__body">
         <div class="kt-form">
             <form [formGroup]="branchForm">
@@ -29,7 +29,7 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="name" autocomplete="off"
-                                    placeholder="Enter Partner Name"
+                                    placeholder="Enter Branch Name"
                                     [class.isError]="controls.name.touched && controls.name.invalid">
                                 <mat-error *ngIf="controls.name.touched && controls.name.errors?.required">Required
                                     field</mat-error>
@@ -37,7 +37,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4">
-                                <label>Partner Id</label>
+                                <label>Partner Name</label>
                             </div>
 
                             <div class="col-8">
@@ -95,7 +95,7 @@
                             <div class="col-8">
                                 <input class="form-control" formControlName="pincode" placeholder="Enter Pin Code"
                                     [class.isError]="controls.pincode.touched && controls.pincode.invalid"
-                                    maxlength="6">
+                                    maxlength="6" numbersOnly>
                                 <small *ngIf="data.action != 'view'" class="text-color">Enter pin code without
                                     spaces</small>
                                 <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.required">

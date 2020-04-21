@@ -59,7 +59,7 @@ body {
 }
 
 .text-color {
-	color: #454D67 !important;
+	color: #5a5d6e !important;
 }
 
 .text-gray {
@@ -252,4 +252,33 @@ input[type=number] {
 
 .text-danger {
 	color: #ff7272
+}
+.kt-portlet .kt-portlet__body{
+	padding: 5px 15px !important;
+}
+
+.kt-mat-dialog-container__wrapper .mat-dialog-container .kt-portlet .kt-portlet__body{
+	max-height: 75vh !important;
+}
+
+mat-header-row{
+	min-height: 30px !important;
+}
+
+.mat-table__wrapper {
+	min-height: 70vh !important; //set table height
+}
+
+@media (min-width: 1025px){
+.kt-container {
+    padding: 0 10px !important;
+	}
+}
+
+.mat-table{
+	font-family: Poppins, Helvetica, sans-serif !important;
+}
+
+.mat-cell, .mat-footer-cell{
+	font-size: 12px !important;
 }

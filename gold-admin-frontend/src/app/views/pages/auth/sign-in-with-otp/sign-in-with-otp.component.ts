@@ -24,6 +24,7 @@ export class SignInWithOtpComponent implements OnInit {
   title: string;
   mobile: string;
   returnUrl: any;
+  email: string;
 
   constructor(
     private fb: FormBuilder,
@@ -50,6 +51,7 @@ export class SignInWithOtpComponent implements OnInit {
 
   ngOnInit() {
     this.mobile = localStorage.getItem('mobile');
+
 
     this.route.queryParams.subscribe(params => {
       this.returnUrl = params.returnUrl || '/';

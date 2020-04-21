@@ -5,14 +5,19 @@ const sequelize = models.sequelize;
 // upload scheme csv
 exports.uploadScheme = async (req, res, next) => {
 
+    const csvFilePath = req.file.path;
+    const partnerId = req.body.partnerId.split(',');
+
+    const jsonArray = await csv().fromFile(csvFilePath);
+    for (var i = 0; i < jsonArray.length; i++) {
+        if (jsonArray[i].AmountStart >= jsonArray[i].AmountEnd) {
+            return res.status(400).json({ message: `Your Scheme start amount is must be greater than your Scheme end amount` })
+        }
+    }
     await sequelize.transaction(async t => {
-        const csvFilePath = req.file.path;
-        const partnerId = req.body.partnerId.split(',');
-        
-        const jsonArray = await csv().fromFile(csvFilePath);
-        // console.log(jsonArray)
 
         for (var i = 0; i < jsonArray.length; i++) {
+
             let addSchemeData = await models.scheme.create({
                 schemeAmountStart: jsonArray[i].AmountStart, schemeAmountEnd: jsonArray[i].AmountEnd,
                 interestRateThirtyDaysMonthly: jsonArray[i].InterestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly: jsonArray[i].InterestRateNinetyDaysMonthly,
@@ -29,7 +34,7 @@ exports.uploadScheme = async (req, res, next) => {
             }
         }
     })
-    res.status(201).json({ message: " Schemes Created" })
+    return res.status(201).json({ message: " Schemes Created" })
 
 
 
