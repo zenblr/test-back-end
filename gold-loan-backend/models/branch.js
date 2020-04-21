@@ -42,15 +42,15 @@ module.exports=(sequelize,DataTypes)=>{
    
         {
             freezeTableName: true,
-            tableName: 'branch',
+            tableName: 'loan_branch',
         }
         
     );
 
     Branch.associate = function(models) {
         Branch.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
-        Branch.belongsTo(models.states,{foreignKey:'stateId', as :'states'});
-        Branch.belongsTo(models.cities,{foreignKey:'cityId', as :'cities'});
+        Branch.belongsTo(models.state,{foreignKey:'stateId', as :'state'});
+        Branch.belongsTo(models.city,{foreignKey:'cityId', as :'city'});
 
     }
     return Branch;

@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
     const UserOtp = sequelize.define('userOtp', {
         // attributes
         mobileNumber: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.STRING,
             field: 'mobile_number',
             allowNull: false,
         },

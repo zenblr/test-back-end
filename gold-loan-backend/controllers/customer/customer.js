@@ -21,13 +21,13 @@ exports.addCustomer = async (req, res, next) => {
     let createdBy = req.userData.id
     let modifiedBy = req.userData.id
 
-    let getMobileNumber = await models.registerCustomerOtp.findOne({ where: { referenceCode, isVerified: true } })
+    let getMobileNumber = await models.customerOtp.findOne({ where: { referenceCode, isVerified: true } })
     if (check.isEmpty(getMobileNumber)) {
         return res.status(404).json({ message: 'Registration Failed' });
     }
     let mobileNumber = getMobileNumber.mobileNumber;
 
-    let customerExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
+    let customerExist = await models.customer.findOne({ where: { mobileNumber: mobileNumber } })
     if (!check.isEmpty(customerExist)) {
         return res.status(404).json({ message: 'This Mobile number already Exists' });
     }
@@ -39,7 +39,7 @@ exports.addCustomer = async (req, res, next) => {
     let password = firstName
 
     await sequelize.transaction(async t => {
-        const customer = await models.customers.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, ratingId, stageId, statusId, createdBy, modifiedBy, isActive: true }, { transaction: t })
+        const customer = await models.customer.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, ratingId, stageId, statusId, createdBy, modifiedBy, isActive: true }, { transaction: t })
         if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
                 let data = await models.customerAddress.create({
@@ -61,19 +61,19 @@ exports.addCustomer = async (req, res, next) => {
 exports.registerCustomerSendOtp = async (req, res, next) => {
     const { mobileNumber } = req.body
 
-    let customerExist = await models.customers.findOne({ where: { mobileNumber, isActive: true } })
+    let customerExist = await models.customer.findOne({ where: { mobileNumber, isActive: true } })
 
     if (!check.isEmpty(customerExist)) {
         return res.status(200).json({ message: `Mobile number is already exist.` })
     }
 
-    await models.registerCustomerOtp.destroy({ where: { mobileNumber } })
+    await models.customerOtp.destroy({ where: { mobileNumber } })
 
     const referenceCode = await createReferenceCode(5);
     let otp = Math.floor(1000 + Math.random() * 9000);
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, 'm')
-    await models.registerCustomerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
+    await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
 
     request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`);
 
@@ -86,19 +86,19 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 exports.sendOtp = async (req, res, next) => {
     const { mobileNumber } = req.body
 
-    let customerExist = await models.customers.findOne({ where: { mobileNumber, isActive: true } })
+    let customerExist = await models.customer.findOne({ where: { mobileNumber, isActive: true } })
 
     if (check.isEmpty(customerExist)) {
         return res.status(200).json({ message: `Mobile number is not Exist.` })
     }
 
-    await models.registerCustomerOtp.destroy({ where: { mobileNumber } })
+    await models.customerOtp.destroy({ where: { mobileNumber } })
 
     const referenceCode = await createReferenceCode(5);
     let otp = Math.floor(1000 + Math.random() * 9000);
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, 'm')
-    await models.registerCustomerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
+    await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode })
     request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`);
 
     return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode })
@@ -110,7 +110,7 @@ exports.verifyOtp = async (req, res, next) => {
     let { referenceCode, otp } = req.body
     var todayDateTime = new Date();
 
-    let verifyUser = await models.registerCustomerOtp.findOne({
+    let verifyUser = await models.customerOtp.findOne({
         where: {
             referenceCode, otp,
             expiryTime: {
@@ -122,7 +122,7 @@ exports.verifyOtp = async (req, res, next) => {
         return res.status(404).json({ message: `Invalid otp.` })
     }
 
-    let verifyFlag = await models.registerCustomerOtp.update({ isVerified: true }, { where: { id: verifyUser.id } })
+    let verifyFlag = await models.customerOtp.update({ isVerified: true }, { where: { id: verifyUser.id } })
 
     return res.status(200).json({ message: "Success", referenceCode })
 
@@ -135,16 +135,16 @@ exports.editCustomer = async (req, res, next) => {
     let modifiedBy = req.userData.id
 
     let { id, firstName, lastName, mobileNumber, email, panCardNumber, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive } = req.body
-    let customerExist = await models.customers.findOne({ where: { id: id } })
+    let customerExist = await models.customer.findOne({ where: { id: id } })
     if (check.isEmpty(customerExist)) {
         return res.status(404).json({ message: 'Customer does not exist' });
     }
-    let mobileNumberExist = await models.customers.findOne({ where: { mobileNumber: mobileNumber } })
+    let mobileNumberExist = await models.customer.findOne({ where: { mobileNumber: mobileNumber } })
     if (mobileNumberExist > 1) {
         return res.status(404).json({ message: 'This Mobile number already Exists' });
     }
     await sequelize.transaction(async t => {
-        const customer = await models.customers.update({ firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive, modifiedBy }, { where: { id: id }, transaction: t })
+        const customer = await models.customer.update({ firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive, modifiedBy }, { where: { id: id }, transaction: t })
     })
     return res.status(200).json({ messgae: `User Updated` })
 
@@ -154,11 +154,11 @@ exports.editCustomer = async (req, res, next) => {
 
 exports.deactivateCustomer = async (req, res, next) => {
     const { customerId, isActive } = req.query;
-    let customerExist = await models.customers.findOne({ where: { id: customerId } })
+    let customerExist = await models.customer.findOne({ where: { id: customerId } })
     if (check.isEmpty(customerExist)) {
         return res.status(404).json({ message: 'Customer is not exist' });
     }
-    await models.customers.update({ isActive: isActive }, { where: { id: customerId } })
+    await models.customer.update({ isActive: isActive }, { where: { id: customerId } })
     return res.status(200).json({ message: `Updated` })
 
 }
@@ -184,13 +184,13 @@ exports.getAllCustomers = async (req, res, next) => {
         },
 
     }];
-    let allCustomers = await models.customers.findAll({
+    let allCustomers = await models.customer.findAll({
         where: searchQuery,
         include: [{
-            model: models.states,
+            model: models.state,
             as: 'state',
         }, {
-            model: models.cities,
+            model: models.city,
             as: 'city',
         }, {
             model: models.rating,
@@ -209,7 +209,7 @@ exports.getAllCustomers = async (req, res, next) => {
         offset: offset,
         limit: pageSize
     });
-    let count = await models.customers.findAll({
+    let count = await models.customer.findAll({
         where: { isActive: true },
         include:[{
             model: models.stage,
@@ -224,15 +224,15 @@ exports.getAllCustomers = async (req, res, next) => {
 
 exports.getSingleCustomer = async (req, res, next) => {
     const { customerId } = req.params;
-    let singleCustomer = await models.customers.findOne({
+    let singleCustomer = await models.customer.findOne({
         where: {
             id: customerId
         },
         include: [{
-            model: models.states,
+            model: models.state,
             as: 'state',
         }, {
-            model: models.cities,
+            model: models.city,
             as: 'city',
         }, {
             model: models.rating,

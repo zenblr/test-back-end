@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'fileUpload',
+        tableName: 'loan_file_upload',
     });
 
 

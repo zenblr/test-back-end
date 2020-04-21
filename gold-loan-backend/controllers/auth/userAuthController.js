@@ -20,27 +20,28 @@ exports.userLogin = async (req, res, next) => {
 
     const { mobileNumber, password } = req.body;
 
-    let checkUser = await models.users.findOne({
-        where: { mobileNumber, isActive: true },
-        include: [{ model: models.roles }]
-    });
+    // let checkUser = await models.user.findOne({
+    //     where: { mobileNumber, isActive: true },
+    //     include: [{ model: models.role }]
+    // });
 
-    // let checkUser = await models.users.findOne({
-    //     where: {
-    //           [Op.or]: [
-    //             {
-    //               email: mobileNumber,
-    //             },
-    //             {
-    //               mobileNumber: mobileNumber,
-    //             }
-    //           ]
-    //       },
-    //       include: [{ model: models.roles }]
-    // })
+
+    let checkUser = await models.user.findOne({
+        where: {
+              [Op.or]: [
+                {
+                  email: mobileNumber,
+                },
+                {
+                  mobileNumber: mobileNumber,
+                }
+              ]
+          },
+          include: [{ model: models.role }]
+    })
 
     if (!checkUser) {
-        return res.status(404).json({ message: 'Wrong Credentials' })
+        return res.status(401).json({ message: 'Wrong Credentials' })
     }
     let userDetails = await checkUser.comparePassword(password);
     if (userDetails === true) {
@@ -60,7 +61,8 @@ exports.userLogin = async (req, res, next) => {
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
-        await models.users.update({ lastLogin: createdTime }, {
+
+        await models.user.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }
         });
         models.logger.create({
@@ -70,9 +72,10 @@ exports.userLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
+        
         return res.status(200).json({ message: 'login successful', Token });
     } else {
-        res.status(401).json({ message: 'Wrong Credentials' });
+       return res.status(401).json({ message: 'Wrong Credentials' });
     }
 
 }
@@ -83,13 +86,11 @@ exports.logout = async (req, res, next) => {
     client.del(token, JSON.stringify(token));
 
     return res.status(202).json({ message: `logout successfull` })
-
 }
 
 exports.verifyLoginOtp = async (req, res, next) => {
     let { referenceCode, otp } = req.body
     var todayDateTime = new Date();
-
 
     let verifyUser = await models.userOtp.findOne({
         where: {
@@ -100,15 +101,15 @@ exports.verifyLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid Otp` })
+        return res.status(401).json({ message: `Invalid Otp` })
     }
 
     var token = await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
-        let user = await models.users.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
-        let checkUser = await models.users.findOne({
+        let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
+        let checkUser = await models.user.findOne({
             where: { id: user.id, isActive: true },
-            include: [{ model: models.roles }],
+            include: [{ model: models.role }],
             transaction: t
         });
         Token = jwt.sign({
@@ -116,19 +117,18 @@ exports.verifyLoginOtp = async (req, res, next) => {
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
-            roleId: checkUser.dataValues.roles[0].id,
-            roleName: checkUser.dataValues.roles[0].roleName,
+            roleId: checkUser.dataValues.role[0].id,
+            roleName: checkUser.dataValues.role[0].roleName,
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
         });
 
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
-        console.log(decoded)
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
         const expiryTime = new Date(decoded.exp * 1000).toGMTString();
 
-        await models.users.update({ lastLogin: createdTime }, {
+        await models.user.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }, transaction: t
         });
         await models.logger.create({
@@ -141,7 +141,5 @@ exports.verifyLoginOtp = async (req, res, next) => {
 
     })
     return res.status(200).json({ message: 'login successful', token });
-
-
 
 }

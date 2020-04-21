@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Roles = sequelize.define('roles', {
+    const Role = sequelize.define('role', {
         // attributes
         roleName: {
             type: DataTypes.STRING,
@@ -19,22 +19,22 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'roles',
+        tableName: 'role',
     });
 
     //Find Role name
-    Roles.findUniqueRole = (roleName) => Roles.findOne({ where: { roleName } });
+    Role.findUniqueRole = (roleName) => Role.findOne({ where: { roleName } });
 
     //function_to_remove_group
-    Roles.removeRole = (id) => Roles.update({ isActive: false }, { where: { id: id, isActive: true } });
+    Role.removeRole = (id) => Role.update({ isActive: false }, { where: { id: id, isActive: true } });
 
-    Roles.associate = function(models) {
-        // Roles.hasMany(models.userRole, { foreignKey: 'roleId', as: 'role_user' });
-        // Roles.hasMany(models.rolePermission, { foreignKey: 'roleId', as: 'rolePermission' });
+    Role.associate = function(models) {
+        // Role.hasMany(models.userRole, { foreignKey: 'roleId', as: 'role_user' });
+        // Role.hasMany(models.rolePermission, { foreignKey: 'roleId', as: 'rolePermission' });
 
-        Roles.belongsToMany(models.users,{through: models.userRole});
-        Roles.belongsToMany(models.permission,{through: models.rolePermission})
+        Role.belongsToMany(models.user,{through: models.userRole});
+        Role.belongsToMany(models.permission,{through: models.rolePermission})
     }
 
-    return Roles;
+    return Role;
 }

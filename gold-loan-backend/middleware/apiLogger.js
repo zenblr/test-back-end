@@ -9,9 +9,10 @@ module.exports = (req, res, next) => {
 
     const createdDateTime = new Date();
 
-    let skipUrls = [
-        "/api/user",
+    let skipUrls = [        
+        "/api/user/addadmin",
         "/",
+
         "/api/customer/verify-register-otp",
         "/api/customer/send-register-otp",
 
@@ -19,6 +20,7 @@ module.exports = (req, res, next) => {
         "/api/auth/customer-login",
         "/api/auth/verify-login",
 
+        "/api/user/",
         "/api/user/register-otp",
         "/api/user/verify-otp",
         "/api/user/send-otp",
@@ -45,7 +47,7 @@ module.exports = (req, res, next) => {
                         })
                         .then(loggedInUser => {
                             if (!loggedInUser) {
-                                res.status(400).json({
+                                res.status(401).json({
                                     messgage: "You are not login user"
                                 })
                             } else {
@@ -56,14 +58,14 @@ module.exports = (req, res, next) => {
                                 next();
                             }
                         }).catch(error => {
-                            res.status(400).json({
+                            res.status(401).json({
                                 messgage: "Wrong Credential"
                             })
                         })
                 }
             })
         } catch (error) {
-            res.status(400).json({
+            res.status(401).json({
                 message: "please login first"
             })
         }

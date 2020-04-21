@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'offer',
+        tableName: 'loan_offer',
     });
 
     return Offer;
