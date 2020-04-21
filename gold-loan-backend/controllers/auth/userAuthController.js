@@ -25,7 +25,6 @@ exports.userLogin = async (req, res, next) => {
     //     include: [{ model: models.role }]
     // });
 
-
     let checkUser = await models.user.findOne({
         where: {
               [Op.or]: [
@@ -117,8 +116,8 @@ exports.verifyLoginOtp = async (req, res, next) => {
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
-            roleId: checkUser.dataValues.role[0].id,
-            roleName: checkUser.dataValues.role[0].roleName,
+            roleId: checkUser.dataValues.roles[0].id,
+            roleName: checkUser.dataValues.roles[0].roleName,
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
