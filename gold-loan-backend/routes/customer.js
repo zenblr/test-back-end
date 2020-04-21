@@ -5,7 +5,7 @@ const { wrapper } = require('../utils/errorWrap')
 const validationError=require('../middleware/validationError');
 const {customerValidation,customerUpdateValidation}=require('../validations/customer');
 
-const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, } = require('../controllers/customer/customer')
+const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, filterCustomer} = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 
 
@@ -24,7 +24,10 @@ router.put('/',customerUpdateValidation,validationError, checkAuth, wrapper(edit
 router.delete('/', checkAuth, wrapper(deactivateCustomer));
 
 router.get('/', checkAuth, wrapper(getAllCustomers));
+router.get('/filter-customer',wrapper(filterCustomer));
 
-router.get('/:customerId', checkAuth, wrapper(getSingleCustomer))
+router.get('/:customerId', checkAuth, wrapper(getSingleCustomer));
+
+
 
 module.exports = router;
