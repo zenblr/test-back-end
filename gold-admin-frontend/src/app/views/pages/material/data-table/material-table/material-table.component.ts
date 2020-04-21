@@ -123,7 +123,7 @@ const pagination = {
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
   <mat-paginator #paginator
-    [pageSize]="10"
+    [pageSize]="25"
     [pageSizeOptions]="[5, 10, 20]"
     [showFirstLastButtons]="true">
   </mat-paginator>

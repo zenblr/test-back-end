@@ -3,7 +3,8 @@
 <kt-portlet>
     <kt-portlet-header [title]="'Upload Offer'"></kt-portlet-header>
     <kt-portlet-body>
-        <div class="row">
+        <kt-uplod-data-image [images]="images"></kt-uplod-data-image>
+        <div class="row kt-margin-t-10">
             <div class="col-3 font-weight-bold text-color d-flex align-items-center" placeholder="">Upload Gold Rate
             </div>
             <div class="col-3 per-gram">
@@ -12,7 +13,6 @@
                 <mat-error *ngIf="goldRate.invalid && goldRate.touched">Field required</mat-error>
             </div>
         </div>
-        <kt-uplod-data-image [images]="images"></kt-uplod-data-image>
     </kt-portlet-body>
     <kt-portlet-footer>
         <div class="row p-3">

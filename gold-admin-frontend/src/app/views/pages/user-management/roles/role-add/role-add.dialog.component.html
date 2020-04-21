@@ -3,7 +3,7 @@
 <kt-toastr #toastr></kt-toastr>
 
 <div class="kt-portlet">
-    <kt-modal-header [title]="title"></kt-modal-header>
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
     <div class="kt-portlet__body">
         <div class="kt-form">
             <form [formGroup]="roleForm">

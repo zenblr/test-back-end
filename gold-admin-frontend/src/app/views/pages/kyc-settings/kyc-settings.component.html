@@ -1,0 +1,81 @@
+<nav ngbNav #nav="ngbNav" class="nav-tabs m-0" [ngStyle]="{'border':'0'}">
+    <ng-container ngbNavItem>
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    1
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
+            </div>
+        </a>
+
+        <ng-template ngbNavContent>
+            <kt-user-details></kt-user-details>
+        </ng-template>
+    </ng-container>
+
+    <ng-container ngbNavItem>
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    2
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
+            </div>
+        </a>
+
+        <ng-template ngbNavContent>
+            <kt-user-address></kt-user-address>
+        </ng-template>
+    </ng-container>
+
+    <ng-container ngbNavItem>
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    3
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
+            </div>
+        </a>
+
+        <ng-template ngbNavContent>
+           <kt-user-personal></kt-user-personal>
+        </ng-template>
+    </ng-container>
+
+    <ng-container ngbNavItem>
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    4
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
+            </div>
+        </a>
+
+        <ng-template ngbNavContent>
+           <kt-user-banks></kt-user-banks>
+        </ng-template>
+    </ng-container>
+     <ng-container ngbNavItem>
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    5
+                </div>
+                <p class="step-name">Basic Details</p>
+                <p class="step-details"> User's Basic Details</p>
+            </div>
+        </a>
+        <ng-template ngbNavContent>
+           <kt-user-review></kt-user-review>
+        </ng-template>
+    </ng-container>
+</nav>
+
+<div [ngbNavOutlet]="nav" [ngStyle]="{'width':'99%','margin':'auto'}"></div>

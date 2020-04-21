@@ -5,7 +5,7 @@ const basic = {
 	beforeCodeTitle: 'Paginator',
 	htmlCode: `
 <mat-paginator [length]="100"
-  [pageSize]="10"
+  [pageSize]="25"
   [pageSizeOptions]="[5, 10, 25, 100]">
 </mat-paginator>`,
 	tsCode: `

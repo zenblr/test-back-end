@@ -59,6 +59,6 @@ export class CustomerGridComponent implements OnInit {
   }
 
   viewDetails(id: number) {
-    this.router.navigate(['/customer-setting/customer-list/' + id])
+    this.router.navigate(['/customer-management/customer-list/' + id])
   }
 }
