@@ -82,7 +82,7 @@ export class AddLeadComponent implements OnInit {
     this.leadForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
+      mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],
       panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
@@ -108,7 +108,7 @@ export class AddLeadComponent implements OnInit {
   }
 
   sendOTP() {
-    const mobileNumber = +(this.controls.mobileNumber.value);
+    const mobileNumber = this.controls.mobileNumber.value;
     this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
@@ -149,7 +149,7 @@ export class AddLeadComponent implements OnInit {
   }
 
   resendOTP() {
-    const mobileNumber = +(this.controls.mobileNumber.value);
+    const mobileNumber = this.controls.mobileNumber.value;
     // use send function OTP for resend OTP
     this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res) {
