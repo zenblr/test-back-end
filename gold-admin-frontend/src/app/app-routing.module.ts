@@ -9,9 +9,10 @@ import { AuthGuard } from './core/auth';
 import { ReverseAuthGuard } from './core/auth/_guards/reverse-auth.guard';
 
 const routes: Routes = [
-	{ path: 'auth', loadChildren: () => import('../app/views/pages/auth/auth.module').then(m => m.AuthModule),
-	canActivate: [ReverseAuthGuard] 
-},
+	{
+		path: 'auth', loadChildren: () => import('../app/views/pages/auth/auth.module').then(m => m.AuthModule),
+		canActivate: [ReverseAuthGuard]
+	},
 
 	{
 		path: '',
@@ -25,6 +26,10 @@ const routes: Routes = [
 			{
 				path: 'admin-account',
 				loadChildren: () => import('../app/views/pages/admin-account/admin-account.module').then(m => m.AdminAccountModule)
+			},
+			{
+				path: 'upload-data',
+				loadChildren: () => import('../app/views/pages/upload-data/upload-data.module').then(m => m.UploadDataModule)
 			},
 			{
 				path: 'loan-setting',

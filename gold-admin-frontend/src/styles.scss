@@ -81,16 +81,19 @@ body {
 
 ::-webkit-input-placeholder {
 	/* Edge */
-	font-weight: bold;
+	font-weight: 500;
+	color: #b0b5c6 !important;
 }
 
 :-ms-input-placeholder {
 	/* Internet Explorer 10-11 */
-	font-weight: bold;
+	font-weight: 500;
+	color: #b0b5c6 !important;
 }
 
 ::placeholder {
-	font-weight: bold;
+	font-weight: 500;
+	color: #b0b5c6 !important;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -267,6 +270,11 @@ mat-header-row{
 
 .mat-table__wrapper {
 	min-height: 70vh !important; //set table height
+}
+
+.border-rad-15 {
+	border-radius: 15px;
+	overflow: hidden;
 }
 
 @media (min-width: 1025px){
