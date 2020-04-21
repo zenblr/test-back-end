@@ -1,8 +1,56 @@
-<p>user-address works!</p>
 <kt-portlet>
     <kt-portlet-body>
         <div class="row">
+            <div class="col-6 kt-padding-t-20">
+                <div class="row">
+                    <div class="col-3 offset-1 p-0">
+                        Address & Identity
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" placeholder="Select Proof" margin>
+                            <option disabled selected> Select </option>
+                            <option>
+                                ANC
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
+            <div class="col-6 kt-padding-t-20">
+                <div class="row">
+                    <div class="col-3 offset-1">
+                        Name
+                    </div>
+                    <div class="col-7">
+                        <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
+                            class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 kt-padding-t-20">
+                <div class="row">
+                    <div class="col-3 offset-1">
+                        Attach
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Sample.csv"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2" readonly>
+                            <div class="input-group-append">
+                                <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                    (click)="file.click()">Attach</span>
+                            </div>
+                        </div>
+                        <label class="file d-none">
+                            <input type="file" id="file" aria-label="File browser example" #file
+                                (input)="getFileInfo($event)">
+                            <span class="file-custom"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
     </kt-portlet-body>
 </kt-portlet>
