@@ -154,7 +154,10 @@
  *     - name: "to"
  *       in: "query"
  *       description: "Pagination ending point"
- *       typse: "string"
+ *       type: "string"
+ *     - name: "stageName"
+ *       in: "query"
+ *       type: "string"
  *     responses:
  *       200:
  *          description: Success
