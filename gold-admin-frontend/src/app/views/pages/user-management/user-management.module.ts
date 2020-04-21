@@ -45,8 +45,12 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				redirectTo: 'roles',
+				redirectTo: 'partner',
 				pathMatch: 'full'
+			},
+			{
+				path: 'partner',
+				component: PartnerListComponent
 			},
 			{
 				path: 'roles',
@@ -56,10 +60,7 @@ const routes: Routes = [
 				path: 'roles/:id',
 				component: PermissionsComponent
 			},
-			{
-				path: 'partner',
-				component: PartnerListComponent
-			},
+			
 			{
 				path: 'branch',
 				component: BranchListComponent
