@@ -34,12 +34,11 @@ exports.addCustomer = async (req, res, next) => {
 
     let getStageId = await models.stage.findOne({ where: { stageName: 'lead' } });
     let stageId = getStageId.id;
-    let ratingId = 1
     let email = "nimap@infotech.com"
     let password = firstName
 
     await sequelize.transaction(async t => {
-        const customer = await models.customer.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, ratingId, stageId, statusId, createdBy, modifiedBy, isActive: true }, { transaction: t })
+        const customer = await models.customer.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, statusId, createdBy, modifiedBy, isActive: true }, { transaction: t })
         if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
                 let data = await models.customerAddress.create({
@@ -134,7 +133,7 @@ exports.editCustomer = async (req, res, next) => {
     // changes need here
     let modifiedBy = req.userData.id
 
-    let { id, firstName, lastName, mobileNumber, email, panCardNumber, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive } = req.body
+    let { id, firstName, lastName, mobileNumber, email, panCardNumber, cityId, stateId, postalCode, stageId, statusId, isActive } = req.body
     let customerExist = await models.customer.findOne({ where: { id: id } })
     if (check.isEmpty(customerExist)) {
         return res.status(404).json({ message: 'Customer does not exist' });
@@ -144,7 +143,7 @@ exports.editCustomer = async (req, res, next) => {
         return res.status(404).json({ message: 'This Mobile number already Exists' });
     }
     await sequelize.transaction(async t => {
-        const customer = await models.customer.update({ firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, ratingId, stageId, statusId, isActive, modifiedBy }, { where: { id: id }, transaction: t })
+        const customer = await models.customer.update({ firstName, lastName, mobileNumber, email, panCardNumber, address, cityId, stateId, postalCode, stageId, statusId, isActive, modifiedBy }, { where: { id: id }, transaction: t })
     })
     return res.status(200).json({ messgae: `User Updated` })
 
@@ -166,7 +165,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 exports.getAllCustomers = async (req, res, next) => {
 
-    let { stageName} = req.query
+    let { stageName } = req.query
     const { search, offset, pageSize } = paginationWithFromTo(
         req.query.search,
         req.query.from,
@@ -193,12 +192,9 @@ exports.getAllCustomers = async (req, res, next) => {
             model: models.city,
             as: 'city',
         }, {
-            model: models.rating,
-            as: 'rating'
-        }, {
             model: models.stage,
             as: 'stage',
-            where:{id: stage.id}
+            where: { id: stage.id }
         }, {
             model: models.status,
             as: 'status'
@@ -211,10 +207,10 @@ exports.getAllCustomers = async (req, res, next) => {
     });
     let count = await models.customer.findAll({
         where: { isActive: true },
-        include:[{
+        include: [{
             model: models.stage,
             as: 'stage',
-            where:{id: stage.id}
+            where: { id: stage.id }
         }]
     });
 
@@ -234,9 +230,6 @@ exports.getSingleCustomer = async (req, res, next) => {
         }, {
             model: models.city,
             as: 'city',
-        }, {
-            model: models.rating,
-            as: 'rating'
         }, {
             model: models.stage,
             as: 'stage'
