@@ -67,5 +67,8 @@ router.use('/scheme',scheme);
 const uploadScheme=require('./uploadSchemes'); // upload Scheme Route
 router.use('/upload-scheme',uploadScheme);
 
+const roughLoanAmount=require('./roughLoanAmount');
+router.use('/rough-amount',roughLoanAmount);
+
 
 module.exports = router;
