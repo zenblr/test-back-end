@@ -2,6 +2,10 @@ const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('customer', {
         // attributes
+        customerUniqueId:{
+            type: DataTypes.STRING,
+            field: 'customer_unique_id'
+        },
         firstName: {
             type: DataTypes.STRING,
             field: 'first_name',
@@ -77,6 +81,11 @@ module.exports = (sequelize, DataTypes) => {
         lastLogin: {
             type: DataTypes.DATE,
             field: 'last_login',
+        },
+        isKycDone: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_kyc_done',
+            defaultValue: false,
         }
     }, {
         freezeTableName: true,
@@ -84,6 +93,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Customer.associate = function (models) {
+        Customer.hasOne(models.kycCustomerPersonalDetail, { foreignKey: 'customerId', as: 'kycCustomer' });
+
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
