@@ -1,9 +1,11 @@
 const models=require('../../models');
+const check = require('../../lib/checkLib');
+
 
 // Add Identity Type
 exports.addIdentityType=async(req,res)=>{
     const {name}= req.body;
-    let identityTypeExist = await models.addressType.findOne({ where: { name } })
+    let identityTypeExist = await models.identityType.findOne({ where: { name,isActive:true } })
     if (!check.isEmpty(identityTypeExist)) {
         return res.status(404).json({ message: 'This Identity Type  is already Exist' });
     }

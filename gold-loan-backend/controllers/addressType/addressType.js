@@ -1,17 +1,19 @@
 const models=require('../../models');
+const check = require('../../lib/checkLib');
+
 
 // Add address Type
 exports.addAddressType=async(req,res)=>{
     const {name}= req.body;
-    let addressTypeExist = await models.addressType.findOne({ where: { name } })
+    let addressTypeExist = await models.addressType.findOne({ where: { name ,isActive:true} })
     if (!check.isEmpty(addressTypeExist)) {
         return res.status(404).json({ message: 'This Address type is already Exist' });
     }
     const addressType=await models.addressType.create({name});
     if(!addressType){
-        return res.status(422).json({message:'accountType is not created'});
+        return res.status(422).json({message:'address type is not created'});
     }
-    return res.status(201).json({message:'accountType is created'});
+    return res.status(201).json({message:'address type is created'});
 }
 
 // get Address Type

@@ -5,8 +5,8 @@ const { wrapper } = require('../utils/errorWrap');
 
 const checkAuth = require('../middleware/checkAuth');
 
-route.post('/', checkAuth, wrapper(addOccupation));
-route.get('/', checkAuth, wrapper(readOccupation));
-route.delete('/',checkAuth,wrapper(deactiveOccupation));
+route.post('/', checkAuth, wrapper(addOccupation)); // add occupation
+route.get('/', checkAuth, wrapper(readOccupation)); // read occupation
+route.delete('/',checkAuth,wrapper(deactiveOccupation)); // deactive occupation
 
 module.exports = route;
