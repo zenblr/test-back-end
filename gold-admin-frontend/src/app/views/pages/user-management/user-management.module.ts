@@ -31,12 +31,22 @@ import {
 	usersReducer,
 	UserEffects
 } from '../../../core/auth';
+
+// Module
+import { CoreModule } from "../../../core/core.module";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+
 import { PartnerListComponent } from './partner/partner-list/partner-list.component';
 import { BranchListComponent } from './branch/branch-list/branch-list.component';
 import { BranchAddComponent } from './branch/branch-add/branch-add.component';
 import { PartnerAddComponent } from './partner/partner-add/partner-add.component';
 import { PermissionsComponent } from './permissions/permissions.component';
-import { CoreModule } from "../../../core/core.module";
+import { MerchantComponent } from './merchant/merchant.component';
+import { UserDetailsComponent } from './merchant/tabs/user-details/user-details.component';
+import { CommissionDetailsComponent } from './merchant/tabs/commission-details/commission-details.component';
+import { PermissionComponent } from './merchant/tabs/permission/permission.component';
+import { LoanSchemeComponent } from '../loan-settings/loan-scheme/loan-scheme.component';
+import { BrokerListComponent } from './broker/broker-list/broker-list.component';
 
 const routes: Routes = [
 	{
@@ -53,6 +63,10 @@ const routes: Routes = [
 				component: PartnerListComponent
 			},
 			{
+				path: 'partner/view-schemes',
+				component: LoanSchemeComponent,
+			},
+			{
 				path: 'roles',
 				component: RolesListComponent
 			},
@@ -60,35 +74,27 @@ const routes: Routes = [
 				path: 'roles/:id',
 				component: PermissionsComponent
 			},
-			
+			{
+				path: 'internal-user',
+				component: RolesListComponent,
+			},
+			{
+				path: 'assign-appraiser',
+				component: RolesListComponent,
+			},
 			{
 				path: 'branch',
 				component: BranchListComponent
 			},
 			{
-				path: 'users',
-				component: UsersListComponent
+				path: 'broker',
+				component: BrokerListComponent
 			},
 			{
-				path: 'users:id',
-				component: UsersListComponent
+				path: 'merchant',
+				component: MerchantComponent
 			},
-			{
-				path: 'users/add',
-				component: UserEditComponent
-			},
-			{
-				path: 'users/add:id',
-				component: UserEditComponent
-			},
-			{
-				path: 'users/edit',
-				component: UserEditComponent
-			},
-			{
-				path: 'users/edit/:id',
-				component: UserEditComponent
-			},
+
 		]
 	}
 ];
@@ -106,7 +112,8 @@ const routes: Routes = [
 		TranslateModule.forChild(),
 		AngularMaterialModule,
 		CoreModule,
-		],
+		NgbModule,
+	],
 	providers: [
 		InterceptService,
 		{
@@ -114,7 +121,7 @@ const routes: Routes = [
 			useClass: InterceptService,
 			multi: true
 		},
-		
+
 		HttpUtilsService,
 		TypesUtilsService,
 		LayoutUtilsService
@@ -139,7 +146,12 @@ const routes: Routes = [
 		BranchListComponent,
 		BranchAddComponent,
 		PartnerAddComponent,
-		PermissionsComponent
+		PermissionsComponent,
+		MerchantComponent,
+		UserDetailsComponent,
+		CommissionDetailsComponent,
+		PermissionComponent,
+		BrokerListComponent
 	]
 })
 export class UserManagementModule { }

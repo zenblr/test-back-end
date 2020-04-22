@@ -21,6 +21,7 @@ import { PartnerService } from '../../../../../core/user-management/partner/serv
 import { PartnerModel } from '../../../../../core/user-management/partner/models/partner.model';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
+import { Router } from '@angular/router';
 
 // Components
 // import { RoleEditDialogComponent } from '../role-edit/role-edit.dialog.component';
@@ -65,7 +66,9 @@ export class PartnerListComponent implements OnInit {
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
     private partnerService: PartnerService,
-    private dataTableService: DataTableService) {
+    private dataTableService: DataTableService,
+    private router:Router
+    ) {
     this.partnerService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
         this.addRole()
@@ -267,30 +270,12 @@ export class PartnerListComponent implements OnInit {
       if (!res) {
         return;
       }
-
-      // this.loadRolesList();
-      // this.loadPartnersPage();
     });
   }
 
-	/**
-	 * Check all rows are selected
-	 */
-  // isAllSelected(): boolean {
-  //   const numSelected = this.selection.selected.length;
-  //   const numRows = this.partnerResult.length;
-  //   return numSelected === numRows;
-  // }
-
-	/**
-	 * Toggle selection
-	 */
-  // masterToggle() {
-  //   if (this.selection.selected.length === this.partnerResult.length) {
-  //     this.selection.clear();
-  //   } else {
-  //     this.partnerResult.forEach(row => this.selection.select(row));
-  //   }
-  // }
-
+  viewSchemes()
+{
+  this.router.navigate(['/user-management/partner/view-schemes'])
+}
+	
 }

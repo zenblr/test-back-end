@@ -90,7 +90,7 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}" >
-                            <div class="kt-pointer"> View Schemes | &nbsp;</div>
+                            <div class="kt-pointer" (click)="viewSchemes()"> View Schemes | &nbsp;</div>
                             <div (click)="editRole(role)" class="kt-pointer"> Edit | &nbsp;</div>
                             <div class="kt-pointer text-danger" (click)="deleteRole(role)" >Delete</div>
                         </div>

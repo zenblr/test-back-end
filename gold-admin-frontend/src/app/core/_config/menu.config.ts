@@ -284,13 +284,28 @@ export class MenuConfig {
 					title: 'Internal User Details',
 					root: true,					
 					icon: 'flaticon2-architecture-and-city',
-					page: '/user-management/internal-user-details',
+					page: '/user-management/internal-user',
 
-				}, {
+				}, 
+				{
 					title: 'Assign Appraiser',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/assign-appraiser',
+
+				},
+				{
+					title: 'Merchant Details',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					page: '/user-management/merchant',
+
+				},
+				{
+					title: 'Broker Details',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					page: '/user-management/broker',
 
 				},
 				{
@@ -302,7 +317,7 @@ export class MenuConfig {
 				},
 				{
 					title: 'Back',
-					icon: 'flaticon2-architecture-and-city',
+					icon: 'flaticon-logout',
 					root: true,
 					page: '/dashboard',
 				},

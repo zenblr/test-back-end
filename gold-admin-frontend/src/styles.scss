@@ -282,3 +282,34 @@ mat-header-row{
 .mat-cell, .mat-footer-cell{
 	font-size: 12px !important;
 }
+
+// scroll
+/* width */
+::-webkit-scrollbar {
+	width: 4px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+	background: #f7f7f7; 
+  
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+	background: #d8dce6;     
+	border-radius: 5px;
+  
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+	background: #555; 
+  }
+
+//   view schemes 
+.view-schemes{
+	.mat-tab-labels{
+		display: none !important;
+	}
+}
