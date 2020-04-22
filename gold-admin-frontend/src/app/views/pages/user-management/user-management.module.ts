@@ -41,12 +41,14 @@ import { BranchListComponent } from './branch/branch-list/branch-list.component'
 import { BranchAddComponent } from './branch/branch-add/branch-add.component';
 import { PartnerAddComponent } from './partner/partner-add/partner-add.component';
 import { PermissionsComponent } from './permissions/permissions.component';
-import { MerchantComponent } from './merchant/merchant.component';
-import { UserDetailsComponent } from './merchant/tabs/user-details/user-details.component';
-import { CommissionDetailsComponent } from './merchant/tabs/commission-details/commission-details.component';
-import { PermissionComponent } from './merchant/tabs/permission/permission.component';
+import { MerchantComponent } from './merchant/add-merchant/merchant.component';
+import { UserDetailsComponent } from './merchant/add-merchant/tabs/user-details/user-details.component';
+import { CommissionDetailsComponent } from './merchant/add-merchant/tabs/commission-details/commission-details.component';
+import { PermissionComponent } from './merchant/add-merchant/tabs/permission/permission.component';
 import { LoanSchemeComponent } from '../loan-settings/loan-scheme/loan-scheme.component';
 import { BrokerListComponent } from './broker/broker-list/broker-list.component';
+import { AddBrokerComponent } from './broker/add-broker/add-broker.component';
+import { MerchantListComponent } from './merchant/merchant-list/merchant-list.component';
 
 const routes: Routes = [
 	{
@@ -92,6 +94,10 @@ const routes: Routes = [
 			},
 			{
 				path: 'merchant',
+				component: MerchantListComponent
+			},
+			{
+				path: 'add-merchant',
 				component: MerchantComponent
 			},
 
@@ -130,7 +136,8 @@ const routes: Routes = [
 		ActionNotificationComponent,
 		RoleAddDialogComponent,
 		BranchAddComponent,
-		PartnerAddComponent
+		PartnerAddComponent,
+		AddBrokerComponent,
 	],
 	declarations: [
 		UserManagementComponent,
@@ -151,7 +158,10 @@ const routes: Routes = [
 		UserDetailsComponent,
 		CommissionDetailsComponent,
 		PermissionComponent,
-		BrokerListComponent
+		BrokerListComponent,
+		AddBrokerComponent,
+		MerchantListComponent,
+
 	]
 })
 export class UserManagementModule { }

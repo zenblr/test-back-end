@@ -286,25 +286,25 @@ mat-header-row{
 // scroll
 /* width */
 ::-webkit-scrollbar {
-	width: 4px;
+	width: 4px !important;
   }
   
   /* Track */
   ::-webkit-scrollbar-track {
-	background: #f7f7f7; 
+	background: #f7f7f7 !important; 
   
   }
    
   /* Handle */
   ::-webkit-scrollbar-thumb {
-	background: #d8dce6;     
-	border-radius: 5px;
+	background: #d8dce6 !important;     
+	border-radius: 5px !important;
   
   }
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-	background: #555; 
+	background: #555 !important; 
   }
 
 //   view schemes 

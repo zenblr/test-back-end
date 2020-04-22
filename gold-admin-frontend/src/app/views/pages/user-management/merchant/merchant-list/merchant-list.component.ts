@@ -13,19 +13,18 @@ import { Store } from '@ngrx/store';
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
 import { AppState } from '../../../../../core/reducers';
-import { BrokerDatasource,BrokerService } from '../../../../../core/user-management/broker';
+import { MerchantDatasource,MerchantService } from '../../../../../core/user-management/merchant';
 
-import {AddBrokerComponent } from '../add-broker/add-broker.component'
 
 @Component({
-  selector: 'kt-broker-list',
-  templateUrl: './broker-list.component.html',
-  styleUrls: ['./broker-list.component.scss']
+  selector: 'kt-merchant-list',
+  templateUrl: './merchant-list.component.html',
+  styleUrls: ['./merchant-list.component.scss']
 })
-export class BrokerListComponent implements OnInit, OnDestroy {
-// Table fields
-dataSource: BrokerDatasource;
-displayedColumns = ['city', 'pincode', 'approvalStatus', 'status', 'action'];
+export class MerchantListComponent implements OnInit {
+
+  dataSource: MerchantDatasource;
+displayedColumns = ['merchantName', 'fullName', 'mobileNumber', 'email', 'state','city','pincode','approvalStatus','action','apiKey'];
 @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 @ViewChild('sort1', { static: true }) sort: MatSort;
 
@@ -50,13 +49,13 @@ constructor(
   public dialog: MatDialog,
   public snackBar: MatSnackBar,
   private layoutUtilsService: LayoutUtilsService,
-  private brokerService: BrokerService,
+  private merchantService: MerchantService,
   private router: Router) {
-  this.brokerService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-    if (res) {
-      this.addRole('add')
-    }
-  })
+  // this.merchantService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+  //   if (res) {
+  //     this.addRole('add')
+  //   }
+  // })
 }
 
 /**
@@ -84,7 +83,7 @@ ngOnInit() {
   this.subscriptions.push(paginatorSubscriptions);
 
   // Init DataSource
-  this.dataSource = new BrokerDatasource(this.brokerService);
+  this.dataSource = new MerchantDatasource(this.merchantService);
   const entitiesSubscription = this.dataSource.entitySubject.pipe(
     skip(1),
     distinctUntilChanged()
@@ -180,46 +179,22 @@ fetchRoles() {
 /**
  * Add role
  */
-addRole(action) {
-  const dialogRef = this.dialog.open(AddBrokerComponent, {
-    data: { action: action },
-    width: '450px'
-  });
-  dialogRef.afterClosed().subscribe(res => {
-    if (res) {
-      this.loadRolesList();
-    }
-  })
-  this.brokerService.openModal.next(false);
-}
+// addRole(action) {
+//   const dialogRef = this.dialog.open(AddBrokerComponent, {
+//     data: { action: action },
+//     width: '450px'
+//   });
+//   dialogRef.afterClosed().subscribe(res => {
+//     if (res) {
+//       this.loadRolesList();
+//     }
+//   })
+//   this.merchantService.openModal.next(false);
+// }
 
 
 
 
-/**
- * Edit role
- *
- * @param role: Role
- */
-editBroker(role, action) {
-  const _saveMessage = `Role successfully has been saved.`;
-  const _messageType = role.id ? MessageType.Update : MessageType.Create;
-  const dialogRef = this.dialog.open(AddBrokerComponent, {
-    data: {
-      action: action,
-      role: role
-    },
-    width: '450px'
-  });
-  dialogRef.afterClosed().subscribe(res => {
-    if (!res) {
-      return;
-    }
-
-    this.layoutUtilsService.showActionNotification(_saveMessage, _messageType, 10000, true, true);
-    this.loadRolesList();
-  });
-}
 
 
 }

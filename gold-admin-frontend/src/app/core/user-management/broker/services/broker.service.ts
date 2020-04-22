@@ -8,11 +8,6 @@ export class BrokerService {
 
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
-  roles = { desserts: [] }
   constructor() { }
-
-
-  getRoles() {
-    return this.roles
-  }
+  
 }
