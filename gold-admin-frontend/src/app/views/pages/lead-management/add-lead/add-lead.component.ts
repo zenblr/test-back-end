@@ -37,6 +37,7 @@ export class AddLeadComponent implements OnInit {
   viewOnly = false;
 
   refCode: number; //reference code
+  mobileAlreadyExists = false;;
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -58,6 +59,7 @@ export class AddLeadComponent implements OnInit {
         this.isMobileVerified = false;
         this.otpSent = false;
       }
+      this.mobileAlreadyExists = false;
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
@@ -112,6 +114,7 @@ export class AddLeadComponent implements OnInit {
     this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
+        this.mobileAlreadyExists = true;
       } else {
         this.otpSent = true;
         this.refCode = res.referenceCode;
@@ -169,7 +172,7 @@ export class AddLeadComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.leadForm.invalid) {
+    if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
       this.leadForm.markAllAsTouched()
       return
     }

@@ -69,6 +69,9 @@
                                         *ngIf="controls.mobileNumber.errors?.pattern && controls.mobileNumber.touched">
                                         Invalid Input
                                     </mat-error>
+                                    <mat-error *ngIf="mobileAlreadyExists && controls.mobileNumber.touched">
+                                        Mobile number already exists!
+                                    </mat-error>
                                     <!-- </mat-form-field> -->
                                 </div>
 
@@ -104,6 +107,9 @@
                                         <mat-error *ngIf="controls.otp.errors?.pattern && controls.otp.touched">Invalid
                                             Input
                                         </mat-error>
+                                        <mat-error *ngIf="!isMobileVerified && controls.otp.touched">
+                                            Mobile number not verfied
+                                        </mat-error>
                                         <mat-hint class="kt-pointer" (click)="resendOTP()">Didn't get an OTP?
                                             <strong>Resend</strong></mat-hint>
                                         <!-- </mat-form-field> -->
@@ -111,7 +117,7 @@
 
                                     <div class="col-3 kt-padding-t-15">
                                         <div *ngIf="!isMobileVerified">
-                                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Sumbit'"
+                                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Verify'"
                                                 [isDisabled]="isOpverified" (action)="verifyOTP()">
                                             </kt-button>
                                         </div>
@@ -173,6 +179,9 @@
                                             {{state.name}}
                                         </option>
                                     </select>
+                                    <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">
+                                        Required field
+                                    </mat-error>
 
                                     <!-- </mat-form-field> -->
                                 </div>
