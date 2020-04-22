@@ -39,15 +39,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'mobile_number',
             allowNull: false,
         },
-        email: {
-            type: DataTypes.STRING,
-            field: 'email',
-            validate: {
-                len: {
-                    args: [0, 30]
-                }
-            }
-        },
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',

@@ -12,19 +12,10 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 
+
 exports.addCustomer = async (req, res, next) => {
-  let {
-    firstName,
-    lastName,
-    referenceCode,
-    panCardNumber,
-    stateId,
-    cityId,
-    address,
-    statusId,
-  } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, address, statusId, } = req.body;
   // cheanges needed here
-  console.log(req.body);
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
 
@@ -52,21 +43,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      {
-        firstName,
-        lastName,
-        password,
-        mobileNumber,
-        email,
-        panCardNumber,
-        stateId,
-        cityId,
-        stageId,
-        statusId,
-        createdBy,
-        modifiedBy,
-        isActive: true,
-      },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, statusId, createdBy, modifiedBy, isActive: true },
       { transaction: t }
     );
     if (check.isEmpty(address.length)) {
@@ -87,6 +64,7 @@ exports.addCustomer = async (req, res, next) => {
   });
   return res.status(200).json({ messgae: `Customer created` });
 };
+
 
 exports.registerCustomerSendOtp = async (req, res, next) => {
   const { mobileNumber } = req.body;
@@ -125,6 +103,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
     });
 };
 
+
 exports.sendOtp = async (req, res, next) => {
   const { mobileNumber } = req.body;
 
@@ -161,6 +140,7 @@ exports.sendOtp = async (req, res, next) => {
     });
 };
 
+
 exports.verifyOtp = async (req, res, next) => {
   let { referenceCode, otp } = req.body;
   var todayDateTime = new Date();
@@ -186,58 +166,26 @@ exports.verifyOtp = async (req, res, next) => {
   return res.status(200).json({ message: "Success", referenceCode });
 };
 
+
 exports.editCustomer = async (req, res, next) => {
   // changes need here
   let modifiedBy = req.userData.id;
+  const { customerId } = req.params;
 
-  let {
-    id,
-    firstName,
-    lastName,
-    mobileNumber,
-    email,
-    panCardNumber,
-    cityId,
-    stateId,
-    postalCode,
-    stageId,
-    statusId,
-    isActive,
-  } = req.body;
-  let customerExist = await models.customer.findOne({ where: { id: id } });
+  let { cityId, stateId, statusId } = req.body;
+  let customerExist = await models.customer.findOne({ where: { id: customerId } });
   if (check.isEmpty(customerExist)) {
     return res.status(404).json({ message: "Customer does not exist" });
   }
-  let mobileNumberExist = await models.customer.findOne({
-    where: { mobileNumber: mobileNumber },
-  });
-  if (mobileNumberExist > 1) {
-    return res
-      .status(404)
-      .json({ message: "This Mobile number already Exists" });
-  }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      {
-        firstName,
-        lastName,
-        mobileNumber,
-        email,
-        panCardNumber,
-        address,
-        cityId,
-        stateId,
-        postalCode,
-        stageId,
-        statusId,
-        isActive,
-        modifiedBy,
-      },
-      { where: { id: id }, transaction: t }
+      { cityId, stateId, statusId, modifiedBy },
+      { where: { id: customerId }, transaction: t }
     );
   });
   return res.status(200).json({ messgae: `User Updated` });
 };
+
 
 exports.deactivateCustomer = async (req, res, next) => {
   const { customerId, isActive } = req.query;
@@ -253,6 +201,7 @@ exports.deactivateCustomer = async (req, res, next) => {
   );
   return res.status(200).json({ message: `Updated` });
 };
+
 
 exports.getAllCustomers = async (req, res, next) => {
   let { stageName } = req.query;
@@ -312,6 +261,7 @@ exports.getAllCustomers = async (req, res, next) => {
   return res.status(200).json({ data: allCustomers, count: count.length });
 };
 
+
 exports.getSingleCustomer = async (req, res, next) => {
   const { customerId } = req.params;
   let singleCustomer = await models.customer.findOne({
@@ -340,6 +290,7 @@ exports.getSingleCustomer = async (req, res, next) => {
   if (check.isEmpty(singleCustomer)) {
     return res.status(404).json({ message: "Customer not found" });
   }
+  return res.status(200).json({ message: singleCustomer })
 };
 
 
@@ -355,7 +306,7 @@ exports.filterCustomer = async (req, res) => {
     statusId = req.query.statusId.split(",");
     query.statusId = statusId;
   }
-  
+
   if (stateId) {
     query.stateId = stateId;
   }

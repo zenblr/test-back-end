@@ -19,7 +19,7 @@ router.post('/send-otp', checkAuth, sendOtp);
 
 router.post('/verify-otp', checkAuth, verifyOtp);
 
-router.put('/',customerUpdateValidation,validationError, checkAuth, wrapper(editCustomer))
+router.put('/:customerId',customerUpdateValidation,validationError, checkAuth, wrapper(editCustomer))
 
 router.delete('/', checkAuth, wrapper(deactivateCustomer));
 
