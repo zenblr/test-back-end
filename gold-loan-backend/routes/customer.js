@@ -24,7 +24,8 @@ router.put('/',customerUpdateValidation,validationError, checkAuth, wrapper(edit
 router.delete('/', checkAuth, wrapper(deactivateCustomer));
 
 router.get('/', checkAuth, wrapper(getAllCustomers));
-router.get('/filter-customer',wrapper(filterCustomer));
+
+router.get('/filter-customer',checkAuth,wrapper(filterCustomer));
 
 router.get('/:customerId', checkAuth, wrapper(getSingleCustomer));
 

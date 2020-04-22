@@ -40,9 +40,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     CustomerAddress.associate = function(models) {
-        CustomerAddress.belongsTo(models.customers, { foreignKey: 'customerId', as: 'singleCustomer' });
-        CustomerAddress.belongsTo(models.states, { foreignKey: 'stateId', as: 'state' });
-        CustomerAddress.belongsTo(models.cities, { foreignKey: 'cityId', as: 'city' });
+        CustomerAddress.belongsTo(models.customer, { foreignKey: 'customerId', as: 'singleCustomer' });
+        CustomerAddress.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
+        CustomerAddress.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
     }
 
     return CustomerAddress;

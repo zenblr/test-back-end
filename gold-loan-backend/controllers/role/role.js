@@ -11,12 +11,12 @@ exports.addRole = async (req, res, next) => {
 
     const { roleName, description, permissionId } = req.body;
 
-    let roleExist = await models.roles.findOne({ where: { roleName } })
+    let roleExist = await models.role.findOne({ where: { roleName } })
     if (!check.isEmpty(roleExist)) {
         return res.status(404).json({ message: 'This Role is already Exist' });
     }
     await sequelize.transaction(async t => {
-        let role = await models.roles.create({ roleName, description });
+        let role = await models.role.create({ roleName, description });
         for (let i = 0; i < permissionId.length; i++) {
             let data = await models.rolePermission.create({
                 roleId: role.id,
@@ -43,7 +43,7 @@ exports.readRole = async (req, res, next) => {
         whereCondition = { order: [['id', 'ASC']] }
     }
 
-    let readRoleData = await models.roles.findAll(whereCondition);
+    let readRoleData = await models.role.findAll(whereCondition);
 
     if (!readRoleData) {
         return res.status(404).json({ message: "Data not found" });
@@ -57,10 +57,10 @@ exports.updateRole = async (req, res, next) => {
     const roleId = req.params.id;
     const { roleName, description, permissionId } = req.body;
 
-    const priName = await models.roles.findOne({ where: { id: roleId } })
+    const priName = await models.role.findOne({ where: { id: roleId } })
 
     if (priName.roleName != roleName) {
-        let roleExist = await models.roles.findOne({ where: { roleName } })
+        let roleExist = await models.role.findOne({ where: { roleName } })
         if (!check.isEmpty(roleExist)) {
             return res.status(404).json({ message: 'This Role is already Exist' });
         }
@@ -76,7 +76,7 @@ exports.updateRole = async (req, res, next) => {
 
     await sequelize.transaction(async t => {
 
-        let updateRoleData = await models.roles.update({ roleName, description }, { where: { id: roleId }, transaction: t });
+        let updateRoleData = await models.role.update({ roleName, description }, { where: { id: roleId }, transaction: t });
 
         if (deletedId.length != 0) {
             var data = await models.rolePermission.destroy({

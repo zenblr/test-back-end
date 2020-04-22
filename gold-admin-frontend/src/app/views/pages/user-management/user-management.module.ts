@@ -36,6 +36,7 @@ import { BranchListComponent } from './branch/branch-list/branch-list.component'
 import { BranchAddComponent } from './branch/branch-add/branch-add.component';
 import { PartnerAddComponent } from './partner/partner-add/partner-add.component';
 import { PermissionsComponent } from './permissions/permissions.component';
+import { CoreModule } from "../../../core/core.module";
 
 const routes: Routes = [
 	{
@@ -102,7 +103,9 @@ const routes: Routes = [
 		FormsModule,
 		ReactiveFormsModule,
 		TranslateModule.forChild(),
-		AngularMaterialModule	],
+		AngularMaterialModule,
+		CoreModule,
+		],
 	providers: [
 		InterceptService,
 		{

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const checkAuth = require('../middleware/checkAuth')
-const { uploadScheme } = require('../controllers/schemes/uploadSchemes');
+const { uploadScheme } = require('../controllers/scheme/uploadSchemes');
 const { wrapper } = require('../utils/errorWrap');
 const multer = require('multer');
 const storage = multer.diskStorage({

@@ -136,7 +136,7 @@
  *   get:
  *     tags:
  *       - Customer By Admin
- *     name: read customers
+ *     name: read customer
  *     summary: To read customer with pagination
  *     security:
  *       - bearerAuth: []
@@ -166,7 +166,7 @@
  *   put:
  *     tags:
  *       - Customer By Admin
- *     name: update customers
+ *     name: update customer
  *     summary: To update customer
  *     security:
  *       - bearerAuth: []

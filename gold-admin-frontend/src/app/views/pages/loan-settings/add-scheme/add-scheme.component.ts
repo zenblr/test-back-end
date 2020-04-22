@@ -106,7 +106,7 @@ export class AddSchemeComponent implements OnInit {
             this._toastr.success('Scheme Created Sucessfully');
             this.dialogRef.close(res);
         }), catchError(err => {
-          this._toastr.error('Some thing went wrong')
+          
           this.ref.detectChanges();
           throw (err)
         })).subscribe()
@@ -115,6 +115,13 @@ export class AddSchemeComponent implements OnInit {
 
   getFileInfo(event) {
       this.file = event.target.files[0];
+      var ext = event.target.files[0].name.split('.');
+      if(ext[ext.length - 1] != 'csv' ){
+        this._toastr.error('Please upload csv file');
+        this.csvForm.controls.csv.markAsTouched()
+        return
+      }
       this.csvForm.get('csv').patchValue(event.target.files[0].name);
+
   }
 }

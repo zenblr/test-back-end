@@ -101,7 +101,7 @@ export class BranchListComponent implements OnInit {
     // First load
     // this.loadBranchPage();
 
-    this.dataSource.loadBranches(1, 10, this.searchValue, '', '', '');
+    this.dataSource.loadBranches(1, 25, this.searchValue, '', '', '');
   }
 
 	/**

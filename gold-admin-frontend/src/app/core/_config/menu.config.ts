@@ -531,10 +531,10 @@ export class MenuConfig {
 					]
 				},
 				{
-					title: 'Customer Management',
+					title: 'Lead Management',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
-					page: '/customer-management',
+					page: '/lead-management',
 
 				},
 				{
@@ -573,10 +573,10 @@ export class MenuConfig {
 					]
 				},
 				{
-					title: 'Customer Settings',
+					title: 'Customer Management',
 					root: true,
 					icon: 'flaticon-users-1',
-					page: '/customer-setting/customer-list',
+					page: '/customer-management/customer-list',
 				},
 				{
 					title: 'Repayment Structure',

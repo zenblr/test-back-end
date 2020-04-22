@@ -1,0 +1,25 @@
+:host {
+    .mat-column-fullName{
+        flex: 0 0 20% !important;
+        padding-right: 5px !important;
+    }
+    .mat-column-mobile{
+        flex: 0 0 12% !important;
+    }
+    .mat-column-pan{
+        flex: 0 0 11% !important;
+    }
+    .mat-column-state{
+        flex: 0 0 13% !important;
+    }
+    .mat-column-city{
+        flex: 0 0 12% !important;
+    }
+    .mat-column-date{
+        flex: 0 0 14% !important;
+    }
+    .mat-column-status{
+        flex: 0 0 15% !important;
+
+    }
+}

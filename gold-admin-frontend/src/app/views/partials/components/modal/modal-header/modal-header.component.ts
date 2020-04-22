@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'kt-modal-header',
@@ -8,10 +8,16 @@ import { Component, OnInit, Input } from '@angular/core';
 export class ModalHeaderComponent implements OnInit {
 
   @Input() title;
+  @Output() action = new EventEmitter();
+
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  closeModal() {
+    this.action.emit(false);
   }
 
 }

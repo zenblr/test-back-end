@@ -1,12 +1,12 @@
-
-<div class="kt-portlet" >
-    <kt-modal-header [title]="'Add Scheme'"></kt-modal-header>
+<div class="kt-portlet">
+    <kt-modal-header [title]="'Add Scheme'" (action)="action($event)"></kt-modal-header>
     <div class="kt-portlet__body position-relative">
         <div class="text-right">
             <a href="../../../../../assets/media/files/schemes.csv" download="schemes.csv"
                 *ngIf="tabGroup.selectedIndex == 1">
                 <span class="text-primary csv_pos">
-                    <img src="../../../../../assets/media/icons/download.svg" alt="download" height="24"> Download Sample CSV</span>
+                    <img src="../../../../../assets/media/icons/download.svg" alt="download" height="24"> Download
+                    Sample CSV</span>
             </a>
         </div>
 
@@ -98,7 +98,7 @@
                     </div>
                     <div class="row kt-margin-t-20">
                         <div class="col-3">
-                            <p class="text-color font-weight-bold">Select Partner ID</p>
+                            <p class="text-color font-weight-bold">Select Partner Name</p>
                         </div>
                         <div class="col-9">
                             <select name="" id="" class="form-control selectpicker" formControlName="partnerId"
@@ -138,7 +138,7 @@
                     </div>
                     <div class="row kt-margin-t-20">
                         <div class="col-3">
-                            <p class="text-color font-weight-bold">Select Partner ID</p>
+                            <p class="text-color font-weight-bold">Select Partner Name</p>
                         </div>
                         <div class="col-9">
                             <select name="" id="" class="form-control" formControlName="partnerId"

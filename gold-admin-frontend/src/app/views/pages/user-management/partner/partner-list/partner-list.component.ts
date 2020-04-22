@@ -130,7 +130,7 @@ export class PartnerListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.loadPartners(this.searchValue, 1, 10, '', '', '');
+    this.dataSource.loadPartners(this.searchValue, 1, 25, '', '', '');
   }
 
 	/**

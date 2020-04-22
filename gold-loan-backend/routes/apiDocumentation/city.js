@@ -40,5 +40,5 @@
  *       200:
  *         description: success
  *       404:
- *         description: Cities Csv is already Uploaded
+ *         description: city Csv is already Uploaded
  */

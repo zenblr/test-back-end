@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'banner',
+        tableName: 'loan_banner',
     });
 
     // //Find_Banner

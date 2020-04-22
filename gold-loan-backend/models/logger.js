@@ -17,9 +17,13 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         // options
         freezeTableName: true,
-        tableName: 'logger',
+        tableName: 'loan_logger',
         timestamps: false
     });
+
+    Logger.associate = function (models) {
+        Logger.belongsTo(models.user, { foreignKey: 'userId', as: 'singleUser' });
+    }
 
     return Logger;
 }
