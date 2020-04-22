@@ -4,30 +4,20 @@ import { Component, OnInit, ElementRef, ViewChild, ChangeDetectionStrategy, OnDe
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material';
 // RXJS
-import { debounceTime, distinctUntilChanged, tap, skip, take, delay, takeUntil } from 'rxjs/operators';
-import { fromEvent, merge, Observable, of, Subscription, Subject } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { distinctUntilChanged, tap, skip, take, delay, takeUntil } from 'rxjs/operators';
+import {  merge,  of, Subscription, Subject } from 'rxjs';
 // NGRX
 import { Store } from '@ngrx/store';
 // Services
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
-// import { Role, RolesDatasource, RoleDeleted, RolesPageRequested  } from '../../../../../core/auth';
 import { RolesDatasource, RolesModel, RolesService } from '../../../../../core/user-management/roles'
 import { AppState } from '../../../../../core/reducers';
-import { QueryParamsModel } from '../../../../../core/_base/crud';
 
 // Components
 import { RoleAddDialogComponent } from '../role-add/role-add.dialog.component';
 import { Router } from '@angular/router';
 
-// Table with EDIT item in MODAL
-// ARTICLE for table with sort/filter/paginator
-// https://blog.angular-university.io/angular-material-data-table/
-// https://v5.material.angular.io/components/table/overview
-// https://v5.material.angular.io/components/sort/overview
-// https://v5.material.angular.io/components/table/overview#sorting
-// https://www.youtube.com/watch?v=NSt9CI3BXv4
 @Component({
 	selector: 'kt-roles-list',
 	templateUrl: './roles-list.component.html',

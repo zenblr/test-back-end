@@ -6,7 +6,7 @@
         </div>
         <div class="col-6">
             <kt-search *ngIf="showInput"></kt-search>
-            <kt-button [value]='value2' [type]='type2' (click)="action($event)" class="kt-margin-r-10 kt-margin-l-10"></kt-button>
+            <kt-button [value]='value1' [type]='type1' (click)="action($event)" class="kt-margin-r-10 kt-margin-l-10"></kt-button>
 
             <!-- Toggle Button -->
             <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style"
@@ -20,7 +20,7 @@
             </mat-button-toggle-group>
         </div>
         <div class="col-2 text-right">
-            <kt-button *ngIf="rightButton" [value]='value3' [type]='type3' (click)="action($event)"></kt-button>
+            <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' (click)="action($event)"></kt-button>
             <kt-filter *ngIf="showfilter"></kt-filter>
         </div>
     </div>

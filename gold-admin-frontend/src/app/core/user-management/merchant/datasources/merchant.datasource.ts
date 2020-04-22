@@ -4,9 +4,9 @@ import { map } from 'rxjs/operators';
 // CRUD
 import { BaseDataSource } from '../../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
-import { RolesService } from '../services/roles.service';
+import { MerchantService } from '../services/merchant.service';
 
-export class RolesDatasource extends BaseDataSource {
+export class MerchantDatasource extends BaseDataSource {
 
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
@@ -15,7 +15,7 @@ export class RolesDatasource extends BaseDataSource {
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
     desserts: any;
 
-    constructor(private rolesService: RolesService) {
+    constructor(private merchantService: MerchantService) {
         super();
     }
 
@@ -34,7 +34,7 @@ export class RolesDatasource extends BaseDataSource {
         this.paginatorTotalSubject.next(10);
         this.loadingSubject.next(false);
         this.isPreloadTextViewedSubject.next(false);
-
+debugger
         // this.rolesService.getRoles(search, from, to, fromDate, toDate, userId)
         //     .pipe(
         //         map(
