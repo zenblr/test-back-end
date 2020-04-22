@@ -52,9 +52,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'pan_card_number',
         },
-        genderId: {
-            type: DataTypes.INTEGER,
-            field: 'gender_id'
+        gender: {
+            type: DataTypes.STRING,
+            field: 'gender'
         },
         martialStatusId: {
             type: DataTypes.INTEGER,
@@ -112,7 +112,6 @@ module.exports = (sequelize, DataTypes) => {
         KycCustomerPersonalDetail.belongsTo(models.identityType, { foreignKey: 'identityTypeId', as: 'identityType' });
 
         KycCustomerPersonalDetail.belongsTo(models.martialStatus, { foreignKey: 'martialStatusId', as: 'martialStatus' });
-        KycCustomerPersonalDetail.belongsTo(models.gender, { foreignKey: 'genderId', as: 'gender' });
 
         KycCustomerPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         KycCustomerPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
