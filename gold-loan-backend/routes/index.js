@@ -67,8 +67,10 @@ router.use('/scheme',scheme);
 const uploadScheme=require('./uploadSchemes'); // upload Scheme Route
 router.use('/upload-scheme',uploadScheme);
 
-const roughLoanAmount=require('./roughLoanAmount');
+const roughLoanAmount=require('./roughLoanAmount'); // rough amount calculator
 router.use('/rough-amount',roughLoanAmount);
 
+const addressType=require('./addressType'); // address Type
+router.use('/address-type',addressType)
 
 module.exports = router;
