@@ -1,0 +1,42 @@
+.nav-tabs .nav-link.active {
+	color: #5a5d6e;
+}
+.tab-link {
+	flex: 1 0 17%;
+	margin: 0 5px 0 5px;
+	background-color: #fafafa;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+
+	.step-number {
+		width: 40px;
+		height: 40px;
+		border-radius: 10px;
+		background-color: #454d67;
+		color: #969cb6;
+		font-weight: 600;
+		margin-bottom: 10px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.step-name {
+		color: #969cb6;
+		margin-bottom: 5px;
+	}
+
+	.step-details {
+		font-weight: 600;
+		margin-bottom: 5px;
+	}
+	.nav-pills,
+	.nav-tabs {
+		margin-bottom: -5px !important;
+    }
+    
+   .border-none{
+       border:0 !important;
+   }
+  
+}
