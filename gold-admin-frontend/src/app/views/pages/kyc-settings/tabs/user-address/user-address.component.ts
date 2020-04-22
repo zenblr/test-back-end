@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserAddressService } from '../../../../../core/kyc-settings';
 
 @Component({
   selector: 'kt-user-address',
@@ -11,16 +12,42 @@ export class UserAddressComponent implements OnInit {
   identityForm: FormGroup;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private userAddressService: UserAddressService) { }
 
   ngOnInit() {
     this.initForm();
+    this.getIdentityType();
   }
 
   initForm() {
-    // this.identityForm = this.fb.group({
-    //   proofType: []
-    // });
+    this.identityForm = this.fb.group({
+      identityProof: [],
+      proofImage: [],
+      resdential: this.fb.group({
+        proofType: [],
+        address: [],
+        stateId: [''],
+        cityId: [''],
+        pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+        proofImage: []
+      }),
+      permanent: this.fb.group({
+        proofType: [],
+        address: [],
+        stateId: [''],
+        cityId: [''],
+        pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+        proofImage: []
+      })
+    });
+  }
+
+  getIdentityType() {
+    this.userAddressService.getIdentityType().subscribe(res => {
+      console.log(res);
+    }, err => {
+      console.log(err);
+    })
   }
 
   getFileInfo(event) {
