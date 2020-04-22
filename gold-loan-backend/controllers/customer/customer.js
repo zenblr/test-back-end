@@ -32,7 +32,7 @@ exports.addCustomer = async (req, res, next) => {
     where: { referenceCode, isVerified: true },
   });
   if (check.isEmpty(getMobileNumber)) {
-    return res.status(404).json({ message: "Registration Failed" });
+    return res.status(404).json({ message: "Your Mobile number is not verified" });
   }
   let mobileNumber = getMobileNumber.mobileNumber;
 
