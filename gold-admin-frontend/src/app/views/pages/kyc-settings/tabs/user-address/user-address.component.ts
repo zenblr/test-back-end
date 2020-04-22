@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class UserAddressComponent implements OnInit {
 
   identityForm: FormGroup;
+  @Output() next: EventEmitter<any> = new EventEmitter<any>();
+
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -30,7 +32,10 @@ export class UserAddressComponent implements OnInit {
     //   return
     // }
     // this.csvForm.get('csv').patchValue(event.target.files[0].name);
+  }
 
+  submit() {
+    this.next.emit(true);
   }
 
 }

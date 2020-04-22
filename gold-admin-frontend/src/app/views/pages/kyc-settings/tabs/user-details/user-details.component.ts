@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../../views/partials/components';
 
@@ -18,6 +18,7 @@ export class UserDetailsComponent implements OnInit {
   isOpverified = true;
 
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  @Output() next: EventEmitter<any> = new EventEmitter<any>();
 
 
   constructor(public fb: FormBuilder) { }
@@ -108,6 +109,10 @@ export class UserDetailsComponent implements OnInit {
     setTimeout(() => {
       this.isPanVerified = true;
     }, 1000);
+  }
+
+  submit() {
+    this.next.emit(true);
   }
 
 }

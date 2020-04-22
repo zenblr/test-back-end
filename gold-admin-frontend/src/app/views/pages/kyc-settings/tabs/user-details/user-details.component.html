@@ -166,7 +166,8 @@
 
 					<div class="row kt-padding-t-15">
 						<div class="col-12">
-							<kt-button [value]="'Next'" [isDisabled]="!userBasicForm.invalid" [type]="'button'">
+							<kt-button [value]="'Next'" [isDisabled]="!userBasicForm.invalid" [type]="'button'"
+								(action)="submit()">
 							</kt-button>
 						</div>
 					</div>
