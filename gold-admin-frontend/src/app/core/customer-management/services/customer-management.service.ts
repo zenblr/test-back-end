@@ -23,6 +23,10 @@ export class CustomerManagementService {
     return this.http.post<any>(`/api/customer`, data);
   }
 
+  getLeadById(id): Observable<any> {
+    return this.http.get<any>(`/api/customer/${id}`);
+  }
+
   sendOtp(data): Observable<any> {
     return this.http.post<any>(`/api/customer/send-register-otp`, data); //mobile
   }

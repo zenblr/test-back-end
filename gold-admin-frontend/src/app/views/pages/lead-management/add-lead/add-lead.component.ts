@@ -37,7 +37,8 @@ export class AddLeadComponent implements OnInit {
   viewOnly = false;
 
   refCode: number; //reference code
-  mobileAlreadyExists = false;;
+  mobileAlreadyExists = false; title: string;
+  ;
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -51,6 +52,15 @@ export class AddLeadComponent implements OnInit {
   ngOnInit() {
     this.formInitialize();
     this.getStates();
+
+    if (this.data.action !== 'add') {
+      this.getLeadById(this.data['id']);
+      this.modalTitle = 'Edit Lead'
+      this.viewOnly = true;
+    } else {
+      this.modalTitle = 'Add New Lead'
+    }
+
     this.controls.mobileNumber.valueChanges.subscribe(res => {
       if (this.controls.mobileNumber.valid) {
         this.otpButton = false;
@@ -107,6 +117,16 @@ export class AddLeadComponent implements OnInit {
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.message;
     });
+  }
+
+  getLeadById(id) {
+    this.customerManagementService.getLeadById(id).subscribe(res => {
+      // console.log(res);
+      this.leadForm.patchValue(res.singleCustomer);
+    },
+      error => {
+        console.log(error.error.message);
+      });
   }
 
   sendOTP() {
