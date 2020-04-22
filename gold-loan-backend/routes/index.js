@@ -55,20 +55,25 @@ router.use('/partner', partner);
 const branch = require('./branch'); // branch Route
 router.use('/branch', branch);
 
-const role= require('./role'); // role Route
-router.use('/role',role)
+const role = require('./role'); // role Route
+router.use('/role', role)
 
-const permission= require('./permission'); // permission Route
-router.use('/permission',permission);
+const permission = require('./permission'); // permission Route
+router.use('/permission', permission);
 
 const scheme = require('./scheme'); // scheme Route
-router.use('/scheme',scheme);
+router.use('/scheme', scheme);
 
-const uploadScheme=require('./uploadSchemes'); // upload Scheme Route
-router.use('/upload-scheme',uploadScheme);
+const uploadScheme = require('./uploadSchemes'); // upload Scheme Route
+router.use('/upload-scheme', uploadScheme);
 
-const roughLoanAmount=require('./roughLoanAmount'); // rough amount calculator
-router.use('/rough-amount',roughLoanAmount);
+const roughLoanAmount = require('./roughLoanAmount');
+router.use('/rough-amount', roughLoanAmount);
+
+
+const occupation = require('./occupation');
+router.use('/occupation', occupation)
+
 
 const addressType=require('./addressType'); // address Type
 router.use('/address-type',addressType)

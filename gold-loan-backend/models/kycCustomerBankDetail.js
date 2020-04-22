@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'bank_branch_name'
         },
-        accountTypeId:{
-            type: DataTypes.INTEGER,
+        accountType:{
+            type: DataTypes.STRING,
             field: 'account_type_id',
         },
         accountHolderName:{
@@ -45,7 +45,6 @@ module.exports = (sequelize, DataTypes) => {
 
         KycCustomerBankDetail.belongsTo(models.kycCustomerPersonalDetail, { foreignKey: 'kycCustomerId', as: 'kycCustomer' });
 
-        KycCustomerBankDetail.belongsTo(models.accountType, { foreignKey: 'accountTypeId', as: 'accountType' });
     }
 
 

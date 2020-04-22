@@ -1,7 +1,6 @@
 const csv = require("csvtojson");
 const models = require("../../models");
 const sequelize = models.sequelize;
-const csvValidators = require("csv-file-validator");
 
 // upload scheme csv
 exports.uploadScheme = async (req, res, next) => {
