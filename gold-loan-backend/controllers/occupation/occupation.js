@@ -18,7 +18,16 @@ exports.addOccupation = async (req, res, next) => {
 
 exports.readOccupation = async (req, res, next) => {
 
-    let allOccupation = await models.occupation.findAll()
+    let allOccupation = await models.occupation.findAll({where:{isActive:true}})
     return res.status(200).json(allOccupation)
 
+}
+
+exports.deactiveOccupation = async (req, res, next) => {
+    const { id, isActive } = req.query;
+    const deactiveOccupation = await models.occupation.update({ isActive: isActive }, { where: { id: id } })
+    if (deactiveOccupation[0] == 0) {
+        return res.status(404).json({ message: "Occupation deleted failed" });
+    }
+    return res.status(200).json({ message: `Updated` })
 }

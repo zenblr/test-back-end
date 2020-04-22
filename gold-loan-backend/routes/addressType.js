@@ -1,12 +1,14 @@
-const {addAddressType,readAddressType}=require('../controllers/addressType/addressType');
+const {addAddressType,readAddressType,deactivateAddressType}=require('../controllers/addressType/addressType');
 const checkAuth=require('../middleware/checkAuth');
 const express=require('express');
-const router=express.Router();
+const route=express.Router();
 const {wrapper}=require('../utils/errorWrap');
 
-router.post('/',checkAuth,wrapper(addAddressType));// add address Type
+route.post('/',checkAuth,wrapper(addAddressType));// add address Type
 
-router.get('/',checkAuth,wrapper(readAddressType)); // read address Type
+route.get('/',checkAuth,wrapper(readAddressType)); // read address Type
 
-module.exports=router;
+route.delete('/', checkAuth, wrapper(deactivateAddressType)) // deactive address type
+
+module.exports=route;
 
