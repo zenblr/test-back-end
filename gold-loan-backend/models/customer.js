@@ -82,9 +82,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'last_login',
         },
-        isKycDone: {
+        isKyVerify: {
             type: DataTypes.BOOLEAN,
-            field: 'is_kyc_done',
+            field: 'is_kyc_verify',
             defaultValue: false,
         }
     }, {

@@ -85,6 +85,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_kyc_done',
             defaultValue: false,
+        },
+        isKyVerify: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_kyc_verify',
+            defaultValue: false,
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: false
         }
     }, {
         freezeTableName: true,
