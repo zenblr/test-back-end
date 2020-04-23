@@ -93,9 +93,13 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Customer.associate = function (models) {
-        Customer.hasOne(models.kycCustomerPersonalDetail, { foreignKey: 'customerId', as: 'kycCustomer' });
+        Customer.hasOne(models.kycCustomerPersonalDetail, { foreignKey: 'customerId', as: 'customerKyc' });
+        Customer.hasMany(models.kycCustomerAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });
+        Customer.hasMany(models.kycCustomerBankDetail, { foreignKey: 'customerId', as: 'customerKycBank' });
 
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
+
+
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
         Customer.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });

@@ -1,9 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
     const KycCustomerBankDetail = sequelize.define('kycCustomerBankDetail', {
         // attributes
-        kycCustomerId: {
+        customerKycId: {
             type: DataTypes.INTEGER,
-            field: 'kyc_customer_id',
+            field: 'customer_kyc_id',
+            allowNull: false
+        },
+        customerId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_id',
             allowNull: false
         },
         bankName:{
@@ -15,8 +20,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'bank_branch_name'
         },
         accountType:{
-            type: DataTypes.STRING,
+            type: DataTypes.ENUM,
             field: 'account_type_id',
+            values: ['saving', 'current']
         },
         accountHolderName:{
             type: DataTypes.STRING,
@@ -37,13 +43,15 @@ module.exports = (sequelize, DataTypes) => {
    
     }, {
         freezeTableName: true,
-        tableName: 'kyc_customer_bank_detail',
+        tableName: 'customer_kyc_bank_detail',
     });
 
 
     KycCustomerBankDetail.associate = function(models) {
 
-        KycCustomerBankDetail.belongsTo(models.kycCustomerPersonalDetail, { foreignKey: 'kycCustomerId', as: 'kycCustomer' });
+        KycCustomerBankDetail.belongsTo(models.kycCustomerPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
+
+        KycCustomerBankDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
     }
 

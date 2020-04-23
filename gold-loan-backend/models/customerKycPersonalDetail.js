@@ -3,12 +3,8 @@ module.exports = (sequelize, DataTypes) => {
         // attributes
         customerId: {
             type: DataTypes.INTEGER,
-            field: 'customerId',
+            field: 'customer_id',
             allowNull: false
-        },
-        customerUniqueId:{
-            type: DataTypes.STRING,
-            field: 'customer_unique_id'
         },
         profileImage: {
             type: DataTypes.TEXT,
@@ -44,12 +40,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_card_number',
         },
         gender: {
-            type: DataTypes.STRING,
-            field: 'gender'
+            type: DataTypes.ENUM,
+            field: 'gender',
+            values: ['m', 'f', 'o']
         },
-        martialStatusId: {
-            type: DataTypes.INTEGER,
-            field: 'martial_status_id'
+        martialStatus: {
+            type: DataTypes.ENUM,
+            field: 'martial_status',
+            values: ['single', 'married', 'divorced']
         },
         occupationId: {
             type: DataTypes.INTEGER,
@@ -98,21 +96,20 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'kyc_customer_personal_detail',
+        tableName: 'customer_kyc_personal_detail',
     });
 
 
-    KycCustomerPersonalDetail.associate = function(models) {
+    KycCustomerPersonalDetail.associate = function (models) {
 
-        KycCustomerPersonalDetail.hasMany(models.kycCustomerAddressDetail, { foreignKey: 'kycCustomerId', as: 'kycCustomerAddress' });
-        KycCustomerPersonalDetail.hasMany(models.kycCustomerBankDetail, { foreignKey: 'kycCustomerId', as: 'kycCustomerBank' });
+        KycCustomerPersonalDetail.hasMany(models.kycCustomerAddressDetail, { foreignKey: 'customerKycId', as: 'customerKycAddress' });
+        KycCustomerPersonalDetail.hasMany(models.kycCustomerBankDetail, { foreignKey: 'customerKycId', as: 'customerKycBank' });
 
 
         KycCustomerPersonalDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         KycCustomerPersonalDetail.belongsTo(models.occupation, { foreignKey: 'occupationId', as: 'occupation' });
         KycCustomerPersonalDetail.belongsTo(models.identityType, { foreignKey: 'identityTypeId', as: 'identityType' });
 
-        KycCustomerPersonalDetail.belongsTo(models.martialStatus, { foreignKey: 'martialStatusId', as: 'martialStatus' });
 
         KycCustomerPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         KycCustomerPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
