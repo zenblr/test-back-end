@@ -4,10 +4,10 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class BrokerService {
+export class InternalUserService {
 
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
   constructor() { }
-  
+
 }

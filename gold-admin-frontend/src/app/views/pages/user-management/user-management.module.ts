@@ -49,6 +49,8 @@ import { LoanSchemeComponent } from '../loan-settings/loan-scheme/loan-scheme.co
 import { BrokerListComponent } from './broker/broker-list/broker-list.component';
 import { AddBrokerComponent } from './broker/add-broker/add-broker.component';
 import { MerchantListComponent } from './merchant/merchant-list/merchant-list.component';
+import { InternalUserListComponent } from './internal-user/internal-user-list/internal-user-list.component';
+import { AddInternalUserComponent } from './internal-user/add-internal-user/add-internal-user.component';
 
 const routes: Routes = [
 	{
@@ -78,7 +80,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'internal-user',
-				component: RolesListComponent,
+				component: InternalUserListComponent,
 			},
 			{
 				path: 'assign-appraiser',
@@ -138,6 +140,7 @@ const routes: Routes = [
 		BranchAddComponent,
 		PartnerAddComponent,
 		AddBrokerComponent,
+		AddInternalUserComponent
 	],
 	declarations: [
 		UserManagementComponent,
@@ -161,6 +164,8 @@ const routes: Routes = [
 		BrokerListComponent,
 		AddBrokerComponent,
 		MerchantListComponent,
+		InternalUserListComponent,
+		AddInternalUserComponent,
 
 	]
 })

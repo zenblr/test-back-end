@@ -1,8 +1,11 @@
-import {SelectionModel} from '@angular/cdk/collections';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {Component, Injectable,OnInit} from '@angular/core';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {BehaviorSubject} from 'rxjs';
+import { SelectionModel } from '@angular/cdk/collections';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { Component, Injectable, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { BehaviorSubject } from 'rxjs';
+import { ToastrComponent } from '../../../../../../../views/partials/components/toastr/toastr.component';
+import { map } from 'rxjs/operators';
+import { MerchantService } from '../../../../../../../core/user-management/merchant';
 
 /**
  * Node for to-do item
@@ -47,6 +50,10 @@ const TREE_DATA = {
 })
 export class PermissionComponent implements OnInit {
 
+  @Output() next: EventEmitter<any> = new EventEmitter<any>();
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  permission: [] = []
+
   /** Map from flat node to nested node. This helps us finding the nested node to be modified */
   flatNodeMap = new Map<TodoItemFlatNode, TodoItemNode>();
 
@@ -68,7 +75,9 @@ export class PermissionComponent implements OnInit {
   /** The selection for checklist */
   checklistSelection = new SelectionModel<TodoItemFlatNode>(true /* multiple */);
 
-  constructor() {
+  constructor(
+    private merchantService: MerchantService
+  ) {
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<TodoItemFlatNode>(this.getLevel, this.isExpandable);
@@ -79,27 +88,43 @@ export class PermissionComponent implements OnInit {
     // });
   }
 
-  ngOnInit(){
-    const data = this.buildFileTree(TREE_DATA, 0);
-    
-    this.dataSource.data = data
+  ngOnInit() {
+    this.getData()
+    console.log(this.dataSource)
   }
-  
-  buildFileTree(obj: {[key: string]: any}, level: number): TodoItemNode[] {
+  getData() {
+    var temp = []
+    this.merchantService.getPermission().pipe(
+      map(res => {
+        console.log(res)
+        this.permission = res;
+        this.permission.forEach(element => {
+          const data = this.buildFileTree(element, 0);
+          temp.push(data)
+        });
+        this.dataSource.data = temp;
+      })
+    ).subscribe()
+  }
+
+  buildFileTree(obj: { [key: string]: any }, level: number): TodoItemNode[] {
+    debugger
     return Object.keys(obj).reduce<TodoItemNode[]>((accumulator, key) => {
-      const value = obj[key];
-      const node = new TodoItemNode();
-      node.item = key;
+      // 
+        const value = obj[key];
+        const node = new TodoItemNode();
+        node.item = key;
 
-      if (value != null) {
-        if (typeof value === 'object') {
-          node.children = this.buildFileTree(value, level + 1);
-        } else {
-          node.item = value;
+        if (value != null) {
+          if (typeof value === 'object') {
+            node.children = this.buildFileTree(value, level + 1);
+          } else {
+            node.item = value;
+          }
         }
+        if (key == 'categoryName' || key == 'subCategory' || key == 'products') {
+        return accumulator.concat(node);
       }
-
-      return accumulator.concat(node);
     }, []);
   }
 
@@ -119,8 +144,8 @@ export class PermissionComponent implements OnInit {
   transformer = (node: TodoItemNode, level: number) => {
     const existingNode = this.nestedNodeMap.get(node);
     const flatNode = existingNode && existingNode.item === node.item
-        ? existingNode
-        : new TodoItemFlatNode();
+      ? existingNode
+      : new TodoItemFlatNode();
     flatNode.item = node.item;
     flatNode.level = level;
     flatNode.expandable = !!node.children;

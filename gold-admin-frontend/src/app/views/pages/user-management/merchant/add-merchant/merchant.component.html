@@ -1,6 +1,7 @@
-<nav ngbNav #nav="ngbNav" class="nav-tabs m-0" [ngStyle]="{'border':'0'}">
-    <ng-container ngbNavItem>
-        <a ngbNavLink class="tab-link">
+<nav ngbNav #nav="ngbNav" [(activeId)]="active"  class="nav-tabs m-0"
+[ngStyle]="{'border':'0'}">
+<ng-container [ngbNavItem]="1" >
+    <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
                     1
@@ -11,11 +12,11 @@
         </a>
 
         <ng-template ngbNavContent>
-            <kt-user-details></kt-user-details>
+            <kt-user-details (next)=next($event)></kt-user-details>
         </ng-template>
     </ng-container>
 
-    <ng-container ngbNavItem>
+    <ng-container [ngbNavItem]="2">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
@@ -27,11 +28,11 @@
         </a>
 
         <ng-template ngbNavContent>
-            <kt-commission-details></kt-commission-details>
+            <kt-commission-details (next)=next($event)></kt-commission-details>
         </ng-template>
     </ng-container>
 
-    <ng-container ngbNavItem>
+    <ng-container [ngbNavItem]="3">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
@@ -43,7 +44,7 @@
         </a>
 
         <ng-template ngbNavContent>
-           <kt-permission></kt-permission>
+           <kt-permission (next)=next($event)></kt-permission>
         </ng-template>
     </ng-container>
 </nav>

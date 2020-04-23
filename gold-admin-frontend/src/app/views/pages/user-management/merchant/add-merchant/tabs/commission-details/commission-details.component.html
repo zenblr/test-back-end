@@ -1,3 +1,4 @@
+<kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body>
         <div class="row justify-content-center min-height">
@@ -9,7 +10,7 @@
                         </div>
                         <div class="col-9 ">
                             <input type="text" class="form-control" placeholder="Enter Commission(%)" 
-                            formControlName="category1" [class.isError]="controls.category1.touched && controls.category1.touched">
+                            formControlName="category1" [class.isError]="controls.category1.touched && controls.category1.invalid">
                         <div *ngIf="controls.category1.touched && controls.category1.invalid">
                             <mat-error *ngIf="controls.category1.errors?.required">Field is required</mat-error>
                         </div>
@@ -21,7 +22,7 @@
                         </div>
                         <div class="col-9 ">
                             <input type="text" class="form-control" placeholder="Enter Commission(%)" 
-                            formControlName="category2" [class.isError]="controls.category2.touched && controls.category2.touched">
+                            formControlName="category2" [class.isError]="controls.category2.touched && controls.category2.invalid">
                         <div *ngIf="controls.category2.touched && controls.category2.invalid">
                             <mat-error *ngIf="controls.category2.errors?.required">Field is required</mat-error>
                         </div>
@@ -33,7 +34,7 @@
                         </div>
                         <div class="col-9 ">
                             <input type="text" class="form-control" placeholder="Enter Commission(%)"
-                            formControlName="category3" [class.isError]="controls.category3.touched && controls.category3.touched">
+                            formControlName="category3" [class.isError]="controls.category3.touched && controls.category3.invalid">
                         <div *ngIf="controls.category3.touched && controls.category3.invalid">
                             <mat-error *ngIf="controls.category3.errors?.required">Field is required</mat-error>
                         </div>
@@ -41,7 +42,7 @@
                     </div>
                     <div class="row kt-margin-t-15">
                         <div class="col-12">
-                            <kt-button [value]="'Next'" [type]="'button'" (click)="next()"></kt-button>
+                            <kt-button [value]="'Next'" [type]="'button'" (click)="submit()"></kt-button>
                         </div>
                     </div>
                 </form>
