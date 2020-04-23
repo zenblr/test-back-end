@@ -17,7 +17,7 @@
  *           type: object
  *           properties:
  *             mobileNumber:
- *               type: number
+ *               type: string
  *         required:
  *           - mobileNumber
  *     responses:
@@ -102,7 +102,11 @@
  *             referenceCode:
  *               type: string
  *             panCardNumber:
- *               type: string  
+ *               type: string
+ *             cityId:
+ *               type: number
+ *             stateId:
+ *               type: number  
  *             address:
  *               type: array
  *               items:
@@ -158,6 +162,7 @@
  *     - name: "stageName"
  *       in: "query"
  *       type: "string"
+ *       required: true
  *     responses:
  *       200:
  *          description: Success
@@ -203,8 +208,6 @@
  *                   type: number
  *                 cityId:
  *                   type: number 
- *             ratingId:
- *               type: number
  *             statusId:
  *               type: number 
  *             stageId:
@@ -221,7 +224,6 @@
  *           - address
  *           - cityId
  *           - stateId
- *           - ratingId
  *           - statusId
  *           - stageId
  *           - isActive
