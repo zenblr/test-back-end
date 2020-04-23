@@ -30,14 +30,18 @@ module.exports = (sequelize, DataTypes) => {
             },
             allowNull: false
         },
-        mobileNumber: {
+        dateOfBirth: {
+            type: DataTypes.DATE,
+            field: 'dateOfBirth'
+        },
+        alternateMobileNumber: {
             type: DataTypes.STRING,
-            field: 'mobile_number',
-            allowNull: false,
+            field: 'alternate_mobile_number',
         },
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',
+            allowNull: false
         },
         gender: {
             type: DataTypes.ENUM,

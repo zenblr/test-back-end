@@ -78,4 +78,9 @@ router.use('/occupation', occupation)
 const identityType=require('./identityType'); // identity Type
 router.use('/identity-type',identityType)
 
+const customerKyc = require('./customerKyc')
+router.use('/kyc',customerKyc)
+
+
+
 module.exports = router;
