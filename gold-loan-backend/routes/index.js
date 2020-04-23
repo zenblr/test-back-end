@@ -67,13 +67,15 @@ router.use('/scheme', scheme);
 const uploadScheme = require('./uploadSchemes'); // upload Scheme Route
 router.use('/upload-scheme', uploadScheme);
 
-const roughLoanAmount = require('./roughLoanAmount');
+const roughLoanAmount = require('./roughLoanAmount'); // rough amount calculations
 router.use('/rough-amount', roughLoanAmount);
 
 
-const occupation = require('./occupation');
+const occupation = require('./occupation'); // occupation
 router.use('/occupation', occupation)
 
 
+const identityType=require('./identityType'); // identity Type
+router.use('/identity-type',identityType)
 
 module.exports = router;
