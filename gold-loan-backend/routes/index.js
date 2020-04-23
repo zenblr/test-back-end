@@ -75,13 +75,7 @@ const occupation = require('./occupation'); // occupation
 router.use('/occupation', occupation)
 
 
-const addressType=require('./addressType'); // address Type
-router.use('/address-type',addressType)
-
 const identityType=require('./identityType'); // identity Type
 router.use('/identity-type',identityType)
-
-const martialStatus=require('./martialStatus'); // martial status
-router.use('/martial-status',martialStatus)
 
 module.exports = router;
