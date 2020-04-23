@@ -67,8 +67,8 @@ export class PartnerListComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private partnerService: PartnerService,
     private dataTableService: DataTableService,
-    private router:Router
-    ) {
+    private router: Router
+  ) {
     this.partnerService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
         this.addRole()
@@ -273,9 +273,8 @@ export class PartnerListComponent implements OnInit {
     });
   }
 
-  viewSchemes()
-{
-  this.router.navigate(['/user-management/partner/view-schemes'])
-}
-	
+  viewSchemes(id:number) {
+    this.router.navigate(['/user-management/partner/view-schemes/',id])
+  }
+
 }

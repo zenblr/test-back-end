@@ -73,26 +73,26 @@
                 <ng-container matColumnDef="partnerId">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Partner ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.partnerId}}</mat-cell>
+                    <mat-cell *matCellDef="let parnter">{{parnter.partnerId}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Partner Name</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let parnter">{{parnter.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="commission">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Commission</mat-header-cell>
-                    <mat-cell *matCellDef="let role" [ngStyle]="{'text-align':'right !important'}">{{role.commission}}</mat-cell>
+                    <mat-cell *matCellDef="let parnter" [ngStyle]="{'text-align':'right !important'}">{{parnter.commission}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-                    <mat-cell *matCellDef="let role">
+                    <mat-cell *matCellDef="let parnter">
                         <div [ngStyle]="{'display': 'inherit'}" >
-                            <div class="kt-pointer" (click)="viewSchemes()"> View Schemes | &nbsp;</div>
-                            <div (click)="editRole(role)" class="kt-pointer"> Edit | &nbsp;</div>
-                            <div class="kt-pointer text-danger" (click)="deleteRole(role)" >Delete</div>
+                            <div class="kt-pointer" (click)="viewSchemes(parnter.id)"> View Schemes | &nbsp;</div>
+                            <div (click)="editRole(parnter)" class="kt-pointer"> Edit | &nbsp;</div>
+                            <div class="kt-pointer text-danger" (click)="deleteRole(parnter)" >Delete</div>
                         </div>
                     </mat-cell>
                 </ng-container>
