@@ -23,23 +23,27 @@ export class UserAddressComponent implements OnInit {
     this.identityForm = this.fb.group({
       identityProof: [],
       proofImage: [],
-      resdential: this.fb.group({
-        proofType: [],
-        address: [],
-        stateId: [''],
-        cityId: [''],
-        pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-        proofImage: []
-      }),
-      permanent: this.fb.group({
-        proofType: [],
-        address: [],
-        stateId: [''],
-        cityId: [''],
-        pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-        proofImage: []
-      })
+      address: this.fb.array([
+        this.fb.group({
+          proofType: [],
+          address: [],
+          stateId: [''],
+          cityId: [''],
+          pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+          proofImage: []
+        }),
+        this.fb.group({
+          proofType: [],
+          address: [],
+          stateId: [''],
+          cityId: [''],
+          pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+          proofImage: []
+        })
+      ])
     });
+
+    console.log(this.identityForm.value);
   }
 
   getIdentityType() {

@@ -177,7 +177,7 @@
                                     <!-- <mat-label>State</mat-label> -->
                                     <select class="form-control" formControlName="stateId" (change)="getCities($event)"
                                         margin [class.isError]="controls.stateId.touched && controls.stateId.invalid">
-                                        <option disabled selected> Select </option>
+                                        <option disabled selected value=""> Select State</option>
                                         <option *ngFor="let state of states" [value]="state.id">
                                             {{state.name}}
                                         </option>
@@ -201,7 +201,7 @@
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                     <select class="form-control" formControlName="cityId" margin
                                         [class.isError]="controls.cityId.touched && controls.cityId.invalid">
-                                        <option disabled selected> Select </option>
+                                        <option selected value="" disabled> Select City</option>
                                         <option *ngFor="let city of cities" [value]="city.id">
                                             {{city.name}}
                                         </option>
@@ -239,8 +239,9 @@
                                     <!-- <mat-label>Select</mat-label> -->
                                     <select class="form-control" formControlName="statusId" margin
                                         [class.isError]="controls.statusId.touched && controls.statusId.invalid">
+                                        <option selected disabled value="">Select Status</option>
                                         <option *ngFor="let stat of status" [value]="stat.id">
-                                            {{stat.status}}
+                                            {{stat.statusName | titlecase}}
                                         </option>
                                     </select>
                                     <mat-error *ngIf="controls.statusId.errors?.required && controls.statusId.touched">
