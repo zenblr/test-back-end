@@ -7,7 +7,7 @@ exports.addIdentityType=async(req,res)=>{
     const {name}= req.body;
     let identityTypeExist = await models.identityType.findOne({ where: { name,isActive:true } })
     if (!check.isEmpty(identityTypeExist)) {
-        return res.status(404).json({ message: 'This Identity Type  is already Exist' });
+        return res.status(400).json({ message: 'This Identity Type  is already Exist' });
     }
     const addIdentityType=await models.identityType.create({name});
     if(!addIdentityType){
@@ -28,6 +28,15 @@ exports.readIdentityType=async(req,res)=>{
     res.status(200).json(readIdentityType);
 }
 
+// update Identity type
+
+exports.updateIdentityType=async (req,res)=>{
+    let identityTypeId=req.params.id;
+    const{name}=req.body;
+    let updateIdentityType= await models.identityType.update({name},{where:{id:identityTypeId,isActive:true}});
+    if(!updateIdentityType[0]){return res.status(404).json({message:'identity type  update failed'});}
+    return res.status(200).json({message:'Updated'});
+    }
 //deactive Identity type
 
 exports.deactivateIdentityType = async (req, res, next) => {
