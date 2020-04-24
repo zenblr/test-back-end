@@ -13,10 +13,19 @@ export class UserAddressService {
   constructor(private http: HttpClient) { }
 
   getIdentityType(): Observable<any> {
-    return this.http.get(`/api/kyc`).pipe(
+    return this.http.get(`/api/identity-type`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.errorToastr(err.message);
+        this.toastr.errorToastr(err.error.message);
+        throw (err)
+      }))
+  }
+
+  getAddressProofType(): Observable<any> {
+    return this.http.get(`/api/address-proof-type`).pipe(
+      map(res => res),
+      catchError(err => {
+        this.toastr.errorToastr(err.error.message);
         throw (err)
       }))
   }
