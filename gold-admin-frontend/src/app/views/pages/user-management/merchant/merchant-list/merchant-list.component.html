@@ -109,9 +109,9 @@
                     <mat-cell *matCellDef="let merchant">View API</mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 150%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '150%'}"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 150%;"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'width': '150%'}"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

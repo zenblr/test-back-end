@@ -6,7 +6,7 @@
     <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
     <div class="kt-portlet__body">
         <div class="kt-form">
-            <form [formGroup]="brokerFrom">
+            <form [formGroup]="addUserForm">
 
 
                 <div class="kt-portlet__body-progress">
@@ -24,53 +24,37 @@
                         <!-- Partner Name -->
                         <div class="row">
                             <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Merchant Name</label>
+                                <label for="" class="text-color font-weight-bold">Name</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="merchantName" autocomplete="off"
-                                    [class.isError]="controls.merchantName.touched && controls.merchantName.invalid">
-                                    <option value="" [selected]="true" [disabled]="true">Select</option>
-                                </select>
-                                <mat-error
-                                    *ngIf="controls.merchantName.touched && controls.merchantName.errors?.required">
-                                    Required
-                                    field</mat-error>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input class="form-control" formControlName="firstName" placeholder="First Name"
+                                            [class.isError]="controls.firstName.touched && controls.firstName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                    <div class="col-6">
+                                        <input class="form-control" formControlName="lastName" placeholder="Last Name"
+                                            [class.isError]="controls.lastName.touched && controls.lastName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.lastName.errors?.required && controls.lastName.touched">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Broker ID</label>
+                                <label for="" class="text-color font-weight-bold">User ID</label>
                             </div>
                             <div class="col-8">
-                                <input class="form-control" formControlName="brokerId" placeholder="e.g 012345"
-                                    [class.isError]="controls.brokerId.touched && controls.brokerId.invalid">
-                                <mat-error *ngIf="controls.brokerId.errors?.required && controls.brokerId.touched">
-                                    Required field
-                                </mat-error>
-                            </div>
-                        </div>
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Full Name</label>
-                            </div>
-                            <div class="col-8">
-                                <input class="form-control" formControlName="fullName" placeholder="e.g John Smith"
-                                    [class.isError]="controls.fullName.touched && controls.fullName.invalid">
-                                <mat-error *ngIf="controls.fullName.errors?.required && controls.fullName.touched">
-                                    Required field
-                                </mat-error>
-                            </div>
-                        </div>
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Mobile Number</label>
-                            </div>
-                            <div class="col-8">
-                                <input class="form-control" numbersOnly maxlength="10" formControlName="mobileNumber"
-                                    placeholder="e.g 9023451234"
-                                    [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid">
-                                <mat-error
-                                    *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
+                                <input class="form-control" formControlName="userId" placeholder="e.g 012345"
+                                    [class.isError]="controls.userId.touched && controls.userId.invalid">
+                                <mat-error *ngIf="controls.userId.errors?.required && controls.userId.touched">
                                     Required field
                                 </mat-error>
                             </div>
@@ -92,71 +76,28 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Address</label>
+                                <label for="" class="text-color font-weight-bold">Mobile Number</label>
                             </div>
                             <div class="col-8">
-                                <textarea cols="10" rows="5" class="form-control" formControlName="address"
-                                    [class.isError]="controls.address.touched && controls.address.invalid"
-                                    placeholder="Address"></textarea>
-                                <mat-error *ngIf="controls.address.errors?.required && controls.address.touched">
-                                    Required field
-                                </mat-error>
-
-                            </div>
-                        </div>
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">State</label>
-                            </div>
-                            <div class="col-8">
-                                <select class="form-control" formControlName="state" autocomplete="off"
-                                    [class.isError]="controls.state.touched && controls.state.invalid" (change)="getCities()">
-                                    <option value="" [selected]="true" [disabled]="true">Select</option>
-                                    <option [value]="state.id" *ngFor="let state of states">{{state.name}}</option>
-                                </select>
+                                <input class="form-control" numbersOnly maxlength="10" formControlName="mobileNumber"
+                                    placeholder="e.g 9023451234"
+                                    [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid">
                                 <mat-error
-                                    *ngIf="controls.state.touched && controls.state.errors?.required">
-                                    Required field</mat-error>
-                            </div>
-                        </div>
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">City</label>
-                            </div>
-                            <div class="col-8">
-                                <select class="form-control" formControlName="city" autocomplete="off"
-                                    [class.isError]="controls.city.touched && controls.city.invalid">
-                                    <option value="" [selected]="true" [disabled]="true">Select</option>
-                                    <option [value]="city.id" *ngFor="let city of citys">{{city.name}}</option>
-                                </select>
-                                <mat-error
-                                    *ngIf="controls.city.touched && controls.city.errors?.required">
-                                    Required field</mat-error>
-                            </div>
-                        </div>
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Pin Code</label>
-                            </div>
-                            <div class="col-8">
-                                <input class="form-control" numbersOnly maxlength="6" formControlName="pincode" placeholder="e.g 012345"
-                                    [class.isError]="controls.pincode.touched && controls.pincode.invalid">
-                                <mat-error *ngIf="controls.pincode.errors?.required && controls.pincode.touched">
+                                    *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
                                     Required field
                                 </mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Status</label>
+                                <label for="" class="text-color font-weight-bold">User Type</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="status" autocomplete="off"
-                                    [class.isError]="controls.status.touched && controls.status.invalid">
+                                <select class="form-control" formControlName="userType" autocomplete="off"
+                                    [class.isError]="controls.userType.touched && controls.userType.invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select</option>
                                 </select>
-                                <mat-error
-                                    *ngIf="controls.status.touched && controls.status.errors?.required">
+                                <mat-error *ngIf="controls.userType.touched && controls.userType.errors?.required">
                                     Required field</mat-error>
                             </div>
                         </div>

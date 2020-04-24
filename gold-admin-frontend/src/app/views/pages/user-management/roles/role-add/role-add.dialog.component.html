@@ -43,7 +43,7 @@
                             <div class="col-8">
                                 <select class="form-control" formControlName="cloneRoles"
                                     [class.isError]="controls.cloneRoles.touched && controls.cloneRoles.invalid">
-                                    <option></option>
+                                    <option [selected]="true" [disabled]="true">Select Role</option>
                                 </select>
                                 <mat-error *ngIf="controls.cloneRoles.errors?.required && controls.cloneRoles.touched">
                                     Required field
@@ -60,6 +60,49 @@
 
                             </div>
                         </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4">
+                                <label for="" class="text-color font-weight-bold">Modules</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="row ">
+                                    <div class="col-10 kt-margin-l-10">
+                                        <label class="custom-checkbox poi">
+                                            <span class="label-checkbox">Gold Emi</span>
+                                            <input type="checkbox" class="" id="view" value="View">
+                                            <span class="checkmark" style="top:0;"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <div class="col-10 kt-margin-l-10">
+                                        <label class="custom-checkbox poi">
+                                            <span class="label-checkbox">Gold Loan</span>
+                                            <input type="checkbox" class="" id="view" value="View">
+                                            <span class="checkmark" style="top:0;"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <div class="col-10 kt-margin-l-10">
+                                        <label class="custom-checkbox poi">
+                                            <span class="label-checkbox">Scrap Gold</span>
+                                            <input type="checkbox" class="" id="view" value="View">
+                                            <span class="checkmark" style="top:0;"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <div class="col-10 kt-margin-l-10">
+                                        <label class="custom-checkbox poi">
+                                            <span class="label-checkbox">Digital Gold</span>
+                                            <input type="checkbox" class="" id="view" value="View">
+                                            <span class="checkmark" style="top:0;"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -67,7 +110,7 @@
     </div>
     <kt-portlet-footer>
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)" [value]="'data.action'"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="data.action"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 </div>
