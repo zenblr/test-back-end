@@ -50,7 +50,7 @@
                             </div>
                             <label class="file d-none">
                                 <input type="file" id="file" aria-label="File browser example" #file
-                                    (input)="getFileInfo($event)">
+                                    (input)="getFileInfo($event,'identityProof')">
                                 <span class="file-custom"></span>
                             </label>
                         </div>
@@ -63,9 +63,10 @@
                     <div class="col-8 offset-4">
                         <div class="img-container">
                             <img class="placeholder-image"
-                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
-                            <!-- <img class="border-rad-15 fetched-image" src="../../../../../../assets/media/users/300_10.jpg"
-                                    alt=""> -->
+                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder"
+                                *ngIf="images.identityProof.length==0">
+                            <img class="border-rad-15 fetched-image" [src]="images.identityProof[0]" alt=""
+                                *ngIf="images.identityProof.length>0">
                         </div>
                     </div>
                 </div>
@@ -315,7 +316,7 @@
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Select"
                                                 aria-label="Recipient's username" aria-describedby="basic-addon2"
-                                                readonly>
+                                                readonly formControlName="addressProof">
                                             <div class="input-group-append">
                                                 <span class="input-group-text bg kt-pointer font-weight"
                                                     id="basic-addon2" (click)="file.click()">Attach</span>
@@ -323,7 +324,7 @@
                                         </div>
                                         <label class="file d-none">
                                             <input type="file" id="file" aria-label="File browser example" #file
-                                                (input)="getFileInfo($event)">
+                                                (input)="getFileInfo($event,i)">
                                             <span class="file-custom"></span>
                                         </label>
                                     </div>
@@ -357,13 +358,22 @@
                         <div class=" kt-margin-t-20 kt-margin-b-20">
                             <div class="">
                                 <div class="col-7 offset-4 border-rad-15">
-                                    <div class="img-container">
+                                    <div class="img-container" *ngIf="(i==0 && images.residential.length== 0)">
                                         <img class="placeholder-image"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
-                                            alt="placeholder">
-                                        <!-- <img class="border-rad-15 fetched-image" src="../../../../../../assets/media/users/300_10.jpg"
-                                            alt=""> -->
+                                            alt="placeholder" >
                                     </div>
+                                    <div class="img-container" *ngIf="(i==1 && images.permanent.length==0)">
+                                        <img class="placeholder-image"
+                                            src="../../../../../../assets/media/icons/image-placeholder.png"
+                                            alt="placeholder" >
+                                    </div>
+                                    <span *ngIf="i==0 && images.residential.length > 0">
+                                        <img class="border-rad-15 fetched-image" [src]="img" alt="" *ngFor="let img of images.residential">
+                                    </span>
+                                    <span *ngIf="i==1 && images.permanent.length > 0">
+                                        <img class="border-rad-15 fetched-image" [src]="img" alt="" *ngFor="let img of images.permanent">
+                                    </span>
 
                                 </div>
                             </div>
