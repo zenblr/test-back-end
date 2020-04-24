@@ -70,12 +70,16 @@ router.use('/upload-scheme', uploadScheme);
 const roughLoanAmount = require('./roughLoanAmount'); // rough amount calculations
 router.use('/rough-amount', roughLoanAmount);
 
-
 const occupation = require('./occupation'); // occupation
 router.use('/occupation', occupation)
 
-
 const identityType=require('./identityType'); // identity Type
 router.use('/identity-type',identityType)
+
+const emailAlert=require('./emailAlert'); // email alert
+router.use('/email-alert',emailAlert)
+
+const smsAlert=require('./smsAlert');  // sms alert
+router.use('/sms-alert',smsAlert)
 
 module.exports = router;
