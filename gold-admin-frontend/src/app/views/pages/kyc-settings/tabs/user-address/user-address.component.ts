@@ -31,11 +31,14 @@ export class UserAddressComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.getStates();
-    // this.getIdentityType();
+    this.getIdentityType();
+    this.getAddressProofType()
   }
 
   initForm() {
     this.identityForm = this.fb.group({
+      customerId: [],
+      customerKycId: [],
       identityTypeId: ['', [Validators.required]],
       identityProof: [],
       address: this.fb.array([

@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../../views/partials/components';
-import { CustomerManagementService } from '../../../../../core/customer-management/services/customer-management.service';
+import { UserDetailsService } from '../../../../../core/kyc-settings';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-user-details',
@@ -22,7 +23,7 @@ export class UserDetailsComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
 
 
-  constructor(public fb: FormBuilder, private customerManagementService: CustomerManagementService) { }
+  constructor(public fb: FormBuilder, private userDetailsService: UserDetailsService) { }
 
   ngOnInit() {
     this.initForm();
@@ -72,8 +73,8 @@ export class UserDetailsComponent implements OnInit {
   }
 
   sendOTP() {
-    const mobileNumber = +(this.controls.mobileNumber.value);
-    this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
+    const mobileNumber = this.controls.mobileNumber.value;
+    this.userDetailsService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
       } else {
@@ -83,8 +84,6 @@ export class UserDetailsComponent implements OnInit {
         const msg = 'Otp has been sent to the registered mobile number';
         this.toastr.successToastr(msg);
       }
-    }, error => {
-      this.toastr.errorToastr(error.error.message);
     });
   }
 
@@ -93,7 +92,7 @@ export class UserDetailsComponent implements OnInit {
       otp: this.controls.otp.value,
       referenceCode: this.controls.referenceCode.value,
     };
-    this.customerManagementService.verifyOtp(params).subscribe(res => {
+    this.userDetailsService.verifyOtp(params).subscribe(res => {
       if (res) {
         this.isMobileVerified = true;
       }
@@ -103,7 +102,7 @@ export class UserDetailsComponent implements OnInit {
   resendOTP() {
     const mobileNumber = this.controls.mobileNumber.value;
     // use send function OTP for resend OTP
-    this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
+    this.userDetailsService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res) {
         this.otpSent = true;
         this.refCode = res.referenceCode;
@@ -111,25 +110,36 @@ export class UserDetailsComponent implements OnInit {
         const msg = 'Otp has been sent to the registered mobile number';
         this.toastr.successToastr(msg);
       }
-    }, error => {
-      this.toastr.errorToastr(error.error.message);
     });
   }
 
   verifyPAN() {
-    const panCardNumber = this.controls.panCardNumber.value;
-    this.customerManagementService.verifyPAN({ panCardNumber }).subscribe(res => {
-      if (res) {
-        this.isPanVerified = true;
-      }
-    });
+    // const panCardNumber = this.controls.panCardNumber.value;
+    // this.userDetailsService.verifyPAN({ panCardNumber }).subscribe(res => {
+    //   if (res) {
+    //     this.isPanVerified = true;
+    //   }
+    // });
     setTimeout(() => {
       this.isPanVerified = true;
     }, 1000);
   }
 
   submit() {
-    this.next.emit(true);
+    if (this.userBasicForm.invalid || !this.isMobileVerified) {
+      this.userBasicForm.markAllAsTouched()
+      return
+    }
+
+    const basicForm = this.userBasicForm.value;
+    this.userDetailsService.basicDetails(basicForm).pipe(
+      map(res => {
+        console.log(res);
+        if (res) {
+          this.next.emit(true);
+        }
+      })
+    ).subscribe();
   }
 
 }
