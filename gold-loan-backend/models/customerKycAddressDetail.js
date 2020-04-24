@@ -35,10 +35,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'pinCode'
         },
-        addressProofTypeId: {
-            type: DataTypes.INTEGER,
-            field: 'address_proof_type_id'
-        },
         addressProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'address_proof'
@@ -55,9 +51,6 @@ module.exports = (sequelize, DataTypes) => {
 
         KycCustomerAddressDetail.belongsTo(models.kycCustomerPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
         KycCustomerAddressDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
-
-
-        KycCustomerAddressDetail.belongsTo(models.addressProofType, { foreignKey: 'addressProofTypeId', as: 'addressProofType' });
 
         KycCustomerAddressDetail.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
         KycCustomerAddressDetail.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });

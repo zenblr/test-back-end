@@ -29,9 +29,6 @@ module.exports = (sequelize, DataTypes) => {
     Role.removeRole = (id) => Role.update({ isActive: false }, { where: { id: id, isActive: true } });
 
     Role.associate = function(models) {
-        // Role.hasMany(models.userRole, { foreignKey: 'roleId', as: 'role_user' });
-        // Role.hasMany(models.rolePermission, { foreignKey: 'roleId', as: 'rolePermission' });
-
         Role.belongsToMany(models.user,{through: models.userRole});
         Role.belongsToMany(models.permission,{through: models.rolePermission})
     }

@@ -1,6 +1,3 @@
-
-
-
 const models = require('../../models');
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;

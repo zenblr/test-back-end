@@ -1,9 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
-    const RolePermission = sequelize.define('rolePermission', {
+    const PermissionSystemInfo = sequelize.define('permissionSystemInfo', {
         // attributes
-        roleId: {
+        systemInfo: {
             type: DataTypes.INTEGER,
-            field: 'role_id'
+            field: 'system_info'
         },
         permissionId: {
             type: DataTypes.INTEGER,
@@ -17,13 +17,12 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'role_permission'
+        tableName: 'permission_system_info'
     });
 
-    RolePermission.associate = function(models) {
-        RolePermission.belongsTo(models.role, { foreignKey: 'roleId', as: 'role' });
-        RolePermission.belongsTo(models.permission, { foreignKey: 'permissionId', as: 'permission' });
+    PermissionSystemInfo.associate = function(models) {
+        PermissionSystemInfo.belongsTo(models.permission, { foreignKey: 'permissionId', as: 'permission' });
     }
     
-    return RolePermission;
+    return PermissionSystemInfo;
 }
