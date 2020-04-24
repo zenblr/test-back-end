@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../../views/partials/components';
 import { UserDetailsService } from '../../../../../core/kyc-settings';
 import { map } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-user-details',
@@ -19,11 +20,12 @@ export class UserDetailsComponent implements OnInit {
   otpSent = false;
   isOpverified = true;
 
-  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
 
 
-  constructor(public fb: FormBuilder, private userDetailsService: UserDetailsService) { }
+  constructor(public fb: FormBuilder, private userDetailsService: UserDetailsService,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     this.initForm();
@@ -76,13 +78,13 @@ export class UserDetailsComponent implements OnInit {
     const mobileNumber = this.controls.mobileNumber.value;
     this.userDetailsService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
-        this.toastr.errorToastr('Mobile Number already exists');
+        this.toastr.error('Mobile Number already exists');
       } else {
         this.otpSent = true;
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         const msg = 'Otp has been sent to the registered mobile number';
-        this.toastr.successToastr(msg);
+        this.toastr.success(msg);
       }
     });
   }
@@ -108,7 +110,7 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         const msg = 'Otp has been sent to the registered mobile number';
-        this.toastr.successToastr(msg);
+        this.toastr.success(msg);
       }
     });
   }
@@ -140,6 +142,10 @@ export class UserDetailsComponent implements OnInit {
         }
       })
     ).subscribe();
+
+
+
+    // this.next.emit(true);  // delete this line    
   }
 
 }

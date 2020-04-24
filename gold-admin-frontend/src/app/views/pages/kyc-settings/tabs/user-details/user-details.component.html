@@ -106,7 +106,7 @@
 										controls.otp.touched
 									">Invalid Input
 								</mat-error>
-								<mat-hint class="kt-pointer">Didn't get an OTP?
+								<mat-hint (click)="resendOTP()" class="kt-pointer">Didn't get an OTP?
 									<strong>Resend</strong></mat-hint>
 								<!-- </mat-form-field> -->
 							</div>

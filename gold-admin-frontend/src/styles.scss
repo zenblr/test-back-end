@@ -326,12 +326,13 @@ mat-header-row{
 
 .img-container {
 	height: 150px;
-	width: 250px;
+	max-width: 250px;
 	background-color: #f2f3f7;
 	border-radius: 15px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	overflow: hidden;
 
 	.fetched-image {
 		width: 100%;

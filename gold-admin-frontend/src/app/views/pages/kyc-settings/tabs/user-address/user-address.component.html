@@ -21,8 +21,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- <div class="col-6 kt-margin-t-20">
+            <!-- <div class="col-6 kt-margin-t-20">
                 <div class="row">
                     <div class="col-3 offset-1 p-0">
                         <label class="font-weight-500 text-color">Name</label>
@@ -34,6 +35,7 @@
                 </div>
             </div> -->
 
+            <div class="row">
                 <div class="col-6 kt-margin-t-20">
                     <div class="row">
                         <div class="col-3 offset-1 p-0">
@@ -357,23 +359,42 @@
 
                         <div class=" kt-margin-t-20 kt-margin-b-20">
                             <div class="">
-                                <div class="col-7 offset-4 border-rad-15">
+                                <div class="col">
                                     <div class="img-container" *ngIf="(i==0 && images.residential.length== 0)">
                                         <img class="placeholder-image"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
-                                            alt="placeholder" >
+                                            alt="placeholder">
                                     </div>
                                     <div class="img-container" *ngIf="(i==1 && images.permanent.length==0)">
                                         <img class="placeholder-image"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
-                                            alt="placeholder" >
+                                            alt="placeholder">
                                     </div>
-                                    <span *ngIf="i==0 && images.residential.length > 0">
-                                        <img class="border-rad-15 fetched-image" [src]="img" alt="" *ngFor="let img of images.residential">
-                                    </span>
-                                    <span *ngIf="i==1 && images.permanent.length > 0">
-                                        <img class="border-rad-15 fetched-image" [src]="img" alt="" *ngFor="let img of images.permanent">
-                                    </span>
+
+                                    <div *ngIf="i==0 && images.residential.length > 0">
+                                        <div class="row">
+                                            <div class="col-6" *ngFor="let img of images.residential">
+                                                <div class="img-container">
+                                                    <img class="fetched-image" [src]="img" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="i==1 && images.permanent.length > 0">
+                                        <div class="row">
+                                            <div class="col-6" *ngFor="let img of images.permanent">
+                                                <div class="img-container">
+                                                    <img class="fetched-image" [src]="img" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="img-container" *ngIf="i==1 && images.permanent.length > 0">
+                                        <img class="fetched-image" [src]="img" alt=""
+                                            *ngFor="let img of images.permanent">
+                                    </div> -->
 
                                 </div>
                             </div>
