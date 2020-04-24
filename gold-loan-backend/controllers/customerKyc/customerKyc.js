@@ -23,9 +23,9 @@ exports.verifyCustomerKycNumber = async (req, res, next) => {
         return res.status(404).json({ message: "Status confirm is not there in status table" });
     }
     let statusId = status.id
-    let checkStatusCustomer = await models.customer.findOne({ where: { statusId } })
+    let checkStatusCustomer = await models.customer.findOne({ where: { statusId, id: numberExistInCustomer.id } })
     if (check.isEmpty(checkStatusCustomer)) {
-        return res.status(404).json({ message: "Your status is not confirm" });
+        return res.status(404).json({ message: "Please proceed after confirming your lead stage status" });
     }
     await models.customerOtp.destroy({ where: { mobileNumber } });
 
@@ -61,7 +61,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     }
     let { id, firstName, lastName, panCardNumber } = getCustomerInfo
 
-    let findCustomerKyc = await models.kycCustomerPersonalDetail.findOne({ where: {customerId : id} })
+    let findCustomerKyc = await models.kycCustomerPersonalDetail.findOne({ where: { customerId: id } })
     if (!check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "Info is already created." });
     }
@@ -77,7 +77,7 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
 
     let { customerId, customerKycId, identityProof, identityTypeId, address } = req.body
 
-    let findCustomerKyc = await models.kycCustomerAddressDetail.findOne({ where: {customerKycId: customerKycId} })
+    let findCustomerKyc = await models.kycCustomerAddressDetail.findOne({ where: { customerKycId: customerKycId } })
 
     if (!check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer address details is already filled." });
@@ -110,15 +110,14 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
         return res.status(200).json({ message: "Your alternate Mobile number is same as your previous Mobile bumber " });
     }
     let findAlternateNumberExist = await models.kycCustomerPersonalDetail.findOne({ where: { alternateMobileNumber } })
-    console.log(check.isEmpty(findAlternateNumberExist))
 
     if (!check.isEmpty(findAlternateNumberExist)) {
         return res.status(404).json({ message: "Your alternate Mobile number is already exist." });
     }
 
     let details = await models.kycCustomerPersonalDetail.update({
-        profileImage:profileImage,
-        dateOfBirth: Date.now(),
+        profileImage: profileImage,
+        dateOfBirth: dateOfBirth,
         alternateMobileNumber, alternateMobileNumber,
         gender: gender,
         martialStatus: martialStatus,
@@ -132,3 +131,45 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
 
 
 }
+
+
+exports.submitCustomerKycBankDetail = async (req, res, next) => {
+
+    let { customerId, customerKycId, bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifcCode, passbookProof } = req.body
+    let findCustomerKyc = await models.kycCustomerBankDetail.findOne({ where: { customerKycId: customerKycId } })
+
+    if (!check.isEmpty(findCustomerKyc)) {
+        return res.status(404).json({ message: "This customer bank details is already filled." });
+    }
+    await models.kycCustomerBankDetail.create({
+        customerId: customerId,
+        customerKycId: customerKycId,
+        bankName: bankName,
+        bankBranchName: bankBranchName,
+        accountType: accountType,
+        accountHolderName: accountHolderName,
+        accountNumber: accountNumber,
+        ifcCode: ifcCode,
+        passbookProof: passbookProof
+    })
+
+    let customerKycReview = await models.kycCustomerPersonalDetail.findOne({
+        where: { id: customerKycId },
+        include: [{
+            model: models.kycCustomerAddressDetail,
+            as: 'customerKycAddress'
+        }, {
+            model: models.kycCustomerBankDetail,
+            as: 'customerKycBank'
+        }]
+    })
+
+    return res.status(200).json({ customerKycReview })
+
+}
+
+
+// exports.submitKyc = async (req, res, next) => {
+//     let { customerId, customerKycId } = req.body;
+
+// }

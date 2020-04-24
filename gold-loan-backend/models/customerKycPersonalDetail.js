@@ -83,15 +83,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'modified_by',
             allowNull: false,
         },
-        isKycDone: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_kyc_done',
-            defaultValue: false,
-        },
-        isKyVerify: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_kyc_verify',
-            defaultValue: false,
+        kycStatus: {
+            type: DataTypes.ENUM,
+            field: 'kyc_status',
+            defaultValue: "pending",
+            values: ['confirm', 'pending','complete','closed']
         },
         isActive: {
             type: DataTypes.BOOLEAN,

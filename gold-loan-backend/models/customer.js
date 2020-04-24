@@ -63,6 +63,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'city_id',
         },
+        kycStatus: {
+            type: DataTypes.ENUM,
+            field: 'kyc_status',
+            defaultValue: "pending",
+            values: ['confirm', 'pending','complete','closed']
+        },
+        isVerifiedByFirstStage: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_verified_by_first_stage',
+            defaultValue: false
+        },
+        isVerifiedByBranchManager: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_verified_by_branch_manager',
+            defaultValue: false
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -82,11 +98,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'last_login',
         },
-        isKyVerify: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_kyc_verify',
-            defaultValue: false,
-        }
     }, {
         freezeTableName: true,
         tableName: 'customer',
