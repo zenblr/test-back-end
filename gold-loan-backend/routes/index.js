@@ -78,8 +78,11 @@ router.use('/occupation', occupation)
 const identityType=require('./identityType'); // identity Type
 router.use('/identity-type',identityType)
 
-const customerKyc = require('./customerKyc')
-router.use('/kyc',customerKyc)
+const customerKyc = require('./customerKyc');
+router.use('/kyc',customerKyc);
+
+const rolePermission = require('./rolePermission');
+router.use('/role-permission',rolePermission);
 
 
 
