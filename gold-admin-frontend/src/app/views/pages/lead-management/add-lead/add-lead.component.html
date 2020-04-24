@@ -175,8 +175,8 @@
                                 <div class="col-8">
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                     <!-- <mat-label>State</mat-label> -->
-                                    <select class="form-control" formControlName="stateId" (change)="getCities($event)"
-                                        margin [class.isError]="controls.stateId.touched && controls.stateId.invalid">
+                                    <select class="form-control" formControlName="stateId" (change)="getCities()" margin
+                                        [class.isError]="controls.stateId.touched && controls.stateId.invalid">
                                         <option disabled selected value=""> Select State</option>
                                         <option *ngFor="let state of states" [value]="state.id">
                                             {{state.name}}
