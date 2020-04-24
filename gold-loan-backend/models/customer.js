@@ -2,6 +2,10 @@ const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('customer', {
         // attributes
+        customerUniqueId:{
+            type: DataTypes.STRING,
+            field: 'customer_unique_id'
+        },
         firstName: {
             type: DataTypes.STRING,
             field: 'first_name',
@@ -59,6 +63,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'city_id',
         },
+        kycStatus: {
+            type: DataTypes.ENUM,
+            field: 'kyc_status',
+            defaultValue: "pending",
+            values: ['confirm', 'pending','complete','closed']
+        },
+        isVerifiedByFirstStage: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_verified_by_first_stage',
+            defaultValue: false
+        },
+        isVerifiedByBranchManager: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_verified_by_branch_manager',
+            defaultValue: false
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -77,14 +97,20 @@ module.exports = (sequelize, DataTypes) => {
         lastLogin: {
             type: DataTypes.DATE,
             field: 'last_login',
-        }
+        },
     }, {
         freezeTableName: true,
         tableName: 'customer',
     });
 
     Customer.associate = function (models) {
+        Customer.hasOne(models.kycCustomerPersonalDetail, { foreignKey: 'customerId', as: 'customerKyc' });
+        Customer.hasMany(models.kycCustomerAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });
+        Customer.hasMany(models.kycCustomerBankDetail, { foreignKey: 'customerId', as: 'customerKycBank' });
+
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
+
+
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
         Customer.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });

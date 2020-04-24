@@ -1,5 +1,5 @@
-const csv = require('csvtojson');
-const models = require('../../models');
+const csv = require("csvtojson");
+const models = require("../../models");
 const sequelize = models.sequelize;
 
 // upload scheme csv
@@ -9,6 +9,9 @@ exports.uploadScheme = async (req, res, next) => {
     const partnerId = req.body.partnerId.split(',');
 
     const jsonArray = await csv().fromFile(csvFilePath);
+    if (jsonArray.length == 0) {
+        return res.status(400).json({ message: `Your file is empty.` })
+    }
     for (var i = 0; i < jsonArray.length; i++) {
         if (jsonArray[i].AmountStart >= jsonArray[i].AmountEnd) {
             return res.status(400).json({ message: `Your Scheme start amount is must be greater than your Scheme end amount` })

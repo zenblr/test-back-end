@@ -108,6 +108,10 @@
  *               items:
  *                type: object
  *                properties:
+ *                 address:
+ *                   type: string
+ *                 landMark:
+ *                   type: string
  *                 stateId:
  *                   type: number
  *                 cityId:
@@ -150,7 +154,10 @@
  *     - name: "to"
  *       in: "query"
  *       description: "Pagination ending point"
- *       typse: "string"
+ *       type: "string"
+ *     - name: "stageName"
+ *       in: "query"
+ *       type: "string"
  *     responses:
  *       200:
  *          description: Success
@@ -188,6 +195,10 @@
  *               items:
  *                type: object
  *                properties:
+ *                 address:
+ *                   type: string
+ *                 landMark:
+ *                   type: string
  *                 stateId:
  *                   type: number
  *                 cityId:
@@ -231,8 +242,8 @@
  *       type: "integer"
  *     - name: "isActive"
  *       in: "query"
- *       description: "isActive to delete"
- *       required: false
+ *       description: "isActive customer to delete"
+ *       required: true
  *       type: "boolean"
  *     security:
  *       - bearerAuth: []

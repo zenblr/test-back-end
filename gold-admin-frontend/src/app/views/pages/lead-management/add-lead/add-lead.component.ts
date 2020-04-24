@@ -8,6 +8,7 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
 // components
 import { ToastrComponent } from '../../../../views/partials/components/toastr/toastr.component';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-add-lead',
@@ -21,11 +22,7 @@ export class AddLeadComponent implements OnInit {
   leadForm: FormGroup;
   states: any;
   cities: any;
-  status = [
-    { id: 1, status: 'Confirm' },
-    { id: 2, status: 'Future Perspective' },
-    { id: 3, status: 'Not Interested' },
-  ];
+  status = [];
   otpButton = true;
   panButton = true;
   isPanVerified = false;
@@ -37,6 +34,8 @@ export class AddLeadComponent implements OnInit {
   viewOnly = false;
 
   refCode: number; //reference code
+  mobileAlreadyExists = false; title: string;
+  ;
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -49,7 +48,10 @@ export class AddLeadComponent implements OnInit {
 
   ngOnInit() {
     this.formInitialize();
+    this.setForm();
     this.getStates();
+    this.getStatus();
+
     this.controls.mobileNumber.valueChanges.subscribe(res => {
       if (this.controls.mobileNumber.valid) {
         this.otpButton = false;
@@ -58,6 +60,7 @@ export class AddLeadComponent implements OnInit {
         this.isMobileVerified = false;
         this.otpSent = false;
       }
+      this.mobileAlreadyExists = false;
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
@@ -94,17 +97,46 @@ export class AddLeadComponent implements OnInit {
     });
   }
 
+  setForm() {
+    if (this.data.action !== 'add') {
+      this.getLeadById(this.data['id']);
+      this.modalTitle = 'Edit Lead'
+      this.viewOnly = true;
+    } else {
+      this.modalTitle = 'Add New Lead'
+    }
+  }
+
   getStates() {
     this.sharedService.getStates().subscribe(res => {
       this.states = res.message;
     });
   }
 
-  getCities(event) {
+  getCities() {
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.message;
     });
+  }
+
+  getStatus() {
+    this.customerManagementService.getStatus().pipe(
+      map(res => {
+        this.status = res;
+      })
+    ).subscribe();
+  }
+
+  getLeadById(id) {
+    this.customerManagementService.getLeadById(id).subscribe(res => {
+      // console.log(res);
+      this.leadForm.patchValue(res.singleCustomer);
+      this.getCities();
+    },
+      error => {
+        this.toastr.errorToastr(error.error.message);
+      });
   }
 
   sendOTP() {
@@ -112,6 +144,7 @@ export class AddLeadComponent implements OnInit {
     this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
+        this.mobileAlreadyExists = true;
       } else {
         this.otpSent = true;
         this.refCode = res.referenceCode;
@@ -169,26 +202,40 @@ export class AddLeadComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.leadForm.invalid) {
-      this.leadForm.markAllAsTouched()
-      return
-    }
-    console.log(this.leadForm.value);
-    const leadData = this.leadForm.value;
-
-    this.customerManagementService.addLead(leadData).subscribe(res => {
-      // console.log(res);
-      if (res) {
-        const msg = 'Lead Added Successfully';
-        this.toastr.successToastr(msg);
-        this.dialogRef.close(true);
+    if (this.data.action == 'add') {
+      if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
+        this.leadForm.markAllAsTouched()
+        return
       }
-    },
-      error => {
-        console.log(error.error.message);
-        const msg = error.error.message;
-        this.toastr.errorToastr(msg);
+
+      const leadData = this.leadForm.value;
+
+      this.customerManagementService.addLead(leadData).subscribe(res => {
+        // console.log(res);
+        if (res) {
+          const msg = 'Lead Added Successfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
+    } else if (this.data.action == 'edit') {
+      const leadData = this.leadForm.value;
+      console.log('edit')
+      this.customerManagementService.editLead(this.data.id, leadData).subscribe(res => {
+        // console.log(res);
+        if (res) {
+          const msg = 'Lead Edited Successfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
+        }
       });
+    }
+
   }
 
   closeModal() {

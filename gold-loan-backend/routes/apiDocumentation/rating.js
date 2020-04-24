@@ -25,7 +25,7 @@
  *           - ratingPoint
  *     responses:
  *       200:
- *          description: rating created
+ *          description: Rating created
  *       404:
  *          description: This Rating is already Exist
  *   get:
@@ -36,7 +36,7 @@
  *     parameters:
  *     - name: "getAll"
  *       in: "query"
- *       description: "isActive to delete"
+ *       description: "get all with isActive conditions"
  *       required: true
  *       type: "boolean"
  *     security:
@@ -100,7 +100,7 @@
  *           - ratingPoint
  *     responses:
  *       200:
- *         description: Category updated
+ *         description: Success
  *       404:
- *         description: Category you are updating does not exit
+ *         description: This Rating is already Exist
  */

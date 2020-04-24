@@ -17,7 +17,7 @@ export class InterceptService implements HttpInterceptor {
 	constructor(
 		private authService: AuthService,
 		private sharedSerivce: SharedService,
-		private router:Router
+		private router: Router
 	) {
 		this.sharedSerivce.loader$.subscribe()
 	}
@@ -62,8 +62,8 @@ export class InterceptService implements HttpInterceptor {
 				}
 			),
 			catchError(
-				err =>{
-					console.log(err.status)
+				err => {
+					// console.log(err.status)
 					if (err.status == 401) {
 						localStorage.clear();
 						this.router.navigate(['/auth/login'])

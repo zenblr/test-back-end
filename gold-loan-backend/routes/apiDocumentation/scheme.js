@@ -46,7 +46,9 @@
  *           - partnerId
  *     responses:
  *       201:
- *          description: schemes Created
+ *          description: schemes created
+ *       400:
+ *          description: interest Rate required/ partnerId is required/start amount is required/end amount is required
  *   get:
  *     tags:
  *       - Scheme
@@ -115,6 +117,8 @@
  *          description: Success
  *       404:
  *          description: data not found
+ *       400:
+ *          description: interest Rate required/ partnerId is required/start amount is required/end amount is required
  *   delete:
  *     tags:
  *       - Scheme

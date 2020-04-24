@@ -33,7 +33,7 @@
  *     parameters:
  *     - name: "getAll"
  *       in: "query"
- *       description: "getAll"
+ *       description: "isActive to get"
  *       required: true
  *       type: "boolean"
  *     security:
@@ -95,5 +95,5 @@
  *       200:
  *         description: Updated
  *       404:
- *         description: This status is already Exist
+ *         description: This Status is already Exist
  */
