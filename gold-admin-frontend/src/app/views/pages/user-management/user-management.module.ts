@@ -65,7 +65,7 @@ const routes: Routes = [
 				component: PartnerListComponent
 			},
 			{
-				path: 'partner/view-schemes',
+				path: 'partner/view-schemes/:id',
 				component: LoanSchemeComponent,
 			},
 			{
