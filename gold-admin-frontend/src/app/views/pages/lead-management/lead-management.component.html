@@ -38,7 +38,7 @@
                     <mat-cell *matCellDef="let role">
                         <span class="d-block">{{role.updatedAt | date:'mediumDate'}},&nbsp;</span>
                         <span class="d-block">{{role.updatedAt | date:'shortTime'}}</span>
-                        </mat-cell>
+                    </mat-cell>
                 </ng-container>
 
                 <!-- <ng-container matColumnDef="time">
@@ -57,6 +57,15 @@
                         <span class="text-danger" *ngIf="role.status.id == '3'">
                             {{role.status.statusName | titlecase}}
                         </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <div class="kt-pointer" (click)="editLead(role)" class="kt-pointer">Edit</div>
+                        </div>
                     </mat-cell>
                 </ng-container>
 

@@ -1,1 +1,425 @@
-<p>user-address works!</p>
+<kt-portlet>
+    <kt-portlet-body>
+        <form [formGroup]="identityForm">
+            <div class="row">
+                <div class="col-6 kt-margin-t-20">
+                    <div class="row">
+                        <div class="col-3 offset-1 p-0">
+                            <label class="font-weight-500 text-color">Identity</label>
+                        </div>
+                        <div class="col-7">
+                            <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof"
+                                [class.isError]="controls.identityTypeId.invalid && controls.identityTypeId.touched">
+                                <option value="" [disabled]="true" [selected]="true"> Select Proof</option>
+                                <option *ngFor="let proof of identityProofs" [value]="proof.id">{{ proof.name }}
+                                </option>
+                            </select>
+                            <mat-error
+                                *ngIf="controls.identityTypeId.errors?.required && controls.identityTypeId.touched">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="col-6 kt-margin-t-20">
+                <div class="row">
+                    <div class="col-3 offset-1 p-0">
+                        <label class="font-weight-500 text-color">Name</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
+                            class="form-control">
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="row">
+                <div class="col-6 kt-margin-t-20">
+                    <div class="row">
+                        <div class="col-3 offset-1 p-0">
+                            <label class="font-weight-500 text-color">Attach</label>
+                        </div>
+                        <div class="col-7">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" formControlName="identityProof"
+                                    placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2" readonly>
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                        (click)="file.click()">Attach</span>
+                                </div>
+                            </div>
+                            <label class="file d-none">
+                                <input type="file" id="file" aria-label="File browser example" #file
+                                    (input)="getFileInfo($event,'identityProof')">
+                                <span class="file-custom"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row kt-margin-t-20 kt-margin-b-20">
+                <div class="col-6">
+                    <div class="col-8 offset-4">
+                        <div class="img-container">
+                            <img class="placeholder-image"
+                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder"
+                                *ngIf="images.identityProof.length==0">
+                            <img class="border-rad-15 fetched-image" [src]="images.identityProof[0]" alt=""
+                                *ngIf="images.identityProof.length>0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DOB & Gender -->
+            <!-- <div class="row">
+            <div class="col-6 kt-margin-t-20">
+                <div class="row">
+                    <div class="col-3 offset-1 p-0">
+                        <label class="font-weight-500 text-color">Date of Birth</label>
+                    </div>
+                    <div class="col-7">
+                        <mat-form-field appearance="box" class="example-full-width">
+                            <mat-label>Choose a date</mat-label>
+                            <input matInput [matDatepicker]="picker">
+                            <mat-datepicker-toggle matSuffix [for]="picker">
+                                <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-6 kt-margin-t-20">
+                <div class="row">
+                    <div class="col-3 offset-1 p-0">
+                        <label class="font-weight-500 text-color">Gender</label>
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" margin>
+                            <option disabled selected> Select </option>
+                            <option value="m">Male</option>
+                            <option value="f">Female</option>
+                            <option value="o">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+
+            <div class="row">
+                <ng-container formArrayName="address"
+                    *ngFor="let addressForm of identityForm.get('address')['controls']; index as i;">
+                    <!-- <div> -->
+                    <div [formGroupName]="i" class="col-6">
+
+
+                        <div class=" kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="font-weight-500 text-color" *ngIf="i == 0">Residential or Official
+                                        Address</label>
+                                    <label class="font-weight-500 text-color" *ngIf="i == 1"> Permanent
+                                        Address</label>
+                                </div>
+                                <div class="col-7">
+                                    <textarea formControlName="address" type="text" rows="5"
+                                        aria-label="Residential Address" placeholder="Enter your text"
+                                        class="form-control"
+                                        [class.isError]="addressForm.controls.address.touched && addressForm.controls.address.invalid">
+                                    </textarea>
+                                    <mat-error
+                                        *ngIf="addressForm.controls.address.errors?.required && addressForm.controls.address.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <input *ngIf="i==0" value="residential" formControlName="addressType" type="hidden">
+                            <input *ngIf="i==1" value="permanent" formControlName="addressType" type="hidden">
+                        </div>
+                        <!-- <div class=" kt-margin-t-20">
+                                    <div class="row">
+                                        <div class="col-3 offset-1 p-0">
+                                            <label class="font-weight-500 text-color">Permanent Address</label>
+                                        </div>
+                                        <div class="col-7">
+                                            <textarea type="text" rows="5" aria-label="Permanent Address" placeholder="Enter your text"
+                                                ktAlphabets class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                        <div>
+                            <div class=" kt-margin-t-20">
+                                <div class="row">
+                                    <div class="col-3 offset-1 p-0">
+                                        <label class="font-weight-500 text-color">State
+                                        </label>
+                                    </div>
+                                    <div class="col-7">
+                                        <select formControlName="stateId" class="form-control"
+                                            (change)="getCities($event, i)"
+                                            [class.isError]="addressForm.controls.stateId.touched && addressForm.controls.stateId.invalid">
+                                            <option value="" [disabled]="true" [selected]="true"> Select State</option>
+                                            <option *ngFor="let state of states" [value]="state.id">
+                                                {{state.name}}
+                                            </option>
+                                        </select>
+                                        <mat-error
+                                            *ngIf="addressForm.controls.stateId.errors?.required && addressForm.controls.stateId.touched">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class=" kt-margin-t-20">
+                                    <div class="row">
+                                        <div class="col-3 offset-1 p-0">
+                                            <label class="font-weight-500 text-color">State</label>
+                                        </div>
+                                        <div class="col-7">
+                                            <select class="form-control" margin>
+                                                <option disabled selected> Select </option>
+                                                <option>
+                                                    ANC
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div> -->
+                        <div>
+                            <div class=" kt-margin-t-20">
+                                <div class="row">
+                                    <div class="col-3 offset-1 p-0">
+                                        <label class="font-weight-500 text-color">City
+                                        </label>
+                                    </div>
+                                    <div class="col-7">
+                                        <select formControlName="cityId" class="form-control"
+                                            [class.isError]="addressForm.controls.cityId.touched && addressForm.controls.cityId.invalid">
+                                            <ng-container *ngIf="i==0">
+                                                <option value="" [disabled]=true [selected]="true"> Select City</option>
+                                                <option *ngFor="let city of cities0" [value]="city.id">
+                                                    {{city.name}}
+                                                </option>
+
+                                            </ng-container>
+                                            <ng-container *ngIf="i==1">
+                                                <option value="" [disabled]=true [selected]="true"> Select City</option>
+                                                <option *ngFor="let city of cities1" [value]="city.id">
+                                                    {{city.name}}
+                                                </option>
+                                            </ng-container>
+                                        </select>
+                                        <ng-container *ngIf="i==0">
+                                            <mat-error
+                                                *ngIf="addressForm.controls.cityId.errors?.required && addressForm.controls.cityId.touched">
+                                                Required field
+                                            </mat-error>
+                                        </ng-container>
+                                        <ng-container *ngIf="i==1">
+                                            <mat-error
+                                                *ngIf="addressForm.controls.cityId.errors?.required && addressForm.controls.cityId.touched">
+                                                Required field
+                                            </mat-error>
+                                        </ng-container>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class=" kt-margin-t-20">
+                                    <div class="row">
+                                        <div class="col-3 offset-1 p-0">
+                                            <label class="font-weight-500 text-color">City</label>
+                                        </div>
+                                        <div class="col-7">
+                                            <select class="form-control" margin>
+                                                <option disabled selected> Select </option>
+                                                <option>
+                                                    ANC
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div> -->
+                        <div>
+
+                            <div class=" kt-margin-t-20">
+                                <div class="row">
+                                    <div class="col-3 offset-1 p-0">
+                                        <label class="font-weight-500 text-color">Pin Code</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <input formControlName="pinCode" type="number" aria-label="Pin Code"
+                                            placeholder="000000" class="form-control"
+                                            [class.isError]="addressForm.controls.pinCode.touched && addressForm.controls.pinCode.invalid"
+                                            onKeyPress="if(this.value.length==6) return false;">
+                                        <mat-error
+                                            *ngIf="addressForm.controls.pinCode.errors?.required && addressForm.controls.pinCode.touched">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class=" kt-margin-t-20">
+                                    <div class="row">
+                                        <div class="col-3 offset-1 p-0">
+                                            <label class="font-weight-500 text-color">Pin Code</label>
+                                        </div>
+                                        <div class="col-7">
+                                            <input type="text" aria-label="First name" placeholder="000000" class="form-control">
+                                        </div>
+                                    </div>
+                                </div> -->
+                        </div>
+
+                        <div class=" kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="font-weight-500 text-color">Address
+                                    </label>
+                                </div>
+                                <div class="col-7">
+                                    <select formControlName="addressProofTypeId" class="form-control"
+                                        [class.isError]="addressForm.controls.addressProofTypeId.touched && addressForm.controls.addressProofTypeId.invalid">
+                                        <option value="" [disabled]=true [selected]="true"> Select Proof</option>
+                                        <option *ngFor="let proof of addressProofs" [value]="proof.id">
+                                            {{proof.name}}
+                                        </option>
+                                    </select>
+                                    <mat-error
+                                        *ngIf="addressForm.controls.addressProofTypeId.errors?.required && addressForm.controls.addressProofTypeId.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class=" kt-margin-t-20">
+                                <div class="row">
+                                    <div class="col-3 offset-1 p-0">
+                                        <label class="font-weight-500 text-color">Attach Proof</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Select"
+                                                aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                                readonly formControlName="addressProof">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text bg kt-pointer font-weight"
+                                                    id="basic-addon2" (click)="file.click()">Attach</span>
+                                            </div>
+                                        </div>
+                                        <label class="file d-none">
+                                            <input type="file" id="file" aria-label="File browser example" #file
+                                                (input)="getFileInfo($event,i)">
+                                            <span class="file-custom"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- <div class=" kt-margin-t-20">
+                                    <div class="row">
+                                        <div class="col-3 offset-1 p-0">
+                                            <label class="font-weight-500 text-color">Attach Proof</label>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Select" aria-label="Select"
+                                                    aria-describedby="basic-addon2" readonly>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                                        (click)="file.click()">Attach</span>
+                                                </div>
+                                            </div>
+                                            <label class="file d-none">
+                                                <input type="file" id="file" aria-label="File browser example" #file
+                                                    (input)="getFileInfo($event)">
+                                                <span class="file-custom"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div> -->
+                        </div>
+
+                        <div class=" kt-margin-t-20 kt-margin-b-20">
+                            <div class="">
+                                <div class="col">
+                                    <div class="img-container" *ngIf="(i==0 && images.residential.length== 0)">
+                                        <img class="placeholder-image"
+                                            src="../../../../../../assets/media/icons/image-placeholder.png"
+                                            alt="placeholder">
+                                    </div>
+                                    <div class="img-container" *ngIf="(i==1 && images.permanent.length==0)">
+                                        <img class="placeholder-image"
+                                            src="../../../../../../assets/media/icons/image-placeholder.png"
+                                            alt="placeholder">
+                                    </div>
+
+                                    <div *ngIf="i==0 && images.residential.length > 0">
+                                        <div class="row">
+                                            <div class="col-6" *ngFor="let img of images.residential">
+                                                <div class="img-container">
+                                                    <img class="fetched-image" [src]="img" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="i==1 && images.permanent.length > 0">
+                                        <div class="row">
+                                            <div class="col-6" *ngFor="let img of images.permanent">
+                                                <div class="img-container">
+                                                    <img class="fetched-image" [src]="img" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="img-container" *ngIf="i==1 && images.permanent.length > 0">
+                                        <img class="fetched-image" [src]="img" alt=""
+                                            *ngFor="let img of images.permanent">
+                                    </div> -->
+
+                                </div>
+                            </div>
+
+                            <!-- <div class="">
+                                    <div class="col-8 offset-4 border-rad-15">
+                                        <div class="img-container">
+                                            <img class="placeholder-image"
+                                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
+                                       
+                                        </div>
+                                    </div>
+                                </div> -->
+                        </div>
+                    </div>
+
+                    <!-- </div> -->
+                </ng-container>
+
+            </div>
+
+            <div class="kt-margin-t-20 kt-margin-b-20">
+                <kt-button [value]="'Next'" [type]="'button'" (action)="submit()"></kt-button>
+            </div>
+
+        </form>
+    </kt-portlet-body>
+</kt-portlet>

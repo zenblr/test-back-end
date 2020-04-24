@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +36,10 @@ export class PartnerService {
 
   deletePartner(id): Observable<any> {
     return this.http.delete<any>(`/api/partner?id=${id}&isActive=${false}`);
+  }
+  getSchemesByParnter(id): Observable<any> {
+    return this.http.get(`/api/scheme/partner-scheme/${id}`).pipe(
+      map(res => res)
+    )
   }
 }
