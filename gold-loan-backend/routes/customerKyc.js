@@ -1,13 +1,15 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
-const { sendOtpKycNumber, verifyCustomerKycNumber, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitKyc } = require('../controllers/customerKyc/customerKyc')
+const { sendOtpKycNumber, verifyCustomerKycNumber, getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitKyc } = require('../controllers/customerKyc/customerKyc')
 
 const checkAuth = require('../middleware/checkAuth');
 
 route.post('/send-otp-kyc-number', checkAuth, wrapper(sendOtpKycNumber))
 
 route.post('/verify-kyc-number', checkAuth, wrapper(verifyCustomerKycNumber))
+
+route.post('/get-customer-detail', checkAuth, wrapper(getCustomerDetails))
 
 route.post('/customer-info', checkAuth, wrapper(submitCustomerKycinfo))
 

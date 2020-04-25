@@ -13,6 +13,69 @@ const check = require("../../lib/checkLib");
 
 exports.sendOtpKycNumber = async (req, res, next) => {
 
+    // let { mobileNumber } = req.body
+    // let numberExistInCustomer = await models.customer.findOne({ where: { mobileNumber } })
+    // if (check.isEmpty(numberExistInCustomer)) {
+    //     return res.status(404).json({ message: "Your Mobile number does not exist, please add lead first" });
+    // }
+
+    // let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    // if (check.isEmpty(status)) {
+    //     return res.status(404).json({ message: "Status confirm is not there in status table" });
+    // }
+    // let statusId = status.id
+    // let checkStatusCustomer = await models.customer.findOne({ where: { statusId, id: numberExistInCustomer.id } })
+    // if (check.isEmpty(checkStatusCustomer)) {
+    //     return res.status(404).json({ message: "Please proceed after confirming your lead stage status" });
+    // }
+    // await models.customerOtp.destroy({ where: { mobileNumber } });
+
+    // const referenceCode = await createReferenceCode(5);
+    // let otp = Math.floor(1000 + Math.random() * 9000);
+    // let createdTime = new Date();
+    // let expiryTime = moment.utc(createdTime).add(10, "m");
+
+    // await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
+    // request(
+    //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`
+    // );
+
+    // return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, });
+}
+
+
+exports.verifyCustomerKycNumber = async (req, res, next) => {
+    // let { referenceCode, otp } = req.body;
+    // var todayDateTime = new Date();
+
+    // let verifyUser = await models.customerOtp.findOne({
+    //     where: {
+    //         referenceCode,
+    //         otp,
+    //         expiryTime: {
+    //             [Op.gte]: todayDateTime,
+    //         },
+    //     },
+    // });
+    // if (check.isEmpty(verifyUser)) {
+    //     return res.status(404).json({ message: `Invalid otp.` });
+    // }
+
+    // let verifyFlag = await models.customerOtp.update(
+    //     { isVerified: true },
+    //     { where: { id: verifyUser.id } }
+    // );
+
+    // let customerInfo = await models.customer.findOne({
+    //     where: { mobileNumber: verifyUser.mobileNumber },
+    //     attributes: ['firstName', 'lastName', 'panCardNumber']
+    // })
+
+    // return res.status(200).json({ message: "Success", referenceCode, customerInfo });
+}
+
+
+exports.getCustomerDetails = async (req, res, next) => {
     let { mobileNumber } = req.body
     let numberExistInCustomer = await models.customer.findOne({ where: { mobileNumber } })
     if (check.isEmpty(numberExistInCustomer)) {
@@ -24,97 +87,47 @@ exports.sendOtpKycNumber = async (req, res, next) => {
         return res.status(404).json({ message: "Status confirm is not there in status table" });
     }
     let statusId = status.id
-    let checkStatusCustomer = await models.customer.findOne({ where: { statusId, id: numberExistInCustomer.id } })
+    let checkStatusCustomer = await models.customer.findOne({
+        where: { statusId, id: numberExistInCustomer.id },
+        attributes: ['firstName', 'lastName', 'panCardNumber']
+    })
     if (check.isEmpty(checkStatusCustomer)) {
         return res.status(404).json({ message: "Please proceed after confirming your lead stage status" });
     }
-    await models.customerOtp.destroy({ where: { mobileNumber } });
-
-    const referenceCode = await createReferenceCode(5);
-    let otp = Math.floor(1000 + Math.random() * 9000);
-    let createdTime = new Date();
-    let expiryTime = moment.utc(createdTime).add(10, "m");
-
-    await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
-    request(
-        `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`
-    );
-
-    return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, });
-}
-
-
-exports.verifyCustomerKycNumber = async (req, res, next) => {
-    let { referenceCode, otp } = req.body;
-    var todayDateTime = new Date();
-
-    let verifyUser = await models.customerOtp.findOne({
-        where: {
-            referenceCode,
-            otp,
-            expiryTime: {
-                [Op.gte]: todayDateTime,
-            },
-        },
-    });
-    if (check.isEmpty(verifyUser)) {
-        return res.status(404).json({ message: `Invalid otp.` });
-    }
-
-    let verifyFlag = await models.customerOtp.update(
-        { isVerified: true },
-        { where: { id: verifyUser.id } }
-    );
-
-    let customerInfo = await models.customer.findOne({ 
-        where: { mobileNumber: verifyUser.mobileNumber }, 
-        attributes: ['firstName','lastName','panCardNumber']
-    })
-
-    return res.status(200).json({ message: "Success", referenceCode, customerInfo });
+    return res.status(200).json({ message: "Success", customerInfo: checkStatusCustomer });
 }
 
 
 exports.submitCustomerKycinfo = async (req, res, next) => {
-    let { referenceCode, firstName, lastName, panCardNumber } = req.body
 
-    let verifyCustomer = await models.customerOtp.findOne({ where: { referenceCode, isVerified: true } });
-    if (check.isEmpty(verifyCustomer)) {
-        return res.status(404).json({ message: "Your Mobile Number is not verified" });
-    }
-
-    let checkInfoUser = await models.customer.findOne({ where: { firstName, lastName, panCardNumber, mobileNumber: verifyCustomer.mobileNumber } });
-    if (check.isEmpty(checkInfoUser)) {
-        return res.status(404).json({ message: "Either your name or Pancard credentials in incorrect." });
-    }
+    let { firstName, lastName, mobileNumber, panCardNumber } = req.body
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
         return res.status(404).json({ message: "Status confirm is not there in status table" });
     }
     let statusId = status.id
-    let getCustomerInfo = await models.customer.findOne({ where: { mobileNumber: verifyCustomer.mobileNumber, statusId } })
+    let getCustomerInfo = await models.customer.findOne({ where: { mobileNumber: mobileNumber, statusId } })
     if (check.isEmpty(getCustomerInfo)) {
         return res.status(404).json({ message: "Your status is not confirm" });
     }
-    let { id } = getCustomerInfo
 
-    let findCustomerKyc = await models.kycCustomerPersonalDetail.findOne({ where: { customerId: id } })
+    let findCustomerKyc = await models.kycCustomerPersonalDetail.findOne({ where: { customerId: getCustomerInfo.id } })
     if (!check.isEmpty(findCustomerKyc)) {
-        return res.status(404).json({ message: "Info is already created." });
+        return res.status(404).json({ message: "This customer Kyc information is already created." });
     }
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
     let createCustomerKyc = await models.kycCustomerPersonalDetail.create({
-        customerId: id,
+        customerId: getCustomerInfo.id,
         firstName: getCustomerInfo.firstName,
         lastName: getCustomerInfo.lastName,
-        panCardNumber: getCustomerInfo.panCardNumber,
+        panCardNumber: panCardNumber,
         createdBy,
         modifiedBy
     });
-    return res.status(200).json({ customerId: id, customerKycId: createCustomerKyc.id })
+    return res.status(200).json({ customerId: getCustomerInfo.id, customerKycId: createCustomerKyc.id })
 }
 
 
