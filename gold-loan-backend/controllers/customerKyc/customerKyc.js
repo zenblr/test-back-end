@@ -227,7 +227,8 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 }
 
 
-// exports.submitKyc = async (req, res, next) => {
-//     let { customerId, customerKycId } = req.body;
+exports.submitAllKycInfo = async (req, res, next) => {
+    
+    let { customerId, customerKycId } = req.body;
 
-// }
+}
