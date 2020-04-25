@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
@@ -13,11 +13,13 @@ export class ImagePreviewDialogComponent implements OnInit {
   images:[] =[];
   index:number= null;
   constructor(public dialogRef: MatDialogRef<ImagePreviewDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+   private ele:ElementRef) { }
 
   ngOnInit() {
-    this.images = this.data.images
-    this.index = this.data.index
+    
+    this.images = this.data.images;
+    this.index = this.data.index;
   }
 
 }
