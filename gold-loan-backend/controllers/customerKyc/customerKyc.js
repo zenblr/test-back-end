@@ -16,8 +16,9 @@ exports.verifyCustomerKycNumber = async (req, res, next) => {
     let { mobileNumber } = req.body
     let numberExistInCustomer = await models.customer.findOne({ where: { mobileNumber } })
     if (check.isEmpty(numberExistInCustomer)) {
-        return res.status(404).json({ message: "Your Mobile number is not exist. please first apply for lead stage" });
+        return res.status(404).json({ message: "Your Mobile number does not exist, please add lead first" });
     }
+
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
         return res.status(404).json({ message: "Status confirm is not there in status table" });
@@ -44,12 +45,18 @@ exports.verifyCustomerKycNumber = async (req, res, next) => {
 
 
 exports.submitCustomerKycinfo = async (req, res, next) => {
-    let { referenceCode } = req.body
+    let { referenceCode, firstName, lastName, panCardNumber } = req.body
 
     let verifyCustomer = await models.customerOtp.findOne({ where: { referenceCode, isVerified: true } });
     if (check.isEmpty(verifyCustomer)) {
         return res.status(404).json({ message: "Your Mobile Number is not verified" });
     }
+
+    let checkInfoUser = await models.customer.findOne({ where: { firstName, lastName, panCardNumber, mobileNumber: verifyCustomer.mobileNumber } });
+    if (check.isEmpty(checkInfoUser)) {
+        return res.status(404).json({ message: "Either your name or Pancard credentials in incorrect." });
+    }
+
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
         return res.status(404).json({ message: "Status confirm is not there in status table" });
@@ -59,7 +66,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     if (check.isEmpty(getCustomerInfo)) {
         return res.status(404).json({ message: "Your status is not confirm" });
     }
-    let { id, firstName, lastName, panCardNumber } = getCustomerInfo
+    let { id } = getCustomerInfo
 
     let findCustomerKyc = await models.kycCustomerPersonalDetail.findOne({ where: { customerId: id } })
     if (!check.isEmpty(findCustomerKyc)) {
@@ -68,7 +75,14 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
-    let createCustomerKyc = await models.kycCustomerPersonalDetail.create({ customerId: id, firstName, lastName, panCardNumber, createdBy, modifiedBy });
+    let createCustomerKyc = await models.kycCustomerPersonalDetail.create({
+        customerId: id,
+        firstName: getCustomerInfo.firstName,
+        lastName: getCustomerInfo.lastName,
+        panCardNumber: getCustomerInfo.panCardNumber,
+        createdBy,
+        modifiedBy
+    });
     return res.status(200).json({ customerId: id, customerKycId: createCustomerKyc.id })
 }
 
