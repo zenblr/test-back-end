@@ -34,7 +34,7 @@ export class MerchantService {
   }
 
   getPermission():Observable<any> {
-    return this.http.get(`${this.baseUrl}/api/merchant-product/catalgo-permission`).pipe
+    return this.http.get(`${this.baseUrl}/api/merchant-product/catalog-permission`).pipe
       (map(res => res))
   }
 }

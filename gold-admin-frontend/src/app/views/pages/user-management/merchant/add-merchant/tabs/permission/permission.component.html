@@ -1,24 +1,100 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
-    <kt-portlet-body>
-        <div class="row height justify-content-center">
-            <div class="col-7">
-                 <mat-tab-group>
-                   <mat-tab label="Category">
-                    <div class="row justify-content-center">
-                    <div class="col-10">
-                      <label class="custom-checkbox">
-                        <span class="label-checkbox text-color font-weight-500">Select All</span>
-                        <input type="checkbox" class="" id="view" value="View">
-                        <span class="checkmark top-0"></span>
+  <kt-portlet-body>
+    <div class="row height justify-content-center">
+      <div class="col-7 scroll">
+        <mat-tab-group>
+          <mat-tab label="Category">
+            <div class="row justify-content-center">
+              <div class="col-10">
+                <label class="custom-checkbox">
+                  <span class="label-checkbox text-color font-weight-500" >Select All</span>
+                  <input type="checkbox" class="" id="view" [checked]="selectAllArray[0]" (change)="selectAll($event.target.checked,'category')">
+                  <span class="checkmark top-0"></span>
+                </label>
+                <div class="row kt-margin-t-15">
+                  <div class="col-12 kt-margin-t-10" *ngFor="let category of permissions;index as idx">
+                    <label class="custom-checkbox">
+                      <span
+                        class="label-checkbox text-color font-weight-500">{{category.categoryName | titlecase}}</span>
+                      <input type="checkbox" class="" id="view" [checked]="category.isChecked" (change)=categoryCheckBox($event.target.checked,category,idx)>
+                      <span class="checkmark top-0"></span>
                     </label>
-                    </div>
-                    </div>
-                    </mat-tab>
-                   <mat-tab label="Sub-Category"></mat-tab>
-                   <mat-tab label="Product"></mat-tab>
-                 </mat-tab-group>                
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
-    </kt-portlet-body>
+          </mat-tab>
+          <mat-tab label="Sub-Category" [disabled]="checkedCategory.length == 0">
+            <div class="row justify-content-center">
+              <div class="col-10">
+                <label class="custom-checkbox">
+                  <span class="label-checkbox text-color font-weight-500">Select All</span>
+                  <input type="checkbox" class="" id="view" value="View" [checked]="selectAllArray[1]">
+                  <span class="checkmark top-0"></span>
+                </label>
+                <div class="row kt-margin-t-15">
+                  <div class="col-12 kt-margin-t-10" *ngFor="let category of checkedCategory;index as idx">
+                    <!-- <div *ngIf="checkedCategory.includes(permission.id)"> -->
+                      <p class=" text-color font-weight-500">{{category.categoryName | titlecase}}</p>
+                      <div *ngFor="let sub of category.subCategory;index as idx" class="position-relative kt-margin-l-15">
+                        <label class="custom-checkbox">
+                          <span
+                            class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{sub.subCategoryName | titlecase}}</span>
+                          <input type="checkbox" class="" id="view" [checked]="sub.isChecked"
+                            (change)=subCategoryCheckBox($event.target.checked,category,idx)>
+                          <span class="checkmark top-0"></span>
+                        </label>
+                      </div>
+                    <!-- </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Product" [disabled]="checkedSubCategory.length == 0">
+            <div class="row justify-content-center">
+              <div class="col-10">
+                <label class="custom-checkbox">
+                  <span class="label-checkbox text-color font-weight-500">Select All</span>
+                  <input type="checkbox" class="" id="view" value="View" [checked]="selectAllArray[2]">
+                  <span class="checkmark top-0"></span>
+                </label>
+                <div class="row kt-margin-t-15">
+                  <div class="col-12 kt-margin-t-10" *ngFor="let category of checkedSubCategory;index as idx">
+                    <!-- <div *ngIf="checkedSubCategory.includes(permission.id)"> -->
+                      <p class=" text-color font-weight-500">{{category.categoryName | titlecase}}</p>
+                      <div *ngFor="let sub of category.subCategory;index as idx">
+                        <!-- <div *ngIf="checkedSubCategory.includes(sub.id)"> -->
+                          <p class=" text-color font-weight-500 kt-margin-l-15">{{sub.subCategoryName | titlecase}}</p>
+                          <div class="row justify-content-start kt-margin-l-40">
+                            <div *ngFor="let product of sub.products;index as idx" class="w-25">
+                              <span  class="position-relative " >
+                                <label class="custom-checkbox" >
+                                  <span
+                                    class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{product.productName | titlecase}}</span>
+                                  <input type="checkbox" [checked]="product.isChecked" (change)="generateProduct($event.target.checked,product.id,idx)">
+                                  <span class="checkmark top-0"></span>
+                                </label>
+                              </span>
+                            </div>
+                          </div>
+                         
+                        <!-- </div> -->
+                      </div>
+                    <!-- </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>      
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 p-2">
+        <kt-modal-footer [value]="'create'"></kt-modal-footer>
+      </div>
+    </div>
+  </kt-portlet-body>
 </kt-portlet>
