@@ -29,8 +29,9 @@
                                 </div>
 
                                 <div class="col-4">
-                                    <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
-                                        class="form-control" formControlName="firstName"
+                                    <input type="text" [readOnly]="viewOnly" aria-label="First name"
+                                        placeholder="First Name" ktAlphabets class="form-control"
+                                        formControlName="firstName"
                                         [class.isError]="controls.firstName.touched && controls.firstName.invalid">
                                     <mat-error
                                         *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
@@ -39,8 +40,9 @@
                                 </div>
                                 <div class="col-4">
 
-                                    <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
-                                        class="form-control" formControlName="lastName"
+                                    <input type="text" [readOnly]="viewOnly" aria-label="Last name"
+                                        placeholder="Last Name" ktAlphabets class="form-control"
+                                        formControlName="lastName"
                                         [class.isError]="controls.lastName.touched && controls.lastName.invalid">
 
                                     <mat-error *ngIf=" controls.lastName.errors?.required && controls.lastName.touched">
@@ -58,8 +60,9 @@
 
                                 <div class="col-5">
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
-                                    <input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
-                                        autocomplete="off" placeholder="Enter mobile number" margin
+                                    <input [readOnly]="viewOnly" class="form-control" type="text"
+                                        formControlName="mobileNumber" numbersOnly autocomplete="off"
+                                        placeholder="Enter mobile number" margin
                                         [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid">
                                     <mat-error
                                         *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
@@ -77,8 +80,8 @@
 
                                 <div class="col-3">
                                     <div *ngIf="!otpSent">
-                                        <kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
-                                            [value]="'Send OTP'" (action)="sendOTP()">
+                                        <kt-button [myClass]="'w-100'" [isDisabled]="otpButton || viewOnly"
+                                            [type]="'button'" [value]="'Send OTP'" (action)="sendOTP()">
                                         </kt-button>
                                     </div>
                                     <div *ngIf="otpSent && !isMobileVerified">
@@ -134,8 +137,8 @@
 
                                 <div class="col-5">
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
-                                    <input class="form-control" formControlName="panCardNumber" autocomplete="off"
-                                        placeholder="PAN Number"
+                                    <input [readOnly]="viewOnly" class="form-control" formControlName="panCardNumber"
+                                        autocomplete="off" placeholder="PAN Number"
                                         [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid">
                                     <mat-error
                                         *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
@@ -150,8 +153,8 @@
 
                                 <div class="col">
                                     <div *ngIf="!isPanVerified">
-                                        <kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
-                                            [value]="'Verify'" (action)="verifyPAN()">
+                                        <kt-button [myClass]="'w-100'" [isDisabled]="panButton || viewOnly"
+                                            [type]="'button'" [value]="'Verify'" (action)="verifyPAN()">
                                         </kt-button>
                                     </div>
 
@@ -172,9 +175,9 @@
                                 <div class="col-8">
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                     <!-- <mat-label>State</mat-label> -->
-                                    <select class="form-control" formControlName="stateId" (change)="getCities($event)"
-                                        margin [class.isError]="controls.stateId.touched && controls.stateId.invalid">
-                                        <option disabled selected> Select </option>
+                                    <select class="form-control" formControlName="stateId" (change)="getCities()" margin
+                                        [class.isError]="controls.stateId.touched && controls.stateId.invalid">
+                                        <option disabled selected value=""> Select State</option>
                                         <option *ngFor="let state of states" [value]="state.id">
                                             {{state.name}}
                                         </option>
@@ -198,7 +201,7 @@
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                     <select class="form-control" formControlName="cityId" margin
                                         [class.isError]="controls.cityId.touched && controls.cityId.invalid">
-                                        <option disabled selected> Select </option>
+                                        <option selected value="" disabled> Select City</option>
                                         <option *ngFor="let city of cities" [value]="city.id">
                                             {{city.name}}
                                         </option>
@@ -236,8 +239,9 @@
                                     <!-- <mat-label>Select</mat-label> -->
                                     <select class="form-control" formControlName="statusId" margin
                                         [class.isError]="controls.statusId.touched && controls.statusId.invalid">
+                                        <option selected disabled value="">Select Status</option>
                                         <option *ngFor="let stat of status" [value]="stat.id">
-                                            {{stat.status}}
+                                            {{stat.statusName | titlecase}}
                                         </option>
                                     </select>
                                     <mat-error *ngIf="controls.statusId.errors?.required && controls.statusId.touched">

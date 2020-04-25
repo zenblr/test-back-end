@@ -106,7 +106,7 @@
 										controls.otp.touched
 									">Invalid Input
 								</mat-error>
-								<mat-hint class="kt-pointer">Didn't get an OTP?
+								<mat-hint (click)="resendOTP()" class="kt-pointer">Didn't get an OTP?
 									<strong>Resend</strong></mat-hint>
 								<!-- </mat-form-field> -->
 							</div>
@@ -166,8 +166,7 @@
 
 					<div class="row kt-padding-t-15">
 						<div class="col-12">
-							<kt-button [value]="'Next'" [isDisabled]="!userBasicForm.invalid" [type]="'button'"
-								(action)="submit()">
+							<kt-button [value]="'Next'" [type]="'button'" (action)="submit()">
 							</kt-button>
 						</div>
 					</div>

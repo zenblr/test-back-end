@@ -72,7 +72,18 @@ body {
 }
 
 .form-control {
-	background-color: rgb(230, 230, 230) !important;
+	display: block;
+    width: 100%;
+    padding: .65rem 1rem !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: #454d67 !important;
+    border-radius: 9px !important;
+    background-color: #f2f3f7 !important;
+    background-clip: padding-box !important;
+    border: 1px solid #e2e5ec!important;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
 }
 
 .isError {
@@ -321,3 +332,28 @@ mat-header-row {
 		display: none !important;
 	}
 }
+<<<<<<< HEAD
+=======
+
+// display images and placeholder styling
+
+.img-container {
+	height: 150px;
+	max-width: 250px;
+	background-color: #f2f3f7;
+	border-radius: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+
+	.fetched-image {
+		width: 100%;
+		height: 100%;
+	}
+
+	.placeholder-image {
+		width: 66px;
+	}
+}
+>>>>>>> ravi
