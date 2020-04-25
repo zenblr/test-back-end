@@ -84,8 +84,6 @@ export class UplodDataImageComponent implements OnInit {
   }
 
   open(index){
-    // this.ele.nativeElement.querySelector('.mat-dialog-container').style.boxShadow = "none";
-    // this.ele.nativeElement.querySelector('.mat-dialog-container').style.background = "transparent";
     this.dilaog.open(ImagePreviewDialogComponent,{
       data:{
         images:this.images,
