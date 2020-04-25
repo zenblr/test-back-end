@@ -44,11 +44,13 @@
                         <div class="col-7">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" formControlName="identityProof"
-                                    placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2" readonly>
+                                    placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2" readonly
+                                    [class.isError]="controls.identityProof.invalid && controls.identityProof.touched">
                                 <div class="input-group-append">
                                     <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                         (click)="file.click()">Attach</span>
                                 </div>
+
                             </div>
                             <label class="file d-none">
                                 <input type="file" id="file" aria-label="File browser example" #file

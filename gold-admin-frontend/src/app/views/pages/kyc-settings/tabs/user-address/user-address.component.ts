@@ -47,7 +47,7 @@ export class UserAddressComponent implements OnInit {
       customerId: [this.customerDetails.customerId],
       customerKycId: [this.customerDetails.customerKycId],
       identityTypeId: ['', [Validators.required]],
-      identityProof: [],
+      identityProof: ['', [Validators.required]],
       address: this.fb.array([
         this.fb.group({
           addressType: ['residential'],
@@ -56,7 +56,7 @@ export class UserAddressComponent implements OnInit {
           stateId: ['', [Validators.required]],
           cityId: ['', [Validators.required]],
           pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-          addressProof: []
+          addressProof: ['', [Validators.required]]
         }),
         this.fb.group({
           addressType: ['permanent'],
@@ -65,7 +65,7 @@ export class UserAddressComponent implements OnInit {
           stateId: ['', [Validators.required]],
           cityId: ['', [Validators.required]],
           pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-          addressProof: []
+          addressProof: ['', [Validators.required]]
         })
       ])
     });
@@ -138,6 +138,10 @@ export class UserAddressComponent implements OnInit {
   submit() {
     // this.next.emit(true);
     // console.log(this.identityForm.value);
+    if (this.identityForm.invalid) {
+      this.identityForm.markAllAsTouched()
+      return
+    }
 
     this.identityForm.patchValue({ identityProof: this.images.identityProof });
 
@@ -157,7 +161,7 @@ export class UserAddressComponent implements OnInit {
       })
     ).subscribe();
 
-    this.next.emit(true);
+    // this.next.emit(true);
 
 
   }

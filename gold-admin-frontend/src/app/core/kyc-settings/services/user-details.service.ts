@@ -17,7 +17,7 @@ export class UserDetailsService {
 
 
   sendOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/kyc/verify-kyc-number`, data).pipe(
+    return this.http.post<any>(`/api/kyc/get-customer-detail`, data).pipe(
       map(res => res),
       catchError(err => {
         console.log(err);
