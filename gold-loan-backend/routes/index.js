@@ -82,4 +82,10 @@ router.use('/email-alert',emailAlert)
 const smsAlert=require('./smsAlert');  // sms alert
 router.use('/sms-alert',smsAlert)
 
+const query=require('./query'); // customer query
+router.use('/customer-query',query)
+
+const feedBack=require('./feedBack');
+router.use('/customer-feedback',feedBack)
+
 module.exports = router;
