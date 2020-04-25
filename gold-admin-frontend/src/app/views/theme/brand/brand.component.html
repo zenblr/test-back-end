@@ -4,11 +4,13 @@
 		<a href="javascript:;" routerLink="/">
 			<img alt="logo" [attr.src]="headerLogo" [height]="height" [ngStyle]="{'transform': 'translate(50%, 0)'}" />
 		</a>
+
 	</div>
-	<div class="kt-aside__brand-tools" style="display: block; color: #ffde9c">
-		<div style="font-weight: 600; position: relative; bottom: 25px;">
+
+	<div class=" kt-aside__brand-tools">
+		<!-- <div style="font-weight: 600; position: relative; bottom: 25px;">
 			{{goldRate}} /gm
-		</div>
+		</div> -->
 		<button ktToggle [options]="toggleOptions"
 			class="kt-aside__brand-aside-toggler kt-aside__brand-aside-toggler--left" id="kt_aside_toggler">
 			<span [inlineSVG]="'./assets/media/icons/svg/Navigation/Angle-double-left.svg'"></span>
@@ -16,5 +18,9 @@
 		</button>
 
 	</div>
+</div>
+
+<div style="font-weight: 600;color: #ffde9c; background-color: #454D67; padding-top: 15px;" class="text-center">
+	<span class="kt-aside__gold-rate">Gold rate: </span>{{goldRate}} /gm
 </div>
 <!-- end:: Brand -->

@@ -71,6 +71,17 @@ body {
 	background-color: rgb(24, 179, 24) !important;
 }
 
+.form-label {
+	color: #5a5d6e;
+	font-weight: 500 !important;
+	display: flex;
+	align-items: center !important;
+
+	label {
+		font-weight: 500 !important;
+	}
+}
+
 .form-control {
 	display: block;
     width: 100%;
@@ -92,7 +103,7 @@ body {
 
 ::-webkit-input-placeholder {
 	/* Edge */
-	font-weight: 400;
+	font-weight: 500;
 	color: #b0b5c6 !important;
 }
 
