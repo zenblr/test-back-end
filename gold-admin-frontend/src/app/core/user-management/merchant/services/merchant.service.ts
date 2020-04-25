@@ -10,7 +10,7 @@ export class MerchantService {
 
   constructor(private http: HttpClient) { }
 
-  baseUrl = 'http://9fdca1d3.ngrok.io';
+  baseUrl = 'http://aa68faa8.ngrok.io';
   userId: BehaviorSubject<any> = new BehaviorSubject(0);
   userId$ = this.userId.asObservable()
 
@@ -35,6 +35,11 @@ export class MerchantService {
 
   getPermission():Observable<any> {
     return this.http.get(`${this.baseUrl}/api/merchant-product/catalog-permission`).pipe
+      (map(res => res))
+  }
+
+  addProduct(products,userId):Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/merchant-product`,{products,userId}).pipe
       (map(res => res))
   }
 }

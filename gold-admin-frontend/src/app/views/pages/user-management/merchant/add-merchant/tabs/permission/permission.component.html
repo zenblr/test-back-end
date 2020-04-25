@@ -9,7 +9,7 @@
               <div class="col-10">
                 <label class="custom-checkbox">
                   <span class="label-checkbox text-color font-weight-500" >Select All</span>
-                  <input type="checkbox" class="" id="view" [checked]="selectAllArray[0]" (change)="selectAll($event.target.checked,'category')">
+                  <input type="checkbox" class="" id="view" [checked]="selectAllArray[0]" (change)="selectAllCat($event.target.checked,'category')">
                   <span class="checkmark top-0"></span>
                 </label>
                 <div class="row kt-margin-t-15">
@@ -30,7 +30,7 @@
               <div class="col-10">
                 <label class="custom-checkbox">
                   <span class="label-checkbox text-color font-weight-500">Select All</span>
-                  <input type="checkbox" class="" id="view" value="View" [checked]="selectAllArray[1]">
+                  <input type="checkbox" class="" id="view" value="View" [checked]="selectAllArray[1]" (change)="selectAllSub($event.target.checked)">
                   <span class="checkmark top-0"></span>
                 </label>
                 <div class="row kt-margin-t-15">
@@ -57,7 +57,7 @@
               <div class="col-10">
                 <label class="custom-checkbox">
                   <span class="label-checkbox text-color font-weight-500">Select All</span>
-                  <input type="checkbox" class="" id="view" value="View" [checked]="selectAllArray[2]">
+                  <input type="checkbox" class="" id="view" value="View" [checked]="selectAllArray[2]" (change)="selectAllProd($event.target.checked)">
                   <span class="checkmark top-0"></span>
                 </label>
                 <div class="row kt-margin-t-15">
@@ -93,7 +93,7 @@
     </div>
     <div class="row">
       <div class="col-12 p-2">
-        <kt-modal-footer [value]="'create'"></kt-modal-footer>
+        <kt-modal-footer [value]="'create'" (action)="submit($event)"></kt-modal-footer>
       </div>
     </div>
   </kt-portlet-body>
