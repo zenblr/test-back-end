@@ -2,11 +2,12 @@
 <div class="kt-header__topbar kt-margin-t-10 ">
     <div class="row justify-content-center">
         <div class="col-4">
-            breasd
+            <!-- breasd -->
         </div>
         <div class="col-6">
             <kt-search *ngIf="showInput"></kt-search>
-            <kt-button [value]='value1' [type]='type1' (click)="action($event)" class="kt-margin-r-10 kt-margin-l-10"></kt-button>
+            <kt-button [value]='value1' [type]='type1' (click)="action($event)" class="kt-margin-r-10 kt-margin-l-10">
+            </kt-button>
 
             <!-- Toggle Button -->
             <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style"

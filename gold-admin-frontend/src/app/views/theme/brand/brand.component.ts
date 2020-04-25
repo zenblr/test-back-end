@@ -38,10 +38,9 @@ export class BrandComponent implements OnInit, AfterViewInit {
 				// console.log(res)
 				this.rate = res.goldRate;
 				this.ref.detectChanges();
-
+				this.uploadOfferService.goldRate.next(this.rate);
 			})
 		).subscribe(res => {
-			// this.uploadOfferService.goldRate.next(this.rate);
 
 		});
 		// this.uploadOfferService.goldRate.next(this.rate);
