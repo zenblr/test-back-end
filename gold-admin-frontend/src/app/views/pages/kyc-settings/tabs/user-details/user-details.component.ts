@@ -31,6 +31,7 @@ export class UserDetailsComponent implements OnInit {
     this.initForm();
     this.controls.mobileNumber.valueChanges.subscribe(res => {
       if (this.controls.mobileNumber.valid) {
+        this.sendOTP();
         this.otpButton = false;
       } else {
         this.otpButton = true;
@@ -68,8 +69,8 @@ export class UserDetailsComponent implements OnInit {
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
-      otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
-      referenceCode: [this.refCode],
+      otp: [, [, Validators.pattern('^[0-9]{4}$')]],
+      referenceCode: [],
       panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
     })
   }
@@ -83,8 +84,12 @@ export class UserDetailsComponent implements OnInit {
         this.otpSent = true;
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
-        const msg = 'Otp has been sent to the registered mobile number';
-        this.toastr.success(msg);
+        this.userBasicForm.patchValue(res.customerInfo);
+        if (res.customerInfo.panCardNumber !== null) {
+          this.controls.panCardNumber.disable();
+        }
+        // const msg = 'Otp has been sent to the registered mobile number';
+        // this.toastr.success(msg);
       }
     });
   }
@@ -128,7 +133,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   submit() {
-    if (this.userBasicForm.invalid || !this.isMobileVerified) {
+    if (this.userBasicForm.invalid) {
       this.userBasicForm.markAllAsTouched()
       return
     }

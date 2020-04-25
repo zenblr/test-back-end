@@ -24,7 +24,7 @@
 
                         <div class="row">
                             <!-- Partner Name -->
-                            <div class="col-4">
+                            <div class="col-4 form-label">
                                 <label>Branch Name</label>
                             </div>
                             <div class="col-8">
@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
+                            <div class="col-4 form-label">
                                 <label>Partner Name</label>
                             </div>
 
@@ -53,7 +53,7 @@
 
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
+                            <div class="col-4 form-label">
                                 <label>State</label>
                             </div>
 
@@ -70,7 +70,7 @@
 
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
+                            <div class="col-4 form-label">
                                 <label>City</label>
                             </div>
 
@@ -89,13 +89,13 @@
 
 
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
+                            <div class="col-4 form-label">
                                 <label>Pin Code</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="pincode" placeholder="Enter Pin Code"
-                                    [class.isError]="controls.pincode.touched && controls.pincode.invalid"
-                                    maxlength="6" numbersOnly>
+                                    [class.isError]="controls.pincode.touched && controls.pincode.invalid" maxlength="6"
+                                    numbersOnly>
                                 <small *ngIf="data.action != 'view'" class="text-color">Enter pin code without
                                     spaces</small>
                                 <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.required">
@@ -105,7 +105,7 @@
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
+                            <div class="col-4 form-label">
                                 <label for="">Address</label>
                             </div>
                             <!-- Address -->
@@ -124,7 +124,10 @@
     </div>
     <kt-portlet-footer *ngIf="data.action != 'view'">
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)" [value]="data.action"></kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="data.action">
+            </kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+            </kt-modal-footer>
         </div>
     </kt-portlet-footer>
 </div>

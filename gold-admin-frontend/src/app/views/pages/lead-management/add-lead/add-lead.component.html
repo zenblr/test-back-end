@@ -24,7 +24,7 @@
 
                             <!-- Name -->
                             <div class="row kt-padding-t-15">
-                                <div class="col-4">
+                                <div class="col-4 form-label">
                                     <mat-label>Full Name</mat-label>
                                 </div>
 
@@ -54,7 +54,7 @@
 
                             <div class="row kt-padding-t-15">
                                 <!-- Mobile -->
-                                <div class="col-4">
+                                <div class="col-4 form-label">
                                     <mat-label>Mobile Number</mat-label>
                                 </div>
 
@@ -91,7 +91,7 @@
                                     </div>
                                     <div *ngIf="isMobileVerified">
                                         <button class="w-100 success-button" mat-raised-button color="success"
-                                            matTooltip="Pan Verified">Verified</button>
+                                            matTooltip="OTP Verified">Verified</button>
                                     </div>
                                 </div>
 
@@ -131,7 +131,7 @@
 
                             <div class="row kt-padding-t-15">
                                 <!-- PAN -->
-                                <div class="col-4">
+                                <div class="col-4 form-label">
                                     <mat-label>Pan Number</mat-label>
                                 </div>
 
@@ -140,10 +140,10 @@
                                     <input [readOnly]="viewOnly" class="form-control" formControlName="panCardNumber"
                                         autocomplete="off" placeholder="PAN Number"
                                         [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid">
-                                    <mat-error
+                                    <!-- <mat-error
                                         *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
                                         Required field
-                                    </mat-error>
+                                    </mat-error> -->
                                     <mat-error
                                         *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
                                         Invalid Input
@@ -168,7 +168,7 @@
 
                             <!-- State -->
                             <div class="row kt-padding-t-15">
-                                <div class="col-4">
+                                <div class="col-4 form-label">
                                     <mat-label>State</mat-label>
                                 </div>
 
@@ -193,7 +193,7 @@
 
                             <!-- City -->
                             <div class="row kt-padding-t-15">
-                                <div class="col-4">
+                                <div class="col-4 form-label">
                                     <mat-label>City</mat-label>
                                 </div>
 
@@ -214,7 +214,7 @@
 
                             <!-- Date & Time -->
                             <div class="row kt-padding-t-15">
-                                <div class="col-4">
+                                <div class="col-4 form-label">
                                     <mat-label>Date & Time</mat-label>
                                 </div>
 
@@ -230,7 +230,7 @@
 
                             <!-- Status -->
                             <div class="row kt-padding-t-15">
-                                <div class="col-4">
+                                <div class="col-4 form-label">
                                     <mat-label>Select Status</mat-label>
                                 </div>
 
@@ -296,8 +296,12 @@
                         </div>
                     </div> -->
 
+
                 <div class="p-3">
-                    <kt-modal-footer (action)="action($event)" [value]="this.data.action"></kt-modal-footer>
+                    <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="data.action">
+                    </kt-modal-footer>
+                    <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+                    </kt-modal-footer>
                 </div>
             </form>
         </div>
