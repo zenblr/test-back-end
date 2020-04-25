@@ -11,7 +11,7 @@ const check = require("../../lib/checkLib");
 
 
 
-exports.verifyCustomerKycNumber = async (req, res, next) => {
+exports.sendOtpKycNumber = async (req, res, next) => {
 
     let { mobileNumber } = req.body
     let numberExistInCustomer = await models.customer.findOne({ where: { mobileNumber } })
@@ -41,6 +41,37 @@ exports.verifyCustomerKycNumber = async (req, res, next) => {
     );
 
     return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, });
+}
+
+
+exports.verifyCustomerKycNumber = async (req, res, next) => {
+    let { referenceCode, otp } = req.body;
+    var todayDateTime = new Date();
+
+    let verifyUser = await models.customerOtp.findOne({
+        where: {
+            referenceCode,
+            otp,
+            expiryTime: {
+                [Op.gte]: todayDateTime,
+            },
+        },
+    });
+    if (check.isEmpty(verifyUser)) {
+        return res.status(404).json({ message: `Invalid otp.` });
+    }
+
+    let verifyFlag = await models.customerOtp.update(
+        { isVerified: true },
+        { where: { id: verifyUser.id } }
+    );
+
+    let customerInfo = await models.customer.findOne({ 
+        where: { mobileNumber: verifyUser.mobileNumber }, 
+        attributes: ['firstName','lastName','panCardNumber']
+    })
+
+    return res.status(200).json({ message: "Success", referenceCode, customerInfo });
 }
 
 
