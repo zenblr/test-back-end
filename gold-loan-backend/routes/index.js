@@ -84,6 +84,9 @@ router.use('/kyc',customerKyc);
 const rolePermission = require('./rolePermission');
 router.use('/role-permission',rolePermission);
 
+const modules = require('./module');
+router.use('/modules',modules);
+
 
 
 module.exports = router;

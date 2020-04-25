@@ -35,3 +35,18 @@ exports.postEntity = async (req, res, next) => {
         message: "success"
     })
 }
+
+exports.postPermissions = async (req, res, next) => {
+    const data = req.body.data;
+    console.log(req.body);
+    let checkIfCsvUploaded = await models.permission.findAll();
+    if (checkIfCsvUploaded.length > 0) {
+        return res.status(404).json({ messgae: "entities are already Uploaded" })
+    }
+    await sequelize.transaction(async t => {
+        await models.permission.bulkCreate(data, { returning: true, transaction: t });
+    })
+    return res.status(200).json({
+        message: "success"
+    })
+}

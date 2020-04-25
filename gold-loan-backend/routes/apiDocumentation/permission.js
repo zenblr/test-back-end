@@ -33,7 +33,7 @@
  *     tags:
  *       - Permission
  *     name: permission
- *     summary: To read permission
+ *     summary: To read all permission
  *     security:
  *       - bearerAuth: []
  *     consumes:

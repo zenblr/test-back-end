@@ -20,12 +20,17 @@
  *               type: string
  *             description:
  *               type: string
- *             permissionId:
+ *             roleId:
  *               type: integer
+ *             moduleId:
+ *               type: array
+ *               items:
+ *                type:integer
  *         required:
  *           - roleName
  *           - description
- *           - permissionId
+ *           - roleId
+ *           - moduleId
  *     responses:
  *       201:
  *         description: role created
@@ -40,6 +45,19 @@
  *       - bearerAuth: []
  *     consumes:
  *        - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
  *     responses:
  *       200:
  *         description: Success
@@ -69,6 +87,21 @@
  *         description: Updated.
  *       404:
  *         description: update failed.
+ * /role/all-role:
+ *   get:
+ *     tags:
+ *       - Role
+ *     name: role
+ *     summary: To read all role
+  *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *        - application/json
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: data not found
  * /role/{id}:
  *   put:
  *     tags:
@@ -93,12 +126,9 @@
  *               type: string
  *             description:
  *               type: string
- *             permissionId:
- *               type: number
  *     required:
  *         - roleName
  *         - description
- *         - permissionId
  *     responses:
  *       200:
  *         description: Updated

@@ -38,8 +38,15 @@ module.exports = (sequelize, DataTypes) => {
     //function_to_remove_group
     Role.removeRole = (id) => Role.update({ isActive: false }, { where: { id: id, isActive: true } });
 
+    Role.addRole = (roleName, description, createdBy, updatedBy ) => Role.create({roleName, description, createdBy, updatedBy});
+
+    Role.updateRole = (roleName, description, updatedBy, id ) => Role.update({roleName, description, updatedBy}, {where: { id }});
+
+    Role.getAllRole = () => Role.findAll({ where: { isActive: true }, order: [['id', 'ASC']] });
+
     Role.associate = function(models) {
         Role.belongsToMany(models.user,{through: models.userRole});
+        Role.belongsToMany(models.module,{through: models.roleModule});
         Role.belongsToMany(models.permission,{through: models.rolePermission})
     }
 
