@@ -222,13 +222,21 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
         }]
     })
 
-    return res.status(200).json({ customerKycReview })
+    return res.status(200).json({ customerKycReview,customerId, customerKycId })
 
 }
 
 
 exports.submitAllKycInfo = async (req, res, next) => {
-    
+
     let { customerId, customerKycId } = req.body;
 
+    let findCustomerKyc = await models.kycCustomerPersonalDetail.findOne({ where: { id: customerKycId } })
+    if (check.isEmpty(findCustomerKyc)) {
+        return res.status(404).json({ message: "This customer kyc detailes is not filled." });
+    }
+    await models.kycCustomerPersonalDetail.update({ isKycSubmitted: true }, { where: { id: customerKycId } })
+
+    return res.status(200).json({ message: `successful`, customerId, customerKycId })
 }
+
