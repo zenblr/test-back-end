@@ -54,7 +54,7 @@ exports.submitCustomerKycAddressValidation = [
 
     body("identityProof")
         .exists()
-        .withMessage('identity prrof is required'),
+        .withMessage('identity proof is required'),
 
     body("identityTypeId")
         .exists()
@@ -108,7 +108,7 @@ exports.submitCustomerKycpersonalDetailValidation = [
         .withMessage("Occupation id is required"),
     body("spouseName")
         .exists()
-        .withMessage("spouse name/middle name is required"),
+        .withMessage("spouse name is required"),
     body("signatureProof")
         .exists()
         .withMessage("sinaguture Proof is required")
@@ -152,7 +152,7 @@ exports.submitCustomerKycBankDetailValidation = [
         }),
     body("passbookProof")
         .exists()
-        .withMessage("pass proof is required"),
+        .withMessage("pass book proof is required"),
 
 ]
 
