@@ -1,11 +1,11 @@
 <kt-portlet>
     <kt-portlet-body>
-        <form [formGroup]="identityForm">
+        <form [formGroup]="identityForm" class="min-height">
             <div class="row">
                 <div class="col-6 kt-margin-t-20">
                     <div class="row">
                         <div class="col-3 offset-1 p-0">
-                            <label class="font-weight-500 text-color">Identity</label>
+                            <label  class="mandatory  font-weight-500 text-color">Identity</label>
                         </div>
                         <div class="col-7">
                             <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof"
@@ -26,7 +26,7 @@
             <!-- <div class="col-6 kt-margin-t-20">
                 <div class="row">
                     <div class="col-3 offset-1 p-0">
-                        <label class="font-weight-500 text-color">Name</label>
+                        <label  class="mandatory  font-weight-500 text-color">Name</label>
                     </div>
                     <div class="col-7">
                         <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
@@ -39,7 +39,7 @@
                 <div class="col-6 kt-margin-t-20">
                     <div class="row">
                         <div class="col-3 offset-1 p-0">
-                            <label class="font-weight-500 text-color">Attach</label>
+                            <label  class="mandatory  font-weight-500 text-color">Attach</label>
                         </div>
                         <div class="col-7">
                             <div class="input-group mb-3">
@@ -52,7 +52,7 @@
                                 </div>
 
                             </div>
-                            <label class="file d-none">
+                            <label  class="mandatory  file d-none">
                                 <input type="file" id="file" aria-label="File browser example" #file
                                     (input)="getFileInfo($event,'identityProof')">
                                 <span class="file-custom"></span>
@@ -81,7 +81,7 @@
             <div class="col-6 kt-margin-t-20">
                 <div class="row">
                     <div class="col-3 offset-1 p-0">
-                        <label class="font-weight-500 text-color">Date of Birth</label>
+                        <label  class="mandatory  font-weight-500 text-color">Date of Birth</label>
                     </div>
                     <div class="col-7">
                         <mat-form-field appearance="box" class="example-full-width">
@@ -100,7 +100,7 @@
             <div class="col-6 kt-margin-t-20">
                 <div class="row">
                     <div class="col-3 offset-1 p-0">
-                        <label class="font-weight-500 text-color">Gender</label>
+                        <label  class="mandatory  font-weight-500 text-color">Gender</label>
                     </div>
                     <div class="col-7">
                         <select class="form-control" margin>
@@ -115,7 +115,7 @@
         </div> -->
             <div class="text-right kt-padding-r-50">
                 <div class="position-relative pos">
-                    <label class="custom-checkbox ">
+                    <label  class="mandatory  custom-checkbox ">
                         <span class="label-checkbox">Residential Same as Permanent</span>
                         <input type="checkbox" class="" (change)="sameAddress($event.target.checked)">
                         <span class="checkmark top-0"></span>
@@ -133,9 +133,9 @@
                         <div class=" kt-margin-t-20">
                             <div class="row">
                                 <div class="col-3 offset-1 p-0">
-                                    <label class="font-weight-500 text-color" *ngIf="i == 1">Residential or Official
+                                    <label  class="mandatory  font-weight-500 text-color" *ngIf="i == 1">Residential or Official
                                         Address</label>
-                                    <label class="font-weight-500 text-color" *ngIf="i == 0"> Permanent
+                                    <label  class="mandatory  font-weight-500 text-color" *ngIf="i == 0"> Permanent
                                         Address</label>
                                 </div>
                                 <div class="col-7">
@@ -159,7 +159,7 @@
                         <!-- <div class=" kt-margin-t-20">
                                     <div class="row">
                                         <div class="col-3 offset-1 p-0">
-                                            <label class="font-weight-500 text-color">Permanent Address</label>
+                                            <label  class="mandatory  font-weight-500 text-color">Permanent Address</label>
                                         </div>
                                         <div class="col-7">
                                             <textarea type="text" rows="5" aria-label="Permanent Address" placeholder="Enter your text"
@@ -172,7 +172,7 @@
                             <div class=" kt-margin-t-20">
                                 <div class="row">
                                     <div class="col-3 offset-1 p-0">
-                                        <label class="font-weight-500 text-color">State
+                                        <label  class="mandatory  font-weight-500 text-color">State
                                         </label>
                                     </div>
                                     <div class="col-7">
@@ -196,7 +196,7 @@
                         <!-- <div class=" kt-margin-t-20">
                                     <div class="row">
                                         <div class="col-3 offset-1 p-0">
-                                            <label class="font-weight-500 text-color">State</label>
+                                            <label  class="mandatory  font-weight-500 text-color">State</label>
                                         </div>
                                         <div class="col-7">
                                             <select class="form-control" margin>
@@ -212,7 +212,7 @@
                             <div class=" kt-margin-t-20">
                                 <div class="row">
                                     <div class="col-3 offset-1 p-0">
-                                        <label class="font-weight-500 text-color">City
+                                        <label  class="mandatory  font-weight-500 text-color">City
                                         </label>
                                     </div>
                                     <div class="col-7">
@@ -253,7 +253,7 @@
                         <!-- <div class=" kt-margin-t-20">
                                     <div class="row">
                                         <div class="col-3 offset-1 p-0">
-                                            <label class="font-weight-500 text-color">City</label>
+                                            <label  class="mandatory  font-weight-500 text-color">City</label>
                                         </div>
                                         <div class="col-7">
                                             <select class="form-control" margin>
@@ -270,7 +270,7 @@
                             <div class=" kt-margin-t-20">
                                 <div class="row">
                                     <div class="col-3 offset-1 p-0">
-                                        <label class="font-weight-500 text-color">Pin Code</label>
+                                        <label  class="mandatory  font-weight-500 text-color">Pin Code</label>
                                     </div>
                                     <div class="col-7">
                                         <input formControlName="pinCode" type="number" aria-label="Pin Code"
@@ -287,7 +287,7 @@
                             <!-- <div class=" kt-margin-t-20">
                                     <div class="row">
                                         <div class="col-3 offset-1 p-0">
-                                            <label class="font-weight-500 text-color">Pin Code</label>
+                                            <label  class="mandatory  font-weight-500 text-color">Pin Code</label>
                                         </div>
                                         <div class="col-7">
                                             <input type="text" aria-label="First name" placeholder="000000" class="form-control">
@@ -299,7 +299,7 @@
                         <div class=" kt-margin-t-20">
                             <div class="row">
                                 <div class="col-3 offset-1 p-0">
-                                    <label class="font-weight-500 text-color">Address
+                                    <label  class="mandatory  font-weight-500 text-color">Address
                                     </label>
                                 </div>
                                 <div class="col-7">
@@ -322,7 +322,7 @@
                             <div class=" kt-margin-t-20">
                                 <div class="row">
                                     <div class="col-3 offset-1 p-0">
-                                        <label class="font-weight-500 text-color">Attach Proof</label>
+                                        <label  class="mandatory  font-weight-500 text-color">Attach Proof</label>
                                     </div>
                                     <div class="col-7">
                                         <div class="input-group mb-3">
@@ -334,7 +334,7 @@
                                                     id="basic-addon2" (click)="file.click()">Attach</span>
                                             </div>
                                         </div>
-                                        <label class="file d-none">
+                                        <label  class="mandatory  file d-none">
                                             <input type="file" id="file" aria-label="File browser example" #file
                                                 (input)="getFileInfo($event,i)">
                                             <span class="file-custom"></span>
@@ -346,7 +346,7 @@
                             <!-- <div class=" kt-margin-t-20">
                                     <div class="row">
                                         <div class="col-3 offset-1 p-0">
-                                            <label class="font-weight-500 text-color">Attach Proof</label>
+                                            <label  class="mandatory  font-weight-500 text-color">Attach Proof</label>
                                         </div>
                                         <div class="col-7">
                                             <div class="input-group mb-3">
@@ -357,7 +357,7 @@
                                                         (click)="file.click()">Attach</span>
                                                 </div>
                                             </div>
-                                            <label class="file d-none">
+                                            <label  class="mandatory  file d-none">
                                                 <input type="file" id="file" aria-label="File browser example" #file
                                                     (input)="getFileInfo($event)">
                                                 <span class="file-custom"></span>

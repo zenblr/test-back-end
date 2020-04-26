@@ -1,9 +1,6 @@
 :host{
-    kt-portlet-body {
-		height: 69vh;
-		overflow-y: auto;
-	}
     .min-60{
-        min-height: 60vh !important;
+        min-height: 69vh !important;
+        overflow-y: auto;
     }
 }
