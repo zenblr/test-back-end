@@ -107,19 +107,22 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         return res.status(404).json({ message: "Status confirm is not there in status table" });
     }
     let statusId = status.id
-    let getCustomerInfo = await models.customer.findOne({ where: { mobileNumber: mobileNumber, statusId } })
+    let getCustomerInfo = await models.customer.findOne({ 
+        where: { mobileNumber: mobileNumber, statusId },
+        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId']
+     })
     if (check.isEmpty(getCustomerInfo)) {
         return res.status(404).json({ message: "Your status is not confirm" });
     }
 
-    let findCustomerKyc = await models.kycCustomerPersonalDetail.findOne({ where: { customerId: getCustomerInfo.id } })
+    let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { customerId: getCustomerInfo.id } })
     if (!check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer Kyc information is already created." });
     }
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
-    let createCustomerKyc = await models.kycCustomerPersonalDetail.create({
+    let createCustomerKyc = await models.customerKycPersonalDetail.create({
         customerId: getCustomerInfo.id,
         firstName: getCustomerInfo.firstName,
         lastName: getCustomerInfo.lastName,
@@ -127,7 +130,12 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         createdBy,
         modifiedBy
     });
-    return res.status(200).json({ customerId: getCustomerInfo.id, customerKycId: createCustomerKyc.id })
+    return res.status(200).json({ 
+        customerId: getCustomerInfo.id, 
+        customerKycId: createCustomerKyc.id,
+        stateId: getCustomerInfo.stateId,
+        cityId: getCustomerInfo.cityId
+    })
 }
 
 
@@ -135,7 +143,7 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
 
     let { customerId, customerKycId, identityProof, identityTypeId, address } = req.body
 
-    let findCustomerKyc = await models.kycCustomerAddressDetail.findOne({ where: { customerKycId: customerKycId } })
+    let findCustomerKyc = await models.customerKycAddressDetail.findOne({ where: { customerKycId: customerKycId } })
 
     if (!check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer address details is already filled." });
@@ -150,9 +158,9 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
     }
 
     await sequelize.transaction(async t => {
-        await models.kycCustomerPersonalDetail.update({ identityProof: identityProof, identityTypeId: identityTypeId }, { where: { id: customerKycId }, transaction: t });
+        await models.customerKycPersonalDetail.update({ identityProof: identityProof, identityTypeId: identityTypeId }, { where: { id: customerKycId }, transaction: t });
 
-        await models.kycCustomerAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
+        await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
     })
     return res.status(200).json({ customerId, customerKycId })
 }
@@ -167,13 +175,13 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     if (customer.mobileNumber == alternateMobileNumber) {
         return res.status(200).json({ message: "Your alternate Mobile number is same as your previous Mobile bumber " });
     }
-    let findAlternateNumberExist = await models.kycCustomerPersonalDetail.findOne({ where: { alternateMobileNumber } })
+    let findAlternateNumberExist = await models.customerKycPersonalDetail.findOne({ where: { alternateMobileNumber } })
 
     if (!check.isEmpty(findAlternateNumberExist)) {
         return res.status(404).json({ message: "Your alternate Mobile number is already exist." });
     }
 
-    let details = await models.kycCustomerPersonalDetail.update({
+    let details = await models.customerKycPersonalDetail.update({
         profileImage: profileImage,
         dateOfBirth: dateOfBirth,
         alternateMobileNumber, alternateMobileNumber,
@@ -194,12 +202,12 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
 exports.submitCustomerKycBankDetail = async (req, res, next) => {
 
     let { customerId, customerKycId, bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifcCode, passbookProof } = req.body
-    let findCustomerKyc = await models.kycCustomerBankDetail.findOne({ where: { customerKycId: customerKycId } })
+    let findCustomerKyc = await models.customerKycBankDetail.findOne({ where: { customerKycId: customerKycId } })
 
     if (!check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer bank details is already filled." });
     }
-    await models.kycCustomerBankDetail.create({
+    await models.customerKycBankDetail.create({
         customerId: customerId,
         customerKycId: customerKycId,
         bankName: bankName,
@@ -211,24 +219,32 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
         passbookProof: passbookProof
     })
 
-    let customerKycReview = await models.kycCustomerPersonalDetail.findOne({
+    let customerKycReview = await models.customerKycPersonalDetail.findOne({
         where: { id: customerKycId },
         include: [{
-            model: models.kycCustomerAddressDetail,
+            model: models.customerKycAddressDetail,
             as: 'customerKycAddress'
         }, {
-            model: models.kycCustomerBankDetail,
+            model: models.customerKycBankDetail,
             as: 'customerKycBank'
         }]
     })
 
-    return res.status(200).json({ customerKycReview })
+    return res.status(200).json({ customerKycReview,customerId, customerKycId })
 
 }
 
 
 exports.submitAllKycInfo = async (req, res, next) => {
-    
+
     let { customerId, customerKycId } = req.body;
 
+    let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { id: customerKycId } })
+    if (check.isEmpty(findCustomerKyc)) {
+        return res.status(404).json({ message: "This customer kyc detailes is not filled." });
+    }
+    await models.customerKycPersonalDetail.update({ isKycSubmitted: true }, { where: { id: customerKycId } })
+
+    return res.status(200).json({ message: `successful`, customerId, customerKycId })
 }
+
