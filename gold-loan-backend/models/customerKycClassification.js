@@ -11,19 +11,23 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false
         },
+
         customerBehaviourRatingAppraisal: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.ENUM,
             field: 'customer_behaviour_rating_appraisal',
+            values: ['1', '2', '3', '4', '5'],
             allowNull: false
         },
         customerIdProofRatingAppraisal: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.ENUM,
             field: 'customer_id_proof_rating_appraisal',
+            values: ['1', '2', '3', '4', '5'],
             allowNull: false
         },
         customerAddressProofRatingAppraisal: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.ENUM,
             field: 'customer_address_proof_rating_appraisal',
+            values: ['1', '2', '3', '4', '5'],
             allowNull: false
         },
         customerKycStatusFromAppraisal: {
@@ -37,20 +41,22 @@ module.exports = (sequelize, DataTypes) => {
             field: 'appraisal_id',
             allowNull: false
         },
-
         customerBehaviourRatingBranchManager: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.ENUM,
             field: 'customer_behaviour_rating_branch_manager',
+            values: ['1', '2', '3', '4', '5'],
         },
         customerIdProofRatingBranchManager: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.ENUM,
             field: 'customer_id_proof_rating_branch_manager',
+            values: ['1', '2', '3', '4', '5'],
         },
         customerAddressProofRatingBranchManager: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.ENUM,
             field: 'customer_address_proof_rating_branch_manager',
+            values: ['1', '2', '3', '4', '5'],
         },
-        customerKycStatusFromBranchManager: {
+         customerKycStatusFromBranchManager: {
             type: DataTypes.ENUM,
             field: 'customer_kyc_status_from_branch_manager',
             values: ['confirm', 'pending', 'closed'],
@@ -74,13 +80,7 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'appraisalId', as: 'appraisalInfo' });
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'branchManagerId', as: 'branchManagerInfo' });
-
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'customerBehaviourRatingAppraisal', as: 'behaviourRatingAppraisal' });        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'customerIdProofRatingAppraisal', as: 'idProofRatingAppraisal' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'customerAddressProofRatingAppraisal', as: 'addressProofRatingAppraisal' });
-
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'customerBehaviourRatingBranchManager', as: 'behaviourRatingBM' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'customerIdProofRatingBranchManager', as: 'idProofRatingBM' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'customerKycStatusFromBranchManager', as: 'addressProofRatingBM' });
+       
     }
 
     return CustomerKycClassification;
