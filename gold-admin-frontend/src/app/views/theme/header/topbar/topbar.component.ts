@@ -101,8 +101,7 @@ export class TopbarComponent implements OnInit {
 		this.subscriptions.forEach(sb => sb.unsubscribe());
 	}
 	reset() {
-		this.destroy$.next()
-		this.destroy$.complete()
+		this.totalRecords = 0;
 		this.rightButton = false;
 		this.type1 = '';
 		this.value1 = '';

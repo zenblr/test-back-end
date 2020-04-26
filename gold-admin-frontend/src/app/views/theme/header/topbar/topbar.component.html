@@ -1,10 +1,10 @@
 <!-- begin:: Header Topbar -->
 <div class="kt-header__topbar kt-margin-t-10 ">
     <div class="row justify-content-center">
-        <div class="col-4">
-            <div class="kt-subheader__main" [hidden]="subheaderService.disabled$ | async" id="kt_subheader">
+        <div class="col-4 align-self-center">
+            <div class="kt-subheader__main m-0" [hidden]="subheaderService.disabled$ | async" id="kt_subheader">
                 <label *ngIf="title" class="kt-subheader__title">{{title}}</label>
-                <span class=""></span>
+                <span class="" *ngIf="totalRecords"></span>
                 <label *ngIf="totalRecords" class="kt-subheader__desc">{{totalRecords}}</label>
             </div>
         </div>
