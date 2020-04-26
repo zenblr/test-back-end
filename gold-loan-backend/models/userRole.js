@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'user_role'
     });
 
+    UserRole.getAllRole = (userId) => UserRole.findAll({ where: {userId, isActive: true }, attributes: ['roleId']});
 
     UserRole.associate = function(models) {
         UserRole.belongsTo(models.user, { foreignKey: 'userId', as: 'user' });
