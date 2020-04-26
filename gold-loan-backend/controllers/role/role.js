@@ -117,7 +117,8 @@ exports.readRolesPagination = async (req, res, next) => {
     const searchQuery = {
         [Op.or]:
         {
-            roleName: { [Op.iLike]: search + "%" }
+            roleName: { [Op.iLike]: search + "%" },
+            description: { [Op.iLike]: search + "%" }
         },
         isActive: true,
     };
@@ -126,11 +127,35 @@ exports.readRolesPagination = async (req, res, next) => {
         order: [["id", "DESC"]],
         offset: offset,
         limit: pageSize,
+        include: [
+          {
+            model: models.user,
+            as:'createdByUser',
+            attributes: ['firstName','lastName']
+          },
+          {
+            model: models.user,
+            as:'updatedByUser',
+            attributes: ['firstName','lastName']
+          },
+        ]
     });
 
     let count = await models.role.findAll({
         where: searchQuery,
         order: [["id", "DESC"]],
+        include: [
+          {
+            model: models.user,
+            as:'createdByUser',
+            attributes: ['firstName','lastName']
+          },
+          {
+            model: models.user,
+            as:'updatedByUser',
+            attributes: ['firstName','lastName']
+          },
+        ]
     });
     if (!readRoleData) {
         return res.status(404).json({ message: "data not found" });
