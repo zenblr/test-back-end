@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, EventEmitter, Output, ChangeDetectorRef }
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../../views/partials/components';
 import { UserDetailsService } from '../../../../../core/kyc-settings';
-import { map } from 'rxjs/operators';
+import { map, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -141,7 +141,7 @@ export class UserDetailsComponent implements OnInit {
     //   this.userBasicForm.markAllAsTouched()
     //   return
     // }
-
+    // this.userBasicForm.enable()
     // const basicForm = this.userBasicForm.value;
     // this.userDetailsService.basicDetails(basicForm).pipe(
     //   map(res => {
@@ -149,6 +149,10 @@ export class UserDetailsComponent implements OnInit {
     //     if (res) {
     //       this.next.emit(true);
     //     }
+    //   }),
+    //   finalize(() => {
+    //     this.userBasicForm.disable();
+    //     this.userBasicForm.controls.mobileNumber.enable()
     //   })
     // ).subscribe();
 

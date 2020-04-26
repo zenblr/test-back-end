@@ -24,7 +24,7 @@
                         <!-- Partner Name -->
                         <div class="row">
                             <div class="col-4 form-label">
-                                <label for="">Partner Name</label>
+                                <label [class.mandatory] ="isMandatory " for="">Partner Name</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="name" autocomplete="off"
@@ -38,7 +38,7 @@
 
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="">Commission %</label>
+                                <label [class.mandatory] ="isMandatory " for="">Commission %</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="commission" type="number"

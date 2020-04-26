@@ -6,6 +6,9 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
   selector: 'kt-image-preview-dialog',
   templateUrl: './image-preview-dialog.html',
   styles: [`.mat-dialog-container:{background:transparent !important}
+  img{
+    border-radius:15px !important;
+  }
   `]
 
 })

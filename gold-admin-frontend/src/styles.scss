@@ -86,7 +86,7 @@ body {
 .form-control {
 	display: block;
     width: 100%;
-    padding: .65rem 1rem !important;
+    padding: .65rem !important;
     font-size: 1rem !important;
     font-weight: 400 !important;
     line-height: 1.5 !important;
@@ -381,16 +381,28 @@ mat-header-row{
 	}
 }
 
-select:hover{
 
-    background-color: #000;
 
-}
-option:focus{
-	background-color: #000 !important;
+.carousel-control-prev-icon{
+    position: absolute;
+    left: -30px;
+  }
+  .carousel-control-next-icon{
+    position: absolute;
+    right: -30px;
+  }
 
-}
-select option:hover{
-	background-color: #000;
+  .input-group-text{
+	  border-radius: 9px !important;
+	  margin-left: -10px;
+	  z-index: 2;
+	  border-top-left-radius: 0 !important;
+	  border-bottom-left-radius: 0 !important;
+  }
 
-}
+  .mandatory::after{
+	content: '*';
+	color: red !important;
+	margin-left: 5px;
+
+  }
