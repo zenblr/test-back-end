@@ -362,12 +362,14 @@
                         <div class=" kt-margin-t-20 kt-margin-b-20">
                             <div class="">
                                 <div class="col">
-                                    <div class="img-container" *ngIf="(i==0 && images.residential.length== 0)">
+                                    <div class="img-container offset-4" style="margin-left: 158px;"
+                                        *ngIf="(i==0 && images.residential.length== 0)">
                                         <img class="placeholder-image"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
                                             alt="placeholder">
                                     </div>
-                                    <div class="img-container" *ngIf="(i==1 && images.permanent.length==0)">
+                                    <div class="img-container offset-4" style="margin-left: 158px;"
+                                        *ngIf="(i==1 && images.permanent.length==0)">
                                         <img class="placeholder-image"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
                                             alt="placeholder">
@@ -418,8 +420,13 @@
 
             </div>
 
-            <div class="kt-margin-t-20 kt-margin-b-20">
-                <kt-button [value]="'Next'" [type]="'button'" (action)="submit()"></kt-button>
+            <div class="row">
+                <div class="col-6">
+                    <div class="offset-4 kt-margin-t-20 kt-margin-b-20">
+                        <kt-button style="margin-left: 12px;" [value]="'Next'" [type]="'button'" (action)="submit()">
+                        </kt-button>
+                    </div>
+                </div>
             </div>
 
         </form>

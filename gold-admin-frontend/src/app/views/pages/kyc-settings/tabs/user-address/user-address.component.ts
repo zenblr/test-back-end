@@ -23,8 +23,8 @@ export class UserAddressComponent implements OnInit {
   addressProofs = [];
   identityProofs = [];
   images = { identityProof: [], residential: [], permanent: [] };
-  customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2 }
+  // customerDetails = this.userDetailsService.userData;
+  customerDetails = { customerId: 1, customerKycId: 2 }
 
   constructor(
     private fb: FormBuilder,
@@ -136,32 +136,31 @@ export class UserAddressComponent implements OnInit {
   }
 
   submit() {
-    // this.next.emit(true);
-    // console.log(this.identityForm.value);
-    if (this.identityForm.invalid) {
-      this.identityForm.markAllAsTouched()
-      return
-    }
 
-    this.identityForm.patchValue({ identityProof: this.images.identityProof });
+    // if (this.identityForm.invalid) {
+    //   this.identityForm.markAllAsTouched()
+    //   return
+    // }
 
-    this.addressControls.controls[0].patchValue({ addressProof: this.images.residential });
+    // this.identityForm.patchValue({ identityProof: this.images.identityProof });
 
-    this.addressControls.controls[1].patchValue({ addressProof: this.images.permanent });
+    // this.addressControls.controls[0].patchValue({ addressProof: this.images.residential });
 
-    const data = this.identityForm.value;
-    console.log(data)
+    // this.addressControls.controls[1].patchValue({ addressProof: this.images.permanent });
 
-    this.userAddressService.addressDetails(data).pipe(
-      map(res => {
-        if (res) {
-          this.next.emit(true);
-        }
-        console.log(res);
-      })
-    ).subscribe();
+    // const data = this.identityForm.value;
+    // console.log(data)
 
-    // this.next.emit(true);
+    // this.userAddressService.addressDetails(data).pipe(
+    //   map(res => {
+    //     if (res) {
+    //       this.next.emit(true);
+    //     }
+    //     console.log(res);
+    //   })
+    // ).subscribe();
+
+    this.next.emit(true);
 
 
   }

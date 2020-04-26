@@ -1,43 +1,104 @@
 <kt-portlet>
     <kt-portlet-body>
         <div class="container">
-            <form action="">
+            <form action="" [formGroup]="personalForm">
                 <div class="row justify-content-center kt-margin-t-30">
                     <div class="col-12">
                         <div class="row">
-                            <div class="col-2 text-right">
-                                <img src="../../../../../../assets/media/users/100_5.jpg" height="100" width="100"
-                                    alt="" />
-                            </div>
-                            <div class="col-3 align-self-center">
-                                <input type="file" #file class="d-none" />
-                                <label (click)="file.click()" class="kt-pointer text-primary">Change Profile
-                                    Picture</label>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="offset-1 kt-margin-r-25 profile-div">
+                                        <img class="" src="../../../../../../assets/media/icons/user.png" alt="" />
+                                    </div>
+
+                                    <div class="col align-self-center">
+                                        <input type="file" #file class="d-none"
+                                            (input)="getFileInfo($event,'profile')" />
+                                        <label (click)="file.click()" class="kt-pointer text-primary"
+                                            style="font-weight: 600;">Change Profile
+                                            Picture</label>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
+
+                        <!-- DOB & Gender -->
+                        <div class="row">
+                            <div class="col-6 kt-margin-t-20">
+                                <div class="row">
+                                    <div class="col-3 offset-1 form-label">
+                                        <label class="">Date of Birth</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <mat-form-field appearance="box" class="example-full-width">
+                                            <mat-label>Choose a date</mat-label>
+                                            <input matInput [matDatepicker]="picker">
+                                            <mat-datepicker-toggle matSuffix [for]="picker">
+                                                <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-6 kt-margin-t-20">
+                                <div class="row">
+                                    <div class="col-3 offset-1 form-label">
+                                        <label class="">Gender</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <select formControlName="gender" class="form-control"
+                                            [class.isError]="controls.gender.touched && controls.gender.invalid">
+                                            <option disabled selected> Select </option>
+                                            <option value="m">Male</option>
+                                            <option value="f">Female</option>
+                                            <option value="o">Other</option>
+                                        </select>
+                                        <mat-error *ngIf="controls.gender.errors?.required && controls.gender.touched">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row kt-margin-t-20">
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="offset-1 col-3">
-                                        <label class="font-weight-500 text-color">Mobile</label>
+                                    <div class="offset-1 col-3 form-label">
+                                        <label class="">Alternate Mobile No.</label>
                                     </div>
                                     <div class="col-7">
-                                        <input type="text" class="form-control" numbersOnly
-                                            placeholder="Mobile Number" />
+                                        <input type="text" formControlName="alternateMobileNumber" class="form-control"
+                                            maxlength="10" numbersOnly placeholder="Mobile Number"
+                                            [class.isError]="controls.alternateMobileNumber.touched && controls.alternateMobileNumber.invalid" />
+                                        <mat-error
+                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                            Required field
+                                        </mat-error>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="col-3 offset-1">
-                                        <label class="font-weight-500 text-color">Martial Status</label>
+                                    <div class="col-3 offset-1 form-label">
+                                        <label>Martial Status</label>
                                     </div>
                                     <div class="col-7">
-                                        <select name="" id="" class="form-control" placeholder="">
+                                        <select name="" id="" formControlName="martialStatus" class="form-control"
+                                            [class.isError]="controls.martialStatus.touched && controls.martialStatus.invalid">
                                             <option [selected]="true" [disabled]="true">Select Status</option>
-                                            <option [value]="1">Married</option>
-                                            <option [value]="2">Single</option>
+                                            <option value="single">Single</option>
+                                            <option value="married">Married</option>
+                                            <option value="divorced">Divorced</option>
                                         </select>
+                                        <mat-error
+                                            *ngIf="controls.martialStatus.errors?.required && controls.martialStatus.touched">
+                                            Required field
+                                        </mat-error>
                                     </div>
                                 </div>
                             </div>
@@ -45,24 +106,37 @@
                         <div class="row kt-margin-t-20">
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="col-3 offset-1">
-                                        <label class="font-weight-500 text-color">Occupation</label>
+                                    <div class="col-3 offset-1 form-label">
+                                        <label>Occupation</label>
                                     </div>
                                     <div class="col-7">
-                                        <select name="" id="" class="form-control" placeholder="Select Occupation">
+                                        <select name="" id="" formControlName="occupationId" class="form-control"
+                                            placeholder="Select Occupation"
+                                            [class.isError]="controls.occupationId.touched && controls.occupationId.invalid">
                                             <option [selected]="true" [disabled]="true">Select Occupation</option>
-                                            <option value=""></option>
+                                            <option [value]="occ.id" *ngFor="let occ of occupations;"> {{occ.name}}
+                                            </option>
                                         </select>
+                                        <mat-error
+                                            *ngIf="controls.occupationId.errors?.required && controls.occupationId.touched">
+                                            Required field
+                                        </mat-error>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="col-3 offset-1">
-                                        <label class="font-weight-500 text-color">Father / Spouse Name</label>
+                                    <div class="col-3 offset-1 form-label">
+                                        <label>Father / Spouse Name</label>
                                     </div>
                                     <div class="col-7">
-                                        <input type="text" class="form-control" placeholder="" />
+                                        <input type="text" formControlName="spouseName" class="form-control"
+                                            placeholder="Kane Taylor"
+                                            [class.isError]="controls.spouseName.touched && controls.spouseName.invalid" />
+                                        <mat-error
+                                            *ngIf="controls.spouseName.errors?.required && controls.spouseName.touched">
+                                            Required field
+                                        </mat-error>
                                     </div>
                                 </div>
                             </div>
@@ -70,19 +144,21 @@
                         <div class="row kt-margin-t-20">
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="col-3 offset-1">
-                                        <label class="font-weight-500 text-color">Signature</label>
+                                    <div class="col-3 offset-1 form-label">
+                                        <label class="">Signature</label>
                                     </div>
                                     <div class="col-7">
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" placeholder="Sample.csv"
+                                            <input type="text" class="form-control" placeholder="Select File"
                                                 aria-label="Recipient's username" aria-describedby="basic-addon2"
-                                                readonly />
+                                                readonly
+                                                [class.isError]="controls.alternateMobileNumber.touched && controls.alternateMobileNumber.invalid" />
                                             <div class="input-group-append">
                                                 <span class="input-group-text bg kt-pointer font-weight"
                                                     id="basic-addon2" (click)="signature.click()">Attach</span>
                                             </div>
-                                            <input type="file" class="d-none" #signature>
+                                            <input type="file" class="d-none" #signature
+                                                (input)="getFileInfo($event,'signature')">
                                         </div>
                                     </div>
                                 </div>
@@ -91,8 +167,14 @@
                         <div class="row kt-margin-t-20 kt-margin-b-20">
                             <div class="col-6">
                                 <div class="col-8 offset-4">
-                                    <img src="../../../../../../assets/media/users/300_10.jpg" alt="" height="150px"
-                                        width="250px">
+                                    <div class="img-container">
+                                        <img class="placeholder-image"
+                                            src="../../../../../../assets/media/icons/image-placeholder.png"
+                                            alt="placeholder">
+                                    </div>
+
+                                    <!-- <img src="../../../../../../assets/media/users/300_10.jpg" alt="" height="150px"
+                                        width="250px"> -->
                                     <div class="kt-margin-t-20 text-color font-11">
                                         (Please verify the detail before moving forward)
                                     </div>

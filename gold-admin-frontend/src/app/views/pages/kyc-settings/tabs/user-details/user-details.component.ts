@@ -133,24 +133,24 @@ export class UserDetailsComponent implements OnInit {
   }
 
   submit() {
-    if (this.userBasicForm.invalid) {
-      this.userBasicForm.markAllAsTouched()
-      return
-    }
+    // if (this.userBasicForm.invalid) {
+    //   this.userBasicForm.markAllAsTouched()
+    //   return
+    // }
 
-    const basicForm = this.userBasicForm.value;
-    this.userDetailsService.basicDetails(basicForm).pipe(
-      map(res => {
-        console.log(res);
-        if (res) {
-          this.next.emit(true);
-        }
-      })
-    ).subscribe();
+    // const basicForm = this.userBasicForm.value;
+    // this.userDetailsService.basicDetails(basicForm).pipe(
+    //   map(res => {
+    //     console.log(res);
+    //     if (res) {
+    //       this.next.emit(true);
+    //     }
+    //   })
+    // ).subscribe();
 
 
 
-    // this.next.emit(true);  // delete this line    
+    this.next.emit(true);  // delete this line    
   }
 
 }
