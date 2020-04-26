@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { finalize, catchError, map } from 'rxjs/operators';
 import { ToastrComponent } from '../toastr/toastr.component';
 import {MatDialog } from '@angular/material'
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-uplod-data-image',
@@ -27,7 +28,9 @@ export class UplodDataImageComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private sharedService: SharedService,
     public dilaog:MatDialog,
-    private layoutUtilsService: LayoutUtilsService
+    private layoutUtilsService: LayoutUtilsService,
+    private ele:ElementRef,
+    private toastrService:ToastrService
   ) { }
 
 
@@ -39,21 +42,42 @@ export class UplodDataImageComponent implements OnInit {
     if (details.length == 0) {
       this.index == null
     } else {
-      this.sharedService.uploadFile(details[0]).pipe(map(res => {
-        if (this.index != null) {
-          this.images.splice(this.index, 1, res.uploadFile.URL)
-          this.index = null;
-        } else {
-          this.images.push(res.uploadFile.URL)
-        }
-        this.ref.detectChanges();
-      }),
-        catchError(err => {
-          this.toastr.errorToastr('Please try Again');
-          throw err
-        }), finalize(() => {
-          this.file.nativeElement.value = ''
-        })).subscribe()
+      var reader = new FileReader()
+      console.log(reader.readAsDataURL(details[0]))
+      console.log(details[0])
+      var reader = new FileReader();
+      const img = new Image();
+      img.src = window.URL.createObjectURL(details[0]);
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (_event) => {
+        setTimeout(() => {
+          const width = img.naturalWidth;
+          const height = img.naturalHeight;
+          window.URL.revokeObjectURL(img.src);
+          if (width !== 600 || height !== 300) {  
+            this.toastrService.error('Please Upload Image of Valid Size');
+            console.log(width , height)
+          }else{
+            this.sharedService.uploadFile(details[0]).pipe(map(res => {
+              if (this.index != null) {
+                this.images.splice(this.index, 1, res.uploadFile.URL)
+                this.index = null;
+              } else {
+                this.images.push(res.uploadFile.URL)
+              }
+              this.ref.detectChanges();
+            }),
+              catchError(err => {
+                this.toastrService.error('Please try Again');
+                throw err
+              }), finalize(() => {
+                this.file.nativeElement.value = ''
+              })).subscribe()
+          }
+          this.ref.detectChanges();
+        }, 2000);
+      }
+      
     }
   }
 
@@ -73,8 +97,7 @@ export class UplodDataImageComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         console.log(res);
-        this.images.splice(index, 1)
-        this.toastr.successToastr('Banner has been deleted')
+        this.images.splice(index, 1);
         this.ref.detectChanges();
       }
     });
@@ -89,7 +112,7 @@ export class UplodDataImageComponent implements OnInit {
         images:this.images,
         index:index
       },
-      width:"75%"
+      width:"auto"
     })
   }
 

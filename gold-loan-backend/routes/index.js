@@ -75,18 +75,22 @@ const occupation = require('./occupation'); // occupation
 router.use('/occupation', occupation)
 
 
-const identityType=require('./identityType'); // identity Type
-router.use('/identity-type',identityType)
+const identityType = require('./identityType'); // identity Type
+router.use('/identity-type', identityType);
 
-const customerKyc = require('./customerKyc');
-router.use('/kyc',customerKyc);
+const addressProofType = require('./addressProofType'); // identity Type
+router.use('/address-proof-type', addressProofType);
+
+const customerKyc = require('./customerKyc')
+router.use('/kyc', customerKyc)
+
+const customerClassification = require('./customerClassification')
+router.use('/classification', customerClassification)
 
 const rolePermission = require('./rolePermission');
 router.use('/role-permission',rolePermission);
 
 const modules = require('./module');
 router.use('/modules',modules);
-
-
 
 module.exports = router;

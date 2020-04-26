@@ -1,5 +1,5 @@
 // Angular
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
@@ -16,6 +16,11 @@ export class DeleteEntityDialogComponent implements OnInit {
 	 * @param dialogRef: MatDialogRef<DeleteEntityDialogComponent>
 	 * @param data: any
 	 */
+
+	@Input() isDisabled: boolean;
+	@Input() value
+	@Output() action = new EventEmitter();
+
 	constructor(
 		public dialogRef: MatDialogRef<DeleteEntityDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any

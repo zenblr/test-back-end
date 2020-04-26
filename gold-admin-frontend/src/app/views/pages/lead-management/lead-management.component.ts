@@ -16,7 +16,7 @@ import { DataTableService } from '../../../core/shared/services/data-table.servi
 export class LeadManagementComponent implements OnInit {
 
   dataSource: CustomerManagementDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'status'];
+  displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'status', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -102,13 +102,27 @@ export class LeadManagementComponent implements OnInit {
   addLead() {
     // console.log(event);
     const dialogRef = this.dialog.open(AddLeadComponent, {
-      data: { action: 'add' }
+      data: { action: 'add' },
+      width: '500px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();
       }
       this.customerManagementService.openModal.next(false);
+    });
+  }
+
+  editLead(role) {
+    const dialogRef = this.dialog.open(AddLeadComponent,
+      {
+        data: { id: role.id, action: 'edit' },
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadLeadsPage();
+      }
     });
   }
 }

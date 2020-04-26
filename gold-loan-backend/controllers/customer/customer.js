@@ -219,6 +219,22 @@ exports.getAllCustomers = async (req, res, next) => {
       [Op.or]: {
         first_name: { [Op.iLike]: search + "%" },
         last_name: { [Op.iLike]: search + "%" },
+        mobile_number: { [Op.iLike]: search + "%" },
+        status_name: sequelize.where(
+          sequelize.cast(sequelize.col("status.status_name"), "varchar"),
+          {
+            [Op.iLike]: search + "%"
+          }),
+        city_name: sequelize.where(
+          sequelize.cast(sequelize.col("city.name"), "varchar"),
+          {
+            [Op.iLike]: search + "%"
+          }),
+        state_name: sequelize.where(
+          sequelize.cast(sequelize.col("state.name"), "varchar"),
+          {
+            [Op.iLike]: search + "%"
+          }),
       },
     },
   ];

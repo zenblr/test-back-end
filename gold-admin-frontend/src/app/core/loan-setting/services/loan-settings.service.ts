@@ -20,7 +20,7 @@ export class LoanSettingsService {
     return this.http.get('api/scheme').pipe(
       map(res => res),
       catchError(err => {
-        this._toastr.error(err.message)
+        this._toastr.error(err.error.message)
         throw (err)
       }))
   }
@@ -28,7 +28,7 @@ export class LoanSettingsService {
     return this.http.post('api/scheme', data).pipe(
       map(res => res),
       catchError(err => {
-        this._toastr.error(err.message)
+        this._toastr.error(err.error.message)
         throw (err)
       }))
   }
@@ -36,7 +36,7 @@ export class LoanSettingsService {
     return this.http.post('api/upload-scheme', data).pipe(
       map(res => res),
       catchError(err => {
-        this._toastr.error(err.message)
+        this._toastr.error(err.error.message)
         throw (err)
       }))
   }

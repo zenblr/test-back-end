@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const KycCustomerBankDetail = sequelize.define('kycCustomerBankDetail', {
+    const CustomerKycBankDetail = sequelize.define('customerKycBankDetail', {
         // attributes
         customerKycId: {
             type: DataTypes.INTEGER,
@@ -47,15 +47,15 @@ module.exports = (sequelize, DataTypes) => {
     });
 
 
-    KycCustomerBankDetail.associate = function(models) {
+    CustomerKycBankDetail.associate = function(models) {
 
-        KycCustomerBankDetail.belongsTo(models.kycCustomerPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
+        CustomerKycBankDetail.belongsTo(models.customerKycPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
 
-        KycCustomerBankDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        CustomerKycBankDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
     }
 
 
 
-    return KycCustomerBankDetail;
+    return CustomerKycBankDetail;
 }

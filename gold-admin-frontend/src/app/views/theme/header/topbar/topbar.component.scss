@@ -3,6 +3,9 @@
 
 		// override default version style
 		.kt-header__topbar {
+
+			margin-top: 7px !important;
+
 			> :last-child:not([role="tooltip"]) {
 				.kt-header__topbar-item {
 					margin-right: 0 !important;
@@ -12,6 +15,26 @@
 			.kt-header__topbar-item {
 				margin-right: 0.36rem !important;
 			}
+
+			.kt-subheader__main {
+				.kt-subheader__title {
+					font-size: 16px !important;
+  					font-weight: 600 !important;
+				}
+
+				.kt-subheader__divider {
+					color: #969cb6;
+					font-size: 20px;
+					font-weight: 400;
+					margin: 0 10px 0 15px;
+				}
+				.kt-subheader__desc {
+					color: #969cb6;
+					font-size: 16px !important;
+					font-weight: 400;
+				}
+			}
+
 		}
 	}
 

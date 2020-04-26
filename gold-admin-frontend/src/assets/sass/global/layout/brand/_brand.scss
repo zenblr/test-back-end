@@ -24,6 +24,14 @@
 
 			}
 		}
+
+	}
+
+	.kt-aside__gold-rate {
+		.kt-aside--minimize {
+			display: none;
+				transition: kt-get($kt-aside-config, base, minimize, transition);
+		}
 	}
 
 	.kt-aside__brand-tools {

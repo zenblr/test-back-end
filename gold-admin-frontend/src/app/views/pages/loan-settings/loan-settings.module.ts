@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router'
 import { AngularMaterialModule } from '../angular-material/angular-material.module'
 import { PartialsModule } from '../../partials/partials.module'
 import { LoanStatusComponent } from './loan-status/loan-status.component';
-import { LoanSchemeComponent } from './loan-scheme/loan-scheme.component';
+// import { LoanSchemeComponent } from '../../partials/partials.module';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../core/_base/crud';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ActionNotificationComponent } from '../../partials/content/crud';
@@ -15,6 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddSchemeComponent } from './add-scheme/add-scheme.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { LoanSchemeComponent } from './loan-scheme/loan-scheme.component';
 
 const routes: Routes = [
   { path: 'loan-status', component: LoanStatusComponent },
@@ -24,7 +25,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     LoanStatusComponent,
-    LoanSchemeComponent, AddSchemeComponent
+    AddSchemeComponent
   ],
   imports: [
     CommonModule,

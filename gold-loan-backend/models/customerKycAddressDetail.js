@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const KycCustomerAddressDetail = sequelize.define('kycCustomerAddressDetail', {
+    const CustomerKycAddressDetail = sequelize.define('customerKycAddressDetail', {
         // attributes
         customerKycId: {
             type: DataTypes.INTEGER,
@@ -46,17 +46,20 @@ module.exports = (sequelize, DataTypes) => {
     });
 
 
-    KycCustomerAddressDetail.associate = function (models) {
+    CustomerKycAddressDetail.associate = function (models) {
 
 
-        KycCustomerAddressDetail.belongsTo(models.kycCustomerPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
-        KycCustomerAddressDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        CustomerKycAddressDetail.belongsTo(models.customerKycPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
+        CustomerKycAddressDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
-        KycCustomerAddressDetail.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
-        KycCustomerAddressDetail.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
+
+        CustomerKycAddressDetail.belongsTo(models.addressProofType, { foreignKey: 'addressProofTypeId', as: 'addressProofType' });
+
+        CustomerKycAddressDetail.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
+        CustomerKycAddressDetail.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
     }
 
 
 
-    return KycCustomerAddressDetail;
+    return CustomerKycAddressDetail;
 }

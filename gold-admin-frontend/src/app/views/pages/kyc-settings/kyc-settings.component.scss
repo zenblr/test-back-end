@@ -1,6 +1,17 @@
 .nav-tabs .nav-link.active {
 	color: #5a5d6e;
 }
+
+.nav-tabs .nav-link.disabled {
+	color: rgba(90, 93, 110, 0.5);
+	background-color: #fafafa;
+
+	.step-number {
+		background-color: rgba(90, 93, 110, 0.5);
+		color: #d1deef;
+	}
+}
+
 .tab-link {
 	flex: 1 0 17%;
 	margin: 0 5px 0 5px;

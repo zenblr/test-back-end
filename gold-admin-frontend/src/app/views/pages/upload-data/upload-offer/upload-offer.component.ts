@@ -35,6 +35,7 @@ export class UploadOfferComponent implements OnInit {
         if (res.images.length > 0) {
           Array.prototype.push.apply(this.images, res.images)
           this.goldRate.patchValue(res.goldRate)
+          this.uploadOfferService.goldRate.next(res.goldRate);
           this.ref.detectChanges();
         }
         console.log(this.images)
@@ -49,6 +50,7 @@ export class UploadOfferComponent implements OnInit {
     this.uploadOfferService.uploadOffers(Number(this.goldRate.value), this.images).pipe(
       (map(res => {
         this.toastr.successToastr('Uploaded Sucessfully');
+        this.uploadOfferService.goldRate.next(this.goldRate.value);
       })),
       catchError(err => {
         this.toastr.errorToastr('Please try Again');
@@ -59,5 +61,5 @@ export class UploadOfferComponent implements OnInit {
     ).subscribe();
   }
 
-  
+
 }

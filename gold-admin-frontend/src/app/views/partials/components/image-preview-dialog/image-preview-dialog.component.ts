@@ -1,23 +1,43 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef, AfterViewInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'kt-image-preview-dialog',
-  template:` <img [src]=images[index] class="d-block m-auto">`,
-  styles:[`.mat-dialog-container:{background:transparent !important}
+  templateUrl: './image-preview-dialog.html',
+  styles: [`.mat-dialog-container:{background:transparent !important}
+  img{
+    border-radius:15px !important;
+  }
   `]
-  
-})
-export class ImagePreviewDialogComponent implements OnInit {
 
-  images:[] =[];
-  index:number= null;
-  constructor(public dialogRef: MatDialogRef<ImagePreviewDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: any) { }
+})
+export class ImagePreviewDialogComponent implements OnInit ,AfterViewInit {
+
+  images: [] = [];
+  index: number = null;
+  constructor(
+    config: NgbCarouselConfig,
+    public dialogRef: MatDialogRef<ImagePreviewDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private ele: ElementRef) {
+      config.interval = 0;
+      config.wrap = true;
+      config.keyboard = false;
+      config.pauseOnHover = false;
+      config.showNavigationIndicators = false;
+     }
 
   ngOnInit() {
-    this.images = this.data.images
-    this.index = this.data.index
+
+    this.images = this.data.images;
+    this.index = this.data.index;
+    
   }
 
+  ngAfterViewInit() {
+    var el =( document.querySelector('.mat-dialog-container') as HTMLElement)
+    el.style.background = "transparent";
+    el.style.boxShadow = "none";
+  }
 }
