@@ -84,6 +84,8 @@ router.use('/address-proof-type', addressProofType);
 const customerKyc = require('./customerKyc')
 router.use('/kyc', customerKyc)
 
+const customerLoanProcess = require('./customerLoanProcess'); // customer loan process module
+router.use('/loan-process', customerLoanProcess);
 
 
 module.exports = router;
