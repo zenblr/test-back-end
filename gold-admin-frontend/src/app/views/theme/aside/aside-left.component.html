@@ -91,6 +91,8 @@
 <ng-template #menuItemTextTemplate let-item="item" let-parentItem="parentItem">
 	<!-- if menu item has icon -->
 	<i *ngIf="item.icon" class="kt-menu__link-icon" [ngClass]="item.icon"></i>
+    <img *ngIf="item.src" class="kt-menu__link-icon kt-menu__link-icon-custom" [src]="item.src">
+
 
 	<!-- if menu item using bullet -->
 	<i *ngIf="parentItem && parentItem.bullet === 'dot'" class="kt-menu__link-bullet kt-menu__link-bullet--dot">
