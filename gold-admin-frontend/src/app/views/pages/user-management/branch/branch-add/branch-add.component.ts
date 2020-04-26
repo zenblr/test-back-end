@@ -23,7 +23,7 @@ export class BranchAddComponent implements OnInit {
   viewOnly = false;
   viewLoading: boolean = false;
   title: string;
-  isMandatory=false
+  isMandatory = false
 
   constructor(
     public dialogRef: MatDialogRef<BranchAddComponent>,
@@ -151,7 +151,7 @@ export class BranchAddComponent implements OnInit {
       this.branchService.addBranch(partnerData).subscribe(res => {
         // console.log(res);
         if (res) {
-          const msg = 'Partner Added Successfully';
+          const msg = 'Branch Added Successfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
         }
