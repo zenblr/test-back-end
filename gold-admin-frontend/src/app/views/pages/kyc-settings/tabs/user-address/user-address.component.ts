@@ -4,6 +4,7 @@ import { UserAddressService, UserDetailsService } from '../../../../../core/kyc-
 import { ToastrComponent } from '../../../../partials/components';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, catchError } from 'rxjs/operators';
+import { MatCheckbox } from '@angular/material';
 
 @Component({
   selector: 'kt-user-address',
@@ -44,8 +45,8 @@ export class UserAddressComponent implements OnInit {
 
   initForm() {
     this.identityForm = this.fb.group({
-      customerId: [this.customerDetails.customerId],
-      customerKycId: [this.customerDetails.customerKycId],
+      customerId: [''],
+      customerKycId: [''],
       identityTypeId: ['', [Validators.required]],
       identityProof: ['', [Validators.required]],
       address: this.fb.array([
@@ -100,10 +101,10 @@ export class UserAddressComponent implements OnInit {
           this.images.identityProof.push(res.uploadFile.URL)
           this.identityForm.get('identityProof').patchValue(event.target.files[0].name);
           this.ref
-        } if (type == 0) {
+        } if (type == 1) {
           this.images.residential.push(res.uploadFile.URL)
           this.addressControls.at(0)['controls'].addressProof.patchValue(event.target.files[0].name)
-        } if (type == 1) {
+        } if (type == 0) {
           this.images.permanent.push(res.uploadFile.URL)
           this.addressControls.at(1)['controls'].addressProof.patchValue(event.target.files[0].name)
         }
@@ -176,6 +177,21 @@ export class UserAddressComponent implements OnInit {
     // console.log(control);
     // return control.at(0) as FormGroup;
 
+  }
+
+  sameAddress(event:MatCheckbox){
+    if(event){
+      this.cities1 = this.cities0;
+      this.images.residential = this.images.permanent
+      this.addressControls.at(1).disable();
+      this.addressControls.at(1).patchValue(this.addressControls.at(0).value)
+    }else{
+      this.cities1 =[];
+      this.images.residential =[];
+      this.addressControls.at(1).reset();
+      this.addressControls.at(1).enable();
+
+    }
   }
 
 }

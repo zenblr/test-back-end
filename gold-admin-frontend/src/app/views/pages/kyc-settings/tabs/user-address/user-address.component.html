@@ -113,7 +113,15 @@
                 </div>
             </div>
         </div> -->
-
+            <div class="text-right kt-padding-r-50">
+                <div class="position-relative pos">
+                    <label class="custom-checkbox ">
+                        <span class="label-checkbox">Residential Same as Permanent</span>
+                        <input type="checkbox" class="" (change)="sameAddress($event.target.checked)">
+                        <span class="checkmark top-0"></span>
+                    </label>
+                </div>
+            </div>
 
             <div class="row">
                 <ng-container formArrayName="address"
@@ -125,9 +133,9 @@
                         <div class=" kt-margin-t-20">
                             <div class="row">
                                 <div class="col-3 offset-1 p-0">
-                                    <label class="font-weight-500 text-color" *ngIf="i == 0">Residential or Official
+                                    <label class="font-weight-500 text-color" *ngIf="i == 1">Residential or Official
                                         Address</label>
-                                    <label class="font-weight-500 text-color" *ngIf="i == 1"> Permanent
+                                    <label class="font-weight-500 text-color" *ngIf="i == 0"> Permanent
                                         Address</label>
                                 </div>
                                 <div class="col-7">
@@ -145,8 +153,8 @@
                         </div>
 
                         <div>
-                            <input *ngIf="i==0" value="residential" formControlName="addressType" type="hidden">
-                            <input *ngIf="i==1" value="permanent" formControlName="addressType" type="hidden">
+                            <input *ngIf="i==1" value="residential" formControlName="addressType" type="hidden">
+                            <input *ngIf="i==0" value="permanent" formControlName="addressType" type="hidden">
                         </div>
                         <!-- <div class=" kt-margin-t-20">
                                     <div class="row">
@@ -362,18 +370,18 @@
                         <div class=" kt-margin-t-20 kt-margin-b-20">
                             <div class="">
                                 <div class="col">
-                                    <div class="img-container" *ngIf="(i==0 && images.residential.length== 0)">
+                                    <div class="img-container" *ngIf="(i==1 && images.residential.length== 0)">
                                         <img class="placeholder-image"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
                                             alt="placeholder">
                                     </div>
-                                    <div class="img-container" *ngIf="(i==1 && images.permanent.length==0)">
+                                    <div class="img-container" *ngIf="(i==0 && images.permanent.length==0)">
                                         <img class="placeholder-image"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
                                             alt="placeholder">
                                     </div>
 
-                                    <div *ngIf="i==0 && images.residential.length > 0">
+                                    <div *ngIf="i==1 && images.residential.length > 0">
                                         <div class="row">
                                             <div class="col-6" *ngFor="let img of images.residential">
                                                 <div class="img-container">
@@ -383,7 +391,7 @@
                                         </div>
                                     </div>
 
-                                    <div *ngIf="i==1 && images.permanent.length > 0">
+                                    <div *ngIf="i==0 && images.permanent.length > 0">
                                         <div class="row">
                                             <div class="col-6" *ngFor="let img of images.permanent">
                                                 <div class="img-container">
