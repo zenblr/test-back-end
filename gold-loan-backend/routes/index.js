@@ -84,6 +84,9 @@ router.use('/address-proof-type', addressProofType);
 const customerKyc = require('./customerKyc')
 router.use('/kyc', customerKyc)
 
+const customerClassification = require('./customerClassification')
+router.use('/classification', customerClassification)
+
 
 
 module.exports = router;

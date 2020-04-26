@@ -12,27 +12,24 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
 
-        customerBehaviourRatingAppraisal: {
-            type: DataTypes.ENUM,
-            field: 'customer_behaviour_rating_appraisal',
-            values: ['1', '2', '3', '4', '5'],
+        behaviourRatingAppraisal: {
+            type: DataTypes.INTEGER,
+            field: 'behaviour_rating_appraisal',
             allowNull: false
         },
-        customerIdProofRatingAppraisal: {
-            type: DataTypes.ENUM,
-            field: 'customer_id_proof_rating_appraisal',
-            values: ['1', '2', '3', '4', '5'],
+        idProofRatingAppraisal: {
+            type: DataTypes.INTEGER,
+            field: 'id_proof_rating_appraisal',
             allowNull: false
         },
-        customerAddressProofRatingAppraisal: {
-            type: DataTypes.ENUM,
-            field: 'customer_address_proof_rating_appraisal',
-            values: ['1', '2', '3', '4', '5'],
+        addressProofRatingAppraisal: {
+            type: DataTypes.INTEGER,
+            field: 'address_proof_rating_appraisal',
             allowNull: false
         },
-        customerKycStatusFromAppraisal: {
+        kycStatusFromAppraisal: {
             type: DataTypes.ENUM,
-            field: 'customer_kyc_status_from_appraisal',
+            field: 'kyc_status_from_appraisal',
             values: ['confirm', 'pending', 'closed'],
             allowNull: false
         },
@@ -41,24 +38,21 @@ module.exports = (sequelize, DataTypes) => {
             field: 'appraisal_id',
             allowNull: false
         },
-        customerBehaviourRatingBranchManager: {
-            type: DataTypes.ENUM,
-            field: 'customer_behaviour_rating_branch_manager',
-            values: ['1', '2', '3', '4', '5'],
+        behaviourRatingBranchManager: {
+            type: DataTypes.INTEGER,
+            field: 'behaviour_rating_branch_manager',
         },
-        customerIdProofRatingBranchManager: {
-            type: DataTypes.ENUM,
-            field: 'customer_id_proof_rating_branch_manager',
-            values: ['1', '2', '3', '4', '5'],
+        idProofRatingBranchManager: {
+            type: DataTypes.INTEGER,
+            field: 'id_proof_rating_branch_manager',
         },
-        customerAddressProofRatingBranchManager: {
-            type: DataTypes.ENUM,
-            field: 'customer_address_proof_rating_branch_manager',
-            values: ['1', '2', '3', '4', '5'],
+        addressProofRatingBranchManager: {
+            type: DataTypes.INTEGER,
+            field: 'address_proof_rating_branch_manager',
         },
-         customerKycStatusFromBranchManager: {
+        kycStatusFromBranchManager: {
             type: DataTypes.ENUM,
-            field: 'customer_kyc_status_from_branch_manager',
+            field: 'kyc_status_from_branch_manager',
             values: ['confirm', 'pending', 'closed'],
         },
         branchManagerId: {
@@ -80,7 +74,21 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'appraisalId', as: 'appraisalInfo' });
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'branchManagerId', as: 'branchManagerInfo' });
-       
+
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'behaviourRatingAppraisal', as: 'behaviourAppraisal' });
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'idProofRatingAppraisal', as: 'idProofAppraisal' });
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'addressProofRatingAppraisal', as: 'addressProofAppraisal' });
+
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'behaviourRatingBranchManager', as: 'behaviourBranchManager' });
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'idProofRatingBranchManager', as: 'idProofBranchManager' });
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'addressProofRatingBranchManager', as: 'addressProofBranchManager' });
+
+  
+
+
+
+
+
     }
 
     return CustomerKycClassification;

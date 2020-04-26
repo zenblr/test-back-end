@@ -258,7 +258,7 @@ exports.getAllCustomers = async (req, res, next) => {
     limit: pageSize,
   });
   let count = await models.customer.findAll({
-    where: searchQuery,
+    where: { isActive: true },
     include: [
       {
         model: models.stage,
