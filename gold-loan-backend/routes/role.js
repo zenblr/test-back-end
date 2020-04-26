@@ -1,5 +1,5 @@
-const { addRole, readAllRole, updateRole, deactiveRole, readRolesPagination } = require("../controllers/role/role");
-const {createRoleValidation, updateRoleValidation} = require("../validations/role");
+const { addRole, readAllRole, updateRole, deactiveRole, readRolesPagination, addPermissions } = require("../controllers/role/role");
+const {createRoleValidation, updateRoleValidation, addPermissionsValidation} = require("../validations/role");
 const validationError = require('../middleware/validationError');
 const { wrapper } = require("../utils/errorWrap");
 
@@ -10,6 +10,8 @@ const checkAuth = require('../middleware/checkAuth');
 const route = express.Router();
 
 route.post('/', checkAuth,createRoleValidation,validationError, wrapper(addRole)); // add role
+
+route.post('/add-permissions',checkAuth,addPermissionsValidation,validationError,wrapper(addPermissions))
 
 route.get('/', checkAuth, wrapper(readRolesPagination)); //read role
 

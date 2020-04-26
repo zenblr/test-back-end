@@ -21,6 +21,14 @@ exports.createRoleValidation = [
     .withMessage("description is required")
 ];
 
+exports.addPermissionsValidation = [
+  body('roleId')
+    .exists().withMessage('roleId is required'),
+  body("permissions")
+    .exists()
+    .withMessage("permissions is required")
+];
+
 exports.updateRoleValidation = [
     body('roleName')
       .exists().withMessage('roleName is required')

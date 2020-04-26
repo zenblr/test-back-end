@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         moduleId: {
             type: DataTypes.INTEGER,
-            field: 'role_id'
+            field: 'module_id'
         },
         isActive: {
             type: DataTypes.BOOLEAN,

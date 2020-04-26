@@ -76,13 +76,38 @@ exports.readRolesPagination = async (req, res, next) => {
     return res.status(200).json({ data: readRoleData, count: count.length });
 };
 
-exports.deactiveRole = async (req, res, next) => {
-    const { stageId, isActive } = req.query;
-    let deactiveRole = await models.stage.update({ isActive: isActive }, { where: { id: stageId } })
-    if (deactiveRole[0] == 0) { return res.status(404).json({ message: "update failed" }) };
-    return res.status(200).json({ message: `Updated` })
+// exports.deactiveRole = async (req, res, next) => {
+//     const { stageId, isActive } = req.query;
+//     let deactiveRole = await models.stage.update({ isActive: isActive }, { where: { id: stageId } })
+//     if (deactiveRole[0] == 0) { return res.status(404).json({ message: "update failed" }) };
+//     return res.status(200).json({ message: `Updated` })
 
-}
+// }
+
+
+
+exports.addPermissions = async (req, res) => {
+    const { roleId, permissions } = req.body;
+    await sequelize.transaction(async t => {
+      let rolePermissions = await models.rolePermission.findAll(
+        {
+          where: { roleId, isActive: true },
+          attributes: ['permissionId'],
+          raw: true
+        },
+        { transaction: t }
+      );
+      let oldPermissions = await rolePermissions.map((data) => data.permissionId)
+      let deleteValue = await _.difference(oldPermissions, permissions);
+      let addValues = await _.difference(permissions, oldPermissions);
+      addValues.map(async (permissionId) => {
+        await models.rolePermission.create({ roleId, permissionId: permissionId }, { transaction: t });
+      });
+      await models.rolePermission.destroy({ where: { roleId, permissionId: deleteValue } }, { transaction: t });
+  
+    })
+    res.status(200).json({ message: "Success" });
+  };
 
 
 

@@ -134,5 +134,35 @@
  *         description: Updated
  *       404:
  *         description: This Role is already Exist
+ * /role/add-permissions:
+ *   post:
+ *     tags:
+ *       - Role
+ *     name: role
+ *     summary: To  add permissions to role (same api for add update)
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             roleId:
+ *               type: integer
+ *             permissions:
+*               type: array
+*               items:
+*                type:integer
+ *         required:
+ *           - roleId
+ *           - permissions
+ *     responses:
+ *       200:
+ *         description: permissions added created
+ *       404:
+ *         description: role not found
  * 
  */

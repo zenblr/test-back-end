@@ -6,6 +6,6 @@ const express = require('express');
 const route = express.Router();
 const checkAuth = require('../middleware/checkAuth');
 
-route.get('/', checkAuth, wrapper(readPermission)); //get permission
+route.get('/:roleId', checkAuth, wrapper(readPermission)); //get permission
 
 module.exports = route;

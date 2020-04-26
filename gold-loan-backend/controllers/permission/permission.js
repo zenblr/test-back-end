@@ -1,11 +1,24 @@
 const models = require("../../models");
 const check = require('../../lib/checkLib');
+const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
 
 //read permissiion
 exports.readPermission = async (req, res, next) => {
+    const roleId = req.params.roleId;
+    let getModules = await models.roleModule.findAll({
+        where : {roleId, isActive : true},
+        attributes: ['moduleId']
+    });
+    let moduleId = await getModules.map((module) => module.moduleId)
     let allPermissions = await models.module.findAll(
         {
-            where: { isActive : true },
+            where: {
+                id: {
+                    [Op.in]: moduleId
+                  },
+                 isActive : true
+                 },
             attributes: ['id', 'moduleName'],
             include: [
                 {
