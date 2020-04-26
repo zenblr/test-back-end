@@ -92,6 +92,9 @@ router.use('/sms-alert',smsAlert)
 const query=require('./query'); // customer query
 router.use('/customer-query',query)
 
+const customerLoanProcess = require('./customerLoanProcess'); // customer loan process module
+router.use('/loan-process', customerLoanProcess);
+
 const feedBack=require('./feedBack');
 router.use('/customer-feedback',feedBack)
 
