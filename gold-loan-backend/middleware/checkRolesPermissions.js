@@ -5,8 +5,6 @@ const redis = require('redis');
 const redisConn = require('../config/redis')
 const redisClient = redis.createClient(redisConn.PORT, redisConn.HOST);
 
-// Check Auth.
-
 module.exports = async (req, res, next) => {
     try {
         let userId = await req.userData.id;

@@ -5,6 +5,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const check = require('../../lib/checkLib')
 const _ = require('lodash');
+const cache = require('../../utils/cache');
 
 //add Role
 exports.addRole = async (req, res, next) => {
@@ -85,6 +86,8 @@ exports.updateRole = async (req, res, next) => {
             //delete permissions if module permissions exists
             let deletePermissions = await deletePermissionsId.map((data) => data.permissionId);
             await models.rolePermission.destroy({ where: { roleId : id, permissionId: deletePermissions } });
+            let users = await models.userRole.getAllUser(id);
+            await users.map((data) => cache(`${data.userId}permissions`));
             res.status(200).json({"message" : "success"});
         }
     } catch(err){
@@ -198,6 +201,9 @@ exports.addPermissions = async (req, res) => {
       await models.rolePermission.destroy({ where: { roleId, permissionId: deleteValue } }, { transaction: t });
   
     })
+    //delete permissions from redis cache
+    let users = await models.userRole.getAllUser(roleId);
+    await users.map((data) => cache(`${data.userId}permissions`));
     res.status(200).json({ message: "Success" });
   };
 
