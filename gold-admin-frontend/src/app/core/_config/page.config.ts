@@ -27,21 +27,21 @@ export class PageConfig {
 		},
 		'upload-data': {
 			'upload-banner': {
-				page: { title: 'Upload Banner', desc: '' }
+				page: { title: 'Promotional Banner', desc: '' }
 			},
 			'upload-offer': {
-				page: { title: 'Upload Offer', desc: '' }
+				page: { title: 'Offer Banner', desc: '' }
 			},
 			'upload-lender-banner': {
-				page: { title: 'Upload Lender Banner', desc: '' }
+				page: { title: 'Lender Partner Banner', desc: '' }
 			},
 		},
 		'user-management': {
 			'partner': {
-				page: { title: 'Partner Details', desc: '' }
+				page: { title: 'All Partners', desc: '' }
 			},
 			'branch': {
-				page: { title: 'Branch Details', desc: '' }
+				page: { title: 'All Branches', desc: '' }
 			},
 			'internal-user': {
 				page: { title: 'Internal User', desc: '' }
@@ -50,20 +50,20 @@ export class PageConfig {
 				page: { title: 'Assign Appraiser', desc: '' }
 			},
 			'merchant': {
-				page: { title: 'Merchant Details', desc: '' }
+				page: { title: 'All Merchants', desc: '' }
 			},
 			'broker': {
-				page: { title: 'Broker Details', desc: '' }
+				page: { title: 'All Brokers', desc: '' }
 			},
 			'roles': {
 				page: { title: 'Roles', desc: '' }
 			},
 		},
-		'lead-management':{
-			page:{title:'Lead Management',desc: ''}
+		'lead-management': {
+			page: { title: 'All Leads', desc: '' }
 		},
-		'kyc-setting':{
-			page:{title:'KYC Setting',desc: ''}
+		'kyc-setting': {
+			page: { title: 'Customer KYC', desc: '' }
 		},
 	};
 
