@@ -24,8 +24,8 @@ export class UserAddressComponent implements OnInit {
   addressProofs = [];
   identityProofs = [];
   images = { identityProof: [], residential: [], permanent: [] };
-  customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2 }
+  // customerDetails = this.userDetailsService.userData;
+  customerDetails = { customerId: 1, customerKycId: 2 }
 
   constructor(
     private fb: FormBuilder,
@@ -51,7 +51,7 @@ export class UserAddressComponent implements OnInit {
       identityProof: ['', [Validators.required]],
       address: this.fb.array([
         this.fb.group({
-          addressType: ['residential'],
+          addressType: ['permanent'],
           addressProofTypeId: ['', [Validators.required]],
           address: ['', [Validators.required]],
           stateId: ['', [Validators.required]],
@@ -60,7 +60,7 @@ export class UserAddressComponent implements OnInit {
           addressProof: ['', [Validators.required]]
         }),
         this.fb.group({
-          addressType: ['permanent'],
+          addressType: ['residential'],
           addressProofTypeId: ['', [Validators.required]],
           address: ['', [Validators.required]],
           stateId: ['', [Validators.required]],
@@ -100,13 +100,12 @@ export class UserAddressComponent implements OnInit {
         if (type == "identityProof") {
           this.images.identityProof.push(res.uploadFile.URL)
           this.identityForm.get('identityProof').patchValue(event.target.files[0].name);
-          this.ref
         } if (type == 1) {
-          this.images.residential.push(res.uploadFile.URL)
-          this.addressControls.at(0)['controls'].addressProof.patchValue(event.target.files[0].name)
-        } if (type == 0) {
           this.images.permanent.push(res.uploadFile.URL)
           this.addressControls.at(1)['controls'].addressProof.patchValue(event.target.files[0].name)
+        } if (type == 0) {
+          this.images.residential.push(res.uploadFile.URL)
+          this.addressControls.at(0)['controls'].addressProof.patchValue(event.target.files[0].name)
         }
         this.ref.detectChanges();
         // console.log(this.addressControls)
@@ -137,8 +136,7 @@ export class UserAddressComponent implements OnInit {
   }
 
   submit() {
-    // this.next.emit(true);
-    // console.log(this.identityForm.value);
+
     if (this.identityForm.invalid) {
       this.identityForm.markAllAsTouched()
       return
@@ -179,15 +177,15 @@ export class UserAddressComponent implements OnInit {
 
   }
 
-  sameAddress(event:MatCheckbox){
-    if(event){
+  sameAddress(event: MatCheckbox) {
+    if (event) {
       this.cities1 = this.cities0;
       this.images.residential = this.images.permanent
       this.addressControls.at(1).disable();
       this.addressControls.at(1).patchValue(this.addressControls.at(0).value)
-    }else{
-      this.cities1 =[];
-      this.images.residential =[];
+    } else {
+      this.cities1 = [];
+      this.images.residential = [];
       this.addressControls.at(1).reset();
       this.addressControls.at(1).enable();
 
