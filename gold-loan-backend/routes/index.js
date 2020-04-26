@@ -73,8 +73,15 @@ router.use('/rough-amount', roughLoanAmount);
 const occupation = require('./occupation'); // occupation
 router.use('/occupation', occupation)
 
-const identityType=require('./identityType'); // identity Type
-router.use('/identity-type',identityType)
+
+const identityType = require('./identityType'); // identity Type
+router.use('/identity-type', identityType);
+
+const addressProofType = require('./addressProofType'); // identity Type
+router.use('/address-proof-type', addressProofType);
+
+const customerKyc = require('./customerKyc')
+router.use('/kyc', customerKyc)
 
 const emailAlert=require('./emailAlert'); // email alert
 router.use('/email-alert',emailAlert)

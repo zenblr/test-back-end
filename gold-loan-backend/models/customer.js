@@ -63,6 +63,32 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'city_id',
         },
+        kycStatus: {
+            type: DataTypes.ENUM,
+            field: 'kyc_status',
+            defaultValue: "pending",
+            values: ['confirm', 'pending','complete','closed']
+        },
+        isVerifiedByFirstStage: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_verified_by_first_stage',
+            defaultValue: false
+        },
+        firstStageVerifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'first_stage_verified_by',
+            defaultValue: null
+        },
+        isVerifiedByBranchManager: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_verified_by_branch_manager',
+            defaultValue: false
+        },
+        branchManagerVerifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'branch_manager_verified_by',
+            defaultValue: null
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -82,11 +108,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'last_login',
         },
-        isKyVerify: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_kyc_verify',
-            defaultValue: false,
-        }
     }, {
         freezeTableName: true,
         tableName: 'customer',
@@ -104,8 +125,12 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
         Customer.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
         Customer.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
+
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        Customer.belongsTo(models.user, { foreignKey: 'firstStageVerifiedBy', as: 'firstStageBy' });
+        Customer.belongsTo(models.user, { foreignKey: 'branchManagerVerifiedBy', as: 'branchManagerBy' });
     }
 
     // This hook is always run before create.

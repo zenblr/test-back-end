@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { finalize, catchError, map } from 'rxjs/operators';
 import { ToastrComponent } from '../toastr/toastr.component';
@@ -27,7 +27,8 @@ export class UplodDataImageComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private sharedService: SharedService,
     public dilaog:MatDialog,
-    private layoutUtilsService: LayoutUtilsService
+    private layoutUtilsService: LayoutUtilsService,
+    private ele:ElementRef
   ) { }
 
 
@@ -73,8 +74,7 @@ export class UplodDataImageComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         console.log(res);
-        this.images.splice(index, 1)
-        this.toastr.successToastr('Banner has been deleted')
+        this.images.splice(index, 1);
         this.ref.detectChanges();
       }
     });

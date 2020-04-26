@@ -10,5 +10,8 @@
     }
     .mat-column-commission{
         flex: 0 0 15% !important;
+        .mat-cell {
+            justify-content: center;
+        }
     }
 }

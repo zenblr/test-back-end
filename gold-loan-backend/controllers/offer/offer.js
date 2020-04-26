@@ -13,7 +13,7 @@ exports.addUpdateOffer = async (req, res, next) => {
         if (!CreatedOffer) {
             res.status(422).json({ message: 'Offer not added' });
         } else {
-            res.status(201).json({message: 'Offer Created'})
+            res.status(200).json({ message: 'Offer Created' })
         }
     } else {
         let id = offer[0].id;
@@ -35,3 +35,12 @@ exports.readOffer = async (req, res, next) => {
         res.status(200).json(offer[0]);
     }
 };
+
+exports.readGoldRate = async (req, res, next) => {
+    let offer = await models.offer.findAll()
+    if (!offer[0]) {
+        res.status(404).json({ message: 'Data not found' });
+    } else {
+        res.status(200).json({ goldRate: offer[0].goldRate });
+    }
+}

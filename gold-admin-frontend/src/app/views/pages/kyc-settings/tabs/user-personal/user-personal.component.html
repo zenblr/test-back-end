@@ -76,7 +76,8 @@
                                     <div class="col-7">
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Sample.csv"
-                                                aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                                                aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                                readonly />
                                             <div class="input-group-append">
                                                 <span class="input-group-text bg kt-pointer font-weight"
                                                     id="basic-addon2" (click)="signature.click()">Attach</span>
@@ -90,12 +91,13 @@
                         <div class="row kt-margin-t-20 kt-margin-b-20">
                             <div class="col-6">
                                 <div class="col-8 offset-4">
-                                    <img src="../../../../../../assets/media/users/300_10.jpg" alt="" height="150px" width="250px">
+                                    <img src="../../../../../../assets/media/users/300_10.jpg" alt="" height="150px"
+                                        width="250px">
                                     <div class="kt-margin-t-20 text-color font-11">
                                         (Please verify the detail before moving forward)
                                     </div>
                                     <div class="kt-margin-t-20">
-                                        <kt-button [value]="'Next'" [type]="'button'"></kt-button>
+                                        <kt-button [value]="'Next'" [type]="'button'" (action)="submit()"></kt-button>
                                     </div>
                                 </div>
                             </div>

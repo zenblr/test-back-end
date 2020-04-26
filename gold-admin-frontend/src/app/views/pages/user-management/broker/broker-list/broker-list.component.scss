@@ -1,0 +1,17 @@
+:host {
+	.mat-column-city {
+		flex: 0 0 25% !important;
+	}
+	.mat-column-pincode {
+		flex: 0 0 15% !important;
+	}
+	.mat-column-approvalStatus {
+		flex: 0 0 20% !important;
+	}
+	.mat-column-status {
+		flex: 0 0 10% !important;
+	}
+	.mat-column-action {
+		flex: 0 0 20% !important;
+	}
+}

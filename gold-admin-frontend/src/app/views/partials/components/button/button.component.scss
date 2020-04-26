@@ -3,7 +3,7 @@
         background-color: #454D67 !important; 
     }
     .cancel{
-        background-color: #C5C6C6 !important;
+        background-color: #bfc4d5 !important;
     }
     button:disabled {
         background-color: rgb(224,224,224) !important;    
@@ -12,11 +12,13 @@
         background-color: #C43330 !important;
     }
     button {
+        // color: #bcc2d6 !important;
         .submit{ 
-            color: #C5C6C6 !important;
+            color: #bcc2d6 !important;
         }
         .cancel{ 
-            color: #454D67 !important;
+            color: #454d67 !important;
         }
+        border-radius: 9px;
     }
 }

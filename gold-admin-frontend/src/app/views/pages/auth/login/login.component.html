@@ -19,10 +19,10 @@
 
 <!--begin::Form-->
 <form class="kt-form" [formGroup]="loginForm" autocomplete="off">
-	<div class="form-group">
+	<div class="form-group mb-0">
 		<div class="kt-margin-t-10 kt-margin-b-10">
-			<input type="text" class="login-form-input" placeholder="Email ID / Mobile Number" formControlName="mobileNo"
-				autocomplete="off" />
+			<input type="text" class="login-form-input" placeholder="Email ID / Mobile Number"
+				formControlName="mobileNo" autocomplete="off" />
 			<div *ngIf="loginForm.controls.mobileNo.touched && loginForm.controls.mobileNo.invalid">
 				<mat-error *ngIf="isControlHasError('mobileNo','required')">
 					<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
