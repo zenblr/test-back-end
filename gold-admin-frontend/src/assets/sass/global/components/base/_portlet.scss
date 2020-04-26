@@ -208,7 +208,7 @@
 
 	.kt-portlet__foot {
 		padding: kt-get($kt-portlet, space, desktop);
-		border-top: 1px solid kt-get($kt-portlet, border-color);
+		// border-top: 1px solid kt-get($kt-portlet, border-color);
 
 		.kt-portlet__foot-wrapper {
 			display:flex;
