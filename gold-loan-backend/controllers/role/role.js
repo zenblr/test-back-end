@@ -20,29 +20,91 @@ exports.addRole = async (req, res, next) => {
         if (!roleId) {
             res.status(201).json(addRole);
         } else {
-            res.status(201).json(roleId);
+            let getRolePermissions = await models.rolePermission.findAll(
+                {
+                  where: { roleId, isActive: true },
+                  attributes: ['permissionId'],
+                  raw: true,
+                }
+              );
+              let permissionsId = await getRolePermissions.map((data) => data.permissionId)
+              permissionsId.map(async (permissionId) => {
+                await models.rolePermission.create({ roleId : addRole.id, permissionId: permissionId });
+              });
+            res.status(201).json({"message" : "sucess"});
         }
     }
 }
 
 exports.updateRole = async (req, res, next) => {
-    const id = req.params.id;
-    const { roleName, description } = req.body;
-    let userId = req.userData.id;
-    let updateRole = await models.role.updateRole(roleName, description, userId, id);
-    if (updateRole == 0) {
-        res.status(404).json({ message: "failed to update role" });
-    } else {
-        res.status(200).json(updateRole);
+    try{
+        const id = req.params.id;
+        const { roleName, description, moduleId } = req.body;
+        let userId = req.userData.id;
+        let updateRole = await models.role.updateRole(roleName, description, userId, id);
+        if (updateRole == 0) {
+            res.status(404).json({ message: "failed to update role" });
+        } else {
+            //update from role module
+            let readRoleData = await models.roleModule.getRoleModules(id);
+            let oldModuleId = await readRoleData.map((data) => data.moduleId);
+            let deleteValue = await _.difference(oldModuleId, moduleId);
+            let addValues = await _.difference(moduleId, oldModuleId);
+            addValues.map(async (moduleId) => {
+                await models.roleModule.addRoleModule( id, moduleId );
+            });
+            await models.roleModule.destroy({ where: { roleId : id, moduleId: deleteValue } });
+            let deletePermissionsId = await models.rolePermission.findAll(
+                {
+                    where : {
+                        isActive : true,
+                        roleId : id
+                    },
+                    attributes: ['permissionId'],
+                    include: [
+                        {
+                          model: models.permission,
+                          as:'permission',
+                          where: { isActive: true },
+                          attributes: [],
+                          include: [
+                            {
+                              model: models.entity,
+                              as:'entity',
+                              attributes: [],
+                              where: { isActive: true,
+                                moduleId: {
+                                    [Op.in]: deleteValue
+                                  } }
+                            },
+                          ]
+                        },
+                      ]
+                }
+            )
+            //delete permissions if module permissions exists
+            let deletePermissions = await deletePermissionsId.map((data) => data.permissionId);
+            await models.rolePermission.destroy({ where: { roleId : id, permissionId: deletePermissions } });
+            res.status(200).json({"message" : "success"});
+        }
+    } catch(err){
+        console.log(err)
     }
 }
 
 exports.readAllRole = async (req, res, next) => {
     let readRoleData = await models.role.getAllRole();
     if (!readRoleData) {
-        return res.status(404).json({ message: "Data not found" });
+     res.status(404).json({ message: "Data not found" });
     }
-    return res.status(200).json( readRoleData );
+     res.status(200).json( readRoleData );
+}
+
+exports.getRoleModules = async (req, res, next) => {
+    const roleId = req.params.roleId;
+    let readRoleData = await models.roleModule.getRoleModules(roleId);
+    let moduleId = await readRoleData.map((data) => data.moduleId)
+    res.status(200).json( moduleId );
 }
 
 
@@ -76,13 +138,18 @@ exports.readRolesPagination = async (req, res, next) => {
     return res.status(200).json({ data: readRoleData, count: count.length });
 };
 
-// exports.deactiveRole = async (req, res, next) => {
-//     const { stageId, isActive } = req.query;
-//     let deactiveRole = await models.stage.update({ isActive: isActive }, { where: { id: stageId } })
-//     if (deactiveRole[0] == 0) { return res.status(404).json({ message: "update failed" }) };
-//     return res.status(200).json({ message: `Updated` })
-
-// }
+exports.deleteRole = async (req, res, next) => {
+    const roleId = req.params.roleId;
+    let assignedToUser = await models.userRole.findAll({ where: { roleId: roleId,isActive : true } });
+    if (assignedToUser.length != 0) {
+        res.status(422).json({"message":"can't delete role! role is assigned to some user"});
+      } else {
+        await models.rolePermission.destroy({ where: { roleId : roleId} });
+        await models.roleModule.destroy({ where: { roleId : roleId} });
+        await models.role.deleteRole(roleId);
+        res.status(200).json({ message: "success" });
+      }
+}
 
 
 

@@ -63,30 +63,6 @@
  *         description: Success
  *       404:
  *         description: data not found
- *   delete:
- *     tags:
- *       - Role
- *     summary: To delete by Id
- *     parameters:
- *     - name: "id"
- *       in: "query"
- *       description: "Id of role to delete"
- *       required: true
- *       type: "integer"
- *     - name: "isActive"
- *       in: "query"
- *       description: "isActive of role to delete"
- *       required: true
- *       type: "boolean"
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Updated.
- *       404:
- *         description: update failed.
  * /role/all-role:
  *   get:
  *     tags:
@@ -126,6 +102,10 @@
  *               type: string
  *             description:
  *               type: string
+ *             moduleId:
+ *               type: array
+ *               items:
+ *                type:integer
  *     required:
  *         - roleName
  *         - description
@@ -164,5 +144,46 @@
  *         description: permissions added created
  *       404:
  *         description: role not found
+ * /role/module/{roleId}:
+ *   get:
+ *     tags:
+ *       - Role
+ *     name: role
+ *     summary: To read moduleId of role
+  *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *        - application/json
+ *     parameters:
+ *       - name: "roleId"
+ *         in: "path"
+ *         description: "roleId to get module"
+ *         required: true
+ *         type: "integer"
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: data not found
+ * /role/{roleId}:
+ *   delete:
+ *     tags:
+ *       - Role
+ *     summary: To delete by roleId
+ *     parameters:
+ *     - name: "roleId"
+ *       in: "path"
+ *       description: "roleId of role to delete"
+ *       required: true
+ *       type: "integer"
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: deleted.
+ *       404:
+ *         description: update failed.res.
+ *       422:
+ *         description: can't delete role! role is assigned to some user
  * 
  */

@@ -44,6 +44,8 @@ module.exports = (sequelize, DataTypes) => {
 
     Role.getAllRole = () => Role.findAll({ where: { isActive: true }, order: [['id', 'ASC']] });
 
+    Role.deleteRole = (id) => Role.update({ isActive: false },{ where: { id}});
+
     Role.associate = function(models) {
         Role.belongsToMany(models.user,{through: models.userRole});
         Role.belongsToMany(models.module,{through: models.roleModule});
