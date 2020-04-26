@@ -115,7 +115,7 @@
         </div> -->
             <div class="text-right kt-padding-r-50">
                 <div class="position-relative pos">
-                    <label  class="mandatory  custom-checkbox ">
+                    <label  class="custom-checkbox ">
                         <span class="label-checkbox">Residential Same as Permanent</span>
                         <input type="checkbox" class="" (change)="sameAddress($event.target.checked)">
                         <span class="checkmark top-0"></span>
@@ -177,7 +177,7 @@
                                     </div>
                                     <div class="col-7">
                                         <select formControlName="stateId" class="form-control"
-                                            (change)="getCities($event, i)"
+                                            (change)="getCities(i)"
                                             [class.isError]="addressForm.controls.stateId.touched && addressForm.controls.stateId.invalid">
                                             <option value="" [disabled]="true" [selected]="true"> Select State</option>
                                             <option *ngFor="let state of states" [value]="state.id">

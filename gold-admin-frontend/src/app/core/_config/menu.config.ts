@@ -6,7 +6,7 @@ export class MenuConfig {
 				{
 					title: 'Dashboard',
 					root: true,
-					src: 'assets/media/aside-icons/dashboard.svg',
+					icon: 'flaticon2-architecture-and-city',
 					page: '/dashboard',
 					translate: 'MENU.DASHBOARD',
 
