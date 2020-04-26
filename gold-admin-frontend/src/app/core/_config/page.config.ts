@@ -17,6 +17,14 @@ export class PageConfig {
 				page: { title: 'Show Feedback', desc: '' }
 			},
 		},
+		'loan-setting': {
+			'scheme': {
+				page: { title: 'Schemes', desc: '' }
+			},
+			packet: {
+				page: { title: 'Packets', desc: '' }
+			},
+		},
 		'upload-data': {
 			'upload-banner': {
 				page: { title: 'Promotional Banner', desc: '' }

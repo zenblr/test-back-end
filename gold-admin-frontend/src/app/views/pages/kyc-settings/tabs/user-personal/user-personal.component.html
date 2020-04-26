@@ -8,7 +8,9 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="offset-1 kt-margin-r-25 profile-div">
-                                        <img class="" src="../../../../../../assets/media/icons/user.png" alt="" />
+                                        <img *ngIf="profile == ''" class=""
+                                            src="../../../../../../assets/media/icons/user.png" alt="" />
+                                        <img *ngIf="profile !== ''" class="profile-pic" [src]="profile" alt="" />
                                     </div>
 
                                     <div class="col align-self-center">
@@ -168,9 +170,13 @@
                             <div class="col-6">
                                 <div class="col-8 offset-4">
                                     <div class="img-container">
-                                        <img class="placeholder-image"
+                                        <img *ngIf="signature == ''"
+                                            src="../../../../../../assets/media/icons/image-placeholder.png" alt="">
+                                        <!-- <img *ngIf="signature == ''" class="placeholder-image"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
-                                            alt="placeholder">
+                                            alt="placeholder"> -->
+                                        <img *ngIf="signature !== ''" [src]="signature" alt="placeholder">
+
                                     </div>
 
                                     <!-- <img src="../../../../../../assets/media/users/300_10.jpg" alt="" height="150px"

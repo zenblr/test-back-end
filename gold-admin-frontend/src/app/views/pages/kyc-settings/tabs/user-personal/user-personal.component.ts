@@ -17,6 +17,8 @@ export class UserPersonalComponent implements OnInit {
   // customerDetails = this.userDetailsService.userData;
   customerDetails = { customerId: 1, customerKycId: 2 }
   file: any;
+  profile = '';
+  signature = '';
 
   constructor(private fb: FormBuilder, private userPersonalService: UserPersonalService,
     private sharedService: SharedService, private ref: ChangeDetectorRef) { }
@@ -56,14 +58,21 @@ export class UserPersonalComponent implements OnInit {
 
   getFileInfo(event, type: any) {
     this.file = event.target.files[0];
-    console.log(type);
+    console.log(this.file, type);
     // console.log(this.addressControls)
     this.sharedService.uploadFile(this.file).pipe(
       map(res => {
-        // if (type == "identityProof") {
-        //   this.images.identityProof.push(res.uploadFile.URL)
-        //   this.identityForm.get('identityProof').patchValue(event.target.files[0].name);
-        //   this.ref
+        if (type == "profile") {
+          this.profile = res.uploadFile.URL
+          // this.images.identityProof.push(res.uploadFile.URL)
+          this.personalForm.get('profileImage').patchValue(event.target.files[0].name);
+        } else if (type == "signature") {
+          this.signature = res.uploadFile.URL
+          // this.images.identityProof.push(res.uploadFile.URL)
+          this.personalForm.get('signatureProof').patchValue(event.target.files[0].name);
+        }
+
+        this.ref.detectChanges();
         // } if (type == 0) {
         //   this.images.residential.push(res.uploadFile.URL)
         //   this.addressControls.at(0)['controls'].addressProof.patchValue(event.target.files[0].name)

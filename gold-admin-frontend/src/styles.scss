@@ -192,6 +192,13 @@ input[type=number] {
 	background-color: #454D67 !important;
 }
 
+.mat-tab-nav-bar, .mat-tab-header{
+	border: none !important;
+}
+
+.kt-aside-menu .kt-menu__nav{
+	padding-top: 0 !important;
+}
 // custom checkbox
 
 /* Hide the browser's default checkbox */
@@ -203,63 +210,66 @@ input[type=number] {
 	width   : 0;
 }
 
-/* Create a custom checkbox */
+
+
+
 .checkmark {
-	position        : absolute;
-	top             : 35px;
-	left            : 0;
-	height          : 25px;
-	width           : 25px;
+	position: absolute;
+	top: 43px;
+	left: 0;
+	height: 20px;
+	width: 20px;
 	background-color: #eee;
-	border-radius   : 5px;
+	border-radius: 5px;
 }
 
 .label-checkbox {
-	margin-left: 25px;
+	margin-left: 20px;
 }
 
-
-
 /* On mouse-over, add a background color */
-.custom-checkbox :hover input~.checkmark {
+.custom-checkbox :hover input ~ .checkmark {
 	background-color: #ffffff;
 }
 
 /* When the checkbox is checked, add a background */
-.custom-checkbox input:checked~.checkmark {
-	background-color: #969696;
+.custom-checkbox input:checked ~ .checkmark {
+	background-color: #454d67;
 }
 
-.custom-checkbox input:disabled~.checkmark {
+.custom-checkbox input:disabled ~ .checkmark {
 	background-color: #eee;
-	opacity         : 0.5;
-	cursor          : not-allowed;
+	opacity: 0.5;
+	cursor: not-allowed;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
-	content : "";
+	content: "";
 	position: absolute;
-	display : none;
+	display: none;
 }
 
 /* Show the checkmark when checked */
-.custom-checkbox input:checked~.checkmark:after {
+.custom-checkbox input:checked ~ .checkmark:after {
 	display: block;
 }
 
 /* Style the checkmark/indicator */
 .custom-checkbox .checkmark:after {
-	left             : 10px;
-	top              : 5px;
-	width            : 6px;
-	height           : 13px;
-	border           : solid white;
-	border-width     : 0 3px 3px 0;
+	left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 12px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
 	-webkit-transform: rotate(45deg);
-	-ms-transform    : rotate(45deg);
-	transform        : rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
 }
+
+
+
 
 // modal
 .mat-dialog-container {
@@ -308,6 +318,10 @@ mat-header-row{
 
 .mat-table{
 	font-family: Poppins, Helvetica, sans-serif !important;
+}
+.mat-raised-button{
+	font-family: Poppins, Helvetica, sans-serif !important;
+
 }
 
 .mat-cell, .mat-footer-cell{
@@ -365,4 +379,18 @@ mat-header-row{
 	.placeholder-image {
 		width: 66px;
 	}
+}
+
+select:hover{
+
+    background-color: #000;
+
+}
+option:focus{
+	background-color: #000 !important;
+
+}
+select option:hover{
+	background-color: #000;
+
 }

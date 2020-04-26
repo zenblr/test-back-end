@@ -89,7 +89,7 @@ export class UplodDataImageComponent implements OnInit {
         images:this.images,
         index:index
       },
-      width:"75%"
+      width:"auto"
     })
   }
 
