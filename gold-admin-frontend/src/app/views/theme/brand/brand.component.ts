@@ -8,6 +8,13 @@ import { tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'kt-brand',
+	styles:[`.gold-rate{
+		font-weight: 600;
+		color: #ffde9c;
+		 background-color: #454D67; 
+		 padding: 15px 0; 
+		 margin-left: -13px ;
+	}`],
 	templateUrl: './brand.component.html',
 })
 export class BrandComponent implements OnInit, AfterViewInit {

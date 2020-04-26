@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../../views/partials/components';
 import { UserDetailsService } from '../../../../../core/kyc-settings';
-import { map } from 'rxjs/operators';
+import { map, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -22,10 +22,11 @@ export class UserDetailsComponent implements OnInit {
 
   // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
+  showVerifyPAN = false;
 
 
   constructor(public fb: FormBuilder, private userDetailsService: UserDetailsService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService, private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.initForm();
@@ -87,6 +88,8 @@ export class UserDetailsComponent implements OnInit {
         this.userBasicForm.patchValue(res.customerInfo);
         if (res.customerInfo.panCardNumber !== null) {
           this.controls.panCardNumber.disable();
+        } else {
+          this.showVerifyPAN = true;
         }
         // const msg = 'Otp has been sent to the registered mobile number';
         // this.toastr.success(msg);
@@ -130,6 +133,7 @@ export class UserDetailsComponent implements OnInit {
     setTimeout(() => {
       this.isPanVerified = true;
     }, 1000);
+    this.ref.detectChanges();
   }
 
   submit() {
@@ -137,7 +141,7 @@ export class UserDetailsComponent implements OnInit {
       this.userBasicForm.markAllAsTouched()
       return
     }
-
+    this.userBasicForm.enable()
     const basicForm = this.userBasicForm.value;
     this.userDetailsService.basicDetails(basicForm).pipe(
       map(res => {
@@ -145,6 +149,10 @@ export class UserDetailsComponent implements OnInit {
         if (res) {
           this.next.emit(true);
         }
+      }),
+      finalize(() => {
+        this.userBasicForm.disable();
+        this.userBasicForm.controls.mobileNumber.enable()
       })
     ).subscribe();
 

@@ -67,6 +67,7 @@ export class AddSchemeComponent implements OnInit {
       partnerId: ['', Validators.required],
       csv: ['', Validators.required]
     })
+    this.csvForm.controls.csv.disable()
     // this.csvForm.get('csv').re()
   }
 

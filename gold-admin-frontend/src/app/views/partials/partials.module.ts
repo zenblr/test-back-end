@@ -27,7 +27,7 @@ import {
 	MatDividerModule,
 } from '@angular/material';
 // NgBootstrap
-import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule,NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // Perfect Scrollbar
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 // Core module
@@ -192,7 +192,8 @@ import { ImagePreviewDialogComponent } from './components/image-preview-dialog/i
 		LoanSchemeComponent,
 
 		// spinner
-		NgxSpinnerModule
+		NgxSpinnerModule,
+		NgbModule
 	],
 	imports: [
 		CommonModule,
@@ -232,6 +233,7 @@ import { ImagePreviewDialogComponent } from './components/image-preview-dialog/i
 		NgbDropdownModule,
 		NgbTabsetModule,
 		NgbTooltipModule,
+		NgbModule,
 
 		// spinner
 		NgxSpinnerModule

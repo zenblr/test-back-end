@@ -7,6 +7,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 })
 export class SharedService {
 
+  totalCount = new BehaviorSubject(0);
+  totalCount$ = this.totalCount.asObservable()
   loader = new BehaviorSubject(false)
   loader$ = this.loader.asObservable();
 

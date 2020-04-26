@@ -1,0 +1,13 @@
+
+ 
+  <div class="row kt-padding-l-40 kt-padding-r-40">
+    <div class="col-12"> 
+      <ngb-carousel *ngIf="images">
+        <ng-template ngbSlide *ngFor="let img of images">
+          <div class="picsum-img-wrapper">
+            <img [src]="img" alt="Random first slide" class="text-center">
+          </div>
+        </ng-template>
+      </ngb-carousel>
+    </div>
+  </div>
