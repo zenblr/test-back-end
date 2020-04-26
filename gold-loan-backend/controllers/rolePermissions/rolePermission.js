@@ -50,3 +50,23 @@ exports.postPermissions = async (req, res, next) => {
         message: "success"
     })
 }
+
+exports.postPermissionsSysyemInfo = async (req, res, next) => {
+    try{
+        const data = req.body.data;
+    console.log(req.body);
+    let checkIfCsvUploaded = await models.permissionSystemInfo.findAll();
+    if (checkIfCsvUploaded.length > 0) {
+        return res.status(404).json({ messgae: "permissionSystemInfo are already Uploaded" })
+    }
+    await sequelize.transaction(async t => {
+        await models.permissionSystemInfo.bulkCreate(data, { returning: true, transaction: t });
+    })
+    return res.status(200).json({
+        message: "success"
+    })
+    } catch(err){
+        console.log(err)
+    }
+    
+}

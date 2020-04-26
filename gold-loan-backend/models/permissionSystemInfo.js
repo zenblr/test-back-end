@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
     const PermissionSystemInfo = sequelize.define('permissionSystemInfo', {
         // attributes
         systemInfo: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.JSON,
             field: 'system_info'
         },
         permissionId: {
