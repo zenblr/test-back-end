@@ -25,18 +25,18 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_active',
             defaultValue: true,
         },
-        userId:{
-            type:DataTypes.INTEGER,
-            field:'user_id'
-        }
+        // customerId:{
+        //     type:DataTypes.INTEGER,
+        //     field:'customer_id'
+        // }
     }, {
         freezeTableName: true,
         allowNull: false,
         tableName: 'query',
     });
-    Query.associate = function(models) {
-        Query.belongsTo(models.user, { foreignKey: 'userId', as: 'user' });
-    }
+    // Query.associate = function(models) {
+    //     Query.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+    // }
 
     return Query;
 }

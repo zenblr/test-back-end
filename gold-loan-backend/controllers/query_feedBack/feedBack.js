@@ -4,9 +4,9 @@ const models=require('../../models');
 
 exports.addFeedBack=async (req,res)=>{
     const{customerName,contactNumber,feedBack,rating}=req.body;
-    let userId = req.userData.id;
+    let customerId= req.userData.id;
 
-    let addFeedBackData=await models.feedBack.create({customerName,contactNumber,feedBack,rating,userId});
+    let addFeedBackData=await models.feedBack.create({customerName,contactNumber,feedBack,rating,customerId});
     if(!addFeedBackData){
         return res.status(422).json({message:'feed back is not created'});
     }
@@ -14,14 +14,14 @@ exports.addFeedBack=async (req,res)=>{
 
 }
 
-// readQuery
+// read feedback
 
 exports.readFeedBack=async(req,res)=>{
 let readCustomerFeedBack=await models.feedBack.findAll({where:{isActive:true},
         include: [
     {
-        model:models.user,
-        as: "user"
+        model:models.customer,
+        as: "customer"
     }
 ], });
 if(!readCustomerFeedBack[0]){
@@ -31,15 +31,15 @@ if(!readCustomerFeedBack[0]){
 return res.status(200).json(readCustomerFeedBack);
     
 }
-// get query by id
+// read feedback by id
 
 exports.readFeedBackById=async(req,res)=>{
     const customerFeedBackId=req.params.id;
     let readCustomerFeedBackId=await models.feedBack.findOne({where:{id:customerFeedBackId,isActive:true},
         include:[
             {
-                model: models.user,
-                as: 'user'
+                model: models.customer,
+                as: 'customer'
             }
         ],
     });
@@ -49,7 +49,7 @@ exports.readFeedBackById=async(req,res)=>{
     return res.status(200).json({readCustomerFeedBackId});
 }
 
-//update status of query
+//update feedback 
 
 exports.updateFeedBack=async(req,res)=>{
     let customerFeedBackId=req.params.id;
@@ -62,7 +62,7 @@ exports.updateFeedBack=async(req,res)=>{
 
 }
 
-// delete query
+// delete feedback
 
 exports.deactiveFeedBack=async(req,res)=>{
     const {isActive,id}=req.query;

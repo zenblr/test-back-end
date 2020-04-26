@@ -4,11 +4,7 @@ const models=require('../../models');
 
 exports.addQuery=async (req,res)=>{
     const{customerName,contactNumber,query}=req.body;
-    let userId = req.userData.id;
-    let name=req.userData.name;
-    console.log(req.userData);
-    console.log(userId+'.......');
-    let addData=await models.query.create({customerName,contactNumber,query,userId});
+    let addData=await models.query.create({customerName,contactNumber,query});
     if(!addData){
         return res.status(422).json({message:'Query is not created'});
     }
@@ -19,7 +15,7 @@ exports.addQuery=async (req,res)=>{
 // readQuery
 
 exports.readQuery=async(req,res)=>{
-    try{
+    
 let readCustomerQuery=await models.query.findAll({where:{isActive:true},
         include: [
     {
@@ -32,10 +28,6 @@ if(!readCustomerQuery[0]){
 
 }
 return res.status(200).json(readCustomerQuery);
-    }
-    catch(error){
-        console.log(error.message)
-    }
 }
 // get query by id
 

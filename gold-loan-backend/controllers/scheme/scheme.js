@@ -30,7 +30,23 @@ exports.addScheme = async (req, res, next) => {
 
 }
 
+//edit scheme
 
+exports.editScheme= async(req,res,next)=>{
+    let {partnerId,schemeId}=req.query;
+    const {schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+        interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually}=req.body;
+        await sequelize.transaction(async t => {
+
+     let schemePartner= await models.partnerScheme.findOne({where:{partnerId,schemeId}});
+     if(schemePartner){
+         
+     let editScheme=await models.scheme.update({schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+        interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually},{where:{id:schemeId}})
+return res.status(200).json({message:'updated'}),{transaction:t}
+}})
+return res.status(404).json({message:'updated failed'});
+}
 //read scheme
 
 exports.readScheme = async (req, res, next) => {

@@ -29,9 +29,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_active',
             defaultValue: true,
         },
-        userId:{
+        customerId:{
             type:DataTypes.INTEGER,
-            field:'user_id'
+            field:'customer_id'
         }
     }, {
         freezeTableName: true,
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'feed_back',
     });
     FeedBack.associate = function(models) {
-        FeedBack.belongsTo(models.user, { foreignKey: 'userId', as: 'user' });
+        FeedBack.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
     }
 
     return FeedBack;
