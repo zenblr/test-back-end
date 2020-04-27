@@ -35,7 +35,7 @@ export class AppraiserDatasource extends BaseDataSource {
         this.paginatorTotalSubject.next(10);
         this.entitySubject.next(data);
         this.loadingSubject.next(false);
-
+        this.isPreloadTextViewedSubject.next(false);
         //     this.appraiserService.getAppraiser(from, to, search)
         //         .pipe(
         //             map(
