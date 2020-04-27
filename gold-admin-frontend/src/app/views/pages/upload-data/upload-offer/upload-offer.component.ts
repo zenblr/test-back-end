@@ -32,12 +32,13 @@ export class UploadOfferComponent implements OnInit {
   getData() {
     this.uploadOfferService.getOffers().pipe(
       map(res => {
+        this.goldRate.patchValue(res.goldRate)
+        console.log(this.goldRate)
+        this.uploadOfferService.goldRate.next(res.goldRate);
         if (res.images.length > 0) {
           Array.prototype.push.apply(this.images, res.images)
-          this.goldRate.patchValue(res.goldRate)
-          this.uploadOfferService.goldRate.next(res.goldRate);
-          this.ref.detectChanges();
         }
+        this.ref.detectChanges();
         console.log(this.images)
       })).subscribe()
   }
