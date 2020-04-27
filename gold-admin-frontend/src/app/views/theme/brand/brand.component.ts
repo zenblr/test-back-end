@@ -13,7 +13,7 @@ import { tap } from 'rxjs/operators';
 		color: #ffde9c;
 		 background-color: #454D67; 
 		 padding: 15px 0; 
-		 margin-left: -13px ;
+		 padding-left: 62px ;
 	}`],
 	templateUrl: './brand.component.html',
 })

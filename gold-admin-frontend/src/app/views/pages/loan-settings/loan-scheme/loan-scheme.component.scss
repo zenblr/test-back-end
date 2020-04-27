@@ -1,4 +1,8 @@
 :host {
+    .min-vh-60{
+        min-height: 60vh;
+        overflow: hidden;
+    }
     .heading {
         font-weight: 600;
         font-size  : 15px;
