@@ -142,7 +142,7 @@ exports.submitCustomerKycBankDetailValidation = [
         .exists()
         .withMessage("account number is required"),
 
-    body("ifcCode")
+    body("ifscCode")
         .exists()
         .withMessage("ifsc code is required")
         .custom(async value => {

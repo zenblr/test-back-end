@@ -3,7 +3,7 @@
  * /customer/send-register-otp:
  *   post:
  *     tags:
- *       - Customer By Admin
+ *       - Customer Registration
  *     name: add Customer by mobile otp
  *     summary: To add customer by  mobile otp
  *     security:
@@ -28,7 +28,7 @@
  * /customer/send-otp:
  *   post:
  *     tags:
- *       - Customer By Admin
+ *       - Customer Registration
  *     name: add Customer by otp
  *     summary: To add customer by otp
  *     security:
@@ -53,7 +53,7 @@
  * /customer/verify-otp:
  *   post:
  *     tags:
- *       - Customer By Admin
+ *       - Customer Registration
  *     name: verify by otp
  *     summary: To verify by otp
  *     security:
@@ -82,7 +82,7 @@
  * /customer:
  *   post:
  *     tags:
- *       - Customer By Admin
+ *       - Customer Registration
  *     name: add Customer
  *     summary: To add customer 
  *     security:
@@ -139,7 +139,7 @@
  *          description: This Mobile number is already Exist/Registration Failed
  *   get:
  *     tags:
- *       - Customer By Admin
+ *       - Customer Registration
  *     name: read customer
  *     summary: To read customer with pagination
  *     security:
@@ -170,7 +170,7 @@
  *          description: Internal server error
  *   put:
  *     tags:
- *       - Customer By Admin
+ *       - Customer Registration
  *     name: update customer
  *     summary: To update customer
  *     security:
@@ -234,7 +234,7 @@
  *          description: Customer is not exist/This Mobile number is already Exist
  *   delete:
  *     tags:
- *       - Customer By Admin
+ *       - Customer Registration
  *     summary: To delete by Id
  *     parameters:
  *     - name: "customerId"
@@ -259,7 +259,7 @@
  * /customer/{customerId}:
  *   get:
  *     tags:
- *       - Customer By Admin
+ *       - Customer Registration
  *     summary: To read by Id
  *     parameters:
  *     - name: "customerId"
