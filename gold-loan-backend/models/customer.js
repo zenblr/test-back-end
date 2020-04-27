@@ -69,6 +69,11 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: "pending",
             values: ['confirm', 'pending','complete','closed']
         },
+        isKycSubmitted: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_kyc_submitted',
+            defaultValue: false
+        },
         isVerifiedByFirstStage: {
             type: DataTypes.BOOLEAN,
             field: 'is_verified_by_first_stage',

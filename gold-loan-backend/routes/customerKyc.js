@@ -19,7 +19,7 @@ route.post('/customer-kyc-personal', checkAuth, wrapper(submitCustomerKycPersona
 
 route.post('/customer-kyc-bank', checkAuth, wrapper(submitCustomerKycBankDetail))
 
-route.post('/submit-all-kyc', checkAuth, wrapper(submitAllKycInfo))
+route.post('/submit-all-kyc-info', checkAuth, wrapper(submitAllKycInfo))
 
 
 

@@ -32,9 +32,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'account_number'
         },
-        ifcCode:{
+        ifscCode:{
             type: DataTypes.STRING,
-            field: 'ifc_code'
+            field: 'ifsc_code'
         },
         passbookProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
