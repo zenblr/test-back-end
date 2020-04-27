@@ -7,12 +7,11 @@ import { ToastrComponent } from '../../../../../views/partials/components/toastr
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
 
 @Component({
-  selector: 'kt-branch-add',
-  templateUrl: './branch-add.component.html',
-  styleUrls: ['./branch-add.component.scss']
+  selector: 'kt-add-appraiser',
+  templateUrl: './add-appraiser.component.html',
+  styleUrls: ['./add-appraiser.component.scss']
 })
-export class BranchAddComponent implements OnInit {
-
+export class AddAppraiserComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   branchForm: FormGroup;
   states: any;
@@ -24,7 +23,7 @@ export class BranchAddComponent implements OnInit {
   title: string;
 
   constructor(
-    public dialogRef: MatDialogRef<BranchAddComponent>,
+    public dialogRef: MatDialogRef<AddAppraiserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private sharedService: SharedService,
     private fb: FormBuilder,
@@ -38,21 +37,18 @@ export class BranchAddComponent implements OnInit {
     this.setForm()
     this.getAllPartners();
     this.getStates();
-    if (this.data.action !== 'add') {
-
-    }
 
   }
 
   setForm() {
     if (this.data.action == 'add') {
-      this.title = 'Add New Branch'
+      this.title = 'Add Appraiser'
 
     } else if (this.data.action == 'edit') {
-      this.title = 'Edit Branch'
+      this.title = 'Edit Appraiser'
       this.getPartnerById(this.data.partnerId);
     } else {
-      this.title = 'View Branch'
+      this.title = 'View Appraiser'
       this.branchForm.disable();
       this.getPartnerById(this.data.partnerId);
     }
@@ -63,10 +59,6 @@ export class BranchAddComponent implements OnInit {
       id: [''],
       name: ['', [Validators.required]],
       partnerId: ['', [Validators.required]],
-      stateId: ['', [Validators.required]],
-      cityId: ['', [Validators.required]],
-      pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-      address: ['', [Validators.required]],
     });
   }
 

@@ -9,6 +9,7 @@ import { BranchService } from '../.././../../core/user-management/branch/service
 import { RolesService } from '../.././../../core/user-management/roles';
 import { BrokerService } from '../.././../../core/user-management/broker';
 import { InternalUserService } from '../.././../../core/user-management/internal-user';
+import { AppraiserService } from '../../../../core/user-management/appraiser';
 
 @Component({
 	selector: 'kt-topbar',
@@ -37,7 +38,8 @@ export class TopbarComponent implements OnInit {
 		private branchService: BranchService,
 		private rolesService: RolesService,
 		private brokerService: BrokerService,
-		private internalUserService: InternalUserService) {
+		private internalUserService: InternalUserService,
+		private appraiserService: AppraiserService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -90,6 +92,12 @@ export class TopbarComponent implements OnInit {
 			this.value1 = 'Add New Branch';
 			this.type1 = 'button';
 		}
+		if (this.path == 'assign-appraiser') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Add Appraiser';
+			this.type1 = 'button';
+		}
 		if (this.path == 'roles') {
 			this.showInput = true;
 			this.rightButton = true
@@ -115,6 +123,8 @@ export class TopbarComponent implements OnInit {
 			this.type1 = 'button';
 			this.value1 = 'Add Internal-user';
 		}
+
+		
 	}
 
 	action(event: Event) {
@@ -139,6 +149,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'internal-user') {
 			this.internalUserService.openModal.next(true)
+		}
+		if (this.path == 'assign-appraiser') {
+			this.appraiserService.openModal.next(true)
 		}
 		if (this.path == 'merchant') {
 			this.router.navigate(['/user-management/add-merchant'])

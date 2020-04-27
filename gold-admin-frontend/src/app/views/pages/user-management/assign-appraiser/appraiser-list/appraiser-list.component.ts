@@ -1,31 +1,30 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { BranchService } from '../../../../../core/user-management/branch/services/branch.service';
 import { LayoutUtilsService, } from '../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
-import { BranchDatasource } from '../../../../../core/user-management/branch/datasources/branch.datasource';
+import { AppraiserDatasource,AppraiserService } from '../../../../../core/user-management/appraiser';
 import { Subscription, merge, Subject } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
-import { BranchAddComponent } from '../branch-add/branch-add.component';
-import { BranchModel } from '../../../../../core/user-management/branch/models/branch.model';
+import { AddAppraiserComponent } from '../add-appraiser/add-appraiser.component';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 
 @Component({
-  selector: 'kt-branch-list',
-  templateUrl: './branch-list.component.html',
-  styleUrls: ['./branch-list.component.scss']
+  selector: 'kt-appraiser-list',
+  templateUrl: './appraiser-list.component.html',
+  styleUrls: ['./appraiser-list.component.scss']
 })
-export class BranchListComponent implements OnInit {
+export class AppraiserListComponent implements OnInit {
 
+ 
   // Table fields
-  dataSource: BranchDatasource;
+  dataSource: AppraiserDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ['branchId', 'name', 'partner', 'state', 'city', 'actions'];
+  displayedColumns = ['customerId', 'customerName','actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  branchResult: BranchModel[] = [];
+  appraiserResult: any[] = [];
 
 
   // Subscriptions
@@ -39,12 +38,12 @@ export class BranchListComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private branchService: BranchService,
+    private appraiserService: AppraiserService,
     private dataTableService: DataTableService
   ) {
-    this.branchService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+    this.appraiserService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
-        this.addRole();
+        this.addAppraiser();
       }
     })
   }
@@ -66,19 +65,6 @@ export class BranchListComponent implements OnInit {
       .subscribe();
     this.subscriptions.push(paginatorSubscriptions);
 
-    // Filtration, bind to searchInput
-    // const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(
-    //   // tslint:disable-next-line:max-line-length
-    //   debounceTime(150), // The user can type quite quickly in the input box, and that could trigger a lot of server requests. With this operator, we are limiting the amount of server requests emitted to a maximum of one every 150ms
-    //   distinctUntilChanged(), // This operator will eliminate duplicate values
-    //   tap(() => {
-    //     this.paginator.pageIndex = 0;
-    //     this.loadBranchPage();
-    //   })
-    // )
-    //   .subscribe();
-    // this.subscriptions.push(searchSubscription);
-
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
@@ -87,19 +73,19 @@ export class BranchListComponent implements OnInit {
       });
 
     // Init DataSource
-    this.dataSource = new BranchDatasource(this.branchService);
+    this.dataSource = new AppraiserDatasource(this.appraiserService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      this.branchResult = res;
+      this.appraiserResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
 
     // First load
     // this.loadBranchPage();
 
-    this.dataSource.loadBranches(1, 25, this.searchValue, '', '', '');
+    this.dataSource.loadBranches(1, 25, this.searchValue,);
   }
 
 	/**
@@ -120,7 +106,7 @@ export class BranchListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadBranches(from, to, this.searchValue, '', '', '');
+    this.dataSource.loadBranches(from, to, this.searchValue);
   }
 
 	/**
@@ -139,32 +125,30 @@ export class BranchListComponent implements OnInit {
 	 *
 	 * @param _item: Role
 	 */
-  deleteRole(_item) {
-    const role = _item;
-    const _title = 'Delete Branch';
-    const _description = 'Are you sure to permanently delete this branch?';
-    const _waitDesciption = 'Branch is deleting...';
-    const _deleteMessage = `Branch has been deleted`;
+  // deleteRole(_item) {
+  //   const role = _item;
+  //   const _title = 'Delete Branch';
+  //   const _description = 'Are you sure to permanently delete this branch?';
+  //   const _waitDesciption = 'Branch is deleting...';
+  //   const _deleteMessage = `Branch has been deleted`;
 
-    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.branchService.deleteBranch(role.id).subscribe(successDelete => {
-          this.toastr.successToastr(_deleteMessage);
-          this.loadBranchPage();
-        },
-          errorDelete => {
-            this.toastr.errorToastr(errorDelete.error.message);
-          });
-      }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-    });
-  }
+  //   const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+  //   dialogRef.afterClosed().subscribe(res => {
+  //     if (res) {
+  //       console.log(res);
+  //       this.appraiserService.deleteBranch(role.id).subscribe(successDelete => {
+  //         this.toastr.successToastr(_deleteMessage);
+  //         this.loadBranchPage();
+  //       },
+  //         errorDelete => {
+  //           this.toastr.errorToastr(errorDelete.error.message);
+  //         });
+  //     }
+  //   });
+  // }
 
-  addRole() {
-    const dialogRef = this.dialog.open(BranchAddComponent, {
+  addAppraiser() {
+    const dialogRef = this.dialog.open(AddAppraiserComponent, {
       data: { action: 'add' },
       width: '450px'
     });
@@ -173,7 +157,7 @@ export class BranchListComponent implements OnInit {
         this.loadBranchPage();
       }
     });
-    this.branchService.openModal.next(false)
+    this.appraiserService.openModal.next(false)
   }
 
 	/**
@@ -185,7 +169,7 @@ export class BranchListComponent implements OnInit {
     console.log(role);
     // const _saveMessage = `Role successfully has been saved.`;
     // const _messageType = role.id ? MessageType.Update : MessageType.Create;
-    const dialogRef = this.dialog.open(BranchAddComponent,
+    const dialogRef = this.dialog.open(AddAppraiserComponent,
       {
         data: { partnerId: role.id, action: 'edit' },
         width: '450px'
@@ -198,7 +182,7 @@ export class BranchListComponent implements OnInit {
   }
 
   viewRole(role) {
-    const dialogRef = this.dialog.open(BranchAddComponent, {
+    const dialogRef = this.dialog.open(AddAppraiserComponent, {
       data: { partnerId: role.id, action: 'view' },
       width: '450px'
     });

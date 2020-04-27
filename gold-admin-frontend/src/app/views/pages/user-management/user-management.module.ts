@@ -51,6 +51,8 @@ import { AddBrokerComponent } from './broker/add-broker/add-broker.component';
 import { MerchantListComponent } from './merchant/merchant-list/merchant-list.component';
 import { InternalUserListComponent } from './internal-user/internal-user-list/internal-user-list.component';
 import { AddInternalUserComponent } from './internal-user/add-internal-user/add-internal-user.component';
+import { AddAppraiserComponent } from './assign-appraiser/add-appraiser/add-appraiser.component';
+import { AppraiserListComponent } from './assign-appraiser/appraiser-list/appraiser-list.component';
 
 const routes: Routes = [
 	{
@@ -84,7 +86,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'assign-appraiser',
-				component: RolesListComponent,
+				component: AppraiserListComponent,
 			},
 			{
 				path: 'branch',
@@ -140,7 +142,8 @@ const routes: Routes = [
 		BranchAddComponent,
 		PartnerAddComponent,
 		AddBrokerComponent,
-		AddInternalUserComponent
+		AddInternalUserComponent,
+		AddAppraiserComponent
 	],
 	declarations: [
 		UserManagementComponent,
@@ -166,6 +169,8 @@ const routes: Routes = [
 		MerchantListComponent,
 		InternalUserListComponent,
 		AddInternalUserComponent,
+		AddAppraiserComponent,
+		AppraiserListComponent,
 
 	]
 })
