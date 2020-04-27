@@ -2,27 +2,16 @@
 import { Component, OnInit, Inject, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 // RxJS
-import { Observable, of, Subscription } from 'rxjs';
-// Lodash
-import { each, find, some } from 'lodash';
-// NGRX
-import { Update } from '@ngrx/entity';
-import { Store, select } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+
+import { Store, } from '@ngrx/store';
 // State
 import { AppState } from '../../../../../core/reducers';
 // Services and Models
-import {
-	Role,
-	Permission,
-	selectRoleById,
-	RoleUpdated,
-	selectAllPermissions,
-	selectAllRoles,
-	selectLastCreatedRoleId,
-	RoleOnServerCreated
-} from '../../../../../core/auth';
-import { delay } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { RolesService } from '../../../../../core/user-management/roles';
+import { ToastrService } from 'ngx-toastr';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
 	selector: 'kt-role-add-dialog',
@@ -31,17 +20,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class RoleAddDialogComponent implements OnInit, OnDestroy {
 	// Public properties
-	role: Role;
-	role$: Observable<Role>;
-	hasFormErrors = false;
-	viewLoading = false;
-	loadingAfterSubmit = false;
-	allPermissions$: Observable<Permission[]>;
-	rolePermissions: Permission[] = [];
+
 	roleForm: FormGroup;
 	// Private properties
 	private componentSubscriptions: Subscription;
 	title: string;
+	cloneRoles: any[] = [];
+	modules:any[]=[]
+	checkedModules:any [] = [0]
+	isDisabled=false;
 
 	/**
 	 * Component constructor
@@ -53,27 +40,97 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 	constructor(public dialogRef: MatDialogRef<RoleAddDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		private store: Store<AppState>,
-		private fb: FormBuilder) { }
+		private fb: FormBuilder,
+		private roleService: RolesService,
+		private toast: ToastrService,
+	) { }
 
 	ngOnInit() {
-		this.initForm()
+		this.initForm();
+		this.getCloneRole();
+		this.getAllModules()
 		console.log(this.data)
 		if (this.data.action == 'add') {
 			this.title = 'Add Role'
 		} else {
 			this.title = 'Edit Role'
-			this.roleForm.patchValue(this.data.role)
-			this.roleForm.controls.cloneRoles.disable()
+			this.roleForm.patchValue(this.data.role);
+			this.checkedModules = []
+			this.data.role.modules.forEach(mod => {
+				this.checkedModules.push(mod.id)
+			});
+			this.controls.moduleId.patchValue(this.checkedModules)
 		}
 
 	}
 
 	initForm() {
 		this.roleForm = this.fb.group({
-			name: ['', Validators.required],
-			cloneRoles: ['', Validators.required],
-			roleDescription: ['']
+			roleName: ['', Validators.required],
+			roleId: [''],
+			description: [''],
+			moduleId:[[],Validators.required]
 		})
+	}
+
+	getCloneRole() {
+		this.roleService.getCloneRole().pipe(
+			map(res => {
+				this.cloneRoles = res
+			}),
+			catchError(err => {
+				this.toast.error(err.error.message)
+				throw err;
+			})).subscribe()
+	}
+
+	getAllModules() {
+		this.roleService.getAllModule().pipe(
+			map(res => {
+				
+				this.modules = res;
+			}),
+			catchError(err => {
+				this.toast.error(err.error.message)
+				throw err;
+			})).subscribe()
+	}
+
+	getModules() {
+		if(this.controls.roleId.value == ''){
+			this.checkedModules = [0];
+			this.isDisabled = false
+			return
+		}
+		this.roleService.getModule(this.controls.roleId.value).pipe(
+			map(res => {
+				this.controls.moduleId.patchValue(res)
+				let temp = this.modules
+				this.modules = [];
+				this.modules = temp
+				this.checkedModules = res;
+				this.isDisabled = true
+			}),
+			catchError(err => {
+				this.toast.error(err.error.message)
+				throw err;
+			})).subscribe()
+	}
+
+	onModuleSelect(value,event,index){
+		let temp = [];
+		// Array.prototype.push.apply(temp,this.controls.modules.value)
+		if(event){
+			temp = this.controls.moduleId.value;
+			temp.push(value)
+			this.controls.moduleId.patchValue(temp)
+	
+		}else{
+			temp = this.controls.moduleId.value;
+			temp.splice(index,1)
+			this.controls.moduleId.patchValue(temp)
+		}
+		
 	}
 
 	get controls() {
@@ -82,9 +139,7 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 
 	action(event: Event) {
 		if (event) {
-			if (this.roleForm.invalid) {
-				this.roleForm.markAllAsTouched()
-			}
+			this.submit()
 		} else if (!event) {
 			this.dialogRef.close()
 		}
@@ -96,212 +151,41 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	/**
-	 * Load permissions
-	 */
-	loadPermissions() {
-		this.allPermissions$.subscribe(_allPermissions => {
-			if (!_allPermissions) {
-				return;
+	submit(){
+		if (this.roleForm.invalid) {
+			this.roleForm.markAllAsTouched();
+			return 
+		}
+		if(this.data.action == 'add'){
+			if(this.controls.roleId.value == ''){
+				this.controls.roleId.patchValue(0)
+			}else{
+			this.controls.roleId.patchValue(Number(this.controls.roleId.value))
 			}
-
-			const mainPermissions = _allPermissions.filter(el => !el.parentId);
-			mainPermissions.forEach((element: Permission) => {
-				const hasUserPermission = this.role.permissions.some(t => t === element.id);
-				const rootPermission = new Permission();
-				rootPermission.clear();
-				rootPermission.isSelected = hasUserPermission;
-				rootPermission._children = [];
-				rootPermission.id = element.id;
-				rootPermission.level = element.level;
-				rootPermission.parentId = element.parentId;
-				rootPermission.title = element.title;
-				const children = _allPermissions.filter(el => el.parentId && el.parentId === element.id);
-				children.forEach(child => {
-					const hasUserChildPermission = this.role.permissions.some(t => t === child.id);
-					const childPermission = new Permission();
-					childPermission.clear();
-					childPermission.isSelected = hasUserChildPermission;
-					childPermission._children = [];
-					childPermission.id = child.id;
-					childPermission.level = child.level;
-					childPermission.parentId = child.parentId;
-					childPermission.title = child.title;
-					rootPermission._children.push(childPermission);
-				});
-				this.rolePermissions.push(rootPermission);
-			});
-		});
-	}
-
-	/** ACTIONS */
-	/**
-	 * Returns permissions ids
-	 */
-	preparePermissionIds(): number[] {
-		const result = [];
-		each(this.rolePermissions, (_root: Permission) => {
-			if (_root.isSelected) {
-				result.push(_root.id);
-				each(_root._children, (_child: Permission) => {
-					if (_child.isSelected) {
-						result.push(_child.id);
-					}
-				});
-			}
-		});
-		return result;
-	}
-
-	/**
-	 * Returns role for save
-	 */
-	prepareRole(): Role {
-		const _role = new Role();
-		_role.id = this.role.id;
-		_role.permissions = this.preparePermissionIds();
-		// each(this.assignedRoles, (_role: Role) => _user.roles.push(_role.id));
-		_role.title = this.role.title;
-		_role.isCoreRole = this.role.isCoreRole;
-		return _role;
-	}
-
-	/**
-	 * Save data
-	 */
-	onSubmit() {
-		this.hasFormErrors = false;
-		this.loadingAfterSubmit = false;
-		/** check form */
-		if (!this.isTitleValid()) {
-			this.hasFormErrors = true;
-			return;
+			this.roleService.addRole(this.roleForm.value).pipe(
+				map(res => {
+					this.toast.success("Role Created Successfully")
+					this.dialogRef.close(res)
+				}),
+				catchError(err => {
+					this.toast.error(err.error.message)
+					throw err;
+				})).subscribe()
+		}else{
+			this.controls.roleId.patchValue(Number(this.controls.roleId.value))
+			this.roleService.editRole(this.data.role.id,this.roleForm.value).pipe(
+				map(res => {
+					this.toast.success("Role Updated Successfully")
+					this.dialogRef.close(res)
+				}),
+				catchError(err => {
+					this.toast.error(err.error.message)
+					throw err;
+				})).subscribe()
 		}
-
-		const editedRole = this.prepareRole();
-		if (editedRole.id > 0) {
-			this.updateRole(editedRole);
-		} else {
-			this.createRole(editedRole);
-		}
+		
+		
 	}
 
-	/**
-	 * Update role
-	 *
-	 * @param _role: Role
-	 */
-	updateRole(_role: Role) {
-		this.loadingAfterSubmit = true;
-		this.viewLoading = true;
-		/* Server loading imitation. Remove this on real code */
-		const updateRole: Update<Role> = {
-			id: this.role.id,
-			changes: _role
-		};
-		this.store.dispatch(new RoleUpdated({
-			partialrole: updateRole,
-			role: _role
-		}));
-		of(undefined).pipe(delay(1000)).subscribe(() => { // Remove this line
-			this.viewLoading = false;
-			this.dialogRef.close({
-				_role,
-				isEdit: true
-			});
-		}); // Remove this line
-	}
 
-	/**
-	 * Create role
-	 *
-	 * @param _role: Role
-	 */
-	createRole(_role: Role) {
-		this.loadingAfterSubmit = true;
-		this.viewLoading = true;
-		this.store.dispatch(new RoleOnServerCreated({ role: _role }));
-		this.componentSubscriptions = this.store.pipe(
-			delay(1000), // Remove this line
-			select(selectLastCreatedRoleId)
-		).subscribe(res => {
-			if (!res) {
-				return;
-			}
-
-			this.viewLoading = false;
-			this.dialogRef.close({
-				_role,
-				isEdit: false
-			});
-		});
-	}
-
-	/**
-	 * Close alert
-	 *
-	 * @param $event: Event
-	 */
-	onAlertClose($event) {
-		this.hasFormErrors = false;
-	}
-
-	/**
-	 * Check is selected changes
-	 *
-	 * @param $event: Event
-	 * @param permission: Permission
-	 */
-	isSelectedChanged($event, permission: Permission) {
-		if (permission._children.length === 0 && permission.isSelected) {
-			const _root = find(this.rolePermissions, (item: Permission) => item.id === permission.parentId);
-			if (_root && !_root.isSelected) {
-				_root.isSelected = true;
-			}
-			return;
-		}
-
-		if (permission._children.length === 0 && !permission.isSelected) {
-			const _root = find(this.rolePermissions, (item: Permission) => item.id === permission.parentId);
-			if (_root && _root.isSelected) {
-				if (!some(_root._children, (item: Permission) => item.isSelected === true)) {
-					_root.isSelected = false;
-				}
-			}
-			return;
-		}
-
-		if (permission._children.length > 0 && permission.isSelected) {
-			each(permission._children, (item: Permission) => item.isSelected = true);
-			return;
-		}
-
-		if (permission._children.length > 0 && !permission.isSelected) {
-			each(permission._children, (item: Permission) => {
-				item.isSelected = false;
-			});
-			return;
-		}
-	}
-
-	/** UI */
-	/**
-	 * Returns component title
-	 */
-	getTitle(): string {
-		if (this.role && this.role.id) {
-			// tslint:disable-next-line:no-string-throw
-			return `Edit role '${this.role.title}'`;
-		}
-
-		// tslint:disable-next-line:no-string-throw
-		return 'New role';
-	}
-
-	/**
-	 * Returns is title valid
-	 */
-	isTitleValid(): boolean {
-		return (this.role && this.role.title && this.role.title.length > 0);
-	}
 }

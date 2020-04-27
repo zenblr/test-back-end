@@ -4,8 +4,8 @@ import { Component, OnInit, ElementRef, ViewChild, ChangeDetectionStrategy, OnDe
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material';
 // RXJS
-import { distinctUntilChanged, tap, skip, take, delay, takeUntil } from 'rxjs/operators';
-import {  merge,  of, Subscription, Subject } from 'rxjs';
+import { distinctUntilChanged, tap, skip, take, delay, takeUntil, catchError, map } from 'rxjs/operators';
+import { merge, of, Subscription, Subject } from 'rxjs';
 // NGRX
 import { Store } from '@ngrx/store';
 // Services
@@ -17,6 +17,7 @@ import { AppState } from '../../../../../core/reducers';
 // Components
 import { RoleAddDialogComponent } from '../role-add/role-add.dialog.component';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	selector: 'kt-roles-list',
@@ -51,7 +52,8 @@ export class RolesListComponent implements OnInit, OnDestroy {
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
 		private rolesService: RolesService,
-		private router: Router) {
+		private router: Router,
+		private toast: ToastrService) {
 		this.rolesService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
 			if (res) {
 				this.addRole('add')
@@ -118,32 +120,11 @@ export class RolesListComponent implements OnInit, OnDestroy {
 		let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
 		let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-		this.dataSource.loadRoles('', from, to, '', '', '');
-		// this.selection.clear();
-		// const queryParams = new QueryParamsModel(
-		// 	this.filterConfiguration(),
-		// 	this.sort.direction,
-		// 	this.sort.active,
-		// 	this.paginator.pageIndex,
-		// 	this.paginator.pageSize
-		// );
-		// Call request from server
-		// this.store.dispatch(new RolesPageRequested({ page: queryParams }));
+		this.dataSource.loadRoles('', from, to);
 		this.selection.clear();
 	}
 
-	/**
-	 * Returns object for filter
-	 */
-
-
-	/** ACTIONS */
-	/**
-	 * Delete role
-	 *
-	 * @param _item: Role
-	 */
-	deleteRole(_item: RolesModel) {
+	deleteRole(id) {
 		const _title = 'User Role';
 		const _description = 'Are you sure to permanently delete this role?';
 		const _waitDesciption = 'Role is deleting...';
@@ -154,32 +135,20 @@ export class RolesListComponent implements OnInit, OnDestroy {
 			if (!res) {
 				return;
 			}
+			this.rolesService.deleteRole(id).pipe(
+				map(res => {
+					this.toast.success(res.message)
+					this.loadRolesList();
 
-			// this.store.dispatch(new RoleDeleted({ id: _item.id }));
-			this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-			this.loadRolesList();
-		});
+				}),
+				catchError(err => {
+					this.toast.error(err.error.message)
+					throw err
+				})).subscribe()
+			});
 	}
 
-	/** Fetch */
-	/**
-	 * Fetch selected rows
-	 */
-	fetchRoles() {
-		// const messages = [];
-		// this.selection.selected.forEach(elem => {
-		// 	messages.push({
-		// 		text: `${elem.title}`,
-		// 		id: elem.id.toString(),
-		// 		// status: elem.username
-		// 	});
-		// });
-		// this.layoutUtilsService.fetchElements(messages);
-	}
 
-	/**
-	 * Add role
-	 */
 	addRole(action) {
 		const dialogRef = this.dialog.open(RoleAddDialogComponent, {
 			data: { action: action },
@@ -195,17 +164,10 @@ export class RolesListComponent implements OnInit, OnDestroy {
 
 
 	permissions(role) {
-		this.router.navigate(['/user-management/roles/' + role.name])
+		this.router.navigate(['/user-management/roles/' + role.id])
 	}
 
-	/**
-	 * Edit role
-	 *
-	 * @param role: Role
-	 */
 	editRole(role: RolesModel, action) {
-		const _saveMessage = `Role successfully has been saved.`;
-		const _messageType = role.id ? MessageType.Update : MessageType.Create;
 		const dialogRef = this.dialog.open(RoleAddDialogComponent, {
 			data: {
 				action: action,
@@ -218,28 +180,10 @@ export class RolesListComponent implements OnInit, OnDestroy {
 				return;
 			}
 
-			this.layoutUtilsService.showActionNotification(_saveMessage, _messageType, 10000, true, true);
+			// this.layoutUtilsService.showActionNotification(_saveMessage, _messageType, 10000, true, true);
 			this.loadRolesList();
 		});
 	}
 
-	/**
-	 * Check all rows are selected
-	 */
-	isAllSelected(): boolean {
-		const numSelected = this.selection.selected.length;
-		const numRows = this.rolesResult.length;
-		return numSelected === numRows;
-	}
 
-	/**
-	 * Toggle selection
-	 */
-	masterToggle() {
-		if (this.selection.selected.length === this.rolesResult.length) {
-			this.selection.clear();
-		} else {
-			this.rolesResult.forEach(row => this.selection.select(row));
-		}
-	}
 }

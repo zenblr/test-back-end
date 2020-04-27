@@ -3,248 +3,27 @@
     <kt-portlet>
         <kt-portlet-body>
             <mat-accordion>
-                <mat-expansion-panel *ngFor="let permission of permissions;" [expanded]="permission.expand">
+                <mat-expansion-panel *ngFor="let permission of permissions;index as i;last as l;" [expanded]="i==l">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            {{permission.title}}
+                            {{permission.moduleName | titlecase}}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
 
                     <div class="kt-padding-10">
-                        <div class="row card-border">
+                        <div class="row card-border" *ngFor="let entity of permission.entity;index as i;first as f" [class.kt-margin-t-15]="i!=f" >
                             <div class="col-12">
                                 <div class="row line-height justify-content-center">
                                     <div class="col-2">
-                                        <label class="text-color font-weight-bold">Customer KYC</label>
+                                        <label class="text-color font-weight-bold">{{entity.entityName | titlecase}}</label>
                                     </div>
                                     <div class="col-1">
                                         <mat-slide-toggle></mat-slide-toggle>
                                     </div>
-                                    <div class="col-2">
+                                    <div class="col-2" *ngFor="let action of entity.permission">
                                         <label class="custom-checkbox">
-                                            <span class="label-checkbox">View</span>
+                                            <span class="label-checkbox">{{action.actionName |titlecase}}</span>
                                             <input type="checkbox" class="" id="view" value="View">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Add</span>
-                                            <input type="checkbox" class="" id="add" value="add">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Edit</span>
-                                            <input type="checkbox" class="" id="edit" value="edit">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Delete</span>
-                                            <input type="checkbox" class="" id="delete" value="delete">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row card-border kt-margin-t-15">
-                            <div class="col-12">
-                                <div class="row line-height justify-content-center">
-                                    <div class="col-2">
-                                        <label class="text-color font-weight-bold">Lead</label>
-                                    </div>
-                                    <div class="col-1">
-                                        <mat-slide-toggle></mat-slide-toggle>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">View</span>
-                                            <input type="checkbox" class="" id="view" value="View">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Add</span>
-                                            <input type="checkbox" class="" id="add" value="add">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Edit</span>
-                                            <input type="checkbox" class="" id="edit" value="edit">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Delete</span>
-                                            <input type="checkbox" class="" id="delete" value="delete">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row card-border kt-margin-t-15">
-                            <div class="col-12">
-                                <div class="row line-height justify-content-center">
-                                    <div class="col-2">
-                                        <label class="text-color font-weight-bold">Loan</label>
-                                    </div>
-                                    <div class="col-1">
-                                        <mat-slide-toggle></mat-slide-toggle>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">View</span>
-                                            <input type="checkbox" class="" id="view" value="View">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Add</span>
-                                            <input type="checkbox" class="" id="add" value="add">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Edit</span>
-                                            <input type="checkbox" class="" id="edit" value="edit">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Delete</span>
-                                            <input type="checkbox" class="" id="delete" value="delete">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row card-border kt-margin-t-15">
-                            <div class="col-12">
-                                <div class="row line-height justify-content-center">
-                                    <div class="col-2">
-                                        <label class="text-color font-weight-bold">Log Book</label>
-                                    </div>
-                                    <div class="col-1">
-                                        <mat-slide-toggle></mat-slide-toggle>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">View</span>
-                                            <input type="checkbox" class="" id="view" value="View">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Add</span>
-                                            <input type="checkbox" class="" id="add" value="add">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Edit</span>
-                                            <input type="checkbox" class="" id="edit" value="edit">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Delete</span>
-                                            <input type="checkbox" class="" id="delete" value="delete">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row card-border kt-margin-t-15">
-                            <div class="col-12">
-                                <div class="row line-height justify-content-center">
-                                    <div class="col-2">
-                                        <label class="text-color font-weight-bold">Jewellery</label>
-                                    </div>
-                                    <div class="col-1">
-                                        <mat-slide-toggle></mat-slide-toggle>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">View</span>
-                                            <input type="checkbox" class="" id="view" value="View">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Add</span>
-                                            <input type="checkbox" class="" id="add" value="add">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Edit</span>
-                                            <input type="checkbox" class="" id="edit" value="edit">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Delete</span>
-                                            <input type="checkbox" class="" id="delete" value="delete">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row card-border kt-margin-t-15">
-                            <div class="col-12">
-                                <div class="row line-height justify-content-center">
-                                    <div class="col-2">
-                                        <label class="text-color font-weight-bold">Settings</label>
-                                    </div>
-                                    <div class="col-1">
-                                        <mat-slide-toggle></mat-slide-toggle>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">View</span>
-                                            <input type="checkbox" class="" id="view" value="View">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Add</span>
-                                            <input type="checkbox" class="" id="add" value="add">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Edit</span>
-                                            <input type="checkbox" class="" id="edit" value="edit">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">Delete</span>
-                                            <input type="checkbox" class="" id="delete" value="delete">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
