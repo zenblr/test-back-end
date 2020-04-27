@@ -93,7 +93,7 @@ exports.readKycSubmmitedCustomer = async (req, res, next) => {
 exports.addBranchManagerRating = async (req, res, next) => {
     let { customerId, customerKycId, behaviourRatingBranchManager, idProofRatingBranchManager, addressProofRatingBranchManager, kycStatusFromBranchManager } = req.body;
 
-    let customer = await models.customer.findOne({ where: { id: customerId, isVerifiedByFirstStage: true, isKycSubmitted: true, kycStatus: "complete" } });
+    let customer = await models.customer.findOne({ where: { id: customerId, isVerifiedByFirstStage: true, isKycSubmitted: true } });
 
     if (check.isEmpty(customer)) {
         return res.status(200).json({ message: `This customer Kyc is not verified by appraisal.` })
@@ -121,7 +121,13 @@ exports.addBranchManagerRating = async (req, res, next) => {
 
 exports.readFirstStageVerifiedCustomer = async (req, res, next) => {
 
-    let customer = await models.customer.findAll({ where: { isVerifiedByFirstStage: true, isVerifiedByBranchManager: false, isKycSubmitted: true, } })
+    let customer = await models.customer.findAll({
+        where: { isVerifiedByFirstStage: true, isVerifiedByBranchManager: false },
+        include: [{
+            model: models.customerKycClassification,
+            as: 'customerKycClassification'
+        }]
+    })
 
     return res.status(200).json({ customer })
 
