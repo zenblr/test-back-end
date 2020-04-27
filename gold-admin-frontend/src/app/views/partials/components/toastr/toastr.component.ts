@@ -15,10 +15,10 @@ export class ToastrComponent implements OnInit {
 
   successToastr(msg) {
     console.log(msg)
-    this.toastr.success(msg, 'Successful!', { timeOut: 2000 });
+    this.toastr.success(msg,'', { timeOut: 2000 });
   }
 
   errorToastr(msg) {
-    this.toastr.error(msg, 'Error!', { timeOut: 3000 });
+    this.toastr.error(msg,'', { timeOut: 3000 });
   }
 }

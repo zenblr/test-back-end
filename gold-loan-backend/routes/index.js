@@ -97,5 +97,13 @@ router.use('/loan-process', customerLoanProcess);
 
 const feedBack=require('./feedBack');
 router.use('/customer-feedback',feedBack)
+const customerClassification = require('./customerClassification')
+router.use('/classification', customerClassification)
+
+const rolePermission = require('./rolePermission');
+router.use('/role-permission',rolePermission);
+
+const modules = require('./module');
+router.use('/modules',modules);
 
 module.exports = router;

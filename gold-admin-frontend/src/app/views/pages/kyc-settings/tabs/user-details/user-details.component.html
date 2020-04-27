@@ -7,7 +7,7 @@
 					<div class="row kt-padding-t-15">
 						<!-- Mobile -->
 						<div class="col-4 align-self-center">
-							<label class="text-color font-weight-500">Mobile Number</label>
+							<label  class="mandatory  text-color font-weight-500">Mobile Number</label>
 						</div>
 
 						<div class="col-8">
@@ -89,7 +89,7 @@
 
 					<div class="row kt-padding-t-15">
 						<div class="col-4 align-self-center">
-							<label class="text-color font-weight-500">Full Name</label>
+							<label  class="  text-color font-weight-500">Full Name</label>
 						</div>
 
 						<div class="col-4">
@@ -126,10 +126,10 @@
 					<div class="row kt-padding-t-15">
 						<!-- PAN -->
 						<div class="col-4 align-self-center">
-							<label class="text-color font-weight-500">Pan Number</label>
+							<label  class="mandatory  text-color font-weight-500">Pan Number</label>
 						</div>
 
-						<div class="col-8">
+						<div class="col">
 							<!-- <mat-form-field appearance="outline" class="w-100"> -->
 							<input class="form-control" formControlName="panCardNumber" autocomplete="off"
 								placeholder="PAN Number" [class.isError]="
@@ -151,7 +151,7 @@
 							<!-- </mat-form-field> -->
 						</div>
 
-						<!-- <div class="col">
+						<div *ngIf="showVerifyPAN" class="col">
 							<div *ngIf="!isPanVerified">
 								<kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
 									[value]="'Verify'" (action)="verifyPAN()">
@@ -163,7 +163,7 @@
 									Verified
 								</button>
 							</div>
-						</div> -->
+						</div>
 					</div>
 
 					<div class="row kt-padding-t-15">

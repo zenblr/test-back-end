@@ -69,6 +69,11 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: "pending",
             values: ['confirm', 'pending','complete','closed']
         },
+        isKycSubmitted: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_kyc_submitted',
+            defaultValue: false
+        },
         isVerifiedByFirstStage: {
             type: DataTypes.BOOLEAN,
             field: 'is_verified_by_first_stage',
@@ -114,9 +119,12 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Customer.associate = function (models) {
+
         Customer.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerId', as: 'customerKyc' });
         Customer.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });
         Customer.hasMany(models.customerKycBankDetail, { foreignKey: 'customerId', as: 'customerKycBank' });
+
+        Customer.hasOne(models.customerKycClassification, { foreignKey: 'customerId', as: 'customerKycClassification' });
 
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.hasMany(models.customerLoan, { foreignKey: 'customerId', as: 'customerLoan' });

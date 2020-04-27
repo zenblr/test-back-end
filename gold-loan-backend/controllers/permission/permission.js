@@ -1,65 +1,67 @@
 const models = require("../../models");
-const check= require('../../lib/checkLib');
-
-//add permission
-exports.addPermission = async (req, res, next) => {
-    const { permissionName, description } = req.body;
-
-    let permissionExist = await models.permission.findOne({ where: { permissionName } })
-    if (!check.isEmpty(permissionExist)) {
-        return res.status(404).json({ message: 'This Permission is already Exist' });
-    }
-
-    let addPermissionData = await models.permission.create({ permissionName, description });
-    if (!addPermissionData) {
-        return res.status(422).json({ message: "data not created" });
-    }
-    return res.status(201).json({ message: 'permission created' });
-
-}
+const check = require('../../lib/checkLib');
+const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
+const _ = require('lodash');
 
 //read permissiion
 exports.readPermission = async (req, res, next) => {
-    let { getAll } = req.query;
-
-    let whereCondition;
-    if (getAll == "true") {
-        whereCondition = {order: [['id', 'ASC']]}
+    const roleId = req.params.roleId;
+    let getModules = await models.roleModule.findAll({
+        where : {roleId, isActive : true},
+        attributes: ['moduleId']
+    });
+    let getEntityPermissions = await models.rolePermission.findAll(
+        {
+            where : {
+                isActive : true,
+                roleId : roleId
+            },
+            include: [
+                {
+                  model: models.permission,
+                  as:'permission',
+                  where: { isActive: true },
+                  attributes: ['id','entityId']
+                },
+              ]
+        }
+    )
+    let allEntityId = await getEntityPermissions.map((entity) => entity.permission.entityId);
+    let permissionId = await getEntityPermissions.map((permission) => permission.permission.id);
+    let entityId= await _.uniq(allEntityId);
+    let moduleId = await getModules.map((module) => module.moduleId)
+    let allPermissions = await models.module.findAll(
+        {
+            where: {
+                id: {
+                    [Op.in]: moduleId
+                  },
+                 isActive : true
+                 },
+            attributes: ['id', 'moduleName'],
+            include: [
+                {
+                    model: models.entity,
+                    as: 'entity',
+                    attributes: ['id', 'entityName'],
+                    where: { isActive: true },
+                    include: [
+                        {
+                            model: models.permission,
+                            as: 'permission',
+                            attributes: ['id', 'actionName'],
+                            where: { isActive: true }
+                        },
+                    ]
+                }
+            ]
+        }
+    )
+    if(!allPermissions){
+        res.status(404).json({"message": "data not found"});
     } else {
-        whereCondition = { where: { isActive: true },  order: [['id', 'ASC']]}
-        
+        res.status(200).json({moduleId, entityId, permissionId, allPermissions});
     }
-
-    let readPermissionData = await models.permission.findAll(whereCondition);
-
-    if (!readPermissionData) {
-        return res.status(404).json({ message: "data not found" });
-    }
-    return res.status(200).json(readPermissionData);
 }
 
-//update permission
-
-exports.updatePermission = async (req, res, next) => {
-    const permissionId = req.params.id;
-    const { permissionName, description } = req.body
-    let permissionExist = await models.permission.findOne({ where: { permissionName } })
-    if (!check.isEmpty(permissionExist)) {
-        return res.status(404).json({ message: 'This Permission is already Exist' });
-    }
-
-    let updatePermissionData = await models.permission.update({ permissionName, description }, { where: { id: permissionId } });
-    if (updatePermissionData[0] === 0) { return res.status(404).json({ message: 'permission update failed' }) }
-    return res.status(200).json({ message: 'Updated' });
-}
-
-// delete permission
-
-exports.deactivePermission = async (req, res, next) => {
-    const { permissionId, isActive } = req.query;
-    let deactivePermission = await models.permission.update({ isActive: isActive }, { where: { id: permissionId } });
-    if (deactivePermission[0] == 0) {
-        return res.status(404).json({ message: "permission deleted failed" });
-    }
-    return res.status(200).json({ message: "Success" });
-}

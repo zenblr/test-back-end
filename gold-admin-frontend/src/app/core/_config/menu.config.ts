@@ -47,17 +47,17 @@ export class MenuConfig {
 
 							submenu: [
 								{
-									title: 'Upload Promotional Banners',
+									title: 'Promotional Banners',
 									page: '/upload-data/upload-banner',
 
 								},
 								{
-									title: 'Upload Offer Banners',
+									title: 'Offer Banners',
 									page: '/upload-data/upload-offer',
 
 								},
 								{
-									title: 'Upload Lending Partner Banners',
+									title: 'Partner Banners',
 									page: '/upload-data/upload-lender-banner',
 
 								},
@@ -267,26 +267,26 @@ export class MenuConfig {
 			itemsTwo: [
 
 				{
-					title: 'Partner Details',
+					title: 'Partner',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/partner',
 
 				},
 				{
-					title: 'Branch Details',
+					title: 'Branch',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/branch',
 
 				},
 				{
-					title: 'Internal User Details',
-					root: true,					
+					title: 'Internal User',
+					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/internal-user',
 
-				}, 
+				},
 				{
 					title: 'Assign Appraiser',
 					root: true,
@@ -295,14 +295,14 @@ export class MenuConfig {
 
 				},
 				{
-					title: 'Merchant Details',
+					title: 'Merchant',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/merchant',
 
 				},
 				{
-					title: 'Broker Details',
+					title: 'Broker',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/broker',

@@ -31,6 +31,7 @@ export class PartnerAddComponent implements OnInit {
   states: any;
   cities: any;
   title: string;
+  isMandatory =false
 
   constructor(
     public dialogRef: MatDialogRef<PartnerAddComponent>,
@@ -47,8 +48,10 @@ export class PartnerAddComponent implements OnInit {
     if (this.data.action !== 'add') {
       this.getPartnerById(this.data['partnerId']);
       this.title = 'Edit Partner'
+      this.isMandatory = true
     } else {
       this.title = 'Add Partner'
+      this.isMandatory = true
     }
   }
 

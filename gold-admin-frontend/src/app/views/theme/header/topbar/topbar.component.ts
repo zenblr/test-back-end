@@ -1,5 +1,5 @@
 // Angular
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from "@angular/common";
 import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
@@ -7,7 +7,12 @@ import { LoanSettingsService } from '../.././../../core/loan-setting'
 import { PartnerService } from '../.././../../core/user-management/partner/services/partner.service';
 import { BranchService } from '../.././../../core/user-management/branch/services/branch.service';
 import { RolesService } from '../.././../../core/user-management/roles';
-import { BrokerService } from '../.././../../core/user-management/broker';
+import { BrokerService } from '../../../../core/user-management/broker';
+import { SubheaderService } from '../../../../core/_base/layout';
+import { Breadcrumb } from '../../../../core/_base/layout/services/subheader.service';
+import { Subscription, Subject } from 'rxjs';
+import { SharedService } from '../../../../core/shared/services/shared.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'kt-topbar',
@@ -15,7 +20,18 @@ import { BrokerService } from '../.././../../core/user-management/broker';
 	styleUrls: ['./topbar.component.scss'],
 })
 export class TopbarComponent implements OnInit {
+	// Public properties
+	@Input() fluid: boolean;
+	@Input() clear: boolean;
 
+	today: number = Date.now();
+	title: string = '';
+	desc: string = '';
+	totalRecords: number = 0;
+	breadcrumbs: Breadcrumb[] = [];
+	destroy$ = new Subject()
+	// Private properties
+	private subscriptions: Subscription[] = [];
 
 	rightButton: boolean = false;
 	showfilter: boolean = false
@@ -28,6 +44,8 @@ export class TopbarComponent implements OnInit {
 	toogler: string;
 	path: string;
 	constructor(
+		public sharedService:SharedService,
+		public subheaderService: SubheaderService,
 		private router: Router,
 		private location: Location,
 		private customerManagementServiceCustomer: CustomerManagementService,
@@ -35,7 +53,7 @@ export class TopbarComponent implements OnInit {
 		private partnerService: PartnerService,
 		private branchService: BranchService,
 		private rolesService: RolesService,
-		private brokerService:BrokerService) {
+		private brokerService: BrokerService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -46,7 +64,44 @@ export class TopbarComponent implements OnInit {
 	ngOnInit() {
 		this.setTopbar(this.router.url)
 	}
+	ngAfterViewInit(): void {
+
+		this.subscriptions.push(this.sharedService.totalCount$.pipe(
+			takeUntil(this.destroy$)
+		).subscribe(ct => {
+			if (ct) {
+				Promise.resolve(null).then(() => {
+					this.totalRecords = ct;
+					console.log(this.totalRecords)
+				});
+			}
+		}));
+		this.subscriptions.push(this.subheaderService.title$.subscribe(bt => {
+			// breadcrumbs title sometimes can be undefined
+			if (bt) {
+				Promise.resolve(null).then(() => {
+					this.title = bt.title;
+					this.desc = bt.desc;
+					console.log(this.title)
+				});
+			}
+		}));
+
+		this.subscriptions.push(this.subheaderService.breadcrumbs$.subscribe(bc => {
+			Promise.resolve(null).then(() => {
+				this.breadcrumbs = bc;
+				console.log(this.breadcrumbs)
+			});
+		}));
+	}
+	/**
+	 * On destroy
+	 */
+	ngOnDestroy(): void {
+		this.subscriptions.forEach(sb => sb.unsubscribe());
+	}
 	reset() {
+		this.totalRecords = 0;
 		this.rightButton = false;
 		this.type1 = '';
 		this.value1 = '';

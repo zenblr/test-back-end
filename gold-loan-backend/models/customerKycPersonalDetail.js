@@ -83,22 +83,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'modified_by',
             allowNull: false,
         },
-        kycStatus: {
-            type: DataTypes.ENUM,
-            field: 'kyc_status',
-            defaultValue: "pending",
-            values: ['confirm', 'pending','complete','closed']
-        },
-        isKycSubmitted: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_kyc_submitted',
-            defaultValue: false
-        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
             defaultValue: false
         }
+
     }, {
         freezeTableName: true,
         tableName: 'customer_kyc_personal_detail',
@@ -109,7 +99,7 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKycPersonalDetail.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerKycId', as: 'customerKycAddress' });
         CustomerKycPersonalDetail.hasMany(models.customerKycBankDetail, { foreignKey: 'customerKycId', as: 'customerKycBank' });
-
+        CustomerKycPersonalDetail.hasOne(models.customerKycClassification, { foreignKey: 'customerKycId', as: 'customerKycClassification' });
 
         CustomerKycPersonalDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         CustomerKycPersonalDetail.belongsTo(models.occupation, { foreignKey: 'occupationId', as: 'occupation' });

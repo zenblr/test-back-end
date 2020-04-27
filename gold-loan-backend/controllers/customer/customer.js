@@ -83,7 +83,13 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   let otp = Math.floor(1000 + Math.random() * 9000);
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
-  await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
+  await models.customerOtp.create({
+    mobileNumber,
+    otp,
+    createdTime,
+    expiryTime,
+    referenceCode,
+  });
 
   request(
     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`
@@ -258,7 +264,7 @@ exports.getAllCustomers = async (req, res, next) => {
     limit: pageSize,
   });
   let count = await models.customer.findAll({
-    where: searchQuery,
+    where: { isActive: true },
     include: [
       {
         model: models.stage,
@@ -300,7 +306,7 @@ exports.getSingleCustomer = async (req, res, next) => {
   if (check.isEmpty(singleCustomer)) {
     return res.status(404).json({ message: "Customer not found" });
   }
-  return res.status(200).json({ singleCustomer })
+  return res.status(200).json({ message: singleCustomer })
 };
 
 

@@ -18,14 +18,13 @@
 
 
 
-                <div class="form-group kt-form__group row">
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
 
 
                         <div class="row">
                             <!-- Partner Name -->
                             <div class="col-4 form-label">
-                                <label>Branch Name</label>
+                                <label [class.mandatory] ="isMandatory ">Branch Name</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="name" autocomplete="off"
@@ -37,7 +36,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label>Partner Name</label>
+                                <label [class.mandatory] ="isMandatory ">Partner Name</label>
                             </div>
 
                             <div class="col-8">
@@ -54,7 +53,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label>State</label>
+                                <label [class.mandatory] ="isMandatory ">State</label>
                             </div>
 
                             <div class="col-8">
@@ -71,7 +70,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label>City</label>
+                                <label [class.mandatory] ="isMandatory ">City</label>
                             </div>
 
                             <div class="col-8">
@@ -90,7 +89,7 @@
 
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label>Pin Code</label>
+                                <label [class.mandatory] ="isMandatory ">Pin Code</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="pincode" placeholder="Enter Pin Code"
@@ -106,7 +105,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="">Address</label>
+                                <label [class.mandatory] ="isMandatory " for="">Address</label>
                             </div>
                             <!-- Address -->
                             <div class="col-8">
@@ -118,7 +117,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
             </form>
         </div>
     </div>

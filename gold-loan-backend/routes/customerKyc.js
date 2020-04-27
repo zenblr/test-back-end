@@ -22,7 +22,7 @@ route.post('/customer-kyc-personal', submitCustomerKycpersonalDetailValidation,v
 
 route.post('/customer-kyc-bank', submitCustomerKycBankDetailValidation,validationError,checkAuth, wrapper(submitCustomerKycBankDetail))
 
-route.post('/submit-all-kyc', submitAllKycInfoValidation,validationError,checkAuth, wrapper(submitAllKycInfo))
+route.post('/submit-all-kyc-info', submitAllKycInfoValidation,validationError,checkAuth, wrapper(submitAllKycInfo))
 
 
 module.exports = route;
