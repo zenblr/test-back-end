@@ -54,7 +54,7 @@
                                     <div class="col-7">
                                         <select formControlName="gender" class="form-control"
                                             [class.isError]="controls.gender.touched && controls.gender.invalid">
-                                            <option disabled selected> Select </option>
+                                            <option value="" disabled selected> Select </option>
                                             <option value="m">Male</option>
                                             <option value="f">Female</option>
                                             <option value="o">Other</option>
@@ -92,7 +92,7 @@
                                     <div class="col-7">
                                         <select name="" id="" formControlName="martialStatus" class="form-control"
                                             [class.isError]="controls.martialStatus.touched && controls.martialStatus.invalid">
-                                            <option [selected]="true" [disabled]="true">Select Status</option>
+                                            <option value="" [selected]="true" [disabled]="true">Select Status</option>
                                             <option value="single">Single</option>
                                             <option value="married">Married</option>
                                             <option value="divorced">Divorced</option>
@@ -115,7 +115,8 @@
                                         <select name="" id="" formControlName="occupationId" class="form-control"
                                             placeholder="Select Occupation"
                                             [class.isError]="controls.occupationId.touched && controls.occupationId.invalid">
-                                            <option [selected]="true" [disabled]="true">Select Occupation</option>
+                                            <option value="" [selected]="true" [disabled]="true">Select Occupation
+                                            </option>
                                             <option [value]="occ.id" *ngFor="let occ of occupations;"> {{occ.name}}
                                             </option>
                                         </select>
@@ -153,8 +154,8 @@
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Select File"
                                                 aria-label="Recipient's username" aria-describedby="basic-addon2"
-                                                readonly
-                                                [class.isError]="controls.alternateMobileNumber.touched && controls.alternateMobileNumber.invalid" />
+                                                readonly formControlName="signatureProof"
+                                                [class.isError]="controls.signatureProof.touched && controls.signatureProof.invalid" />
                                             <div class="input-group-append">
                                                 <span class="input-group-text bg kt-pointer font-weight"
                                                     id="basic-addon2" (click)="signature.click()">Attach</span>
@@ -170,13 +171,19 @@
                             <div class="col-6">
                                 <div class="col-8 offset-4">
                                     <div class="img-container">
-                                        <div class="offset-1 kt-margin-r-25 profile-div">
-                                            <img *ngIf="!signature.isImage" class=""
-                                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                                            <img *ngIf="signature.isImage" class="profile-pic" [src]="signature.url" alt="" />
+                                        <div class="offset-1 kt-margin-r-25">
+                                            <img *ngIf="!signatureJSON.isImage" class=""
+                                                src="../../../../../../assets/media/icons/image-placeholder.png"
+                                                alt="" />
+                                            <img *ngIf="signatureJSON.isImage" [src]="signatureJSON.url" alt="" />
+                                            <!-- <img src="http://173.249.49.7:8000/uploads/images/1587974614144.png"
+                                                alt="" /> -->
                                         </div>
 
                                     </div>
+                                    <!-- <img *ngIf="signatureJSON.url" [src]="signature.url" alt="" /> -->
+
+
 
                                     <!-- <img src="../../../../../../assets/media/users/300_10.jpg" alt="" height="150px"
                                         width="250px"> -->
