@@ -83,7 +83,7 @@ exports.submitCustomerKycpersonalDetailValidation = [
 
     body("dateOfBirth")
         .exists()
-        .withMessage('date of birth'),
+        .withMessage('date of birth is required'),
 
     body("alternateMobileNumber")
         .exists()
