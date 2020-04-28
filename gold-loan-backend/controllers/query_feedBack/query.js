@@ -16,13 +16,7 @@ exports.addQuery=async (req,res)=>{
 
 exports.readQuery=async(req,res)=>{
     
-let readCustomerQuery=await models.query.findAll({where:{isActive:true},
-        include: [
-    {
-        model:models.user,
-        as: "user"
-    }
-], });
+let readCustomerQuery=await models.query.findAll({where:{isActive:true}});
 if(!readCustomerQuery[0]){
     return res.status(404).json({message:'data not found'});
 
@@ -34,12 +28,6 @@ return res.status(200).json(readCustomerQuery);
 exports.readQueryById=async(req,res)=>{
     const customerQueryId=req.params.id;
     let readCustomerQueryById=await models.query.findOne({where:{id:customerQueryId,isActive:true},
-        include:[
-            {
-                model: models.user,
-                as: 'user'
-            }
-        ],
     });
     if(!readCustomerQueryById){
         return res.status(404).json({message:'data not found'})

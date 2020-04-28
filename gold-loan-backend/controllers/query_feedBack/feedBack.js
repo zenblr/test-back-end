@@ -8,7 +8,7 @@ exports.addFeedBack=async (req,res)=>{
 
     let addFeedBackData=await models.feedBack.create({customerName,contactNumber,feedBack,rating,customerId});
     if(!addFeedBackData){
-        return res.status(422).json({message:'feed back is not created'});
+        return res.status(422).json({message:'feedback is not created'});
     }
     return res.status(201).json({message:'created'});
 
@@ -68,7 +68,7 @@ exports.deactiveFeedBack=async(req,res)=>{
     const {isActive,id}=req.query;
     let deactiveCustomerFeedBack=await models.feedBack.update({isActive:isActive},{where:{id}});
     if(!deactiveCustomerFeedBack[0]){
-        return res.status(404).json({message:'Query deleted failed'});
+        return res.status(404).json({message:'feedback deleted failed'});
     }
     return res.status(200).json({message:'Updated'});
 }
