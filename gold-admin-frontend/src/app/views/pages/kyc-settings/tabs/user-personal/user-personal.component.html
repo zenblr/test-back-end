@@ -30,17 +30,22 @@
                             <div class="col-6 kt-margin-t-20">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="">Date of Birth</label>
+                                        <label class="mandatory">Date of Birth</label>
                                     </div>
                                     <div class="col-7">
-                                        <mat-form-field appearance="box" class="example-full-width">
-                                            <mat-label>Choose a date</mat-label>
-                                            <input matInput [matDatepicker]="picker">
-                                            <mat-datepicker-toggle matSuffix [for]="picker">
-                                                <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
-                                            </mat-datepicker-toggle>
-                                            <mat-datepicker #picker></mat-datepicker>
-                                        </mat-form-field>
+
+                                        <input type="text" class="form-control" [matDatepicker]="picker"
+                                            (click)="picker.open()" formControlName="dateOfBirth"
+                                            [class.isError]="controls.dateOfBirth.touched && controls.dateOfBirth.invalid"
+                                            readonly placeholder="4/5/2020">
+                                        <!-- <mat-datepicker-toggle matSuffix [for]="picker">
+                                            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                                        </mat-datepicker-toggle> -->
+                                        <mat-datepicker #picker></mat-datepicker>
+                                        <mat-error
+                                            *ngIf="controls.dateOfBirth.errors?.required && controls.dateOfBirth.touched">
+                                            Required field
+                                        </mat-error>
                                     </div>
                                 </div>
 
@@ -49,7 +54,7 @@
                             <div class="col-6 kt-margin-t-20">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="">Gender</label>
+                                        <label class="mandatory">Gender</label>
                                     </div>
                                     <div class="col-7">
                                         <select formControlName="gender" class="form-control"
@@ -71,7 +76,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="offset-1 col-3 form-label">
-                                        <label class="">Alternate Mobile No.</label>
+                                        <label class="mandatory">Alternate Mobile No.</label>
                                     </div>
                                     <div class="col-7">
                                         <input type="text" formControlName="alternateMobileNumber" class="form-control"
@@ -81,13 +86,17 @@
                                             *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                             Required field
                                         </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.alternateMobileNumber.errors?.pattern && controls.alternateMobileNumber.touched">
+                                            Required field
+                                        </mat-error>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label>Martial Status</label>
+                                        <label class="mandatory">Martial Status</label>
                                     </div>
                                     <div class="col-7">
                                         <select name="" id="" formControlName="martialStatus" class="form-control"
@@ -109,7 +118,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label>Occupation</label>
+                                        <label class="mandatory">Occupation</label>
                                     </div>
                                     <div class="col-7">
                                         <select name="" id="" formControlName="occupationId" class="form-control"
@@ -130,7 +139,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label>Father / Spouse Name</label>
+                                        <label class="mandatory">Father / Spouse Name</label>
                                     </div>
                                     <div class="col-7">
                                         <input type="text" formControlName="spouseName" class="form-control"
@@ -148,7 +157,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="">Signature</label>
+                                        <label class="mandatory">Signature</label>
                                     </div>
                                     <div class="col-7">
                                         <div class="input-group mb-3">
@@ -158,7 +167,8 @@
                                                 [class.isError]="controls.signatureProof.touched && controls.signatureProof.invalid" />
                                             <div class="input-group-append">
                                                 <span class="input-group-text bg kt-pointer font-weight"
-                                                    id="basic-addon2" (click)="signature.click()">Attach</span>
+                                                    id="basic-addon2" (click)="signature.click()"
+                                                    style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                             </div>
                                             <input type="file" class="d-none" #signature
                                                 (input)="getFileInfo($event,'signature')">
@@ -171,11 +181,12 @@
                             <div class="col-6">
                                 <div class="col-8 offset-4">
                                     <div class="img-container">
-                                        <div class="offset-1 kt-margin-r-25">
+                                        <div class="">
                                             <img *ngIf="!signatureJSON.isImage" class=""
                                                 src="../../../../../../assets/media/icons/image-placeholder.png"
                                                 alt="" />
-                                            <img *ngIf="signatureJSON.isImage" [src]="signatureJSON.url" alt="" />
+                                            <img *ngIf="signatureJSON.isImage" [src]="signatureJSON.url"
+                                                style="border-radius: 15px;" alt="" />
                                             <!-- <img src="http://173.249.49.7:8000/uploads/images/1587974614144.png"
                                                 alt="" /> -->
                                         </div>

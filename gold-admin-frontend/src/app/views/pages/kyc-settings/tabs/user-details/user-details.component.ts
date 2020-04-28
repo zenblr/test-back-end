@@ -137,28 +137,28 @@ export class UserDetailsComponent implements OnInit {
   }
 
   submit() {
-    // if (this.userBasicForm.invalid) {
-    //   this.userBasicForm.markAllAsTouched()
-    //   return
-    // }
-    // this.userBasicForm.enable()
-    // const basicForm = this.userBasicForm.value;
-    // this.userDetailsService.basicDetails(basicForm).pipe(
-    //   map(res => {
-    //     console.log(res);
-    //     if (res) {
-    //       this.next.emit(true);
-    //     }
-    //   }),
-    //   finalize(() => {
-    //     this.userBasicForm.disable();
-    //     this.userBasicForm.controls.mobileNumber.enable()
-    //   })
-    // ).subscribe();
+    if (this.userBasicForm.invalid) {
+      this.userBasicForm.markAllAsTouched()
+      return
+    }
+    this.userBasicForm.enable()
+    const basicForm = this.userBasicForm.value;
+    this.userDetailsService.basicDetails(basicForm).pipe(
+      map(res => {
+        console.log(res);
+        if (res) {
+          this.next.emit(true);
+        }
+      }),
+      finalize(() => {
+        this.userBasicForm.disable();
+        this.userBasicForm.controls.mobileNumber.enable()
+      })
+    ).subscribe();
 
 
 
-    this.next.emit(true);  // delete this line    
+    // this.next.emit(true);  // delete this line    
   }
 
 }

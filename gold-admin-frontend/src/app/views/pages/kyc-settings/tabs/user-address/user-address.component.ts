@@ -24,8 +24,8 @@ export class UserAddressComponent implements OnInit {
   addressProofs = [];
   identityProofs = [];
   images = { identityProof: [], residential: [], permanent: [] };
-  // customerDetails = this.userDetailsService.userData;
-  customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5 }
+  customerDetails = this.userDetailsService.userData;
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5 }
 
   constructor(
     private fb: FormBuilder,
@@ -137,31 +137,31 @@ export class UserAddressComponent implements OnInit {
 
   submit() {
 
-    // if (this.identityForm.invalid) {
-    //   this.identityForm.markAllAsTouched()
-    //   return
-    // }
-    // this.addressControls.at(1).enable();
+    if (this.identityForm.invalid) {
+      this.identityForm.markAllAsTouched()
+      return
+    }
+    this.addressControls.at(1).enable();
 
-    // this.identityForm.patchValue({ identityProof: this.images.identityProof });
+    this.identityForm.patchValue({ identityProof: this.images.identityProof });
 
-    // this.addressControls.controls[0].patchValue({ addressProof: this.images.residential });
+    this.addressControls.controls[0].patchValue({ addressProof: this.images.residential });
 
-    // this.addressControls.controls[1].patchValue({ addressProof: this.images.permanent });
+    this.addressControls.controls[1].patchValue({ addressProof: this.images.permanent });
 
-    // const data = this.identityForm.value;
-    // console.log(data)
+    const data = this.identityForm.value;
+    console.log(data)
 
-    // this.userAddressService.addressDetails(data).pipe(
-    //   map(res => {
-    //     if (res) {
-    //       this.next.emit(true);
-    //     }
-    //     console.log(res);
-    //   }),
-    // ).subscribe();
+    this.userAddressService.addressDetails(data).pipe(
+      map(res => {
+        if (res) {
+          this.next.emit(true);
+        }
+        console.log(res);
+      }),
+    ).subscribe();
 
-    this.next.emit(true);
+    // this.next.emit(true);
 
 
   }
