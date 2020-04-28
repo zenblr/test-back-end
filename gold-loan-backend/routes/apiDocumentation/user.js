@@ -27,14 +27,18 @@
  *             panCardNumber:
  *               type: string  
  *             address:
- *                type: object
- *                properties:
- *                 landMark:
- *                   type: string
- *                 stateId:
- *                   type: number
- *                 cityId:
- *                   type: number
+ *                type: array
+ *                items:
+ *                  type: object  
+ *                  properties:
+ *                   address:
+ *                    type: string
+ *                   landMark:
+ *                    type: string
+ *                   stateId:
+ *                    type: number
+ *                   cityId:
+ *                    type: number
  *             roleId:
  *               type: number       
  *         required:
@@ -45,6 +49,8 @@
  *           - email
  *           - panCardNumber
  *           - address
+ *           - cityId
+ *           - stateId
  *           - roleId
  * 
  *     responses:

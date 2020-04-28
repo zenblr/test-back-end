@@ -80,7 +80,9 @@
  *             identityTypeId:
  *               type: integer
  *             identityProof:
- *               type: string
+ *               type: array
+ *               items: 
+ *                type: string
  *             address:
  *               type: array
  *               items:
@@ -137,7 +139,7 @@
  *             profileImage:
  *               type: string
  *             dateoOfBirth:
- *               type: date
+ *               type: string
  *             alternateMobileNumber:
  *               type: string
  *             gender:
@@ -200,18 +202,16 @@
  *               type: string
  *             bankBranchName:
  *               type: string
- *             alternateMobileNumber:
- *               type: string
  *             accountType:
  *               type: string
  *               enum:
  *                - saving
  *                - current
  *             accountNumber:
- *               type; string
+ *               type: string
  *             accountHolderName:
  *               type: string
- *             ifcCode:
+ *             ifscCode:
  *               type: string
  *             passbookProof:
  *               type: array
@@ -220,7 +220,7 @@
  *     responses:
  *       200:
  *          description: Success
- * /kyc/submit-all-kyc:
+ * /kyc/submit-all-kyc-info:
  *   post:
  *     tags:
  *       - Customer Kyc

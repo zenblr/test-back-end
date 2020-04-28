@@ -66,7 +66,7 @@
  *                 purityTest:
  *                   type: array
  *                   items: 
- *                    type: object
+ *                    type: string
  *                 ltvPercent:
  *                    type: string
  *                 ltvAmount:
@@ -74,7 +74,7 @@
  *                 currentLtvAmount:
  *                    type: number
  *             customerUniqueId:
- *               type: integer
+ *               type: string
  *             mobile:
  *               type: string
  *             panCardNumber:
@@ -101,9 +101,22 @@
  *           type: object
  *           properties:
  *             loanId:
- *               type: number
+ *               type: integer
  *             packageImageData:
- *               type: string
+ *               type: array
+ *               items:
+ *                type: object
+ *                properties:
+ *                 emptyPacketWithNoOrnament:
+ *                   type: string
+ *                 packetWithAllOrnaments:
+ *                   type: string
+ *                 packetWithSealing:
+ *                   type: string
+ *                 packetWithWeight:
+ *                   type: string
+ *                 packetUniqueId:
+ *                   type: string
  *         required:
  *           - loanId
  *           - packageImageData
@@ -154,7 +167,7 @@
  *          description: loan details fetch successfully
  *       404:
  *          description: no loan details found
- * loan-process/change-loan-ornaments-detail/{id}:
+ * /loan-process/change-loan-ornaments-detail/{id}:
  *   put:
  *     tags:
  *       - Customer Loan Process
@@ -194,7 +207,9 @@
  *             acidTest:
  *               type: string
  *             purityTest:
- *               type: string
+ *               type: array
+ *               items: 
+ *                type: string
  *             ornamentImage:
  *               type: string
  *             ltvPercent:
