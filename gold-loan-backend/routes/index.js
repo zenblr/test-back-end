@@ -87,5 +87,7 @@ router.use('/kyc', customerKyc)
 const customerLoanProcess = require('./customerLoanProcess'); // customer loan process module
 router.use('/loan-process', customerLoanProcess);
 
+const loanAccount = require('./loanAccount'); // customer loan account process module
+router.use('/loan-account', loanAccount);
 
 module.exports = router;

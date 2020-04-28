@@ -3,7 +3,7 @@ const models = require('../../models');
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
-const CONSTANT = require("../../utils/constant"); // IMPORTING CONSTANT UTIL
+const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 
@@ -78,39 +78,57 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
 //  FUNCTION FOR GET LOAN DETAILS
 exports.getLoanDetails = async (req, res, next) => {
-    let loanDetails = await models.customerLoan.findAll({
-        include: [{
-            model: models.customer,
-            as: 'customer',
-            attributes: {
-                exclude: ['password']
-            }
-        },
-        {
-            model: models.customerLoanBankDetail,
-            as: 'loanBankDetail'
-        },
-        {
-            model: models.customerLoanKycDetail,
-            as: 'loanKycDetail'
-        },
-        {
-            model: models.customerLoanNomineeDetail,
-            as: 'loanNomineeDetail'
-        },
-        {
-            model: models.customerLoanOrnamentsDetail,
-            as: 'loanOrnamentsDetail'
-        },
-        {
-            model: models.customerLoanPersonalDetail,
-            as: 'loanPersonalDetail'
-        }]
-    });
+    let { search, offset, pageSize } =
+        paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
+    let associateModel = [{
+        model: models.customer,
+        as: 'customer',
+        where: { isActive: true },
+        attributes: { exclude: ['password'] }
+    },
+    {
+        model: models.customerLoanBankDetail,
+        as: 'loanBankDetail',
+        where: { isActive: true }
+    },
+    {
+        model: models.customerLoanKycDetail,
+        as: 'loanKycDetail',
+        where: { isActive: true }
+    },
+    {
+        model: models.customerLoanNomineeDetail,
+        as: 'loanNomineeDetail',
+        where: { isActive: true }
+    },
+    {
+        model: models.customerLoanOrnamentsDetail,
+        as: 'loanOrnamentsDetail',
+        where: { isActive: true }
+    },
+    {
+        model: models.customerLoanPersonalDetail,
+        as: 'loanPersonalDetail',
+        where: { isActive: true }
+    }]
+
+    let loanDetails = await models.customerLoan.findAll({
+        where: { isActive: true },
+        include: associateModel,
+        order: [
+            ['id', 'DESC']
+        ],
+        offset: offset,
+        limit: pageSize
+    });
+    let count = await models.customerLoan.findAll({
+        where: { isActive: true },
+        include: associateModel,
+    });
     if (loanDetails.length === 0) {
         res.status(404).json({ message: 'no loan details found' });
     } else {
-        res.status(200).json({ message: 'loan details fetch successfully', loanDetails });
+        res.status(200).json({ message: 'loan details fetch successfully', loanDetails, count: count.length });
     }
 }
