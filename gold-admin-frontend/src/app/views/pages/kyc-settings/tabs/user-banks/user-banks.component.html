@@ -139,14 +139,14 @@
                         <div class="row kt-margin-t-20 kt-margin-b-20">
                             <div class="col">
                                 <div class="row offset-2">
-                                    <div class="img-container" style="width: 250px;">
+                                    <div ngIf="passBookImage.length == 0" class="img-container" style="width: 250px;">
                                         <img *ngIf="passBookImage.length == 0"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
                                             class="placeholder-image">
                                     </div>
 
-                                    <div class="">
-                                        <div class="d-inline-block img-container kt-padding-right-15"
+                                    <div *ngIf="passBookImage.length > 0" class="">
+                                        <div class="d-inline-block img-container kt-margin-right-15"
                                             *ngFor="let proof of passBookImage; index as i;">
                                             <img class="fetched-image" *ngIf="passBookImage" [src]="proof">
                                         </div>

@@ -8,9 +8,9 @@ import { NgbNavChangeEvent, NgbNav } from '@ng-bootstrap/ng-bootstrap';
 })
 export class KycSettingsComponent implements OnInit {
 
-  active = 1;
-  disabled: boolean[] = [false, true, true, true, true];
-  // disabled: boolean[] = [false, false, false, false, false]; // delete this line
+  active = 5;
+  // disabled: boolean[] = [false, true, true, true, true];
+  disabled: boolean[] = [false, false, false, false, false]; // delete this line
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;
 
   constructor(private ref: ChangeDetectorRef) { }
@@ -28,21 +28,21 @@ export class KycSettingsComponent implements OnInit {
   next(event) {
 
 
-    if (this.active < this.disabled.length) {
-      for (let i = 0; i < this.disabled.length; i++) {
-        this.disabled[i] = true;
-        if (i == this.active) {
-          this.disabled[this.active] = !this.disabled[this.active];
-        }
-      }
-      this.active++;
-    } else {
-      this.active = 1;
-      this.disabled[4] = true;
-      this.disabled[0] = false;
-    }
+    // if (this.active < this.disabled.length) {
+    //   for (let i = 0; i < this.disabled.length; i++) {
+    //     this.disabled[i] = true;
+    //     if (i == this.active) {
+    //       this.disabled[this.active] = !this.disabled[this.active];
+    //     }
+    //   }
+    //   this.active++;
+    // } else {
+    //   this.active = 1;
+    //   this.disabled[4] = true;
+    //   this.disabled[0] = false;
+    // }
 
-    this.ref.detectChanges();
+    // this.ref.detectChanges();
 
   }
 

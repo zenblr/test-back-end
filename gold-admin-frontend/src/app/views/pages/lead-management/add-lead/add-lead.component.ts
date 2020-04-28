@@ -205,8 +205,11 @@ export class AddLeadComponent implements OnInit {
     if (this.data.action == 'add') {
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
         this.leadForm.markAllAsTouched()
+        console.log(this.leadForm.value)
+
         return
       }
+
 
       if (this.controls.panCardNumber.value == '') {
         this.leadForm.get('panCardNumber').patchValue(null);

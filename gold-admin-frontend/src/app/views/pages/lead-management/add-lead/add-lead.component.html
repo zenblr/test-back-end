@@ -129,13 +129,13 @@
                         <div class="row kt-padding-t-15">
                             <!-- PAN -->
                             <div class="col-4 form-label">
-                                <mat-label>Pan Number</mat-label>
+                                <mat-label>PAN</mat-label>
                             </div>
 
                             <div class="col-5">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                 <input [readOnly]="viewOnly" class="form-control" formControlName="panCardNumber"
-                                    autocomplete="off" placeholder="PAN Number"
+                                    autocomplete="off" placeholder="PAN Number" maxlength="10"
                                     [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid">
                                 <!-- <mat-error
                                         *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
