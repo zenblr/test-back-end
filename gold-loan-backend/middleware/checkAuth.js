@@ -1,7 +1,13 @@
 const jwt = require('jsonwebtoken');
 const CONSTANT = require('../utils/constant');
+const models = require('../models');
+const redis = require('redis');
+const redisConn = require('../config/redis')
 
-module.exports = async(req, res, next) => {
+const client = redis.createClient(redisConn.PORT, redisConn.HOST);
+
+
+module.exports = async (req, res, next) => {
     try {
         const token = await req.headers.authorization.split(" ")[1];
 
@@ -9,6 +15,10 @@ module.exports = async(req, res, next) => {
         req.userData = decoded;
         next();
     } catch (error) {
+        let token = await req.headers.authorization.split(" ")[1];
+        let abc = await models.logger.destroy({ where: { token: token } });
+        console.log(abc)
+        client.del(token, JSON.stringify(token));
         return res.status(401).json({
             message: "auth failed"
         });
