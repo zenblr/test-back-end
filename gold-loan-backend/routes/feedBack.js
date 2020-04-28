@@ -10,6 +10,6 @@ route.post('/',checkAuth,wrapper(addFeedBack));
 route.get('/',checkAuth,wrapper(readFeedBack));
 route.delete('/',checkAuth,wrapper(deactiveFeedBack))
 route.get('/:id',checkAuth,wrapper(readFeedBackById));
-route.put('/:id',validationError,checkAuth,wrapper(updateFeedBack));
+route.put('/:id',checkAuth,wrapper(updateFeedBack));
 
 module.exports=route;   
