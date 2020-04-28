@@ -306,7 +306,7 @@ exports.getSingleCustomer = async (req, res, next) => {
   if (check.isEmpty(singleCustomer)) {
     return res.status(404).json({ message: "Customer not found" });
   }
-  return res.status(200).json({ message: singleCustomer })
+  return res.status(200).json({ singleCustomer })
 };
 
 
