@@ -74,14 +74,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_kyc_submitted',
             defaultValue: false
         },
-        isVerifiedByFirstStage: {
+        isVerifiedByCce: {
             type: DataTypes.BOOLEAN,
-            field: 'is_verified_by_first_stage',
+            field: 'is_verified_by_Cce',
             defaultValue: false
         },
-        firstStageVerifiedBy: {
+        cceVerifiedBy: {
             type: DataTypes.INTEGER,
-            field: 'first_stage_verified_by',
+            field: 'cce_verified_by',
             defaultValue: null
         },
         isVerifiedByBranchManager: {
@@ -138,7 +138,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        Customer.belongsTo(models.user, { foreignKey: 'firstStageVerifiedBy', as: 'firstStageBy' });
+        Customer.belongsTo(models.user, { foreignKey: 'cceVerifiedBy', as: 'cceStageBy' });
         Customer.belongsTo(models.user, { foreignKey: 'branchManagerVerifiedBy', as: 'branchManagerBy' });
     }
 

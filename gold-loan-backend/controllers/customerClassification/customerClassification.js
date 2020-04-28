@@ -11,30 +11,30 @@ const check = require("../../lib/checkLib");
 
 exports.addAppraisalRating = async (req, res, next) => {
 
-    let { customerId, customerKycId, behaviourRatingAppraisal, idProofRatingAppraisal, addressProofRatingAppraisal, kycStatusFromAppraisal } = req.body;
+    let { customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce } = req.body;
 
     let customer = await models.customer.findOne({ where: { id: customerId, isKycSubmitted: true } });
     if (check.isEmpty(customer)) {
         return res.status(200).json({ message: `This customer Kyc information is not submitted` })
     }
 
-    let appraisalId = req.userData.id
+    let cceId = req.userData.id
     let checkRatingExist = await models.customerKycClassification.findOne({ where: { customerId } })
     if (!check.isEmpty(checkRatingExist)) {
         return res.status(200).json({ message: `This customer rating is already exist` })
     }
-    if (kycStatusFromAppraisal !== "confirm") {
+    if (kycStatusFromCce !== "confirm") {
         await sequelize.transaction(async (t) => {
 
-            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingAppraisal, idProofRatingAppraisal, addressProofRatingAppraisal, kycStatusFromAppraisal, appraisalId })
+            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId })
         });
     } else {
         await sequelize.transaction(async (t) => {
             await models.customer.update(
-                { isVerifiedByFirstStage: true, firstStageVerifiedBy: appraisalId, kycStatus: "complete" },
+                { isVerifiedByCce: true, cceVerifiedBy: cceId, kycStatus: "complete" },
                 { where: { id: customerId } })
 
-            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingAppraisal, idProofRatingAppraisal, addressProofRatingAppraisal, kycStatusFromAppraisal, appraisalId })
+            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId })
         });
     }
     return res.status(200).json({ message: 'success' })
@@ -43,30 +43,30 @@ exports.addAppraisalRating = async (req, res, next) => {
 
 exports.updateAppraisalRating = async (req, res, next) => {
     let { id } = req.params;
-    let { behaviourRatingAppraisal, idProofRatingAppraisal, addressProofRatingAppraisal, kycStatusFromAppraisal } = req.body;
-    let appraisalId = req.userData.id
+    let { behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce } = req.body;
+    let cceId = req.userData.id
 
     let customer = await models.customer.findOne({ where: { id: id, isVerifiedByBranchManager: true, kycStatus: "confirm" } });
     if (!check.isEmpty(customer)) {
         return res.status(200).json({ message: `This customer status is confirm by Branch manager.` })
     }
 
-    if (kycStatusFromAppraisal !== "confirm") {
+    if (kycStatusFromCce !== "confirm") {
         await sequelize.transaction(async (t) => {
 
             await models.customer.update(
-                { isVerifiedByFirstStage: false, firstStageVerifiedBy: appraisalId, kycStatus: "pending" },
+                { isVerifiedByCce: false, cceVerifiedBy: cceId, kycStatus: "pending" },
                 { where: { id: id } })
 
-            await models.customerKycClassification.update({ behaviourRatingAppraisal, idProofRatingAppraisal, addressProofRatingAppraisal, kycStatusFromAppraisal, appraisalId }, { where: { customerId: id } })
+            await models.customerKycClassification.update({ behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId }, { where: { customerId: id } })
         });
     } else {
         await sequelize.transaction(async (t) => {
             await models.customer.update(
-                { isVerifiedByFirstStage: true, firstStageVerifiedBy: appraisalId, kycStatus: "complete" },
+                { isVerifiedByCce: true, cceVerifiedBy: cceId, kycStatus: "complete" },
                 { where: { id: id } })
 
-            await models.customerKycClassification.update({ behaviourRatingAppraisal, idProofRatingAppraisal, addressProofRatingAppraisal, kycStatusFromAppraisal, appraisalId }, { where: { customerId: id } })
+            await models.customerKycClassification.update({ behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId }, { where: { customerId: id } })
         });
 
     }
@@ -78,7 +78,7 @@ exports.updateAppraisalRating = async (req, res, next) => {
 exports.readKycSubmmitedCustomer = async (req, res, next) => {
 
     let customer = await models.customer.findAll({
-        where: { isVerifiedByFirstStage: false, isKycSubmitted: true },
+        where: { isVerifiedByCce: false, isKycSubmitted: true },
         include: [{
             model: models.customerKycClassification,
             as: 'customerKycClassification'
@@ -93,7 +93,7 @@ exports.readKycSubmmitedCustomer = async (req, res, next) => {
 exports.addBranchManagerRating = async (req, res, next) => {
     let { customerId, customerKycId, behaviourRatingBranchManager, idProofRatingBranchManager, addressProofRatingBranchManager, kycStatusFromBranchManager } = req.body;
 
-    let customer = await models.customer.findOne({ where: { id: customerId, isVerifiedByFirstStage: true, isKycSubmitted: true } });
+    let customer = await models.customer.findOne({ where: { id: customerId, isVerifiedByCce: true, isKycSubmitted: true } });
 
     if (check.isEmpty(customer)) {
         return res.status(200).json({ message: `This customer Kyc is not verified by appraisal.` })
@@ -122,7 +122,7 @@ exports.addBranchManagerRating = async (req, res, next) => {
 exports.readFirstStageVerifiedCustomer = async (req, res, next) => {
 
     let customer = await models.customer.findAll({
-        where: { isVerifiedByFirstStage: true, isVerifiedByBranchManager: false },
+        where: { isVerifiedByCce: true, isVerifiedByBranchManager: false },
         include: [{
             model: models.customerKycClassification,
             as: 'customerKycClassification'

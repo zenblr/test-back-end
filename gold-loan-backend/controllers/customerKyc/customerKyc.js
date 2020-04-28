@@ -230,14 +230,21 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
         passbookProof: passbookProof
     })
 
-    let customerKycReview = await models.customerKycPersonalDetail.findOne({
-        where: { id: customerKycId },
+    let customerKycReview = await models.customer.findOne({
+        where: { id: customerId },
+        attributes: ['id','firstName','lastName','panCardNumber','mobileNumber'],
         include: [{
+            model: models.customerKycPersonalDetail,
+            as: 'customerKyc',
+            attributes: ['id','customerId','profileImage','firstName','lastName','dateOfBirth','alternateMobileNumber','panCardNumber','gender','martialStatus','occupationId','identityTypeId','identityProof','spouseName','signatureProof'],
+        },{
             model: models.customerKycAddressDetail,
-            as: 'customerKycAddress'
+            as: 'customerKycAddress',
+            attributes:['id','customerKycId','customerId','addressType','address','stateId','cityId','pinCode','addressProof','addressProofTypeId']
         }, {
             model: models.customerKycBankDetail,
-            as: 'customerKycBank'
+            as: 'customerKycBank',
+            attributes:['id','customerKycId','customerId','bankName','bankBranchName','accountType','accountHolderName','accountNumber','ifscCode','passbookProof']
         }]
     })
 
