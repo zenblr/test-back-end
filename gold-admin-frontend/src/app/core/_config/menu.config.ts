@@ -6,7 +6,7 @@ export class MenuConfig {
 				{
 					title: 'Dashboard',
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
+					src: 'assets/media/aside-icons/icons-01.svg',
 					page: '/dashboard',
 					translate: 'MENU.DASHBOARD',
 
@@ -14,7 +14,7 @@ export class MenuConfig {
 				{
 					title: 'Admin Account',
 					root: true,
-					icon: 'flaticon2-expand',
+					src: 'assets/media/aside-icons/icons-02.svg',
 					page: '/dashboard',
 
 					submenu: [
@@ -38,7 +38,7 @@ export class MenuConfig {
 				{
 					title: 'Admin-Settings',
 					root: true,
-					icon: 'flaticon-web',
+					src: 'assets/media/aside-icons/icons-03.svg',
 
 					submenu: [
 						{
@@ -109,7 +109,7 @@ export class MenuConfig {
 				{
 					title: 'User Management',
 					root: true,
-					icon: 'flaticon-users-1',
+					src: 'assets/media/aside-icons/icons-04.svg',
 					page: '/user-management',
 
 					// submenu: [
@@ -157,14 +157,14 @@ export class MenuConfig {
 				{
 					title: 'Lead Management',
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
+					src: 'assets/media/aside-icons/icons-05.svg',
 					page: '/lead-management',
 
 				},
 				{
 					title: 'Customer Setting',
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
+					src: 'assets/media/aside-icons/icons-06.svg',
 					submenu: [
 						{
 							title: 'KYC Setting',
@@ -175,7 +175,7 @@ export class MenuConfig {
 				{
 					title: 'Loan Managment',
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
+					src: 'assets/media/aside-icons/icons-07.svg',
 					submenu: [
 						{
 							title: 'Loan Calculator',
@@ -199,13 +199,13 @@ export class MenuConfig {
 				{
 					title: 'Customer Management',
 					root: true,
-					icon: 'flaticon-users-1',
+					src: 'assets/media/aside-icons/icons-08.svg',
 					page: '/customer-management/customer-list',
 				},
 				{
 					title: 'Repayment Structure',
 					root: true,
-					icon: 'flaticon-users-1',
+					src: 'assets/media/aside-icons/icons-09.svg',
 					submenu: [
 						{
 							title: 'Montly Payment',
@@ -220,7 +220,7 @@ export class MenuConfig {
 				{
 					title: 'Account',
 					root: true,
-					icon: 'flaticon-users-1',
+					src: 'assets/media/aside-icons/icons-12.svg',
 					submenu: [
 						{
 							title: 'Loan Disbursed Details',
@@ -235,7 +235,7 @@ export class MenuConfig {
 				{
 					title: 'Report',
 					root: true,
-					icon: 'flaticon-users-1',
+					src: 'assets/media/aside-icons/icons-11.svg',
 					submenu: [
 						{
 							title: 'KYC',
@@ -261,7 +261,7 @@ export class MenuConfig {
 				},
 				{
 					title: 'Log Out',
-					icon: 'flaticon-logout'
+					src: 'assets/media/aside-icons/icons-12.svg',
 				}
 			],
 			itemsTwo: [
