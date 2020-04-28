@@ -14,6 +14,7 @@ import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud'
 // Models
 import { AppState } from '../../../../../core/reducers';
 import { MerchantDatasource, MerchantService } from '../../../../../core/user-management/merchant';
+import { ViewMerchantComponent } from '../view-merchant/view-merchant.component';
 
 
 @Component({
@@ -64,20 +65,9 @@ export class MerchantListComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private merchantService: MerchantService,
     private router: Router) {
-    // this.merchantService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-    //   if (res) {
-    //     this.addRole('add')
-    //   }
-    // })
   }
 
-  /**
-   * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
-   */
 
-  /**
-   * On init
-   */
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
     const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
@@ -89,7 +79,7 @@ export class MerchantListComponent implements OnInit {
     **/
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {
-        this.loadRolesList();
+        this.loadMerchantList();
       })
     )
       .subscribe();
@@ -108,7 +98,7 @@ export class MerchantListComponent implements OnInit {
 
     // First load
     of(undefined).pipe(take(1), delay(1000)).subscribe(() => { // Remove this line, just loading imitation
-      this.loadRolesList();
+      this.loadMerchantList();
     });
   }
 
@@ -124,90 +114,25 @@ export class MerchantListComponent implements OnInit {
   /**
    * Load Roles List
    */
-  loadRolesList() {
+  loadMerchantList() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadRoles('', from, to, '', '', '');
-    // this.selection.clear();
-    // const queryParams = new QueryParamsModel(
-    // 	this.filterConfiguration(),
-    // 	this.sort.direction,
-    // 	this.sort.active,
-    // 	this.paginator.pageIndex,
-    // 	this.paginator.pageSize
-    // );
-    // Call request from server
-    // this.store.dispatch(new RolesPageRequested({ page: queryParams }));
-    // this.selection.clear();
+    this.dataSource.loadMerchant('', from, to);
+
   }
 
-  /**
-   * Returns object for filter
-   */
-
-
-  /** ACTIONS */
-  /**
-   * Delete role
-   *
-   * @param _item: Role
-   */
-  deleteRole(_item) {
-    const _title = 'User Role';
-    const _description = 'Are you sure to permanently delete this role?';
-    const _waitDesciption = 'Role is deleting...';
-    const _deleteMessage = `Role has been deleted`;
-
-    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
-    dialogRef.afterClosed().subscribe(res => {
-      if (!res) {
-        return;
-      }
-
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-      this.loadRolesList();
-    });
+  editMerchant(merchant) {
+    console.log(merchant)
+    this.router.navigate(['user-management/edit-merchant/', merchant.userId])
   }
 
-  /** Fetch */
-  /**
-   * Fetch selected rows
-   */
-  fetchRoles() {
-    // const messages = [];
-    // this.selection.selected.forEach(elem => {
-    // 	messages.push({
-    // 		text: `${elem.title}`,
-    // 		id: elem.id.toString(),
-    // 		// status: elem.username
-    // 	});
-    // });
-    // this.layoutUtilsService.fetchElements(messages);
+  viewBroker(merchant) {
+    const dialog = this.dialog.open(ViewMerchantComponent, {
+      data: { userId: merchant.userId },
+      width:'450px'
+    })
   }
-
-  /**
-   * Add role
-   */
-  // addRole(action) {
-  //   const dialogRef = this.dialog.open(AddBrokerComponent, {
-  //     data: { action: action },
-  //     width: '450px'
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.loadRolesList();
-  //     }
-  //   })
-  //   this.merchantService.openModal.next(false);
-  // }
-
-
-
-
-
-
 }

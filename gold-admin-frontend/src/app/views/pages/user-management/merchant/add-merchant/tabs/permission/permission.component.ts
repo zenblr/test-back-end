@@ -1,12 +1,10 @@
-import { SelectionModel } from '@angular/cdk/collections';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { Component, Injectable, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { BehaviorSubject } from 'rxjs';
+
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { ToastrComponent } from '../../../../../../../views/partials/components/toastr/toastr.component';
 import { map, catchError } from 'rxjs/operators';
 import { MerchantService } from '../../../../../../../core/user-management/merchant';
 import { MatCheckbox } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -16,18 +14,24 @@ import { MatCheckbox } from '@angular/material';
 })
 export class PermissionComponent implements OnInit {
 
-  @Output() next: EventEmitter<any> = new EventEmitter<any>();
+  @ViewChild('checkboxThree', { static: false }) checkboxThree: ElementRef
+  @ViewChild('checkboxTwo', { static: false }) checkboxTwo: ElementRef
+  @ViewChild('checkboxOne', { static: false }) checkboxOne: ElementRef
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   permissions: any[] = []
   checkedCategory: any[] = []
   checkedSubCategory: any[] = [];
   checkedProduct: any = [];
-  selectAllArray: any[] = []
+  selectAll = { cat: false, subCat: false, pro: false }
   userId: number = null;
+  isEdit: boolean = true;
+  lengthOf = { category: 0, subCategory: 0, product: 0 }
 
   constructor(
     private merchantService: MerchantService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private rout: ActivatedRoute,
+    private router: Router
   ) {
     this.merchantService.userId$.subscribe(res => {
       this.userId = res;
@@ -35,164 +39,263 @@ export class PermissionComponent implements OnInit {
   }
 
   ngOnInit() {
+    var id = this.rout.snapshot.params.id;
+    if (id) {
+      this.userId = id;
+    }
     this.getData()
-    this.createSelectAll()
   }
 
-  createSelectAll() {
-    this.selectAllArray = []
-    for (let index = 0; index < 3; index++) {
-      this.selectAllArray.push(false);
-    }
-  }
 
 
   getData() {
-    this.merchantService.getPermission().pipe(
+    this.merchantService.getPermission(this.userId).pipe(
       map(res => {
         console.log(res)
         this.permissions = res;
-        this.addIsChecked()
+        this.calculateLength()
         this.ref.detectChanges();
       })
     ).subscribe()
   }
 
-  addIsChecked() {
+
+  calculateLength() {
     this.permissions.forEach(ele => {
-      ele.isChecked = false;
+      this.lengthOf.category += 1
+      if (ele.isSelected)
+        this.checkedCategory.push(ele)
       ele.subCategory.forEach(sub => {
-        sub.isChecked = false;
+        this.lengthOf.subCategory += 1
+        if (sub.isSelected)
+          this.checkedSubCategory.push(sub)
         sub.products.forEach(pro => {
-          pro.isChecked = false;
+          this.lengthOf.product += 1
+          if (pro.isSelected)
+            this.checkedProduct.push(pro)
+          console.log(this.lengthOf.product)
+        })
+      })
+    })
+    this.checked('all')
+  }
+
+
+  isSelectedFalse() {
+    this.permissions.forEach(ele => {
+      ele.isSelected = false;
+      ele.subCategory.forEach(sub => {
+        sub.isSelected = false;
+        sub.products.forEach(pro => {
+          pro.isSelected = false;
         })
       })
     })
   }
 
-  categoryCheckBox(checked: MatCheckbox, checkedCategory: any[], index: number) {
-    console.log(checked)
-    if (checked) {
-      this.checkedCategory.push(checkedCategory)
-    } else if (!checked) {
-      var idx = this.checkedSubCategory.findIndex(ele => {
-        return ele.categoryId == this.checkedCategory[index].id
+  isSelectedTrue() {
+    this.permissions.forEach(ele => {
+      ele.isSelected = true;
+      this.checkedCategory.push(ele);
+      ele.subCategory.forEach(sub => {
+        sub.isSelected = true;
+        this.checkedSubCategory.push(sub)
+        sub.products.forEach(prod => {
+          prod.isSelected = true;
+          this.checkedProduct.push(prod.id)
+        })
       })
-      this.checkedSubCategory.splice(idx, 1)
-      this.checkedCategory.splice(index, 1)
-    }
-    console.log(this.checkedCategory, this.checkedSubCategory)
+    })
   }
 
-  subCategoryCheckBox(checked: MatCheckbox, subCategory: any[], index: number) {
-    console.log(checked)
+  categoryCheckBox(checked: MatCheckbox, index: number) {
     if (checked) {
-      this.checkedSubCategory.push(subCategory)
+      this.permissions[index].isSelected = true
     } else if (!checked) {
-      this.checkedSubCategory.splice(index, 1)
+      this.permissions[index].isSelected = false
+      this.permissions[index].subCategory.forEach(sub => {
+        sub.isSelected = false
+      })
     }
-    console.log(this.checkedSubCategory)
+    this.checkedCategory = this.permissions.filter(cat => {
+      return cat.isSelected
+    })
+    this.checked('cat')
+
   }
 
-  generateProduct(checked: MatCheckbox, product: any[], index: number) {
+
+
+  subCategoryCheckBox(checked: MatCheckbox, catIndex: number, subIndex: number) {
+    //   console.log(checked)
     if (checked) {
-      this.checkedProduct.push(product)
+      this.permissions[catIndex].subCategory[subIndex].isSelected = true
     } else if (!checked) {
-      this.checkedProduct.splice(index, 1)
+      this.permissions[catIndex].subCategory[subIndex].isSelected = false
     }
-    console.log(this.checkedProduct)
+    this.checkedSubCategory = []
+    this.permissions.forEach(cat => {
+      cat.subCategory.forEach(sub => {
+        if (sub.isSelected)
+          this.checkedSubCategory.push(sub)
+      })
+    })
+    this.checked('sub')
+
+    console.log(this.permissions)
+  }
+
+  generateProduct(checked: MatCheckbox, catIndex: number, subIndex: number, index: number) {
+    var pro = this.permissions[catIndex].subCategory[subIndex].products[index]
+    if (checked) {
+      this.checkedProduct.push(pro.id)
+      pro.isSelected = true
+    } else if (!checked) {
+      var indexOfProId = this.checkedProduct.indexOf(pro.id);
+      this.checkedProduct.splice(indexOfProId, 1)
+      pro.isSelected = false
+    }
+    this.checked('pro')
+
   }
 
   selectAllCat(event: MatCheckbox, type) {
-    this.selectAllArray = []
-    for (let index = 0; index < 3; index++) {
-      this.selectAllArray.push(true);
-    }
+    this.checkedCategory = []
+    this.checkedSubCategory = []
+    this.checkedProduct = []
     if (event) {
-      this.permissions.forEach(ele => {
-        ele.isChecked = true;
-        this.checkedCategory.push(ele);
-        ele.subCategory.forEach(sub => {
-          sub.isChecked = true;
-          this.checkedSubCategory.push(ele)
-          sub.products.forEach(prod => {
-            prod.isChecked = true;
-            this.checkedProduct.push(prod.id)
-          })
-        })
-      })
+      this.selectAll = { cat: true, subCat: true, pro: true }
+      this.isSelectedTrue()
+
     } else {
-      this.createSelectAll()
-      this.addIsChecked()
-      this.checkedCategory = []
-      this.checkedSubCategory = []
-      this.checkedProduct = []
+      this.selectAll = { cat: false, subCat: false, pro: false }
+      this.isSelectedFalse()
     }
+    this.checked('cat')
+
   }
 
 
   selectAllSub(event: MatCheckbox) {
+    this.checkedProduct = []
+    this.checkedSubCategory = []
     if (event) {
-      for (let index = 0; index < 3; index++) {
-        if (index >=1)
-        this.selectAllArray[index] = true;
-      }
-      this.checkedCategory.forEach(ele => {
-        ele.subCategory.forEach(sub => {
-          sub.isChecked = true
-          this.checkedSubCategory.push(ele)
-          sub.products.forEach(prod => {
-            prod.isChecked = true;
-            this.checkedProduct.push(prod.id)
-          });
-        });
+      this.selectAll.subCat = true;
+      this.selectAll.pro = true
+      this.permissions.forEach(cat => {
+        cat.subCategory.forEach(sub => {
+          this.checkedSubCategory.push(sub)
+          sub.isSelected = true
+          sub.products.forEach(pro => {
+            this.checkedProduct.push(pro.id)
+            pro.isSelected = true
+          })
+        })
       })
     } else {
-      for (let index = 0; index < 3; index++) {
-        if (index >=1)
-        this.selectAllArray[index] = false;
-
-      }
-      this.checkedCategory.forEach(ele => {
-        ele.subCategory.forEach(sub => {
-          sub.isChecked = false
-          this.checkedSubCategory = []
-          sub.products.forEach(prod => {
-            prod.isChecked = false;
-            this.checkedProduct = []
-          });
-        });
+      this.selectAll.subCat = false,
+        this.selectAll.pro = false
+      this.permissions.forEach(cat => {
+        cat.subCategory.forEach(sub => {
+          sub.isSelected = false
+          sub.products.forEach(pro => {
+            pro.isSelected = false
+          })
+        })
       })
     }
+    this.checked('sub')
   }
 
   selectAllProd(event: MatCheckbox) {
+    this.checkedProduct = []
     if (event) {
-      this.checkedSubCategory.forEach(ele =>{
+      this.checkboxThree.nativeElement.classList.remove('checkmark2')
+      this.checkboxThree.nativeElement.classList.add('checkmark')
+      this.permissions.forEach(ele => {
         ele.subCategory.forEach(sub => {
           sub.products.forEach(pro => {
-            pro.isChecked = true
+            pro.isSelected = true
             this.checkedProduct.push(pro.id)
           });
         });
       })
     } else {
-      this.checkedSubCategory.forEach(ele =>{
+      this.selectAll.pro = false
+      this.permissions.forEach(ele => {
         ele.subCategory.forEach(sub => {
           sub.products.forEach(pro => {
-            pro.isChecked = false
-            this.checkedProduct = []
+            pro.isSelected = false
           });
         });
       })
     }
+    this.checked('pro')
+  }
+
+  checked(type) {
+    if (type == 'cat' || type == 'all') {
+
+      if (this.lengthOf.category == this.checkedCategory.length) {
+        this.selectAll = { cat: true, subCat: true, pro: true }
+        this.checkboxOne.nativeElement.classList.remove('checkmark2')
+        this.checkboxOne.nativeElement.classList.add('checkmark')
+      } else if (this.checkedSubCategory.length > 0) {
+        this.selectAll = { cat: true, subCat: true, pro: true }
+        this.checkboxOne.nativeElement.classList.remove('checkmark')
+        this.checkboxOne.nativeElement.classList.add('checkmark2')
+      } else if (this.checkedSubCategory.length == 0) {
+        this.selectAll = { cat: false, subCat: false, pro: false }
+      }
+
+    } else if (type == 'sub' || type == 'all') {
+
+      if (this.lengthOf.subCategory == this.checkedSubCategory.length) {
+        this.selectAll.subCat = true;
+        this.selectAll.pro = true
+        this.checkboxTwo.nativeElement.classList.remove('checkmark2')
+        this.checkboxTwo.nativeElement.classList.add('checkmark')
+      } else if (this.checkedSubCategory.length > 0) {
+        this.selectAll.subCat = true;
+        this.selectAll.pro = true
+        this.checkboxTwo.nativeElement.classList.remove('checkmark')
+        this.checkboxTwo.nativeElement.classList.add('checkmark2')
+      } else if (this.checkedSubCategory.length == 0) {
+        this.selectAll.pro = false;
+      }
+
+    } else if (type == 'pro' || type == 'all') {
+
+      if (this.lengthOf.product == this.checkedProduct.length) {
+        this.selectAll.pro = true
+        this.checkboxThree.nativeElement.classList.remove('checkmark2')
+        this.checkboxThree.nativeElement.classList.add('checkmark')
+        this.selectAll.pro = true;
+      } else if (this.checkedProduct.length > 0) {
+        this.selectAll.pro = true;
+        this.checkboxThree.nativeElement.classList.remove('checkmark')
+        this.checkboxThree.nativeElement.classList.add('checkmark2')
+      } else if (this.checkedProduct.length == 0) {
+        this.selectAll.pro = false;
+      }
+
+    }
   }
 
   submit(event) {
+    var isSelected = false;
+    if (this.lengthOf.product == this.checkedProduct.length &&
+      this.lengthOf.subCategory == this.checkedSubCategory.length &&
+      this.lengthOf.category == this.checkedCategory.length) {
+      isSelected = true;
+    } else {
+      isSelected = false;
+    }
     if (event) {
-      this.merchantService.addProduct(this.checkedProduct, this.userId).pipe(
+      this.merchantService.addProduct(this.checkedProduct, isSelected, this.userId).pipe(
         map(res => {
           this.toastr.successToastr(res.message)
+          this.router.navigate(['/user-management/merchant'])
         }),
         catchError(err => {
           this.toastr.errorToastr(err.error.message)

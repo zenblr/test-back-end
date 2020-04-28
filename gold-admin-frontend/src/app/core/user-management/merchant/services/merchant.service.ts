@@ -10,9 +10,11 @@ export class MerchantService {
 
   constructor(private http: HttpClient) { }
 
-  baseUrl = 'http://aa68faa8.ngrok.io';
+  baseUrl = 'http://49c2b6a8.ngrok.io';
   userId: BehaviorSubject<any> = new BehaviorSubject(0);
   userId$ = this.userId.asObservable()
+  userDetails: BehaviorSubject<any> = new BehaviorSubject('');
+  userDetails$ = this.userDetails.asObservable()
 
   getMerchant(search, from, to): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/merchant?search=${search}&from=${from}&to=${to}`).pipe(
@@ -26,20 +28,39 @@ export class MerchantService {
     )
   }
 
+  editMerchant(details,userId): Observable<any> {
+    return this.http.put(`${this.baseUrl}/api/merchant/${userId}`, details).pipe(
+      map(res => res)
+    )
+  }
+
   merchantCommission(categoryCommission, userId): Observable<any> {
-    return this.http.post(
+    return this.http.put(
       `${this.baseUrl}/api/merchant/category-commission`, { categoryCommission, userId }).pipe(
         map(res => res)
       )
   }
 
-  getPermission():Observable<any> {
-    return this.http.get(`${this.baseUrl}/api/merchant-product/catalog-permission`).pipe
+  getMerchantById(id):Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/merchant/${id}`).pipe(
+      map(res => res)
+    )
+  }
+
+  getPermission(id):Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/merchant-product/${id}`).pipe
       (map(res => res))
   }
 
-  addProduct(products,userId):Observable<any> {
-    return this.http.post(`${this.baseUrl}/api/merchant-product`,{products,userId}).pipe
+  addProduct(products,allowProductAccess,userId):Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/merchant-product`,{products,allowProductAccess,userId}).pipe
       (map(res => res))
   }
+
+  getMerchantCommssion(id):Observable<any>{
+    return this.http.get(`${this.baseUrl}/api/merchant-category-commission/${id}`).pipe(
+      map(res => res)
+    )
+  }
 }
+  

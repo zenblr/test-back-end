@@ -15,4 +15,10 @@ export class PermissionService {
      map(res => res)
    )
   }
+
+  updatePermission(permissions,roleId):Observable<any>{
+    return this.http.post(`api/role/add-permissions`,{permissions,roleId}).pipe(
+      map(res => res)
+    )
+  }
 }

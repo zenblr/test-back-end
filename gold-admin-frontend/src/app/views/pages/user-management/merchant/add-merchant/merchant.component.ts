@@ -9,7 +9,7 @@ import { NgbNavChangeEvent, NgbNav } from '@ng-bootstrap/ng-bootstrap';
 export class MerchantComponent implements OnInit {
 
   active = 1;
-  disabled: boolean[] = [false, false, false];
+  disabled: boolean[] = [false, true, true];
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;
 
   constructor(private ref: ChangeDetectorRef) { }
@@ -24,21 +24,19 @@ export class MerchantComponent implements OnInit {
   }
 
   next(event) {
-
-
-    // if (this.active < this.disabled.length) {
-    //   for (let i = 0; i < this.disabled.length; i++) {
-    //     this.disabled[i] = true;
-    //     if (i <= this.active) {
-    //       this.disabled[i] = !this.disabled[i];
-    //     }
-    //   }
-    //   this.active++;
-    // } else {
-    //   this.active = 1;
-    //   this.disabled[4] = true;
-    //   this.disabled[0] = false;
-    // }
+    if (this.active < this.disabled.length) {
+      for (let i = 0; i < this.disabled.length; i++) {
+        this.disabled[i] = true;
+        if (i <= this.active) {
+          this.disabled[i] = !this.disabled[i];
+        }
+      }
+      this.active++;
+    } else {
+      this.active = 1;
+      this.disabled[4] = true;
+      this.disabled[0] = false;
+    }
 
     this.ref.detectChanges();
 

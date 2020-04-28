@@ -57,7 +57,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color" >
-                            {{merchant.name}}
+                            {{merchant.user.address[0].state.name}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -66,13 +66,13 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>City</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color" >
-                            {{merchant.name}}
+                            {{merchant.user.address[0].city.name}}
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="pincode">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>PinCode</mat-header-cell>
-                    <mat-cell *matCellDef="let merchant">{{merchant.calories}}</mat-cell>
+                    <mat-cell *matCellDef="let merchant">{{merchant.user.address[0].postalCode}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="approvalStatus">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Approval Status</mat-header-cell>
@@ -94,11 +94,11 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="editBroker(merchant,'view')" class="kt-pointer"> View
+                            <div (click)="viewBroker(merchant)" class="kt-pointer"> View
                                 |
                                 &nbsp;
                             </div>
-                            <div (click)="editBroker(merchant,'edit')" class="kt-pointer"> Edit
+                            <div (click)="editMerchant(merchant)" class="kt-pointer"> Edit
 
                             </div>
                         </div>

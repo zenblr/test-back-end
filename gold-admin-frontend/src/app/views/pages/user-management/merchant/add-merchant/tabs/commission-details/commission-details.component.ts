@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MerchantService } from '../../../../../../../core/user-management/merchant';
 import { map, catchError } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../../../../views/partials/components';
@@ -12,15 +12,17 @@ import { ToastrComponent } from '../../../../../../../views/partials/components'
 export class CommissionDetailsComponent implements OnInit {
 
   categoryCommission:any[] = []
-  category: FormGroup;
+  commissionForm: FormGroup;
   userId:number;
+  commission:[]
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
 
   constructor(
     public fb: FormBuilder,
-    private merchantSercvice:MerchantService
+    private merchantSercvice:MerchantService,
+    private ref:ChangeDetectorRef
   ) {
     this.merchantSercvice.userId$.subscribe(res =>{
       this.userId = res
@@ -29,43 +31,54 @@ export class CommissionDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.initForm()
+    this.merchantSercvice.getMerchantCommssion(this.userId).pipe(
+      map(res =>{
+        this.commission = res;
+        console.log(this.commission)
+        this.createFormArray()
+      }),
+      catchError(err =>{
+        // this.toastr.errorToastr(err.error.message)
+        throw err
+      })).subscribe()
+    
   }
 
   initForm() {
-    this.category = this.fb.group({
-      category1: ['', [Validators.required]],
-      category2: ['', [Validators.required]],
-      category3: ['', [Validators.required]]
+    this.commissionForm = this.fb.group({
+      category:this.fb.array([])
     })
   }
 
-  get controls() {
-    if (this.category)
-      return this.category.controls
+  get categoryArray() {
+    if (this.commissionForm)
+      return this.commissionForm.controls.category as FormArray
   }
 
-  prepareCategoryCommissionArray(){
-    this.categoryCommission = []
-    var commission = Object.values(this.category.value)
-    let data:any = { }
-    for (let index = 0; index < commission.length; index++) {
-       data ={
-        categoryId:index,
-        commission:Number(commission[index])
-      }
-      this.categoryCommission.push(data)
-    }
+  createFormArray(){
+    this.commission.forEach(com=>{
+      this.categoryArray.push(
+        this.fb.group({
+          category:[com['category'],Validators.required],
+          categoryId:[com['categoryId'],Validators.required],
+          commission:[com['commission'],Validators.required],
+        })
+      )
+    })
+    console.log(this.categoryArray.controls)
+    this.ref.detectChanges()
   }
+
+
 
   submit() {
-    if (this.category.invalid) {
-      this.category.markAllAsTouched()
+    if (this.commissionForm.invalid) {
+      this.commissionForm.markAllAsTouched()
       return
     }
-    this.prepareCategoryCommissionArray()
     console.log(this.userId)
     console.log(this.categoryCommission)
-    this.merchantSercvice.merchantCommission(this.categoryCommission,this.userId).pipe(
+    this.merchantSercvice.merchantCommission(this.categoryArray.value,this.userId).pipe(
       map(res=>{
         this.next.emit(true);
       }

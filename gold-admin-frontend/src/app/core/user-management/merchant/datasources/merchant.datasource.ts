@@ -19,7 +19,7 @@ export class MerchantDatasource extends BaseDataSource {
         super();
     }
 
-    loadRoles(search, from, to, fromDate, toDate, userId) {
+    loadMerchant(search, from, to) {
         this.loadingSubject.next(true);
 
         this.merchantService.getMerchant(search, from, to)

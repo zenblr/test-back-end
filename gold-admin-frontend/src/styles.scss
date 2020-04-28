@@ -247,6 +247,63 @@ input[type="number"] {
 	transform: rotate(45deg);
 }
 
+// custom checkbox 2
+
+
+
+/* Create a custom checkbox */
+.checkmark2 {
+	position: absolute;
+	top: 43px;
+	left: 0;
+	height: 20px;
+	width: 20px;
+	background-color: #eee;
+	border-radius: 5px;
+}
+
+
+/* On mouse-over, add a background color */
+.custom-checkbox :hover input ~ .checkmark2 {
+	background-color: #ffffff;
+}
+
+/* When the checkbox is checked, add a background */
+.custom-checkbox input:checked ~ .checkmark2 {
+	background-color: #454d67;
+}
+
+.custom-checkbox input:disabled ~ .checkmark2 {
+	background-color: #454d67;
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark2:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+/* Show the checkmark when checked */
+.custom-checkbox input:checked ~ .checkmark2:after {
+	display: block;
+}
+
+/* Style the checkmark/indicator */
+.custom-checkbox .checkmark2:after {
+	left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 12px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	transform: rotate(90deg);
+}
+
 // modal
 .mat-dialog-container {
 	border: transparent !important;

@@ -53,6 +53,7 @@ import { InternalUserListComponent } from './internal-user/internal-user-list/in
 import { AddInternalUserComponent } from './internal-user/add-internal-user/add-internal-user.component';
 import { AddAppraiserComponent } from './assign-appraiser/add-appraiser/add-appraiser.component';
 import { AppraiserListComponent } from './assign-appraiser/appraiser-list/appraiser-list.component';
+import { ViewMerchantComponent } from './merchant/view-merchant/view-merchant.component';
 
 const routes: Routes = [
 	{
@@ -104,6 +105,10 @@ const routes: Routes = [
 				path: 'add-merchant',
 				component: MerchantComponent
 			},
+			{
+				path: 'edit-merchant/:id',
+				component: MerchantComponent
+			},
 
 		]
 	}
@@ -143,7 +148,8 @@ const routes: Routes = [
 		PartnerAddComponent,
 		AddBrokerComponent,
 		AddInternalUserComponent,
-		AddAppraiserComponent
+		AddAppraiserComponent,
+		ViewMerchantComponent
 	],
 	declarations: [
 		UserManagementComponent,
@@ -171,6 +177,7 @@ const routes: Routes = [
 		AddInternalUserComponent,
 		AddAppraiserComponent,
 		AppraiserListComponent,
+		ViewMerchantComponent,
 
 	]
 })
