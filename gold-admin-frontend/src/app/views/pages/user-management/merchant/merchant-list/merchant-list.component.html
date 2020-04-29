@@ -1,7 +1,8 @@
 <kt-portlet>
     <!-- PORTLET LOADING | Binded to TABLE Datasource -->
     <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
-    <kt-portlet-header [title]="'Brokers list'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
+    <kt-portlet-header [title]="'Merchant list'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
+   
     </kt-portlet-header>
     <!-- end::Header -->
     <kt-portlet-body>
@@ -77,9 +78,8 @@
                 <ng-container matColumnDef="approvalStatus">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Approval Status</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
-                        <div [ngClass]="merchant.approvalStatusId == 1 ? 'text-success' :merchant.approvalStatusId == 2 ? 'text-warning' : 'text-danger'" 
-                        *ngFor="let status of approvalStatus">
-                            <span *ngIf="status.id == merchant.approvalStatusId">{{status.statusName | uppercase }}</span>
+                        <div [ngClass]="merchant.approvalStatus.id == 1 ? 'text-warning' :merchant.approvalStatus.id == 2 ? 'text-success' : 'text-danger'">
+                            <span>{{merchant.approvalStatus.statusName | uppercase }}</span>
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -94,7 +94,7 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="viewBroker(merchant)" class="kt-pointer"> View
+                            <div (click)="viewMerchant(merchant)" class="kt-pointer"> View
                                 |
                                 &nbsp;
                             </div>
@@ -106,7 +106,7 @@
                 </ng-container>
                 <ng-container matColumnDef="apiKey">
                     <mat-header-cell *matHeaderCellDef>API Key</mat-header-cell>
-                    <mat-cell *matCellDef="let merchant">View API</mat-cell>
+                    <mat-cell *matCellDef="let merchant" (click)="apiKey(merchant)" class="kt-pointer">View API</mat-cell>
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '150%'}"></mat-header-row>

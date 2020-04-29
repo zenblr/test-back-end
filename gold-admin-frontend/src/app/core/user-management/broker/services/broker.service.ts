@@ -12,7 +12,7 @@ export class BrokerService {
   openModal$ = this.openModal.asObservable();
   constructor(private http: HttpClient) { }
 
-  baseUrl = 'http://9fdca1d3.ngrok.io';
+  baseUrl = 'http://ec50174a.ngrok.io';
 
   getBroker(search,from,to): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/broker?search=${search}&from=${from}&to=${to}`).pipe(

@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ViewMerchantComponent implements OnInit {
 
-  merchant: any[] = []
+  merchant: any
 
   constructor(
     public dialogRef: MatDialogRef<AddBrokerComponent>,
@@ -22,11 +22,12 @@ export class ViewMerchantComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+ 
     this.merchatService.getMerchantById(this.data.userId).pipe(
       map(res => {
         this.merchant = res
       }), catchError(err => {
-        this.toast.success(err.error.error)
+        this.toast.error(err.error.error)
         throw err
       })).subscribe()
   }

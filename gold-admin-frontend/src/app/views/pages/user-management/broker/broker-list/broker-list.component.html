@@ -19,7 +19,7 @@
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Merchant Name</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div class="text-color" >
+                        <div class="text-color">
                             {{broker.merchant.merchantName | titlecase}}
                         </div>
                     </mat-cell>
@@ -28,7 +28,7 @@
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Store Id</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div class="text-color" >
+                        <div class="text-color">
                             {{broker.storeId}}
                         </div>
                     </mat-cell>
@@ -37,7 +37,7 @@
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>User Email</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div class="text-color" >
+                        <div class="text-color">
                             {{broker.user.email}}
                         </div>
                     </mat-cell>
@@ -46,7 +46,7 @@
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile Number</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div class="text-color" >
+                        <div class="text-color">
                             {{broker.user.mobileNumber}}
                         </div>
                     </mat-cell>
@@ -55,7 +55,7 @@
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div class="text-color" >
+                        <div class="text-color">
                             {{broker.user.address[0].address}}
                         </div>
                     </mat-cell>
@@ -64,17 +64,17 @@
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div class="text-color" >
+                        <div class="text-color">
                             {{broker.user.address[0].state.name}}
                         </div>
                     </mat-cell>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="city">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>City</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div class="text-color" >
+                        <div class="text-color">
                             {{broker.user.address[0].city.name}}
 
                         </div>
@@ -84,7 +84,7 @@
                 <ng-container matColumnDef="pincode">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>PinCode</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div class="text-color" >
+                        <div class="text-color">
                             {{broker.user.address[0].postalCode}}
 
                         </div>
@@ -93,8 +93,10 @@
                 <ng-container matColumnDef="approvalStatus">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Approval Status</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div [ngClass]="broker.approvalStatus.id == 1 ? 'text-success' :broker.approvalStatus.id == 2 ? 'text-warning' : 'text-danger'">
-                            {{broker.approvalStatus.statusName | uppercase}}
+                        <div [ngClass]="broker.approvalStatusId == 1 ? 'text-success' :broker.approvalStatusId == 2 ? 'text-warning' : 'text-danger'"
+                            *ngFor="let approval of status">
+                            <div *ngIf="broker.approvalStatusId == approval.id"> {{approval.statusName | uppercase}}
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>

@@ -166,11 +166,49 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" numbersOnly maxlength="6" formControlName="pinCode"
-                                    placeholder="e.g 012345"
-                                    [class.isError]="controls.pinCode.touched && controls.pinCode.invalid">
-                                <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
-                                    Required field
-                                </mat-error>
+                                    placeholder="e.g 012345">
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4">
+                                <label for="" class="text-color font-weight-bold">PAN No.</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="text" formControlName="panCardNumber"
+                                    placeholder="e.g qwert1234q" [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.errors?.pattern">
+                                    <mat-error *ngIf="controls.panCardNumber.touched && controls.panCardNumber.errors?.pattern">
+                                        Invalid field</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4">
+                                <label for="" class="text-color font-weight-bold">Name on PAN</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="text" formControlName="nameOnPanCard"
+                                    placeholder="John">
+                                    
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4">
+                                <label for="" class="text-color font-weight-bold">Upload PAN</label>
+                            </div>
+                            <div class="col-8">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" formControlName="imgName"
+                                        placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2" [disabled]="true">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                            (click)="file.click()">Attach</span>
+                                    </div>
+                                </div>
+                                <label class="file d-none">
+                                    <input type="file" id="file" aria-label="File browser example" #file
+                                        (input)="getFileInfo($event)">
+                                    <span class="file-custom"></span>
+                                </label>
+                                
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">

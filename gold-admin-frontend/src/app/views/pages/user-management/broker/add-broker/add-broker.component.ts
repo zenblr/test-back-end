@@ -27,14 +27,14 @@ export class AddBrokerComponent implements OnInit {
     private fb: FormBuilder,
     private brokerService: BrokerService,
     private toast: ToastrService,
-    private ref:ChangeDetectorRef
+    private ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
+    this.status = this.data.status
     this.initForm();
     this.getStates();
     this.getMerchant();
-    this.getStatus()
     this.setTitle()
 
   }
@@ -66,7 +66,11 @@ export class AddBrokerComponent implements OnInit {
       cityId: ['', Validators.required],
       pinCode: ['', Validators.required],
       approvalStatusId: ['', Validators.required],
-      userId:[],
+      panCardNumber: ['',  Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')],
+      nameOnPanCard: [''],
+      panCard: [''],
+      imgName: [''],
+      userId: [],
     })
   }
 
@@ -92,11 +96,11 @@ export class AddBrokerComponent implements OnInit {
         this.toast.error("Error", err.error.message)
         // this.toast.error(err.error.message,"Error")
         throw err
-      }),finalize(()=>{
+      }), finalize(() => {
         this.ref.detectChanges()
       })
     ).subscribe()
-    
+
   }
 
   getCities() {
@@ -109,18 +113,7 @@ export class AddBrokerComponent implements OnInit {
 
   }
 
-  getStatus() {
-
-    this.brokerService.getStatus().pipe(
-      map(res => {
-        this.status = res
-      }),
-      catchError(err => {
-        this.toast.error('Error', err.error.message)
-        throw err
-      })).subscribe()
-
-  }
+  
 
   action(event: Event) {
 
@@ -130,6 +123,21 @@ export class AddBrokerComponent implements OnInit {
       this.dialogRef.close()
     }
 
+  }
+
+  getFileInfo(event) {
+   var name =  event.target.files[0].name
+   var ext = name.split('.')
+   if(ext[ext.length-1] == 'jpg' || ext[ext.length-1] =='png' || ext[ext.length-1] == 'jpeg'){
+    this.sharedService.uploadFile(event.target.files[0]).pipe(
+      map(res =>{
+        this.brokerFrom.controls.imgName.patchValue(event.target.files[0])
+        this.brokerFrom.controls.panCard.patchValue(res.uploadFile.URL)
+      })).subscribe()
+   }else{
+     this.toast.error('Upload Valid File Format');
+   }
+    
   }
 
   submit() {
@@ -144,7 +152,7 @@ export class AddBrokerComponent implements OnInit {
     this.controls.approvalStatusId.patchValue(parseInt(this.controls.approvalStatusId.value))
     this.controls.merchantId.patchValue(parseInt(this.controls.merchantId.value))
 
-    if(this.data.action == 'add'){
+    if (this.data.action == 'add') {
       this.brokerService.addBroker(this.brokerFrom.value).pipe(
         map(res => {
           this.toast.success(res.message);
@@ -154,7 +162,7 @@ export class AddBrokerComponent implements OnInit {
           throw err
         })
       ).subscribe()
-    }else{
+    } else {
       this.brokerService.updateBroker(this.brokerFrom.value).pipe(
         map(res => {
           this.toast.success(res.message);
@@ -165,7 +173,7 @@ export class AddBrokerComponent implements OnInit {
         })
       ).subscribe()
     }
-    
+
   }
 
 }

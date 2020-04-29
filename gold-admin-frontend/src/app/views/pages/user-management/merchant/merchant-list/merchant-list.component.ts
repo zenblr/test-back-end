@@ -15,6 +15,8 @@ import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud'
 import { AppState } from '../../../../../core/reducers';
 import { MerchantDatasource, MerchantService } from '../../../../../core/user-management/merchant';
 import { ViewMerchantComponent } from '../view-merchant/view-merchant.component';
+import { ApiKeyComponent } from '../api-key/api-key.component';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 
 
 @Component({
@@ -28,7 +30,8 @@ export class MerchantListComponent implements OnInit {
   displayedColumns = ['merchantName', 'fullName', 'mobileNumber', 'email', 'state', 'city', 'pincode', 'approvalStatus', 'action', 'apiKey'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
-
+  searchValue = ''
+  unsubscribeSearch$ = new Subject()
   brokerResult: any[] = [];
   approvalStatus: any[] = [
     {
@@ -64,6 +67,7 @@ export class MerchantListComponent implements OnInit {
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
     private merchantService: MerchantService,
+    private dataTableService: DataTableService,
     private router: Router) {
   }
 
@@ -85,6 +89,14 @@ export class MerchantListComponent implements OnInit {
       .subscribe();
     this.subscriptions.push(paginatorSubscriptions);
 
+    const searchSubscription = this.dataTableService.searchInput$.pipe(
+      takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadMerchantList();
+      });
+      this.subscriptions.push(searchSubscription);
     // Init DataSource
     this.dataSource = new MerchantDatasource(this.merchantService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
@@ -109,6 +121,8 @@ export class MerchantListComponent implements OnInit {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.destroy$.next()
     this.destroy$.complete()
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 
   /**
@@ -120,7 +134,7 @@ export class MerchantListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadMerchant('', from, to);
+    this.dataSource.loadMerchant(this.searchValue, from, to);
 
   }
 
@@ -129,10 +143,17 @@ export class MerchantListComponent implements OnInit {
     this.router.navigate(['user-management/edit-merchant/', merchant.userId])
   }
 
-  viewBroker(merchant) {
+  viewMerchant(merchant) {
     const dialog = this.dialog.open(ViewMerchantComponent, {
       data: { userId: merchant.userId },
-      width:'450px'
+      width:'630px'
+    })
+  }
+
+  apiKey(merchant) {
+    const dialog = this.dialog.open(ApiKeyComponent, {
+      data: { userId: merchant.userId },
+      width:'350px'
     })
   }
 }

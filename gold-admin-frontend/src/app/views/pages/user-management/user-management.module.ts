@@ -54,6 +54,7 @@ import { AddInternalUserComponent } from './internal-user/add-internal-user/add-
 import { AddAppraiserComponent } from './assign-appraiser/add-appraiser/add-appraiser.component';
 import { AppraiserListComponent } from './assign-appraiser/appraiser-list/appraiser-list.component';
 import { ViewMerchantComponent } from './merchant/view-merchant/view-merchant.component';
+import { ApiKeyComponent } from './merchant/api-key/api-key.component';
 
 const routes: Routes = [
 	{
@@ -149,7 +150,8 @@ const routes: Routes = [
 		AddBrokerComponent,
 		AddInternalUserComponent,
 		AddAppraiserComponent,
-		ViewMerchantComponent
+		ViewMerchantComponent,
+		ApiKeyComponent
 	],
 	declarations: [
 		UserManagementComponent,
@@ -178,6 +180,7 @@ const routes: Routes = [
 		AddAppraiserComponent,
 		AppraiserListComponent,
 		ViewMerchantComponent,
+		ApiKeyComponent,
 
 	]
 })

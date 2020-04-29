@@ -1,22 +1,20 @@
 // Angular
-import { Component, OnInit, ElementRef, ViewChild, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-// Material
-import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material';
 // RXJS
 import { distinctUntilChanged, tap, skip, take, delay, takeUntil, map, catchError } from 'rxjs/operators';
 import { merge, of, Subscription, Subject } from 'rxjs';
 // NGRX
-import { Store } from '@ngrx/store';
 // Services
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
-import { AppState } from '../../../../../core/reducers';
 import { BrokerDatasource, BrokerService } from '../../../../../core/user-management/broker';
 
 import { AddBrokerComponent } from '../add-broker/add-broker.component'
 import { ToastrService } from 'ngx-toastr';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
+
 
 @Component({
   selector: 'kt-broker-list',
@@ -24,6 +22,9 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./broker-list.component.scss']
 })
 export class BrokerListComponent implements OnInit, OnDestroy {
+
+  searchValue = ''
+  unsubscribeSearch$ = new Subject()
   // Table fields
   dataSource: BrokerDatasource;
   displayedColumns = ['merchantName', 'storeId', 'email', 'mobileNumber', 'address', 'state', 'city', 'pincode', 'approvalStatus', 'status', 'action'];
@@ -37,6 +38,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private destroy$: Subject<any> = new Subject()
+  status: any []=[];
 
   /**
    * Component constructor
@@ -53,6 +55,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
     private layoutUtilsService: LayoutUtilsService,
     private brokerService: BrokerService,
     private router: Router,
+    private dataTableService: DataTableService,
     private toast: ToastrService
   ) {
     this.brokerService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
@@ -70,6 +73,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
    * On init
    */
   ngOnInit() {
+    this.getStatus()
     // If the user changes the sort order, reset back to the first page.
     const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     this.subscriptions.push(sortSubscription);
@@ -86,6 +90,14 @@ export class BrokerListComponent implements OnInit, OnDestroy {
       .subscribe();
     this.subscriptions.push(paginatorSubscriptions);
 
+    const searchSubscription = this.dataTableService.searchInput$.pipe(
+      takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadBrokerList();
+      });
+      this.subscriptions.push(searchSubscription);
     // Init DataSource
     this.dataSource = new BrokerDatasource(this.brokerService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
@@ -110,6 +122,8 @@ export class BrokerListComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.destroy$.next()
     this.destroy$.complete()
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 
   /**
@@ -121,7 +135,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadBrokers('', from, to);
+    this.dataSource.loadBrokers(this.searchValue, from, to);
     // this.selection.clear();
     // const queryParams = new QueryParamsModel(
     // 	this.filterConfiguration(),
@@ -164,28 +178,22 @@ export class BrokerListComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Fetch */
-  /**
-   * Fetch selected rows
-   */
-  fetchRoles() {
-    // const messages = [];
-    // this.selection.selected.forEach(elem => {
-    // 	messages.push({
-    // 		text: `${elem.title}`,
-    // 		id: elem.id.toString(),
-    // 		// status: elem.username
-    // 	});
-    // });
-    // this.layoutUtilsService.fetchElements(messages);
+  getStatus() {
+
+    this.brokerService.getStatus().pipe(
+      map(res => {
+        this.status = res
+      }),
+      catchError(err => {
+        this.toast.error('Error', err.error.message)
+        throw err
+      })).subscribe()
+
   }
 
-  /**
-   * Add role
-   */
   addBroker(action) {
     const dialogRef = this.dialog.open(AddBrokerComponent, {
-      data: { action: action },
+      data: { action: action , status:this.status},
       width: '450px'
     });
     dialogRef.afterClosed().subscribe(res => {
@@ -204,7 +212,8 @@ export class BrokerListComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddBrokerComponent, {
       data: {
         action: action,
-        broker: data
+        broker: data,
+        status:this.status
       },
       width: '450px'
     });

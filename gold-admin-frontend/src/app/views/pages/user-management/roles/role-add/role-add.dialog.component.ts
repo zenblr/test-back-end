@@ -26,9 +26,9 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 	private componentSubscriptions: Subscription;
 	title: string;
 	cloneRoles: any[] = [];
-	modules:any[]=[]
-	checkedModules:any [] = [0]
-	isDisabled=false;
+	modules: any[] = []
+	checkedModules: any[] = []
+	isDisabled = false;
 
 	/**
 	 * Component constructor
@@ -56,8 +56,12 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 			this.title = 'Edit Role'
 			this.roleForm.patchValue(this.data.role);
 			this.checkedModules = []
-			this.data.role.modules.forEach(mod => {
-				this.checkedModules.push(mod.id)
+			this.data.role.modules.forEach(editMod => {
+				this.checkedModules.push(editMod.id)
+				this.modules.forEach(mod => {
+					if (editMod.id == mod.id)
+						mod.isSelected = false;
+				})
 			});
 			this.controls.moduleId.patchValue(this.checkedModules)
 		}
@@ -69,7 +73,7 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 			roleName: ['', Validators.required],
 			roleId: [''],
 			description: [''],
-			moduleId:[[],Validators.required]
+			moduleId: [[], Validators.required]
 		})
 	}
 
@@ -87,8 +91,10 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 	getAllModules() {
 		this.roleService.getAllModule().pipe(
 			map(res => {
-				
 				this.modules = res;
+				this.modules.forEach(mod => {
+					mod.isSelected = false;
+				})
 			}),
 			catchError(err => {
 				this.toast.error(err.error.message)
@@ -97,18 +103,24 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 	}
 
 	getModules() {
-		if(this.controls.roleId.value == ''){
-			this.checkedModules = [0];
+		this.modules.forEach(mod => {
+			mod.isSelected = false;
+		})
+		if (this.controls.roleId.value == '') {
 			this.isDisabled = false
 			return
 		}
 		this.roleService.getModule(this.controls.roleId.value).pipe(
 			map(res => {
 				this.controls.moduleId.patchValue(res)
-				let temp = this.modules
-				this.modules = [];
-				this.modules = temp
 				this.checkedModules = res;
+				this.data.role.modules.forEach(editMod => {
+					this.checkedModules.push(editMod.id)
+					this.modules.forEach(mod => {
+						if (editMod.id == mod.id)
+							mod.isSelected = true;
+					})
+				});
 				this.isDisabled = true
 			}),
 			catchError(err => {
@@ -117,20 +129,20 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 			})).subscribe()
 	}
 
-	onModuleSelect(value,event,index){
+	onModuleSelect(value, event, index) {
 		let temp = [];
 		// Array.prototype.push.apply(temp,this.controls.modules.value)
-		if(event){
+		if (event) {
 			temp = this.controls.moduleId.value;
 			temp.push(value)
 			this.controls.moduleId.patchValue(temp)
-	
-		}else{
+
+		} else {
 			temp = this.controls.moduleId.value;
-			temp.splice(index,1)
+			temp.splice(index, 1)
 			this.controls.moduleId.patchValue(temp)
 		}
-		
+
 	}
 
 	get controls() {
@@ -151,16 +163,16 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	submit(){
+	submit() {
 		if (this.roleForm.invalid) {
 			this.roleForm.markAllAsTouched();
-			return 
+			return
 		}
-		if(this.data.action == 'add'){
-			if(this.controls.roleId.value == ''){
+		if (this.data.action == 'add') {
+			if (this.controls.roleId.value == '') {
 				this.controls.roleId.patchValue(0)
-			}else{
-			this.controls.roleId.patchValue(Number(this.controls.roleId.value))
+			} else {
+				this.controls.roleId.patchValue(Number(this.controls.roleId.value))
 			}
 			this.roleService.addRole(this.roleForm.value).pipe(
 				map(res => {
@@ -171,9 +183,9 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 					this.toast.error(err.error.message)
 					throw err;
 				})).subscribe()
-		}else{
+		} else {
 			this.controls.roleId.patchValue(Number(this.controls.roleId.value))
-			this.roleService.editRole(this.data.role.id,this.roleForm.value).pipe(
+			this.roleService.editRole(this.data.role.id, this.roleForm.value).pipe(
 				map(res => {
 					this.toast.success("Role Updated Successfully")
 					this.dialogRef.close(res)
@@ -183,8 +195,8 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 					throw err;
 				})).subscribe()
 		}
-		
-		
+
+
 	}
 
 

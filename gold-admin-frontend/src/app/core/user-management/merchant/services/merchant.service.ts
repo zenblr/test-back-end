@@ -10,7 +10,7 @@ export class MerchantService {
 
   constructor(private http: HttpClient) { }
 
-  baseUrl = 'http://49c2b6a8.ngrok.io';
+  baseUrl = 'http://ec50174a.ngrok.io';
   userId: BehaviorSubject<any> = new BehaviorSubject(0);
   userId$ = this.userId.asObservable()
   userDetails: BehaviorSubject<any> = new BehaviorSubject('');
@@ -28,7 +28,7 @@ export class MerchantService {
     )
   }
 
-  editMerchant(details,userId): Observable<any> {
+  editMerchant(details, userId): Observable<any> {
     return this.http.put(`${this.baseUrl}/api/merchant/${userId}`, details).pipe(
       map(res => res)
     )
@@ -41,26 +41,48 @@ export class MerchantService {
       )
   }
 
-  getMerchantById(id):Observable<any> {
+  getMerchantById(id): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/merchant/${id}`).pipe(
       map(res => res)
     )
   }
 
-  getPermission(id):Observable<any> {
+  getPermission(id): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/merchant-product/${id}`).pipe
       (map(res => res))
   }
 
-  addProduct(products,allowProductAccess,userId):Observable<any> {
-    return this.http.post(`${this.baseUrl}/api/merchant-product`,{products,allowProductAccess,userId}).pipe
+  addProduct(products, allowProductAccess, userId): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/merchant-product`, { products, allowProductAccess, userId }).pipe
       (map(res => res))
   }
 
-  getMerchantCommssion(id):Observable<any>{
+  getMerchantCommssion(id): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/merchant-category-commission/${id}`).pipe(
       map(res => res)
     )
   }
+
+  getApiDetails(id):Observable<any>{
+    return this.http.get(`${this.baseUrl}/api/merchant/api-key/${id}`).pipe(
+      map(res => res)
+    )
+  }
+
+  generateApi(id):Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/merchant/api-key/generate/${id}`).pipe(
+      map(res => res)
+    )
+  }
+  reGenerateApi(id):Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/merchant/api-key/re-generate/${id}`).pipe(
+      map(res => res)
+    )
+  }
+
+  status(value,userId):Observable<any> {
+    return this.http.put(`${this.baseUrl}/api/merchant/api-key/status`,{value,userId}).pipe(
+      map(res => res))
+  }
 }
-  
+
