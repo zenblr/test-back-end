@@ -26,18 +26,27 @@ export class UploadOfferComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getData()
+    this.getData();
+    this.getGoldRate();
   }
 
   getData() {
     this.uploadOfferService.getOffers().pipe(
       map(res => {
-        this.goldRate.patchValue(res.goldRate)
-        this.uploadOfferService.goldRate.next(res.goldRate);
+        // this.goldRate.patchValue(res.goldRate)
+        // this.uploadOfferService.goldRate.next(res.goldRate);
         if (res.images.length > 0) {
           Array.prototype.push.apply(this.images, res.images)
         }
         this.ref.detectChanges();
+      })).subscribe()
+  }
+
+  getGoldRate() {
+    this.uploadOfferService.getGoldRate().pipe(
+      map(res => {
+        this.goldRate.patchValue(res.goldRate)
+        this.uploadOfferService.goldRate.next(res.goldRate);
       })).subscribe()
   }
 
@@ -52,10 +61,11 @@ export class UploadOfferComponent implements OnInit {
         if (res) {
           this.toastr.successToastr('Gold Rate Updated Sucessfully');
           this.uploadOfferService.goldRate.next(this.goldRate.value);
+          this.getGoldRate();
         }
       }),
       // catchError(err => {
-        // this.toastr.errorToastr('Please try Again');
+      // this.toastr.errorToastr('Please try Again');
       //   throw err
       // }),
       finalize(() => {

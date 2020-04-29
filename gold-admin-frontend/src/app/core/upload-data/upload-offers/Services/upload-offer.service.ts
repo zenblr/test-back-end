@@ -16,7 +16,17 @@ export class UploadOfferService {
 
 
   updateGoldRate(data): Observable<any> {
-    return this.http.post(`/api/offer`, data).pipe(
+    return this.http.post(`/api/gold-rate`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
+
+  getGoldRate(): Observable<any> {
+    return this.http.get(`/api/gold-rate`).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);
