@@ -95,7 +95,7 @@ router.use('/customer-query',query)
 const customerLoanProcess = require('./customerLoanProcess'); // customer loan process module
 router.use('/loan-process', customerLoanProcess);
 
-const feedBack=require('./feedBack');
+const feedBack=require('./feedBack'); // feed back module
 router.use('/customer-feedback',feedBack)
 
 const customerClassification = require('./customerClassification')
@@ -106,5 +106,8 @@ router.use('/role-permission',rolePermission);
 
 const modules = require('./module');
 router.use('/modules',modules);
+
+const internalBranch=require('./internalBranch'); // internal branch module
+router.use('/internal-branch',internalBranch)
 
 module.exports = router;
