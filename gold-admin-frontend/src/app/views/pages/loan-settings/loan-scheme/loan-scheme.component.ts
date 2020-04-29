@@ -14,11 +14,12 @@ import { PartnerService } from '../../../../core/user-management/partner/service
 })
 export class LoanSchemeComponent implements OnInit {
 
-  schemes: String[] = []
+  schemes: any[] = []
   loader: boolean = true;
   viewLoading: boolean = false;
   destroy$ = new Subject();
   @ViewChild('matTab', { static: false }) matTab: ElementRef
+  noResults: any[]=[];
 
   constructor(
     private loanSettingService: LoanSettingsService,
@@ -50,8 +51,8 @@ export class LoanSchemeComponent implements OnInit {
       map(
         res => {
           this.schemes.push(res.data)
-          console.log(this.schemes)
-          console.log(document.querySelector('.mat-tab-labels'))
+          this.noResults = res.data.schemes;
+          console.log(this.noResults.length)
           this.ref.detectChanges();
           this.eleref.nativeElement.querySelector('.mat-tab-labels').style.display = 'none';
           this.eleref.nativeElement.querySelector('.mat-tab-header').style.display = 'none';
@@ -68,6 +69,7 @@ export class LoanSchemeComponent implements OnInit {
     this.loanSettingService.getScheme().pipe(
       map(res => {
         this.schemes = res.data;
+        this.noResults = res.data;
         this.viewLoading = false;
         this.ref.detectChanges();
       }),

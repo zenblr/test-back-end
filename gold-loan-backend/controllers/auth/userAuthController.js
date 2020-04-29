@@ -68,35 +68,35 @@ exports.userLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
-        let getRole = await models.userRole.getAllRole(decoded.id);
-        let roleId = await getRole.map((data) => data.roleId);
-        let modules = await models.roleModule.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},
-            attributes: [],
-            include: [
-                {
-                  model: models.module,
-                  as:'module',
-                  attributes: ['id','moduleName'],
-                  where: { isActive: true}
-                },
-              ]
-        });
+        // let getRole = await models.userRole.getAllRole(decoded.id);
+        // let roleId = await getRole.map((data) => data.roleId);
+        // let modules = await models.roleModule.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},
+        //     attributes: [],
+        //     include: [
+        //         {
+        //           model: models.module,
+        //           as:'module',
+        //           attributes: ['id','moduleName'],
+        //           where: { isActive: true}
+        //         },
+        //       ]
+        // });
 
-        let getPermissions = await models.rolePermission.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},attributes: ['permissionId']});
-        let permissionId = await getPermissions.map((data) => data.permissionId);
-        let permissions = await models.entity.findAll({
-            where : {isActive : true},
-            attributes: ['id','entityName'],
-            include: [
-                {
-                  model: models.permission,
-                  as:'permission',
-                  attributes: ['id','actionName'],
-                  where: { isActive: true, id: {[Op.in]: permissionId} }
-                },
-              ]
-        })
-        return res.status(200).json({ message: 'login successful', Token, modules, permissions });
+        // let getPermissions = await models.rolePermission.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},attributes: ['permissionId']});
+        // let permissionId = await getPermissions.map((data) => data.permissionId);
+        // let permissions = await models.entity.findAll({
+        //     where : {isActive : true},
+        //     attributes: ['id','entityName'],
+        //     include: [
+        //         {
+        //           model: models.permission,
+        //           as:'permission',
+        //           attributes: ['id','actionName'],
+        //           where: { isActive: true, id: {[Op.in]: permissionId} }
+        //         },
+        //       ]
+        // })
+        return res.status(200).json({ message: 'login successful', Token });
     } else {
        return res.status(401).json({ message: 'Wrong Credentials' });
     }

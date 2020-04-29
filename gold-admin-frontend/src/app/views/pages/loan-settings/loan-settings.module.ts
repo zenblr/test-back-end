@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AddSchemeComponent } from './add-scheme/add-scheme.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoanSchemeComponent } from './loan-scheme/loan-scheme.component';
-
+import{ CoreModule } from '../../../core/core.module'
 const routes: Routes = [
   { path: 'loan-status', component: LoanStatusComponent },
   { path: 'scheme', component: LoanSchemeComponent },
@@ -37,7 +37,8 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     TranslateModule.forChild(),
-    AngularMaterialModule
+    AngularMaterialModule,
+    CoreModule
   ],
   providers: [
     InterceptService,

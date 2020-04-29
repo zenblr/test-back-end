@@ -82,7 +82,7 @@ exports.readPartner = async (req, res, next) => {
       limit: pageSize,
     });
 
-    let count = await models.partner.findAll({
+    let count = await models.partner.count({
       where: searchQuery,
       order: [["id", "ASC"]],
     });
@@ -90,7 +90,7 @@ exports.readPartner = async (req, res, next) => {
     if (!readPartnerData) {
       return res.status(404).json({ message: "data not found" });
     }
-    return res.status(200).json({ data: readPartnerData, count: count.length });
+    return res.status(200).json({ data: readPartnerData, count: count });
   }
 };
 

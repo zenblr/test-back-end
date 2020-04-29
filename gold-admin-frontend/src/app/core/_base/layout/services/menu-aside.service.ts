@@ -22,15 +22,14 @@ export class MenuAsideService {
 	 */
 	constructor(
 		private menuConfigService: MenuConfigService,
-		private router:Router,
-		) {
-			this.currentRouteUrl = this.router.url.split('/')[1]
-			this.router.events
+		private router: Router,
+	) {
+		this.currentRouteUrl = this.router.url.split('/')[1]
+		this.router.events
 			.pipe(filter(event => event instanceof NavigationEnd))
 			.subscribe(event => {
 				this.currentRouteUrl = this.router.url.split('/')[1];
 				this.loadMenu();
-				console.log(this.currentRouteUrl)
 			});
 
 		this.loadMenu();
@@ -42,13 +41,12 @@ export class MenuAsideService {
 	loadMenu() {
 		// get menu list
 		var aside = ''
-		if(this.currentRouteUrl == 'user-management' ){
+		if (this.currentRouteUrl == 'user-management') {
 			aside = 'aside.itemsTwo'
-		}else{
+		} else {
 			aside = 'aside.itemsOne'
 		}
 		const menuItems: any[] = objectPath.get(this.menuConfigService.getMenus(), aside);
-		console.log(aside)
 		this.menuList$.next(menuItems);
 	}
 }

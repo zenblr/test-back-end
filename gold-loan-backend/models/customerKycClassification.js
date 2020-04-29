@@ -12,30 +12,30 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
 
-        behaviourRatingAppraisal: {
+        behaviourRatingCce: {
             type: DataTypes.INTEGER,
-            field: 'behaviour_rating_appraisal',
+            field: 'behaviour_rating_cce',
             allowNull: false
         },
-        idProofRatingAppraisal: {
+        idProofRatingCce: {
             type: DataTypes.INTEGER,
-            field: 'id_proof_rating_appraisal',
+            field: 'id_proof_rating_cce',
             allowNull: false
         },
-        addressProofRatingAppraisal: {
+        addressProofRatingCce: {
             type: DataTypes.INTEGER,
-            field: 'address_proof_rating_appraisal',
+            field: 'address_proof_rating_cce',
             allowNull: false
         },
-        kycStatusFromAppraisal: {
+        kycStatusFromCce: {
             type: DataTypes.ENUM,
-            field: 'kyc_status_from_appraisal',
+            field: 'kyc_status_from_cce',
             values: ['confirm', 'pending', 'closed'],
             allowNull: false
         },
-        appraisalId: {
+        cceId: {
             type: DataTypes.INTEGER,
-            field: 'appraisal_id',
+            field: 'cce_id',
             allowNull: false
         },
         behaviourRatingBranchManager: {
@@ -72,12 +72,12 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycClassification.belongsTo(models.customerKycPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
         CustomerKycClassification.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
-        CustomerKycClassification.belongsTo(models.user, { foreignKey: 'appraisalId', as: 'appraisalInfo' });
+        CustomerKycClassification.belongsTo(models.user, { foreignKey: 'cceId', as: 'cceInfo' });
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'branchManagerId', as: 'branchManagerInfo' });
 
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'behaviourRatingAppraisal', as: 'behaviourAppraisal' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'idProofRatingAppraisal', as: 'idProofAppraisal' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'addressProofRatingAppraisal', as: 'addressProofAppraisal' });
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'behaviourRatingCce', as: 'behaviourCce' });
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'idProofRatingCce', as: 'idProofCce' });
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'addressProofRatingCce', as: 'addressProofCce' });
 
         CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'behaviourRatingBranchManager', as: 'behaviourBranchManager' });
         CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'idProofRatingBranchManager', as: 'idProofBranchManager' });

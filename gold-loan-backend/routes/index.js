@@ -52,8 +52,8 @@ const partner = require('./partner'); //  partner Route
 router.use('/partner', partner);
 
 
-const branch = require('./branch'); // branch Route
-router.use('/branch', branch);
+const partnerBranch = require('./partnerBranch'); // branch Route
+router.use('/partner-branch', partnerBranch);
 
 const role = require('./role'); // role Route
 router.use('/role', role)
@@ -97,6 +97,7 @@ router.use('/loan-process', customerLoanProcess);
 
 const feedBack=require('./feedBack');
 router.use('/customer-feedback',feedBack)
+
 const customerClassification = require('./customerClassification')
 router.use('/classification', customerClassification)
 
