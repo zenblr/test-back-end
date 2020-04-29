@@ -40,7 +40,16 @@
                             <label class="mandatory">Full Name</label>
                         </div>
                         <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Full Name" />
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Full Name" formControlName="firstName"/>
+
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Full Name" formControlName="lastName"/>
+
+                                </div>
+                            </div>
                             <!-- <mat-error
                             *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                             Required field
@@ -60,7 +69,7 @@
                         <div class="col-7">
                             <div class="row">
                                 <div class="col-8">
-                                    <input type="text" class="form-control" placeholder="Mobile Number" />
+                                    <input type="text" class="form-control" placeholder="Mobile Number" formControlName="mobileNumber"/>
                                     <!-- <mat-error
                                             *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                             Required field
@@ -82,7 +91,7 @@
                         <div class="col-7">
                             <div class="row">
                                 <div class="col-8">
-                                    <input type="text" class="form-control" placeholder="PAN" />
+                                    <input type="text" class="form-control" placeholder="PAN" formControlName="panCardNumber"/>
                                     <!-- <mat-error
                                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                     Required field
@@ -96,431 +105,313 @@
                     </div>
                 </div>
             </div>
-
+            <!-- 
             <!-- Address Details -->
-            <div class="row kt-margin-t-50">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-12 form-label header">
-                            <h5> Address & Identity </h5>
+        </form>
+
+            <!-- Personal Details -->
+            <form action="" [formGroup]="customerKyc">
+                <div class="row kt-margin-t-50">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Personal Details </h5>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Address & Identity</label>
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Date of Birth </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="dateOfBirth" />
+                                <!-- <mat-error
+                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                            Required field
+                        </mat-error> -->
+                            </div>
                         </div>
-                        <div class="col-7">
-                            <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof">
-                                <option value="" [disabled]="true" [selected]="true"> Select Proof</option>
-                                <option *ngFor="let proof of identityProofs" [value]="proof.id">{{ proof.name }}
-                                </option>
-                            </select>
-                            <!-- <mat-error
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Gender</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="gender" />
+                                <!-- <mat-error
                                 *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                 Required field
                             </mat-error> -->
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-3 offset-1 form-label">
-                            <label class="mandatory">Proof</label>
-                        </div>
-                        <!-- <div class="col-7">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Select File"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
-                            <div class="input-group-append">
-                                <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                    (click)="identity.click()"
-                                    style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
-                            </div>
-                            <input type="file" class="d-none" #identity>
-                        </div>
-                    </div> -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-6">
-                    <div class="col-8 offset-4">
-                        <div class="img-container">
-                            <div class="">
-                                <img class="" src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                                <!-- <img [src]="signatureJSON.url" style="border-radius: 15px;"
-                                    alt="" /> -->
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">State</label>
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Alternate No. </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="alternateMobileNumber" />
+                                <!-- <mat-error
+                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                            Required field
+                        </mat-error> -->
+                            </div>
                         </div>
-                        <div class="col-7">
-                            <select formControlName="stateId" class="form-control" (change)="getCities()">
-                                <option value="" [disabled]="true" [selected]="true"> Select State
-                                </option>
-                                <option *ngFor="let state of states" [value]="state.id">
-                                    {{state.name}}
-                                </option>
-                            </select>
-                            <!-- <mat-error
-                                        *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                        Required field
-                                    </mat-error> -->
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Marital Status</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="martialStatus" />
+                                <!-- <mat-error
+                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                Required field
+                            </mat-error> -->
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">City</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                            Required field
-                                        </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Address </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                            Required field
-                                        </mat-error> -->
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Occupation </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="occupationId" />
+                                <!-- <mat-error
+                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                Required field
+                            </mat-error> -->
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Pin Code</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                                Required field
-                                            </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Personal Details -->
-            <div class="row kt-margin-t-50">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-12 form-label header">
-                            <h5> Personal Details </h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Date of Birth </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Father/Spouse Name</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="spouseName" />
+                                <!-- <mat-error
                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                     Required field
                                 </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Gender</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                        *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                        Required field
-                                    </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Alternate No. </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                    Required field
-                                </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Marital Status</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                        *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                        Required field
-                                    </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Occupation </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                        *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                        Required field
-                                    </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Father/Spouse Name</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                            Required field
-                                        </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-3 offset-1 form-label">
-                            <label class="mandatory">Signature</label>
-                        </div>
-                        <!-- <div class="col-7">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Select File"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
-                            <div class="input-group-append">
-                                <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                    (click)="signature.click()"
-                                    style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
-                            </div>
-                            <input type="file" class="d-none" #signature>
-                        </div>
-                    </div> -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-6">
-                    <div class="col-8 offset-4">
-                        <div class="img-container">
-                            <div class="">
-                                <img class="" src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                                <!-- <img [src]="signatureJSON.url" style="border-radius: 15px;"
-                                alt="" /> -->
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label class="mandatory">Signature</label>
+                            </div>
+                            <!-- <div class="col-7">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Select File"
+                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="signature.click()"
+                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" #signature>
+                </div>
+            </div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-6">
+                        <div class="col-8 offset-4">
+                            <div class="img-container">
+                                <div class="">
+                                    <!-- <img class="" src="../../../../../../assets/media/icons/image-placeholder.png" alt="" /> -->
+                                    <img [src]="customerKyc.controls.signature" style="border-radius: 15px;" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
 
             <!-- Bank Details -->
-            <div class="row kt-margin-t-50">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-12 form-label header">
-                            <h5> Bank Details </h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Bank Name </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                        *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                        Required field
-                                    </mat-error> -->
+            <form action="" [formGroup]="customerKycBank">
+                <div class="row kt-margin-t-50">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Bank Details </h5>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Bank Branch</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Bank Name </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="bankName" />
+                                <!-- <mat-error
                                             *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                             Required field
                                         </mat-error> -->
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> A/C Type </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                        *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                        Required field
-                                    </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">A/C Holder</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                            Required field
-                                        </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> A/C No. </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                            Required field
-                                        </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">IFSC Code</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number" />
-                            <!-- <mat-error
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Bank Branch</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="bankBranchName" />
+                                <!-- <mat-error
                                                 *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                 Required field
                                             </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-3 offset-1 form-label">
-                            <label class="mandatory">Passbook or Statement</label>
-                        </div>
-                        <!-- <div class="col-7">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Select File"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
-                            <div class="input-group-append">
-                                <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                    (click)="pass.click()"
-                                    style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
-                            </div>
-                            <input type="file" class="d-none" #pass>
-                        </div>
-                    </div> -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-6">
-                    <div class="col-8 offset-4">
-                        <div class="img-container">
-                            <div class="">
-                                <img class="" src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                                <!-- <img [src]="signatureJSON.url" style="border-radius: 15px;"
-                                    alt="" /> -->
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> A/C Type </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="accountType" />
+                                <!-- <mat-error
+                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                            Required field
+                                        </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">A/C Holder</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="accountHolderName" />
+                                <!-- <mat-error
+                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                Required field
+                                            </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> A/C No. </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="accountNumber" />
+                                <!-- <mat-error
+                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                Required field
+                                            </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">IFSC Code</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="ifscCode" />
+                                <!-- <mat-error
+                                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                    Required field
+                                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label class="mandatory">Passbook or Statement</label>
+                            </div>
+                            <!-- <div class="col-7">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Select File"
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                        (click)="pass.click()"
+                                        style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                </div>
+                                <input type="file" class="d-none" #pass>
+                            </div>
+                        </div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-6">
+                        <div class="col-8 offset-4">
+                            <div class="img-container">
+                                <div class="">
+                                    <!-- <img class="" src="../../../../../../assets/media/icons/image-placeholder.png"
+                                        alt="" /> -->
+                                    <img [src]="customerKycBank.controls.passbookProof.value"
+                                        style="border-radius: 15px;" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
 
             <div class="row">
                 <div class="col-6">
@@ -531,6 +422,6 @@
                     </div>
                 </div>
             </div>
-        </form>
+        <!-- </form> -->
     </kt-portlet-body>
 </kt-portlet>

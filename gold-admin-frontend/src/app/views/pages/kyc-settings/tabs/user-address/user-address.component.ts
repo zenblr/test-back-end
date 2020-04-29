@@ -24,8 +24,8 @@ export class UserAddressComponent implements OnInit {
   addressProofs = [];
   identityProofs = [];
   images = { identityProof: [], residential: [], permanent: [] };
-  customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5 }
+  // customerDetails = this.userDetailsService.userData;
+  customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5,pinCode:123456 }
 
   constructor(
     private fb: FormBuilder,
