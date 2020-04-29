@@ -6,7 +6,7 @@ const sequelize = models.sequelize;
 exports.uploadScheme = async (req, res, next) => {
 
     const csvFilePath = req.file.path;
-    const partnerId = req.body.partnerId.split(',');
+    const partnerId = req.body.partnerId
 
     const jsonArray = await csv().fromFile(csvFilePath);
     if (jsonArray.length == 0) {
@@ -27,15 +27,14 @@ exports.uploadScheme = async (req, res, next) => {
                 interestRateOneHundredEightyDaysMonthly: jsonArray[i].InterestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually: jsonArray[i].InterestRateThirtyDaysAnnually,
                 interestRateNinetyDaysAnnually: jsonArray[i].InterestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually: jsonArray[i].InterestRateOneHundredEightyDaysAnnually
             }, { transaction: t });
-            for (let i = 0; i < partnerId.length; i++) {
 
-                var schemedata = await models.partnerScheme.create({
+                let  schemedata = await models.partnerScheme.create({
                     schemeId: addSchemeData.id,
-                    partnerId: partnerId[i]
+                    partnerId: partnerId
 
                 }, { transaction: t })
             }
-        }
+            
     })
     return res.status(201).json({ message: " Schemes Created" })
 

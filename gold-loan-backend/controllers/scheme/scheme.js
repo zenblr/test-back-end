@@ -22,15 +22,14 @@ exports.addScheme = async (req, res, next) => {
             interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually
         });
 
-        for (let i = 0; i < partnerId.length; i++) {
-            console.log(partnerId[i]);
+        // for (let i = 0; i < partnerId.length; i++) {
+            // console.log(partnerId[i]);
 
-            var data = await models.partnerScheme.create({
+            let data = await models.partnerScheme.create({
                 schemeId: addSchemeData.id,
-                partnerId: partnerId[i]
+                partnerId: partnerId
 
             }, { transaction: t })
-        }
     })
     return res.status(201).json({ message: "scheme created" })
 
