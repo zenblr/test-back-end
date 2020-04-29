@@ -12,8 +12,8 @@ import { InternalUserService } from '../.././../../core/user-management/internal
 import { AppraiserService } from '../../../../core/user-management/appraiser';
 import { Breadcrumb } from '../../../../core/_base/layout/services/subheader.service';
 import { Subject, Subscription } from 'rxjs';
-import { SharedService } from 'src/app/core/shared/services/shared.service';
-import { SubheaderService } from 'src/app/core/_base/layout';
+import { SharedService } from '../../../../core/shared/services/shared.service';
+import { SubheaderService } from '../../../../core/_base/layout';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
