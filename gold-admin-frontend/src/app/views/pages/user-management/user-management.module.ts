@@ -49,6 +49,12 @@ import { LoanSchemeComponent } from '../loan-settings/loan-scheme/loan-scheme.co
 import { BrokerListComponent } from './broker/broker-list/broker-list.component';
 import { AddBrokerComponent } from './broker/add-broker/add-broker.component';
 import { MerchantListComponent } from './merchant/merchant-list/merchant-list.component';
+import { InternalUserListComponent } from './internal-user/internal-user-list/internal-user-list.component';
+import { AddInternalUserComponent } from './internal-user/add-internal-user/add-internal-user.component';
+import { AddAppraiserComponent } from './assign-appraiser/add-appraiser/add-appraiser.component';
+import { AppraiserListComponent } from './assign-appraiser/appraiser-list/appraiser-list.component';
+import { ViewMerchantComponent } from './merchant/view-merchant/view-merchant.component';
+import { ApiKeyComponent } from './merchant/api-key/api-key.component';
 
 const routes: Routes = [
 	{
@@ -78,11 +84,11 @@ const routes: Routes = [
 			},
 			{
 				path: 'internal-user',
-				component: RolesListComponent,
+				component: InternalUserListComponent,
 			},
 			{
 				path: 'assign-appraiser',
-				component: RolesListComponent,
+				component: AppraiserListComponent,
 			},
 			{
 				path: 'branch',
@@ -98,6 +104,10 @@ const routes: Routes = [
 			},
 			{
 				path: 'add-merchant',
+				component: MerchantComponent
+			},
+			{
+				path: 'edit-merchant/:id',
 				component: MerchantComponent
 			},
 
@@ -138,6 +148,10 @@ const routes: Routes = [
 		BranchAddComponent,
 		PartnerAddComponent,
 		AddBrokerComponent,
+		AddInternalUserComponent,
+		AddAppraiserComponent,
+		ViewMerchantComponent,
+		ApiKeyComponent
 	],
 	declarations: [
 		UserManagementComponent,
@@ -161,6 +175,12 @@ const routes: Routes = [
 		BrokerListComponent,
 		AddBrokerComponent,
 		MerchantListComponent,
+		InternalUserListComponent,
+		AddInternalUserComponent,
+		AddAppraiserComponent,
+		AppraiserListComponent,
+		ViewMerchantComponent,
+		ApiKeyComponent,
 
 	]
 })

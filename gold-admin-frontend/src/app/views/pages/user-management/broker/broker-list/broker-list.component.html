@@ -7,7 +7,7 @@
     <kt-portlet-body>
         <!-- MATERIAL TABLE | Binded to datasources -->
         <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
-        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
+        <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
                 <!-- Checkbox Column -->
@@ -15,32 +15,95 @@
                 <!-- Table with selection -->
                 <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
 
+                <ng-container matColumnDef="merchantName">
+                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Merchant Name</mat-header-cell>
+                    <mat-cell *matCellDef="let broker">
+                        <div class="text-color">
+                            {{broker.merchant.merchantName | titlecase}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="storeId">
+                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Store Id</mat-header-cell>
+                    <mat-cell *matCellDef="let broker">
+                        <div class="text-color">
+                            {{broker.storeId}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="email">
+                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>User Email</mat-header-cell>
+                    <mat-cell *matCellDef="let broker">
+                        <div class="text-color">
+                            {{broker.user.email}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="mobileNumber">
+                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile Number</mat-header-cell>
+                    <mat-cell *matCellDef="let broker">
+                        <div class="text-color">
+                            {{broker.user.mobileNumber}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="address">
+                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
+                    <mat-cell *matCellDef="let broker">
+                        <div class="text-color">
+                            {{broker.user.address[0].address}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="state">
+                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
+                    <mat-cell *matCellDef="let broker">
+                        <div class="text-color">
+                            {{broker.user.address[0].state.name}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="city">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef mat-sort-header>City</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div class="text-color" (click)="permissions(broker)">
-                            {{broker.name}}
+                        <div class="text-color">
+                            {{broker.user.address[0].city.name}}
+
                         </div>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="pincode">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>PinCode</mat-header-cell>
-                    <mat-cell *matCellDef="let broker">{{broker.calories}}</mat-cell>
+                    <mat-cell *matCellDef="let broker">
+                        <div class="text-color">
+                            {{broker.user.address[0].postalCode}}
+
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="approvalStatus">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Approval Status</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div [ngClass]="broker.id == 1 ? 'text-success' :broker.id == 2 ? 'text-warning' : 'text-danger'">
-                            {{broker.carbs}}
+                        <div [ngClass]="broker.approvalStatusId == 1 ? 'text-success' :broker.approvalStatusId == 2 ? 'text-warning' : 'text-danger'"
+                            *ngFor="let approval of status">
+                            <div *ngIf="broker.approvalStatusId == approval.id"> {{approval.statusName | uppercase}}
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <mat-slide-toggle [color]="'accent'">
+                        <mat-slide-toggle [color]="'accent'" [checked]="broker.status" (change)="toogle(broker,$event)">
                         </mat-slide-toggle>
                     </mat-cell>
                 </ng-container>
@@ -59,9 +122,9 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '150%'}"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'width': '150%'}"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

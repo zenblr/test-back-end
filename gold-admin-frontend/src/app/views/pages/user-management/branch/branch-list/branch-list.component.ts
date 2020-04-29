@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { BranchService } from '../../../../../core/user-management/branch/services/branch.service';
-import { LayoutUtilsService, QueryParamsModel } from '../../../../../core/_base/crud';
+import { LayoutUtilsService, } from '../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { BranchDatasource } from '../../../../../core/user-management/branch/datasources/branch.datasource';
-import { Subscription, merge, fromEvent, Subject } from 'rxjs';
-import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
-import { RolesPageRequested, Role } from '../../../../../core/auth';
+import { Subscription, merge, Subject } from 'rxjs';
+import { tap, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { BranchAddComponent } from '../branch-add/branch-add.component';
-import { SelectionModel } from '@angular/cdk/collections';
 import { BranchModel } from '../../../../../core/user-management/branch/models/branch.model';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';

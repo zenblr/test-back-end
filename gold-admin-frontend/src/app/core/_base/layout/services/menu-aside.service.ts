@@ -30,7 +30,6 @@ export class MenuAsideService {
 			.subscribe(event => {
 				this.currentRouteUrl = this.router.url.split('/')[1];
 				this.loadMenu();
-				console.log(this.currentRouteUrl)
 			});
 
 		this.loadMenu();

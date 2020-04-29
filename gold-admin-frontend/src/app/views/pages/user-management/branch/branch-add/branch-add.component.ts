@@ -2,7 +2,6 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { BranchService } from '../../../../../core/user-management/branch/services/branch.service';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
-import { DialogData } from '../../../material/popups-and-modals/dialog/dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';

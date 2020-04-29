@@ -7,11 +7,13 @@ import { LoanSettingsService } from '../.././../../core/loan-setting'
 import { PartnerService } from '../.././../../core/user-management/partner/services/partner.service';
 import { BranchService } from '../.././../../core/user-management/branch/services/branch.service';
 import { RolesService } from '../.././../../core/user-management/roles';
-import { BrokerService } from '../../../../core/user-management/broker';
-import { SubheaderService } from '../../../../core/_base/layout';
+import { BrokerService } from '../.././../../core/user-management/broker';
+import { InternalUserService } from '../.././../../core/user-management/internal-user';
+import { AppraiserService } from '../../../../core/user-management/appraiser';
 import { Breadcrumb } from '../../../../core/_base/layout/services/subheader.service';
-import { Subscription, Subject } from 'rxjs';
-import { SharedService } from '../../../../core/shared/services/shared.service';
+import { Subject, Subscription } from 'rxjs';
+import { SharedService } from 'src/app/core/shared/services/shared.service';
+import { SubheaderService } from 'src/app/core/_base/layout';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -48,12 +50,14 @@ export class TopbarComponent implements OnInit {
 		public subheaderService: SubheaderService,
 		private router: Router,
 		private location: Location,
+		private brokerService:BrokerService,
 		private customerManagementServiceCustomer: CustomerManagementService,
 		private loanSettingService: LoanSettingsService,
 		private partnerService: PartnerService,
 		private branchService: BranchService,
 		private rolesService: RolesService,
-		private brokerService: BrokerService) {
+		private internalUserService: InternalUserService,
+		private appraiserService: AppraiserService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -143,6 +147,12 @@ export class TopbarComponent implements OnInit {
 			this.value1 = 'Add New Branch';
 			this.type1 = 'button';
 		}
+		if (this.path == 'assign-appraiser') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Add Appraiser';
+			this.type1 = 'button';
+		}
 		if (this.path == 'roles') {
 			this.showInput = true;
 			this.rightButton = true
@@ -161,6 +171,15 @@ export class TopbarComponent implements OnInit {
 			this.type1 = 'button';
 			this.value1 = 'Add Merchant';
 		}
+
+		if (this.path == 'internal-user') {
+			this.showInput = true;
+			this.rightButton = true
+			this.type1 = 'button';
+			this.value1 = 'Add Internal-user';
+		}
+
+		
 	}
 
 	action(event: Event) {
@@ -182,6 +201,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'broker') {
 			this.brokerService.openModal.next(true)
+		}
+		if (this.path == 'internal-user') {
+			this.internalUserService.openModal.next(true)
+		}
+		if (this.path == 'assign-appraiser') {
+			this.appraiserService.openModal.next(true)
 		}
 		if (this.path == 'merchant') {
 			this.router.navigate(['/user-management/add-merchant'])

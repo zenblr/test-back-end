@@ -1,21 +1,20 @@
 // Angular
-import { Component, OnInit, ElementRef, ViewChild, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-// Material
-import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material';
 // RXJS
-import { distinctUntilChanged, tap, skip, take, delay, takeUntil } from 'rxjs/operators';
-import {  merge,  of, Subscription, Subject } from 'rxjs';
+import { distinctUntilChanged, tap, skip, take, delay, takeUntil, map, catchError } from 'rxjs/operators';
+import { merge, of, Subscription, Subject } from 'rxjs';
 // NGRX
-import { Store } from '@ngrx/store';
 // Services
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
-import { AppState } from '../../../../../core/reducers';
-import { BrokerDatasource,BrokerService } from '../../../../../core/user-management/broker';
+import { BrokerDatasource, BrokerService } from '../../../../../core/user-management/broker';
 
-import {AddBrokerComponent } from '../add-broker/add-broker.component'
+import { AddBrokerComponent } from '../add-broker/add-broker.component'
+import { ToastrService } from 'ngx-toastr';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
+
 
 @Component({
   selector: 'kt-broker-list',
@@ -23,203 +22,237 @@ import {AddBrokerComponent } from '../add-broker/add-broker.component'
   styleUrls: ['./broker-list.component.scss']
 })
 export class BrokerListComponent implements OnInit, OnDestroy {
-// Table fields
-dataSource: BrokerDatasource;
-displayedColumns = ['city', 'pincode', 'approvalStatus', 'status', 'action'];
-@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-@ViewChild('sort1', { static: true }) sort: MatSort;
 
-brokerResult:any [] =[];
+  searchValue = ''
+  unsubscribeSearch$ = new Subject()
+  // Table fields
+  dataSource: BrokerDatasource;
+  displayedColumns = ['merchantName', 'storeId', 'email', 'mobileNumber', 'address', 'state', 'city', 'pincode', 'approvalStatus', 'status', 'action'];
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild('sort1', { static: true }) sort: MatSort;
+
+  brokerResult: any[] = [];
 
 
 
-// Subscriptions
-private subscriptions: Subscription[] = [];
-private destroy$: Subject<any> = new Subject()
+  // Subscriptions
+  private subscriptions: Subscription[] = [];
+  private destroy$: Subject<any> = new Subject()
+  status: any []=[];
 
-/**
- * Component constructor
- *
- * @param store: Store<AppState>
- * @param dialog: MatDialog
- * @param snackBar: MatSnackBar
- * @param layoutUtilsService: LayoutUtilsService
- */
-constructor(
-  private store: Store<AppState>,
-  public dialog: MatDialog,
-  public snackBar: MatSnackBar,
-  private layoutUtilsService: LayoutUtilsService,
-  private brokerService: BrokerService,
-  private router: Router) {
-  this.brokerService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-    if (res) {
-      this.addRole('add')
-    }
-  })
-}
-
-/**
- * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
- */
-
-/**
- * On init
- */
-ngOnInit() {
-  // If the user changes the sort order, reset back to the first page.
-  const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-  this.subscriptions.push(sortSubscription);
-
-  /* Data load will be triggered in two cases:
-  - when a pagination event occurs => this.paginator.page
-  - when a sort event occurs => this.sort.sortChange
-  **/
-  const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-    tap(() => {
-      this.loadRolesList();
+  /**
+   * Component constructor
+   *
+   * @param store: Store<AppState>
+   * @param dialog: MatDialog
+   * @param snackBar: MatSnackBar
+   * @param layoutUtilsService: LayoutUtilsService
+   */
+  constructor(
+    public ref: ChangeDetectorRef,
+    public dialog: MatDialog,
+    public snackBar: MatSnackBar,
+    private layoutUtilsService: LayoutUtilsService,
+    private brokerService: BrokerService,
+    private router: Router,
+    private dataTableService: DataTableService,
+    private toast: ToastrService
+  ) {
+    this.brokerService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.addBroker('add')
+      }
     })
-  )
-    .subscribe();
-  this.subscriptions.push(paginatorSubscriptions);
+  }
 
-  // Init DataSource
-  this.dataSource = new BrokerDatasource(this.brokerService);
-  const entitiesSubscription = this.dataSource.entitySubject.pipe(
-    skip(1),
-    distinctUntilChanged()
-  ).subscribe(res => {
-    this.brokerResult = res;
-    console.log(this.brokerResult)
-  });
-  this.subscriptions.push(entitiesSubscription);
+  /**
+   * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
+   */
 
-  // First load
-  of(undefined).pipe(take(1), delay(1000)).subscribe(() => { // Remove this line, just loading imitation
-    this.loadRolesList();
-  });
-}
+  /**
+   * On init
+   */
+  ngOnInit() {
+    this.getStatus()
+    // If the user changes the sort order, reset back to the first page.
+    const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+    this.subscriptions.push(sortSubscription);
 
-/**
- * On Destroy
- */
-ngOnDestroy() {
-  this.subscriptions.forEach(el => el.unsubscribe());
-  this.destroy$.next()
-  this.destroy$.complete()
-}
+    /* Data load will be triggered in two cases:
+    - when a pagination event occurs => this.paginator.page
+    - when a sort event occurs => this.sort.sortChange
+    **/
+    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
+      tap(() => {
+        this.loadBrokerList();
+      })
+    )
+      .subscribe();
+    this.subscriptions.push(paginatorSubscriptions);
 
-/**
- * Load Roles List
- */
-loadRolesList() {
-  if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
-    return;
-  let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-  let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    const searchSubscription = this.dataTableService.searchInput$.pipe(
+      takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadBrokerList();
+      });
+      this.subscriptions.push(searchSubscription);
+    // Init DataSource
+    this.dataSource = new BrokerDatasource(this.brokerService);
+    const entitiesSubscription = this.dataSource.entitySubject.pipe(
+      skip(1),
+      distinctUntilChanged()
+    ).subscribe(res => {
+      this.brokerResult = res;
+      console.log(this.brokerResult)
+    });
+    this.subscriptions.push(entitiesSubscription);
 
-  this.dataSource.loadRoles('', from, to, '', '', '');
-  // this.selection.clear();
-  // const queryParams = new QueryParamsModel(
-  // 	this.filterConfiguration(),
-  // 	this.sort.direction,
-  // 	this.sort.active,
-  // 	this.paginator.pageIndex,
-  // 	this.paginator.pageSize
-  // );
-  // Call request from server
-  // this.store.dispatch(new RolesPageRequested({ page: queryParams }));
-  // this.selection.clear();
-}
+    // First load
+    of(undefined).pipe(take(1), delay(1000)).subscribe(() => { // Remove this line, just loading imitation
+      this.loadBrokerList();
+    });
+  }
 
-/**
- * Returns object for filter
- */
+  /**
+   * On Destroy
+   */
+  ngOnDestroy() {
+    this.subscriptions.forEach(el => el.unsubscribe());
+    this.destroy$.next()
+    this.destroy$.complete()
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
+  }
 
-
-/** ACTIONS */
-/**
- * Delete role
- *
- * @param _item: Role
- */
-deleteRole(_item) {
-  const _title = 'User Role';
-  const _description = 'Are you sure to permanently delete this role?';
-  const _waitDesciption = 'Role is deleting...';
-  const _deleteMessage = `Role has been deleted`;
-
-  const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
-  dialogRef.afterClosed().subscribe(res => {
-    if (!res) {
+  /**
+   * Load Roles List
+   */
+  loadBrokerList() {
+    if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
+    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+
+    this.dataSource.loadBrokers(this.searchValue, from, to);
+    // this.selection.clear();
+    // const queryParams = new QueryParamsModel(
+    // 	this.filterConfiguration(),
+    // 	this.sort.direction,
+    // 	this.sort.active,
+    // 	this.paginator.pageIndex,
+    // 	this.paginator.pageSize
+    // );
+    // Call request from server
+    // this.store.dispatch(new RolesPageRequested({ page: queryParams }));
+    // this.selection.clear();
+  }
+
+  /**
+   * Returns object for filter
+   */
+
+
+  /** ACTIONS */
+  /**
+   * Delete role
+   *
+   * @param _item: Role
+   */
+  deleteRole(_item) {
+    const _title = 'User Role';
+    const _description = 'Are you sure to permanently delete this role?';
+    const _waitDesciption = 'Role is deleting...';
+    const _deleteMessage = `Role has been deleted`;
+
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (!res) {
+        return;
+      }
+
+      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
+      this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
+      this.loadBrokerList();
+    });
+  }
+
+  getStatus() {
+
+    this.brokerService.getStatus().pipe(
+      map(res => {
+        this.status = res
+      }),
+      catchError(err => {
+        this.toast.error('Error', err.error.message)
+        throw err
+      })).subscribe()
+
+  }
+
+  addBroker(action) {
+    const dialogRef = this.dialog.open(AddBrokerComponent, {
+      data: { action: action , status:this.status},
+      width: '450px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadBrokerList();
+      }
+    })
+    this.brokerService.openModal.next(false);
+  }
+
+
+  editBroker(broker, action) {
+    let data = this.createData(broker)
+    console.log(data)
+    const _saveMessage = `Role successfully has been saved.`;
+    const dialogRef = this.dialog.open(AddBrokerComponent, {
+      data: {
+        action: action,
+        broker: data,
+        status:this.status
+      },
+      width: '450px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadBrokerList();
+      }
+      this.brokerService.openModal.next(false);
+    });
+  }
+
+  toogle(broker, event) {
+    this.brokerService.bokerStatus(broker.id, event.checked).pipe(
+      map(res => {
+        this.toast.success(res.message, 'Status Changed Successfully')
+      }),
+      catchError(err => {
+        this.toast.error(err.error.message)
+        throw err
+      })).subscribe()
+  }
+
+  createData(broker) {
+    var data = {
+      merchantId: broker.merchant.id,
+      firstName: broker.user.firstName,
+      lastName: broker.user.lastName,
+      mobileNumber: broker.user.mobileNumber,
+      email: broker.user.email,
+      stateId: broker.user.address[0].state.stateId,
+      pinCode: broker.user.address[0].postalCode,
+      cityId: broker.user.address[0].city.cityId,
+      storeId: broker.storeId,
+      address: broker.user.address[0].address,
+      approvalStatusId: broker.approvalStatus.id,
+      userId: broker.userId
     }
-
-    // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-    this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-    this.loadRolesList();
-  });
-}
-
-/** Fetch */
-/**
- * Fetch selected rows
- */
-fetchRoles() {
-  // const messages = [];
-  // this.selection.selected.forEach(elem => {
-  // 	messages.push({
-  // 		text: `${elem.title}`,
-  // 		id: elem.id.toString(),
-  // 		// status: elem.username
-  // 	});
-  // });
-  // this.layoutUtilsService.fetchElements(messages);
-}
-
-/**
- * Add role
- */
-addRole(action) {
-  const dialogRef = this.dialog.open(AddBrokerComponent, {
-    data: { action: action },
-    width: '450px'
-  });
-  dialogRef.afterClosed().subscribe(res => {
-    if (res) {
-      this.loadRolesList();
-    }
-  })
-  this.brokerService.openModal.next(false);
-}
-
-
-
-
-/**
- * Edit role
- *
- * @param role: Role
- */
-editBroker(role, action) {
-  const _saveMessage = `Role successfully has been saved.`;
-  const _messageType = role.id ? MessageType.Update : MessageType.Create;
-  const dialogRef = this.dialog.open(AddBrokerComponent, {
-    data: {
-      action: action,
-      role: role
-    },
-    width: '450px'
-  });
-  dialogRef.afterClosed().subscribe(res => {
-    if (!res) {
-      return;
-    }
-
-    this.layoutUtilsService.showActionNotification(_saveMessage, _messageType, 10000, true, true);
-    this.loadRolesList();
-  });
-}
+    return data
+  }
 
 
 }

@@ -1,44 +1,11 @@
-import {SelectionModel} from '@angular/cdk/collections';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {Component, Injectable,OnInit} from '@angular/core';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {BehaviorSubject} from 'rxjs';
 
-/**
- * Node for to-do item
- */
-export class TodoItemNode {
-  children: TodoItemNode[];
-  item: string;
-}
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { ToastrComponent } from '../../../../../../../views/partials/components/toastr/toastr.component';
+import { map, catchError } from 'rxjs/operators';
+import { MerchantService } from '../../../../../../../core/user-management/merchant';
+import { MatCheckbox } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 
-/** Flat to-do item node with expandable and level information */
-export class TodoItemFlatNode {
-  item: string;
-  level: number;
-  expandable: boolean;
-}
-
-/**
- * The Json object for to-do list data.
- */
-const TREE_DATA = {
-  Groceries: {
-    'Almond Meal flour': null,
-    'Organic eggs': null,
-    'Protein Powder': null,
-    Fruits: {
-      Apple: null,
-      Berries: ['Blueberry', 'Raspberry'],
-      Orange: null
-    }
-  },
-  Reminders: [
-    'Cook dinner',
-    'Read the Material Design spec',
-    'Upgrade Application to Angular'
-  ]
-};
 
 @Component({
   selector: 'kt-permission',
@@ -47,167 +14,294 @@ const TREE_DATA = {
 })
 export class PermissionComponent implements OnInit {
 
-  /** Map from flat node to nested node. This helps us finding the nested node to be modified */
-  flatNodeMap = new Map<TodoItemFlatNode, TodoItemNode>();
+  @ViewChild('checkboxThree', { static: false }) checkboxThree: ElementRef
+  @ViewChild('checkboxTwo', { static: false }) checkboxTwo: ElementRef
+  @ViewChild('checkboxOne', { static: false }) checkboxOne: ElementRef
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  permissions: any[] = []
+  checkedCategory: any[] = []
+  checkedSubCategory: any[] = [];
+  checkedProduct: any = [];
+  selectAll = { cat: false, subCat: false, pro: false }
+  userId: number = null;
+  isEdit: boolean = true;
+  lengthOf = { category: 0, subCategory: 0, product: 0 }
 
-  /** Map from nested node to flattened node. This helps us to keep the same object for selection */
-  nestedNodeMap = new Map<TodoItemNode, TodoItemFlatNode>();
-
-  /** A selected parent node to be inserted */
-  selectedParent: TodoItemFlatNode | null = null;
-
-  /** The new item's name */
-  newItemName = '';
-
-  treeControl: FlatTreeControl<TodoItemFlatNode>;
-
-  treeFlattener: MatTreeFlattener<TodoItemNode, TodoItemFlatNode>;
-
-  dataSource: MatTreeFlatDataSource<TodoItemNode, TodoItemFlatNode>;
-
-  /** The selection for checklist */
-  checklistSelection = new SelectionModel<TodoItemFlatNode>(true /* multiple */);
-
-  constructor() {
-    this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
-      this.isExpandable, this.getChildren);
-    this.treeControl = new FlatTreeControl<TodoItemFlatNode>(this.getLevel, this.isExpandable);
-    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
-    // _database.dataChange.subscribe(data => {
-    //   this.dataSource.data = data;
-    // });
+  constructor(
+    private merchantService: MerchantService,
+    private ref: ChangeDetectorRef,
+    private rout: ActivatedRoute,
+    private router: Router
+  ) {
+    this.merchantService.userId$.subscribe(res => {
+      this.userId = res;
+    })
   }
 
-  ngOnInit(){
-    const data = this.buildFileTree(TREE_DATA, 0);
-    
-    this.dataSource.data = data
+  ngOnInit() {
+    var id = this.rout.snapshot.params.id;
+    if (id) {
+      this.userId = id;
+    }
+    this.getData()
   }
-  
-  buildFileTree(obj: {[key: string]: any}, level: number): TodoItemNode[] {
-    return Object.keys(obj).reduce<TodoItemNode[]>((accumulator, key) => {
-      const value = obj[key];
-      const node = new TodoItemNode();
-      node.item = key;
 
-      if (value != null) {
-        if (typeof value === 'object') {
-          node.children = this.buildFileTree(value, level + 1);
-        } else {
-          node.item = value;
-        }
+
+
+  getData() {
+    this.merchantService.getPermission(this.userId).pipe(
+      map(res => {
+        console.log(res)
+        this.permissions = res;
+        this.calculateLength()
+        this.ref.detectChanges();
+      })
+    ).subscribe()
+  }
+
+
+  calculateLength() {
+    this.permissions.forEach(ele => {
+      this.lengthOf.category += 1
+      if (ele.isSelected)
+        this.checkedCategory.push(ele)
+      ele.subCategory.forEach(sub => {
+        this.lengthOf.subCategory += 1
+        if (sub.isSelected)
+          this.checkedSubCategory.push(sub)
+        sub.products.forEach(pro => {
+          this.lengthOf.product += 1
+          if (pro.isSelected)
+            this.checkedProduct.push(pro)
+          console.log(this.lengthOf.product)
+        })
+      })
+    })
+    this.checked('all')
+  }
+
+
+  isSelectedFalse() {
+    this.permissions.forEach(ele => {
+      ele.isSelected = false;
+      ele.subCategory.forEach(sub => {
+        sub.isSelected = false;
+        sub.products.forEach(pro => {
+          pro.isSelected = false;
+        })
+      })
+    })
+  }
+
+  isSelectedTrue() {
+    this.permissions.forEach(ele => {
+      ele.isSelected = true;
+      this.checkedCategory.push(ele);
+      ele.subCategory.forEach(sub => {
+        sub.isSelected = true;
+        this.checkedSubCategory.push(sub)
+        sub.products.forEach(prod => {
+          prod.isSelected = true;
+          this.checkedProduct.push(prod.id)
+        })
+      })
+    })
+  }
+
+  categoryCheckBox(checked: MatCheckbox, index: number) {
+    if (checked) {
+      this.permissions[index].isSelected = true
+    } else if (!checked) {
+      this.permissions[index].isSelected = false
+      this.permissions[index].subCategory.forEach(sub => {
+        sub.isSelected = false
+      })
+    }
+    this.checkedCategory = this.permissions.filter(cat => {
+      return cat.isSelected
+    })
+    this.checked('cat')
+
+  }
+
+
+
+  subCategoryCheckBox(checked: MatCheckbox, catIndex: number, subIndex: number) {
+    //   console.log(checked)
+    if (checked) {
+      this.permissions[catIndex].subCategory[subIndex].isSelected = true
+    } else if (!checked) {
+      this.permissions[catIndex].subCategory[subIndex].isSelected = false
+    }
+    this.checkedSubCategory = []
+    this.permissions.forEach(cat => {
+      cat.subCategory.forEach(sub => {
+        if (sub.isSelected)
+          this.checkedSubCategory.push(sub)
+      })
+    })
+    this.checked('sub')
+
+    console.log(this.permissions)
+  }
+
+  generateProduct(checked: MatCheckbox, catIndex: number, subIndex: number, index: number) {
+    var pro = this.permissions[catIndex].subCategory[subIndex].products[index]
+    if (checked) {
+      this.checkedProduct.push(pro.id)
+      pro.isSelected = true
+    } else if (!checked) {
+      var indexOfProId = this.checkedProduct.indexOf(pro.id);
+      this.checkedProduct.splice(indexOfProId, 1)
+      pro.isSelected = false
+    }
+    this.checked('pro')
+
+  }
+
+  selectAllCat(event: MatCheckbox, type) {
+    this.checkedCategory = []
+    this.checkedSubCategory = []
+    this.checkedProduct = []
+    if (event) {
+      this.selectAll = { cat: true, subCat: true, pro: true }
+      this.isSelectedTrue()
+
+    } else {
+      this.selectAll = { cat: false, subCat: false, pro: false }
+      this.isSelectedFalse()
+    }
+    this.checked('cat')
+
+  }
+
+
+  selectAllSub(event: MatCheckbox) {
+    this.checkedProduct = []
+    this.checkedSubCategory = []
+    if (event) {
+      this.selectAll.subCat = true;
+      this.selectAll.pro = true
+      this.permissions.forEach(cat => {
+        cat.subCategory.forEach(sub => {
+          this.checkedSubCategory.push(sub)
+          sub.isSelected = true
+          sub.products.forEach(pro => {
+            this.checkedProduct.push(pro.id)
+            pro.isSelected = true
+          })
+        })
+      })
+    } else {
+      this.selectAll.subCat = false,
+        this.selectAll.pro = false
+      this.permissions.forEach(cat => {
+        cat.subCategory.forEach(sub => {
+          sub.isSelected = false
+          sub.products.forEach(pro => {
+            pro.isSelected = false
+          })
+        })
+      })
+    }
+    this.checked('sub')
+  }
+
+  selectAllProd(event: MatCheckbox) {
+    this.checkedProduct = []
+    if (event) {
+      this.checkboxThree.nativeElement.classList.remove('checkmark2')
+      this.checkboxThree.nativeElement.classList.add('checkmark')
+      this.permissions.forEach(ele => {
+        ele.subCategory.forEach(sub => {
+          sub.products.forEach(pro => {
+            pro.isSelected = true
+            this.checkedProduct.push(pro.id)
+          });
+        });
+      })
+    } else {
+      this.selectAll.pro = false
+      this.permissions.forEach(ele => {
+        ele.subCategory.forEach(sub => {
+          sub.products.forEach(pro => {
+            pro.isSelected = false
+          });
+        });
+      })
+    }
+    this.checked('pro')
+  }
+
+  checked(type) {
+    if (type == 'cat' || type == 'all') {
+
+      if (this.lengthOf.category == this.checkedCategory.length) {
+        this.selectAll = { cat: true, subCat: true, pro: true }
+        this.checkboxOne.nativeElement.classList.remove('checkmark2')
+        this.checkboxOne.nativeElement.classList.add('checkmark')
+      } else if (this.checkedSubCategory.length > 0) {
+        this.selectAll = { cat: true, subCat: true, pro: true }
+        this.checkboxOne.nativeElement.classList.remove('checkmark')
+        this.checkboxOne.nativeElement.classList.add('checkmark2')
+      } else if (this.checkedSubCategory.length == 0) {
+        this.selectAll = { cat: false, subCat: false, pro: false }
       }
 
-      return accumulator.concat(node);
-    }, []);
-  }
+    } else if (type == 'sub' || type == 'all') {
 
-  getLevel = (node: TodoItemFlatNode) => node.level;
-
-  isExpandable = (node: TodoItemFlatNode) => node.expandable;
-
-  getChildren = (node: TodoItemNode): TodoItemNode[] => node.children;
-
-  hasChild = (_: number, _nodeData: TodoItemFlatNode) => _nodeData.expandable;
-
-  hasNoContent = (_: number, _nodeData: TodoItemFlatNode) => _nodeData.item === '';
-
-  /**
-   * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
-   */
-  transformer = (node: TodoItemNode, level: number) => {
-    const existingNode = this.nestedNodeMap.get(node);
-    const flatNode = existingNode && existingNode.item === node.item
-        ? existingNode
-        : new TodoItemFlatNode();
-    flatNode.item = node.item;
-    flatNode.level = level;
-    flatNode.expandable = !!node.children;
-    this.flatNodeMap.set(flatNode, node);
-    this.nestedNodeMap.set(node, flatNode);
-    return flatNode;
-  }
-
-  /** Whether all the descendants of the node are selected. */
-  descendantsAllSelected(node: TodoItemFlatNode): boolean {
-    const descendants = this.treeControl.getDescendants(node);
-    const descAllSelected = descendants.every(child =>
-      this.checklistSelection.isSelected(child)
-    );
-    return descAllSelected;
-  }
-
-  /** Whether part of the descendants are selected */
-  descendantsPartiallySelected(node: TodoItemFlatNode): boolean {
-    const descendants = this.treeControl.getDescendants(node);
-    const result = descendants.some(child => this.checklistSelection.isSelected(child));
-    return result && !this.descendantsAllSelected(node);
-  }
-
-  /** Toggle the to-do item selection. Select/deselect all the descendants node */
-  todoItemSelectionToggle(node: TodoItemFlatNode): void {
-    this.checklistSelection.toggle(node);
-    const descendants = this.treeControl.getDescendants(node);
-    this.checklistSelection.isSelected(node)
-      ? this.checklistSelection.select(...descendants)
-      : this.checklistSelection.deselect(...descendants);
-
-    // Force update for the parent
-    descendants.every(child =>
-      this.checklistSelection.isSelected(child)
-    );
-    this.checkAllParentsSelection(node);
-  }
-
-  /** Toggle a leaf to-do item selection. Check all the parents to see if they changed */
-  todoLeafItemSelectionToggle(node: TodoItemFlatNode): void {
-    this.checklistSelection.toggle(node);
-    this.checkAllParentsSelection(node);
-  }
-
-  /* Checks all the parents when a leaf node is selected/unselected */
-  checkAllParentsSelection(node: TodoItemFlatNode): void {
-    let parent: TodoItemFlatNode | null = this.getParentNode(node);
-    while (parent) {
-      this.checkRootNodeSelection(parent);
-      parent = this.getParentNode(parent);
-    }
-  }
-
-  /** Check root node checked state and change it accordingly */
-  checkRootNodeSelection(node: TodoItemFlatNode): void {
-    const nodeSelected = this.checklistSelection.isSelected(node);
-    const descendants = this.treeControl.getDescendants(node);
-    const descAllSelected = descendants.every(child =>
-      this.checklistSelection.isSelected(child)
-    );
-    if (nodeSelected && !descAllSelected) {
-      this.checklistSelection.deselect(node);
-    } else if (!nodeSelected && descAllSelected) {
-      this.checklistSelection.select(node);
-    }
-  }
-
-  /* Get the parent node of a node */
-  getParentNode(node: TodoItemFlatNode): TodoItemFlatNode | null {
-    const currentLevel = this.getLevel(node);
-
-    if (currentLevel < 1) {
-      return null;
-    }
-
-    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
-
-    for (let i = startIndex; i >= 0; i--) {
-      const currentNode = this.treeControl.dataNodes[i];
-
-      if (this.getLevel(currentNode) < currentLevel) {
-        return currentNode;
+      if (this.lengthOf.subCategory == this.checkedSubCategory.length) {
+        this.selectAll.subCat = true;
+        this.selectAll.pro = true
+        this.checkboxTwo.nativeElement.classList.remove('checkmark2')
+        this.checkboxTwo.nativeElement.classList.add('checkmark')
+      } else if (this.checkedSubCategory.length > 0) {
+        this.selectAll.subCat = true;
+        this.selectAll.pro = true
+        this.checkboxTwo.nativeElement.classList.remove('checkmark')
+        this.checkboxTwo.nativeElement.classList.add('checkmark2')
+      } else if (this.checkedSubCategory.length == 0) {
+        this.selectAll.pro = false;
       }
+
+    } else if (type == 'pro' || type == 'all') {
+
+      if (this.lengthOf.product == this.checkedProduct.length) {
+        this.selectAll.pro = true
+        this.checkboxThree.nativeElement.classList.remove('checkmark2')
+        this.checkboxThree.nativeElement.classList.add('checkmark')
+        this.selectAll.pro = true;
+      } else if (this.checkedProduct.length > 0) {
+        this.selectAll.pro = true;
+        this.checkboxThree.nativeElement.classList.remove('checkmark')
+        this.checkboxThree.nativeElement.classList.add('checkmark2')
+      } else if (this.checkedProduct.length == 0) {
+        this.selectAll.pro = false;
+      }
+
     }
-    return null;
+  }
+
+  submit(event) {
+    var isSelected = false;
+    if (this.lengthOf.product == this.checkedProduct.length &&
+      this.lengthOf.subCategory == this.checkedSubCategory.length &&
+      this.lengthOf.category == this.checkedCategory.length) {
+      isSelected = true;
+    } else {
+      isSelected = false;
+    }
+    if (event) {
+      this.merchantService.addProduct(this.checkedProduct, isSelected, this.userId).pipe(
+        map(res => {
+          this.toastr.successToastr(res.message)
+          this.router.navigate(['/user-management/merchant'])
+        }),
+        catchError(err => {
+          this.toastr.errorToastr(err.error.message)
+          throw err
+        })).subscribe()
+    }
   }
 
 }
-

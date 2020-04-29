@@ -71,8 +71,8 @@ export class InterceptService implements HttpInterceptor {
 				err => {
 					// console.log(err.status)
 					if (err.status == 401) {
-						localStorage.clear();
-						this.router.navigate(['/auth/login'])
+						// localStorage.clear();
+						// this.router.navigate(['/auth/login'])
 					}
 					throw err
 				}
