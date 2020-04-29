@@ -12,7 +12,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'commission'
         },
-
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by',
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -30,6 +37,8 @@ module.exports = (sequelize, DataTypes) => {
     Partner.associate = function (models) {
 
         Partner.belongsToMany(models.scheme, { through: models.partnerScheme })
+        Partner.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        Partner.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
 
