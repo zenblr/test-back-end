@@ -9,6 +9,10 @@ const check = require("../../lib/checkLib");
 //add partner
 exports.addPartner = async (req, res, next) => {
   const { name, commission } = req.body;
+
+  let createdBy = req.userData.id;
+  let modifiedBy = req.userData.id;
+
   let partnerExist = await models.partner.findOne({
     where: { name, isActive: true },
   });
@@ -17,7 +21,7 @@ exports.addPartner = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     let partnerData = await models.partner.create(
-      { name, commission },
+      { name, commission, createdBy, modifiedBy },
       { transaction: t }
     );
     let id = partnerData.dataValues.id;
@@ -36,10 +40,12 @@ exports.addPartner = async (req, res, next) => {
 exports.updatePartner = async (req, res, next) => {
   const partnerId = req.params.id;
   const { name, commission } = req.body;
+  let modifiedBy = req.userData.id;
+
 
   let pId = name.slice(0, 3).toUpperCase() + "-" + partnerId;
   let updatePartnerData = await models.partner.update(
-    { name, partnerId: pId, commission },
+    { name, partnerId: pId, commission, modifiedBy },
     { where: { id: partnerId, isActive: true } }
   );
 

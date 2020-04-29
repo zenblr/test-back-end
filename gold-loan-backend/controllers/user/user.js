@@ -213,11 +213,10 @@ exports.changePassword = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
     let user = await models.user.findAll({
         include: [{
-            model: models.role,
-            include: [{
-                model: models.permission,
-                attributes: ['id', 'permission_name']
-            }]
+            model: models.role
+        },{
+            model: models.internalBranch,
+            as: 'internalBranch'
         }]
     });
     return res.json(user)

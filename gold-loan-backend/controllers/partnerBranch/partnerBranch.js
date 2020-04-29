@@ -9,9 +9,13 @@ const check = require('../../lib/checkLib')
 //Add branch
 exports.addBranch = async (req, res, next) => {
     const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
+
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+
     await sequelize.transaction(async t => {
 
-        let addBranch = await models.partnerBranch.create({ partnerId, name, cityId, stateId, address, pincode, commission, isActive }, { transaction: t });
+        let addBranch = await models.partnerBranch.create({ partnerId, name, cityId, stateId, address, pincode, commission, createdBy, modifiedBy, isActive }, { transaction: t });
         let id = addBranch.dataValues.id;
 
         let partnerdataid = await models.partner.findOne({ where: { id: addBranch.dataValues.partnerId }, transaction: t });
@@ -83,7 +87,7 @@ exports.readBranch = async (req, res, next) => {
         where: searchQuery,
         include: includeArray
     });
-    
+
     if (!readBranchData) { return res.status(404).json({ message: 'data not found' }) }
     return res.status(200).json({ data: readBranchData, count: count });
 }
@@ -131,11 +135,13 @@ exports.readBranchById = async (req, res, next) => {
 exports.updateBranch = async (req, res, next) => {
     const branchId = req.params.id;
 
+    let modifiedBy = req.userData.id;
+
     const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
     let pId = name.slice(0, 3).toUpperCase() + '-' + branchId;
 
 
-    let branchData = await models.partnerBranch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pincode, commission, isActive }, { where: { id: branchId, isActive: true } });
+    let branchData = await models.partnerBranch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pincode, commission, modifiedBy, isActive }, { where: { id: branchId, isActive: true } });
     if (branchData[0] == 0) {
         return res.status(404).json({ message: " Update failed" });
     }

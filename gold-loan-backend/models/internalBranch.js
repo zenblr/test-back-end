@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
     const InternalBranch = sequelize.define('internalBranch', {
-        internalBranchId: {
+        internalBranchUniqueId: {
             type: DataTypes.STRING,
-            field: 'internal_branch_id'
+            field: 'internal_branch_unique_id'
         },
         name: {
             type: DataTypes.STRING,
@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'address'
         },
+        pinCode: {
+            type: DataTypes.INTEGER,
+            field: 'pin_code',
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
@@ -30,12 +34,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'modified_by',
             allowNull: false,
         },
-        pincode: {
-            type: DataTypes.INTEGER,
-            field: 'pincode',
-
-        },
-        
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

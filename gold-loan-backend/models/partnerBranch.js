@@ -34,6 +34,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'commission'
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by',
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -52,6 +60,9 @@ module.exports = (sequelize, DataTypes) => {
         PartnerBranch.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
         PartnerBranch.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
         PartnerBranch.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
+
+        PartnerBranch.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        PartnerBranch.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
     }
     return PartnerBranch;
