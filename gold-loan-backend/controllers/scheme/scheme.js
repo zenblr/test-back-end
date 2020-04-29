@@ -1,10 +1,10 @@
 const models = require('../../models');
 const sequelize = models.sequelize;
-const check=require('../../lib/checkLib');
+const check = require('../../lib/checkLib');
 
 // add scheme
 exports.addScheme = async (req, res, next) => {
-    const { schemeName,schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+    const { schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually, partnerId } = req.body;
 
     if (schemeAmountStart >= schemeAmountEnd) {
@@ -14,11 +14,11 @@ exports.addScheme = async (req, res, next) => {
     await sequelize.transaction(async t => {
         let schemeNameExist = await models.scheme.findOne({ where: { schemeName } })
 
-    if (!check.isEmpty(schemeNameExist)) {
-        return res.status(404).json({ message: 'This Scheme Name is already Exist' });
-    }
+        if (!check.isEmpty(schemeNameExist)) {
+            return res.status(404).json({ message: 'This Scheme Name is already Exist' });
+        }
         const addSchemeData = await models.scheme.create({
-          schemeName,schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+            schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
             interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually
         });
 
@@ -36,23 +36,6 @@ exports.addScheme = async (req, res, next) => {
 
 }
 
-//edit scheme
-
-// exports.editScheme= async(req,res,next)=>{
-//     let {partnerId,schemeId}=req.query;
-//     const {schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-//         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually}=req.body;
-//         await sequelize.transaction(async t => {
-
-//      let schemePartner= await models.partnerScheme.findOne({where:{partnerId,schemeId}});
-//      if(schemePartner){
-         
-//      let editScheme=await models.scheme.update({schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-//         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually},{where:{id:schemeId}})
-// return res.status(200).json({message:'updated'}),{transaction:t}
-// }})
-// return res.status(404).json({message:'updated failed'});
-// }
 //read scheme
 
 exports.readScheme = async (req, res, next) => {
@@ -60,12 +43,10 @@ exports.readScheme = async (req, res, next) => {
         where: { isActive: true },
         include: [
             {
-                model:models.scheme,
-            where:{
-            isActive:true
-        }
-    },
-],
+                model: models.scheme,
+                where: { isActive: true }
+            },
+        ],
     })
 
     if (!readSchemeData[0]) {
@@ -95,7 +76,10 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
 
     let readSchemeByPartner = await models.partner.findOne({
         where: { isActive: true, id: partnerId },
-        include: [models.scheme],
+        include: [{
+            model: models.scheme,
+            where: { isActive: true }
+        }],
     })
     if (!readSchemeByPartner) {
         return res.status(404).json({ message: 'data not found' });
@@ -103,6 +87,20 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
     return res.status(200).json({ data: readSchemeByPartner });
 }
 
+
+// delete Scheme by id
+
+exports.deactiveScheme = async (req, res, next) => {
+    const schemeId = req.params.id;
+
+    const deactiveSchemeData = await models.scheme.update({ isActive: false }, { where: { id: schemeId, isActive: true } });
+
+    if (!deactiveSchemeData[0]) {
+        return res.status(404).json({ message: 'data not found' });
+    }
+
+    return res.status(200).json({ message: 'Success' });
+} 
 
 // update Scheme By id
 
@@ -130,16 +128,21 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
 //     return res.status(200).json({ message: 'Success' });
 // }
 
-// delete Scheme by id
 
-exports.deactiveScheme = async (req, res, next) => {
-    const schemeId = req.params.id;
+//edit scheme
 
-    const deactiveSchemeData = await models.scheme.update({ isActive: false }, { where: { id: schemeId, isActive: true } });
+// exports.editScheme= async(req,res,next)=>{
+//     let {partnerId,schemeId}=req.query;
+//     const {schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+//         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually}=req.body;
+//         await sequelize.transaction(async t => {
 
-    if (!deactiveSchemeData[0]) {
-        return res.status(404).json({ message: 'data not found' });
-    }
+//      let schemePartner= await models.partnerScheme.findOne({where:{partnerId,schemeId}});
+//      if(schemePartner){
 
-    return res.status(200).json({ message: 'Success' });
-} 
+//      let editScheme=await models.scheme.update({schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+//         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually},{where:{id:schemeId}})
+// return res.status(200).json({message:'updated'}),{transaction:t}
+// }})
+// return res.status(404).json({message:'updated failed'});
+// }

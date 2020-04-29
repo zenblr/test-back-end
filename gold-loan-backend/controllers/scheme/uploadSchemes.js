@@ -17,26 +17,33 @@ exports.uploadScheme = async (req, res, next) => {
             return res.status(400).json({ message: `Your Scheme start amount is must be greater than your Scheme end amount` })
         }
     }
-    await sequelize.transaction(async t => {
+   let scheme = await jsonArray.map(value => {
+       return value.schemeName
+   }) 
+   console.log(scheme)
 
-        for (var i = 0; i < jsonArray.length; i++) {
+    return res.status(201).json({ message: jsonArray })
 
-            let addSchemeData = await models.scheme.create({
-                schemeAmountStart: jsonArray[i].AmountStart, schemeAmountEnd: jsonArray[i].AmountEnd,
-                interestRateThirtyDaysMonthly: jsonArray[i].InterestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly: jsonArray[i].InterestRateNinetyDaysMonthly,
-                interestRateOneHundredEightyDaysMonthly: jsonArray[i].InterestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually: jsonArray[i].InterestRateThirtyDaysAnnually,
-                interestRateNinetyDaysAnnually: jsonArray[i].InterestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually: jsonArray[i].InterestRateOneHundredEightyDaysAnnually
-            }, { transaction: t });
-            for (let i = 0; i < partnerId.length; i++) {
+    // await sequelize.transaction(async t => {
 
-                var schemedata = await models.partnerScheme.create({
-                    schemeId: addSchemeData.id,
-                    partnerId: partnerId[i]
+    //     for (var i = 0; i < jsonArray.length; i++) {
 
-                }, { transaction: t })
-            }
-        }
-    })
+    //         let addSchemeData = await models.scheme.create({
+    //             schemeAmountStart: jsonArray[i].AmountStart, schemeAmountEnd: jsonArray[i].AmountEnd,
+    //             interestRateThirtyDaysMonthly: jsonArray[i].InterestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly: jsonArray[i].InterestRateNinetyDaysMonthly,
+    //             interestRateOneHundredEightyDaysMonthly: jsonArray[i].InterestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually: jsonArray[i].InterestRateThirtyDaysAnnually,
+    //             interestRateNinetyDaysAnnually: jsonArray[i].InterestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually: jsonArray[i].InterestRateOneHundredEightyDaysAnnually
+    //         }, { transaction: t });
+    //         for (let i = 0; i < partnerId.length; i++) {
+
+    //             var schemedata = await models.partnerScheme.create({
+    //                 schemeId: addSchemeData.id,
+    //                 partnerId: partnerId[i]
+
+    //             }, { transaction: t })
+    //         }
+    //     }
+    // })
     return res.status(201).json({ message: " Schemes Created" })
 
 

@@ -109,7 +109,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let statusId = status.id
     let getCustomerInfo = await models.customer.findOne({
         where: { mobileNumber: mobileNumber, statusId },
-        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId']
+        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId','pinCode']
     })
     if (check.isEmpty(getCustomerInfo)) {
         return res.status(404).json({ message: "Your status is not confirm" });
@@ -134,7 +134,8 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         customerId: getCustomerInfo.id,
         customerKycId: createCustomerKyc.id,
         stateId: getCustomerInfo.stateId,
-        cityId: getCustomerInfo.cityId
+        cityId: getCustomerInfo.cityId,
+        pinCode: getCustomerInfo.pinCode
     })
 }
 

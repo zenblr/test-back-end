@@ -107,4 +107,7 @@ router.use('/role-permission',rolePermission);
 const modules = require('./module');
 router.use('/modules',modules);
 
+const goldRate = require('./goldRate');
+router.use('/gold-rate', goldRate)
+
 module.exports = router;
