@@ -27,27 +27,41 @@ export class UserReviewComponent implements OnInit {
 
   initForm() {
     this.reviewForm = this.fb.group({
+      profileImage: ['', [Validators.required]],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
+      mobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
-      identityTypeId: ['', [Validators.required]],
-      identityProof: ['', [Validators.required]],
-      profileImage: ['', [Validators.required]],
-      alternateMobileNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      gender: ['', [Validators.required]],
-      spouseName: ['', [Validators.required]],
-      martialStatus: ['', [Validators.required]],
-      signatureProof: ['', [Validators.required]],
-      occupationId: ['', [Validators.required]],
-      dateOfBirth: ['', [Validators.required]],
-      bankName: ['', [Validators.required]],
-      bankBranchName: ['', [Validators.required]],
-      accountType: ['', [Validators.required]],
-      accountHolderName: ['', [Validators.required]],
-      accountNumber: ['', [Validators.required]],
-      ifscCode: ['', [Validators.required]],
-      passbookProof: []
+      customerKycAddress: this.fb.array([
+        this.fb.group({
+          identityTypeId: ['', [Validators.required]],
+          identityProof: ['', [Validators.required]],
+          addressType: [],
+          address: [],
+          stateId: [],
+          cityId: [],
+          pinCode: [],
+          addressProof: [],
+        }),
+      ]),
+      customerKyc: this.fb.group({
+        alternateMobileNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+        gender: ['', [Validators.required]],
+        spouseName: ['', [Validators.required]],
+        martialStatus: ['', [Validators.required]],
+        signatureProof: ['', [Validators.required]],
+        occupationId: ['', [Validators.required]],
+        dateOfBirth: ['', [Validators.required]],
+      }),
+      customerKycBank: this.fb.group({
+        bankName: ['', [Validators.required]],
+        bankBranchName: ['', [Validators.required]],
+        accountType: ['', [Validators.required]],
+        accountHolderName: ['', [Validators.required]],
+        accountNumber: ['', [Validators.required]],
+        ifscCode: ['', [Validators.required]],
+        passbookProof: []
+      })
     })
   }
 

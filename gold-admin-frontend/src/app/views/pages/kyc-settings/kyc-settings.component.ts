@@ -8,7 +8,7 @@ import { NgbNavChangeEvent, NgbNav } from '@ng-bootstrap/ng-bootstrap';
 })
 export class KycSettingsComponent implements OnInit {
 
-  active = 5;
+  active = 1;
   // disabled: boolean[] = [false, true, true, true, true];
   disabled: boolean[] = [false, false, false, false, false]; // delete this line
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;

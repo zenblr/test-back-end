@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +12,21 @@ export class UploadOfferService {
   goldRate = new BehaviorSubject<any>(0);
   goldRate$ = this.goldRate.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
 
+  updateGoldRate(data): Observable<any> {
+    return this.http.post(`/api/offer`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
 
-
-  uploadOffers(goldRate, fd): Observable<any> {
-    return this.http.post<any>(`/api/offer`, { goldRate, images: fd });
+  uploadOffers(fd): Observable<any> {
+    return this.http.post<any>(`/api/offer`, { images: fd });
   }
 
   getOffers(): Observable<any> {

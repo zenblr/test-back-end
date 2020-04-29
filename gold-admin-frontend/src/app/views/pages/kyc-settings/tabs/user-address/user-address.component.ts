@@ -56,7 +56,7 @@ export class UserAddressComponent implements OnInit {
           address: ['', [Validators.required]],
           stateId: [this.customerDetails.stateId, [Validators.required]],
           cityId: [this.customerDetails.cityId, [Validators.required]],
-          pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+          pinCode: [this.customerDetails.pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
           addressProof: ['', [Validators.required]]
         }),
         this.fb.group({
