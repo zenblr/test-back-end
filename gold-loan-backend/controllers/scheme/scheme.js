@@ -132,9 +132,9 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
 // delete Scheme by id
 
 exports.deactiveScheme = async (req, res, next) => {
-    const schemeId = req.params.id;
+    const {id,isActive}=req.query;
 
-    const deactiveSchemeData = await models.scheme.update({ isActive: false }, { where: { id: schemeId, isActive: true } });
+    const deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } });
 
     if (!deactiveSchemeData[0]) {
         return res.status(404).json({ message: 'data not found' });

@@ -16,13 +16,13 @@ route.get('/', checkAuth, wrapper(readScheme)); // read Scheme route
 
 route.put('/',checkAuth,wrapper(editScheme)); // edit scheme route
 
+route.delete('/', checkAuth, wrapper(deactiveScheme)); // deactive scheme
+
 route.get('/:id', checkAuth, wrapper(readSchemeById)); // read scheme by id route
 
 route.get('/partner-scheme/:id', wrapper(readSchemeByPartnerId))
 
 route.put('/:id', checkAuth, schemeValidation, validationError, wrapper(updateScheme));  // update scheme 
-
-route.delete('/:id', checkAuth, wrapper(deactiveScheme)); // deactive scheme
 
 
 module.exports = route;
