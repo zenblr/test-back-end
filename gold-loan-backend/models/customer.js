@@ -2,9 +2,14 @@ const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('customer', {
         // attributes
-        customerUniqueId:{
+        customerUniqueId: {
             type: DataTypes.STRING,
             field: 'customer_unique_id'
+        },
+        internalBranchId: {
+            type: DataTypes.INTEGER,
+            field: 'internal_branch_id',
+            allowNull: false,
         },
         firstName: {
             type: DataTypes.STRING,
@@ -63,11 +68,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'city_id',
         },
+        pinCode: {
+            type: DataTypes.INTEGER,
+            field: 'pin_code',
+        },
         kycStatus: {
             type: DataTypes.ENUM,
             field: 'kyc_status',
             defaultValue: "pending",
-            values: ['confirm', 'pending','complete','closed']
+            values: ['confirm', 'pending', 'complete', 'closed']
         },
         isKycSubmitted: {
             type: DataTypes.BOOLEAN,
@@ -119,6 +128,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Customer.associate = function (models) {
+        Customer.belongsTo(models.internalBranch, { foreignKey: 'internalBranchId', as: 'internalBranch' })
 
         Customer.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerId', as: 'customerKyc' });
         Customer.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });

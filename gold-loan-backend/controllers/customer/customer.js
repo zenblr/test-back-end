@@ -14,7 +14,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, address, statusId, } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, address, statusId, pinCode, internalBranchId } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -43,7 +43,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, statusId, createdBy, modifiedBy, isActive: true },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, createdBy, modifiedBy, isActive: true },
       { transaction: t }
     );
     if (check.isEmpty(address.length)) {
@@ -172,14 +172,14 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, statusId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId } = req.body;
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
   if (check.isEmpty(customerExist)) {
     return res.status(404).json({ message: "Customer does not exist" });
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, modifiedBy },
+      { cityId, stateId, statusId, pinCode, internalBranchId, modifiedBy },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -219,7 +219,7 @@ exports.getAllCustomers = async (req, res, next) => {
       first_name: { [Op.iLike]: search + "%" },
       last_name: { [Op.iLike]: search + "%" },
       mobile_number: { [Op.iLike]: search + "%" },
-      pan_card_number:  { [Op.iLike]: search + "%" },
+      pan_card_number: { [Op.iLike]: search + "%" },
       "$status.status_name$": {
         [Op.iLike]: search + "%",
       },
