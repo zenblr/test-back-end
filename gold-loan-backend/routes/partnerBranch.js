@@ -1,4 +1,4 @@
-const { addBranch, readBranch, readBranchById, updateBranch, deleteBranch } = require('../controllers/branch/branch');
+const { addBranch, readBranch, readBranchById, updateBranch, deleteBranch } = require('../controllers/partnerBranch/partnerBranch');
 const express = require('express');
 const route = express.Router();
 const validationError = require('../middleware/validationError')

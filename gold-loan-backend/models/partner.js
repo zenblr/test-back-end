@@ -1,25 +1,25 @@
-module.exports=(sequelize,DataTypes)=>{
-    const Partner=sequelize.define('partner',{
-        partnerId:{
-            type:DataTypes.STRING,
-            field:'partner_id'
+module.exports = (sequelize, DataTypes) => {
+    const Partner = sequelize.define('partner', {
+        partnerId: {
+            type: DataTypes.STRING,
+            field: 'partner_id'
         },
-        name:{
-            type:DataTypes.STRING,
-            field:'name'
+        name: {
+            type: DataTypes.STRING,
+            field: 'name'
         },
-        commission:{
-            type:DataTypes.FLOAT,
-            field:'commission'
+        commission: {
+            type: DataTypes.FLOAT,
+            field: 'commission'
         },
-    
-    isActive:{
-        type:DataTypes.BOOLEAN,
-        field:'is_active',
-        defaultValue:true,
 
-    }
-},
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true,
+
+        }
+    },
         {
             freezeTableName: true,
             tableName: 'loan_partner',
@@ -27,9 +27,9 @@ module.exports=(sequelize,DataTypes)=>{
     );
 
 
-    Partner.associate = function(models) {
-     
-        Partner.belongsToMany(models.scheme, {through: models.partnerScheme})
+    Partner.associate = function (models) {
+
+        Partner.belongsToMany(models.scheme, { through: models.partnerScheme })
     }
 
 
