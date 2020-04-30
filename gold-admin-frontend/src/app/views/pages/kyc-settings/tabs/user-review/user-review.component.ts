@@ -59,8 +59,8 @@ export class UserReviewComponent implements OnInit {
         "panCardNumber": "asass1234a",
         "gender": "m",
         "martialStatus": "married",
-        "occupationId": 1,
-        "identityTypeId": 1,
+        "occupationId": 1, // occupation.name
+        "identityTypeId": 1,  //identityType.name
         "identityProof": [
           "http://173.249.49.7:8000/uploads/images/1588052018310.png"
         ],
@@ -79,8 +79,8 @@ export class UserReviewComponent implements OnInit {
           "customerId": 1,
           "addressType": "permanent",
           "address": "assa1212",
-          "stateId": 1,
-          "cityId": 4,
+          "stateId": 1, // state.name
+          "cityId": 4, // city.name
           "pinCode": 122121,
           "addressProof": [
             "http://173.249.49.7:8000/uploads/images/1588052060956.png",
@@ -88,7 +88,7 @@ export class UserReviewComponent implements OnInit {
           ],
           "createdAt": "2020-04-28T05:35:06.709Z",
           "updatedAt": "2020-04-28T05:35:06.709Z",
-          "addressProofTypeId": 1
+          "addressProofTypeId": 1 // addressProofType.name
         },
         {
           "id": 2,
