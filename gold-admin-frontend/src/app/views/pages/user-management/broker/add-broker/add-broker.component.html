@@ -24,7 +24,7 @@
                         <!-- Partner Name -->
                         <div class="row">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">Merchant Name</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">Merchant Name</mat-label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="merchantId" autocomplete="off"
@@ -41,7 +41,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">Broker ID</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">Broker ID</mat-label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="storeId" placeholder="e.g 012345"
@@ -53,7 +53,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">Full Name</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">Full Name</mat-label>
                             </div>
                             <div class="col-8">
                                 <div class="row">
@@ -86,7 +86,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">Mobile Number</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">Mobile Number</mat-label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" numbersOnly maxlength="10" formControlName="mobileNumber"
@@ -100,7 +100,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">Email</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">Email</mat-label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="email" placeholder="e.g abc@123.com"
@@ -115,7 +115,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-500">Address</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-500">Address</mat-label>
                             </div>
                             <div class="col-8">
                                 <textarea cols="10" rows="5" class="form-control" formControlName="address"
@@ -129,7 +129,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">State</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">State</mat-label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="stateId" autocomplete="off"
@@ -146,7 +146,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">City</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">City</mat-label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="cityId" autocomplete="off"
@@ -162,7 +162,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">Pin Code</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">Pin Code</mat-label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" numbersOnly maxlength="6" formControlName="pinCode"
@@ -171,7 +171,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">PAN No.</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">PAN No.</mat-label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" type="text" formControlName="panCardNumber"
@@ -182,7 +182,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">Name on PAN</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">Name on PAN</mat-label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" type="text" formControlName="nameOnPanCard"
@@ -192,7 +192,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">Upload PAN</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">Upload PAN</mat-label>
                             </div>
                             <div class="col-8">
                                 <div class="input-group mb-3">
@@ -203,17 +203,17 @@
                                             (click)="file.click()">Attach</span>
                                     </div>
                                 </div>
-       form-label                          <label class="file d-none">
+       form-label                          <mat-label class="file d-none">
        [class.mandatory]="data.action!=view"                              <input type="file" id="file" aria-label="File browser example" #file
                                         (input)="getFileInfo($event)">
                                     <span class="file-custom"></span>
-                                </label>
+                                </mat-label>
                                 
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color font-weight-bold">Status</label>
+                                <mat-label for="" [class.mandatory]="data.action!=view" class="text-color ">Status</mat-label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="approvalStatusId" autocomplete="off"
