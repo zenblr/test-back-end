@@ -6,10 +6,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'images'
 
         },
-        goldRate: {
-            type: DataTypes.INTEGER,
-            field: 'gold_rate'
-        },
         userId: {
             type: DataTypes.INTEGER,
             field: 'user_id'

@@ -38,7 +38,11 @@ module.exports = (sequelize, DataTypes) => {
         addressProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'address_proof'
-        }
+        },
+        addressProofNumber: {
+            type: DataTypes.STRING,
+            field: 'address_proof_number',
+        },
 
     }, {
         freezeTableName: true,

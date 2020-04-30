@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true,
         allowNull: false,
         tableName: 'address_proof_type',
-        timestamps: false
     });
 
 

@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true,
         allowNull: false,
         tableName: 'occupation', 
-        timestamps: false
 
     });
 

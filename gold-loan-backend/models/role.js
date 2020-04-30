@@ -19,12 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
-            allowNull: false
         },
         updatedBy: {
             type: DataTypes.INTEGER,
             field: 'updated_by',
-            allowNull: false
         },
     }, {
         freezeTableName: true,

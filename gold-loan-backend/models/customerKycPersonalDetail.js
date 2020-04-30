@@ -65,6 +65,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'identity_proof'
         },
+        identityProofNumber: {
+            type: DataTypes.STRING,
+            field: 'identity_proof_number',
+        },
         spouseName: {
             type: DataTypes.STRING,
             field: 'spouse_name',

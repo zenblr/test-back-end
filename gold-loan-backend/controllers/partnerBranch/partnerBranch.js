@@ -8,14 +8,14 @@ const check = require('../../lib/checkLib')
 
 //Add branch
 exports.addBranch = async (req, res, next) => {
-    const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
+    const { partnerId, name, cityId, stateId, address, pinCode, isActive } = req.body;
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
     await sequelize.transaction(async t => {
 
-        let addBranch = await models.partnerBranch.create({ partnerId, name, cityId, stateId, address, pincode, commission, createdBy, modifiedBy, isActive }, { transaction: t });
+        let addBranch = await models.partnerBranch.create({ partnerId, name, cityId, stateId, address, pinCode, createdBy, modifiedBy, isActive }, { transaction: t });
         let id = addBranch.dataValues.id;
 
         let partnerdataid = await models.partner.findOne({ where: { id: addBranch.dataValues.partnerId }, transaction: t });
@@ -41,8 +41,8 @@ exports.readBranch = async (req, res, next) => {
             "$partner.name$": {
                 [Op.iLike]: search + "%",
             },
-            pincode: sequelize.where(
-                sequelize.cast(sequelize.col("pincode"), "varchar"),
+            pinCode: sequelize.where(
+                sequelize.cast(sequelize.col("pin_code"), "varchar"),
                 {
                     [Op.iLike]: search + "%"
                 }),
@@ -137,11 +137,11 @@ exports.updateBranch = async (req, res, next) => {
 
     let modifiedBy = req.userData.id;
 
-    const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
+    const { partnerId, name, cityId, stateId, address, pinCode, isActive } = req.body;
     let pId = name.slice(0, 3).toUpperCase() + '-' + branchId;
 
 
-    let branchData = await models.partnerBranch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pincode, commission, modifiedBy, isActive }, { where: { id: branchId, isActive: true } });
+    let branchData = await models.partnerBranch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pinCode, modifiedBy, isActive }, { where: { id: branchId, isActive: true } });
     if (branchData[0] == 0) {
         return res.status(404).json({ message: " Update failed" });
     }
