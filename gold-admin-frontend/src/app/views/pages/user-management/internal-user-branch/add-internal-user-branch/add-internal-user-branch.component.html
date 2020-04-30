@@ -23,8 +23,8 @@
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
                         <!-- Partner Name -->
                         <div class="row">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Branch Name</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color font-weight-bold">Branch Name</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="name" placeholder="Branch Name"
@@ -35,11 +35,11 @@
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Address</label>
+                            <div class="col-4  form-label">
+                                <label for=""  [class.mandatory]="data.action!='view'" class="text-color font-weight-bold">Address</label>
                             </div>
                             <div class="col-8">
-                                <textarea class="form-control" placeholder="Address" formControlName="address"
+                                <textarea class="form-control" placeholder="Enter Address" formControlName="address"
                                     placeholder="e.g 012345"
                                     [class.isError]="controls.address.touched && controls.address.invalid" cols="20"
                                     rows="5"></textarea>
@@ -49,8 +49,8 @@
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">State</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color font-weight-bold">State</label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="stateId" autocomplete="off"
@@ -64,8 +64,8 @@
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">City</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color font-weight-bold">City</label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="cityId" autocomplete="off"
@@ -79,8 +79,8 @@
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Pincode</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color font-weight-bold">Pincode</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" numbersOnly maxlength="6" formControlName="pinCode"
