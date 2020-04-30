@@ -46,7 +46,7 @@ export class TopbarComponent implements OnInit {
 	toogler: string;
 	path: string;
 	constructor(
-		public sharedService:SharedService,
+		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
 		private router: Router,
 		private location: Location,
@@ -86,7 +86,6 @@ export class TopbarComponent implements OnInit {
 				Promise.resolve(null).then(() => {
 					this.title = bt.title;
 					this.desc = bt.desc;
-					console.log(this.title)
 				});
 			}
 		}));
@@ -94,7 +93,6 @@ export class TopbarComponent implements OnInit {
 		this.subscriptions.push(this.subheaderService.breadcrumbs$.subscribe(bc => {
 			Promise.resolve(null).then(() => {
 				this.breadcrumbs = bc;
-				console.log(this.breadcrumbs)
 			});
 		}));
 	}

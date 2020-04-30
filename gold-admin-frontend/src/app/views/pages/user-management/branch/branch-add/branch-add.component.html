@@ -18,105 +18,109 @@
 
 
 
-                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+                <div class="col-lg-12 kt-margin-bottom-20-mobile">
 
 
-                        <div class="row">
-                            <!-- Partner Name -->
-                            <div class="col-4 form-label">
-                                <label [class.mandatory] ="isMandatory ">Branch Name</label>
-                            </div>
-                            <div class="col-8">
-                                <input class="form-control" formControlName="name" autocomplete="off"
-                                    placeholder="Enter Branch Name"
-                                    [class.isError]="controls.name.touched && controls.name.invalid">
-                                <mat-error *ngIf="controls.name.touched && controls.name.errors?.required">Required
-                                    field</mat-error>
-                            </div>
+                    <div class="row">
+                        <!-- Partner Name -->
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Branch Name</label>
                         </div>
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <label [class.mandatory] ="isMandatory ">Partner Name</label>
-                            </div>
-
-                            <div class="col-8">
-                                <select class="form-control" name="" id="" formControlName="partnerId"
-                                    [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
-                                    <option *ngFor="let partner of partners" [value]="partner.id">{{partner.name}}
-                                    </option>
-                                </select>
-                                <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.errors?.required">
-                                    Required field
-                                </mat-error>
-                            </div>
-
-                        </div>
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <label [class.mandatory] ="isMandatory ">State</label>
-                            </div>
-
-                            <div class="col-8">
-                                <select class="form-control" formControlName="stateId" (change)="getCities()"
-                                    [class.isError]="controls.stateId.touched && controls.stateId.invalid">
-                                    <option *ngFor="let state of states" [value]="state.id">
-                                        {{state.name}}
-                                    </option>
-                                </select>
-                                <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">
-                                    Required field</mat-error>
-                            </div>
-
-                        </div>
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <label [class.mandatory] ="isMandatory ">City</label>
-                            </div>
-
-                            <div class="col-8">
-                                <select class="form-control" formControlName="cityId"
-                                    [class.isError]="controls.cityId.touched && controls.cityId.invalid">
-                                    <option *ngFor="let city of cities" [value]="city.id">
-                                        {{city.name}}
-                                    </option>
-                                </select>
-                                <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
-                                    Required field</mat-error>
-                            </div>
-
-                        </div>
-
-
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <label [class.mandatory] ="isMandatory ">Pin Code</label>
-                            </div>
-                            <div class="col-8">
-                                <input class="form-control" formControlName="pincode" placeholder="Enter Pin Code"
-                                    [class.isError]="controls.pincode.touched && controls.pincode.invalid" maxlength="6"
-                                    numbersOnly>
-                                <small *ngIf="data.action != 'view'" class="text-color">Enter pin code without
-                                    spaces</small>
-                                <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.required">
-                                    Required field</mat-error>
-                                <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.pattern">
-                                    Invalid Pin Code</mat-error>
-                            </div>
-                        </div>
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <label [class.mandatory] ="isMandatory " for="">Address</label>
-                            </div>
-                            <!-- Address -->
-                            <div class="col-8">
-                                <textarea class="form-control" rows="3" formControlName="address"
-                                    placeholder="Enter Address"
-                                    [class.isError]="controls.address.touched && controls.address.invalid"></textarea>
-                                <mat-error *ngIf=" controls.address.touched &&controls.address.errors?.required">
-                                    Required field</mat-error>
-                            </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="name" autocomplete="off"
+                                placeholder="Enter Branch Name"
+                                [class.isError]="controls.name.touched && controls.name.invalid">
+                            <mat-error *ngIf="controls.name.touched && controls.name.errors?.required">Required
+                                field</mat-error>
                         </div>
                     </div>
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Partner Name</label>
+                        </div>
+
+                        <div class="col-8">
+                            <select class="form-control" name="" id="" formControlName="partnerId"
+                                [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Partner</option>
+                                <option *ngFor="let partner of partners" [value]="partner.id">{{partner.name}}
+                                </option>
+                            </select>
+                            <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+
+                    </div>
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">State</label>
+                        </div>
+
+                        <div class="col-8">
+                            <select class="form-control" formControlName="stateId" (change)="getCities()"
+                                [class.isError]="controls.stateId.touched && controls.stateId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select State</option>
+
+                                <option *ngFor="let state of states" [value]="state.id">
+                                    {{state.name}}
+                                </option>
+                            </select>
+                            <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">
+                                Required field</mat-error>
+                        </div>
+
+                    </div>
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">City</label>
+                        </div>
+
+                        <div class="col-8">
+                            <select class="form-control" formControlName="cityId"
+                                [class.isError]="controls.cityId.touched && controls.cityId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select City</option>
+                                <option *ngFor="let city of cities" [value]="city.id">
+                                    {{city.name}}
+                                </option>
+                            </select>
+                            <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
+                                Required field</mat-error>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Pin Code</label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="pincode" placeholder="Enter Pin Code"
+                                [class.isError]="controls.pincode.touched && controls.pincode.invalid" maxlength="6"
+                                numbersOnly>
+                            <small *ngIf="data.action != 'view'" class="text-color">Enter pin code without
+                                spaces</small>
+                            <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.required">
+                                Required field</mat-error>
+                            <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.pattern">
+                                Invalid Pin Code</mat-error>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory " for="">Address</label>
+                        </div>
+                        <!-- Address -->
+                        <div class="col-8">
+                            <textarea class="form-control" rows="3" formControlName="address"
+                                placeholder="Enter Address"
+                                [class.isError]="controls.address.touched && controls.address.invalid"></textarea>
+                            <mat-error *ngIf=" controls.address.touched &&controls.address.errors?.required">
+                                Required field</mat-error>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

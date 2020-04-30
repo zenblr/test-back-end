@@ -69,6 +69,8 @@ body {
 .success-button {
 	color: #fff !important;
 	background-color: rgb(24, 179, 24) !important;
+	border-radius: 9px !important;
+	font-family: 'Poppins';
 }
 
 .form-label {
@@ -452,11 +454,11 @@ mat-header-row {
   }
 
   .input-group-text{
-	  border-radius: 9px !important;
+	//   border-radius: 9px !important;
 	  margin-left: -10px;
 	  z-index: 2;
-	  border-top-left-radius: 0 !important;
-	  border-bottom-left-radius: 0 !important;
+	  border-top-right-radius: 9px !important;
+	  border-bottom-right-radius: 9px !important;
   }
 
   .mandatory::after{

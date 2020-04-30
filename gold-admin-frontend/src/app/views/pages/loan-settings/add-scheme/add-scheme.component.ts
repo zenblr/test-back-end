@@ -35,7 +35,7 @@ export class AddSchemeComponent implements OnInit {
   }
 
   partner() {
-   
+
     this.partnerService.getAllPartner('', 1, 50).pipe(
       map(res => {
         this.partnerData = res.data;
@@ -52,6 +52,7 @@ export class AddSchemeComponent implements OnInit {
 
   initForm() {
     this.billingForm = this.fb.group({
+      schemeName: ['', [Validators.required]],
       schemeAmountStart: ['', Validators.required],
       schemeAmountEnd: ['', Validators.required],
       interestRateThirtyDaysMonthly: ['', Validators.required],
@@ -81,15 +82,19 @@ export class AddSchemeComponent implements OnInit {
 
   submit() {
     if (this.tabGroup.selectedIndex == 0) {
+      console.log(this.billingForm.value);
       if (this.billingForm.invalid) {
         this.billingForm.markAllAsTouched()
         return
       }
+      let partnerArray = [];
+      partnerArray.push(this.billingForm.get('partnerId').value);
+      this.billingForm.patchValue({ partnerId: partnerArray });
       this.laonSettingService.saveScheme(this.billingForm.value).pipe(
         map((res) => {
-            this._toastr.success('Scheme Created Sucessfully');
-            this.dialogRef.close(res);
-        }),catchError(err => {
+          this._toastr.success('Scheme Created Sucessfully');
+          this.dialogRef.close(res);
+        }), catchError(err => {
           this._toastr.error('Some thing went wrong')
           this.ref.detectChanges();
           throw (err)
@@ -104,10 +109,10 @@ export class AddSchemeComponent implements OnInit {
       fb.append('partnerId', this.csvForm.controls.partnerId.value)
       this.laonSettingService.uplaodCSV(fb).pipe(
         map((res) => {
-            this._toastr.success('Scheme Created Sucessfully');
-            this.dialogRef.close(res);
+          this._toastr.success('Scheme Created Sucessfully');
+          this.dialogRef.close(res);
         }), catchError(err => {
-          
+
           this.ref.detectChanges();
           throw (err)
         })).subscribe()
@@ -115,14 +120,14 @@ export class AddSchemeComponent implements OnInit {
   }
 
   getFileInfo(event) {
-      this.file = event.target.files[0];
-      var ext = event.target.files[0].name.split('.');
-      if(ext[ext.length - 1] != 'csv' ){
-        this._toastr.error('Please upload csv file');
-        this.csvForm.controls.csv.markAsTouched()
-        return
-      }
-      this.csvForm.get('csv').patchValue(event.target.files[0].name);
+    this.file = event.target.files[0];
+    var ext = event.target.files[0].name.split('.');
+    if (ext[ext.length - 1] != 'csv') {
+      this._toastr.error('Please upload csv file');
+      this.csvForm.controls.csv.markAsTouched()
+      return
+    }
+    this.csvForm.get('csv').patchValue(event.target.files[0].name);
 
   }
 }

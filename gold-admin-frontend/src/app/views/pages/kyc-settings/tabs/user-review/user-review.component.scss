@@ -1,6 +1,37 @@
 :host {
     kt-portlet-body {
-		height: 69vh;
+		height: 72vh;
 		overflow-y: auto;
+	}
+
+	.header {
+		border-bottom: 2px solid #ececf170;
+	}
+
+	.bg {
+		background-color: #454d67 !important;
+		color: rgb(193, 193, 193) !important;
+	}
+
+	.font-11{
+        font-size: 11px !important;
+	}
+	.profile-div {
+		width: 100px;
+		height: 100px;
+		border-radius: 15px;
+		background-color: #f2f3f7;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		img {
+			width: 40px;
+		}
+		.profile-pic {
+			width: 100%;
+			height: 100%;
+			border-radius: 15px;
+		}
 	}
 }

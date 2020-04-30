@@ -1,4 +1,4 @@
-<kt-portlet>
+<kt-portlet style="padding-top: 25px !important;">
     <kt-portlet-body>
         <div class="min-height">
             <form [formGroup]="identityForm">
@@ -50,7 +50,8 @@
                                         [class.isError]="controls.identityProof.invalid && controls.identityProof.touched">
                                     <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                            (click)="file.click()">Attach</span>
+                                            (click)="file.click()"
+                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
 
                                 </div>
@@ -126,7 +127,7 @@
             </div> -->
 
                 <div class="row">
-                    <div class="col-6 offset-6 kt-padding-l-25">
+                    <div class=" offset-6 kt-padding-l-25" style="position: relative; left: 35px;">
                         <div class="">
                             <label class="custom-checkbox ">
                                 <span class="label-checkbox">Residential Same as Permanent</span>
@@ -352,7 +353,8 @@
                                                         formControlName="addressProof">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text bg kt-pointer font-weight"
-                                                            id="basic-addon2" (click)="file.click()">Attach</span>
+                                                            id="basic-addon2" (click)="file.click()"
+                                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                                     </div>
                                                 </div>
                                                 <label class="mandatory  file d-none">

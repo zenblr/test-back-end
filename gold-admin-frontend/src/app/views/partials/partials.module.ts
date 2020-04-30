@@ -27,7 +27,7 @@ import {
 	MatDividerModule,
 } from '@angular/material';
 // NgBootstrap
-import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule,NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // Perfect Scrollbar
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 // Core module
@@ -84,7 +84,6 @@ import { LoanSchemeComponent } from "../../views/pages/loan-settings/loan-scheme
 
 
 // spinner
-import { NgxSpinnerModule } from "ngx-spinner";
 import { UplodDataImageComponent } from './components/uplod-data-image/uplod-data-image.component';
 import { ImagePreviewDialogComponent } from './components/image-preview-dialog/image-preview-dialog.component';
 
@@ -192,7 +191,6 @@ import { ImagePreviewDialogComponent } from './components/image-preview-dialog/i
 		LoanSchemeComponent,
 
 		// spinner
-		NgxSpinnerModule,
 		NgbModule
 	],
 	imports: [
@@ -236,9 +234,8 @@ import { ImagePreviewDialogComponent } from './components/image-preview-dialog/i
 		NgbModule,
 
 		// spinner
-		NgxSpinnerModule
 	],
-	entryComponents:[
+	entryComponents: [
 		ImagePreviewDialogComponent
 	]
 })

@@ -3,6 +3,8 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { UserPersonalService } from '../../../../../core/kyc-settings/services/user-personal.service';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { catchError, map, finalize } from 'rxjs/operators';
+import { UserDetailsService } from '../../../../../core/kyc-settings';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-user-personal',
@@ -14,14 +16,16 @@ export class UserPersonalComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   personalForm: FormGroup;
   occupations = [];
-  // customerDetails = this.userDetailsService.userData;
-  customerDetails = { customerId: 1, customerKycId: 2 }
+  customerDetails = this.userDetailsService.userData;
+  // customerDetails = { customerId: 1, customerKycId: 2 }
   file: any;
   profile = '';
   signatureJSON = { url: null, isImage: false };
 
-  constructor(private fb: FormBuilder, private userPersonalService: UserPersonalService,
-    private sharedService: SharedService, private ref: ChangeDetectorRef) { }
+  constructor(private fb: FormBuilder, private userDetailsService: UserDetailsService,
+    private userPersonalService: UserPersonalService,
+    private sharedService: SharedService, private ref: ChangeDetectorRef,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     // console.log(this.signature)
@@ -40,6 +44,7 @@ export class UserPersonalComponent implements OnInit {
       martialStatus: ['', [Validators.required]],
       signatureProof: ['', [Validators.required]],
       occupationId: ['', [Validators.required]],
+      dateOfBirth: ['', [Validators.required]],
     })
   }
 
@@ -73,17 +78,20 @@ export class UserPersonalComponent implements OnInit {
   }
 
   submit() {
-    this.personalForm.get('profileImage').patchValue(this.profile);
-
-    this.personalForm.get('signatureProof').patchValue(this.signatureJSON.url);
-
 
     console.log(this.personalForm.value);
 
     if (this.personalForm.invalid) {
       this.personalForm.markAllAsTouched()
+      if (this.controls.profileImage.invalid) {
+        this.toastr.error('Please upload a Profile Image');
+      }
       return
     }
+
+    this.personalForm.get('profileImage').patchValue(this.profile);
+    this.personalForm.get('signatureProof').patchValue(this.signatureJSON.url);
+
     // this.personalForm.enable()
     const basicForm = this.personalForm.value;
     this.userPersonalService.personalDetails(basicForm).pipe(
@@ -94,10 +102,11 @@ export class UserPersonalComponent implements OnInit {
         }
       }),
       finalize(() => {
+        this.personalForm.get('signatureProof').patchValue(this.file.name);
       })
     ).subscribe();
 
-    this.next.emit(true);
+    // this.next.emit(true);
   }
 
   get controls() {

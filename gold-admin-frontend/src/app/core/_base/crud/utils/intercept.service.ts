@@ -41,20 +41,20 @@ export class InterceptService implements HttpInterceptor {
 		// console.log('----request----');
 		// console.log(request);
 		// console.log('--- end of request---');
-		this.sharedSerivce.loader.next(true)
+		// this.sharedSerivce.loader.next(true)
 		return next.handle(request).pipe(
 			tap(
 				event => {
 					if (event instanceof HttpResponse) {
 						// console.log('all looks good');
 						// http response status code
-						console.log(event.body.count);
-						if(event.body.count){
+						// console.log(event.body.count);
+						if (event.body.count) {
 							this.sharedSerivce.totalCount.next(event.body.count)
-						}else{
+						} else {
 							this.sharedSerivce.totalCount.next(null)
 						}
-						
+
 					}
 				},
 				error => {
@@ -78,7 +78,7 @@ export class InterceptService implements HttpInterceptor {
 				}
 			),
 			finalize(() => {
-				this.sharedSerivce.loader.next(false)
+				// this.sharedSerivce.loader.next(false)
 			})
 		);
 	}
