@@ -6,17 +6,17 @@ const check=require('../../lib/checkLib');
 exports.addScheme = async (req, res, next) => {
     const { schemeName,schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually, partnerId } = req.body;
+        let schemeNameExist = await models.scheme.findOne({ where: { schemeName } })
 
+        if (!check.isEmpty(schemeNameExist)) {
+            return res.status(404).json({ message: 'This Scheme Name is already Exist' });
+        }
     if (schemeAmountStart >= schemeAmountEnd) {
         return res.status(400).json({ message: `Your Scheme start amount is must be greater than your Scheme end amount` })
     }
 
     await sequelize.transaction(async t => {
-        let schemeNameExist = await models.scheme.findOne({ where: { schemeName } })
-
-    if (!check.isEmpty(schemeNameExist)) {
-        return res.status(404).json({ message: 'This Scheme Name is already Exist' });
-    }
+     
         const addSchemeData = await models.scheme.create({
           schemeName,schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
             interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually
