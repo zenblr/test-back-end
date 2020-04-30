@@ -67,14 +67,6 @@ constructor(
  * On init
  */
 ngOnInit() {
-  // If the user changes the sort order, reset back to the first page.
-  const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-  this.subscriptions.push(sortSubscription);
-
-  /* Data load will be triggered in two cases:
-  - when a pagination event occurs => this.paginator.page
-  - when a sort event occurs => this.sort.sortChange
-  **/
   const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
     tap(() => {
       this.loadRolesList();
@@ -119,17 +111,6 @@ loadRolesList() {
   let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
   this.dataSource.loadRoles('', from, to, '', '', '');
-  // this.selection.clear();
-  // const queryParams = new QueryParamsModel(
-  // 	this.filterConfiguration(),
-  // 	this.sort.direction,
-  // 	this.sort.active,
-  // 	this.paginator.pageIndex,
-  // 	this.paginator.pageSize
-  // );
-  // Call request from server
-  // this.store.dispatch(new RolesPageRequested({ page: queryParams }));
-  // this.selection.clear();
 }
 
 /**

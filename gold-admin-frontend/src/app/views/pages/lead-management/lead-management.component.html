@@ -3,11 +3,9 @@
     <kt-portlet-body>
 
         <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
-            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
-                matSortActive="id" matSortDirection="asc" matSortDisableClear>
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" >
 
                 <ng-container matColumnDef="fullName">
-                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.firstName | titlecase}}&nbsp;{{role.lastName | titlecase}}
                     </mat-cell>
@@ -81,10 +79,8 @@
 
         <!-- start: BOTTOM -->
         <div class="mat-table__bottom">
-            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
-            <!-- MATERIAL PAGINATOR | Binded to dasources -->
-            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+            
             <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>

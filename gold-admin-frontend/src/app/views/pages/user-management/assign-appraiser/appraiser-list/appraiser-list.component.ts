@@ -21,7 +21,7 @@ export class AppraiserListComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   displayedColumns = ['customerId', 'customerName','actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild('sort1', { static: true }) sort: MatSort;
+ 
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   appraiserResult: any[] = [];
@@ -49,22 +49,7 @@ export class AppraiserListComponent implements OnInit {
   }
 
   ngOnInit() {
-    // If the user changes the sort order, reset back to the first page.
-    const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    this.subscriptions.push(sortSubscription);
-
-		/* Data load will be triggered in two cases:
-		- when a pagination event occurs => this.paginator.page
-		- when a sort event occurs => this.sort.sortChange
-		**/
-    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-      tap(() => {
-        this.loadBranchPage();
-      })
-    )
-      .subscribe();
-    this.subscriptions.push(paginatorSubscriptions);
-
+   
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;

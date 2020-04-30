@@ -119,44 +119,44 @@
 				</ng-container>
 
 				<ng-container matColumnDef="VINCode">
-					<mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column-vinCode">VIN Code (ID)</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef  class="mat-column-vinCode">VIN Code (ID)</mat-header-cell>
 					<mat-cell *matCellDef="let product" class="mat-column-vinCode">{{product.VINCode}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="manufacture">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Manufacture</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Manufacture</mat-header-cell>
 					<mat-cell *matCellDef="let product">{{product.manufacture}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="model">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Model</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Model</mat-header-cell>
 					<mat-cell *matCellDef="let product">{{product.model}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="modelYear">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Model Year</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Model Year</mat-header-cell>
 					<mat-cell *matCellDef="let product">{{product.modelYear}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="color">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Color</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Color</mat-header-cell>
 					<mat-cell *matCellDef="let product" [ngStyle]="{ 'color' : product.color }">{{product.color}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="price">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Price</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Price</mat-header-cell>
 					<mat-cell *matCellDef="let product">${{product.price}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="status">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Status</mat-header-cell>
 					<mat-cell *matCellDef="let product">
 						<span class="kt-badge kt-badge--inline kt-badge--pill kt-badge--{{ getItemCssClassByStatus(product.status) }} kt-badge--wide">{{ getItemStatusString(product.status) }}</span>
 					</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="condition">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Condition</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Condition</mat-header-cell>
 					<mat-cell *matCellDef="let product">
 						<span class="kt-badge kt-badge--{{ getItemCssClassByCondition(product.condition) }} kt-badge--dot"></span>&nbsp;
 						<span class="kt--font-bold kt-font-{{ getItemCssClassByCondition(product.condition) }}">{{ getItemConditionString(product.condition) }}</span>

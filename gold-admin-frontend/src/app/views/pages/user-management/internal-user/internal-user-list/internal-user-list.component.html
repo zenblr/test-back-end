@@ -1,23 +1,13 @@
 <kt-portlet>
-    <!-- PORTLET LOADING | Binded to TABLE Datasource -->
-    <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
-    <kt-portlet-header [title]="'Internal Users'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
-    </kt-portlet-header>
-    <!-- end::Header -->
+
     <kt-portlet-body>
         <!-- MATERIAL TABLE | Binded to datasources -->
         <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
         <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
-            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
-                matSortActive="id" matSortDirection="asc" matSortDisableClear>
-                <!-- Checkbox Column -->
-
-                <!-- Table with selection -->
-                <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
-
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" >
+               
                 <ng-container matColumnDef="city">
-                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>City</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef >City</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
                         <div class="text-color" (click)="permissions(broker)">
                             {{broker.name}}
@@ -26,11 +16,11 @@
                 </ng-container>
 
                 <ng-container matColumnDef="pincode">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>PinCode</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef >PinCode</mat-header-cell>
                     <mat-cell *matCellDef="let broker">{{broker.calories}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="approvalStatus">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Approval Status</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef >Approval Status</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
                         <div [ngClass]="broker.id == 1 ? 'text-success' :broker.id == 2 ? 'text-warning' : 'text-danger'">
                             {{broker.carbs}}
@@ -38,7 +28,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef >Status</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
                         <mat-slide-toggle [color]="'accent'">
                         </mat-slide-toggle>
@@ -71,10 +61,8 @@
 
         <!-- start: BOTTOM -->
         <div class="mat-table__bottom">
-            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
-            <!-- MATERIAL PAGINATOR | Binded to dasources -->
-            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+            
             <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>

@@ -29,7 +29,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
   dataSource: BrokerDatasource;
   displayedColumns = ['merchantName', 'storeId', 'email', 'mobileNumber', 'address', 'state', 'city', 'pincode', 'approvalStatus', 'status', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild('sort1', { static: true }) sort: MatSort;
+ 
 
   brokerResult: any[] = [];
 
@@ -74,21 +74,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.getStatus()
-    // If the user changes the sort order, reset back to the first page.
-    const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    this.subscriptions.push(sortSubscription);
-
-    /* Data load will be triggered in two cases:
-    - when a pagination event occurs => this.paginator.page
-    - when a sort event occurs => this.sort.sortChange
-    **/
-    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-      tap(() => {
-        this.loadBrokerList();
-      })
-    )
-      .subscribe();
-    this.subscriptions.push(paginatorSubscriptions);
+   
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(
       takeUntil(this.unsubscribeSearch$))
