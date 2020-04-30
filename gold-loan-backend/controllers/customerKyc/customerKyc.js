@@ -238,10 +238,27 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
             model: models.customerKycPersonalDetail,
             as: 'customerKyc',
             attributes: ['id','customerId','profileImage','firstName','lastName','dateOfBirth','alternateMobileNumber','panCardNumber','gender','martialStatus','occupationId','identityTypeId','identityProof','spouseName','signatureProof'],
+            include:[{
+                model: models.occupation,
+                as:'occupation'
+            },{
+                model: models.identityType,
+                as:'identityType'
+            }]
         },{
             model: models.customerKycAddressDetail,
             as: 'customerKycAddress',
-            attributes:['id','customerKycId','customerId','addressType','address','stateId','cityId','pinCode','addressProof','addressProofTypeId']
+            attributes:['id','customerKycId','customerId','addressType','address','stateId','cityId','pinCode','addressProof','addressProofTypeId'],
+            include:[{
+                model: models.state,
+                as:'state'
+            },{
+                model: models.city,
+                as:'city'
+            },{
+                model: models.addressProofType,
+                as:'addressProofType'
+            }]
         }, {
             model: models.customerKycBankDetail,
             as: 'customerKycBank',
