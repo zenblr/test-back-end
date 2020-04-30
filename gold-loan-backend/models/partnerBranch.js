@@ -25,14 +25,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'address'
         },
 
-        pincode: {
+        pinCode: {
             type: DataTypes.INTEGER,
-            field: 'pincode',
+            field: 'pin_code',
 
-        },
-        commission: {
-            type: DataTypes.FLOAT,
-            field: 'commission'
         },
         createdBy: {
             type: DataTypes.INTEGER,

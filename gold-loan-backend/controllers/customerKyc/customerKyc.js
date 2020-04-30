@@ -109,7 +109,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let statusId = status.id
     let getCustomerInfo = await models.customer.findOne({
         where: { mobileNumber: mobileNumber, statusId },
-        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId','pinCode']
+        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode']
     })
     if (check.isEmpty(getCustomerInfo)) {
         return res.status(404).json({ message: "Your status is not confirm" });
@@ -142,12 +142,12 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
 exports.submitCustomerKycAddress = async (req, res, next) => {
 
-    let { customerId, customerKycId, identityProof, identityTypeId, address } = req.body
+    let { customerId, customerKycId, identityProof, identityTypeId, identityProofNumber, address } = req.body
 
-    if(identityProof.length == 0 ){
+    if (identityProof.length == 0) {
         return res.status(404).json({ message: "Identity proof file must be required." });
     }
-    if(address[0].addressProof.length == 0 || address[1].addressProof.length == 0){
+    if (address[0].addressProof.length == 0 || address[1].addressProof.length == 0) {
         return res.status(404).json({ message: "Address proof file must be required." });
     }
     let findCustomerKyc = await models.customerKycAddressDetail.findOne({ where: { customerKycId: customerKycId } })
@@ -155,7 +155,7 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
     if (!check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer address details is already filled." });
     }
-    
+
 
     let addressArray = []
     for (let i = 0; i < address.length; i++) {
@@ -168,12 +168,12 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
     let name = `${firstName} ${lastName}`;
 
     await sequelize.transaction(async t => {
-        await models.customerKycPersonalDetail.update({ identityProof: identityProof, identityTypeId: identityTypeId }, { where: { id: customerKycId }, transaction: t });
+        await models.customerKycPersonalDetail.update({ identityProof, identityTypeId, identityProofNumber }, { where: { id: customerKycId }, transaction: t });
 
         await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
     })
 
-    
+
     return res.status(200).json({ customerId, customerKycId, name })
 }
 
@@ -194,14 +194,7 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     }
 
     let details = await models.customerKycPersonalDetail.update({
-        profileImage: profileImage,
-        dateOfBirth: dateOfBirth,
-        alternateMobileNumber, alternateMobileNumber,
-        gender: gender,
-        martialStatus: martialStatus,
-        occupationId: occupationId,
-        spouseName: spouseName,
-        signatureProof: signatureProof
+        profileImage, dateOfBirth, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof
     }, { where: { id: customerKycId } });
     console.log(details)
 
@@ -220,49 +213,41 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
         return res.status(404).json({ message: "This customer bank details is already filled." });
     }
     await models.customerKycBankDetail.create({
-        customerId: customerId,
-        customerKycId: customerKycId,
-        bankName: bankName,
-        bankBranchName: bankBranchName,
-        accountType: accountType,
-        accountHolderName: accountHolderName,
-        accountNumber: accountNumber,
-        ifscCode: ifscCode,
-        passbookProof: passbookProof
+        customerId, customerKycId, bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, passbookProof
     })
 
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id','firstName','lastName','panCardNumber','mobileNumber'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber'],
         include: [{
             model: models.customerKycPersonalDetail,
             as: 'customerKyc',
-            attributes: ['id','customerId','profileImage','firstName','lastName','dateOfBirth','alternateMobileNumber','panCardNumber','gender','martialStatus','occupationId','identityTypeId','identityProof','spouseName','signatureProof'],
-            include:[{
+            attributes: ['id', 'customerId', 'profileImage', 'firstName', 'lastName', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProof', 'identityProofNumber', 'spouseName', 'signatureProof'],
+            include: [{
                 model: models.occupation,
-                as:'occupation'
-            },{
+                as: 'occupation'
+            }, {
                 model: models.identityType,
-                as:'identityType'
+                as: 'identityType'
             }]
-        },{
+        }, {
             model: models.customerKycAddressDetail,
             as: 'customerKycAddress',
-            attributes:['id','customerKycId','customerId','addressType','address','stateId','cityId','pinCode','addressProof','addressProofTypeId'],
-            include:[{
+            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId','addressProofNumber'],
+            include: [{
                 model: models.state,
-                as:'state'
-            },{
+                as: 'state'
+            }, {
                 model: models.city,
-                as:'city'
-            },{
+                as: 'city'
+            }, {
                 model: models.addressProofType,
-                as:'addressProofType'
+                as: 'addressProofType'
             }]
         }, {
             model: models.customerKycBankDetail,
             as: 'customerKycBank',
-            attributes:['id','customerKycId','customerId','bankName','bankBranchName','accountType','accountHolderName','accountNumber','ifscCode','passbookProof']
+            attributes: ['id', 'customerKycId', 'customerId', 'bankName', 'bankBranchName', 'accountType', 'accountHolderName', 'accountNumber', 'ifscCode', 'passbookProof']
         }]
     })
 
@@ -279,7 +264,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
     if (check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer kyc detailes is not filled." });
     }
-    let abc =await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId } })
+    let abc = await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId } })
     return res.status(200).json({ message: `successful`, customerId, customerKycId })
 }
 
