@@ -10,8 +10,9 @@ import { RolesService } from '../.././../../core/user-management/roles';
 import { BrokerService } from '../.././../../core/user-management/broker';
 import { InternalUserService } from '../.././../../core/user-management/internal-user';
 import { AppraiserService } from '../../../../core/user-management/appraiser';
+import { InternalUserBranchService } from '../../../../core/user-management/internal-user-branch'
 import { Breadcrumb } from '../../../../core/_base/layout/services/subheader.service';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, from } from 'rxjs';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { SubheaderService } from '../../../../core/_base/layout';
 import { takeUntil } from 'rxjs/operators';
@@ -57,6 +58,7 @@ export class TopbarComponent implements OnInit {
 		private branchService: BranchService,
 		private rolesService: RolesService,
 		private internalUserService: InternalUserService,
+		private internalUserBranchService:InternalUserBranchService,
 		private appraiserService: AppraiserService) {
 
 		this.router.events.subscribe(val => {
@@ -114,6 +116,13 @@ export class TopbarComponent implements OnInit {
 		this.toogle = false;
 	}
 
+	dataSourceHeader(){
+		this.showfilter = true;
+		this.showInput = true;
+		this.value1 = 'Add Partner';
+		this.type1 = 'button';
+	}
+
 	setTopbar(path: string) {
 		var pathArray = path.split('/')
 		this.path = pathArray[pathArray.length - 1]
@@ -123,16 +132,13 @@ export class TopbarComponent implements OnInit {
 			this.type2 = 'button';
 		}
 		if (this.path == 'lead-management') {
-			this.showfilter = true;
-			this.showInput = true;
+			this.dataSourceHeader()
 			this.value1 = 'Add New Lead';
-			this.type1 = 'button';
+
 		}
 		if (this.path == 'partner') {
-			this.showfilter = true;
-			this.showInput = true;
+			this.dataSourceHeader()
 			this.value1 = 'Add Partner';
-			this.type1 = 'button';
 		}
 		if (this.path == 'customer-list') {
 			this.showfilter = true;
@@ -140,16 +146,12 @@ export class TopbarComponent implements OnInit {
 			this.toogle = true;
 		}
 		if (this.path == 'branch') {
-			this.showfilter = true;
-			this.showInput = true;
+			this.dataSourceHeader()
 			this.value1 = 'Add New Branch';
-			this.type1 = 'button';
 		}
 		if (this.path == 'assign-appraiser') {
-			this.showfilter = true;
-			this.showInput = true;
+			this.dataSourceHeader()
 			this.value1 = 'Add Appraiser';
-			this.type1 = 'button';
 		}
 		if (this.path == 'roles') {
 			this.showInput = true;
@@ -158,23 +160,21 @@ export class TopbarComponent implements OnInit {
 			this.value2 = 'Add New Role';
 		}
 		if (this.path == 'broker') {
-			this.showInput = true;
-			this.rightButton = true
-			this.type1 = 'button';
+			this.dataSourceHeader()
 			this.value1 = 'Add Broker';
 		}
 		if (this.path == 'merchant') {
-			this.showInput = true;
-			this.rightButton = true
-			this.type1 = 'button';
+			this.dataSourceHeader()
 			this.value1 = 'Add Merchant';
 		}
 
 		if (this.path == 'internal-user') {
-			this.showInput = true;
-			this.rightButton = true
-			this.type1 = 'button';
-			this.value1 = 'Add Internal-user';
+			this.dataSourceHeader()
+			this.value1 = 'Add Internal User';
+		}
+		if (this.path == 'internal-user-branch') {
+			this.dataSourceHeader()
+			this.value1 = 'Add Internal User Branch';
 		}
 
 		
@@ -208,6 +208,10 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'merchant') {
 			this.router.navigate(['/user-management/add-merchant'])
+		}
+		if (this.path == 'internal-user-branch') {
+			this.internalUserBranchService.openModal.next(true)
+
 		}
 	}
 

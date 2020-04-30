@@ -55,6 +55,8 @@ import { AddAppraiserComponent } from './assign-appraiser/add-appraiser/add-appr
 import { AppraiserListComponent } from './assign-appraiser/appraiser-list/appraiser-list.component';
 import { ViewMerchantComponent } from './merchant/view-merchant/view-merchant.component';
 import { ApiKeyComponent } from './merchant/api-key/api-key.component';
+import { InternalUserBranchListComponent } from './internal-user-branch/internal-user-branch-list/internal-user-branch-list.component';
+import { AddInternalUserBranchComponent } from './internal-user-branch/add-internal-user-branch/add-internal-user-branch.component';
 
 const routes: Routes = [
 	{
@@ -85,6 +87,10 @@ const routes: Routes = [
 			{
 				path: 'internal-user',
 				component: InternalUserListComponent,
+			},
+			{
+				path: 'internal-user-branch',
+				component: InternalUserBranchListComponent,
 			},
 			{
 				path: 'assign-appraiser',
@@ -151,7 +157,8 @@ const routes: Routes = [
 		AddInternalUserComponent,
 		AddAppraiserComponent,
 		ViewMerchantComponent,
-		ApiKeyComponent
+		ApiKeyComponent,
+		AddInternalUserBranchComponent
 	],
 	declarations: [
 		UserManagementComponent,
@@ -181,6 +188,8 @@ const routes: Routes = [
 		AppraiserListComponent,
 		ViewMerchantComponent,
 		ApiKeyComponent,
+		InternalUserBranchListComponent,
+		AddInternalUserBranchComponent,
 
 	]
 })

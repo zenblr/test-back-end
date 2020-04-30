@@ -13,22 +13,23 @@ import { Store } from '@ngrx/store';
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
 import { AppState } from '../../../../../core/reducers';
-import { InternalUserDatasource,InternalUserService } from '../../../../../core/user-management/internal-user';
+import { InternalUserBranchDatasource,InternalUserBranchService } from '../../../../../core/user-management/internal-user-branch';
 
-import {AddInternalUserComponent } from '../add-internal-user/add-internal-user.component'
+import {AddInternalUserBranchComponent } from '../add-internal-user-branch/add-internal-user-branch.component'
 
 @Component({
-  selector: 'kt-internal-user-list',
-  templateUrl: './internal-user-list.component.html',
-  styleUrls: ['./internal-user-list.component.scss']
+  selector: 'kt-internal-user-branch-list',
+  templateUrl: './internal-user-branch-list.component.html',
+  styleUrls: ['./internal-user-branch-list.component.scss']
 })
-export class InternalUserListComponent implements OnInit {
-// Table fields
-dataSource: InternalUserDatasource;
-displayedColumns = ['city', 'pincode', 'approvalStatus', 'status', 'action'];
+export class InternalUserBranchListComponent implements OnInit {
+
+ // Table fields
+dataSource: InternalUserBranchDatasource;
+displayedColumns = ['branchId','branchName','address','state','city', 'pincode', 'action'];
 @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-brokerResult:any [] =[];
+internalBranchResult:any [] =[];
 
 
 
@@ -49,11 +50,11 @@ constructor(
   public dialog: MatDialog,
   public snackBar: MatSnackBar,
   private layoutUtilsService: LayoutUtilsService,
-  private internalUserService: InternalUserService,
+  private internalUserBranchService: InternalUserBranchService,
   private router: Router) {
-  this.internalUserService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+  this.internalUserBranchService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
     if (res) {
-      this.addUser('add')
+      this.addInternalBranch('add')
     }
   })
 }
@@ -67,19 +68,19 @@ constructor(
  */
 ngOnInit() {
     // Init DataSource
-  this.dataSource = new InternalUserDatasource(this.internalUserService);
+  this.dataSource = new InternalUserBranchDatasource(this.internalUserBranchService);
   const entitiesSubscription = this.dataSource.entitySubject.pipe(
     skip(1),
     distinctUntilChanged()
   ).subscribe(res => {
-    this.brokerResult = res;
-    console.log(this.brokerResult)
+    this.internalBranchResult = res;
+    console.log(this.internalBranchResult)
   });
   this.subscriptions.push(entitiesSubscription);
 
   // First load
   of(undefined).pipe(take(1), delay(1000)).subscribe(() => { // Remove this line, just loading imitation
-    this.loadRolesList();
+    this.loadInternalBranchList();
   });
 }
 
@@ -95,13 +96,13 @@ ngOnDestroy() {
 /**
  * Load Roles List
  */
-loadRolesList() {
+loadInternalBranchList() {
   if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
     return;
   let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
   let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-  this.dataSource.loadRoles('', from, to, '', '', '');
+  this.dataSource.loadInternalBranch('', from, to, '', '', '');
 }
 
 /**
@@ -129,7 +130,7 @@ deleteRole(_item) {
 
     // this.store.dispatch(new RoleDeleted({ id: _item.id }));
     this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-    this.loadRolesList();
+    this.loadInternalBranchList();
   });
 }
 
@@ -152,17 +153,17 @@ fetchRoles() {
 /**
  * Add role
  */
-addUser(action) {
-  const dialogRef = this.dialog.open(AddInternalUserComponent, {
+addInternalBranch(action) {
+  const dialogRef = this.dialog.open(AddInternalUserBranchComponent, {
     data: { action: action },
     width: '450px'
   });
   dialogRef.afterClosed().subscribe(res => {
     if (res) {
-      this.loadRolesList();
+      this.loadInternalBranchList();
     }
   })
-  this.internalUserService.openModal.next(false);
+  this.internalUserBranchService.openModal.next(false);
 }
 
 
@@ -176,7 +177,7 @@ addUser(action) {
 editBroker(role, action) {
   const _saveMessage = `Role successfully has been saved.`;
   const _messageType = role.id ? MessageType.Update : MessageType.Create;
-  const dialogRef = this.dialog.open(AddInternalUserComponent, {
+  const dialogRef = this.dialog.open(AddInternalUserBranchComponent, {
     data: {
       action: action,
       role: role
@@ -189,7 +190,7 @@ editBroker(role, action) {
     }
 
     this.layoutUtilsService.showActionNotification(_saveMessage, _messageType, 10000, true, true);
-    this.loadRolesList();
+    this.loadInternalBranchList();
   });
 }
 

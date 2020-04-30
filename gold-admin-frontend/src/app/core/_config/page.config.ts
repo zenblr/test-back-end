@@ -41,10 +41,13 @@ export class PageConfig {
 				page: { title: 'All Partners', desc: '' }
 			},
 			'branch': {
-				page: { title: 'All Branches', desc: '' }
+				page: { title: 'All Partner Branches', desc: '' }
 			},
 			'internal-user': {
 				page: { title: 'Internal User', desc: '' }
+			},
+			'internal-user-branch': {
+				page: { title: 'Internal User Branch', desc: '' }
 			},
 			'assign-appraiser': {
 				page: { title: 'Assign Appraiser', desc: '' }
