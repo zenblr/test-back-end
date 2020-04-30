@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ChangeDetec
 import { UserAddressService } from '../../../../../core/kyc-settings';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
-import { map, filter } from 'rxjs/operators';
+import { map, filter, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-user-review',
@@ -97,7 +97,7 @@ export class UserReviewComponent implements OnInit {
           "addressType": "residential",
           "address": "assa1212",
           "stateId": 3,
-          "cityId": 14,
+          "cityId": 299,
           "pinCode": 122121,
           "addressProof": [
             "http://173.249.49.7:8000/uploads/images/1588052060956.png",
@@ -136,9 +136,9 @@ export class UserReviewComponent implements OnInit {
     private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
+    this.initForm();
     this.getStates();
     this.getCities();
-    this.initForm();
 
   }
 
@@ -222,19 +222,15 @@ export class UserReviewComponent implements OnInit {
         temp = res.message.filter(state => {
           return state.id == this.data.customerKycReview.customerKycAddress[index].stateId;
         })
+        console.log(temp[0].name)
         if (index == 0) {
           this.customerKycAddressOne.patchValue({ stateId: temp[0].name })
         } else {
-          this.customerKycAddressOne.patchValue({ stateId: temp[1].name })
+          this.customerKycAddressTwo.patchValue({ stateId: temp[0].name })
         }
       }
-      // this.data.customerKycReview.customerKycAddress.forEach(ele => {
-      //   var temp = [];
-      //   temp = res.message.filter(state => {
-      //     return state.id == ele.stateId;
-      //   })
-      //   Array.prototype.push.apply(this.states, temp);
-      // })
+    }),finalize(()=>{
+      this.ref.detectChanges()
     })).subscribe()
 
 
@@ -242,23 +238,23 @@ export class UserReviewComponent implements OnInit {
   }
 
   getCities() {
-    // console.log(index)
-    // const stateId = this.addressControls.controls[index]['controls'].stateId.value;
-    // console.log(stateId)
-
-    this.data.customerKycReview.customerKycAddress.forEach(element => {
-      this.sharedService.getCities(element.stateId).pipe(map(res => {
+    for (let index = 0; index < this.data.customerKycReview.customerKycAddress.length; index++) {
+      this.sharedService.getCities(this.data.customerKycReview.customerKycAddress[index].stateId).pipe(map(res => {
         var temp = [];
         temp = res.message.filter(city => {
-          return city.id == element.cityId;
+          return city.id == this.data.customerKycReview.customerKycAddress[index].cityId;
         })
         console.log(temp)
-        // this.cities0.push(temp);
-        Array.prototype.push.apply(this.cities0, temp);
-      })).subscribe(res => {
-
-      })
-    });
+        if (index == 0) {
+          this.customerKycAddressOne.patchValue({ cityId: temp[0].name })
+        } else {
+          this.customerKycAddressTwo.patchValue({ cityId: temp[0].name })
+        }
+      }),finalize(()=>{
+        this.ref.detectChanges()
+      })).subscribe()
+      
+    }
 
     console.log(this.cities0);
 
