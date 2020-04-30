@@ -5,7 +5,7 @@ const op = sequelize.Op;
 
 
 
-exports.addInternalUser = [
+exports.addInternalUserValidation = [
   body('firstName')
     .exists().withMessage('firstName is required'),
   body('lastName')
@@ -47,6 +47,52 @@ exports.addInternalUser = [
   body('roleId')
     .exists().withMessage('roleId is required')
 ];
+
+exports.UpdateInternalUserValidation = [
+  body('firstName')
+    .exists().withMessage('firstName is required'),
+  body('lastName')
+    .exists().withMessage('lastName is required'),
+  body('mobileNumber')
+    .exists()
+    .withMessage('mobileNumber no is required')
+    .custom(async (value, { req }) => {
+      return await models.user.findOne({
+        where: {
+          mobileNumber: {
+            [Op.iLike]: value
+          },
+          id: { [Op.not]: req.params.id },
+          isActive: true
+        }
+      }).then(mobile => {
+        if (mobile) {
+          return Promise.reject("mobileNumber no already exist !");
+        }
+      })
+    }),
+  body('email')
+    .exists()
+    .withMessage('email is required')
+    .custom(async (value, { req }) => {
+      return await models.user.findOne({
+        where: {
+          email: {
+            [Op.iLike]: value
+          },
+          id: { [Op.not]: req.params.id },
+          isActive: true
+        }
+      }).then(email => {
+        if (email) {
+          return Promise.reject("email already exist !");
+        }
+      })
+    }),
+  body('roleId')
+    .exists().withMessage('roleId is required')
+];
+
 
 exports.userValidation = [
   body('firstName')

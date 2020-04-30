@@ -282,12 +282,72 @@ exports.updateInternalUser = async (req, res, next) => {
     let { firstName, lastName, mobileNumber, email,internalBranchId,roleId } = req.body;
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
-        const user = await models.user.update({ firstName, lastName, mobileNumber, email, internalBranchId, modifiedBy }, { transaction: t })
+        const user = await models.user.update({ firstName, lastName, mobileNumber, email, internalBranchId, modifiedBy }, {where : {id : id}})
         await models.userRole.update({isActive : false},{where:{ userId: user.id} });
         await models.userRole.create({ userId: user.id, roleId }, { transaction: t });
     })
-    // request(
-    //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=your password is ${password}`
-    //   );
     return res.status(200).json({ message: 'User updated.' });
 }
+
+exports.deleteInternalUser = async (req, res, next) => {
+    const id = req.params.id;
+    let modifiedBy = req.userData.id;
+    await sequelize.transaction(async t => {
+        const user = await models.user.update({ isActive:false, modifiedBy }, {where : {id : id}})
+        await models.userRole.update({isActive : false},{where:{ userId: user.id} });
+    })
+    return res.status(200).json({ message: 'User deleted.' });
+}
+
+exports.GetInternalUser = async (req, res) => {
+    const { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(
+      req.query.search,
+      req.query.from,
+      req.query.to
+    );
+    let includeArray = [
+        {
+          model: models.role,
+          where: { isActive: true },
+          subQuery: false
+        },
+        {
+            model: models.internalBranch,
+            as : 'internalBranch',
+            where: { isActive: true },
+            subQuery: false
+          }
+      ]
+    let searchQuery = {
+        [Sequelize.Op.or]: {
+            firstName: { [Sequelize.Op.iLike]: search + "%" },
+            lastName: { [Sequelize.Op.iLike]: search + "%" },
+            mobileNumber: { [Sequelize.Op.iLike]: search + "%" },
+            email: { [Sequelize.Op.iLike]: search + "%" },
+            "$user.internalBranch.internal_branch_unique_id$": {
+                [Op.iLike]: search + "%",
+              },
+            "$user.role.role_name$": {
+                [Op.iLike]: search + "%",
+              }
+        },
+        isActive: true,
+        userTypeId : 1
+      }
+    let CategoryData = await models.user.findAll({
+      where: searchQuery,
+      offset: offset,
+      limit: pageSize,
+      include: includeArray,
+      subQuery: false
+    });
+    let count = await models.categories.findAll({
+      where: searchQuery,
+        include: includeArray,
+        subQuery: false
+    });
+    res.status(200).json({
+      data: CategoryData,
+      count: count.length
+    });
+  }
