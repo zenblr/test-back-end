@@ -209,6 +209,93 @@
  *     responses:
  *       200:
  *          description: Success
+ * /user/internal-user:
+ *   post:
+ *     tags:
+ *       - Internal User
+ *     name: add internal user
+ *     summary: To add internal user  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             mobileNumber:
+ *               type: integer
+ *             email:
+ *               type: string
+ *             roleId:
+ *               type: number   
+ *             internalBranchId:
+ *               type: number      
+ *         required:
+ *           - firstName
+ *           - lastName
+ *           - password
+ *           - mobileNumber
+ *           - email
+ *           - roleId
+ * 
+ *     responses:
+ *       200:
+ *          description: internal user added
+ *       404:
+ *          description: failed to add internal user
+ * /user/internal-user/{id}:
+ *   post:
+ *     tags:
+ *       - Internal User
+ *     name: add internal user
+ *     summary: To add internal user  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: "id"
+ *         in: "path"
+ *         description: "id to edit internal user"
+ *         required: true
+ *         type: "integer"
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             mobileNumber:
+ *               type: integer
+ *             email:
+ *               type: string
+ *             roleId:
+ *               type: number   
+ *             internalBranchId:
+ *               type: number      
+ *         required:
+ *           - firstName
+ *           - lastName
+ *           - password
+ *           - mobileNumber
+ *           - email
+ *           - roleId
+ * 
+ *     responses:
+ *       200:
+ *          description: internal user updated
+ *       404:
+ *          description: failed to update internal user
  *    
  * 
  */

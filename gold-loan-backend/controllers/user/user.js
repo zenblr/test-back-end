@@ -260,3 +260,34 @@ exports.addAdmin = async (req, res, next) => {
 //query for add user
 // INSERT INTO "user" (firstName, lastName, password, mobileNumber, email, panCardNumber, userTypeId) 
 // VALUES ('rupesh','ayare', crypt('password1', gen_salt('bf', 10)),"9324495603", "rupesh@nimapinfotech.com","asdfg1234g",1);
+
+//Add internal user
+exports.addInternalUser = async (req, res, next) => {
+    let { firstName, lastName, mobileNumber, email,internalBranchId,roleId } = req.body;
+    let createdBy = req.userData.id
+    let modifiedBy = req.userData.id
+    let password = firstName.slice(0, 3) + '@' + mobileNumber.slice(mobileNumber.length - 5, 9);
+    await sequelize.transaction(async t => {
+        const user = await models.user.create({ firstName, lastName, password, mobileNumber, email, internalBranchId, userTypeId : 1, createdBy, modifiedBy }, { transaction: t })
+        await models.userRole.create({ userId: user.id, roleId }, { transaction: t })
+    })
+    // request(
+    //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=your password is ${password}`
+    //   );
+    return res.status(200).json({ message: 'User Created.' });
+}
+
+exports.updateInternalUser = async (req, res, next) => {
+    const id = req.params.id;
+    let { firstName, lastName, mobileNumber, email,internalBranchId,roleId } = req.body;
+    let modifiedBy = req.userData.id;
+    await sequelize.transaction(async t => {
+        const user = await models.user.update({ firstName, lastName, mobileNumber, email, internalBranchId, modifiedBy }, { transaction: t })
+        await models.userRole.update({isActive : false},{where:{ userId: user.id} });
+        await models.userRole.create({ userId: user.id, roleId }, { transaction: t });
+    })
+    // request(
+    //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=your password is ${password}`
+    //   );
+    return res.status(200).json({ message: 'User updated.' });
+}

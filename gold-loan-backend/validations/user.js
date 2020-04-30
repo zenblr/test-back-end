@@ -4,6 +4,50 @@ const sequelize = models.Sequelize;
 const op = sequelize.Op;
 
 
+
+exports.addInternalUser = [
+  body('firstName')
+    .exists().withMessage('firstName is required'),
+  body('lastName')
+    .exists().withMessage('lastName is required'),
+  body('mobileNumber')
+    .exists()
+    .withMessage('mobileNumber no is required')
+    .custom(async value => {
+      return await models.user.findOne({
+        where: {
+          mobileNumber: {
+            [Op.iLike]: value
+          },
+          isActive: true
+        }
+      }).then(mobile => {
+        if (mobile) {
+          return Promise.reject("mobileNumber no already exist !");
+        }
+      })
+    }),
+  body('email')
+    .exists()
+    .withMessage('email is required')
+    .custom(async value => {
+      return await models.user.findOne({
+        where: {
+          email: {
+            [Op.iLike]: value
+          },
+          isActive: true
+        }
+      }).then(email => {
+        if (email) {
+          return Promise.reject("email already exist !");
+        }
+      })
+    }),
+  body('roleId')
+    .exists().withMessage('roleId is required')
+];
+
 exports.userValidation = [
   body('firstName')
     .exists()

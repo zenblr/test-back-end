@@ -5,10 +5,10 @@ const { wrapper } = require('../utils/errorWrap');
 
 const checkAuth = require('../middleware/checkAuth')
 
-const { userValidation } = require('../validations/user');
+const { userValidation,addInternalUser } = require('../validations/user');
 const validationError = require('../middleware/validationError')
 
-const { addUser, registerSendOtp, verifyRegistrationOtp, sendOtp, changePassword, updatePassword, getUser, verifyOtp, addAdmin } = require('../controllers/user/user')
+const { addUser, registerSendOtp,addInternalUser,updateInternalUser, verifyRegistrationOtp, sendOtp, changePassword, updatePassword, getUser, verifyOtp, addAdmin } = require('../controllers/user/user')
 
 //Register User
 
@@ -26,6 +26,10 @@ route.post('/verify-otp', verifyOtp)
 route.post('/update-password', wrapper(updatePassword));
 
 route.post('/change-password', checkAuth, wrapper(changePassword));
+
+route.post('/internal-user', checkAuth,addInternalUser,validationError, wrapper(addInternalUser));
+
+route.put('/internal-user/:id', checkAuth,addInternalUser,validationError, wrapper(updateInternalUser));
 
 route.get('/', getUser);
 
