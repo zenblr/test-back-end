@@ -52,6 +52,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'user_type_id',
             allowNull: false,
         },
+        internalBranchId: {
+            type: DataTypes.INTEGER,
+            field: 'internal_branch_id',
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
@@ -74,27 +78,30 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'user',
     });
 
-    User.associate = function(models) {
+    User.associate = function (models) {
         User.hasMany(models.user_address, { foreignKey: 'userId', as: 'address' });
         // User.hasMany(models.userRole, { foreignKey: 'userId', as: 'userRole' });
 
-        User.belongsToMany(models.role, {through: models.userRole});
+        User.belongsToMany(models.role, { through: models.userRole });
 
         User.belongsTo(models.userType, { foreignKey: 'userTypeId', as: 'Usertype' });
 
         User.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         User.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        User.belongsTo(models.internalBranch, { foreignKey: 'internalBranchId', as: 'internalBranch', constraints: false })
+
     }
 
     // This hook is always run before create.
-    User.beforeCreate(function(user, options, cb) {
+    User.beforeCreate(function (user, options, cb) {
         if (user.password) {
             return new Promise((resolve, reject) => {
-                bcrypt.genSalt(10, function(err, salt) {
+                bcrypt.genSalt(10, function (err, salt) {
                     if (err) {
                         return err;
                     }
-                    bcrypt.hash(user.password, salt, function(err, hash) {
+                    bcrypt.hash(user.password, salt, function (err, hash) {
                         if (err) {
                             return err;
                         }
@@ -107,14 +114,14 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     // This hook is always run before update.
-    User.beforeUpdate(function(user, options, cb) {
+    User.beforeUpdate(function (user, options, cb) {
         if (user.password) {
             return new Promise((resolve, reject) => {
-                bcrypt.genSalt(10, function(err, salt) {
+                bcrypt.genSalt(10, function (err, salt) {
                     if (err) {
                         return err;
                     }
-                    bcrypt.hash(user.password, salt, function(err, hash) {
+                    bcrypt.hash(user.password, salt, function (err, hash) {
                         if (err) {
                             return err;
                         }
@@ -127,9 +134,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     // Instance method for comparing password.
-    User.prototype.comparePassword = function(passw, cb) {
+    User.prototype.comparePassword = function (passw, cb) {
         return new Promise((resolve, reject) => {
-            bcrypt.compare(passw, this.password, function(err, isMatch) {
+            bcrypt.compare(passw, this.password, function (err, isMatch) {
                 if (err) {
                     return err;
                 }
@@ -139,7 +146,7 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     // This will not return password, refresh token and access token.
-    User.prototype.toJSON = function() {
+    User.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
         delete values.password;
         return values;

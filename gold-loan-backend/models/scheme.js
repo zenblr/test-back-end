@@ -1,6 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const Scheme = sequelize.define('scheme', {
         //attribute
+        schemeName:{
+            type:DataTypes.STRING,
+            field:'scheme_name'
+        },
         schemeAmountStart: {
             type: DataTypes.BIGINT,
             field: 'scheme_amount_start'

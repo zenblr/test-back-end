@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         pinCode: {
             type: DataTypes.INTEGER,
-            field: 'pinCode'
+            field: 'pin_code'
         },
         addressProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),

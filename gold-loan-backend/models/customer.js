@@ -2,9 +2,14 @@ const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('customer', {
         // attributes
-        customerUniqueId:{
+        customerUniqueId: {
             type: DataTypes.STRING,
             field: 'customer_unique_id'
+        },
+        internalBranchId: {
+            type: DataTypes.INTEGER,
+            field: 'internal_branch_id',
+            allowNull: false,
         },
         firstName: {
             type: DataTypes.STRING,
@@ -63,20 +68,29 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'city_id',
         },
+        pinCode: {
+            type: DataTypes.INTEGER,
+            field: 'pin_code',
+        },
         kycStatus: {
             type: DataTypes.ENUM,
             field: 'kyc_status',
             defaultValue: "pending",
-            values: ['confirm', 'pending','complete','closed']
+            values: ['confirm', 'pending', 'complete', 'closed']
         },
-        isVerifiedByFirstStage: {
+        isKycSubmitted: {
             type: DataTypes.BOOLEAN,
-            field: 'is_verified_by_first_stage',
+            field: 'is_kyc_submitted',
             defaultValue: false
         },
-        firstStageVerifiedBy: {
+        isVerifiedByCce: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_verified_by_Cce',
+            defaultValue: false
+        },
+        cceVerifiedBy: {
             type: DataTypes.INTEGER,
-            field: 'first_stage_verified_by',
+            field: 'cce_verified_by',
             defaultValue: null
         },
         isVerifiedByBranchManager: {
@@ -114,6 +128,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Customer.associate = function (models) {
+        Customer.belongsTo(models.internalBranch, { foreignKey: 'internalBranchId', as: 'internalBranch' })
 
         Customer.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerId', as: 'customerKyc' });
         Customer.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });
@@ -122,6 +137,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.hasOne(models.customerKycClassification, { foreignKey: 'customerId', as: 'customerKycClassification' });
 
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
+        Customer.hasMany(models.customerLoan, { foreignKey: 'customerId', as: 'customerLoan' });
 
 
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
@@ -132,7 +148,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        Customer.belongsTo(models.user, { foreignKey: 'firstStageVerifiedBy', as: 'firstStageBy' });
+        Customer.belongsTo(models.user, { foreignKey: 'cceVerifiedBy', as: 'cceStageBy' });
         Customer.belongsTo(models.user, { foreignKey: 'branchManagerVerifiedBy', as: 'branchManagerBy' });
     }
 

@@ -12,10 +12,19 @@ export class UserPersonalService {
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getOccupation(): Observable<any> {
-    return this.http.get(`/api/identity-type`).pipe(
+    return this.http.get(`/api/occupation`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message, 'Error!');
+        this.toastr.error(err.error.message);
+        throw (err)
+      }))
+  }
+
+  personalDetails(data): Observable<any> {
+    return this.http.post(`/api/kyc/customer-kyc-personal`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        this.toastr.error(err.error.message);
         throw (err)
       }))
   }

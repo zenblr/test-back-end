@@ -14,7 +14,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, address, statusId, } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, address, statusId, pinCode, internalBranchId } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -43,7 +43,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, statusId, createdBy, modifiedBy, isActive: true },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, createdBy, modifiedBy, isActive: true },
       { transaction: t }
     );
     if (check.isEmpty(address.length)) {
@@ -172,14 +172,14 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, statusId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId } = req.body;
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
   if (check.isEmpty(customerExist)) {
     return res.status(404).json({ message: "Customer does not exist" });
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, modifiedBy },
+      { cityId, stateId, statusId, pinCode, internalBranchId, modifiedBy },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -214,67 +214,57 @@ exports.getAllCustomers = async (req, res, next) => {
 
   console.log(search, offset, pageSize, stage.id);
 
-  const searchQuery = [
-    {
-      [Op.or]: {
-        first_name: { [Op.iLike]: search + "%" },
-        last_name: { [Op.iLike]: search + "%" },
-        mobile_number: { [Op.iLike]: search + "%" },
-        status_name: sequelize.where(
-          sequelize.cast(sequelize.col("status.status_name"), "varchar"),
-          {
-            [Op.iLike]: search + "%"
-          }),
-        city_name: sequelize.where(
-          sequelize.cast(sequelize.col("city.name"), "varchar"),
-          {
-            [Op.iLike]: search + "%"
-          }),
-        state_name: sequelize.where(
-          sequelize.cast(sequelize.col("state.name"), "varchar"),
-          {
-            [Op.iLike]: search + "%"
-          }),
+  const searchQuery = {
+    [Op.or]: {
+      first_name: { [Op.iLike]: search + "%" },
+      last_name: { [Op.iLike]: search + "%" },
+      mobile_number: { [Op.iLike]: search + "%" },
+      pan_card_number: { [Op.iLike]: search + "%" },
+      "$status.status_name$": {
+        [Op.iLike]: search + "%",
       },
+      "$city.name$": {
+        [Op.iLike]: search + "%",
+      },
+      "$state.name$": {
+        [Op.iLike]: search + "%",
+      }
     },
-  ];
+    isActive: true,
+  };
+  let includeArray = [
+    {
+      model: models.state,
+      as: "state",
+    },
+    {
+      model: models.city,
+      as: "city",
+    },
+    {
+      model: models.stage,
+      as: "stage",
+      where: { id: stage.id },
+    },
+    {
+      model: models.status,
+      as: "status",
+    },
+  ]
+
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
-    include: [
-      {
-        model: models.state,
-        as: "state",
-      },
-      {
-        model: models.city,
-        as: "city",
-      },
-      {
-        model: models.stage,
-        as: "stage",
-        where: { id: stage.id },
-      },
-      {
-        model: models.status,
-        as: "status",
-      },
-    ],
     order: [["id", "DESC"]],
     offset: offset,
     limit: pageSize,
+    include: includeArray,
   });
-  let count = await models.customer.findAll({
-    where: { isActive: true },
-    include: [
-      {
-        model: models.stage,
-        as: "stage",
-        where: { id: stage.id },
-      },
-    ],
+  let count = await models.customer.count({
+    where: searchQuery,
+    include: includeArray,
   });
 
-  return res.status(200).json({ data: allCustomers, count: count.length });
+  return res.status(200).json({ data: allCustomers, count: count });
 };
 
 
@@ -306,7 +296,7 @@ exports.getSingleCustomer = async (req, res, next) => {
   if (check.isEmpty(singleCustomer)) {
     return res.status(404).json({ message: "Customer not found" });
   }
-  return res.status(200).json({ message: singleCustomer })
+  return res.status(200).json({ singleCustomer })
 };
 
 

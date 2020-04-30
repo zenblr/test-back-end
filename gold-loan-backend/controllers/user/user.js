@@ -13,7 +13,7 @@ const CONSTANT = require('../../utils/constant');
 const moment = require('moment')
 
 exports.addUser = async (req, res, next) => {
-    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId, userTypeId } = req.body;
+    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId, userTypeId, internalBranchId } = req.body;
     let userMobileNumberExist = await models.user.findOne({ where: { mobileNumber: mobileNumber } })
     if (!check.isEmpty(userMobileNumberExist)) {
         return res.status(404).json({ message: 'This Mobile number is already Exist' });
@@ -28,7 +28,7 @@ exports.addUser = async (req, res, next) => {
 
     await sequelize.transaction(async t => {
 
-        const user = await models.user.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, userTypeId, createdBy, modifiedBy }, { transaction: t })
+        const user = await models.user.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, userTypeId,internalBranchId, createdBy, modifiedBy }, { transaction: t })
         if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
                 let data = await models.user_address.create({
@@ -203,9 +203,9 @@ exports.changePassword = async (req, res, next) => {
     if (checkPassword === true) {
         await userinfo.update({ password: newPassword },
             { where: { id: userinfo.id, isActive: true } });
-       return res.status(200).json({ message: 'Success' })
+        return res.status(200).json({ message: 'Success' })
     } else {
-       return res.status(400).json({ message: ' The password you entered is incorrect Please retype your current password.' });
+        return res.status(400).json({ message: ' The password you entered is incorrect Please retype your current password.' });
     }
 }
 
@@ -213,11 +213,10 @@ exports.changePassword = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
     let user = await models.user.findAll({
         include: [{
-            model: models.role,
-            include: [{
-                model: models.permission,
-                attributes: ['id', 'permission_name']
-            }]
+            model: models.role
+        },{
+            model: models.internalBranch,
+            as: 'internalBranch'
         }]
     });
     return res.json(user)

@@ -14,7 +14,7 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 })
 export class ImagePreviewDialogComponent implements OnInit ,AfterViewInit {
 
-  images: [] = [];
+  images:any [] = [];
   index: number = null;
   constructor(
     config: NgbCarouselConfig,
@@ -29,10 +29,16 @@ export class ImagePreviewDialogComponent implements OnInit ,AfterViewInit {
      }
 
   ngOnInit() {
-
-    this.images = this.data.images;
     this.index = this.data.index;
-    
+    var temp = []
+    for (let index = 0; index < this.data.images.length; index++) {
+     if(index >= this.index){
+       this.images.push(this.data.images[index])
+     }else{
+       temp.push(this.data.images[index])
+     }
+    }
+    Array.prototype.push.apply(this.images,temp)
   }
 
   ngAfterViewInit() {

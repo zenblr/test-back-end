@@ -66,15 +66,11 @@ export class ChangePasswordComponent implements OnInit {
     }
     this.authService.changePassword(this.passwordForm.value).pipe(
       map((res) => {
-         if (res.message == "Success") {
           this.toast.success("Password Changed Successfully");
           this.logout()
           this.form.resetForm()
-        }
       }),catchError(err =>{
-        if (err.error.message == " wrong credentials") {
-          this.toast.error("Wrong Credentials")
-        } 
+          this.toast.error(err.error.message)
         throw err
       })
     ).subscribe()

@@ -32,9 +32,9 @@ exports.readAddressProofType = async (req, res) => {
 
 exports.deactivateAddressProofType = async (req, res, next) => {
     const { id, isActive } = req.query;
-    const deactiveIdentityType = await models.identityType.update({ isActive: isActive }, { where: { id: id } })
-    if (deactiveIdentityType[0] == 0) {
-        return res.status(404).json({ message: "Identity type deleted failed" });
+    const deactiveAddressProofType = await models.addressProofType.update({ isActive: isActive }, { where: { id: id } })
+    if (deactiveAddressProofType[0] == 0) {
+        return res.status(404).json({ message: "Address Proof Type deleted failed" });
     }
     return res.status(200).json({ message: `Updated` })
 }

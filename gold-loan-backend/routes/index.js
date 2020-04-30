@@ -52,8 +52,8 @@ const partner = require('./partner'); //  partner Route
 router.use('/partner', partner);
 
 
-const branch = require('./branch'); // branch Route
-router.use('/branch', branch);
+const partnerBranch = require('./partnerBranch'); // branch Route
+router.use('/partner-branch', partnerBranch);
 
 const role = require('./role'); // role Route
 router.use('/role', role)
@@ -70,7 +70,6 @@ router.use('/upload-scheme', uploadScheme);
 const roughLoanAmount = require('./roughLoanAmount'); // rough amount calculations
 router.use('/rough-amount', roughLoanAmount);
 
-
 const occupation = require('./occupation'); // occupation
 router.use('/occupation', occupation)
 
@@ -84,6 +83,21 @@ router.use('/address-proof-type', addressProofType);
 const customerKyc = require('./customerKyc')
 router.use('/kyc', customerKyc)
 
+const emailAlert=require('./emailAlert'); // email alert
+router.use('/email-alert',emailAlert)
+
+const smsAlert=require('./smsAlert');  // sms alert
+router.use('/sms-alert',smsAlert)
+
+const query=require('./query'); // customer query
+router.use('/customer-query',query)
+
+const customerLoanProcess = require('./customerLoanProcess'); // customer loan process module
+router.use('/loan-process', customerLoanProcess);
+
+const feedBack=require('./feedBack');
+router.use('/customer-feedback',feedBack)
+
 const customerClassification = require('./customerClassification')
 router.use('/classification', customerClassification)
 
@@ -92,5 +106,8 @@ router.use('/role-permission',rolePermission);
 
 const modules = require('./module');
 router.use('/modules',modules);
+
+const goldRate = require('./goldRate');
+router.use('/gold-rate', goldRate)
 
 module.exports = router;

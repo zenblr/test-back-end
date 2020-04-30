@@ -9,16 +9,20 @@ const check = require('../../lib/checkLib')
 //Add branch
 exports.addBranch = async (req, res, next) => {
     const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
+
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+
     await sequelize.transaction(async t => {
 
-        let addBranch = await models.branch.create({ partnerId, name, cityId, stateId, address, pincode, commission, isActive }, { transaction: t });
+        let addBranch = await models.partnerBranch.create({ partnerId, name, cityId, stateId, address, pincode, commission, createdBy, modifiedBy, isActive }, { transaction: t });
         let id = addBranch.dataValues.id;
 
         let partnerdataid = await models.partner.findOne({ where: { id: addBranch.dataValues.partnerId }, transaction: t });
 
         let pqid = partnerdataid.dataValues.partnerId;
         let newId = pqid.slice(0, 2) + addBranch.dataValues.name.slice(0, 3).toUpperCase() + '-' + id;
-        await models.branch.update({ branchId: newId }, { where: { id }, transaction: t });
+        await models.partnerBranch.update({ branchId: newId }, { where: { id }, transaction: t });
         return addBranch;
     })
     return res.status(201).json({ message: "branch created" })
@@ -34,85 +38,65 @@ exports.readBranch = async (req, res, next) => {
         [Op.or]: {
             name: { [Op.iLike]: search + '%' },
             branchId: { [Op.iLike]: search + '%' },
-            name: sequelize.where(
-                sequelize.cast(sequelize.col("partner.name"), "varchar"),
-                {
-                    [Op.iLike]: search + "%"
-                }),
+            "$partner.name$": {
+                [Op.iLike]: search + "%",
+            },
             pincode: sequelize.where(
-                sequelize.cast(sequelize.col("branch.pincode"), "varchar"),
+                sequelize.cast(sequelize.col("pincode"), "varchar"),
                 {
                     [Op.iLike]: search + "%"
                 }),
-            city_name: sequelize.where(
-                sequelize.cast(sequelize.col("city.name"), "varchar"),
-                {
-                    [Op.iLike]: search + "%"
-                }),
-            state_name: sequelize.where(
-                sequelize.cast(sequelize.col("state.name"), "varchar"),
-                {
-                    [Op.iLike]: search + "%"
-                }),
+            "$city.name$": {
+                [Op.iLike]: search + "%",
+            },
+            "$state.name$": {
+                [Op.iLike]: search + "%",
+            }
         },
         isActive: true
     }
-    let readBranchData = await models.branch.findAll({
-        where: searchQuery,
-        include: [
-            {
-                model: models.partner,
-                as: 'partner'
-            }, {
-                model: models.city,
-                as: "city",
-                where: {
-                    isActive: true
-                }
-            }, {
-                model: models.state,
-                as: "state",
-                where: {
-                    isActive: true
-                }
+    const includeArray = [
+        {
+            model: models.partner,
+            as: 'partner'
+        }, {
+            model: models.city,
+            as: "city",
+            where: {
+                isActive: true
             }
-        ],
+        }, {
+            model: models.state,
+            as: "state",
+            where: {
+                isActive: true
+            }
+        }
+    ]
+
+    let readBranchData = await models.partnerBranch.findAll({
+        where: searchQuery,
+        include: includeArray,
         order: [
             ['id', 'DESC']
         ],
         offset: offset,
         limit: pageSize
     });
-    let count = await models.branch.findAll({
+    let count = await models.partnerBranch.count({
         where: searchQuery,
-        include: [
-            {
-                model: models.partner,
-                as: 'partner'
-            }, {
-                model: models.city,
-                as: "city",
-                where: {
-                    isActive: true
-                }
-            }, {
-                model: models.state,
-                as: "state",
-                where: {
-                    isActive: true
-                }
-            }
-        ],
+        include: includeArray
     });
+
     if (!readBranchData) { return res.status(404).json({ message: 'data not found' }) }
-    return res.status(200).json({ data: readBranchData, count: count.length });
+    return res.status(200).json({ data: readBranchData, count: count });
 }
 
 //get branch by id
 
 exports.readBranchById = async (req, res, next) => {
     const branchId = req.params.id;
-    let branchData = await models.branch.findOne({
+    let branchData = await models.partnerBranch.findOne({
         where: { id: branchId, isActive: true },
         include: [{
             model: models.partner,
@@ -151,11 +135,13 @@ exports.readBranchById = async (req, res, next) => {
 exports.updateBranch = async (req, res, next) => {
     const branchId = req.params.id;
 
+    let modifiedBy = req.userData.id;
+
     const { partnerId, name, cityId, stateId, address, pincode, commission, isActive } = req.body;
     let pId = name.slice(0, 3).toUpperCase() + '-' + branchId;
 
 
-    let branchData = await models.branch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pincode, commission, isActive }, { where: { id: branchId, isActive: true } });
+    let branchData = await models.partnerBranch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pincode, commission, modifiedBy, isActive }, { where: { id: branchId, isActive: true } });
     if (branchData[0] == 0) {
         return res.status(404).json({ message: " Update failed" });
     }
@@ -166,7 +152,7 @@ exports.updateBranch = async (req, res, next) => {
 
 exports.deleteBranch = async (req, res, next) => {
     const { id, isActive } = req.query;
-    let branch = await models.branch.update({ isActive: isActive }, { where: { id: id } })
+    let branch = await models.partnerBranch.update({ isActive: isActive }, { where: { id: id } })
     if (branch[0] == 0) {
         return res.status(404).json({ message: "branch deleted failed" });
     }

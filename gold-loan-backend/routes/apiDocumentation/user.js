@@ -3,7 +3,7 @@
  * /user/register-otp:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Registration
  *     summary: To Register  
  *     consumes:
@@ -27,14 +27,18 @@
  *             panCardNumber:
  *               type: string  
  *             address:
- *                type: object
- *                properties:
- *                 landMark:
- *                   type: string
- *                 stateId:
- *                   type: number
- *                 cityId:
- *                   type: number
+ *                type: array
+ *                items:
+ *                  type: object  
+ *                  properties:
+ *                   address:
+ *                    type: string
+ *                   landMark:
+ *                    type: string
+ *                   stateId:
+ *                    type: number
+ *                   cityId:
+ *                    type: number
  *             roleId:
  *               type: number       
  *         required:
@@ -45,6 +49,8 @@
  *           - email
  *           - panCardNumber
  *           - address
+ *           - cityId
+ *           - stateId
  *           - roleId
  * 
  *     responses:
@@ -55,7 +61,7 @@
  * /user/verify-otp:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Verification Otp
  *     summary: To Verify Otp
  *     consumes:
@@ -83,7 +89,7 @@
  * /user/send-otp:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Resend Otp
  *     summary: Resend Otp
  *     consumes:
@@ -107,7 +113,7 @@
  * /user/verify-register-otp:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Verification  Registration Otp
  *     summary: To Verify Registration Otp
  *     consumes:
@@ -135,7 +141,7 @@
  * /user/change-password:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Change password
  *     summary: To change password
  *     consumes:
@@ -166,7 +172,7 @@
  * /user/update-password:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Update Password
  *     summary: To update  password
  *     consumes:
@@ -197,7 +203,7 @@
  * /user:
  *  get:
  *     tags:
- *      - Customer Registration
+ *      - User Registration
  *     name: read user
  *     summary: To read user 
  *     responses:

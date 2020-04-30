@@ -30,14 +30,18 @@ module.exports = (sequelize, DataTypes) => {
             },
             allowNull: false
         },
-        mobileNumber: {
+        dateOfBirth: {
+            type: DataTypes.DATE,
+            field: 'dateOfBirth'
+        },
+        alternateMobileNumber: {
             type: DataTypes.STRING,
-            field: 'mobile_number',
-            allowNull: false,
+            field: 'alternate_mobile_number',
         },
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',
+            allowNull: false
         },
         gender: {
             type: DataTypes.ENUM,
@@ -79,22 +83,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'modified_by',
             allowNull: false,
         },
-        kycStatus: {
-            type: DataTypes.ENUM,
-            field: 'kyc_status',
-            defaultValue: "pending",
-            values: ['confirm', 'pending','complete','closed']
-        },
-        isKycSubmitted: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_kyc_submitted',
-            defaultValue: false
-        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
             defaultValue: false
         }
+
     }, {
         freezeTableName: true,
         tableName: 'customer_kyc_personal_detail',
