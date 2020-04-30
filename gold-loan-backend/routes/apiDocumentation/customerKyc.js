@@ -57,6 +57,7 @@
  *     responses:
  *       200:
  *         description: Success.
+ *       
  * /kyc/customer-kyc-address:
  *   post:
  *     tags:
@@ -217,6 +218,16 @@
  *               type: array
  *               items:
  *                type: string 
+ *     required:
+ *       - customerId
+ *       - customerKycId
+ *       - bankName
+ *       - bankBranchName
+ *       - accountType
+ *       - accountNumber
+ *       - accountHolderName
+ *       - ifscCode
+ *       - passBookProof
  *     responses:
  *       200:
  *          description: Success

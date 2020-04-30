@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /user/register-otp:
+ * /user:
  *   post:
  *     tags:
  *       - User Registration
@@ -21,7 +21,7 @@
  *             password:
  *               type: string
  *             mobileNumber:
- *               type: integer
+ *               type: string
  *             email:
  *               type: string
  *             panCardNumber:
@@ -40,7 +40,11 @@
  *                   cityId:
  *                    type: number
  *             roleId:
- *               type: number       
+ *               type: number 
+ *             userTypeId:
+ *               type: number
+ *             internalBranchId:
+ *              type: number      
  *         required:
  *           - firstName
  *           - lastName
@@ -52,12 +56,23 @@
  *           - cityId
  *           - stateId
  *           - roleId
- * 
+ *           - userTypeId:
+ *           - internalBranchId
  *     responses:
  *       200:
- *          description: Your otp send it on to the mobile number
+ *          description: User Created
  *       404:
- *          description: This Mobile number is already Exist
+ *          description: This Mobile number is already Exist/This Email id is already exist
+ *   get:
+ *     tags:
+ *      - User Registration
+ *     name: read user
+ *     summary: To read user 
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *          description: Success
  * /user/verify-otp:
  *   post:
  *     tags:
@@ -101,7 +116,7 @@
  *           type: object
  *           properties:
  *             mobileNumber:
- *               type: integer
+ *               type: string
  *               
  *         required:
  *           - mobileNumber
@@ -110,34 +125,6 @@
  *          description: Otp send to your Mobile number
  *       400:
  *          description: User does not exists, please contact to Admin
- * /user/verify-register-otp:
- *   post:
- *     tags:
- *       - User Registration
- *     name: Verification  Registration Otp
- *     summary: To Verify Registration Otp
- *     consumes:
- *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         schema:
- *           type: object
- *           properties:
- *             referenceCode:
- *               type: string
- *             otp:
- *               type: integer
- *               
- *         required:
- *           - referenceCode
- *           - otp
- *     responses:
- *       200:
- *          description: Success 
- *                       referenceCode
- *       400:
- *          description: Invalid Otp
  * /user/change-password:
  *   post:
  *     tags:
@@ -199,16 +186,65 @@
  *       404:
  *          description: User not found . Please contact Admin.
  *       401:
- *          description: wrong credentials
- * /user:
- *  get:
- *     tags:
+ *          description: wrong credentials   
+ * /user/addAdmin:
+ * post:
+ *    tags:
  *      - User Registration
- *     name: read user
- *     summary: To read user 
- *     responses:
+ *    name: add admin
+ *    summary: To add admin
+ *    consumes:
+ *       - application/json
+ *    parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             password:
+ *               type: string
+ *             mobileNumber:
+ *               type: string
+ *             email:
+ *               type: string
+ *             panCardNumber:
+ *               type: string  
+ *             address:
+ *                type: array
+ *                items:
+ *                  type: object  
+ *                  properties:
+ *                   address:
+ *                    type: string
+ *                   landMark:
+ *                    type: string
+ *                   stateId:
+ *                    type: number
+ *                   cityId:
+ *                    type: number
+ *             roleId:
+ *               type: number 
+ *             userTypeId:
+ *               type: number   
+ *         required:
+ *           - firstName
+ *           - lastName
+ *           - password
+ *           - mobileNumber
+ *           - email
+ *           - panCardNumber
+ *           - address
+ *           - cityId
+ *           - stateId
+ *           - roleId
+ *           - userTypeId
+ *    responses:
  *       200:
- *          description: Success
- *    
- * 
+ *          description: User created
+ *       404:
+ *          description: This Mobile number is already Exist/This Email id is already exist
  */

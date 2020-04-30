@@ -103,6 +103,8 @@
  *               type: string
  *             panCardNumber:
  *               type: string
+ *             internalBranchId:
+ *               type: number
  *             cityId:
  *               type: number
  *             stateId:
