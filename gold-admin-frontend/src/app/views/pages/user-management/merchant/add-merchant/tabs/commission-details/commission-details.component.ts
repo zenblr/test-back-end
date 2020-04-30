@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MerchantService } from '../../../../../../../core/user-management/merchant';
 import { map, catchError } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../../../../views/partials/components';
+import {  ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kt-commission-details',
@@ -22,7 +23,8 @@ export class CommissionDetailsComponent implements OnInit {
   constructor(
     public fb: FormBuilder,
     private merchantSercvice:MerchantService,
-    private ref:ChangeDetectorRef
+    private ref:ChangeDetectorRef,
+    private rout: ActivatedRoute
   ) {
     this.merchantSercvice.userId$.subscribe(res =>{
       this.userId = res
@@ -30,6 +32,10 @@ export class CommissionDetailsComponent implements OnInit {
    }
 
   ngOnInit() {
+    var id = this.rout.snapshot.params.id;
+    if (id) {
+      this.userId = id;
+    }
     this.initForm()
     this.merchantSercvice.getMerchantCommssion(this.userId).pipe(
       map(res =>{
