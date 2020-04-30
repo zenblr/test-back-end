@@ -3,7 +3,7 @@ const express = require('express');
 const route = express.Router();
 const validationError = require('../middleware/validationError')
 const { wrapper } = require('../utils/errorWrap');
-const { branchValidation } = require('../validations/branch')
+const { branchValidation } = require('../validations/partnerBranch')
 
 const checkAuth = require('../middleware/checkAuth');
 
