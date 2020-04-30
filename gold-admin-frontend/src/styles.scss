@@ -261,7 +261,7 @@ input[type="number"] {
 .custom-checkbox .checkmark:after {
 	left: 7px;
     top: 3px;
-    width: 5px;
+    width: 6px;
     height: 12px;
 	border: solid white;
 	border-width: 0 3px 3px 0;
@@ -316,15 +316,14 @@ input[type="number"] {
 
 /* Style the checkmark/indicator */
 .custom-checkbox .checkmark2:after {
-	left: 7px;
-    top: 3px;
-    width: 5px;
-    height: 12px;
-	border: solid white;
-	border-width: 0 3px 3px 0;
-	-webkit-transform: rotate(90deg);
-	-ms-transform: rotate(90deg);
-	transform: rotate(90deg);
+	content: ' ';
+	position: absolute;
+	top: 50%;
+	left: 10%;
+	transform: translate(0, -50%);
+	width: 80%;
+	height: 3px;
+	background: white;
 }
 
 

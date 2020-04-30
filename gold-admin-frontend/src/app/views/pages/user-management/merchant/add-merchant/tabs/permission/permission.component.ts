@@ -31,7 +31,8 @@ export class PermissionComponent implements OnInit {
     private merchantService: MerchantService,
     private ref: ChangeDetectorRef,
     private rout: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private ele: ElementRef
   ) {
     this.merchantService.userId$.subscribe(res => {
       this.userId = res;
@@ -51,16 +52,15 @@ export class PermissionComponent implements OnInit {
   getData() {
     this.merchantService.getPermission(this.userId).pipe(
       map(res => {
-        console.log(res)
         this.permissions = res;
-        this.calculateLength()
+        this.calculateInitLength()
         this.ref.detectChanges();
       })
     ).subscribe()
   }
 
 
-  calculateLength() {
+  calculateInitLength() {
     this.permissions.forEach(ele => {
       this.lengthOf.category += 1
       if (ele.isSelected)
@@ -73,13 +73,28 @@ export class PermissionComponent implements OnInit {
           this.lengthOf.product += 1
           if (pro.isSelected)
             this.checkedProduct.push(pro)
-          console.log(this.lengthOf.product)
         })
       })
     })
     this.checked('all')
   }
 
+  calculateLength() {
+    this.lengthOf = { category: 0, subCategory: 0, product: 0 }
+    this.permissions.forEach(ele => {
+      this.lengthOf.category += 1
+      ele.subCategory.forEach(sub => {
+        if (ele.isSelected) {
+          this.lengthOf.subCategory += 1
+          sub.products.forEach(() => {
+            if (sub.isSelected) {
+              this.lengthOf.product += 1
+            }
+          })
+        }
+      })
+    })
+  }
 
   isSelectedFalse() {
     this.permissions.forEach(ele => {
@@ -111,6 +126,9 @@ export class PermissionComponent implements OnInit {
   categoryCheckBox(checked: MatCheckbox, index: number) {
     if (checked) {
       this.permissions[index].isSelected = true
+      this.permissions[index].subCategory.forEach(sub => {
+        sub.isSelected = true
+      })
     } else if (!checked) {
       this.permissions[index].isSelected = false
       this.permissions[index].subCategory.forEach(sub => {
@@ -120,14 +138,13 @@ export class PermissionComponent implements OnInit {
     this.checkedCategory = this.permissions.filter(cat => {
       return cat.isSelected
     })
+    this.calculateLength()
     this.checked('cat')
-
   }
 
 
 
   subCategoryCheckBox(checked: MatCheckbox, catIndex: number, subIndex: number) {
-    //   console.log(checked)
     if (checked) {
       this.permissions[catIndex].subCategory[subIndex].isSelected = true
     } else if (!checked) {
@@ -140,9 +157,8 @@ export class PermissionComponent implements OnInit {
           this.checkedSubCategory.push(sub)
       })
     })
+    this.calculateLength()
     this.checked('sub')
-
-    console.log(this.permissions)
   }
 
   generateProduct(checked: MatCheckbox, catIndex: number, subIndex: number, index: number) {
@@ -155,6 +171,7 @@ export class PermissionComponent implements OnInit {
       this.checkedProduct.splice(indexOfProId, 1)
       pro.isSelected = false
     }
+    this.calculateLength()
     this.checked('pro')
 
   }
@@ -171,6 +188,7 @@ export class PermissionComponent implements OnInit {
       this.selectAll = { cat: false, subCat: false, pro: false }
       this.isSelectedFalse()
     }
+    this.calculateLength()
     this.checked('cat')
 
   }
@@ -183,14 +201,16 @@ export class PermissionComponent implements OnInit {
       this.selectAll.subCat = true;
       this.selectAll.pro = true
       this.permissions.forEach(cat => {
-        cat.subCategory.forEach(sub => {
-          this.checkedSubCategory.push(sub)
-          sub.isSelected = true
-          sub.products.forEach(pro => {
-            this.checkedProduct.push(pro.id)
-            pro.isSelected = true
+        if (cat.isSelected) {
+          cat.subCategory.forEach(sub => {
+            this.checkedSubCategory.push(sub)
+            sub.isSelected = true
+            sub.products.forEach(pro => {
+              this.checkedProduct.push(pro.id)
+              pro.isSelected = true
+            })
           })
-        })
+        }
       })
     } else {
       this.selectAll.subCat = false,
@@ -204,20 +224,21 @@ export class PermissionComponent implements OnInit {
         })
       })
     }
+    this.calculateLength()
     this.checked('sub')
   }
 
   selectAllProd(event: MatCheckbox) {
     this.checkedProduct = []
     if (event) {
-      this.checkboxThree.nativeElement.classList.remove('checkmark2')
-      this.checkboxThree.nativeElement.classList.add('checkmark')
       this.permissions.forEach(ele => {
         ele.subCategory.forEach(sub => {
-          sub.products.forEach(pro => {
-            pro.isSelected = true
-            this.checkedProduct.push(pro.id)
-          });
+          if (sub.isSelected) {
+            sub.products.forEach(pro => {
+              pro.isSelected = true
+              this.checkedProduct.push(pro.id)
+            });
+          }
         });
       })
     } else {
@@ -230,6 +251,7 @@ export class PermissionComponent implements OnInit {
         });
       })
     }
+    this.calculateLength()
     this.checked('pro')
   }
 
@@ -240,11 +262,11 @@ export class PermissionComponent implements OnInit {
         this.selectAll = { cat: true, subCat: true, pro: true }
         this.checkboxOne.nativeElement.classList.remove('checkmark2')
         this.checkboxOne.nativeElement.classList.add('checkmark')
-      } else if (this.checkedSubCategory.length > 0) {
+      } else if (this.checkedCategory.length > 0) {
         this.selectAll = { cat: true, subCat: true, pro: true }
         this.checkboxOne.nativeElement.classList.remove('checkmark')
         this.checkboxOne.nativeElement.classList.add('checkmark2')
-      } else if (this.checkedSubCategory.length == 0) {
+      } else if (this.checkedCategory.length == 0) {
         this.selectAll = { cat: false, subCat: false, pro: false }
       }
 
@@ -262,6 +284,8 @@ export class PermissionComponent implements OnInit {
         this.checkboxTwo.nativeElement.classList.add('checkmark2')
       } else if (this.checkedSubCategory.length == 0) {
         this.selectAll.pro = false;
+        this.selectAll.subCat = false;
+
       }
 
     } else if (type == 'pro' || type == 'all') {
@@ -278,7 +302,6 @@ export class PermissionComponent implements OnInit {
       } else if (this.checkedProduct.length == 0) {
         this.selectAll.pro = false;
       }
-
     }
   }
 

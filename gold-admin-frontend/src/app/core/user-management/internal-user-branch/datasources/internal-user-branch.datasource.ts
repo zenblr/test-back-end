@@ -19,37 +19,23 @@ export class InternalUserBranchDatasource extends BaseDataSource {
         super();
     }
 
-    loadInternalBranch(search, from, to, fromDate, toDate, userId) {
-        this.loadingSubject.next(true);
-        this.desserts = [
-            { name: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4,id:1 },
-            { name: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4,id:2 },
-            { name: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6,id:3 },
-            { name: 'Cupcake', calories: 305, fat: 4, carbs: 67, protein: 4,id:2 },
-            { name: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4 ,id:1},
-        ]
+    loadInternalBranch(search, from, to) {
 
-
-        this.entitySubject.next(this.desserts);
-        this.paginatorTotalSubject.next(10);
-        this.loadingSubject.next(false);
-        this.isPreloadTextViewedSubject.next(false);
-
-        // this.internalUserBranchService.getRoles(search, from, to, fromDate, toDate, userId)
-        //     .pipe(
-        //         map(
-        //             report => {
-        //                 this.entitySubject.next(this.desserts);
-        //                 this.paginatorTotalSubject.next(10);
-        //             }
-        //         ),
-        //         catchError(() => of([])),
-        //         finalize(() => {
-        //             this.loadingSubject.next(false);
-        //             this.isPreloadTextViewedSubject.next(false);
-        //         })
-        //     )
-        //     .subscribe();
+        this.internalUserBranchService.getInternalBranch(search, from, to)
+            .pipe(
+                map(
+                    branch => {
+                        this.entitySubject.next(branch.data);
+                        this.paginatorTotalSubject.next(branch.count);
+                    }
+                ),
+                catchError(() => of([])),
+                finalize(() => {
+                    this.loadingSubject.next(false);
+                    this.isPreloadTextViewedSubject.next(false);
+                })
+            )
+            .subscribe();
     }
 
 }

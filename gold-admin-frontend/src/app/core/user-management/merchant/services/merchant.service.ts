@@ -10,7 +10,7 @@ export class MerchantService {
 
   constructor(private http: HttpClient) { }
 
-  baseUrl = 'http://ec50174a.ngrok.io';
+  baseUrl = 'http://5ced6a5f.ngrok.io';
   userId: BehaviorSubject<any> = new BehaviorSubject(0);
   userId$ = this.userId.asObservable()
   userDetails: BehaviorSubject<any> = new BehaviorSubject('');

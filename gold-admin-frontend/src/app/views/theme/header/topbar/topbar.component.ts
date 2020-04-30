@@ -174,7 +174,7 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'internal-user-branch') {
 			this.dataSourceHeader()
-			this.value1 = 'Add Internal User Branch';
+			this.value1 = 'Add Internal Branch';
 		}
 
 		
