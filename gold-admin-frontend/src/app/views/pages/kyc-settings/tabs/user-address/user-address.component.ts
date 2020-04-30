@@ -24,8 +24,8 @@ export class UserAddressComponent implements OnInit {
   addressProofs = [];
   identityProofs = [];
   images = { identityProof: [], residential: [], permanent: [] };
-  // customerDetails = this.userDetailsService.userData;
-  customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
+  customerDetails = this.userDetailsService.userData;
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
 
   constructor(
     private fb: FormBuilder,
@@ -49,10 +49,12 @@ export class UserAddressComponent implements OnInit {
       customerKycId: [this.customerDetails.customerKycId],
       identityTypeId: ['', [Validators.required]],
       identityProof: ['', [Validators.required]],
+      identityProofNumber: [''],
       address: this.fb.array([
         this.fb.group({
           addressType: ['permanent'],
           addressProofTypeId: ['', [Validators.required]],
+          addressProofNumber: [],
           address: ['', [Validators.required]],
           stateId: [this.customerDetails.stateId, [Validators.required]],
           cityId: [this.customerDetails.cityId, [Validators.required]],
@@ -62,6 +64,7 @@ export class UserAddressComponent implements OnInit {
         this.fb.group({
           addressType: ['residential'],
           addressProofTypeId: ['', [Validators.required]],
+          addressProofNumber: [],
           address: ['', [Validators.required]],
           stateId: ['', [Validators.required]],
           cityId: ['', [Validators.required]],

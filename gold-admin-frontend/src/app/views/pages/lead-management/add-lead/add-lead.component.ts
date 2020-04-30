@@ -113,7 +113,7 @@ export class AddLeadComponent implements OnInit {
 
   getInternalBranhces() {
     this.customerManagementService.getInternalBranhces().subscribe(res => {
-      this.branches = res;
+      this.branches = res.data;
     });
   }
 

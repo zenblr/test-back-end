@@ -174,7 +174,7 @@
                                     <option [disabled]="true" [selected]="true" value=""> Select Internal Branch
                                     </option>
                                     <option *ngFor="let branch of branches" [value]="branch.id">
-                                        {{branch.name}}
+                                        {{branch.name | titlecase}}
                                     </option>
                                 </select>
                                 <mat-error

@@ -53,8 +53,8 @@ export class AddSchemeComponent implements OnInit {
   initForm() {
     this.billingForm = this.fb.group({
       schemeName: ['', [Validators.required]],
-      schemeAmountStart: ['', Validators.required],
-      schemeAmountEnd: ['', Validators.required],
+      schemeAmountStart: ['', [Validators.required]],
+      schemeAmountEnd: ['', [Validators.required]],
       interestRateThirtyDaysMonthly: ['', Validators.required],
       interestRateNinetyDaysMonthly: ['', Validators.required],
       interestRateOneHundredEightyDaysMonthly: ['', Validators.required],
@@ -83,6 +83,14 @@ export class AddSchemeComponent implements OnInit {
   submit() {
     if (this.tabGroup.selectedIndex == 0) {
       console.log(this.billingForm.value);
+      // let fromValue = this.billingForm.get('schemeAmountStart').value * 100000;
+      // fromValue = +(fromValue);
+      // Math.ceil(fromValue);
+      // let toValue = this.billingForm.get('schemeAmountEnd').value * 100000;
+      // toValue = +(toValue);
+      // Math.ceil(toValue);
+      // console.log(fromValue, toValue)
+      // this.billingForm.patchValue({ schemeAmountStart: fromValue, schemeAmountEnd: toValue });
       if (this.billingForm.invalid) {
         this.billingForm.markAllAsTouched()
         return
@@ -90,6 +98,7 @@ export class AddSchemeComponent implements OnInit {
       let partnerArray = [];
       partnerArray.push(this.billingForm.get('partnerId').value);
       this.billingForm.patchValue({ partnerId: partnerArray });
+
       this.laonSettingService.saveScheme(this.billingForm.value).pipe(
         map((res) => {
           this._toastr.success('Scheme Created Sucessfully');

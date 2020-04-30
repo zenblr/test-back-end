@@ -96,14 +96,14 @@
                             <label [class.mandatory]="isMandatory ">Pin Code</label>
                         </div>
                         <div class="col-8">
-                            <input class="form-control" formControlName="pincode" placeholder="Enter Pin Code"
-                                [class.isError]="controls.pincode.touched && controls.pincode.invalid" maxlength="6"
+                            <input class="form-control" formControlName="pinCode" placeholder="Enter Pin Code"
+                                [class.isError]="controls.pinCode.touched && controls.pinCode.invalid" maxlength="6"
                                 numbersOnly>
                             <small *ngIf="data.action != 'view'" class="text-color">Enter pin code without
                                 spaces</small>
-                            <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.required">
+                            <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.required">
                                 Required field</mat-error>
-                            <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.pattern">
+                            <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.pattern">
                                 Invalid Pin Code</mat-error>
                         </div>
                     </div>
