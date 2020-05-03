@@ -1,7 +1,7 @@
 const { body } = require("express-validator");
 const models = require('../models');
 const sequelize = models.Sequelize;
-const op = sequelize.Op;
+const Op = sequelize.Op;
 
 
 

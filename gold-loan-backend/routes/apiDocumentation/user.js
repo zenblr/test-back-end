@@ -230,7 +230,7 @@
  *             lastName:
  *               type: string
  *             mobileNumber:
- *               type: integer
+ *               type: string
  *             email:
  *               type: string
  *             roleId:
@@ -303,7 +303,7 @@
  *             lastName:
  *               type: string
  *             mobileNumber:
- *               type: integer
+ *               type: string
  *             email:
  *               type: string
  *             roleId:

@@ -3,7 +3,7 @@ const sequelize = models.sequelize;
 
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
-
+const paginationFUNC = require("../../utils/pagination");
 const check = require('../../lib/checkLib');
 const request = require('request');
 const { createReferenceCode } = require('../../utils/referenceCode');
@@ -300,54 +300,53 @@ exports.deleteInternalUser = async (req, res, next) => {
 }
 
 exports.GetInternalUser = async (req, res) => {
-    const { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(
-      req.query.search,
-      req.query.from,
-      req.query.to
-    );
-    let includeArray = [
-        {
-          model: models.role,
-          where: { isActive: true },
-          subQuery: false
-        },
-        {
-            model: models.internalBranch,
-            as : 'internalBranch',
-            where: { isActive: true },
-            subQuery: false
-          }
-      ]
-    let searchQuery = {
-        [Sequelize.Op.or]: {
-            firstName: { [Sequelize.Op.iLike]: search + "%" },
-            lastName: { [Sequelize.Op.iLike]: search + "%" },
-            mobileNumber: { [Sequelize.Op.iLike]: search + "%" },
-            email: { [Sequelize.Op.iLike]: search + "%" },
-            "$user.internalBranch.internal_branch_unique_id$": {
-                [Op.iLike]: search + "%",
+        const { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(
+            req.query.search,
+            req.query.from,
+            req.query.to
+          );
+          let includeArray = [
+              {
+                model: models.role,
+                where: { isActive: true },
+                subQuery: false
               },
-            "$user.role.role_name$": {
-                [Op.iLike]: search + "%",
-              }
-        },
-        isActive: true,
-        userTypeId : 1
-      }
-    let CategoryData = await models.user.findAll({
-      where: searchQuery,
-      offset: offset,
-      limit: pageSize,
-      include: includeArray,
-      subQuery: false
-    });
-    let count = await models.categories.findAll({
-      where: searchQuery,
-        include: includeArray,
-        subQuery: false
-    });
-    res.status(200).json({
-      data: CategoryData,
-      count: count.length
-    });
+              {
+                  model: models.internalBranch,
+                  as : 'internalBranch',
+                  subQuery: false
+                }
+            ]
+          let searchQuery = {
+              [Sequelize.Op.or]: {
+                  firstName: { [Sequelize.Op.iLike]: search + "%" },
+                  lastName: { [Sequelize.Op.iLike]: search + "%" },
+                  mobileNumber: { [Sequelize.Op.iLike]: search + "%" },
+                  email: { [Sequelize.Op.iLike]: search + "%" },
+                //   "$internalBranch.internal_branch_id$": {
+                //       [Op.iLike]: search + "%",
+                //     },
+                  "$roles.role_name$": {
+                      [Op.iLike]: search + "%",
+                    }
+              },
+              isActive: true,
+              userTypeId : 1
+            }
+          let CategoryData = await models.user.findAll({
+            where: searchQuery,
+            offset: offset,
+            limit: pageSize,
+            include: includeArray,
+            subQuery: false
+          });
+          let count = await models.user.findAll({
+            where: searchQuery,
+              include: includeArray,
+              subQuery: false
+          });
+          res.status(200).json({
+            data: CategoryData,
+            count: count.length
+          });
   }
