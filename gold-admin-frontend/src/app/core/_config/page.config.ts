@@ -81,6 +81,12 @@ export class PageConfig {
 			'upload-design': {
 				page: { title: 'Upload Design', desc: '' }
 			},
+			'bulkUploadReport': {
+				page: { title: 'Bulk Upload Report', desc: '' }
+			},
+			'wallet-price': {
+				page: { title: 'Wallet Price', desc: '' }
+			},
 		},
 	};
 

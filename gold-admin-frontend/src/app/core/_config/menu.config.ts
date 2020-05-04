@@ -270,7 +270,7 @@ export class MenuConfig {
 					src: 'assets/media/aside-icons/icons-12.svg',
 				}
 			],
-			
+
 			itemsTwo: [
 				{
 					title: 'Partner',
@@ -334,7 +334,7 @@ export class MenuConfig {
 						},
 						{
 							title: 'Category',
-							page: '/emi-management/products/category',
+							page: '/emi-management/category',
 						},
 						{
 							title: 'Sub-Category',
