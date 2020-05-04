@@ -21,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     });
     
     UserInternalBranch.associate = function(models) {
-        // UserInternalBranch.belongsTo(models.user, { foreignKey: 'userId', as: 'user' });
-        // UserInternalBranch.belongsTo(models.role, { foreignKey: 'roleId', as: 'role' });
+        //  UserInternalBranch.belongsTo(models.user, { foreignKey: 'userId', as: 'user' });
+        //  UserInternalBranch.belongsTo(models.role, { foreignKey: 'roleId', as: 'role' });
     }
 
 
