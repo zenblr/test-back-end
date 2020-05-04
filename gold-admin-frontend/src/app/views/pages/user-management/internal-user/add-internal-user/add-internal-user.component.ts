@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { InternalUserService } from '../../../../../core/user-management/internal-user';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-add-internal-user',
@@ -14,7 +16,8 @@ export class AddInternalUserComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<AddInternalUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private internalUser: InternalUserService
   ) { }
 
   ngOnInit() {
@@ -64,6 +67,20 @@ export class AddInternalUserComponent implements OnInit {
       this.addUserForm.markAllAsTouched()
       return
     }
-  }
+    if (this.data == 'add') {
+      this.internalUser.addUser(this.addUserForm.value).pipe(
+        map(res => {
 
+        }), catchError(err => {
+          throw err
+        })).subscribe()
+    } else {
+      this.internalUser.editUser(this.addUserForm.value,this.data.user.id).pipe(
+        map(res => {
+
+        }), catchError(err => {
+          throw err
+        })).subscribe()
+    }
+  }
 }
