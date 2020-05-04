@@ -23,127 +23,128 @@ export class UserReviewComponent implements OnInit {
   states = [];
   cities0 = [];
   cities1 = [];
-  data = {
-    "customerKycReview": {
-      "id": 1,
-      "customerUniqueId": null,
-      "firstName": "bhushan",
-      "lastName": "madaye",
-      "mobileNumber": "8424004296",
-      "email": "nimap@infotech.com",
-      "panCardNumber": "asass1234a",
-      "stageId": 1,
-      "statusId": 1,
-      "stateId": 1,
-      "cityId": 1,
-      "kycStatus": "pending",
-      "isKycSubmitted": false,
-      "isVerifiedByCce": false,
-      "cceVerifiedBy": null,
-      "isVerifiedByBranchManager": false,
-      "branchManagerVerifiedBy": null,
-      "isActive": true,
-      "createdBy": 36,
-      "modifiedBy": 36,
-      "lastLogin": null,
-      "createdAt": "2020-04-28T05:31:32.245Z",
-      "updatedAt": "2020-04-28T05:31:32.245Z",
-      "customerKyc": {
-        "id": 1,
-        "customerId": 1,
-        "profileImage": "http://173.249.49.7:8000/uploads/images/1588052119361.png",
-        "firstName": "bhushan",
-        "lastName": "madaye",
-        "dateOfBirth": "2020-04-08T18:30:00.000Z",
-        "alternateMobileNumber": "1232132132",
-        "panCardNumber": "asass1234a",
-        "gender": "m",
-        "martialStatus": "married",
-        "occupation": { name: 'Engineer' }, // occupation.name
-        "identityType": { name: 'aadhar' },  //identityType.name
-        "identityProof": [
-          "http://173.249.49.7:8000/uploads/images/1588052018310.png"
-        ],
-        "spouseName": "asd",
-        "signatureProof": "http://173.249.49.7:8000/uploads/images/1588052173393.png",
-        "createdBy": 36,
-        "modifiedBy": 36,
-        "isActive": false,
-        "createdAt": "2020-04-28T05:33:23.145Z",
-        "updatedAt": "2020-04-28T05:36:22.176Z"
-      },
-      "customerKycAddress": [
-        {
-          "id": 1,
-          "customerKycId": 1,
-          "customerId": 1,
-          "addressType": "permanent",
-          "address": "assa1212",
-          "state": { name: "Goa" }, // state.name
-          "city": { name: 'panji' }, // city.name
-          "pinCode": 122121,
-          "addressProof": [
-            "http://173.249.49.7:8000/uploads/images/1588052060956.png",
-            "http://173.249.49.7:8000/uploads/images/1588052086540.png"
-          ],
-          "createdAt": "2020-04-28T05:35:06.709Z",
-          "updatedAt": "2020-04-28T05:35:06.709Z",
-          "addressProofType": { name: 'electricity bill' } // addressProofType.name
-        },
-        {
-          "id": 2,
-          "customerKycId": 1,
-          "customerId": 1,
-          "addressType": "residential",
-          "address": "assa1212",
-          "state": { name: "Goa" },
-          "city": { name: "panji" },
-          "pinCode": 122121,
-          "addressProof": [
-            "http://173.249.49.7:8000/uploads/images/1588052060956.png",
-          ],
-          "createdAt": "2020-04-28T05:35:06.709Z",
-          "updatedAt": "2020-04-28T05:35:06.709Z",
-          "addressProofTypeId": { name: 'electricity bill' }
-        }
-      ],
-      "customerKycBank": [
-        {
-          "id": 4,
-          "customerKycId": 1,
-          "customerId": 1,
-          "": "nkgsb",
-          "bankBranchName": "virar",
-          "accountType": "saving",
-          "accountHolderName": "bhushan",
-          "accountNumber": "1234671268768721376",
-          "ifscCode": "bkid1233123",
-          "passbookProof": [
-            "http://173.249.49.7:8000/uploads/images/1588052315608.png"
-          ],
-          "createdAt": "2020-04-28T05:44:52.576Z",
-          "updatedAt": "2020-04-28T05:44:52.576Z"
-        }
-      ]
-    },
-    "customerId": 1,
-    "customerKycId": 1
-  }
+  // data = {
+  //   "customerKycReview": {
+  //     "id": 1,
+  //     "customerUniqueId": null,
+  //     "firstName": "bhushan",
+  //     "lastName": "madaye",
+  //     "mobileNumber": "8424004296",
+  //     "email": "nimap@infotech.com",
+  //     "panCardNumber": "asass1234a",
+  //     "stageId": 1,
+  //     "statusId": 1,
+  //     "stateId": 1,
+  //     "cityId": 1,
+  //     "kycStatus": "pending",
+  //     "isKycSubmitted": false,
+  //     "isVerifiedByCce": false,
+  //     "cceVerifiedBy": null,
+  //     "isVerifiedByBranchManager": false,
+  //     "branchManagerVerifiedBy": null,
+  //     "isActive": true,
+  //     "createdBy": 36,
+  //     "modifiedBy": 36,
+  //     "lastLogin": null,
+  //     "createdAt": "2020-04-28T05:31:32.245Z",
+  //     "updatedAt": "2020-04-28T05:31:32.245Z",
+  //     "customerKyc": {
+  //       "id": 1,
+  //       "customerId": 1,
+  //       "profileImage": "http://173.249.49.7:8000/uploads/images/1588052119361.png",
+  //       "firstName": "bhushan",
+  //       "lastName": "madaye",
+  //       "dateOfBirth": "2020-04-08T18:30:00.000Z",
+  //       "alternateMobileNumber": "1232132132",
+  //       "panCardNumber": "asass1234a",
+  //       "gender": "m",
+  //       "martialStatus": "married",
+  //       "occupation": { name: 'Engineer' }, // occupation.name
+  //       "identityType": { name: 'aadhar' },  //identityType.name
+  //       "identityProof": [
+  //         "http://173.249.49.7:8000/uploads/images/1588052018310.png"
+  //       ],
+  //       "spouseName": "asd",
+  //       "signatureProof": "http://173.249.49.7:8000/uploads/images/1588052173393.png",
+  //       "createdBy": 36,
+  //       "modifiedBy": 36,
+  //       "isActive": false,
+  //       "createdAt": "2020-04-28T05:33:23.145Z",
+  //       "updatedAt": "2020-04-28T05:36:22.176Z"
+  //     },
+  //     "customerKycAddress": [
+  //       {
+  //         "id": 1,
+  //         "customerKycId": 1,
+  //         "customerId": 1,
+  //         "addressType": "permanent",
+  //         "address": "assa1212",
+  //         "state": { name: "Goa" }, // state.name
+  //         "city": { name: 'panji' }, // city.name
+  //         "pinCode": 122121,
+  //         "addressProof": [
+  //           "http://173.249.49.7:8000/uploads/images/1588052060956.png",
+  //           "http://173.249.49.7:8000/uploads/images/1588052086540.png"
+  //         ],
+  //         "createdAt": "2020-04-28T05:35:06.709Z",
+  //         "updatedAt": "2020-04-28T05:35:06.709Z",
+  //         "addressProofType": { name: 'electricity bill' } // addressProofType.name
+  //       },
+  //       {
+  //         "id": 2,
+  //         "customerKycId": 1,
+  //         "customerId": 1,
+  //         "addressType": "residential",
+  //         "address": "assa1212",
+  //         "state": { name: "Goa" },
+  //         "city": { name: "panji" },
+  //         "pinCode": 122121,
+  //         "addressProof": [
+  //           "http://173.249.49.7:8000/uploads/images/1588052060956.png",
+  //         ],
+  //         "createdAt": "2020-04-28T05:35:06.709Z",
+  //         "updatedAt": "2020-04-28T05:35:06.709Z",
+  //         "addressProofTypeId": { name: 'electricity bill' }
+  //       }
+  //     ],
+  //     "customerKycBank": [
+  //       {
+  //         "id": 4,
+  //         "customerKycId": 1,
+  //         "customerId": 1,
+  //         "": "nkgsb",
+  //         "bankBranchName": "virar",
+  //         "accountType": "saving",
+  //         "accountHolderName": "bhushan",
+  //         "accountNumber": "1234671268768721376",
+  //         "ifscCode": "bkid1233123",
+  //         "passbookProof": [
+  //           "http://173.249.49.7:8000/uploads/images/1588052315608.png"
+  //         ],
+  //         "createdAt": "2020-04-28T05:44:52.576Z",
+  //         "updatedAt": "2020-04-28T05:44:52.576Z"
+  //       }
+  //     ]
+  //   },
+  //   "customerId": 1,
+  //   "customerKycId": 1
+  // }
 
-  // data = {};
+  data:any = {};
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
     private sharedService: SharedService,
-    private ref: ChangeDetectorRef, private userBankService: UserBankService) { }
+    private ref: ChangeDetectorRef, 
+    private userBankService: UserBankService) { }
 
   ngOnInit() {
     console.log(this.data)
-    // this.data = this.userBankService.kycDetails;
+    this.data = this.userBankService.kycDetails;
     this.initForm();
     // this.getStates();
     // this.getCities();
-
+    // this.submit()
   }
 
   initForm() {
@@ -203,7 +204,13 @@ export class UserReviewComponent implements OnInit {
   }
 
   submit() {
-    this.next.emit(true);
+    // 
+    this.userBankService.kycSubmit(this.data.customerKycReview.customerId,this.data.customerKycReview.customerKycId).pipe(
+      map(res => {
+        this.next.emit(true);
+      })
+    ).subscribe()
+    
   }
 
   getIdentityType() {
@@ -218,56 +225,6 @@ export class UserReviewComponent implements OnInit {
     })
   }
 
-  getStates() {
-    // this.sharedService.getStates().subscribe(res => {
-    //   this.states = res.message;
-    // });
-
-    // this.data.customerKycReview.customerKycAddress.forEach(element => {
-
-    // this.sharedService.getStates().pipe(map(res => {
-    //   for (let index = 0; index < this.data.customerKycReview.customerKycAddress.length; index++) {
-    //     var temp = [];
-    //     temp = res.message.filter(state => {
-    //       return state.id == this.data.customerKycReview.customerKycAddress[index].state;
-    //     })
-    //     console.log(temp[0].name)
-    //     if (index == 0) {
-    //       this.customerKycAddressOne.patchValue({ stateId: temp[0].name })
-    //     } else {
-    //       this.customerKycAddressTwo.patchValue({ stateId: temp[0].name })
-    //     }
-    //   }
-    // }), finalize(() => {
-    //   this.ref.detectChanges()
-    // })).subscribe()
-
-
-    // console.log(this.states)
-  }
-
-  getCities() {
-    // for (let index = 0; index < this.data.customerKycReview.customerKycAddress.length; index++) {
-    //   this.sharedService.getCities(this.data.customerKycReview.customerKycAddress[index].state).pipe(map(res => {
-    //     var temp = [];
-    //     temp = res.message.filter(city => {
-    //       return city.id == this.data.customerKycReview.customerKycAddress[index].city;
-    //     })
-    //     console.log(temp)
-    //     if (index == 0) {
-    //       this.customerKycAddressOne.patchValue({ cityId: temp[0].name })
-    //     } else {
-    //       this.customerKycAddressTwo.patchValue({ cityId: temp[0].name })
-    //     }
-    //   }), finalize(() => {
-    //     this.ref.detectChanges()
-    //   })).subscribe()
-
-    // }
-
-    // console.log(this.cities0);
-
-  }
 
   get controls() {
     return this.reviewForm.controls;

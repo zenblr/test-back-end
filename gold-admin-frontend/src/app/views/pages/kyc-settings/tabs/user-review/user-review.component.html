@@ -1,6 +1,5 @@
 <kt-portlet>
     <kt-portlet-body >
-        {{data}}
         <div *ngIf="data">
             <form [formGroup]=reviewForm>
                 <!-- Basic Details -->
@@ -202,8 +201,8 @@
                                 <label class="mandatory">City</label>
                             </div>
                             <div class="col-7">
-                                <input type="text" class="form-control"
-                                    value="{{ data.customerKycReview.customerKycAddress[0].city.name | titlecase }}" />
+                                <input type="text" class="form-control"  value="{{ data.customerKycReview.customerKycAddress[0].city.name | titlecase }}
+                                   " />
                                 <!-- <mat-error
                                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                     Required field
@@ -221,7 +220,7 @@
                             </div>
                             <div class="col-7">
                                 <textarea type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="address" ></textarea>
+                                    formControlName="address"  value="{{ data.customerKycReview.customerKycAddress[0].address  }}"></textarea>
                                 <!-- <mat-error
                                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                     Required field
@@ -237,7 +236,7 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="pinCode" />
+                                    formControlName="pinCode"  value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}"/>
     
                             </div>
                         </div>
@@ -293,7 +292,7 @@
                             </div>
                             <div class="col-7">
                                 <textarea type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="address" ></textarea>
+                                    formControlName="address"value="{{ data.customerKycReview.customerKycAddress[0].address }}" ></textarea>
     
                             </div>
                         </div>
@@ -306,7 +305,7 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="pinCode" />
+                                    formControlName="pinCode" value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}"/>
                                 <!-- <mat-error
                                                             *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                             Required field
@@ -403,7 +402,7 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="alternateMobileNumber" />
+                                    formControlName="alternateMobileNumber" [value]="data.customerKycReview.customerKyc.alternateMobileNumber"/>
                                 <!-- <mat-error
                                 *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                 Required field
@@ -601,7 +600,7 @@
                                 <label class="mandatory"> A/C No. </label>
                             </div>
                             <div class="col-7">
-                                <input type="text" class="form-control" placeholder="" formControlName="accountNumber" />
+                                <input type="text" class="form-control" placeholder="" formControlName="accountNumber" [value]="data.customerKycReview.customerKycBank[0].accountNumber" />
                                 <!-- <mat-error
                                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                     Required field

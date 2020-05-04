@@ -65,6 +65,11 @@ export class PageConfig {
 		'kyc-setting': {
 			page: { title: 'Customer KYC', desc: '' }
 		},
+		'loan-management': {
+			'loan-calculator': {
+				page: { title: 'Loan Calculator', desc: '' }
+			}
+		},
 	};
 
 	public get configs() {
