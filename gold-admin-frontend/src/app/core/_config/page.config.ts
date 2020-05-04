@@ -13,7 +13,7 @@ export class PageConfig {
 			'show-queries': {
 				page: { title: 'Show Queries', desc: '' }
 			},
-			'show=feedback': {
+			'show-feedback': {
 				page: { title: 'Show Feedback', desc: '' }
 			},
 		},
@@ -64,6 +64,11 @@ export class PageConfig {
 		},
 		'kyc-setting': {
 			page: { title: 'Customer KYC', desc: '' }
+		},
+		'loan-management': {
+			'loan-calculator': {
+				page: { title: 'Loan Calculator', desc: '' }
+			}
 		},
 	};
 

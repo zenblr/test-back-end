@@ -129,14 +129,15 @@
                         <div class="row kt-padding-t-15">
                             <!-- PAN -->
                             <div class="col-4 form-label">
-                                <mat-label>Pan Number</mat-label>
+                                <mat-label>PAN</mat-label>
                             </div>
 
                             <div class="col-5">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                 <input [readOnly]="viewOnly" class="form-control" formControlName="panCardNumber"
-                                    autocomplete="off" placeholder="PAN Number"
-                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid">
+                                    autocomplete="off" placeholder="PAN" maxlength="10"
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+                                    style="text-transform: uppercase;">
                                 <!-- <mat-error
                                         *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
                                         Required field
@@ -159,6 +160,30 @@
                                     <button class="w-100 success-button" mat-raised-button
                                         matTooltip="Pan Verified">Verified</button>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Internal Branch -->
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Internal Branch</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <select class="form-control" formControlName="internalBranchId"
+                                    [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
+                                    <option [disabled]="true" [selected]="true" value=""> Select Internal Branch
+                                    </option>
+                                    <option *ngFor="let branch of branches" [value]="branch.id">
+                                        {{branch.name | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
+                                    Required field
+                                </mat-error>
+
+                                <!-- </mat-form-field> -->
                             </div>
                         </div>
 
@@ -205,6 +230,21 @@
                                 </select>
                                 <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
                                     Required field</mat-error>
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label>Pin Code</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                <input class="form-control" formControlName="pinCode" numbersOnly maxlength="6"
+                                    placeholder="000 000">
+                                <mat-error *ngIf="controls.dateTime.errors?.required ">Required field</mat-error>
                                 <!-- </mat-form-field> -->
                             </div>
                         </div>

@@ -34,8 +34,9 @@ export class AddLeadComponent implements OnInit {
   viewOnly = false;
 
   refCode: number; //reference code
-  mobileAlreadyExists = false; title: string;
-  ;
+  mobileAlreadyExists = false;
+  title: string;
+  branches = []
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -49,6 +50,7 @@ export class AddLeadComponent implements OnInit {
   ngOnInit() {
     this.formInitialize();
     this.setForm();
+    this.getInternalBranhces();
     this.getStates();
     this.getStatus();
 
@@ -85,12 +87,14 @@ export class AddLeadComponent implements OnInit {
     this.leadForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
+      internalBranchId: [1],
       mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],
       panCardNumber: ['', [Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
+      pinCode: ['', [Validators.required]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
       address: this.fb.array([])
@@ -105,6 +109,12 @@ export class AddLeadComponent implements OnInit {
     } else {
       this.modalTitle = 'Add New Lead'
     }
+  }
+
+  getInternalBranhces() {
+    this.customerManagementService.getInternalBranhces().subscribe(res => {
+      this.branches = res.data;
+    });
   }
 
   getStates() {
@@ -204,12 +214,17 @@ export class AddLeadComponent implements OnInit {
   onSubmit() {
     if (this.data.action == 'add') {
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
-        this.leadForm.markAllAsTouched()
+        this.leadForm.markAllAsTouched();
+        console.log(this.leadForm.value)
         return
       }
 
+
       if (this.controls.panCardNumber.value == '') {
         this.leadForm.get('panCardNumber').patchValue(null);
+      } else {
+        const PAN = this.controls.panCardNumber.value.toUpperCase();
+        this.leadForm.get('panCardNumber').patchValue(PAN);
       }
       const leadData = this.leadForm.value;
 

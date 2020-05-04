@@ -1,27 +1,36 @@
 <!-- <kt-portlet> -->
-    <!-- <kt-portlet-header [title]="title"></kt-portlet-header>
+<!-- <kt-portlet-header [title]="title"></kt-portlet-header>
     <kt-portlet-body> -->
-        <div class="row">
-            <div class="col-4 kt-margin-t-10 kt-margin-b-10" *ngFor="let image of images;index as idx">
-                <div class="position-relative">
+<div class="row">
+    <div class="col-4 kt-margin-t-10 kt-margin-b-10" *ngFor="let image of images;index as idx">
+        <div class="position-relative">
 
-                    <span class="pos-action" >
-                        <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer kt-margin-r-10" (click)="edit(idx)">
-                        <img src="../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer" (click)="removeImages(idx);">                   
-                    </span>
-                    <img [src]="image" *ngIf="image" class="w-100 div-height border-radius kt-pointer" (click)="open(idx)">
+            <span class="pos-action">
+                <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer kt-margin-r-10"
+                    (click)="edit(idx)">
+                <ng-container *ngIf="promotionPage">
+                    <img *ngIf="idx !== 0" src="../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer"
+                        (click)="removeImages(idx);">
+                </ng-container>
 
-                </div>
-            </div>
-            <div class="col-2 kt-margin-t-10 kt-margin-b-10">
-                <div class="div-height kt-pointer">
-                    <input type="file" accept="image/*" class="d-none" #file (change)="uploadImages($event)">
-                    <button (click)="file.click();index = null" class="img-add w-100">
-                        <img src="../../../../../assets/media/icons/add.svg" alt="">
-                    </button>
-                </div>
-            </div>
+                <ng-container *ngIf="!promotionPage">
+                    <img src="../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer"
+                        (click)="removeImages(idx);">
+                </ng-container>
+            </span>
+            <img [src]="image" *ngIf="image" class="w-100 div-height border-radius kt-pointer" (click)="open(idx)">
+
         </div>
-    <!-- </kt-portlet-body> -->
-    
+    </div>
+    <div class="col-2 kt-margin-t-10 kt-margin-b-10">
+        <div class="div-height kt-pointer">
+            <input type="file" accept="image/*" class="d-none" #file (change)="uploadImages($event)">
+            <button (click)="file.click();index = null" class="img-add w-100">
+                <img src="../../../../../assets/media/icons/add.svg" alt="">
+            </button>
+        </div>
+    </div>
+</div>
+<!-- </kt-portlet-body> -->
+
 <!-- </kt-portlet> -->

@@ -1,0 +1,146 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="container">
+            <form [formGroup]="custClassificationForm">
+                <!-- <div>
+                    <div class="row">
+                        <div class="col">
+                            <h6>Company</h6>
+                        </div>
+                        <div class="col">
+                            <h6>CCE</h6>
+                        </div>
+                        <div class="col">
+                            <h6>BM/ Operation Team</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <h6>Customer Behaviour</h6>
+                        </div>
+                        <div class="col">
+                            <h6>CCE</h6>
+                        </div>
+                        <div class="col">
+                            <h6>BM/ Operation Team</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <h6>ID Proof</h6>
+                        </div>
+                        <div class="col">
+                            <h6>CCE</h6>
+                        </div>
+                        <div class="col">
+                            <h6>BM/ Operation Team</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <h6>Address Proof</h6>
+                        </div>
+                        <div class="col">
+                            <h6>CCE</h6>
+                        </div>
+                        <div class="col">
+                            <h6>BM/ Operation Team</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <h6>KYC Status</h6>
+                        </div>
+                        <div class="col">
+                            <h6>CCE</h6>
+                        </div>
+                        <div class="col">
+                            <h6>BM/ Operation Team</h6>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="table-div">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 40%" class="rating-title">Company</th>
+                                <th scope="col" style="width: 30%" class="rating-cce">CCE</th>
+                                <th scope="col" style="width: 30%" class="rating-bm">BM/ Operation Team</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td scope="row" class="rating-title">Customer Behaviour</td>
+                                <td class="rating-cce">
+                                    <select class="form-control" formControlName="behaviourRatingCce">
+                                        <option value="" [disabled]=true [selected]="true"> Select Rating
+                                        </option>
+                                        <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
+                                            {{rate.ratingName | titlecase}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td class="rating-bm"></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class="rating-title">ID Proof</td>
+                                <td class="rating-cce">
+                                    <select class="form-control" formControlName="idProofRatingCce">
+                                        <option value="" [disabled]=true [selected]="true"> Select Rating
+                                        </option>
+                                        <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
+                                            {{rate.ratingName | titlecase}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td class="rating-bm">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class="rating-title">Address Proof</td>
+                                <td class="rating-cce">
+                                    <select class="form-control" formControlName="addressProofRatingCce">
+                                        <option value="" [disabled]=true [selected]="true"> Select Rating
+                                        </option>
+                                        <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
+                                            {{rate.ratingName | titlecase}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td class="rating-bm"></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class="rating-title">KYC Status</td>
+                                <td class="rating-cce">
+                                    <select class="form-control" formControlName="kycStatusFromCce">
+                                        <option value="" [disabled]=true [selected]="true"> Select Status
+                                        </option>
+                                        <option *ngFor="let status of kycStatus" [value]="status.value">
+                                            {{status.name | titlecase}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td class="rating-bm">
+                                    <select class="form-control">
+                                        <option value="" [disabled]=true [selected]="true"> Select Status
+                                        </option>
+                                        <option *ngFor="let status of kycStatus" [value]="status.value">
+                                            {{status.name | titlecase}}
+                                        </option>
+                                    </select></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
+                    <kt-button [value]="'Submit'" [type]="'submit'" (action)="submit()"></kt-button>
+                </div>
+            </form>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

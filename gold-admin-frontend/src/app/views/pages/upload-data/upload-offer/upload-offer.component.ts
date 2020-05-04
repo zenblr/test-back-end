@@ -26,14 +26,15 @@ export class UploadOfferComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getData()
+    this.getData();
+    this.getGoldRate();
   }
 
   getData() {
     this.uploadOfferService.getOffers().pipe(
       map(res => {
-        this.goldRate.patchValue(res.goldRate)
-        this.uploadOfferService.goldRate.next(res.goldRate);
+        // this.goldRate.patchValue(res.goldRate)
+        // this.uploadOfferService.goldRate.next(res.goldRate);
         if (res.images.length > 0) {
           Array.prototype.push.apply(this.images, res.images)
         }
@@ -41,15 +42,43 @@ export class UploadOfferComponent implements OnInit {
       })).subscribe()
   }
 
-  save() {
+  getGoldRate() {
+    this.uploadOfferService.getGoldRate().pipe(
+      map(res => {
+        this.goldRate.patchValue(res.goldRate)
+        this.uploadOfferService.goldRate.next(res.goldRate);
+      })).subscribe()
+  }
+
+  updateGoldRate() {
     if (this.goldRate.invalid) {
       this.goldRate.markAsTouched()
       return
     }
-    this.uploadOfferService.uploadOffers(Number(this.goldRate.value), this.images).pipe(
+
+    this.uploadOfferService.updateGoldRate({ goldRate: this.goldRate.value }).pipe(
+      map(res => {
+        if (res) {
+          this.toastr.successToastr('Gold Rate Updated Sucessfully');
+          this.uploadOfferService.goldRate.next(this.goldRate.value);
+          this.getGoldRate();
+        }
+      }),
+      // catchError(err => {
+      // this.toastr.errorToastr('Please try Again');
+      //   throw err
+      // }),
+      finalize(() => {
+      })
+    ).subscribe();
+  }
+
+  save() {
+
+    this.uploadOfferService.uploadOffers(this.images).pipe(
       (map(res => {
         this.toastr.successToastr('Uploaded Sucessfully');
-        this.uploadOfferService.goldRate.next(this.goldRate.value);
+        // this.uploadOfferService.goldRate.next(this.goldRate.value);
       })),
       catchError(err => {
         this.toastr.errorToastr('Please try Again');

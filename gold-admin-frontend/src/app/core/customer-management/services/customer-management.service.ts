@@ -73,7 +73,8 @@ export class CustomerManagementService {
     return this.http.post<any>(`/api/customer/verify-pan`, data);
   }
 
-  deleteCustomer(id): Observable<any> {
-    return this.http.delete<any>(`/api/customer/delete/${id}`);
+  getInternalBranhces(): Observable<any> {
+    return this.http.get<any>(`api/internal-branch`);
   }
+
 }

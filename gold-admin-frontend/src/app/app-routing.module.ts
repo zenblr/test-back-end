@@ -36,6 +36,10 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/loan-settings/loan-settings.module').then(m => m.LoanSettingsModule)
 			},
 			{
+				path: 'loan-management',
+				loadChildren: () => import('../app/views/pages/loan-management/loan-management.module').then(m => m.LoanManagementModule)
+			},
+			{
 				path:'upload-data',
 				loadChildren:() => import('../app/views/pages/upload-data/upload-data.module').then(m=>m.UploadDataModule),
 			},
