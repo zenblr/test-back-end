@@ -2,6 +2,11 @@ const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('user', {
         // attributes
+        userUniqueId: {
+            type: DataTypes.STRING,
+            field: 'user_unique_id',
+            unique: true
+        },
         firstName: {
             type: DataTypes.STRING,
             field: 'first_name',
@@ -11,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
                     args: [0, 30]
                 }
             }
-        },
+        },  
         lastName: {
             type: DataTypes.STRING,
             field: 'last_name',

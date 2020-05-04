@@ -262,13 +262,16 @@ exports.addAdmin = async (req, res, next) => {
 
 //Add internal user
 exports.addInternalUser = async (req, res, next) => {
-    let { firstName, lastName, mobileNumber, email,internalBranchId,roleId } = req.body;
+    let { firstName, lastName, mobileNumber, email,internalBranchId,roleId,userUniqueId } = req.body;
     let createdBy = req.userData.id
     let modifiedBy = req.userData.id
     let password = firstName.slice(0, 3) + '@' + mobileNumber.slice(mobileNumber.length - 5, 9);
     await sequelize.transaction(async t => {
-        const user = await models.user.create({ firstName, lastName, password, mobileNumber, email, userTypeId : 1, createdBy, modifiedBy }, { transaction: t })
+        const user = await models.user.create({ userUniqueId,firstName, lastName, password, mobileNumber, email, userTypeId : 1, createdBy, modifiedBy }, { transaction: t })
         await models.userRole.create({ userId: user.id, roleId }, { transaction: t })
+        if(internalBranchId != null && internalBranchId != undefined){
+            await models.userInternalBranch.create({ userId: user.id, internalBranchId }, { transaction: t })
+        }
     })
     // request(
     //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=your password is ${password}`
@@ -284,6 +287,10 @@ exports.updateInternalUser = async (req, res, next) => {
         const user = await models.user.update({ firstName, lastName, mobileNumber, email, modifiedBy }, {where : {id : id}})
         await models.userRole.update({isActive : false},{where:{ userId: user.id} });
         await models.userRole.create({ userId: user.id, roleId }, { transaction: t });
+        if(internalBranchId != null && internalBranchId != undefined){
+            await models.userInternalBranch.update({isActive : false}, {where:{ userId: user.id} })
+            await models.userInternalBranch.create({ userId: user.id, internalBranchId }, { transaction: t })
+        }
     })
     return res.status(200).json({ message: 'User updated.' });
 }
@@ -312,7 +319,6 @@ exports.GetInternalUser = async (req, res) => {
               },
               {
                   model: models.internalBranch,
-                  as : 'internalBranch',
                   subQuery: false
                 }
             ]

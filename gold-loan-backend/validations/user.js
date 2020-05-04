@@ -27,6 +27,23 @@ exports.addInternalUserValidation = [
         }
       })
     }),
+    body('userUniqueId')
+    .exists()
+    .withMessage('userUniqueId is required')
+    .custom(async value => {
+      return await models.user.findOne({
+        where: {
+          userUniqueId: {
+            [Op.iLike]: value
+          },
+          isActive: true
+        }
+      }).then(mobile => {
+        if (mobile) {
+          return Promise.reject("user Unique Id already exist !");
+        }
+      })
+    }),
   body('email')
     .exists()
     .withMessage('email is required')

@@ -272,7 +272,9 @@
  *             roleId:
  *               type: number   
  *             internalBranchId:
- *               type: number      
+ *               type: number     
+ *             userUniqueId:
+ *               type: string      
  *         required:
  *           - firstName
  *           - lastName
