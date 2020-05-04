@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { UserDetailsService } from '../../../../core/kyc-settings/services/user-details.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomerClassificationService } from '../../../../core/kyc-settings/services/customer-classification.service';
@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class UserClassificationComponent implements OnInit {
 
+  @Output() next: EventEmitter<any> = new EventEmitter<any>();
   kycStatus = [{ value: 'confirm', name: 'confirm' }, { value: 'pending', name: 'pending' }, { value: 'closed', name: 'closed' }];
   // kycStatus = [];
   rating = [];
@@ -51,6 +52,8 @@ export class UserClassificationComponent implements OnInit {
   }
 
   submit() {
+
+
     if (this.custClassificationForm.invalid) {
       this.custClassificationForm.markAllAsTouched();
       return;
@@ -60,6 +63,7 @@ export class UserClassificationComponent implements OnInit {
       map(res => {
         if (res) {
           this.toastr.success(res.message);
+          this.next.emit(true);
         }
       })
     ).subscribe();

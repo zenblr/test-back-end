@@ -1,663 +1,690 @@
 <kt-portlet>
     <kt-portlet-body>
-        <form [formGroup]=reviewForm>
-            <!-- Basic Details -->
-            <div class="row kt-margin-t-30">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-12 form-label header">
-                            <h5> Basic Details </h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            {{data | json}}
-                            <div class="profile-div">
-                                <!-- <img class="" src="../../../../../../assets/media/icons/user.png" alt="" /> -->
-                                <img *ngIf="data" class="profile-pic"
-                                    [src]="data.customerKycReview.customerKyc.profileImage" alt="" />
-                            </div>
-                        </div>
-                        <!-- <div class="col-7 d-flex">
-                        <div class="align-self-center">
-                            <input type="file" #profile class="d-none" />
-                            <label (click)="profile.click()" class="kt-pointer text-primary"
-                                style="font-weight: 600;">Change Profile
-                                Picture</label>
-                        </div>
-                    </div> -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Full Name</label>
-                        </div>
-                        <div class="col-7">
-                            <!-- <div class="row"> -->
-                            <!-- <div class="col"> -->
-                            <input type="text" class="form-control" placeholder="Full Name" formControlName="firstName"
-                                value="{{data.customerKycReview.firstName | titlecase}} &nbsp;&nbsp;{{data.customerKycReview.lastName | titlecase}}" />
-
-                            <!-- </div> -->
-                            <!-- <div class="col">
-                                    <input type="text" class="form-control" placeholder="Full Name"
-                                        formControlName="lastName" />
-
-                                </div> -->
-                            <!-- </div> -->
-                            <!-- <mat-error
-                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                            Required field
-                        </mat-error> -->
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Mobile No.</label>
-                        </div>
-                        <div class="col-7">
-                            <div class="row">
-                                <div class="col-8">
-                                    <input type="text" class="form-control" placeholder="Mobile Number"
-                                        formControlName="mobileNumber"
-                                        value="{{ data.customerKycReview.mobileNumber | titlecase }}" />
-                                    <!-- <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                            Required field
-                                        </mat-error> -->
-                                </div>
-                                <div class="col pl-0">
-                                    <button class="w-100 btn success-button" color="success">Verified</button>
-                                </div>
+        <div *ngIf="data">
+            <form [formGroup]=reviewForm>
+                <!-- Basic Details -->
+                <div class="row kt-margin-t-30">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Basic Details </h5>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">PAN</label>
-                        </div>
-                        <div class="col-7">
-                            <div class="row">
-                                <div class="col-8">
-                                    <input type="text" class="form-control" placeholder="PAN"
-                                        formControlName="panCardNumber"
-                                        value="{{ data.customerKycReview.panCardNumber | uppercase }}" />
-
-                                </div>
-                                <div class="col pl-0">
-                                    <button class="w-100 btn success-button" color="success">Verified</button>
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <div class="profile-div">
+                                    <!-- <img class="" src="../../../../../../assets/media/icons/user.png" alt="" /> -->
+                                    <img *ngIf="data" class="profile-pic"
+                                        [src]="data.customerKycReview.customerKyc.profileImage" alt="" />
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Address Details -->
-            <div class="row kt-margin-t-50">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-12 form-label header">
-                            <h5> Address & Identity </h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Address & Identity</label>
-                        </div>
-                        <div class="col-7">
-                            <input class="form-control"
-                                value="{{ data.customerKycReview.customerKyc.identityType.name | titlecase }}" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-3 offset-1 form-label">
-                            <label class="mandatory">Proof</label>
-                        </div>
-                        <!-- <div class="col-7">
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Select File"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                        (click)="identity.click()"
-                                        style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
-                                </div>
-                                <input type="file" class="d-none" #identity>
+                            <!-- <div class="col-7 d-flex">
+                            <div class="align-self-center">
+                                <input type="file" #profile class="d-none" />
+                                <label (click)="profile.click()" class="kt-pointer text-primary"
+                                    style="font-weight: 600;">Change Profile
+                                    Picture</label>
                             </div>
                         </div> -->
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- <div class="row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-6">
-                    <div class="col-8 offset-4">
-                        <div class="img-container">
-                            <div class="">
-                                <img class="" src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                              
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Full Name</label>
+                            </div>
+                            <div class="col-7">
+                                <!-- <div class="row"> -->
+                                <!-- <div class="col"> -->
+                                <input type="text" class="form-control" placeholder="Full Name"
+                                    formControlName="firstName"
+                                    value="{{this.data.customerKycReview.firstName | titlecase}} &nbsp;&nbsp;{{this.data.customerKycReview.lastName | titlecase}}" />
+
+                                <!-- </div> -->
+                                <!-- <div class="col">
+                                        <input type="text" class="form-control" placeholder="Full Name"
+                                            formControlName="lastName" />
+    
+                                    </div> -->
+                                <!-- </div> -->
+                                <!-- <mat-error
+                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                Required field
+                            </mat-error> -->
+
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> -->
 
-            <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKyc.identityProof">
-                    <div class="img-container">
-                        <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
-                    </div>
-                </div>
-            </div>
-        </form>
-
-        <form *ngIf="cities0" [formGroup]="customerKycAddressOne">
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">State</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control"
-                                value="{{ data.customerKycReview.customerKycAddress[0].state.name | titlecase }}" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class=" col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">City</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control"
-                                value="{{ data.customerKycReview.customerKycAddress[0].city.name | titlecase }}" />
-                            <!-- <mat-error
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Mobile No.</label>
+                            </div>
+                            <div class="col-7">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="Mobile Number"
+                                            formControlName="mobileNumber"
+                                            value="{{ this.data.customerKycReview.mobileNumber | titlecase }}" />
+                                        <!-- <mat-error
                                                 *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                 Required field
                                             </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Address </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number"
-                                formControlName="address" />
-                            <!-- <mat-error
-                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                                Required field
-                                            </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Pin Code</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number"
-                                formControlName="pinCode" />
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKycAddress[0].addressProof">
-                    <div class="img-container">
-                        <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
-                    </div>
-                </div>
-            </div>
-        </form>
-
-        <form *ngIf="cities0" [formGroup]="customerKycAddressTwo">
-            <!-- Address Details -->
-
-
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">State</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control"
-                                value="{{ data.customerKycReview.customerKycAddress[1].state.name | titlecase }}" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">City</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control"
-                                value="{{ data.customerKycReview.customerKycAddress[1].city.name | titlecase }}" />
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Address </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number"
-                                formControlName="address" />
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Pin Code</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number"
-                                formControlName="pinCode" />
-                            <!-- <mat-error
-                                                        *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                                        Required field
-                                                    </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- <div class="row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-6">
-                    <div class="col-8 offset-4">
-                        <div class="img-container">
-                            <ng-container
-                                *ngFor="let pass of data.customerKycReview.customerKycAddress[1].addressProof">
-                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-
-            <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKycAddress[1].addressProof">
-                    <div class="img-container">
-                        <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
-                    </div>
-                </div>
-            </div>
-        </form>
-
-        <!-- Personal Details -->
-        <form action="" [formGroup]="customerKyc">
-            <div class="row kt-margin-t-50">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-12 form-label header">
-                            <h5> Personal Details </h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Date of Birth </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number"
-                                formControlName="dateOfBirth"
-                                value="{{ data.customerKycReview.customerKyc.dateOfBirth | date: 'mediumDate' }}" />
-                            <!-- <mat-error
-                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                            Required field
-                        </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Gender</label>
-                        </div>
-                        <div class="col-7">
-                            <ng-container *ngIf="data.customerKycReview.customerKyc.gender == 'm'">
-                                <input type="text" class="form-control" placeholder="" value="Male" />
-                            </ng-container>
-
-                            <ng-container *ngIf="data.customerKycReview.customerKyc.gender == 'f'">
-                                <input type="text" class="form-control" placeholder="" value="Female" />
-                            </ng-container>
-
-                            <ng-container *ngIf="data.customerKycReview.customerKyc.gender == '0'">
-                                <input type="text" class="form-control" placeholder="" value="Other" />
-                            </ng-container>
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Alternate No. </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mobile Number"
-                                formControlName="alternateMobileNumber" />
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Marital Status</label>
-                        </div>
-                        <div class="col-7">
-                            <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'single'">
-                                <input type="text" class="form-control" placeholder="" value="Single" />
-                            </ng-container>
-                            <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'married'">
-                                <input type="text" class="form-control" placeholder="" value="Married" />
-                            </ng-container>
-                            <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'divorced'">
-                                <input type="text" class="form-control" placeholder="" value="Divorced" />
-                            </ng-container>
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Occupation </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="" formControlName="occupationId"
-                                value="{{ data.customerKycReview.customerKyc.occupation.name }}" />
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Father/Spouse Name</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="" formControlName="spouseName"
-                                value="{{ data.customerKycReview.customerKyc.spouseName | titlecase }}" />
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-3 offset-1 form-label">
-                            <label class="mandatory">Signature</label>
-                        </div>
-                        <!-- <div class="col-7">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Select File"
-                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
-                    <div class="input-group-append">
-                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="signature.click()"
-                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
-                    </div>
-                    <input type="file" class="d-none" #signature>
-                </div>
-            </div> -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-6">
-                    <div class="col-8 offset-4">
-                        <div class="img-container">
-                            <ng-container *ngFor="let pass of data.customerKycReview.customerKyc.signatureProof">
-                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </form>
-
-        <!-- Bank Details -->
-        <form action="" [formGroup]="customerKycBank">
-            <div class="row kt-margin-t-50">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-12 form-label header">
-                            <h5> Bank Details </h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> Bank Name </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="" formControlName="bankName"
-                                value="{{ data.customerKycReview.customerKycBank[0].bankName | titlecase }}" />
-                            <!-- <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                            Required field
-                                        </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">Bank Branch</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="" formControlName="bankBranchName"
-                                value="{{ data.customerKycReview.customerKycBank[0].bankBranchName | titlecase }}" />
-                            <!-- <mat-error
-                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                                Required field
-                                            </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> A/C Type </label>
-                        </div>
-                        <div class="col-7">
-                            <ng-container *ngIf="data.customerKycReview.customerKycBank[0].accountType == 'saving'">
-                                <input type="text" class="form-control" placeholder="" value="accountType"
-                                    value="Saving" />
-                            </ng-container>
-                            <ng-container *ngIf="data.customerKycReview.customerKycBank[0].accountType == 'current'">
-                                <input type="text" class="form-control" placeholder="" value="accountType"
-                                    value="Current" />
-                            </ng-container>
-
-                            <!-- <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                            Required field
-                                        </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">A/C Holder</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="" formControlName="accountHolderName"
-                                value="{{ data.customerKycReview.customerKycBank[0].accountHolderName | titlecase }}" />
-                            <!-- <mat-error
-                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                                Required field
-                                            </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory"> A/C No. </label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="" formControlName="accountNumber" />
-                            <!-- <mat-error
-                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
-                                                Required field
-                                            </mat-error> -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="offset-1 col-3 form-label">
-                            <label class="mandatory">IFSC Code</label>
-                        </div>
-                        <div class="col-7">
-                            <input type="text" class="form-control" placeholder="" formControlName="ifscCode"
-                                value="{{ data.customerKycReview.customerKycBank[0].ifscCode | uppercase }}" />
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row kt-margin-t-20">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-3 offset-1 form-label">
-                            <label class="mandatory">Passbook or Statement</label>
-                        </div>
-                        <!-- <div class="col-7">
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Select File"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                        (click)="pass.click()"
-                                        style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                    </div>
+                                    <div class="col pl-0">
+                                        <button class="w-100 btn success-button" color="success">Verified</button>
+                                    </div>
                                 </div>
-                                <input type="file" class="d-none" #pass>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="row kt-margin-t-20 kt-margin-b-20">
-                <div class="col-6">
-                    <div class="col-8 offset-4">
-                        <div class="img-container">
-                            <!-- <div class=""> -->
-                            <!-- <img class="" src="../../../../../../assets/media/icons/image-placeholder.png"
-                                        alt="" /> -->
-                            <ng-container *ngFor="let pass of data.customerKycReview.customerKycBank[0].passbookProof">
-                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">PAN</label>
+                            </div>
+                            <div class="col-7">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="PAN"
+                                            formControlName="panCardNumber"
+                                            value="{{ this.data.customerKycReview.panCardNumber | uppercase }}" />
 
-                            </ng-container>
-                            <!-- </div> -->
+                                    </div>
+                                    <div class="col pl-0">
+                                        <button class="w-100 btn success-button" color="success">Verified</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
+
+                <!-- Address Details -->
+                <div class="row kt-margin-t-50">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Address & Identity </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Address & Identity</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control"
+                                    value="{{ data.customerKycReview.customerKyc.identityType.name | titlecase }}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label class="mandatory">Proof</label>
+                            </div>
+                            <!-- <div class="col-7">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Select File"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                            (click)="identity.click()"
+                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                    </div>
+                                    <input type="file" class="d-none" #identity>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-6">
+                        <div class="col-8 offset-4">
+                            <div class="img-container">
+                                <div class="">
+                                    <img class="" src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+                                  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKyc.identityProof">
+                        <div class="img-container">
+                            <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <form *ngIf="cities0" [formGroup]="customerKycAddressOne">
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">State</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].state.name | titlecase }}" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=" col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">City</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" value="{{ data.customerKycReview.customerKycAddress[0].city.name | titlecase }}
+                                   " />
+                                <!-- <mat-error
+                                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                    Required field
+                                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Address </label>
+                            </div>
+                            <div class="col-7">
+                                <textarea type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="address"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].address  }}"></textarea>
+                                <!-- <mat-error
+                                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                    Required field
+                                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Pin Code</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="pinCode"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKycAddress[0].addressProof">
+                        <div class="img-container">
+                            <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <form *ngIf="cities0" [formGroup]="customerKycAddressTwo">
+                <!-- Address Details -->
 
 
-        <div class="row">
-            <div class="col-6">
-                <div class="offset-4">
-                    <div class="col kt-margin-t-20 kt-margin-b-20">
-                        <kt-button [value]="'Submit'" [type]="'button'" (action)="submit()"></kt-button>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">State</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control"
+                                    value="{{ data.customerKycReview.customerKycAddress[1].state.name | titlecase }}" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">City</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control"
+                                    value="{{ data.customerKycReview.customerKycAddress[1].city.name | titlecase }}" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Address </label>
+                            </div>
+                            <div class="col-7">
+                                <textarea type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="address"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].address }}"></textarea>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Pin Code</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="pinCode"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}" />
+                                <!-- <mat-error
+                                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                            Required field
+                                                        </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-6">
+                        <div class="col-8 offset-4">
+                            <div class="img-container">
+                                <ng-container
+                                    *ngFor="let pass of data.customerKycReview.customerKycAddress[1].addressProof">
+                                    <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKycAddress[1].addressProof">
+                        <div class="img-container">
+                            <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Personal Details -->
+            <form action="" [formGroup]="customerKyc">
+                <div class="row kt-margin-t-50">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Personal Details </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Date of Birth </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="dateOfBirth"
+                                    value="{{ data.customerKycReview.customerKyc.dateOfBirth | date: 'mediumDate' }}" />
+                                <!-- <mat-error
+                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                Required field
+                            </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Gender</label>
+                            </div>
+                            <div class="col-7">
+                                <ng-container *ngIf="data.customerKycReview.customerKyc.gender == 'm'">
+                                    <input type="text" class="form-control" placeholder="" value="Male" />
+                                </ng-container>
+
+                                <ng-container *ngIf="data.customerKycReview.customerKyc.gender == 'f'">
+                                    <input type="text" class="form-control" placeholder="" value="Female" />
+                                </ng-container>
+
+                                <ng-container *ngIf="data.customerKycReview.customerKyc.gender == '0'">
+                                    <input type="text" class="form-control" placeholder="" value="Other" />
+                                </ng-container>
+
+                                <!-- <mat-error
+                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                    Required field
+                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Alternate No. </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="alternateMobileNumber"
+                                    [value]="data.customerKycReview.customerKyc.alternateMobileNumber" />
+                                <!-- <mat-error
+                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                Required field
+                            </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Marital Status</label>
+                            </div>
+                            <div class="col-7">
+                                <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'single'">
+                                    <input type="text" class="form-control" placeholder="" value="Single" />
+                                </ng-container>
+                                <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'married'">
+                                    <input type="text" class="form-control" placeholder="" value="Married" />
+                                </ng-container>
+                                <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'divorced'">
+                                    <input type="text" class="form-control" placeholder="" value="Divorced" />
+                                </ng-container>
+
+                                <!-- <mat-error
+                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                    Required field
+                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Occupation </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="" formControlName="occupationId"
+                                    value="{{ data.customerKycReview.customerKyc.occupation.name }}" />
+                                <!-- <mat-error
+                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                    Required field
+                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Father/Spouse Name</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="" formControlName="spouseName"
+                                    value="{{ data.customerKycReview.customerKyc.spouseName | titlecase }}" />
+                                <!-- <mat-error
+                                        *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                        Required field
+                                    </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label class="mandatory">Signature</label>
+                            </div>
+                            <!-- <div class="col-7">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Select File"
+                            aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                        <div class="input-group-append">
+                            <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                (click)="signature.click()"
+                                style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                        </div>
+                        <input type="file" class="d-none" #signature>
+                    </div>
+                </div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-6">
+                        <div class="col-8 offset-4">
+                            <div class="img-container">
+                                <ng-container *ngFor="let pass of data.customerKycReview.customerKyc.signatureProof">
+                                    <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+            <!-- Bank Details -->
+            <form action="" [formGroup]="customerKycBank">
+                <div class="row kt-margin-t-50">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Bank Details </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> Bank Name </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="" formControlName="bankName"
+                                    value="{{ data.customerKycReview.customerKycBank[0].bankName | titlecase }}" />
+                                <!-- <mat-error
+                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                Required field
+                                            </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Bank Branch</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="" formControlName="bankBranchName"
+                                    value="{{ data.customerKycReview.customerKycBank[0].bankBranchName | titlecase }}" />
+                                <!-- <mat-error
+                                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                    Required field
+                                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> A/C Type </label>
+                            </div>
+                            <div class="col-7">
+                                <ng-container *ngIf="data.customerKycReview.customerKycBank[0].accountType == 'saving'">
+                                    <input type="text" class="form-control" placeholder="" value="accountType"
+                                        value="Saving" />
+                                </ng-container>
+                                <ng-container
+                                    *ngIf="data.customerKycReview.customerKycBank[0].accountType == 'current'">
+                                    <input type="text" class="form-control" placeholder="" value="accountType"
+                                        value="Current" />
+                                </ng-container>
+
+                                <!-- <mat-error
+                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                Required field
+                                            </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">A/C Holder</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder=""
+                                    formControlName="accountHolderName"
+                                    value="{{ data.customerKycReview.customerKycBank[0].accountHolderName | titlecase }}" />
+                                <!-- <mat-error
+                                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                    Required field
+                                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory"> A/C No. </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="" formControlName="accountNumber"
+                                    [value]="data.customerKycReview.customerKycBank[0].accountNumber" />
+                                <!-- <mat-error
+                                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                    Required field
+                                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">IFSC Code</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="" formControlName="ifscCode"
+                                    value="{{ data.customerKycReview.customerKycBank[0].ifscCode | uppercase }}" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label class="mandatory">Passbook or Statement</label>
+                            </div>
+                            <!-- <div class="col-7">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Select File"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                            (click)="pass.click()"
+                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                    </div>
+                                    <input type="file" class="d-none" #pass>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-6">
+                        <div class="col-8 offset-4">
+                            <div class="img-container">
+                                <!-- <div class=""> -->
+                                <!-- <img class="" src="../../../../../../assets/media/icons/image-placeholder.png"
+                                            alt="" /> -->
+                                <ng-container
+                                    *ngFor="let pass of data.customerKycReview.customerKycBank[0].passbookProof">
+                                    <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+
+                                </ng-container>
+                                <!-- </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="offset-4">
+                        <div class="col kt-margin-t-20 kt-margin-b-20">
+                            <kt-button [value]="'Submit'" [type]="'button'" (action)="submit()"></kt-button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- </form> -->
     </kt-portlet-body>
 </kt-portlet>
