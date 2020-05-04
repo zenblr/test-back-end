@@ -15,10 +15,7 @@ exports.createRoleValidation = [
           return Promise.reject("roleName already exit !");
         }
       })
-    }),
-  body("description")
-    .exists()
-    .withMessage("description is required")
+    })
 ];
 
 exports.addPermissionsValidation = [
@@ -42,8 +39,5 @@ exports.updateRoleValidation = [
             return Promise.reject("roleName already exit !");
           }
         })
-      }),
-    body("description")
-      .exists()
-      .withMessage("description is required")
+      })
   ];

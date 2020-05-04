@@ -244,7 +244,141 @@
  *           - userTypeId
  *    responses:
  *       200:
- *          description: User created
+ *          description: Success
+ * /user/internal-user:
+ *   post:
+ *     tags:
+ *       - Internal User
+ *     name: add internal user
+ *     summary: To add internal user  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             mobileNumber:
+ *               type: string
+ *             email:
+ *               type: string
+ *             roleId:
+ *               type: number   
+ *             internalBranchId:
+ *               type: number      
+ *         required:
+ *           - firstName
+ *           - lastName
+ *           - password
+ *           - mobileNumber
+ *           - email
+ *           - roleId
+ * 
+ *     responses:
+ *       200:
+ *          description: internal user added
  *       404:
- *          description: This Mobile number is already Exist/This Email id is already exist
+ *          description: failed to add internal user
+ *   get:
+ *     tags:
+ *       - Internal User
+ *     name: Read Internal User
+ *     summary: To read Internal User with pagination
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Data found
+ *       404:
+ *         description: Data not found
+ * /user/internal-user/{id}:
+ *   put:
+ *     tags:
+ *       - Internal User
+ *     name: add internal user
+ *     summary: To add internal user  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: "id"
+ *         in: "path"
+ *         description: "id to edit internal user"
+ *         required: true
+ *         type: "integer"
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             mobileNumber:
+ *               type: string
+ *             email:
+ *               type: string
+ *             roleId:
+ *               type: number   
+ *             internalBranchId:
+ *               type: number      
+ *         required:
+ *           - firstName
+ *           - lastName
+ *           - password
+ *           - mobileNumber
+ *           - email
+ *           - roleId
+ * 
+ *     responses:
+ *       200:
+ *          description: internal user updated
+ *       404:
+ *          description: failed to update internal user
+ *   delete:
+ *     tags:
+ *       - Internal User
+ *     name: delete internal user
+ *     summary: To add internal user  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: "id"
+ *         in: "path"
+ *         description: "id to edit internal user"
+ *         required: true
+ *         type: "integer"
+ *     responses:
+ *       200:
+ *          description: internal user deleted
+ *       404:
+ *          description: failed to delete internal user
+ *    
+ * 
  */

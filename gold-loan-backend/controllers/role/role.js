@@ -141,6 +141,10 @@ exports.readRolesPagination = async (req, res, next) => {
             as:'updatedByUser',
             attributes: ['firstName','lastName']
           },
+          {
+            model: models.module,
+            attributes: ['id','moduleName']
+          },
         ]
     });
 
