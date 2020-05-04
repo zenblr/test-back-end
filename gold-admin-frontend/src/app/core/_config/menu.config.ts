@@ -260,6 +260,12 @@ export class MenuConfig {
 					]
 				},
 				{
+					title: 'EMI Management',
+					root: true,
+					src: 'assets/media/aside-icons/icons-04.svg',
+					page: '/emi-management',
+				},
+				{
 					title: 'Log Out',
 					src: 'assets/media/aside-icons/icons-12.svg',
 				}
