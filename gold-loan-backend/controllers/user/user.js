@@ -28,7 +28,7 @@ exports.addUser = async (req, res, next) => {
 
     await sequelize.transaction(async t => {
 
-        const user = await models.user.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, userTypeId,internalBranchId, createdBy, modifiedBy }, { transaction: t })
+        const user = await models.user.create({ firstName, lastName, password, mobileNumber, email, panCardNumber, userTypeId, createdBy, modifiedBy }, { transaction: t })
         if (check.isEmpty(address.length)) {
             for (let i = 0; i < address.length; i++) {
                 let data = await models.user_address.create({
@@ -215,8 +215,7 @@ exports.getUser = async (req, res, next) => {
         include: [{
             model: models.role
         },{
-            model: models.internalBranch,
-            as: 'internalBranch'
+            model: models.internalBranch
         }]
     });
     return res.json(user)

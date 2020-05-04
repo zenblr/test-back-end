@@ -56,6 +56,9 @@ module.exports = (sequelize, DataTypes) => {
         InternalBranch.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         InternalBranch.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
+        InternalBranch.belongsToMany(models.user, { through: models.userInternalBranch });
+
+
     }
     return InternalBranch;
 }
