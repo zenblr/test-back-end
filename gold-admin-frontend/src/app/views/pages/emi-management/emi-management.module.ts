@@ -27,6 +27,16 @@ import {
 // Module
 import { CoreModule } from "../../../core/core.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { ProductComponent } from './product/product.component';
+import { ShowProductsComponent } from './product/show-products/show-products.component';
+import { CategoryComponent } from './product/category/category.component';
+import { SubCategoryComponent } from './product/sub-category/sub-category.component';
+import { UploadProductComponent } from './product/upload-product/upload-product.component';
+import { UploadDesignComponent } from './product/upload-design/upload-design.component';
+import { BulkUploadReportComponent } from './bulk-upload-report/bulk-upload-report.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ConfigDetailsComponent } from './config-details/config-details.component';
+import { WalletPriceComponent } from './config-details/wallet-price/wallet-price.component';
 
 const routes: Routes = [
 	{
@@ -74,6 +84,16 @@ const routes: Routes = [
 	],
 	declarations: [
 		EMIManagementComponent,
+		ProductComponent,
+		ShowProductsComponent,
+		CategoryComponent,
+		SubCategoryComponent,
+		UploadProductComponent,
+		UploadDesignComponent,
+		BulkUploadReportComponent,
+		DashboardComponent,
+		ConfigDetailsComponent,
+		WalletPriceComponent,
 
 	]
 })
