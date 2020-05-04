@@ -13,7 +13,7 @@ export class PageConfig {
 			'show-queries': {
 				page: { title: 'Show Queries', desc: '' }
 			},
-			'show=feedback': {
+			'show-feedback': {
 				page: { title: 'Show Feedback', desc: '' }
 			},
 		},

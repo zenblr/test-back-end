@@ -197,4 +197,15 @@ export class UserAddressComponent implements OnInit {
     }
   }
 
+  removeImages(index, type) {
+    // console.log(index, type)
+    if (type == 'identityProof') {
+      this.images.identityProof.splice(index, 1);
+    } else if (type == 'residential') {
+      this.images.residential.splice(index, 1);
+    } else if (type == 'permanent') {
+      this.images.permanent.splice(index, 1);
+    }
+  }
+
 }

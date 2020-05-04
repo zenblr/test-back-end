@@ -97,7 +97,7 @@
 								class="form-control" formControlName="firstName" [class.isError]="
 									controls.firstName.touched &&
 									controls.firstName.invalid
-								" [readOnly]="true" />
+								" [readOnly]="true" style="text-transform: capitalize;" />
 							<mat-error *ngIf="
 									controls.firstName.errors?.required &&
 									controls.firstName.touched
@@ -110,7 +110,7 @@
 								class="form-control" formControlName="lastName" [class.isError]="
 									controls.lastName.touched &&
 									controls.lastName.invalid
-								" [readOnly]="true" />
+								" [readOnly]="true" style="text-transform: capitalize;" />
 
 							<mat-error *ngIf="
 									controls.lastName.errors?.required &&
@@ -132,10 +132,9 @@
 						<div class="col">
 							<!-- <mat-form-field appearance="outline" class="w-100"> -->
 							<input class="form-control" formControlName="panCardNumber" autocomplete="off"
-								placeholder="PAN Number" [class.isError]="
-									controls.panCardNumber.touched &&
-									controls.panCardNumber.invalid
-								" />
+								placeholder="PAN"
+								[class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+								maxlength="10" style="text-transform: uppercase;" />
 							<mat-error *ngIf="
 									controls.panCardNumber.errors?.required &&
 									controls.panCardNumber.touched

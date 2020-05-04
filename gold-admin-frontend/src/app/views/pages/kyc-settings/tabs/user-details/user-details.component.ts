@@ -142,6 +142,8 @@ export class UserDetailsComponent implements OnInit {
       return
     }
     this.userBasicForm.enable()
+    const PAN = this.controls.panCardNumber.value.toUpperCase();
+    this.userBasicForm.get('panCardNumber').patchValue(PAN)
     const basicForm = this.userBasicForm.value;
     this.userDetailsService.basicDetails(basicForm).pipe(
       map(res => {

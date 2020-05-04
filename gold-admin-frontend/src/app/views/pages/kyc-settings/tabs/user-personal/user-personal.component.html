@@ -182,13 +182,12 @@
                             <div class="col-6">
                                 <div class="col-8 offset-4">
                                     <div class="img-container">
-                                        <div class="">
-                                            <img *ngIf="!signatureJSON.isImage" class=""
-                                                src="../../../../../../assets/media/icons/image-placeholder.png"
-                                                alt="" />
-                                            <img *ngIf="signatureJSON.isImage" [src]="signatureJSON.url"
-                                                style="border-radius: 15px;" alt="" />
-                                        </div>
+                                        <!-- <div class=""> -->
+                                        <img *ngIf="!signatureJSON.isImage" class=""
+                                            src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+                                        <img class="fetched-image" *ngIf="signatureJSON.isImage"
+                                            [src]="signatureJSON.url" style="border-radius: 15px;" alt="" />
+                                        <!-- </div> -->
                                     </div>
                                     <div class="kt-margin-t-20 text-color font-11">
                                         (Please verify the detail before moving forward)
