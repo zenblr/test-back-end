@@ -7,7 +7,7 @@
                     1
                 </div>
                 <p class="step-name">Basic Details</p>
-                <p class="step-details"> User's Basic Details</p>
+                <!-- <p class="step-details"> User's Basic Details</p> -->
             </div>
         </a>
 
@@ -23,7 +23,7 @@
                     2
                 </div>
                 <p class="step-name">Address & Identity</p>
-                <p class="step-details"> User's Address & Identity</p>
+                <!-- <p class="step-details"> User's Address & Identity</p> -->
             </div>
         </a>
 
@@ -39,7 +39,7 @@
                     3
                 </div>
                 <p class="step-name">Personal Details</p>
-                <p class="step-details"> User's Personal Details</p>
+                <!-- <p class="step-details"> User's Personal Details</p> -->
             </div>
         </a>
 
@@ -55,7 +55,7 @@
                     4
                 </div>
                 <p class="step-name">Bank Details</p>
-                <p class="step-details"> User's Bank Details</p>
+                <!-- <p class="step-details"> User's Bank Details</p> -->
             </div>
         </a>
 
@@ -63,18 +63,32 @@
             <kt-user-banks (next)=next($event)></kt-user-banks>
         </ng-template>
     </ng-container>
-    <ng-container [ngbNavItem]="5" [disabled]="disabled[4]">
+    <ng-container [ngbNavItem]="5" [disabled]="disabled[5]">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
                     5
                 </div>
                 <p class="step-name">Review & Submit</p>
-                <p class="step-details"> User's Review & Submit</p>
+                <!-- <p class="step-details"> User's Review & Submit</p> -->
             </div>
         </a>
         <ng-template ngbNavContent>
             <kt-user-review (next)=next($event)></kt-user-review>
+        </ng-template>
+    </ng-container>
+    <ng-container [ngbNavItem]="6" [disabled]="disabled[4]">
+        <a ngbNavLink class="tab-link">
+            <div>
+                <div class="step-number">
+                    6
+                </div>
+                <p class="step-name">Customer Classification</p>
+                <!-- <p class="step-details"> User's Review & Submit</p> -->
+            </div>
+        </a>
+        <ng-template ngbNavContent>
+            <kt-user-classification (next)=next($event)></kt-user-classification>
         </ng-template>
     </ng-container>
 </nav>
