@@ -5,11 +5,11 @@ const { addAppraisalRating, readKycSubmmitedCustomer, addBranchManagerRating, re
 
 const checkAuth = require('../middleware/checkAuth');
 
-route.post('/appraisal', checkAuth, wrapper(addAppraisalRating));
+route.post('/cce', checkAuth, wrapper(addAppraisalRating));
 
-route.put('/appraisal/:id', checkAuth, wrapper(updateAppraisalRating));
+route.put('/cce/:id', checkAuth, wrapper(updateAppraisalRating));
 
-route.get('/appraisal', checkAuth, wrapper(readKycSubmmitedCustomer));
+route.get('/cce', checkAuth, wrapper(readKycSubmmitedCustomer));
 
 route.post('/branch-manager', checkAuth, wrapper(addBranchManagerRating));
 
