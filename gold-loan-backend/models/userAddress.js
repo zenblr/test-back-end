@@ -7,13 +7,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         address:{
             type: DataTypes.TEXT,
-            field: 'address',
-            allowNull:false
+            field: 'address'
         },
         landMark: {
             type: DataTypes.STRING,
-            field: 'land_mark',
-            allowNull: false,
+            field: 'land_mark'
         },
         stateId: {
             type: DataTypes.INTEGER,
