@@ -68,6 +68,9 @@ export class PageConfig {
 		'loan-management': {
 			'loan-calculator': {
 				page: { title: 'Loan Calculator', desc: '' }
+			},
+			'loan-application-form': {
+				page: { title: 'Add New Loan', desc: '' }
 			}
 		},
 	};
