@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 COPY package.json /usr/src/app/
 RUN npm install
 
+# RUN npx sequelize-cli db:migrate
 # Bun
 # Create app directory
 # WORKDIR /usr/src/app
