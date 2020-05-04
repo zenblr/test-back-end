@@ -65,6 +65,23 @@ export class PageConfig {
 		'kyc-setting': {
 			page: { title: 'Customer KYC', desc: '' }
 		},
+		'emi-management': {
+			'products': {
+				page: { title: 'Show Poducts', desc: '' }
+			},
+			'category': {
+				page: { title: 'Category', desc: '' }
+			},
+			'sub-category': {
+				page: { title: 'Sub-category', desc: '' }
+			},
+			'upload-product': {
+				page: { title: 'Bulk Upload Product', desc: '' }
+			},
+			'upload-design': {
+				page: { title: 'Upload Design', desc: '' }
+			},
+		},
 	};
 
 	public get configs() {

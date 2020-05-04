@@ -40,11 +40,14 @@ export class MenuAsideService {
 	 */
 	loadMenu() {
 		// get menu list
-		var aside = ''
-		if (this.currentRouteUrl == 'user-management') {
-			aside = 'aside.itemsTwo'
-		} else {
-			aside = 'aside.itemsOne'
+		let aside = '';
+		switch (this.currentRouteUrl) {
+			case 'user-management': aside = 'aside.itemsTwo';
+				break;
+			case 'emi-management': aside = 'aside.itemsThree';
+				break;
+			default: aside = 'aside.itemsOne';
+				break;
 		}
 		const menuItems: any[] = objectPath.get(this.menuConfigService.getMenus(), aside);
 		this.menuList$.next(menuItems);
