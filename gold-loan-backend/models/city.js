@@ -11,10 +11,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'state_id',
             allowNull: false,
         },
-        slug: {
-            type: DataTypes.STRING,
-            field: 'slug'
-        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
