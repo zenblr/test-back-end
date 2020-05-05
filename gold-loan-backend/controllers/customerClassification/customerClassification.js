@@ -9,7 +9,7 @@ const moment = require("moment");
 
 const check = require("../../lib/checkLib");
 
-exports.addAppraisalRating = async (req, res, next) => {
+exports.addCceRating = async (req, res, next) => {
 
     let { customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce } = req.body;
 
@@ -25,23 +25,26 @@ exports.addAppraisalRating = async (req, res, next) => {
     }
     if (kycStatusFromCce !== "confirm") {
         await sequelize.transaction(async (t) => {
+            await models.customer.update(
+                { cceVerifiedBy: cceId },
+                { where: { id: customerId }, transaction: t })
 
-            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId })
+            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId }, { transaction: t })
         });
     } else {
         await sequelize.transaction(async (t) => {
             await models.customer.update(
-                { isVerifiedByCce: true, cceVerifiedBy: cceId, kycStatus: "pending" },
-                { where: { id: customerId } })
+                { isVerifiedByCce: true, cceVerifiedBy: cceId },
+                { where: { id: customerId }, transaction: t })
 
-            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId })
+            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId }, { transaction: t })
         });
     }
     return res.status(200).json({ message: 'success' })
 }
 
 
-exports.updateAppraisalRating = async (req, res, next) => {
+exports.updateCceRating = async (req, res, next) => {
     let { id } = req.params;
     let { behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce } = req.body;
     let cceId = req.userData.id

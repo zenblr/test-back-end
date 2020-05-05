@@ -6,6 +6,7 @@ const request = require("request");
 const { createReferenceCode } = require("../../utils/referenceCode");
 const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
+const { paginationWithFromTo } = require("../../utils/pagination");
 
 const check = require("../../lib/checkLib");
 
@@ -269,5 +270,66 @@ exports.submitAllKycInfo = async (req, res, next) => {
     }
     let abc = await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId } })
     return res.status(200).json({ message: `successful`, customerId, customerKycId })
+}
+
+
+exports.appliedKyc = async (req, res, next) => {
+    const { search, offset, pageSize } = paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+
+    var query = {};
+
+    if (req.query.kycStatus) {
+        query.kycStatus =  sequelize.where(
+            sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
+            {
+                [Op.iLike]: req.query.kycStatus + "%",
+            }
+        );
+    }
+
+    const searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                first_name: { [Op.iLike]: search + "%" },
+                last_name: { [Op.iLike]: search + "%" },
+                mobile_number: { [Op.iLike]: search + "%" },
+                pan_card_number: { [Op.iLike]: search + "%" },
+                kyc_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                )
+            }
+        }],
+        isActive: true,
+        isAppliedForKyc: true
+    };
+    let includeArray = [
+        {
+            model: models.customerKycPersonalDetail,
+            as: 'customerKyc',
+            attributes: ['createdAt']
+        }
+    ]
+    
+    let getAppliedKyc = await models.customer.findAll({
+        where: searchQuery,
+        attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'panCardNumber', 'kycStatus'],
+        offset: offset,
+        limit: pageSize,
+        include: includeArray
+    })
+    let count = await models.customer.count({
+        where: searchQuery,
+        include: includeArray,
+    });
+
+    return res.status(200).json({ data: getAppliedKyc, count })
+
 }
 
