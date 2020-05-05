@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'relationship'
         },
+        nomineeId: {
+            type: DataTypes.STRING,
+            field: 'nominee_id'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
