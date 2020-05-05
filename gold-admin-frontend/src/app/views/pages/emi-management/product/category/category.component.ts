@@ -29,7 +29,7 @@ import {AddCategoryDatasource , AddCategoryService,AddCategoryModel} from '../..
 })
 export class CategoryComponent implements OnInit, OnDestroy {
   dataSource: AddCategoryDatasource;
-  displayedColumns: string[] = ["categoryName", "action"];
+  displayedColumns: string[] = ["categoryName","conversionFactor", "action"];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("searchInput", { static: true }) searchInput: ElementRef;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -46,7 +46,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   };
   public spinnerValue: boolean = false;
   public noRecords: boolean;
-  public permission: any;
+  
 
   constructor(
     public dialog: MatDialog,

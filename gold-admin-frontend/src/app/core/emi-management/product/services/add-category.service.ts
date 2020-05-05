@@ -14,8 +14,8 @@ export class AddCategoryService {
   constructor(private _http: HttpClient,
 		private httpUtils: HttpUtilsService) { }
 
-  public getAllBulkUploadStatus(from: number, to: number, search: string): Observable<any> {
-		return this._http.get<any>(`/api/bulk-upload?from=${from}&to=${to}&search=${search}`).pipe(
+  public getCategoryList(from: number, to: number, search: string): Observable<any> {
+		return this._http.get<any>(`/api/category?from=${from}&to=${to}&search=${search}`).pipe(
 
 			(tap(allMemberData => {
 				return allMemberData

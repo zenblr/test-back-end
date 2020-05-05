@@ -5,7 +5,7 @@ import {map } from 'rxjs/operators';
 
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import {AddCategoryService} from '../services/add-category.service';
-import { BaseDataSource } from 'src/app/core/_base/crud';
+import { BaseDataSource } from '../../../../core/_base/crud/index';
 
 export class AddCategoryDatasource extends BaseDataSource {
     private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -20,7 +20,7 @@ export class AddCategoryDatasource extends BaseDataSource {
 
     getAllCategoryData(from: number, to: number,search?:string){
        this.loadingSubject.next(true);
-       this.service.getAllBulkUploadStatus(from,to,search)
+       this.service.getCategoryList(from,to,search)
        .pipe(
            map(
                data=>{
