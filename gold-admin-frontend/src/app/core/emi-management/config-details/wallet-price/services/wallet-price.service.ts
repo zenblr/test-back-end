@@ -20,10 +20,10 @@ export class WalletPriceService {
   }
 
   addWalletPrice(data): Observable<any> {
-    return this.http.post<any>(`/api/partner-branch`, data);
+    return this.http.post<any>(`http://173.249.49.7:9120/api/wallet`, data);
   }
 
   updateWalletPrice(id, data): Observable<any> {
-    return this.http.put<any>(`/api/partner-branch/${id}`, data);
+    return this.http.put<any>(`http://173.249.49.7:9120/api/wallet/${id}`, data);
   }
 }

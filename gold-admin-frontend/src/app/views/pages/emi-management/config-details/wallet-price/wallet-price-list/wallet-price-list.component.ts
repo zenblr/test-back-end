@@ -1,24 +1,12 @@
 // Angular
-import { Component, OnInit, ElementRef, ViewChild, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 // Material
-import { SelectionModel } from '@angular/cdk/collections';
-import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 // RXJS
-import { debounceTime, distinctUntilChanged, tap, skip, take, delay, takeUntil, map } from 'rxjs/operators';
-import { fromEvent, merge, Observable, of, Subscription, Subject } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-// NGRX
-import { Store } from '@ngrx/store';
+import { tap, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 // Services
-// import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
-// Models
-// import { Role, RolesDataSource, RoleDeleted, RolesPageRequested } from '../../../../../core/auth';
-// import { AppState } from '../../../../../core/reducers';
-// import { QueryParamsModel } from '../../../../../core/_base/crud';
-// import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
-// import { DataTableService } from '../../../../../core/shared/services/data-table.service';
-import { Router } from '@angular/router';
-import { WalletPriceService, WalletPriceDatasource, WalletPriceModel } from '../../../../../../core/emi-management/config-details/wallet-price';
+import { WalletPriceService } from '../../../../../../core/emi-management/config-details/wallet-price';
 import { WalletPriceAddComponent } from '../wallet-price-add/wallet-price-add.component';
 
 @Component({
@@ -27,8 +15,8 @@ import { WalletPriceAddComponent } from '../wallet-price-add/wallet-price-add.co
   styleUrls: ['./wallet-price-list.component.scss']
 })
 export class WalletPriceListComponent implements OnInit {
-  // walletPrice: any;
   walletPrice$: Observable<any>;
+  walletPriceData: any;
   private destroy$ = new Subject();
 
   constructor(
@@ -37,7 +25,11 @@ export class WalletPriceListComponent implements OnInit {
   ) {
     this.walletPriceService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
-        this.addWalletPrice();
+        if (this.walletPriceData) {
+          this.editWalletPrice(this.walletPriceData);
+        } else {
+          this.addWalletPrice();
+        }
       }
     })
   }
@@ -47,8 +39,7 @@ export class WalletPriceListComponent implements OnInit {
   }
 
   getWalletPrice() {
-    this.walletPrice$ = this.walletPriceService.getWalletPrice();
-    // this.walletPriceService.getWalletPrice().subscribe(res => {this.walletPrice = res; console.log(this.walletPrice )});
+    this.walletPrice$ = this.walletPriceService.getWalletPrice().pipe(tap(res => this.walletPriceData = res));
   }
 
   /**
@@ -58,9 +49,25 @@ export class WalletPriceListComponent implements OnInit {
     const dialogRef = this.dialog.open(WalletPriceAddComponent, { data: { action: 'add' }, width: '550px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        // this.loadPartnersPage();
+        this.getWalletPrice();;
       }
     })
     this.walletPriceService.openModal.next(false);
+  }
+
+  /**
+	 * Edit Wallet Price
+	 */
+  editWalletPrice(walletPrice) {
+    const dialogRef = this.dialog.open(WalletPriceAddComponent,
+      {
+        data: { data: walletPrice, action: 'edit' },
+        width: '550px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.getWalletPrice();
+      }
+    });
   }
 }

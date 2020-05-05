@@ -164,7 +164,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'wallet-price') {
 			this.rightButton = true
 			this.type2 = 'button';
-			this.value2 = 'Wallet Price';
+			this.value2 = 'Edit Wallet Price';
 		}
 	}
 

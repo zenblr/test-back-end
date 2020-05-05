@@ -28,18 +28,18 @@ export class WalletPriceAddComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.setForm();
-    console.log(this.data);
   }
 
   initForm() {
     this.walletPriceForm = this.fb.group({
+      id: [''],
       walletGoldPrice: ['', Validators.required],
       walletSilverPrice: ['', Validators.required],
       forwordCostThreeMonth: ['', Validators.required],
       forwordCostSixMonth: ['', Validators.required],
       forwordCostNineMonth: ['', Validators.required],
       gst: ['', Validators.required],
-      excixeDuty: ['', Validators.required],
+      excixeDuty: [''],
       cancelValue: ['', Validators.required],
     })
   }
@@ -56,7 +56,7 @@ export class WalletPriceAddComponent implements OnInit {
         break;
       case 'edit': this.title = 'Edit Wallet Price';
         this.isMandatory = true;
-        // this.getPartnerById(this.data.partnerId);
+        this.walletPriceForm.patchValue(this.data.data);
         break;
       default:
     }
@@ -75,15 +75,13 @@ export class WalletPriceAddComponent implements OnInit {
       this.walletPriceForm.markAllAsTouched();
       return
     }
-    // console.log(this.branchForm.value);
     const walletPriceData = this.walletPriceForm.value;
     const id = this.controls.id.value;
 
     if (this.data.action == 'edit') {
       this.walletPriceService.updateWalletPrice(id, walletPriceData).subscribe(res => {
-        // console.log(res);
         if (res) {
-          const msg = 'Branch Updated Sucessfully';
+          const msg = 'Wallet Price Updated Sucessfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
         }
@@ -96,9 +94,8 @@ export class WalletPriceAddComponent implements OnInit {
 
     } else {
       this.walletPriceService.addWalletPrice(walletPriceData).subscribe(res => {
-        // console.log(res);
         if (res) {
-          const msg = 'Branch Added Successfully';
+          const msg = 'Wallet Price Added Successfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
         }
