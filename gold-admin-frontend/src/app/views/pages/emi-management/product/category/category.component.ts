@@ -19,7 +19,10 @@ import { ToastrService } from "ngx-toastr";
 import {
   DeleteEntityDialogComponent,
 } from "../../../../partials/content/crud/index";
+import {LayoutUtilsService} from '../../../../../core/_base/crud/utils/layout-utils.service';
+import {AddEditCategoryComponent} from './add-edit-category/add-edit-category.component';
 import {AddCategoryDatasource , AddCategoryService,AddCategoryModel} from '../../../../../core/emi-management/product/index';
+
 
 
 @Component({
@@ -46,20 +49,21 @@ export class CategoryComponent implements OnInit, OnDestroy {
   };
   public spinnerValue: boolean = false;
   public noRecords: boolean;
-  
+
 
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    private _settingsService: AddCategoryService,
+    private AddCategoryService: AddCategoryService,
     private toast: ToastrService,
     private ref: ChangeDetectorRef,
-    
+    public layoutUtilsService :LayoutUtilsService,
+
   ) {}
 
   ngOnInit() {
-   
-    this.dataSource = new AddCategoryDatasource(this._settingsService);
+
+    this.dataSource = new AddCategoryDatasource(this.AddCategoryService);
     const entitiesSubscription = this.dataSource.entitySubject
       .pipe(skip(1), distinctUntilChanged())
       .subscribe(res => {
@@ -79,30 +83,30 @@ export class CategoryComponent implements OnInit, OnDestroy {
       this.positionData.Text
     );
   }
-  // addCategory() {
-  //   const dialogRef = this.dialog.open(CommonModalComponent, {
-  //     data: { title: "AddCategoryComponent", action: "Add Category" },
-  //     width: "50vw"
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     this.loadCategoryPage();
-  //   });
-  // }
+  addCategory() {
+    const dialogRef = this.dialog.open(AddEditCategoryComponent, {
+      data: { title: "AddCategoryComponent", action: "add" },
+      width: "50vw"
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      this.loadCategoryPage();
+    });
+  }
 
-  // editCategory(id) {
-  //   let categoryId = id;
-  //   const dialogRef = this.dialog.open(CommonModalComponent, {
-  //     data: {
-  //       categoryId,
-  //       title: "AddCategoryComponent",
-  //       action: "Edit Category"
-  //     },
-  //     width: "50vw"
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     this.loadCategoryPage();
-  //   });
-  // }
+  editCategory(id) {
+    const categoryId = id;
+    const dialogRef = this.dialog.open(AddEditCategoryComponent, {
+      data: {
+        categoryId,
+        title: "AddCategoryComponent",
+        action: "edit"
+      },
+      width: "50vw"
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      this.loadCategoryPage();
+    });
+  }
 
   // deleteCategory(idd, categoryNamee) {
   //   let id = idd;
@@ -120,7 +124,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   //     this.spinnerValue = true;
   //     this.ref.detectChanges();
   //     if (status == "delete") {
-  //       this._settingsService.deleteCategory(id).subscribe(
+  //       this.AddCategoryService.deleteCategory(id).subscribe(
   //         res => {
   //           this.spinnerValue = false;
   //           this.ref.detectChanges();
@@ -147,6 +151,39 @@ export class CategoryComponent implements OnInit, OnDestroy {
   //     }
   //   });
   // }
+
+  deleteCategory(id) {
+
+    const _title = 'Delete Category';
+    const _description = 'Are you sure to permanently delete this Category?';
+    const _waitDesciption = 'Category is deleting...';
+    const _deleteMessage = 'Category has been deleted';
+
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.AddCategoryService.deleteCategory(id).subscribe(
+                  res => {
+
+
+                    this.toast.success("Success", "Category Deleted Successfully", {
+                      timeOut: 3000
+                    });
+                    this.loadCategoryPage();
+                  },
+                  err => {
+
+
+                    this.toast.error("Sorry", err["error"]["message"], {
+                      timeOut: 3000
+                    });
+                  }
+                );
+
+      }
+
+    });
+  }
 
   ngAfterViewInit() {
     const searchSubscription = fromEvent(

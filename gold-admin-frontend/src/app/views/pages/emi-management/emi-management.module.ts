@@ -37,6 +37,7 @@ import { BulkUploadReportComponent } from './bulk-upload-report/bulk-upload-repo
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ConfigDetailsComponent } from './config-details/config-details.component';
 import { WalletPriceComponent } from './config-details/wallet-price/wallet-price.component';
+import { AddEditCategoryComponent } from './product/category/add-edit-category/add-edit-category.component';
 
 const routes: Routes = [
 	{
@@ -104,6 +105,7 @@ const routes: Routes = [
 	],
 	entryComponents: [
 		ActionNotificationComponent,
+		AddEditCategoryComponent,
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -117,6 +119,7 @@ const routes: Routes = [
 		DashboardComponent,
 		ConfigDetailsComponent,
 		WalletPriceComponent,
+		AddEditCategoryComponent,
 	]
 })
 export class EMIManagementModule { }
