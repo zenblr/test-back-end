@@ -4,6 +4,7 @@
         "password": "nimap@123",
         "database": "gold",
         "host": "db",
+        "port":"8432",
         "dialect": "postgres",
         "operatorsAliases": false
     },
