@@ -31,7 +31,7 @@ exports.addAppraisalRating = async (req, res, next) => {
     } else {
         await sequelize.transaction(async (t) => {
             await models.customer.update(
-                { isVerifiedByCce: true, cceVerifiedBy: cceId, kycStatus: "complete" },
+                { isVerifiedByCce: true, cceVerifiedBy: cceId, kycStatus: "pending" },
                 { where: { id: customerId } })
 
             await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId })

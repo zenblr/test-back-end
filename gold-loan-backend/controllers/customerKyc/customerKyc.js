@@ -122,6 +122,8 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
+    let updateCustomer = await models.customer.update({ isAppliedForKyc: true }, { where: { id: getCustomerInfo.id } })
+
     let createCustomerKyc = await models.customerKycPersonalDetail.create({
         customerId: getCustomerInfo.id,
         firstName: getCustomerInfo.firstName,
@@ -233,7 +235,7 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
         }, {
             model: models.customerKycAddressDetail,
             as: 'customerKycAddress',
-            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId','addressProofNumber'],
+            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId', 'addressProofNumber'],
             include: [{
                 model: models.state,
                 as: 'state'
@@ -259,6 +261,7 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 exports.submitAllKycInfo = async (req, res, next) => {
 
     let { customerId, customerKycId } = req.body;
+    console.log(req.body)
 
     let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { id: customerKycId } })
     if (check.isEmpty(findCustomerKyc)) {
