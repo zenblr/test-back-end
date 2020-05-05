@@ -27,7 +27,8 @@ import { WalletPriceAddComponent } from '../wallet-price-add/wallet-price-add.co
   styleUrls: ['./wallet-price-list.component.scss']
 })
 export class WalletPriceListComponent implements OnInit {
-
+  // walletPrice: any;
+  walletPrice$: Observable<any>;
   private destroy$ = new Subject();
 
   constructor(
@@ -39,9 +40,15 @@ export class WalletPriceListComponent implements OnInit {
         this.addWalletPrice();
       }
     })
-   }
+  }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.getWalletPrice();
+  }
+
+  getWalletPrice() {
+    this.walletPrice$ = this.walletPriceService.getWalletPrice();
+    // this.walletPriceService.getWalletPrice().subscribe(res => {this.walletPrice = res; console.log(this.walletPrice )});
   }
 
   /**
