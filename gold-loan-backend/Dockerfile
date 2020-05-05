@@ -19,7 +19,7 @@ RUN npm install
 # Bundle app source
 COPY . /usr/src/app
 
-CMD npm migrate
+RUN npx sequelize-cli db:migrate
 
 
 EXPOSE 3000
