@@ -48,7 +48,7 @@ export class WalletPriceListComponent implements OnInit {
 	 * Add Wallet Price
 	 */
   addWalletPrice() {
-    const dialogRef = this.dialog.open(WalletPriceAddComponent, { data: { action: 'add' }, width: '450px' });
+    const dialogRef = this.dialog.open(WalletPriceAddComponent, { data: { action: 'add' }, width: '550px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         // this.loadPartnersPage();
