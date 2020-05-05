@@ -501,9 +501,10 @@
                 <div class="row kt-margin-t-20 kt-margin-b-20">
                     <div class="col-6">
                         <div class="col-8 offset-4">
-                            <div class="img-container">
-                                <ng-container *ngFor="let pass of data.customerKycReview.customerKyc.signatureProof">
-                                    <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                            <div class="img-container kt-margin-r-15">
+                                <ng-container>
+                                    <img class="fetched-image" [src]="data.customerKycReview.customerKyc.signatureProof"
+                                        style="border-radius: 15px;" alt="" />
                                 </ng-container>
                             </div>
                         </div>
@@ -654,23 +655,22 @@
                     </div>
                 </div>
 
-                <div class="row kt-margin-t-20 kt-margin-b-20">
-                    <div class="col-6">
-                        <div class="col-8 offset-4">
-                            <div class="img-container">
-                                <!-- <div class=""> -->
-                                <!-- <img class="" src="../../../../../../assets/media/icons/image-placeholder.png"
+                <div class="row offset-2 kt-margin-t-20 kt-margin-b-20">
+                    <!-- <div class="col-6"> -->
+                    <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKycBank[0].passbookProof">
+                        <div class="img-container  kt-margin-r-15">
+                            <!-- <div class=""> -->
+                            <!-- <img class="" src="../../../../../../assets/media/icons/image-placeholder.png"
                                             alt="" /> -->
-                                <ng-container
-                                    *ngFor="let pass of data.customerKycReview.customerKycBank[0].passbookProof">
-                                    <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
 
-                                </ng-container>
-                                <!-- </div> -->
-                            </div>
+                            <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+
+
+                            <!-- </div> -->
                         </div>
                     </div>
                 </div>
+                <!-- </div> -->
             </form>
 
 

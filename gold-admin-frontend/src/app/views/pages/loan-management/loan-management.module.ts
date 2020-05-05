@@ -10,7 +10,8 @@ import { FinalLoanAmountComponent } from './loan-calculator/tabs/final-loan-amou
 import { LoanApplicationFormComponent } from './loan-application-form/loan-application-form.component';
 import { BasicDetailsComponent } from './loan-application-form/tabs/basic-details/basic-details.component';
 import { KycDetailsComponent } from './loan-application-form/tabs/kyc-details/kyc-details.component';
-import { NomineeDetailsComponent } from './loan-application-form/tabs/nominee-details/nominee-details.component'
+import { NomineeDetailsComponent } from './loan-application-form/tabs/nominee-details/nominee-details.component';
+import { FinalInterestAmountComponent } from './loan-calculator/tabs/final-interest-amount/final-interest-amount.component'
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -23,7 +24,7 @@ const rout: Routes = [
 ]
 
 @NgModule({
-  declarations: [LoanCalculatorComponent, RoughLoanAmountComponent, FinalLoanAmountComponent, LoanApplicationFormComponent, BasicDetailsComponent, KycDetailsComponent, NomineeDetailsComponent],
+  declarations: [LoanCalculatorComponent, RoughLoanAmountComponent, FinalLoanAmountComponent, LoanApplicationFormComponent, BasicDetailsComponent, KycDetailsComponent, NomineeDetailsComponent, FinalInterestAmountComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(rout),
