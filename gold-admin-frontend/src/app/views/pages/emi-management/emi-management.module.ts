@@ -36,7 +36,8 @@ import { UploadDesignComponent } from './product/upload-design/upload-design.com
 import { BulkUploadReportComponent } from './bulk-upload-report/bulk-upload-report.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ConfigDetailsComponent } from './config-details/config-details.component';
-import { WalletPriceComponent } from './config-details/wallet-price/wallet-price.component';
+import { WalletPriceListComponent } from './config-details/wallet-price/wallet-price-list/wallet-price-list.component';
+import { WalletPriceAddComponent } from './config-details/wallet-price/wallet-price-add/wallet-price-add.component';
 
 const routes: Routes = [
 	{
@@ -70,7 +71,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'wallet-price',
-				component: WalletPriceComponent
+				component: WalletPriceListComponent
 			},
 		]
 	}
@@ -104,6 +105,7 @@ const routes: Routes = [
 	],
 	entryComponents: [
 		ActionNotificationComponent,
+		WalletPriceAddComponent,
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -116,7 +118,8 @@ const routes: Routes = [
 		BulkUploadReportComponent,
 		DashboardComponent,
 		ConfigDetailsComponent,
-		WalletPriceComponent,
+		WalletPriceListComponent,
+		WalletPriceAddComponent
 	]
 })
 export class EMIManagementModule { }
