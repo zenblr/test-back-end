@@ -13,12 +13,12 @@ import { ToastrService } from 'ngx-toastr';
 export class UserClassificationComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
-  kycStatus = [{ value: 'confirm', name: 'confirm' }, { value: 'pending', name: 'pending' }, { value: 'closed', name: 'closed' }];
+  kycStatus = [{ value: 'confirm', name: 'confirm' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
   // kycStatus = [];
   rating = [];
   custClassificationForm: FormGroup;
-  // customerDetails = this.userDetailsService.userData;
-  customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
+  customerDetails = this.userDetailsService.userData;
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
 
   constructor(
     private userDetailsService: UserDetailsService,
@@ -58,6 +58,12 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationForm.markAllAsTouched();
       return;
     }
+
+    this.custClassificationForm.patchValue({
+      behaviourRatingCce: +(this.custClassificationForm.get('behaviourRatingCce').value),
+      idProofRatingCce: +(this.custClassificationForm.get('idProofRatingCce').value),
+      addressProofRatingCce: +(this.custClassificationForm.get('addressProofRatingCce').value),
+    })
 
     this.custClassificationService.cceRating(this.custClassificationForm.value).pipe(
       map(res => {
