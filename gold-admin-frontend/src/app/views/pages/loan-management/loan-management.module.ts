@@ -13,9 +13,14 @@ import { KycDetailsComponent } from './loan-application-form/tabs/kyc-details/ky
 import { NomineeDetailsComponent } from './loan-application-form/tabs/nominee-details/nominee-details.component'
 import { CoreModule } from '../../../core/core.module';
 import { OrnamentsComponent } from './loan-application-form/tabs/ornaments/ornaments.component';
+import { FinalInterestAmountComponent } from './loan-calculator/tabs/final-interest-amount/final-interest-amount.component'
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../core/_base/crud';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { BankDetailsComponent } from './loan-application-form/tabs/bank-details/bank-details.component';
+import { ApprovalComponent } from './loan-application-form/tabs/approval/approval.component';
+import { PacketsComponent } from './packets/packets.component';
+import { AppliedLoanComponent } from './applied-loan/applied-loan/applied-loan.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -23,6 +28,14 @@ const rout: Routes = [
   },
   {
     path: 'loan-application-form',
+    component: LoanApplicationFormComponent
+  },
+  {
+    path: 'applied-loan',
+    component: AppliedLoanComponent
+  },
+  {
+    path: 'package-image-upload',
     component: LoanApplicationFormComponent
   }
 ]
@@ -37,7 +50,11 @@ const rout: Routes = [
     KycDetailsComponent,
     NomineeDetailsComponent,
     OrnamentsComponent,
-    
+    FinalInterestAmountComponent,
+    BankDetailsComponent,
+    ApprovalComponent,
+    PacketsComponent,
+    AppliedLoanComponent
   ],
   imports: [
     CommonModule,

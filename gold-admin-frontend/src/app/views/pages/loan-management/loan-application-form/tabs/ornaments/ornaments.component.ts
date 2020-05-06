@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError } from 'rxjs/operators';
@@ -13,6 +13,8 @@ import { ImagePreviewDialogComponent } from '../../../../../../views/partials/co
 })
 export class OrnamentsComponent implements OnInit {
 
+  @Input() disable;
+  @Input() invalid;
   left: number = 0
   ornamentsForm: FormGroup;
   images= [];

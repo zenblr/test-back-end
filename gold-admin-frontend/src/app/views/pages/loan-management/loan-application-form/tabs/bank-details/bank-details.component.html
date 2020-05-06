@@ -1,0 +1,40 @@
+<div class="row justify-content-center">
+    <div class="col-6" [formGroup]="bankForm">
+        <div class="row ">
+            <div class="col-4 form-label">
+                <label class="text-color kt-padding-l-10">Name</label>
+            </div>
+            <div class="col-6">
+                <input type="text" class="form-control" placeholder="vishwas shetty" formControlName="name"
+                [class.isError]="controls.name.touched && controls.name.invalid">
+                <mat-error *ngIf="controls.name.touched && controls.name.invalid">
+                    <span *ngIf="controls.name.errors?.required">Field is Required</span>
+                    <span *ngIf="controls.name.errors?.pattern">Invalid Input</span>
+                </mat-error>
+            </div>
+        </div>
+        <div class="row kt-margin-t-15">
+            <div class="col-4 form-label">
+                <label class="text-color kt-padding-l-10">Account No.</label>
+            </div>
+            <div class="col-6">
+                <input type="text" class="form-control" placeholder="10234501203203" formControlName="accountNumber"
+                 numbersOnly [class.isError]="controls.accountNumber.touched && controls.accountNumber.invalid" >
+                <mat-error *ngIf="controls.accountNumber.touched && controls.accountNumber.invalid">Field is Required</mat-error>
+            </div>
+        </div>
+        <div class="row kt-margin-t-15">
+            <div class="col-4 form-label">
+                <label class="text-color kt-padding-l-10">IFSC Code</label>
+            </div>
+            <div class="col-6">
+                <input type="text" class="form-control" placeholder="IFSC0000XXX" formControlName="ifscCode"
+                [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid" maxlength="11">
+                <mat-error *ngIf="controls.ifscCode.touched && controls.ifscCode.invalid">
+                    <span *ngIf="controls.ifscCode.errors?.required">Field is Required</span>
+                    <span *ngIf="controls.ifscCode.errors?.pattern">Invalid Input</span>
+                </mat-error>
+            </div>
+        </div>
+    </div>
+</div>

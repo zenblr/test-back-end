@@ -71,6 +71,9 @@ export class PageConfig {
 			},
 			'loan-application-form': {
 				page: { title: 'Add New Loan', desc: '' }
+			},
+			'package-image-upload': {
+				page: { title: 'Upload Packets', desc: '' }
 			}
 		},
 	};
