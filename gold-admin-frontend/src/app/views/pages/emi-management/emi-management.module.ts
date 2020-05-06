@@ -33,7 +33,7 @@ import { CategoryComponent } from './product/category/category.component';
 import { SubCategoryComponent } from './product/sub-category/sub-category.component';
 import { UploadProductComponent } from './product/upload-product/upload-product.component';
 import { UploadDesignComponent } from './product/upload-design/upload-design.component';
-import { BulkUploadReportComponent } from './bulk-upload-report/bulk-upload-report.component';
+import { BulkUploadReportListComponent } from './bulk-upload-report/bulk-upload-report-list/bulk-upload-report-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ConfigDetailsComponent } from './config-details/config-details.component';
 import { WalletPriceListComponent } from './config-details/wallet-price/wallet-price-list/wallet-price-list.component';
@@ -67,7 +67,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'bulkUploadReport',
-				component: BulkUploadReportComponent
+				component: BulkUploadReportListComponent
 			},
 			{
 				path: 'wallet-price',
@@ -115,7 +115,7 @@ const routes: Routes = [
 		SubCategoryComponent,
 		UploadProductComponent,
 		UploadDesignComponent,
-		BulkUploadReportComponent,
+		BulkUploadReportListComponent,
 		DashboardComponent,
 		ConfigDetailsComponent,
 		WalletPriceListComponent,
