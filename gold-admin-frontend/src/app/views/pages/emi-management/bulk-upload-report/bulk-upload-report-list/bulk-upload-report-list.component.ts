@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { BranchService } from '../../../../../core/user-management/branch/services/branch.service';
 import { LayoutUtilsService, QueryParamsModel } from '../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
-import { BranchDatasource } from '../../../../../core/user-management/branch/datasources/branch.datasource';
+import { BulkUploadReportDatasource, BulkUploadReportService } from '../../../../../core/emi-management/bulk-upload-report';
 import { Subscription, merge, fromEvent, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { RolesPageRequested, Role } from '../../../../../core/auth';
@@ -19,7 +18,7 @@ import { DataTableService } from '../../../../../core/shared/services/data-table
 export class BulkUploadReportListComponent implements OnInit {
 
   // Table fields
-  dataSource: BranchDatasource;
+  dataSource: BulkUploadReportDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   displayedColumns = ['fileName', 'userName', 'time', 'status', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -35,12 +34,11 @@ export class BulkUploadReportListComponent implements OnInit {
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
 
-
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private branchService: BranchService,
+    private bulkUploadReportService: BulkUploadReportService,
     private dataTableService: DataTableService
   ) { }
 
@@ -82,7 +80,7 @@ export class BulkUploadReportListComponent implements OnInit {
       });
 
     // Init DataSource
-    this.dataSource = new BranchDatasource(this.branchService);
+    this.dataSource = new BulkUploadReportDatasource(this.bulkUploadReportService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -94,7 +92,7 @@ export class BulkUploadReportListComponent implements OnInit {
     // First load
     // this.loadBranchPage();
 
-    this.dataSource.loadBranches(1, 25, this.searchValue, '', '', '');
+    this.dataSource.loadBulkUploadReports(1, 25, this.searchValue, '', '', '');
   }
 
 	/**
@@ -108,14 +106,13 @@ export class BulkUploadReportListComponent implements OnInit {
     this.unsubscribeSearch$.complete();
   }
 
-
   loadBranchPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadBranches(from, to, this.searchValue, '', '', '');
+    this.dataSource.loadBulkUploadReports(from, to, this.searchValue, '', '', '');
   }
 
 	/**
@@ -128,33 +125,11 @@ export class BulkUploadReportListComponent implements OnInit {
     return filter;
   }
 
-  /** ACTIONS */
-	/**
-	 * Delete role
-	 *
-	 * @param _item: Role
-	 */
-  deleteRole(_item) {
-    const role = _item;
-    const _title = 'Delete Branch';
-    const _description = 'Are you sure to permanently delete this branch?';
-    const _waitDesciption = 'Branch is deleting...';
-    const _deleteMessage = `Branch has been deleted`;
+  downloadFile() {
 
-    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.branchService.deleteBranch(role.id).subscribe(successDelete => {
-          this.toastr.successToastr(_deleteMessage);
-          this.loadBranchPage();
-        },
-          errorDelete => {
-            this.toastr.errorToastr(errorDelete.error.message);
-          });
-      }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-    });
+  }
+
+  downloadReport() {
+
   }
 }

@@ -13,43 +13,29 @@ export class BulkUploadReportDatasource extends BaseDataSource {
 
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
-    desserts: any;
 
     constructor(private bulkUploadReportService: BulkUploadReportService) {
         super();
     }
 
-    loadRoles(search, from, to, fromDate, toDate, userId) {
+    loadBulkUploadReports(from, to, search, fromDate, toDate, userId) {
         this.loadingSubject.next(true);
-        this.desserts = [
-            { name: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4,id:1 },
-            { name: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4,id:2 },
-            { name: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6,id:3 },
-            { name: 'Cupcake', calories: 305, fat: 4, carbs: 67, protein: 4,id:2 },
-            { name: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4 ,id:1},
-        ]
 
-
-        this.entitySubject.next(this.desserts);
-        this.paginatorTotalSubject.next(10);
-        this.loadingSubject.next(false);
-        this.isPreloadTextViewedSubject.next(false);
-
-        // this.rolesService.getRoles(search, from, to, fromDate, toDate, userId)
-        //     .pipe(
-        //         map(
-        //             report => {
-        //                 this.entitySubject.next(this.desserts);
-        //                 this.paginatorTotalSubject.next(10);
-        //             }
-        //         ),
-        //         catchError(() => of([])),
-        //         finalize(() => {
-        //             this.loadingSubject.next(false);
-        //             this.isPreloadTextViewedSubject.next(false);
-        //         })
-        //     )
-        //     .subscribe();
+        this.bulkUploadReportService.getAllBulkUploadReports(from, to, search, fromDate, toDate, userId)
+            .pipe(
+                map(
+                    report => {
+                        this.paginatorTotalSubject.next(report.count);
+                        this.entitySubject.next(report.data);
+                    }
+                ),
+                catchError(() => of([])),
+                finalize(() => {
+                    this.loadingSubject.next(false);
+                    this.isPreloadTextViewedSubject.next(false);
+                })
+            )
+            .subscribe();
     }
 
 }
