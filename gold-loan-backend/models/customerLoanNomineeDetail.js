@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'nominee_age'
         },
+        nomineeType: {
+            type: DataTypes.ENUM,
+            field: 'nominee_type',
+            values: ['minor', 'major']
+        },
         relationship: {
             type: DataTypes.STRING,
             field: 'relationship'
@@ -35,9 +40,15 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD CUSTOMER NOMINEE DETAIL
     customerLoanNomineeDetail.addCustomerNomineeDetail =
-        (loanId, nomineeName, nomineeAge, relationship, t) => customerLoanNomineeDetail.create({
-            loanId, nomineeName, nomineeAge, relationship, isActive: true
-        }, { t });
+        (loanId, nomineeData, t) => {
+            let finalNomineeData = nomineeData.map(function (ele) {
+                let obj = Object.assign({}, ele);
+                obj.isActive = true;
+                obj.loanId = loanId;
+                return obj;
+            })
+            return customerLoanNomineeDetail.bulkCreate(finalNomineeData, { t });
+        };
 
     return customerLoanNomineeDetail;
 }

@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'office_address'
         },
+        officePin: {
+            type: DataTypes.STRING,
+            field: 'office_pin'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -39,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD CUSTOMER KYC DETAIL
     customerLoanKycDetail.addCustomerKycDetail =
-        (loanId, aadharNumber, permanentAddress, pincode, officeAddress, t) => customerLoanKycDetail.create({
-            loanId, aadharNumber, permanentAddress, pincode, officeAddress, isActive: true
+        (loanId, aadharNumber, permanentAddress, pincode, officeAddress, officePin, t) => customerLoanKycDetail.create({
+            loanId, aadharNumber, permanentAddress, pincode, officeAddress, officePin, isActive: true
         }, { t });
 
     return customerLoanKycDetail;
