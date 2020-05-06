@@ -1,0 +1,88 @@
+<form action="" [formGroup]="nominee">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">Name</label>
+                </div>
+                <div class="col-6">
+                    <input type="text" class="form-control" placeholder="vishwas shetty" formControlName="nomineeName"
+                        [class.isError]="controls.nomineeName.touched && controls.nomineeName.invalid">
+                        <mat-error *ngIf="controls.nomineeName.touched && controls.nomineeName.invalid">
+                            <span *ngIf="controls.nomineeName.errors?.required">Field is Required</span>
+                            <span *ngIf="controls.nomineeName.errors?.pattern">Invalid Input</span>
+                        </mat-error>
+                </div>
+            </div>
+            <div class="row kt-margin-t-15">
+                <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">Age</label>
+                </div>
+                <div class="col-6">
+                    <input type="number" class="form-control" placeholder="10234501203203" numbersOnly
+                        formControlName="nomineeAge" (blur)="checkForMinor()"
+                        [class.isError]="controls.nomineeAge.touched && controls.nomineeAge.invalid">
+                    <mat-error *ngIf="controls.nomineeAge.touched && controls.nomineeAge.invalid">
+                        Field is Required
+                    </mat-error>
+                </div>
+            </div>
+            <div class="row kt-margin-t-15">
+                <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">Relationship</label>
+                </div>
+                <div class="col-6">
+                    <input type="text" class="form-control" placeholder="eg.Son,Father" formControlName="relationship"
+                        [class.isError]="controls.relationship.touched && controls.relationship.invalid">
+                        <mat-error *ngIf="controls.relationship.touched && controls.relationship.invalid">
+                            <span *ngIf="controls.relationship.errors?.required">Field is Required</span>
+                            <span *ngIf="controls.relationship.errors?.pattern">Invalid Input</span>
+                        </mat-error>
+                </div>
+            </div>
+            <div *ngIf="showHide">
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="text-color kt-padding-l-10">Guardian Name</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control" placeholder="vishwas shetty" formControlName="guardianName"
+                            [class.isError]="controls.guardianName.touched && controls.guardianName.invalid">
+                            <mat-error *ngIf="controls.guardianName.touched && controls.guardianName.invalid">
+                                <span *ngIf="controls.guardianName.errors?.required">Field is Required</span>
+                                <span *ngIf="controls.guardianName.errors?.pattern">Invalid Input</span>
+                            </mat-error>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="text-color kt-padding-l-10">Guardian Age</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" class="form-control" placeholder="10234501203203" numbersOnly
+                            formControlName="guardianAge" (blur)="checkForGuardianAge()"
+                            [class.isError]="controls.guardianAge.touched && controls.guardianAge.invalid">
+                        <mat-error *ngIf="controls.guardianAge.touched && controls.guardianAge.invalid">
+                            <span *ngIf="controls.guardianAge.errors?.required">Field is Required</span>
+                                <span *ngIf="controls.guardianAge.errors?.pattern">Age should be greater than 17 </span>
+                        </mat-error>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="text-color kt-padding-l-10">Guardian Relations</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control" placeholder="eg.Son,Father" formControlName="guardianRelationship"
+                            [class.isError]="controls.guardianRelationship.touched && controls.guardianRelationship.invalid">
+                            <mat-error *ngIf="controls.guardianRelationship.touched && controls.guardianRelationship.invalid">
+                                <span *ngIf="controls.guardianRelationship.errors?.required">Field is Required</span>
+                                <span *ngIf="controls.guardianRelationship.errors?.pattern">Invalid Input</span>
+                            </mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</form>

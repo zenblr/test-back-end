@@ -40,7 +40,7 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	constructor(private layoutConfigService: LayoutConfigService, public htmlClassService: HtmlClassService,
 		private uploadOfferService: UploadOfferService, private ref: ChangeDetectorRef) {
 
-		this.uploadOfferService.getOffers().pipe(
+		this.uploadOfferService.getGoldRate().pipe(
 			tap(res => {
 				// console.log(res)
 				this.rate = res.goldRate;

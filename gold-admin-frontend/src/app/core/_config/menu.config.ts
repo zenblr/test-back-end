@@ -112,7 +112,6 @@ export class MenuConfig {
 					src: 'assets/media/aside-icons/icons-04.svg',
 					page: '/user-management',
 
-				
 				},
 				{
 					title: 'Lead Management',
@@ -139,19 +138,19 @@ export class MenuConfig {
 					submenu: [
 						{
 							title: 'Loan Calculator',
-							page: '/loan-calculator'
+							page: '/loan-management/loan-calculator'
 						},
 						{
 							title: 'Loan Application Form',
-							page: '/loan-application-form'
+							page: '/loan-management/loan-application-form'
 						},
 						{
 							title: 'Applied Loan',
-							page: '/applied-loan'
+							page: '/loan-management/applied-loan'
 						},
 						{
 							title: 'Package Image Upload',
-							page: '/package-image-upload'
+							page: '/loan-management/package-image-upload'
 						},
 
 					]

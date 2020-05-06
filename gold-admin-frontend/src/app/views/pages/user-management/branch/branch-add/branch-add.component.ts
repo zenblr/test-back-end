@@ -68,7 +68,7 @@ export class BranchAddComponent implements OnInit {
       partnerId: ['', [Validators.required]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
-      pincode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+      pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       address: ['', [Validators.required]],
     });
   }

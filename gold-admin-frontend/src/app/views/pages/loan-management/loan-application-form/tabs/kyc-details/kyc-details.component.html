@@ -1,0 +1,71 @@
+<form action="" [formGroup]="kycForm">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">Aadhaar Number</label>
+                </div>
+                <div class="col-6">
+                    <input type="text" class="form-control" placeholder="1023 4501 2032 1214" numbersOnly
+                        formControlName="aadharNumber" maxlength="12"
+                        [class.isError]="controls.aadharNumber.touched && controls.aadharNumber.invalid">
+                    <mat-error *ngIf="controls.aadharNumber.touched && controls.aadharNumber.invalid">
+                        <span *ngIf="controls.aadharNumber.errors?.required">Field is Required</span>
+                        <span *ngIf="controls.aadharNumber.errors?.minlength">Length Should be 12</span>
+                    </mat-error>
+                </div>
+            </div>
+            <div class="row kt-margin-t-15">
+                <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">Permanent Address</label>
+                </div>
+                <div class="col-6">
+                    <textarea cols="5" rows="3" placeholder="Write Your Permanent Address..." class="form-control"
+                        formControlName="permanentAddress"
+                        [class.isError]="controls.permanentAddress.touched && controls.permanentAddress.invalid"></textarea>
+                    <mat-error *ngIf="controls.permanentAddress.touched && controls.permanentAddress.invalid">
+                        Field is Required
+                    </mat-error>
+                </div>
+            </div>
+
+            <div class="row kt-margin-t-15">
+                <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">Pincode</label>
+                </div>
+                <div class="col-6">
+                    <input type="text" class="form-control" placeholder="432134" numbersOnly maxlength="6"
+                        formControlName="pincode"
+                        [class.isError]="controls.pincode.touched && controls.pincode.invalid">
+                    <mat-error *ngIf="controls.pincode.touched && controls.pincode.invalid">
+                        <span *ngIf="controls.pincode.errors?.required">Field is Required</span>
+                        <span *ngIf="controls.pincode.errors?.minlength">Length Should be 6</span>
+                    </mat-error>
+                </div>
+            </div>
+            <div class="row kt-margin-t-15">
+                <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">Office Address</label>
+                </div>
+                <div class="col-6">
+                    <textarea cols="5" rows="3" placeholder="Write Your Office Address..."
+                        formControlName="officeAddress" class="form-control"
+                        [class.isError]="controls.officeAddress.touched && controls.officeAddress.invalid"></textarea>
+                    <mat-error *ngIf="controls.officeAddress.touched && controls.officeAddress.invalid">
+                        Field is Required
+                    </mat-error>
+                </div>
+            </div>
+            <div class="row kt-margin-t-15">
+                <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">Pincode</label>
+                </div>
+                <div class="col-6">
+                    <input type="text" class="form-control" placeholder="432134">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</form>

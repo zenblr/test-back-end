@@ -83,7 +83,7 @@
                                         <label class="mandatory">Bank A/C Number</label>
                                     </div>
                                     <div class="col-7">
-                                        <input type="text" class="form-control" numbersOnly maxlength="19" minlength="8"
+                                        <input type="text" class="form-control" numbersOnly maxlength="18" minlength="8"
                                             placeholder="xxxx xxxx xx8867" formControlName="accountNumber"
                                             [class.isError]="controls.accountNumber.touched && controls.accountNumber.invalid" />
                                         <mat-error
@@ -139,14 +139,14 @@
                         <div class="row kt-margin-t-20 kt-margin-b-20">
                             <div class="col">
                                 <div class="row offset-2">
-                                    <div ngIf="passBookImage.length == 0" class="img-container" style="width: 250px;">
+                                    <div *ngIf="passBookImage.length == 0" class="img-container" style="width: 250px;">
                                         <img *ngIf="passBookImage.length == 0"
                                             src="../../../../../../assets/media/icons/image-placeholder.png"
                                             class="placeholder-image">
                                     </div>
 
                                     <div *ngIf="passBookImage.length > 0" class="">
-                                        <div class="d-inline-block img-container kt-margin-right-15"
+                                        <div class="d-inline-block img-container kt-margin-r-15"
                                             *ngFor="let proof of passBookImage; index as i;">
                                             <img class="fetched-image" *ngIf="passBookImage" [src]="proof">
                                         </div>

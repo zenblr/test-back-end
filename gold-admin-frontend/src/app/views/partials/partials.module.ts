@@ -82,10 +82,10 @@ import { ModalHeaderComponent } from './components/modal/modal-header/modal-head
 import { ModalFooterComponent } from './components/modal/modal-footer/modal-footer.component';
 import { LoanSchemeComponent } from "../../views/pages/loan-settings/loan-scheme/loan-scheme.component";
 
-
 // spinner
 import { UplodDataImageComponent } from './components/uplod-data-image/uplod-data-image.component';
 import { ImagePreviewDialogComponent } from './components/image-preview-dialog/image-preview-dialog.component';
+import { UserClassificationComponent } from './components/user-classification/user-classification.component';
 
 
 @NgModule({
@@ -141,6 +141,8 @@ import { ImagePreviewDialogComponent } from './components/image-preview-dialog/i
 		ImagePreviewDialogComponent,
 
 		LoanSchemeComponent,
+
+		UserClassificationComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -189,11 +191,13 @@ import { ImagePreviewDialogComponent } from './components/image-preview-dialog/i
 		UplodDataImageComponent,
 		ImagePreviewDialogComponent,
 		LoanSchemeComponent,
+		UserClassificationComponent
 
 		// spinner
-		NgbModule
+
 	],
 	imports: [
+		NgbModule,
 		CommonModule,
 		RouterModule,
 		FormsModule,

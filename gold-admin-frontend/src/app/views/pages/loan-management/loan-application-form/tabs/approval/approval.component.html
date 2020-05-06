@@ -1,0 +1,64 @@
+<div class="container">
+    <form >
+        <div class="row justify-content-center ">
+            <div class="col-8 bordered">
+                <div class="row head">
+                    <div class="col-4">Field</div>
+                    <div class="col-4 border text-center">Appraiser</div>
+                    <div class="col-4 text-center">Branch Manager</div>
+                </div>
+                <div class="row body border-top-bottom">
+                    <div class="col-4 form-label">
+                        <label for="">Loan Application Form</label>
+                    </div>
+                    <div class="col-4 border text-center">
+                        <!-- <img src="../../../../../../../assets/media/icons/correct.svg" alt=""> -->
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" alt="">
+                    </div>
+                    <div class="col-4 text-center">
+                        <!-- <img src="../../../../../../../assets/media/icons/correct.svg" alt=""> -->
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" alt="">
+                    </div>
+                </div>
+                <div class="row body border-top-bottom">
+                    <div class="col-4 form-label">
+                        <label>Gold Value</label>
+                    </div>
+                    <div class="col-4 border text-center">
+                        <!-- <img src="../../../../../../../assets/media/icons/correct.svg" alt=""> -->
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" alt="">
+
+                    </div>
+                    <div class="col-4 text-center">
+                        <!-- <img src="../../../../../../../assets/media/icons/correct.svg" alt=""> -->
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" alt="">
+
+                    </div>
+                </div>
+                <div class="row body">
+                    <div class="col-4 form-label">
+                        <label for="">Final Status</label>
+                    </div>
+                    <div class="col-4 border text-center select">
+                        <select class="form-control ">
+                            <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
+                            <option [value]="status.value" *ngFor="let status of appraiser">{{status.name | titlecase}}</option>
+                        </select>
+                    </div>
+                    <div class="col-4 text-center select">
+                        <select class="form-control ">
+                            <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
+                            <option [value]="status.value" *ngFor="let status of branchManager">{{status.name | titlecase}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-8 kt-margin-t-20 kt-margin-b-20">
+                <kt-button [value]="'Submit'" [type]="'submit'" (action)="submit()"></kt-button>
+            </div>
+        </div>
+
+    </form>
+</div>

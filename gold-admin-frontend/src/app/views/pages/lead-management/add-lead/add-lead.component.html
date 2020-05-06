@@ -135,8 +135,9 @@
                             <div class="col-5">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                 <input [readOnly]="viewOnly" class="form-control" formControlName="panCardNumber"
-                                    autocomplete="off" placeholder="PAN Number" maxlength="10"
-                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid">
+                                    autocomplete="off" placeholder="PAN" maxlength="10"
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+                                    style="text-transform: uppercase;">
                                 <!-- <mat-error
                                         *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
                                         Required field
@@ -174,7 +175,7 @@
                                     <option [disabled]="true" [selected]="true" value=""> Select Internal Branch
                                     </option>
                                     <option *ngFor="let branch of branches" [value]="branch.id">
-                                        {{branch.name}}
+                                        {{branch.name | titlecase}}
                                     </option>
                                 </select>
                                 <mat-error

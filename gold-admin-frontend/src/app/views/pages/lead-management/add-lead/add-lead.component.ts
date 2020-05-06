@@ -113,7 +113,7 @@ export class AddLeadComponent implements OnInit {
 
   getInternalBranhces() {
     this.customerManagementService.getInternalBranhces().subscribe(res => {
-      this.branches = res;
+      this.branches = res.data;
     });
   }
 
@@ -214,15 +214,17 @@ export class AddLeadComponent implements OnInit {
   onSubmit() {
     if (this.data.action == 'add') {
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
-        this.leadForm.markAllAsTouched()
+        this.leadForm.markAllAsTouched();
         console.log(this.leadForm.value)
-
         return
       }
 
 
       if (this.controls.panCardNumber.value == '') {
         this.leadForm.get('panCardNumber').patchValue(null);
+      } else {
+        const PAN = this.controls.panCardNumber.value.toUpperCase();
+        this.leadForm.get('panCardNumber').patchValue(PAN);
       }
       const leadData = this.leadForm.value;
 
