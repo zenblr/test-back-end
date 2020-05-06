@@ -13,6 +13,9 @@ import { KycDetailsComponent } from './loan-application-form/tabs/kyc-details/ky
 import { NomineeDetailsComponent } from './loan-application-form/tabs/nominee-details/nominee-details.component'
 import { CoreModule } from '../../../core/core.module';
 import { OrnamentsComponent } from './loan-application-form/tabs/ornaments/ornaments.component';
+import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../core/_base/crud';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -25,7 +28,17 @@ const rout: Routes = [
 ]
 
 @NgModule({
-  declarations: [LoanCalculatorComponent, RoughLoanAmountComponent, FinalLoanAmountComponent, LoanApplicationFormComponent, BasicDetailsComponent, KycDetailsComponent, NomineeDetailsComponent, OrnamentsComponent],
+  declarations: [
+    LoanCalculatorComponent,
+    RoughLoanAmountComponent,
+    FinalLoanAmountComponent,
+    LoanApplicationFormComponent,
+    BasicDetailsComponent,
+    KycDetailsComponent,
+    NomineeDetailsComponent,
+    OrnamentsComponent,
+    
+  ],
   imports: [
     CommonModule,
     RouterModule.forChild(rout),
@@ -34,6 +47,19 @@ const rout: Routes = [
     FormsModule,
     PartialsModule,
     CoreModule
-  ]
+  ],
+  providers: [
+    InterceptService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptService,
+      multi: true
+    },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
+    HttpUtilsService,
+    TypesUtilsService,
+    LayoutUtilsService
+  ],
 })
 export class LoanManagementModule { }

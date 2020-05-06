@@ -62,7 +62,7 @@ export class UserReviewComponent implements OnInit {
   //       "occupation": { name: 'Engineer' }, // occupation.name
   //       "identityType": { name: 'aadhar' },  //identityType.name
   //       "identityProof": [
-  //         "http://173.249.49.7:8000/uploads/images/1588052018310.png"
+  //         "http://173.249.49.7:8000/uploads/images/1588052018310.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
   //       ],
   //       "spouseName": "asd",
   //       "signatureProof": "http://173.249.49.7:8000/uploads/images/1588052173393.png",
@@ -100,7 +100,7 @@ export class UserReviewComponent implements OnInit {
   //         "city": { name: "panji" },
   //         "pinCode": 122121,
   //         "addressProof": [
-  //           "http://173.249.49.7:8000/uploads/images/1588052060956.png",
+  //           "http://173.249.49.7:8000/uploads/images/1588052060956.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
   //         ],
   //         "createdAt": "2020-04-28T05:35:06.709Z",
   //         "updatedAt": "2020-04-28T05:35:06.709Z",
@@ -119,7 +119,7 @@ export class UserReviewComponent implements OnInit {
   //         "accountNumber": "1234671268768721376",
   //         "ifscCode": "bkid1233123",
   //         "passbookProof": [
-  //           "http://173.249.49.7:8000/uploads/images/1588052315608.png"
+  //           "http://173.249.49.7:8000/uploads/images/1588052315608.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
   //         ],
   //         "createdAt": "2020-04-28T05:44:52.576Z",
   //         "updatedAt": "2020-04-28T05:44:52.576Z"
@@ -205,7 +205,7 @@ export class UserReviewComponent implements OnInit {
 
   submit() {
     // 
-    this.userBankService.kycSubmit(this.data.customerKycReview.customerId, this.data.customerKycReview.customerKycId).pipe(
+    this.userBankService.kycSubmit(this.data.customerId, this.data.customerKycId).pipe(
       map(res => {
         this.next.emit(true);
       })
