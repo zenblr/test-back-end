@@ -112,7 +112,7 @@ export class UserReviewComponent implements OnInit {
   //         "id": 4,
   //         "customerKycId": 1,
   //         "customerId": 1,
-  //         "": "nkgsb",
+  //         "bankName": "nkgsb",
   //         "bankBranchName": "virar",
   //         "accountType": "saving",
   //         "accountHolderName": "bhushan",
@@ -130,12 +130,12 @@ export class UserReviewComponent implements OnInit {
   //   "customerKycId": 1
   // }
 
-  data:any = {};
+  data: any = {};
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
     private sharedService: SharedService,
-    private ref: ChangeDetectorRef, 
+    private ref: ChangeDetectorRef,
     private userBankService: UserBankService) { }
 
   ngOnInit() {
@@ -205,12 +205,12 @@ export class UserReviewComponent implements OnInit {
 
   submit() {
     // 
-    this.userBankService.kycSubmit(this.data.customerKycReview.customerId,this.data.customerKycReview.customerKycId).pipe(
+    this.userBankService.kycSubmit(this.data.customerKycReview.customerId, this.data.customerKycReview.customerKycId).pipe(
       map(res => {
         this.next.emit(true);
       })
     ).subscribe()
-    
+
   }
 
   getIdentityType() {

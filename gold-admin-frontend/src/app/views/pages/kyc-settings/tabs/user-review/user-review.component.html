@@ -1,5 +1,5 @@
 <kt-portlet>
-    <kt-portlet-body >
+    <kt-portlet-body>
         <div *ngIf="data">
             <form [formGroup]=reviewForm>
                 <!-- Basic Details -->
@@ -12,7 +12,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -44,9 +44,10 @@
                             <div class="col-7">
                                 <!-- <div class="row"> -->
                                 <!-- <div class="col"> -->
-                                <input type="text" class="form-control" placeholder="Full Name" formControlName="firstName"
+                                <input type="text" class="form-control" placeholder="Full Name"
+                                    formControlName="firstName"
                                     value="{{this.data.customerKycReview.firstName | titlecase}} &nbsp;&nbsp;{{this.data.customerKycReview.lastName | titlecase}}" />
-    
+
                                 <!-- </div> -->
                                 <!-- <div class="col">
                                         <input type="text" class="form-control" placeholder="Full Name"
@@ -58,12 +59,12 @@
                                 *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                 Required field
                             </mat-error> -->
-    
+
                             </div>
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -88,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
@@ -100,7 +101,7 @@
                                         <input type="text" class="form-control" placeholder="PAN"
                                             formControlName="panCardNumber"
                                             value="{{ this.data.customerKycReview.panCardNumber | uppercase }}" />
-    
+
                                     </div>
                                     <div class="col pl-0">
                                         <button class="w-100 btn success-button" color="success">Verified</button>
@@ -110,7 +111,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <!-- Address Details -->
                 <div class="row kt-margin-t-50">
                     <div class="col-6">
@@ -121,7 +122,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -135,7 +136,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -157,7 +158,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <!-- <div class="row kt-margin-t-20 kt-margin-b-20">
                     <div class="col-6">
                         <div class="col-8 offset-4">
@@ -170,7 +171,7 @@
                         </div>
                     </div>
                 </div> -->
-    
+
                 <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
                     <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKyc.identityProof">
                         <div class="img-container">
@@ -179,9 +180,9 @@
                     </div>
                 </div>
             </form>
-    
+
             <form *ngIf="cities0" [formGroup]="customerKycAddressOne">
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -194,14 +195,14 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class=" col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
                                 <label class="mandatory">City</label>
                             </div>
                             <div class="col-7">
-                                <input type="text" class="form-control"  value="{{ data.customerKycReview.customerKycAddress[0].city.name | titlecase }}
+                                <input type="text" class="form-control" value="{{ data.customerKycReview.customerKycAddress[0].city.name | titlecase }}
                                    " />
                                 <!-- <mat-error
                                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
@@ -211,7 +212,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -220,7 +221,8 @@
                             </div>
                             <div class="col-7">
                                 <textarea type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="address"  value="{{ data.customerKycReview.customerKycAddress[0].address  }}"></textarea>
+                                    formControlName="address"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].address  }}"></textarea>
                                 <!-- <mat-error
                                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                     Required field
@@ -228,7 +230,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
@@ -236,13 +238,14 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="pinCode"  value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}"/>
-    
+                                    formControlName="pinCode"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}" />
+
                             </div>
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
                     <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKycAddress[0].addressProof">
                         <div class="img-container">
@@ -251,12 +254,12 @@
                     </div>
                 </div>
             </form>
-    
+
             <form *ngIf="cities0" [formGroup]="customerKycAddressTwo">
                 <!-- Address Details -->
-    
-    
-    
+
+
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -269,7 +272,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
@@ -278,12 +281,12 @@
                             <div class="col-7">
                                 <input type="text" class="form-control"
                                     value="{{ data.customerKycReview.customerKycAddress[1].city.name | titlecase }}" />
-    
+
                             </div>
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -292,12 +295,13 @@
                             </div>
                             <div class="col-7">
                                 <textarea type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="address"value="{{ data.customerKycReview.customerKycAddress[0].address }}" ></textarea>
-    
+                                    formControlName="address"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].address }}"></textarea>
+
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
@@ -305,7 +309,8 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="pinCode" value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}"/>
+                                    formControlName="pinCode"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}" />
                                 <!-- <mat-error
                                                             *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                             Required field
@@ -314,7 +319,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <!-- <div class="row kt-margin-t-20 kt-margin-b-20">
                     <div class="col-6">
                         <div class="col-8 offset-4">
@@ -327,7 +332,7 @@
                         </div>
                     </div>
                 </div> -->
-    
+
                 <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
                     <div class="col-4" *ngFor="let pass of data.customerKycReview.customerKycAddress[1].addressProof">
                         <div class="img-container">
@@ -336,7 +341,7 @@
                     </div>
                 </div>
             </form>
-    
+
             <!-- Personal Details -->
             <form action="" [formGroup]="customerKyc">
                 <div class="row kt-margin-t-50">
@@ -348,7 +353,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -366,7 +371,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
@@ -376,15 +381,15 @@
                                 <ng-container *ngIf="data.customerKycReview.customerKyc.gender == 'm'">
                                     <input type="text" class="form-control" placeholder="" value="Male" />
                                 </ng-container>
-    
+
                                 <ng-container *ngIf="data.customerKycReview.customerKyc.gender == 'f'">
                                     <input type="text" class="form-control" placeholder="" value="Female" />
                                 </ng-container>
-    
+
                                 <ng-container *ngIf="data.customerKycReview.customerKyc.gender == '0'">
                                     <input type="text" class="form-control" placeholder="" value="Other" />
                                 </ng-container>
-    
+
                                 <!-- <mat-error
                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                     Required field
@@ -393,7 +398,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -402,7 +407,8 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="alternateMobileNumber" [value]="data.customerKycReview.customerKyc.alternateMobileNumber"/>
+                                    formControlName="alternateMobileNumber"
+                                    [value]="data.customerKycReview.customerKyc.alternateMobileNumber" />
                                 <!-- <mat-error
                                 *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                 Required field
@@ -410,7 +416,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
@@ -426,7 +432,7 @@
                                 <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'divorced'">
                                     <input type="text" class="form-control" placeholder="" value="Divorced" />
                                 </ng-container>
-    
+
                                 <!-- <mat-error
                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                     Required field
@@ -435,7 +441,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -452,7 +458,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
@@ -469,7 +475,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -491,7 +497,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20 kt-margin-b-20">
                     <div class="col-6">
                         <div class="col-8 offset-4">
@@ -503,9 +509,9 @@
                         </div>
                     </div>
                 </div>
-    
+
             </form>
-    
+
             <!-- Bank Details -->
             <form action="" [formGroup]="customerKycBank">
                 <div class="row kt-margin-t-50">
@@ -517,7 +523,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -534,7 +540,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
@@ -551,7 +557,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -563,11 +569,12 @@
                                     <input type="text" class="form-control" placeholder="" value="accountType"
                                         value="Saving" />
                                 </ng-container>
-                                <ng-container *ngIf="data.customerKycReview.customerKycBank[0].accountType == 'current'">
+                                <ng-container
+                                    *ngIf="data.customerKycReview.customerKycBank[0].accountType == 'current'">
                                     <input type="text" class="form-control" placeholder="" value="accountType"
                                         value="Current" />
                                 </ng-container>
-    
+
                                 <!-- <mat-error
                                                 *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                 Required field
@@ -575,14 +582,15 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
                                 <label class="mandatory">A/C Holder</label>
                             </div>
                             <div class="col-7">
-                                <input type="text" class="form-control" placeholder="" formControlName="accountHolderName"
+                                <input type="text" class="form-control" placeholder=""
+                                    formControlName="accountHolderName"
                                     value="{{ data.customerKycReview.customerKycBank[0].accountHolderName | titlecase }}" />
                                 <!-- <mat-error
                                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
@@ -592,7 +600,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -600,7 +608,8 @@
                                 <label class="mandatory"> A/C No. </label>
                             </div>
                             <div class="col-7">
-                                <input type="text" class="form-control" placeholder="" formControlName="accountNumber" [value]="data.customerKycReview.customerKycBank[0].accountNumber" />
+                                <input type="text" class="form-control" placeholder="" formControlName="accountNumber"
+                                    [value]="data.customerKycReview.customerKycBank[0].accountNumber" />
                                 <!-- <mat-error
                                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                                     Required field
@@ -608,7 +617,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
@@ -617,12 +626,12 @@
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="" formControlName="ifscCode"
                                     value="{{ data.customerKycReview.customerKycBank[0].ifscCode | uppercase }}" />
-    
+
                             </div>
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
@@ -644,7 +653,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="row kt-margin-t-20 kt-margin-b-20">
                     <div class="col-6">
                         <div class="col-8 offset-4">
@@ -652,9 +661,10 @@
                                 <!-- <div class=""> -->
                                 <!-- <img class="" src="../../../../../../assets/media/icons/image-placeholder.png"
                                             alt="" /> -->
-                                <ng-container *ngFor="let pass of data.customerKycReview.customerKycBank[0].passbookProof">
+                                <ng-container
+                                    *ngFor="let pass of data.customerKycReview.customerKycBank[0].passbookProof">
                                     <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
-    
+
                                 </ng-container>
                                 <!-- </div> -->
                             </div>
@@ -662,8 +672,8 @@
                     </div>
                 </div>
             </form>
-    
-    
+
+
             <div class="row">
                 <div class="col-6">
                     <div class="offset-4">
@@ -674,7 +684,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- </form> -->
     </kt-portlet-body>
 </kt-portlet>
