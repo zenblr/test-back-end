@@ -1,12 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LayoutUtilsService, QueryParamsModel } from '../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
-import { BulkUploadReportDatasource, BulkUploadReportService } from '../../../../../core/emi-management/bulk-upload-report';
+import { BulkUploadReportDatasource, BulkUploadReportService, BulkUploadReportModel } from '../../../../../core/emi-management/bulk-upload-report';
 import { Subscription, merge, fromEvent, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
-import { RolesPageRequested, Role } from '../../../../../core/auth';
-import { SelectionModel } from '@angular/cdk/collections';
-import { BranchModel } from '../../../../../core/user-management/branch/models/branch.model';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 
@@ -16,7 +13,6 @@ import { DataTableService } from '../../../../../core/shared/services/data-table
   styleUrls: ['./bulk-upload-report-list.component.scss']
 })
 export class BulkUploadReportListComponent implements OnInit {
-
   // Table fields
   dataSource: BulkUploadReportDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -25,9 +21,7 @@ export class BulkUploadReportListComponent implements OnInit {
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  branchResult: BranchModel[] = [];
-
-
+  bulkUploadReportResult: BulkUploadReportModel[] = [];
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private destroy$ = new Subject();
@@ -53,7 +47,7 @@ export class BulkUploadReportListComponent implements OnInit {
 		**/
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {
-        this.loadBranchPage();
+        this.loadBulkUploadReportPage();
       })
     )
       .subscribe();
@@ -66,7 +60,7 @@ export class BulkUploadReportListComponent implements OnInit {
     //   distinctUntilChanged(), // This operator will eliminate duplicate values
     //   tap(() => {
     //     this.paginator.pageIndex = 0;
-    //     this.loadBranchPage();
+    //     this.loadBulkUploadReportPage();
     //   })
     // )
     //   .subscribe();
@@ -76,7 +70,7 @@ export class BulkUploadReportListComponent implements OnInit {
       .subscribe(res => {
         this.searchValue = res;
         this.paginator.pageIndex = 0;
-        this.loadBranchPage();
+        this.loadBulkUploadReportPage();
       });
 
     // Init DataSource
@@ -85,13 +79,9 @@ export class BulkUploadReportListComponent implements OnInit {
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      this.branchResult = res;
+      this.bulkUploadReportResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-
-    // First load
-    // this.loadBranchPage();
-
     this.dataSource.loadBulkUploadReports(1, 25, this.searchValue, '', '', '');
   }
 
@@ -106,7 +96,7 @@ export class BulkUploadReportListComponent implements OnInit {
     this.unsubscribeSearch$.complete();
   }
 
-  loadBranchPage() {
+  loadBulkUploadReportPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
@@ -125,11 +115,11 @@ export class BulkUploadReportListComponent implements OnInit {
     return filter;
   }
 
-  downloadFile() {
-
+  downloadFile(report) {
+    window.open(report.URL, '_blank');
   }
 
-  downloadReport() {
-
+  downloadReport(report) {
+    this.bulkUploadReportService.reportExport(report).subscribe();
   }
 }
