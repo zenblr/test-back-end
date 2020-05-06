@@ -16,6 +16,7 @@ import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsServi
 import { ActionNotificationComponent } from '../../partials/content/crud';
 // Components
 import { EMIManagementComponent } from './emi-management.component';
+import {AddEditCategoryComponent} from '../../../views/pages/emi-management/product/category/add-edit-category/add-edit-category.component';
 
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
@@ -105,11 +106,8 @@ const routes: Routes = [
 	],
 	entryComponents: [
 		ActionNotificationComponent,
-<<<<<<< HEAD
 		AddEditCategoryComponent,
-=======
 		WalletPriceAddComponent,
->>>>>>> 4f4dbf2a2e6b064da4f006b1266cfdce79481a5f
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -123,7 +121,9 @@ const routes: Routes = [
 		DashboardComponent,
 		ConfigDetailsComponent,
 		WalletPriceListComponent,
-		WalletPriceAddComponent
+		WalletPriceAddComponent,
+		AddEditCategoryComponent,
+
 	]
 })
 export class EMIManagementModule { }

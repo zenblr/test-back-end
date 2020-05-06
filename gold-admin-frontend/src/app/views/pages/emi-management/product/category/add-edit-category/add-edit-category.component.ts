@@ -19,6 +19,7 @@ export class AddEditCategoryComponent implements OnInit {
     title: string;
     addCategory: FormGroup;
     isMandatory: boolean = false;
+    metalListType:any;
 
     constructor(
       public dialogRef: MatDialogRef<AddEditCategoryComponent>,
@@ -31,11 +32,13 @@ export class AddEditCategoryComponent implements OnInit {
     console.log(this.data);
     this.formdata();
     this.setForm();
+    this.getMetalTypeList();
   }
   formdata() {
     this.addCategory = this.fb.group({
 		categoryName: ['', Validators.required],
-		conversionFactor: ['', Validators.required],
+    conversionFactor: ['', Validators.required],
+    metalTypeId : ['', Validators.required],
     });
   }
   setForm() {
@@ -68,7 +71,13 @@ export class AddEditCategoryComponent implements OnInit {
 					timeOut: 3000
 				  });
 				this.dialogRef.close();
-			}
+      },
+      err=>{
+        this.toast.error('Sorry', err['error']['message'], {
+          timeOut: 3000
+        });
+        this.dialogRef.close();
+      }
 		)
 	} else if (this.data.action === 'edit'){
 		this.addCategoryService.editCategory(categoryData , this.data.categoryId).subscribe(
@@ -77,9 +86,25 @@ export class AddEditCategoryComponent implements OnInit {
 					timeOut: 3000
 				  });
 				this.dialogRef.close();
-			}
+      },
+      err=>{
+        this.toast.error('Sorry', err['error']['message'], {
+          timeOut: 3000
+        });
+        this.dialogRef.close();
+      }
 		)
 	}
+  }
+
+
+  getMetalTypeList(){
+    this.addCategoryService.getMetalList().subscribe(
+      res=>{
+        console.log(res);
+        this.metalListType = res ;
+      }
+    )
   }
 
 

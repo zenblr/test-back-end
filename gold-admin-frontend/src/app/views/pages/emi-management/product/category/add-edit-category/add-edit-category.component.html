@@ -40,10 +40,29 @@
                             <mat-error *ngIf="controls.conversionFactor.touched && controls.conversionFactor.errors?.required">Required
                                 field</mat-error>
                         </div>
+                    </div>
 
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Select Metal Type</label>
+                        </div>
 
+                        <div class="col-8">
+                            <select class="form-control" formControlName="metalTypeId" 
+                                [class.isError]="controls.metalTypeId.touched && controls.metalTypeId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Metal Type</option>
+
+                                <option *ngFor="let metal of metalListType" [value]="metal.id">
+                                    {{metal.metalType}}
+                                </option>
+                            </select>
+                            <mat-error *ngIf="controls.metalTypeId.touched && controls.metalTypeId.errors?.required">
+                                Required field</mat-error>
+                        </div>
 
                     </div>
+
+
 
 
 

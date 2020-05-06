@@ -32,7 +32,7 @@ import {AddCategoryDatasource , AddCategoryService,AddCategoryModel} from '../..
 })
 export class CategoryComponent implements OnInit, OnDestroy {
   dataSource: AddCategoryDatasource;
-  displayedColumns: string[] = ["categoryName","conversionFactor", "action"];
+  displayedColumns: string[] = ["categoryName","conversionFactor","metalType", "action"];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("searchInput", { static: true }) searchInput: ElementRef;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -108,49 +108,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  // deleteCategory(idd, categoryNamee) {
-  //   let id = idd;
-  //   let categoryName = categoryNamee;
-  //   const dialogRef = this.dialog.open(DeleteEntityDialogComponent, {
-  //     data: {
-  //       id,
-  //       title: "AddCategoryComponent",
-  //       name: categoryName
-  //     },
-  //     width: "40vw"
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     let status = res;
-  //     this.spinnerValue = true;
-  //     this.ref.detectChanges();
-  //     if (status == "delete") {
-  //       this.AddCategoryService.deleteCategory(id).subscribe(
-  //         res => {
-  //           this.spinnerValue = false;
-  //           this.ref.detectChanges();
-  //           this.toast.success("Success", "Category Deleted Successfully", {
-  //             timeOut: 3000
-  //           });
-  //           this.dataSource.getAllCategoryData(
-  //             this.positionData.From,
-  //             this.positionData.To,
-  //             this.positionData.Text
-  //           );
-  //         },
-  //         err => {
-  //           this.spinnerValue = false;
-  //           this.ref.detectChanges();
-  //           this.toast.error("Sorry", err["error"]["message"], {
-  //             timeOut: 3000
-  //           });
-  //         }
-  //       );
-  //     } else {
-  //       this.spinnerValue = false;
-  //       this.ref.detectChanges();
-  //     }
-  //   });
-  // }
 
   deleteCategory(id) {
 
@@ -164,19 +121,16 @@ export class CategoryComponent implements OnInit, OnDestroy {
       if (res) {
         this.AddCategoryService.deleteCategory(id).subscribe(
                   res => {
-
-
                     this.toast.success("Success", "Category Deleted Successfully", {
                       timeOut: 3000
                     });
                     this.loadCategoryPage();
                   },
                   err => {
-
-
                     this.toast.error("Sorry", err["error"]["message"], {
                       timeOut: 3000
                     });
+                    this.loadCategoryPage();
                   }
                 );
 
