@@ -1,0 +1,37 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="">
+            <!-- <div class="col-8"> -->
+            <mat-tab-group mat-align-tabs="center">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <span class="tab-number text-gray">Rough Amount</span>
+                        <span class="tab-text">Rough Loan Amount</span>
+                    </ng-template>
+                    <div class="col-12">
+                        <kt-rough-loan-amount></kt-rough-loan-amount>
+                    </div>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <span class="tab-number text-gray">Final Amount</span>
+                        <span class="tab-text">Final Loan Amount</span>
+                    </ng-template>
+                    <div>
+                        <kt-final-loan-amount></kt-final-loan-amount>
+                    </div>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <span class="tab-number text-gray">Interest Calculator</span>
+                        <span class="tab-text">Final Interest Calculator</span>
+                    </ng-template>
+                    <div>
+                        <kt-final-interest-amount></kt-final-interest-amount>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+        <!-- </div> -->
+    </kt-portlet-body>
+</kt-portlet>
