@@ -40,4 +40,7 @@ export class AddCategoryService {
 	getSingleCategory(id){
 		return this._http.get(`http://173.249.49.7:9120/api/category/`+ id);
 	}
+	getMetalList(){
+		return this._http.get(`http://173.249.49.7:9120/api/metal-type`);
+	}
 }

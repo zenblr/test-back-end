@@ -108,6 +108,7 @@ const routes: Routes = [
 		ActionNotificationComponent,
 		WalletPriceAddComponent,
 		AddEditCategoryComponent,
+		AddEditCategoryComponent,
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -123,6 +124,7 @@ const routes: Routes = [
 		WalletPriceListComponent,
 		WalletPriceAddComponent,
 		AddEditCategoryComponent,
+
 	]
 })
 export class EMIManagementModule { }
