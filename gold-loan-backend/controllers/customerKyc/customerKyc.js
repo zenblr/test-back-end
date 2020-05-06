@@ -103,9 +103,9 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
     let { firstName, lastName, mobileNumber, panCardNumber } = req.body
 
-    let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    let status = await models.status.findOne({ where: { statusName: "approved" } })
     if (check.isEmpty(status)) {
-        return res.status(404).json({ message: "Status confirm is not there in status table" });
+        return res.status(404).json({ message: "Status approved is not there in status table" });
     }
     let statusId = status.id
     let getCustomerInfo = await models.customer.findOne({
@@ -113,7 +113,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode']
     })
     if (check.isEmpty(getCustomerInfo)) {
-        return res.status(404).json({ message: "Your status is not confirm" });
+        return res.status(404).json({ message: "Your status is not approved" });
     }
 
     let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { customerId: getCustomerInfo.id } })
@@ -261,15 +261,25 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 
 exports.submitAllKycInfo = async (req, res, next) => {
 
-    let { customerId, customerKycId } = req.body;
-    console.log(req.body)
+    let { customerId, customerKycId, customerKyc, customerKycAddress, customerKycBank } = req.body;
 
     let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { id: customerKycId } })
     if (check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer kyc detailes is not filled." });
     }
-    let abc = await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId } })
+
+    await sequelize.transaction(async (t) => {
+        await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId }, transaction: t });
+        
+        await models.customerKycPersonalDetail.update(customerKyc, { where: { customerId: customerId }, transaction: t })
+
+        await models.customerKycAddressDetail.bulkCreate(customerKycAddress, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProof", "addressProofTypeId", "addressProofNumber"] }, { transaction: t })
+
+        await models.customerKycBankDetail.bulkCreate(customerKycBank, { updateOnDuplicate: ["bankName", "bankBranchName", "accountType", "accountHolderName", "accountNumber", "ifscCode", "passbookProof"] }, { transaction: t })
+
+    })
     return res.status(200).json({ message: `successful`, customerId, customerKycId })
+
 }
 
 
@@ -283,7 +293,7 @@ exports.appliedKyc = async (req, res, next) => {
     var query = {};
 
     if (req.query.kycStatus) {
-        query.kycStatus =  sequelize.where(
+        query.kycStatus = sequelize.where(
             sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
             {
                 [Op.iLike]: req.query.kycStatus + "%",
@@ -316,7 +326,7 @@ exports.appliedKyc = async (req, res, next) => {
             attributes: ['createdAt']
         }
     ]
-    
+
     let getAppliedKyc = await models.customer.findAll({
         where: searchQuery,
         attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'panCardNumber', 'kycStatus'],

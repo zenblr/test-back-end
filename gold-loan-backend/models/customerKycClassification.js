@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         kycStatusFromCce: {
             type: DataTypes.ENUM,
             field: 'kyc_status_from_cce',
-            values: ['confirm', 'pending', 'rejected'],
+            values: ['approved', 'pending', 'rejected'],
             allowNull: false
         },
         cceId: {
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
         kycStatusFromBranchManager: {
             type: DataTypes.ENUM,
             field: 'kyc_status_from_branch_manager',
-            values: ['confirm', 'pending', 'rejected'],
+            values: ['approved', 'pending', 'rejected'],
         },
         branchManagerId: {
             type: DataTypes.INTEGER,

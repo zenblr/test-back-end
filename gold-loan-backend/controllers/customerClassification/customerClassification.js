@@ -23,7 +23,7 @@ exports.addCceRating = async (req, res, next) => {
     if (!check.isEmpty(checkRatingExist)) {
         return res.status(200).json({ message: `This customer rating is already exist` })
     }
-    if (kycStatusFromCce !== "confirm") {
+    if (kycStatusFromCce !== "approved") {
         await sequelize.transaction(async (t) => {
             await models.customer.update(
                 { cceVerifiedBy: cceId },
