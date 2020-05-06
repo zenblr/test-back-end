@@ -1,181 +1,89 @@
 <kt-portlet>
     <kt-portlet-body>
         <div class="row">
-            <div class="col-6">
-                <mat-tab-group>
+            <div class="col-7">
+                <mat-tab-group [selectedIndex]="selected">
                     <mat-tab label="Basic Details">
-                        <kt-basic-details></kt-basic-details>
+                        <kt-basic-details (basicFormEmit)="basicForm($event)" [invalid]="basicInvalid"></kt-basic-details>
                     </mat-tab>
                     <mat-tab label="KYC Details">
-                        <kt-kyc-details></kt-kyc-details>
+                        <kt-kyc-details (kycEmit)="kycEmit($event)" [invalid]="kycInvalid"></kt-kyc-details>
                     </mat-tab>
                     <mat-tab label="Nominee Details">
-                        <kt-nominee-details></kt-nominee-details>
+                        <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [invalid]="nomineeInvalid"></kt-nominee-details>
+                    </mat-tab>
+                    <mat-tab label="Final Loan Intrest">
+                        <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [invalid]="nomineeInvalid"></kt-nominee-details>
                     </mat-tab>
                 </mat-tab-group>
             </div>
-            <div class="col-6">
+            <div class="col-5" [formGroup]="bankForm">
                 <label class="text-color form-label kt-margin-t-15 p-0">Bank Details</label>
                 <div class="row kt-margin-t-35">
                     <div class="col-4 form-label">
                         <label class="text-color kt-padding-l-10">Name</label>
                     </div>
-                    <div class="col-6">
-                        <input type="text" class="form-control" placeholder="vishwas shetty">
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="vishwas shetty" formControlName="name"
+                        [class.isError]="controls.name.touched && controls.name.invalid">
+                        <mat-error *ngIf="controls.name.touched && controls.name.invalid">
+                            <span *ngIf="controls.name.errors?.required">Field is Required</span>
+                            <span *ngIf="controls.name.errors?.pattern">Invalid Input</span>
+                        </mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 form-label">
                         <label class="text-color kt-padding-l-10">Account No.</label>
                     </div>
-                    <div class="col-6">
-                        <input type="text" class="form-control" placeholder="10234501203203">
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="10234501203203" formControlName="accountNumber"
+                         numbersOnly [class.isError]="controls.accountNumber.touched && controls.accountNumber.invalid" >
+                        <mat-error *ngIf="controls.accountNumber.touched && controls.accountNumber.invalid">Field is Required</mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 form-label">
                         <label class="text-color kt-padding-l-10">IFSC Code</label>
                     </div>
-                    <div class="col-6">
-                        <input type="text" class="form-control" placeholder="IFSC0000XXX">
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="IFSC0000XXX" formControlName="ifscCode"
+                        [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid" maxlength="11">
+                        <mat-error *ngIf="controls.ifscCode.touched && controls.ifscCode.invalid">
+                            <span *ngIf="controls.ifscCode.errors?.required">Field is Required</span>
+                            <span *ngIf="controls.ifscCode.errors?.pattern">Invalid Input</span>
+                        </mat-error>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <mat-tab-group>
-                    <mat-tab label="Ornaments">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="row">
-                                    <div class="col-4 form-label">
-                                        <label class="text-color kt-padding-l-10">Ornament Type</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="vishwas shetty">
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="text-color kt-padding-l-10">Gross Wt.</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="10234501203203">
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="text-color kt-padding-l-10">Deduction Wt.</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="IFSC0000XXX">
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-color kt-padding-l-10">With Ornaments</label>
-                                    </div>
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-primary text-center kt-padding-l-15">View
-                                            Image</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <kt-button [type]="'button'" [value]="'Attach'"></kt-button>
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-color kt-padding-l-10">Acid Test</label>
-                                    </div>
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-primary text-center kt-padding-l-15">View
-                                            Image</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <kt-button [type]="'button'" [value]="'Attach'"></kt-button>
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-color kt-padding-l-10">LTV%</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="10234501203203">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="row">
-                                    <div class="col-4 form-label">
-                                        <label class="text-color kt-padding-l-10">Quantity</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="vishwas shetty">
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="text-color kt-padding-l-10">Net wt.</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="10234501203203">
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-color kt-padding-l-10">VM 00 wt.</label>
-                                    </div>
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-primary text-center kt-padding-l-15">View
-                                            Image</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <kt-button [type]="'button'" [value]="'Attach'"></kt-button>
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-color kt-padding-l-10">Stone Touch</label>
-                                    </div>
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-primary text-center kt-padding-l-15">View
-                                            Image</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <kt-button [type]="'button'" [value]="'Attach'"></kt-button>
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-color kt-padding-l-10">Purity Test</label>
-                                    </div>
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-primary text-center kt-padding-l-15">View
-                                            Image</label>
-                                    </div>
-                                    <div class="col-4">
-                                        <kt-button [type]="'button'" [value]="'Attach'"></kt-button>
-                                    </div>
-                                </div>
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="my-auto text-color kt-padding-l-10">LTV Amount</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="10234501203203">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3 img-container height220">
-                                <img class="placeholder-image"
-                                    src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
-                            </div>
-                        </div>
-                    </mat-tab>
-                </mat-tab-group>
+                <kt-ornaments></kt-ornaments>
+            </div>
+            
+        </div>
+        <div class="row kt-margin-t-10">
+            <div class="col-12">
+                <mat-divider></mat-divider>
             </div>
         </div>
-        <div class="row"></div>
+        <div class="row justify-content-center">
+            <div class="col-12 py-2">
+                <h3 class="text-gray text-center">Total Eligible Amount {{totalAmount | currency:'INR'}}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 kt-margin-b-10">
+                <mat-divider></mat-divider>
+            </div>
+        </div>
+        <div class="row py-3">
+            <div class="col-12">
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="apply()"></kt-button>
+                <span class="kt-padding-10"></span>
+                <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>
+            </div>
+        </div>
     </kt-portlet-body>
 </kt-portlet>

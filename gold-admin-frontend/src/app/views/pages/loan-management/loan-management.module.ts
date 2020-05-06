@@ -11,6 +11,8 @@ import { LoanApplicationFormComponent } from './loan-application-form/loan-appli
 import { BasicDetailsComponent } from './loan-application-form/tabs/basic-details/basic-details.component';
 import { KycDetailsComponent } from './loan-application-form/tabs/kyc-details/kyc-details.component';
 import { NomineeDetailsComponent } from './loan-application-form/tabs/nominee-details/nominee-details.component'
+import { CoreModule } from '../../../core/core.module';
+import { OrnamentsComponent } from './loan-application-form/tabs/ornaments/ornaments.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -23,14 +25,15 @@ const rout: Routes = [
 ]
 
 @NgModule({
-  declarations: [LoanCalculatorComponent, RoughLoanAmountComponent, FinalLoanAmountComponent, LoanApplicationFormComponent, BasicDetailsComponent, KycDetailsComponent, NomineeDetailsComponent],
+  declarations: [LoanCalculatorComponent, RoughLoanAmountComponent, FinalLoanAmountComponent, LoanApplicationFormComponent, BasicDetailsComponent, KycDetailsComponent, NomineeDetailsComponent, OrnamentsComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(rout),
     AngularMaterialModule,
     ReactiveFormsModule,
     FormsModule,
-    PartialsModule
+    PartialsModule,
+    CoreModule
   ]
 })
 export class LoanManagementModule { }

@@ -1,0 +1,204 @@
+<mat-tab-group [formGroup]="ornamentsForm" class="position-relative">
+    <mat-tab label="Ornaments {{idx+1}}" formArrayName="ornamentData"
+        *ngFor="let ornament of OrnamentsData.controls;index as idx">
+        <div class="row justify-content-around" [formGroupName]="idx">
+            <div class="col-4">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="text-color ">Ornament Type</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="Ring" formControlName="ornamentType">
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="text-color ">Gross Wt.</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="12.02 gram" formControlName="grossWeight"
+                            [class.isError]="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid">
+                        <mat-error
+                            *ngIf="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid">
+                            <span *ngIf="ornament.controls.grossWeight.errors?.pattern">Enter a valid Number</span>
+                        </mat-error>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="text-color ">Deduction Wt.</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="14.04" formControlName="deductionWeight"
+                            [class.isError]="ornament.controls.deductionWeight.touched && ornament.controls.deductionWeight.invalid">
+                        <mat-error
+                            *ngIf="ornament.controls.deductionWeight.touched && ornament.controls.deductionWeight.invalid">
+                            <span *ngIf="ornament.controls.deductionWeight.errors?.pattern">Enter a valid Number</span>
+                        </mat-error>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="my-auto text-color ">With Ornament</label>
+                    </div>
+                    <div class="col-4 form-label">
+                        <label *ngIf="ornament.controls.withOrnamentWeight.value"
+                         class="my-auto text-primary text-center kt-padding-l-15"(click)="preview(ornament.controls.withOrnamentWeight.value,idx)">View
+                            Image</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="file" #withOrnamentWeight class="d-none"
+                            (change)="uploadFile(idx,$event,'withOrnamentWeight')">
+                        <kt-button *ngIf="!ornament.controls.withOrnamentWeight.value" [type]="'button'"
+                            [value]="'Attach'" (click)="withOrnamentWeight.click()"></kt-button>
+                        <div class="form-label">
+                            <label *ngIf="ornament.controls.withOrnamentWeight.value"
+                                class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
+                                (click)="removeImage('withOrnamentWeight',idx,ornament.controls.withOrnamentWeight.value)">Remove</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="my-auto text-color ">Acid Test</label>
+                    </div>
+                    <div class="col-4 form-label">
+                        <label *ngIf="ornament.controls.acidTest.value" class="my-auto text-primary text-center kt-padding-l-15"
+                        (click)="preview(ornament.controls.acidTest.value,idx)">View Image</label>
+                    </div>
+                    <div class="col-4 ">
+                        <input type="file" #acidTest class="d-none" (change)="uploadFile(idx,$event,'acidTest')">
+                        <kt-button *ngIf="!ornament.controls.acidTest.value" [type]="'button'" [value]="'Attach'"
+                            (click)="acidTest.click()"></kt-button>
+                        <div class="form-label">
+                            <label *ngIf="ornament.controls.acidTest.value"
+                                class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
+                                (click)="removeImage('acidTest',idx,ornament.controls.acidTest.value)">Remove</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="my-auto text-color ">LTV%</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="54.10%" formControlName="ltvPercent"
+                            [class.isError]="ornament.controls.ltvPercent.touched && ornament.controls.ltvPercent.invalid">
+                        <mat-error *ngIf="ornament.controls.ltvPercent.touched && ornament.controls.ltvPercent.invalid">
+                            <span *ngIf="ornament.controls.ltvPercent.errors?.pattern">Enter a valid Number</span>
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="text-color ">Quantity</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="10" formControlName="quantity" numbersOnly>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="text-color ">Net wt.</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="10.20" formControlName="netWeight"
+                            [class.isError]="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid">
+                        <mat-error *ngIf="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid">
+                            <span *ngIf="ornament.controls.netWeight.errors?.pattern">Enter a valid Number</span>
+                        </mat-error>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="my-auto text-color ">WM 00 wt.</label>
+                    </div>
+                    <div class="col-4 form-label">
+                        <label *ngIf="ornament.controls.weightMachineZeroWeight.value" class="my-auto text-primary text-center kt-padding-l-15"
+                        (click)="preview(ornament.controls.weightMachineZeroWeight.value,idx)">View Image</label>
+                    </div>
+                    <div class="col-4 ">
+                        <input type="file" #vm class="d-none" (change)="uploadFile(idx,$event,'vm')">
+                        <kt-button *ngIf="!ornament.controls.weightMachineZeroWeight.value" [type]="'button'"
+                            [value]="'Attach'" (click)="vm.click()"></kt-button>
+
+                        <div class="form-label">
+                            <label *ngIf="ornament.controls.weightMachineZeroWeight.value"
+                                class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
+                                (click)="removeImage('vm',idx,ornament.controls.weightMachineZeroWeight.value)">Remove</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="my-auto text-color ">Stone Touch</label>
+                    </div>
+                    <div class="col-4 form-label">
+                        <label *ngIf="ornament.controls.stoneTouch.value" class="my-auto text-primary text-center kt-padding-l-15"
+                        (click)="preview(ornament.controls.stoneTouch.value,idx)">View Image</label>
+                    </div>
+                    <div class="col-4 ">
+                        <input type="file" #stoneTouch class="d-none" (change)="uploadFile(idx,$event,'stoneTouch')">
+                        <kt-button *ngIf="!ornament.controls.stoneTouch.value" [type]="'button'" [value]="'Attach'"
+                            (click)="stoneTouch.click()"></kt-button>
+                        <div class="form-label">
+                            <label *ngIf="ornament.controls.stoneTouch.value"
+                                class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
+                                (click)="removeImage('stoneTouch',idx,ornament.controls.stoneTouch.value)">Remove</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="my-auto text-color ">Purity Test</label>
+                    </div>
+                    <div class="col-4 form-label">
+                        <label *ngIf="ornament.controls.purityTest.value" class="my-auto text-primary text-center kt-padding-l-15"
+                        (click)="preview(ornament.controls.purityTest.value,idx)">View Image</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="file" #purity class="d-none" (change)="uploadFile(idx,$event,'purity')">
+                        <kt-button *ngIf="!ornament.controls.purityTest.value" [type]="'button'" [value]="'Attach'"
+                            (click)="purity.click()"></kt-button>
+                        <div class="form-label">
+                            <label *ngIf="ornament.controls.purityTest.value"
+                                class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
+                                (click)="removeImage('purity',idx,ornament.controls.purityTest.value)">Remove</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 form-label">
+                        <label class="my-auto text-color ">LTV Amount</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" placeholder="100.00" formControlName="ltvAmount"
+                            [class.isError]="ornament.controls.ltvAmount.touched && ornament.controls.ltvAmount.invalid">
+                        <mat-error *ngIf="ornament.controls.ltvAmount.touched && ornament.controls.ltvAmount.invalid">
+                            <span *ngIf="ornament.controls.ltvAmount.errors?.pattern">Enter a valid Number</span>
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 ">
+                <input type="file" #ornamentImage class="d-none" (change)="uploadFile(idx,$event,'ornamentImage')">
+                <div class="img-container height220 kt-pointer" *ngIf="!ornament.controls.ornamentImage.value"
+                    (click)="ornamentImage.click()">
+                    <img class="placeholder-image" src="../../../../../../assets/media/icons/image-placeholder.png"
+                        alt="placeholder">
+                </div>
+                <div class="img-container height220 bg-transparent" *ngIf="ornament.controls.ornamentImage.value">
+                    <img class="w-100" [src]="ornament.controls.ornamentImage.value" alt="placeholder">
+                </div>
+                <div class="form-label">
+                    <label *ngIf="ornament.controls.ornamentImage.value" class="my-auto text-danger m-auto kt-pointer"
+                        (click)="removeImage('ornamentImage',idx)">Remove</label>
+                </div>
+
+            </div>
+        </div>
+    </mat-tab>
+</mat-tab-group>
+<button (click)="addmore()" class="addmore">+ Add More</button>

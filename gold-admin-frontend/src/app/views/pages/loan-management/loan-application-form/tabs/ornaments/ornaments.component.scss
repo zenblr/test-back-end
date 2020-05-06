@@ -1,0 +1,18 @@
+:host {
+	.height220 {
+		height: 220px;
+	}
+	::ng-deep.mat-tab-header {
+		max-width: 90%;
+	}
+	.addmore {
+		position: absolute;
+		top: 15px;
+		left: 30%;
+		z-index: 99999 !important;
+		background: transparent;
+		border: thin solid;
+		border-radius: 5px;
+		padding: 5px;
+	}
+}

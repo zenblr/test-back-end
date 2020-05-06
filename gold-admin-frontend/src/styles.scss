@@ -318,12 +318,8 @@ mat-header-row{
 	}
 }
 
-.mat-table{
+.mat-table,.mat-tab-group, .mat-raised-button{
 	font-family: Poppins, Helvetica, sans-serif !important;
-}
-.mat-raised-button{
-	font-family: Poppins, Helvetica, sans-serif !important;
-
 }
 
 .mat-cell, .mat-footer-cell{
