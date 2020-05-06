@@ -9,7 +9,7 @@
             <mat-form-field class="mat-form-field-fluid searchbar example-form-field">
                 <input matInput placeholder="Search Category" #searchInput autocomplete="off">
             </mat-form-field>&nbsp;&nbsp;
-            <button  class="btn primary_button" (click)="addCategory();">Add New</button> &nbsp; &nbsp; &nbsp; &nbsp;
+            <button  class="btn primaryHeaderBtn" (click)="addCategory();">Add New</button> &nbsp; &nbsp; &nbsp; &nbsp;
         </ng-container>
     </kt-portlet-header>
     <kt-portlet-body class="kt-padding-t-5 kt-padding-b-5 kt-padding-l-10 kt-padding-r-10 componrntBody">
@@ -18,25 +18,25 @@
                 <ng-container matColumnDef="categoryName">
                     <mat-header-cell *matHeaderCellDef>Category Name
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.categoryName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let element">{{element.categoryName | titlecase  }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="conversionFactor">
                     <mat-header-cell *matHeaderCellDef>Conversion Factor
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.conversionFactor | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let element">{{element.conversionFactor }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Action
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element ">
-                        <button  (click)="editCategory(element.id)" mat-icon-button aria-label="Example icon-button with a edit icon" class="edit_icon">
-                        <mat-icon>edit</mat-icon>
-                        </button>
-                        <button  (click)="deleteCategory(element.id ,element.categoryName)" mat-icon-button color="primary" aria-label="Example icon-button with a delete icon" class="delete_icon">
-                        <mat-icon>delete</mat-icon>
-                        </button>
+                        <p  (click)="editCategory(element.id)" mat-icon-button aria-label="Example icon-button with a edit icon" class="edit_btn">
+                         Edit &nbsp;| &nbsp;
+                        </p>
+                        <p (click)="deleteCategory(element.id)" mat-icon-button  aria-label="Example icon-button with a delete icon" class="delete_btn">
+                        Delete
+                        </p>
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

@@ -38,6 +38,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ConfigDetailsComponent } from './config-details/config-details.component';
 import { WalletPriceListComponent } from './config-details/wallet-price/wallet-price-list/wallet-price-list.component';
 import { WalletPriceAddComponent } from './config-details/wallet-price/wallet-price-add/wallet-price-add.component';
+import { AddEditCategoryComponent } from './product/category/add-edit-category/add-edit-category.component';
 
 const routes: Routes = [
 	{
@@ -106,6 +107,7 @@ const routes: Routes = [
 	entryComponents: [
 		ActionNotificationComponent,
 		WalletPriceAddComponent,
+		AddEditCategoryComponent,
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -119,7 +121,8 @@ const routes: Routes = [
 		DashboardComponent,
 		ConfigDetailsComponent,
 		WalletPriceListComponent,
-		WalletPriceAddComponent
+		WalletPriceAddComponent,
+		AddEditCategoryComponent,
 	]
 })
 export class EMIManagementModule { }

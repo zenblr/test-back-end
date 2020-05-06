@@ -15,7 +15,7 @@ export class AddCategoryService {
 		private httpUtils: HttpUtilsService) { }
 
   public getCategoryList(from: number, to: number, search: string): Observable<any> {
-		return this._http.get<any>(`/api/category?from=${from}&to=${to}&search=${search}`).pipe(
+		return this._http.get<any>(`http://173.249.49.7:9120/api/category?from=${from}&to=${to}&search=${search}`).pipe(
 
 			(tap(allMemberData => {
 				return allMemberData
@@ -24,5 +24,20 @@ export class AddCategoryService {
 				throw error;
 			}))
 		)
+	}
+	deleteCategory(id){
+		return this._http.delete(`http://173.249.49.7:9120/api/category/`+ id)
+	}
+
+	addNewCategory(data){
+		return this._http.post<any>(`http://173.249.49.7:9120/api/category`, data );
+	}
+
+	editCategory(data, id){
+
+		return this._http.patch<any>(`http://173.249.49.7:9120/api/category/` + id, data);
+	}
+	getSingleCategory(id){
+		return this._http.get(`http://173.249.49.7:9120/api/category/`+ id);
 	}
 }
