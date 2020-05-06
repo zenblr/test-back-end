@@ -1,5 +1,5 @@
 // Angular
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 // Material
 import { MatDialog } from '@angular/material';
 // RXJS
@@ -14,21 +14,19 @@ import { WalletPriceAddComponent } from '../wallet-price-add/wallet-price-add.co
   templateUrl: './wallet-price-list.component.html',
   styleUrls: ['./wallet-price-list.component.scss']
 })
-export class WalletPriceListComponent implements OnInit {
-  walletPrice$: Observable<any>;
-  walletPriceData: any;
+export class WalletPriceListComponent implements OnInit, OnDestroy {
+  walletPrice: any;
   private destroy$ = new Subject();
 
   constructor(
     public dialog: MatDialog,
-    private walletPriceService: WalletPriceService
+    private walletPriceService: WalletPriceService,
+    private ref: ChangeDetectorRef
   ) {
     this.walletPriceService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
-        if (this.walletPriceData) {
-          this.editWalletPrice(this.walletPriceData);
-        } else {
-          this.addWalletPrice();
+        if (this.walletPrice) {
+          this.editWalletPrice(this.walletPrice);
         }
       }
     })
@@ -39,7 +37,13 @@ export class WalletPriceListComponent implements OnInit {
   }
 
   getWalletPrice() {
-    this.walletPrice$ = this.walletPriceService.getWalletPrice().pipe(tap(res => this.walletPriceData = res));
+    this.walletPriceService.getWalletPrice().subscribe(
+      res => {
+        this.walletPrice = res;
+        this.ref.detectChanges();
+      }
+    )
+    // this.walletPrice$ = this.walletPriceService.getWalletPrice().pipe(tap(res => this.walletPriceData = res));
   }
 
   /**
@@ -51,7 +55,7 @@ export class WalletPriceListComponent implements OnInit {
       if (res) {
         this.getWalletPrice();;
       }
-    })
+    });
     this.walletPriceService.openModal.next(false);
   }
 
@@ -69,5 +73,14 @@ export class WalletPriceListComponent implements OnInit {
         this.getWalletPrice();
       }
     });
+    this.walletPriceService.openModal.next(false);
+  }
+
+  /**
+	 * On Destroy
+	 */
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
