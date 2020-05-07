@@ -170,6 +170,10 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = true;
 			this.showInput = true;
 		}
+		if (this.path == 'products') {
+			this.showfilter = true;
+			this.showInput = true;
+		}
 	}
 
 	action(event: Event) {

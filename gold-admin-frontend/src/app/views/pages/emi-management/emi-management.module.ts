@@ -4,8 +4,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import {ProductListComponent} from './product/show-product/product-list/product-list.component';
-import {ProductEditComponent} from './product/show-product/product-edit/product-edit.component';
 // NGRX
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -16,11 +14,6 @@ import { PartialsModule } from '../../partials/partials.module';
 import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsService } from '../../../core/_base/crud';
 // Shared
 import { ActionNotificationComponent } from '../../partials/content/crud';
-// Components
-import { EMIManagementComponent } from './emi-management.component';
-import {SubCategoryListComponent} from './product/sub-category/sub-category-list/sub-category-list.component';
-import {SubCategoryAddEditComponent} from './product/sub-category/sub-category-add-edit/sub-category-add-edit.component';
-
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
 import {
@@ -31,9 +24,12 @@ import {
 // Module
 import { CoreModule } from "../../../core/core.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+// Components
+import { EMIManagementComponent } from './emi-management.component';
+import { SubCategoryListComponent } from './product/sub-category/sub-category-list/sub-category-list.component';
+import { SubCategoryAddEditComponent } from './product/sub-category/sub-category-add-edit/sub-category-add-edit.component'
 import { ProductComponent } from './product/product.component';
 import { CategoryComponent } from './product/category/category.component';
-
 import { UploadProductComponent } from './product/upload-product/upload-product.component';
 import { UploadDesignComponent } from './product/upload-design/upload-design.component';
 import { BulkUploadReportListComponent } from './bulk-upload-report/bulk-upload-report-list/bulk-upload-report-list.component';
@@ -42,11 +38,13 @@ import { ConfigDetailsComponent } from './config-details/config-details.componen
 import { WalletPriceListComponent } from './config-details/wallet-price/wallet-price-list/wallet-price-list.component';
 import { WalletPriceAddComponent } from './config-details/wallet-price/wallet-price-add/wallet-price-add.component';
 import { AddEditCategoryComponent } from './product/category/add-edit-category/add-edit-category.component';
-import {ProductViewComponent} from './product/show-product/product-view/product-view.component';
-
+import { ProductViewComponent } from './product/show-product/product-view/product-view.component';
+import { ProductListComponent } from './product/show-product/product-list/product-list.component';
+import { ProductEditComponent } from './product/show-product/product-edit/product-edit.component';
 
 const routes: Routes = [
-		{ path: '' ,
+	{
+		path: '',
 
 		component: EMIManagementComponent,
 
@@ -81,7 +79,7 @@ const routes: Routes = [
 				component: WalletPriceListComponent
 			},
 		]
-		} 
+	}
 ];
 
 @NgModule({
@@ -117,7 +115,7 @@ const routes: Routes = [
 		ProductEditComponent,
 		ProductViewComponent,
 		SubCategoryAddEditComponent
-		
+
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -125,7 +123,7 @@ const routes: Routes = [
 		ProductListComponent,
 		ProductComponent,
 		CategoryComponent,
-		
+
 		UploadProductComponent,
 		UploadDesignComponent,
 		BulkUploadReportListComponent,

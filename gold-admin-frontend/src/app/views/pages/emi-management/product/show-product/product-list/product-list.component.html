@@ -1,111 +1,126 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+    <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+    <!-- <kt-portlet-header [title]="'Branch List'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
 
-<kt-portlet class="mt-5 mt-lg-0">
-    <kt-portlet-header [class]="'kt-portlet__head--lg'">
-        <ng-container ktPortletTitle>
-            <h3 class="ComponentTitle">
-                <span>Product List</span>
-            </h3>
-        </ng-container>
         <ng-container ktPortletTools>
-            <mat-form-field class="mat-form-field-fluid searchbar example-form-field">
-                <input matInput placeholder="Search Category" #searchInput autocomplete="off">
-            </mat-form-field>&nbsp;&nbsp;
-        
+
         </ng-container>
-    </kt-portlet-header>
-    <kt-portlet-body class="kt-padding-t-5 kt-padding-b-5 kt-padding-l-10 kt-padding-r-10 componrntBody">
-        <div class="mat-table__wrapper">
-            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort" matSortActive="id" matSortDirection="asc" matSortDisableClear>
+    </kt-portlet-header> -->
+    <!-- end::Header -->
+
+    <kt-portlet-body>
+        <!-- start::FILTERS & GROUP ACTIONS -->
+        <div class="kt-form kt-margin-b-10">
+
+            <!-- start::GROUP ACTIONS -->
+            <!-- Group actions list: 'Delete selected' | 'Fetch selected' | 'Update status for selected' -->
+            <!-- Group actions are shared for all LISTS -->
+
+            <!-- end::GROUP ACTIONS -->
+        </div>
+        <!-- end::FILTERS & GROUP ACTIONS -->
+
+        <!-- MATERIAL TABLE | Binded to datasources -->
+        <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
+        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
+                matSortActive="id" matSortDirection="asc" matSortDisableClear>
+                <!-- Checkbox Column -->
+
+                <!-- Table with selection -->
+                <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
+                <!-- <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="mat-column-checkbox">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container> -->
+
                 <ng-container matColumnDef="productImage">
                     <mat-header-cell *matHeaderCellDef>Design</mat-header-cell>
                     <span>
                         <mat-cell *matCellDef="let element" matTooltipClass="primary-tooltip">
-                            <img height="60" width="60" [src]="element.productImage"
-                               >
+                            <img height="60" width="60" [src]="element?.productImage">
                         </mat-cell>
                     </span>
                 </ng-container>
-                
                 <ng-container matColumnDef="sku">
-                    <mat-header-cell *matHeaderCellDef>SKU Code
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.sku| titlecase  }}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>SKU Code</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.sku | titlecase}}</mat-cell>
                 </ng-container>
-
                 <ng-container matColumnDef="productName">
-                    <mat-header-cell *matHeaderCellDef>Product Name
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.productName | titlecase }}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>Product Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.productName | titlecase}}</mat-cell>
                 </ng-container>
-
                 <ng-container matColumnDef="category">
-                    <mat-header-cell *matHeaderCellDef>Category
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.subCategory.category.categoryName | titlecase }}</mat-cell>
-                </ng-container>
-
-
-                <ng-container matColumnDef="subCategory">
-                    <mat-header-cell *matHeaderCellDef>Sub Category
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.subCategory.subCategoryName | titlecase }}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="weight">
-                    <mat-header-cell *matHeaderCellDef>Wt(gm)
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.weight }}</mat-cell>
-                </ng-container>
-
-
-                <ng-container matColumnDef="price">
-                    <mat-header-cell *matHeaderCellDef>Price
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.price }}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="manufacturingCostPerGram">
-                    <mat-header-cell *matHeaderCellDef>Manufacturing cost/gm
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.manufacturingCostPerGram }}</mat-cell>
-                </ng-container>
-
-           
-                
-                <ng-container matColumnDef="shipping">
-                    <mat-header-cell *matHeaderCellDef>Shipping Charges
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.shipping }}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="hallmarkingPackaging">
-                    <mat-header-cell *matHeaderCellDef>Hallmark Packaging
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.hallmarkingPackaging }}</mat-cell>
-                </ng-container>
-
-
-                <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef>Action
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element ">
-                        <p  (click)="editProduct(element.id)" mat-icon-button aria-label="Example icon-button with a edit icon" class="edit_btn">
-                         Edit &nbsp;| &nbsp;
-                        </p>
-                        <p (click)="deleteProduct(element.id)" mat-icon-button  aria-label="Example icon-button with a delete icon" class="delete_btn">
-                        Delete
-                        </p>
+                    <mat-header-cell *matHeaderCellDef>Category</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.subCategory?.category?.categoryName | titlecase}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="subCategory">
+                    <mat-header-cell *matHeaderCellDef>Sub Category</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.subCategory?.subCategoryName | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="weight">
+                    <mat-header-cell *matHeaderCellDef>Wt(gm)</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.weight}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="price">
+                    <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.price}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="manufacturingCostPerGram">
+                    <mat-header-cell *matHeaderCellDef>Manufacturing cost/gm</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.manufacturingCostPerGram}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="shipping">
+                    <mat-header-cell *matHeaderCellDef>Shipping Charges</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.shipping}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="hallmarkingPackaging">
+                    <mat-header-cell *matHeaderCellDef>Hallmark Packaging</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.hallmarkingPackaging}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <div (click)="viewProduct(element.id)" class="kt-pointer"> View | &nbsp;</div>
+                            <div (click)="editProduct(element.id)" class="kt-pointer"> Edit | &nbsp;</div>
+                            <div class="kt-pointer text-danger" (click)="deleteProduct(element.id)">Delete</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
                 <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>
-            <div class="mat-table__message" *ngIf="noRecords">No records found</div>
+
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <!-- Message for empty data  -->
             <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
         </div>
+
+        <!-- start: BOTTOM -->
         <div class="mat-table__bottom">
+            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
-            <mat-paginator [pageSize]="50" [pageSizeOptions]="[25,50,100,200,500]" [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+            <!-- MATERIAL PAGINATOR | Binded to dasources -->
+            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>
+        <!-- end: BOTTOM -->
     </kt-portlet-body>
+    <!-- end::Body -->
 </kt-portlet>
