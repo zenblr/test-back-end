@@ -2,15 +2,9 @@
     "development": {
         "username": "postgres",
         "password": "nimap@123",
-<<<<<<< HEAD
         "database": "gold_master",
         "host": "173.249.49.7",
         "port":"3432",
-=======
-        "database": "gold",
-        "host": "173.249.49.7",
-        "port":"8432",
->>>>>>> fffece8ed41d2be51c7477c1a48caab9da5deda0
         "dialect": "postgres",
         "operatorsAliases": false
     },
