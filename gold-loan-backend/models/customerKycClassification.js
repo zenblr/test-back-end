@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
             values: ['approved', 'pending', 'rejected'],
             allowNull: false
         },
+        reasonFromCce: {
+            type: DataTypes.TEXT,
+            field: 'reason_from_cce',
+        },
         cceId: {
             type: DataTypes.INTEGER,
             field: 'cce_id',
@@ -53,10 +57,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'address_proof_rating_verified_by_bm',
             defaultValue: false
         },
-        kycStatusFromBranchManager: {
+        kycStatusFromBm: {
             type: DataTypes.ENUM,
             field: 'kyc_status_from_branch_manager',
             values: ['approved', 'pending', 'rejected'],
+        },
+        reasonFromBm: {
+            type: DataTypes.TEXT,
+            field: 'reason_from_bm',
         },
         branchManagerId: {
             type: DataTypes.INTEGER,

@@ -24,18 +24,18 @@ exports.userLogin = async (req, res, next) => {
 
     let checkUser = await models.user.findOne({
         where: {
-              [Op.or]: [
+            [Op.or]: [
                 {
-                  email: mobileNumber,
+                    email: mobileNumber,
                 },
                 {
-                  mobileNumber: mobileNumber,
+                    mobileNumber: mobileNumber,
                 }
-              ]
-          },
-          include: [{ model: models.role }]
+            ]
+        },
+        include: [{ model: models.role }]
     })
-
+    let roleId = await checkUser.roles.map((data) => data.id);
     if (!checkUser) {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }
@@ -46,8 +46,7 @@ exports.userLogin = async (req, res, next) => {
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
-            roleId: checkUser.dataValues.roles[0].id,
-            roleName: checkUser.dataValues.roles[0].roleName,
+            roleId: roleId,
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -98,7 +97,7 @@ exports.userLogin = async (req, res, next) => {
         // })
         return res.status(200).json({ message: 'login successful', Token });
     } else {
-       return res.status(401).json({ message: 'Wrong Credentials' });
+        return res.status(401).json({ message: 'Wrong Credentials' });
     }
 
 }
@@ -127,6 +126,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
         return res.status(401).json({ message: `Invalid Otp` })
     }
 
+
     var token = await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
         let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
@@ -135,13 +135,14 @@ exports.verifyLoginOtp = async (req, res, next) => {
             include: [{ model: models.role }],
             transaction: t
         });
+        let roleId = await checkUser.roles.map((data) => data.id);
+
         Token = jwt.sign({
             id: checkUser.dataValues.id,
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
-            roleId: checkUser.dataValues.roles[0].id,
-            roleName: checkUser.dataValues.roles[0].roleName,
+            roleId: roleId
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
