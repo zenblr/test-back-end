@@ -77,26 +77,28 @@
                             <tr>
                                 <td scope="row" class="rating-title">Customer Behaviour</td>
                                 <td class="rating-cce">
-                                    <select class="form-control" formControlName="behaviourRatingCce">
+                                    <select class="form-control" formControlName="behaviourRatingCce"
+                                        [class.isError]="cceControls.behaviourRatingCce.invalid && cceControls.behaviourRatingCce.touched">
                                         <option value="" [disabled]=true [selected]="true"> Select Rating
                                         </option>
                                         <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
-                                            {{rate.ratingName | titlecase}}
+                                            {{rate.ratingPoint}}
                                         </option>
                                     </select>
                                 </td>
                                 <td class="rating-bm text-center">
-                                        <img src="assets/media/icons/incorrect.svg">
+                                    <img src="assets/media/icons/incorrect.svg">
                                 </td>
                             </tr>
                             <tr>
                                 <td scope="row" class="rating-title">ID Proof</td>
                                 <td class="rating-cce">
-                                    <select class="form-control" formControlName="idProofRatingCce">
+                                    <select class="form-control" formControlName="idProofRatingCce"
+                                        [class.isError]="cceControls.idProofRatingCce.invalid && cceControls.idProofRatingCce.touched">
                                         <option value="" [disabled]=true [selected]="true"> Select Rating
                                         </option>
                                         <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
-                                            {{rate.ratingName | titlecase}}
+                                            {{rate.ratingPoint}}
                                         </option>
                                     </select>
                                 </td>
@@ -107,22 +109,24 @@
                             <tr>
                                 <td scope="row" class="rating-title">Address Proof</td>
                                 <td class="rating-cce">
-                                    <select class="form-control" formControlName="addressProofRatingCce">
+                                    <select class="form-control" formControlName="addressProofRatingCce"
+                                        [class.isError]="cceControls.addressProofRatingCce.invalid && cceControls.addressProofRatingCce.touched">
                                         <option value="" [disabled]=true [selected]="true"> Select Rating
                                         </option>
                                         <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
-                                            {{rate.ratingName | titlecase}}
+                                            {{rate.ratingPoint}}
                                         </option>
                                     </select>
                                 </td>
                                 <td class="rating-bm text-center">
-                                        <img src="assets/media/icons/incorrect.svg">
+                                    <img src="assets/media/icons/incorrect.svg">
                                 </td>
                             </tr>
                             <tr>
                                 <td scope="row" class="rating-title">KYC Status</td>
                                 <td class="rating-cce">
-                                    <select class="form-control" formControlName="kycStatusFromCce">
+                                    <select class="form-control" formControlName="kycStatusFromCce"
+                                        [class.isError]="cceControls.kycStatusFromCce.invalid && cceControls.kycStatusFromCce.touched">
                                         <option value="" [disabled]=true [selected]="true"> Select Status
                                         </option>
                                         <option *ngFor="let status of cceKycStatus" [value]="status.value">
@@ -141,6 +145,12 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div *ngIf="showTextBoxCce" class="col kt-margin-t-20 kt-margin-b-20"
+                    style="width: 600px; margin: auto">
+                    <textarea class="form-control" formControlName="reasonFromCce"
+                        [class.isError]="cceControls.reasonFromCce.invalid && cceControls.reasonFromCce.touched"></textarea>
                 </div>
                 <div class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
                     <kt-button [value]="'Submit'" [type]="'submit'" (action)="submit()"></kt-button>
