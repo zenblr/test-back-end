@@ -2,45 +2,41 @@
     <kt-portlet-header [class]="'kt-portlet__head--lg'">
         <ng-container ktPortletTitle>
             <h3 class="ComponentTitle">
-                <span>Category List</span>
+                <span>Sub Category List</span>
             </h3>
         </ng-container>
         <ng-container ktPortletTools>
             <mat-form-field class="mat-form-field-fluid searchbar example-form-field">
-                <input matInput placeholder="Search Category" #searchInput autocomplete="off">
+                <input matInput placeholder="Search SubCategory" #searchInput autocomplete="off">
             </mat-form-field>&nbsp;&nbsp;
-            <button  class="btn primaryHeaderBtn" (click)="addCategory();">Add New</button> &nbsp; &nbsp; &nbsp; &nbsp;
+            <button  class="btn primaryHeaderBtn" (click)="addSubCategory();">Add New</button> &nbsp; &nbsp; &nbsp; &nbsp;
         </ng-container>
     </kt-portlet-header>
     <kt-portlet-body class="kt-padding-t-5 kt-padding-b-5 kt-padding-l-10 kt-padding-r-10 componrntBody">
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort" matSortActive="id" matSortDirection="asc" matSortDisableClear>
-                <ng-container matColumnDef="categoryName">
-                    <mat-header-cell *matHeaderCellDef>Category Name
+                <ng-container matColumnDef="subCategoryName">
+                    <mat-header-cell *matHeaderCellDef>Sub Category
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.categoryName | titlecase  }}</mat-cell>
+                    <mat-cell *matCellDef="let element">{{element.subCategoryName | titlecase  }}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="conversionFactor">
-                    <mat-header-cell *matHeaderCellDef>Conversion Factor
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.conversionFactor }}</mat-cell>
-                </ng-container>
+                
 
-                <ng-container matColumnDef="metalType">
-                    <mat-header-cell *matHeaderCellDef>Metal Type
+                <ng-container matColumnDef="categoryName"> 
+                    <mat-header-cell *matHeaderCellDef>Category
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.metalType.metalType }}</mat-cell>
+                    <mat-cell *matCellDef="let element">{{element.category.categoryName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Action
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element ">
-                        <p  (click)="editCategory(element.id)" mat-icon-button aria-label="Example icon-button with a edit icon" class="edit_btn">
+                        <p  (click)="editSubCategory(element.id)" mat-icon-button aria-label="Example icon-button with a edit icon" class="edit_btn">
                          Edit &nbsp;| &nbsp;
                         </p>
-                        <p (click)="deleteCategory(element.id)" mat-icon-button  aria-label="Example icon-button with a delete icon" class="delete_btn">
+                        <p (click)="deleteSubCategory(element.id)" mat-icon-button  aria-label="Example icon-button with a delete icon" class="delete_btn">
                         Delete
                         </p>
                     </mat-cell>

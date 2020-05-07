@@ -20,28 +20,28 @@ import {
   DeleteEntityDialogComponent,
 } from "../../../../../partials/content/crud/index";
 import {LayoutUtilsService} from '../../../../../../core/_base/crud/utils/layout-utils.service';
-import {ProductEditComponent} from '../product-edit/product-edit.component';
-import {ProductDatasource , ProductService,ProductModel} from '../../../../../../core/emi-management/product/index';
+import {SubCategoryAddEditComponent} from '../sub-category-add-edit/sub-category-add-edit.component';
+import {SubCategoryDatasource , SubCategoryService,SubCategoryModel} from '../../../../../../core/emi-management/product/index';
 
 
 
 @Component({
-  selector: 'kt-product-list',
-  templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss']
+  selector: 'kt-sub-category-list',
+  templateUrl: './sub-category-list.component.html',
+  styleUrls: ['./sub-category-list.component.scss']
 })
-export class ProductListComponent implements OnInit, OnDestroy{
-  dataSource: ProductDatasource;
-  displayedColumns: string[] = ["productImage","sku","productName", "category" ,"subCategory","weight","price","manufacturingCostPerGram","shipping",'hallmarkingPackaging',"action" ];
+export class SubCategoryListComponent implements OnInit, OnDestroy {
+  dataSource: SubCategoryDatasource;
+  displayedColumns: string[] = ["subCategoryName","categoryName", "action"];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("searchInput", { static: true }) searchInput: ElementRef;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   filterStatus: string = "";
   filterType: string = "";
-  selection = new SelectionModel<ProductModel>(true, []);
-  positionResult: ProductModel[] = [];
+  selection = new SelectionModel<SubCategoryModel>(true, []);
+  positionResult: SubCategoryModel[] = [];
   private subscriptions: Subscription[] = [];
-  selectedMemberData: ProductModel[] = [];
+  selectedMemberData: SubCategoryModel[] = [];
   positionData = {
     From: 1,
     To: 50,
@@ -54,7 +54,7 @@ export class ProductListComponent implements OnInit, OnDestroy{
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    private ProductService: ProductService,
+    private SubCategoryService: SubCategoryService,
     private toast: ToastrService,
     private ref: ChangeDetectorRef,
     public layoutUtilsService :LayoutUtilsService,
@@ -62,15 +62,15 @@ export class ProductListComponent implements OnInit, OnDestroy{
   ) {}
 
   ngOnInit() {
-
-    this.dataSource = new ProductDatasource(this.ProductService);
+  
+    this.dataSource = new SubCategoryDatasource(this.SubCategoryService);
     const entitiesSubscription = this.dataSource.entitySubject
       .pipe(skip(1), distinctUntilChanged())
       .subscribe(res => {
         console.log(res);
         this.positionResult = res;
-        if (res.length) {
-          this.noRecords = false;
+       if (res.length) {
+           this.noRecords = false;
           this.ref.detectChanges();
         } else {
           this.noRecords = true;
@@ -78,54 +78,65 @@ export class ProductListComponent implements OnInit, OnDestroy{
         }
       });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.getAllProductListData(
+    this.dataSource.getAllSubCategoryData(
       this.positionData.From,
       this.positionData.To,
       this.positionData.Text
     );
   }
-  
-  
-  editCategory(id) {
-    const productId = id;
-    const dialogRef = this.dialog.open(ProductEditComponent, {
+  addSubCategory() {
+    const dialogRef = this.dialog.open(SubCategoryAddEditComponent, {
+      data: { title: "SubCategoryListComponent", action: "add" },
+      width: "50vw"
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      this.loadSubCategoryPage();
+    });
+  }
+
+  editSubCategory(id) {
+    const subCategoryId = id;
+    const dialogRef = this.dialog.open(SubCategoryAddEditComponent, {
       data: {
-        productId,
-        title: "editCategoryComponent",
+        subCategoryId,
+        title: "SubCategoryListComponent",
         action: "edit"
       },
       width: "50vw"
     });
     dialogRef.afterClosed().subscribe(res => {
-      this.loadProductsPage();
+      this.loadSubCategoryPage();
     });
   }
 
 
-  deleteProduct(id) {
+  deleteSubCategory(id) {
 
-    const _title = 'Delete Product';
-    const _description = 'Are you sure to permanently delete this Product?';
-    const _waitDesciption = 'Product is deleting...';
-    const _deleteMessage = 'Product has been deleted';
+    const _title = 'Delete Sub-Category';
+    const _description = 'Are you sure to permanently delete this Sub-Category?';
+    const _waitDesciption = 'Sub-Category is deleting...';
+    const _deleteMessage = 'Sub-Category has been deleted';
+
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.ProductService.deleteProduct(id).subscribe(
+        this.SubCategoryService.deleteSubCategory(id).subscribe(
                   res => {
-                    this.toast.success("Success", "Category Deleted Successfully", {
+                    this.toast.success("Success", "Sub-Category Deleted Successfully", {
                       timeOut: 3000
                     });
-                    this.loadProductsPage();
+                    this.loadSubCategoryPage();
                   },
                   err => {
                     this.toast.error("Sorry", err["error"]["message"], {
                       timeOut: 3000
                     });
-                    this.loadProductsPage();
+                    this.loadSubCategoryPage();
                   }
                 );
+
       }
+
     });
   }
 
@@ -139,19 +150,19 @@ export class ProductListComponent implements OnInit, OnDestroy{
         distinctUntilChanged(),
         tap(() => {
           this.paginator.pageIndex = 0;
-          this.loadProductsPage();
+          this.loadSubCategoryPage();
         })
       )
       .subscribe();
     this.subscriptions.push(searchSubscription);
 
     const paginatorSubscriptions = merge(this.paginator.page)
-      .pipe(tap(() => this.loadProductsPage()))
+      .pipe(tap(() => this.loadSubCategoryPage()))
       .subscribe();
     this.subscriptions.push(paginatorSubscriptions);
   }
 
-  loadProductsPage() {
+  loadSubCategoryPage() {
     this.selection.clear();
     if (
       this.paginator.pageIndex < 0 ||
@@ -164,12 +175,12 @@ export class ProductListComponent implements OnInit, OnDestroy{
     this.positionData.From = from;
     this.positionData.To = to;
     this.positionData.Text = this.searchInput.nativeElement.value;
-    this.dataSource.getAllProductListData(
+    this.dataSource.getAllSubCategoryData(
       this.positionData.From,
       this.positionData.To,
       this.positionData.Text
     );
-    // Send positiondata to getAllCategoryData
+    // Send positiondata to getAllSubCategoryData
     this.selection.clear();
   }
   /*** On Destroy ***/
@@ -180,10 +191,11 @@ export class ProductListComponent implements OnInit, OnDestroy{
   /*** Load Customers List from service through data-source ***/
 
   clearSearch() {
-    this.dataSource.getAllProductListData(
+    this.dataSource.getAllSubCategoryData(
       this.positionData.From,
       this.positionData.To,
       ""
     );
   }
 }
+

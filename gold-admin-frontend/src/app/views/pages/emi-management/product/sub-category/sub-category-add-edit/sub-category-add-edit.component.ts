@@ -1,30 +1,30 @@
+
+
 import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
-import {AddCategoryService} from '../../../../../../core/emi-management/product/category/services/add-category.service';
+import {SubCategoryService} from '../../../../../../core/emi-management/product/sub-category/services/sub-category.service';
 
-
-type NewType = FormGroup;
 
 @Component({
-  selector: 'kt-add-edit-category',
-  templateUrl: './add-edit-category.component.html',
-  styleUrls: ['./add-edit-category.component.scss']
+  selector: 'kt-sub-category-add-edit',
+  templateUrl: './sub-category-add-edit.component.html',
+  styleUrls: ['./sub-category-add-edit.component.scss']
 })
-export class AddEditCategoryComponent implements OnInit {
+export class SubCategoryAddEditComponent implements OnInit {
 
 
     title: string;
-    addCategory: FormGroup;
+    addEditSubCategory: FormGroup;
     isMandatory: boolean = false;
-    metalListType:any;
+    categoryList:any;
 
     constructor(
-      public dialogRef: MatDialogRef<AddEditCategoryComponent>,
+      public dialogRef: MatDialogRef<SubCategoryAddEditComponent>,
       @Inject(MAT_DIALOG_DATA) public data: any, public fb: FormBuilder,
-      public addCategoryService: AddCategoryService,
+      public SubCategoryService: SubCategoryService,
       public toast: ToastrService , public ref: ChangeDetectorRef ,
     ) { }
 
@@ -32,24 +32,24 @@ export class AddEditCategoryComponent implements OnInit {
     console.log(this.data);
     this.formdata();
     this.setForm();
-    this.getMetalTypeList();
+    this.getCategoryList();
   }
   formdata() {
-    this.addCategory = this.fb.group({
-		categoryName: ['', Validators.required],
-    conversionFactor: ['', Validators.required],
-    metalTypeId : ['', Validators.required],
+    this.addEditSubCategory = this.fb.group({
+		categoryId: ['', Validators.required],
+    subCategoryName: ['', Validators.required],
+    
     });
   }
   setForm() {
     if (this.data.action === 'add') {
-      this.title = 'Add New Category';
+      this.title = 'Add New Sub Category';
 	  this.isMandatory = true ;
 
     } else if(this.data.action === 'edit') {
-      this.title = 'Edit Category';
+      this.title = 'Edit Sub Category';
       this.isMandatory = true;
-      this.getCategoryData(this.data.categoryId);
+      this.getSubCategoryData(this.data.subCategoryId);
     }
   }
 
@@ -62,12 +62,12 @@ export class AddEditCategoryComponent implements OnInit {
   }
 
   onSubmit(){
-		const categoryData = this.addCategory.value;
+		const subCategoryData = this.addEditSubCategory.value;
 	  if (this.data.action === 'add') {
 
-		this.addCategoryService.addNewCategory(categoryData).subscribe(
+		this.SubCategoryService.addNewSubCategory(subCategoryData).subscribe(
 			res=>{
-				this.toast.success("Success", "Category Added Successfully", {
+				this.toast.success("Success", "Sub Category Added Successfully", {
 					timeOut: 3000
 				  });
 				this.dialogRef.close();
@@ -80,9 +80,9 @@ export class AddEditCategoryComponent implements OnInit {
       }
 		)
 	} else if (this.data.action === 'edit'){
-		this.addCategoryService.editCategory(categoryData , this.data.categoryId).subscribe(
+		this.SubCategoryService.editSubCategory(subCategoryData , this.data.subCategoryId).subscribe(
 			res=>{
-				this.toast.success("Success", "Category Updated Successfully", {
+				this.toast.success("Success", "Sub Category Updated Successfully", {
 					timeOut: 3000
 				  });
 				this.dialogRef.close();
@@ -98,27 +98,24 @@ export class AddEditCategoryComponent implements OnInit {
   }
 
 
-  getMetalTypeList(){
-    this.addCategoryService.getMetalList().subscribe(
+  getCategoryList(){
+    this.SubCategoryService.getCategoryList().subscribe(
       res=>{
         console.log(res);
-        this.metalListType = res ;
+        this.categoryList = res ;
       }
     )
   }
 
-
-
   get controls() {
-    return this.addCategory.controls;
+    return this.addEditSubCategory.controls;
   }
-  getCategoryData(id){
-		this.addCategoryService.getSingleCategory(id).subscribe(
+
+  getSubCategoryData(id){
+		this.SubCategoryService.getSingleSubCategory(id).subscribe(
 		  res=>{
 			  console.log(res);
-			//   console.log(res[0]['categoryName']);
-			//   this.addCategory.setValue({categoryName : res['categoryName']});
-			this.addCategory.patchValue(res[0]);
+			  this.addEditSubCategory.patchValue(res[0]);
 			  this.ref.detectChanges();
 		  },
 		  err =>{
@@ -127,4 +124,5 @@ export class AddEditCategoryComponent implements OnInit {
 	  )
   }
 }
+
 
