@@ -44,7 +44,7 @@ import {ProductViewComponent} from './product/show-product/product-view/product-
 
 
 const routes: Routes = [
-		{path: '' ,
+		{ path: '' ,
 
 		component: EMIManagementComponent,
 
@@ -116,6 +116,7 @@ const routes: Routes = [
 		
 	],
 	declarations: [
+		EMIManagementComponent,
 		ProductEditComponent,
 		ProductListComponent,
 		ProductComponent,
