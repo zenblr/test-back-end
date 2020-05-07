@@ -1,17 +1,14 @@
 const models = require('../../models');
-const check = require('../../lib/checkLib');
-const {paginationWithFromTo} = require("../../utils/pagination");   
-const Sequelize = models.Sequelize;
-const Op = Sequelize.Op;
+const { paginationWithFromTo } = require("../../utils/pagination");
+
+
 // add logistic partner
 
 exports.addLogisticPartner = async (req, res) => {
     const { name } = req.body;
-    let logisticPartnerExist = await models.logisticPartner.findOne({ where: { name, isActive: true } });
-    if (!check.isEmpty(logisticPartnerExist)) {
-        return res.status(400).json({ message: 'logistic partner is not exist' });
-    }
-    let addLogisticPartner = await models.logisticPartner.create({ name });
+    let modifiedBy=req.userData.id;
+    let createdBy=req.userData.id;
+    let addLogisticPartner = await models.logisticPartner.create({ name,modifiedBy,createdBy });
     if (!addLogisticPartner) { return res.status(404).json({ message: 'logistic partner is not created' }) }
     return res.status(201).json({ message: 'logistic partner created' });
 
@@ -26,26 +23,22 @@ exports.readLogisticPartner = async (req, res) => {
         req.query.to
     );
     const searchQuery = {
-        [Op.or]: {
-            name: { [Op.iLike]: search + "%" },
-        },
-        isActive:true
+        name: { [Op.iLike]: search + "%" },
+        isActive: true
     }
 
-  let allLogisticPartner = await models.logisticPartner.findAll({
-    where: searchQuery,
-    offset: offset,
-    limit: pageSize  });
-  let count = await models.logisticPartner.count({
-    where: searchQuery
-  });
-
-    // let readLogisticPartnerData= await models.logisticPartner.findAll({ where: { isActive: true } },
-    // );
+    let allLogisticPartner = await models.logisticPartner.findAll({
+        where: searchQuery,
+        offset: offset,
+        limit: pageSize
+    });
+    let count = await models.logisticPartner.count({
+        where: searchQuery
+    });
     if (!allLogisticPartner[0]) {
         return res.status(404).json({ message: 'data not found' });
     }
-    return res.status(200).json({data:allLogisticPartner,count:count});
+    return res.status(200).json({ data: allLogisticPartner, count: count });
 }
 
 // get logistic partner by id
@@ -70,8 +63,8 @@ exports.updateLogisticPartner = async (req, res) => {
 // deactive logistic partner 
 
 exports.deactiveLogisticPartner = async (req, res) => {
-    const { id, isActive } = req.query;
-    let deactiveLogisticPartner = await models.logisticPartner.update({ isActive: isActive }, { where: { id } });
+    const { id } = req.query;
+    let deactiveLogisticPartner = await models.logisticPartner.update({ isActive: false }, { where: { id,isActive:true } });
     if (!deactiveLogisticPartner[0]) { return res.status(404).json({ message: 'logistic partner delete failed ' }) }
     return res.status(200).json({ message: 'Updated' })
 }

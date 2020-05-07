@@ -6,6 +6,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'name',
             allowNull: false,
         },
+        createdBy:{
+            type:DataTypes.INTEGER,
+            field:'created_by'
+        },
+        modifiedBy:{
+            type:DataTypes.INTEGER,
+            field:'modified_by'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
