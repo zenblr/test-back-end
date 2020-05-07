@@ -20,23 +20,34 @@ exports.addCceRating = async (req, res, next) => {
         return res.status(200).json({ message: `This customer rating is already exist` })
     }
     if (kycStatusFromCce !== "approved") {
+
+        if (reasonFromCce.length == 0) {
+            return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
+        }
+
         await sequelize.transaction(async (t) => {
             await models.customer.update(
-                { cceVerifiedBy: cceId },
+                { cceVerifiedBy: cceId, isKycSubmitted: true },
                 { where: { id: customerId }, transaction: t })
 
             await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, reasonFromCce, cceId }, { transaction: t })
         });
     } else {
+        reasonFromCce = ""
         await sequelize.transaction(async (t) => {
             await models.customer.update(
-                { isVerifiedByCce: true, cceVerifiedBy: cceId },
+                { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true },
                 { where: { id: customerId }, transaction: t })
 
             await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId }, { transaction: t })
         });
     }
     return res.status(200).json({ message: 'success' })
+}
+
+
+exports.updateRating = async(req, res, next) =>{
+    
 }
 
 

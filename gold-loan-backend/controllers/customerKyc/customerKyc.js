@@ -83,9 +83,9 @@ exports.getCustomerDetails = async (req, res, next) => {
         return res.status(404).json({ message: "Your Mobile number does not exist, please add lead first" });
     }
 
-    let status = await models.status.findOne({ where: { statusName: "approved" } })
+    let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
-        return res.status(404).json({ message: "Status approved is not there in status table" });
+        return res.status(404).json({ message: "Status confirm is not there in status table" });
     }
     let statusId = status.id
     let checkStatusCustomer = await models.customer.findOne({
@@ -93,7 +93,7 @@ exports.getCustomerDetails = async (req, res, next) => {
         attributes: ['firstName', 'lastName', 'panCardNumber']
     })
     if (check.isEmpty(checkStatusCustomer)) {
-        return res.status(400).json({ message: "Please proceed after approved your lead stage status" });
+        return res.status(400).json({ message: "Please proceed after confirm your lead stage status" });
     }
     return res.status(200).json({ message: "Success", customerInfo: checkStatusCustomer });
 }
@@ -103,9 +103,9 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
     let { firstName, lastName, mobileNumber, panCardNumber } = req.body
 
-    let status = await models.status.findOne({ where: { statusName: "approved" } })
+    let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
-        return res.status(404).json({ message: "Status approved is not there in status table" });
+        return res.status(404).json({ message: "Status confirm is not there in status table" });
     }
     let statusId = status.id
     let getCustomerInfo = await models.customer.findOne({
@@ -113,7 +113,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode']
     })
     if (check.isEmpty(getCustomerInfo)) {
-        return res.status(404).json({ message: "Your status is not approved" });
+        return res.status(404).json({ message: "Your status is not confirm" });
     }
 
     let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { customerId: getCustomerInfo.id } })
@@ -271,7 +271,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
     }
 
     await sequelize.transaction(async (t) => {
-        await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId }, transaction: t });
+        // await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId }, transaction: t });
 
         await models.customerKycPersonalDetail.update(customerKyc, { where: { customerId: customerId }, transaction: t })
 
@@ -289,6 +289,7 @@ exports.appliedKyc = async (req, res, next) => {
 
     let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
     if (roleName == "bm" || roleName == "cce") {
+        console.log(roleName)
 
         const { search, offset, pageSize } = paginationWithFromTo(
             req.query.search,
@@ -349,7 +350,7 @@ exports.appliedKyc = async (req, res, next) => {
                 }
             }],
             isActive: true,
-            isAppliedForKyc: true
+            isKycSubmitted: true
         };
         let includeArray = [
             {
