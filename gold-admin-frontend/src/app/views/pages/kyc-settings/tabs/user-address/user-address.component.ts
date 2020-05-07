@@ -25,7 +25,7 @@ export class UserAddressComponent implements OnInit {
   identityProofs = [];
   images = { identityProof: [], residential: [], permanent: [] };
   customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5 }
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
 
   constructor(
     private fb: FormBuilder,
@@ -49,19 +49,22 @@ export class UserAddressComponent implements OnInit {
       customerKycId: [this.customerDetails.customerKycId],
       identityTypeId: ['', [Validators.required]],
       identityProof: ['', [Validators.required]],
+      identityProofNumber: [''],
       address: this.fb.array([
         this.fb.group({
           addressType: ['permanent'],
           addressProofTypeId: ['', [Validators.required]],
+          addressProofNumber: [],
           address: ['', [Validators.required]],
           stateId: [this.customerDetails.stateId, [Validators.required]],
           cityId: [this.customerDetails.cityId, [Validators.required]],
-          pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+          pinCode: [this.customerDetails.pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
           addressProof: ['', [Validators.required]]
         }),
         this.fb.group({
           addressType: ['residential'],
           addressProofTypeId: ['', [Validators.required]],
+          addressProofNumber: [],
           address: ['', [Validators.required]],
           stateId: ['', [Validators.required]],
           cityId: ['', [Validators.required]],
@@ -191,6 +194,17 @@ export class UserAddressComponent implements OnInit {
       this.addressControls.at(1).reset();
       this.addressControls.at(1).enable();
 
+    }
+  }
+
+  removeImages(index, type) {
+    // console.log(index, type)
+    if (type == 'identityProof') {
+      this.images.identityProof.splice(index, 1);
+    } else if (type == 'residential') {
+      this.images.residential.splice(index, 1);
+    } else if (type == 'permanent') {
+      this.images.permanent.splice(index, 1);
     }
   }
 

@@ -27,7 +27,7 @@ import {
 	MatDividerModule,
 } from '@angular/material';
 // NgBootstrap
-import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule,NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // Perfect Scrollbar
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 // Core module
@@ -82,11 +82,10 @@ import { ModalHeaderComponent } from './components/modal/modal-header/modal-head
 import { ModalFooterComponent } from './components/modal/modal-footer/modal-footer.component';
 import { LoanSchemeComponent } from "../../views/pages/loan-settings/loan-scheme/loan-scheme.component";
 
-
 // spinner
-import { NgxSpinnerModule } from "ngx-spinner";
 import { UplodDataImageComponent } from './components/uplod-data-image/uplod-data-image.component';
 import { ImagePreviewDialogComponent } from './components/image-preview-dialog/image-preview-dialog.component';
+import { UserClassificationComponent } from './components/user-classification/user-classification.component';
 
 
 @NgModule({
@@ -142,6 +141,8 @@ import { ImagePreviewDialogComponent } from './components/image-preview-dialog/i
 		ImagePreviewDialogComponent,
 
 		LoanSchemeComponent,
+
+		UserClassificationComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -190,12 +191,13 @@ import { ImagePreviewDialogComponent } from './components/image-preview-dialog/i
 		UplodDataImageComponent,
 		ImagePreviewDialogComponent,
 		LoanSchemeComponent,
+		UserClassificationComponent
 
 		// spinner
-		NgxSpinnerModule,
-		NgbModule
+
 	],
 	imports: [
+		NgbModule,
 		CommonModule,
 		RouterModule,
 		FormsModule,
@@ -236,9 +238,8 @@ import { ImagePreviewDialogComponent } from './components/image-preview-dialog/i
 		NgbModule,
 
 		// spinner
-		NgxSpinnerModule
 	],
-	entryComponents:[
+	entryComponents: [
 		ImagePreviewDialogComponent
 	]
 })

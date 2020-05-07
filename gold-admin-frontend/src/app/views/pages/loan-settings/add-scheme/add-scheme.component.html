@@ -13,6 +13,17 @@
         <mat-tab-group #tabGroup>
             <mat-tab label="By Filling From">
                 <form [formGroup]="billingForm">
+                    <div class="row kt-margin-b-15">
+                        <div class="col-3">
+                            <p class="text-color font-weight-bold mandatory"> Scheme Name</p>
+                        </div>
+                        <div class="col-9">
+                            <input type="test" class="form-control" formControlName="schemeName"
+                                [class.isError]="billingForm.get('schemeName').touched && billingForm.get('schemeName').invalid"
+                                placeholder="Express Gold Loan">
+                        </div>
+                    </div>
+
                     <div class="row kt-margin-b-10">
                         <div class="col-3">
                             <p class="text-color font-weight-bold mandatory"> Enter Amount</p>
@@ -22,12 +33,12 @@
                                 <div class="col-6 amount">
                                     <input type="number" class="form-control" formControlName="schemeAmountStart"
                                         [class.isError]="billingForm.get('schemeAmountStart').touched && billingForm.get('schemeAmountStart').invalid"
-                                        placeholder="From e.g 1,00,000" >
+                                        placeholder="From e.g. 1 or 1.5">
                                 </div>
                                 <div class="col-6 amount">
                                     <input type="number" class="form-control" formControlName="schemeAmountEnd"
                                         [class.isError]="billingForm.get('schemeAmountEnd').touched && billingForm.get('schemeAmountEnd').invalid"
-                                        placeholder="From e.g 2,00,000" >
+                                        placeholder="To e.g. 2">
                                 </div>
                             </div>
                         </div>
@@ -101,10 +112,11 @@
                             <p class="text-color font-weight-bold mandatory">Select Partner Name</p>
                         </div>
                         <div class="col-9">
-                            <select name="" id="" class="form-control selectpicker" formControlName="partnerId"
-                                [class.isError]="billingForm.get('partnerId').touched && billingForm.get('partnerId').invalid"
-                                multiple>
-                                <option [value]="partner.id" *ngFor="let partner of partnerData">{{partner.name}}
+                            <select name="" id="" class="form-control" formControlName="partnerId"
+                                [class.isError]="billingForm.get('partnerId').touched && billingForm.get('partnerId').invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Partner</option>
+                                <option [value]="partner.id" *ngFor="let partner of partnerData">
+                                    {{partner.name | titlecase}}
                                 </option>
                             </select>
 
@@ -142,9 +154,10 @@
                         </div>
                         <div class="col-9">
                             <select name="" id="" class="form-control" formControlName="partnerId"
-                                [class.isError]="csvForm.get('partnerId').touched && csvForm.get('partnerId').invalid"
-                                multiple>
-                                <option [value]="partner.id" *ngFor="let partner of partnerData">{{partner.name}}
+                                [class.isError]="csvForm.get('partnerId').touched && csvForm.get('partnerId').invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Partner</option>
+                                <option [value]="partner.id" *ngFor="let partner of partnerData">
+                                    {{partner.name | titlecase}}
                                 </option>
                             </select>
 

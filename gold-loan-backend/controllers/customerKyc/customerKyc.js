@@ -6,6 +6,7 @@ const request = require("request");
 const { createReferenceCode } = require("../../utils/referenceCode");
 const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
+const { paginationWithFromTo } = require("../../utils/pagination");
 
 const check = require("../../lib/checkLib");
 
@@ -102,9 +103,9 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
     let { firstName, lastName, mobileNumber, panCardNumber } = req.body
 
-    let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    let status = await models.status.findOne({ where: { statusName: "approved" } })
     if (check.isEmpty(status)) {
-        return res.status(404).json({ message: "Status confirm is not there in status table" });
+        return res.status(404).json({ message: "Status approved is not there in status table" });
     }
     let statusId = status.id
     let getCustomerInfo = await models.customer.findOne({
@@ -112,7 +113,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode']
     })
     if (check.isEmpty(getCustomerInfo)) {
-        return res.status(404).json({ message: "Your status is not confirm" });
+        return res.status(404).json({ message: "Your status is not approved" });
     }
 
     let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { customerId: getCustomerInfo.id } })
@@ -121,6 +122,8 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     }
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+
+    let updateCustomer = await models.customer.update({ isAppliedForKyc: true }, { where: { id: getCustomerInfo.id } })
 
     let createCustomerKyc = await models.customerKycPersonalDetail.create({
         customerId: getCustomerInfo.id,
@@ -233,7 +236,7 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
         }, {
             model: models.customerKycAddressDetail,
             as: 'customerKycAddress',
-            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId','addressProofNumber'],
+            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId', 'addressProofNumber'],
             include: [{
                 model: models.state,
                 as: 'state'
@@ -258,13 +261,106 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 
 exports.submitAllKycInfo = async (req, res, next) => {
 
-    let { customerId, customerKycId } = req.body;
+    let { customerId, customerKycId, customerKyc, customerKycAddress, customerKycBank } = req.body;
 
     let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { id: customerKycId } })
     if (check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer kyc detailes is not filled." });
     }
-    let abc = await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId } })
+
+    await sequelize.transaction(async (t) => {
+        await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId }, transaction: t });
+
+        await models.customerKycPersonalDetail.update(customerKyc, { where: { customerId: customerId }, transaction: t })
+
+        await models.customerKycAddressDetail.bulkCreate(customerKycAddress, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProof", "addressProofTypeId", "addressProofNumber"] }, { transaction: t })
+
+        await models.customerKycBankDetail.bulkCreate(customerKycBank, { updateOnDuplicate: ["bankName", "bankBranchName", "accountType", "accountHolderName", "accountNumber", "ifscCode", "passbookProof"] }, { transaction: t })
+
+    })
     return res.status(200).json({ message: `successful`, customerId, customerKycId })
+
+}
+
+
+exports.appliedKyc = async (req, res, next) => {
+
+    let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
+    console.log(roleName)
+    const { search, offset, pageSize } = paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+        let query = {};
+        if (req.query.kycStatus) {
+            query.kycStatus = sequelize.where(
+                sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
+                {
+                    [Op.iLike]: req.query.kycStatus + "%",
+                }
+            );
+        }
+        if (req.query.cceRating) {
+            query.cceRating = sequelize.where(
+                sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
+                {
+                    [Op.iLike]: req.query.cceRating + "%",
+                }
+            );
+          }
+        const searchQuery = {
+            [Op.and]: [query, {
+                [Op.or]: {
+                    first_name: { [Op.iLike]: search + "%" },
+                    last_name: { [Op.iLike]: search + "%" },
+                    mobile_number: { [Op.iLike]: search + "%" },
+                    pan_card_number: { [Op.iLike]: search + "%" },
+                    kyc_status: sequelize.where(
+                        sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
+                        {
+                            [Op.iLike]: search + "%",
+                        }
+                    ),
+                    kyc_rating_cce: sequelize.where(
+                        sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
+                        {
+                            [Op.iLike]: search + "%",
+                        }
+                    )
+                }
+            }],
+            isActive: true,
+            isAppliedForKyc: true
+        };
+        let includeArray = [
+            {
+                model: models.customerKycPersonalDetail,
+                as: 'customerKyc',
+                attributes: ['createdAt']
+            },
+            {
+                model: models.customerKycClassification,
+                as: 'customerKycClassification',
+                attributes:['kycStatusFromCce','reasonFromCce','kycStatusFromBm','reasonFromBm']
+            }
+        ]
+
+        let getAppliedKyc = await models.customer.findAll({
+            where: searchQuery,
+            attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'panCardNumber', 'kycStatus'],
+            offset: offset,
+            limit: pageSize,
+            include: includeArray
+        })
+        let count = await models.customer.count({
+            where: searchQuery,
+            include: includeArray,
+        });
+        return res.status(200).json({ data: getAppliedKyc, count })
+    
+
+
+
 }
 

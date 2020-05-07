@@ -43,9 +43,9 @@ exports.updatePartner = async (req, res, next) => {
   let modifiedBy = req.userData.id;
 
 
-  let pId = name.slice(0, 3).toUpperCase() + "-" + partnerId;
+  // let pId = name.slice(0, 3).toUpperCase() + "-" + partnerId;
   let updatePartnerData = await models.partner.update(
-    { name, partnerId: pId, commission, modifiedBy },
+    { name, commission, modifiedBy },
     { where: { id: partnerId, isActive: true } }
   );
 

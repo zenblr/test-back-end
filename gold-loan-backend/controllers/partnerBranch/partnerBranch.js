@@ -138,10 +138,10 @@ exports.updateBranch = async (req, res, next) => {
     let modifiedBy = req.userData.id;
 
     const { partnerId, name, cityId, stateId, address, pinCode, isActive } = req.body;
-    let pId = name.slice(0, 3).toUpperCase() + '-' + branchId;
+    // let pId = name.slice(0, 3).toUpperCase() + '-' + branchId;
 
 
-    let branchData = await models.partnerBranch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pinCode, modifiedBy, isActive }, { where: { id: branchId, isActive: true } });
+    let branchData = await models.partnerBranch.update({ partnerId, name, cityId, stateId, address, pinCode, modifiedBy, isActive }, { where: { id: branchId, isActive: true } });
     if (branchData[0] == 0) {
         return res.status(404).json({ message: " Update failed" });
     }
