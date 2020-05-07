@@ -3,7 +3,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
-import {AddCategoryService} from '../../../../../../core/emi-management/product/services/add-category.service';
+import {ProductService} from '../../../../../../core/emi-management/product/product-list/services/product.service';
 
 @Component({
   selector: 'kt-product-edit',
@@ -20,7 +20,7 @@ export class ProductEditComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ProductEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, public fb: FormBuilder,
-    public addCategoryService: AddCategoryService,
+    public ProductService: ProductService,
     public toast: ToastrService , public ref: ChangeDetectorRef ,
   ) { }
 
@@ -62,7 +62,7 @@ onSubmit(){
   const productData = this.editProduct.value;
  
 
-  this.addCategoryService.editProduct(productData , this.data.categoryId).subscribe(
+  this.ProductService.editProduct(productData , this.data.categoryId).subscribe(
     res=>{
       this.toast.success("Success", "Product Updated Successfully", {
         timeOut: 3000
@@ -87,7 +87,7 @@ get controls() {
   return this.editProduct.controls;
 }
 getSingleProductData(id){
-  this.addCategoryService.getSingleProduct(id).subscribe(
+  this.ProductService.getSingleProduct(id).subscribe(
     res=>{
       console.log(res);
     //   console.log(res[0]['categoryName']);

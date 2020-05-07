@@ -18,6 +18,8 @@ import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsServi
 import { ActionNotificationComponent } from '../../partials/content/crud';
 // Components
 import { EMIManagementComponent } from './emi-management.component';
+import {SubCategoryListComponent} from './product/sub-category/sub-category-list/sub-category-list.component';
+import {SubCategoryAddEditComponent} from './product/sub-category/sub-category-add-edit/sub-category-add-edit.component';
 
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
@@ -31,7 +33,7 @@ import { CoreModule } from "../../../core/core.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ProductComponent } from './product/product.component';
 import { CategoryComponent } from './product/category/category.component';
-import { SubCategoryComponent } from './product/sub-category/sub-category.component';
+
 import { UploadProductComponent } from './product/upload-product/upload-product.component';
 import { UploadDesignComponent } from './product/upload-design/upload-design.component';
 import { BulkUploadReportListComponent } from './bulk-upload-report/bulk-upload-report-list/bulk-upload-report-list.component';
@@ -60,7 +62,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'sub-category',
-				component: SubCategoryComponent
+				component: SubCategoryListComponent
 			},
 			{
 				path: 'upload-product',
@@ -111,8 +113,10 @@ const routes: Routes = [
 	entryComponents: [
 		ActionNotificationComponent,
 		WalletPriceAddComponent,
+		AddEditCategoryComponent,
 		ProductEditComponent,
-		ProductViewComponent
+		ProductViewComponent,
+		SubCategoryAddEditComponent
 		
 	],
 	declarations: [
@@ -121,7 +125,7 @@ const routes: Routes = [
 		ProductListComponent,
 		ProductComponent,
 		CategoryComponent,
-		SubCategoryComponent,
+		
 		UploadProductComponent,
 		UploadDesignComponent,
 		BulkUploadReportListComponent,
@@ -131,6 +135,8 @@ const routes: Routes = [
 		WalletPriceAddComponent,
 		AddEditCategoryComponent,
 		ProductViewComponent,
+		SubCategoryAddEditComponent,
+		SubCategoryListComponent,
 
 	]
 })
