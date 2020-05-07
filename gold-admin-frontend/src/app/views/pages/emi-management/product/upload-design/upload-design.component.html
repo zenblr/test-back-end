@@ -3,7 +3,7 @@
         <div class="row row-no-padding row-col-separator-xl">
             <div class="col-12 text-center">
                 <h5 class="text-dark">To upload your design click here on Choose File.</h5>
-                <p class="my-3">
+                <p class="pt-4 pb-3">
                     <label for="file-upload" class="custom-file-upload font-weight-500">
                         Choose File
                     </label>
@@ -14,6 +14,15 @@
                         <strong class="displayError">Maximum Limit Is 50 Images</strong>
                     </span>
                 </p>
+                <div *ngIf="!files.length">
+                    <p>No files are choosen</p>
+                    <!-- <p>Design image parameters guideline for upload images:</p>
+                    <div>Size of image - Maximum 1 MB</div>
+                    <div>Image dimensions - 1500 pixels x 1500 pixels</div> -->
+                </div>
+                <div *ngIf="files.length">
+                    <p>{{files.length}} files are selected to upload</p>
+                </div>
                 <p>Note: The design name must be as per the SKUCODE of products, which are already uploaded for eg.
                     SKUCODE_1</p>
                 <p>
@@ -23,7 +32,7 @@
                     </button> -->
                     <kt-button [type]="'button'" [value]="'Upload'" class="kt-margin-r-10" (click)="uploadFiles()">
                     </kt-button>
-                    <kt-button [type]="'reset'" [value]="'Cancel'"></kt-button>
+                    <kt-button [type]="'reset'" [value]="'Cancel'" (click)="cancelFiles()"></kt-button>
                 </p>
             </div>
         </div>
