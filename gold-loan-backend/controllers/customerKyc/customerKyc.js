@@ -93,7 +93,7 @@ exports.getCustomerDetails = async (req, res, next) => {
         attributes: ['firstName', 'lastName', 'panCardNumber']
     })
     if (check.isEmpty(checkStatusCustomer)) {
-        return res.status(404).json({ message: "Please proceed after confirming your lead stage status" });
+        return res.status(400).json({ message: "Please proceed after approved your lead stage status" });
     }
     return res.status(200).json({ message: "Success", customerInfo: checkStatusCustomer });
 }
@@ -188,12 +188,12 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     let customer = await models.customer.findOne({ where: { id: customerId } })
 
     if (customer.mobileNumber == alternateMobileNumber) {
-        return res.status(200).json({ message: "Your alternate Mobile number is same as your previous Mobile bumber " });
+        return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
     }
     let findAlternateNumberExist = await models.customerKycPersonalDetail.findOne({ where: { alternateMobileNumber } })
 
     if (!check.isEmpty(findAlternateNumberExist)) {
-        return res.status(404).json({ message: "Your alternate Mobile number is already exist." });
+        return res.status(400).json({ message: "Your alternate Mobile number is already exist." });
     }
 
     let details = await models.customerKycPersonalDetail.update({
