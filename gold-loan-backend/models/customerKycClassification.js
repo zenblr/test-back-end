@@ -59,8 +59,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         kycStatusFromBm: {
             type: DataTypes.ENUM,
-            field: 'kyc_status_from_branch_manager',
+            field: 'kyc_status_from_bm',
             values: ['approved', 'pending', 'rejected'],
+            defaultValue: "pending"
         },
         reasonFromBm: {
             type: DataTypes.TEXT,

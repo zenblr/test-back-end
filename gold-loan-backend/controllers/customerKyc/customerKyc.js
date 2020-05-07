@@ -246,13 +246,15 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
             }, {
                 model: models.addressProofType,
                 as: 'addressProofType'
-            }]
+            }],
+            order: [["id", "ASC"]]
         }, {
             model: models.customerKycBankDetail,
             as: 'customerKycBank',
             attributes: ['id', 'customerKycId', 'customerId', 'bankName', 'bankBranchName', 'accountType', 'accountHolderName', 'accountNumber', 'ifscCode', 'passbookProof']
         }]
     })
+    console.log(customerKycReview)
 
     return res.status(200).json({ customerKycReview, customerId, customerKycId })
 
@@ -286,12 +288,14 @@ exports.submitAllKycInfo = async (req, res, next) => {
 exports.appliedKyc = async (req, res, next) => {
 
     let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
-    console.log(roleName)
-    const { search, offset, pageSize } = paginationWithFromTo(
-        req.query.search,
-        req.query.from,
-        req.query.to
-    );
+    if (roleName == "bm" || roleName == "cce") {
+
+        const { search, offset, pageSize } = paginationWithFromTo(
+            req.query.search,
+            req.query.from,
+            req.query.to
+        );
+
         let query = {};
         if (req.query.kycStatus) {
             query.kycStatus = sequelize.where(
@@ -308,7 +312,15 @@ exports.appliedKyc = async (req, res, next) => {
                     [Op.iLike]: req.query.cceRating + "%",
                 }
             );
-          }
+        }
+        if (req.query.bmRating) {
+            query.bmRating = sequelize.where(
+                sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
+                {
+                    [Op.iLike]: search + "%",
+                }
+            )
+        }
         const searchQuery = {
             [Op.and]: [query, {
                 [Op.or]: {
@@ -327,6 +339,12 @@ exports.appliedKyc = async (req, res, next) => {
                         {
                             [Op.iLike]: search + "%",
                         }
+                    ),
+                    kyc_rating_bm: sequelize.where(
+                        sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
+                        {
+                            [Op.iLike]: search + "%",
+                        }
                     )
                 }
             }],
@@ -342,9 +360,13 @@ exports.appliedKyc = async (req, res, next) => {
             {
                 model: models.customerKycClassification,
                 as: 'customerKycClassification',
-                attributes:['kycStatusFromCce','reasonFromCce','kycStatusFromBm','reasonFromBm']
+                attributes: ['kycStatusFromCce', 'reasonFromCce', 'kycStatusFromBm', 'reasonFromBm']
             }
         ]
+
+        if (roleName == "bm") {
+            searchQuery.isVerifiedByCce = true
+        }
 
         let getAppliedKyc = await models.customer.findAll({
             where: searchQuery,
@@ -358,9 +380,9 @@ exports.appliedKyc = async (req, res, next) => {
             include: includeArray,
         });
         return res.status(200).json({ data: getAppliedKyc, count })
-    
-
-
+    }else{
+        return res.status(400).json({message: `You do not have authority.`})
+    }
 
 }
 
