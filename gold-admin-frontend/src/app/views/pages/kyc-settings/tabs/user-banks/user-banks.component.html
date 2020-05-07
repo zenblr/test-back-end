@@ -14,10 +14,12 @@
                                         <input type="text" class="form-control" placeholder="Enter Bank Name"
                                             formControlName="bankName"
                                             [class.isError]="controls.bankName.touched && controls.bankName.invalid" />
+                                        <mat-error
+                                            *ngIf="controls.bankName.errors?.required && controls.bankName.touched">
+                                            Required field
+                                        </mat-error>
                                     </div>
-                                    <mat-error *ngIf="controls.bankName.errors?.required && controls.bankName.touched">
-                                        Required field
-                                    </mat-error>
+
                                 </div>
                             </div>
                             <div class="col-6">
