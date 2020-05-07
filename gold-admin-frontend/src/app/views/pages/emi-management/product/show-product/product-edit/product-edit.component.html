@@ -1,0 +1,127 @@
+
+<div class="kt-portlet">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-form">
+            <form [formGroup]="addCategory">
+
+                <!-- <div class="kt-portlet__body-progress" *ngIf="viewLoading">
+                    <mat-spinner [diameter]="20"></mat-spinner>
+                </div> -->
+
+                <div class="col-lg-12 kt-margin-bottom-20-mobile">
+
+                    <div class="row">
+                            images
+                    </div>
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Select SubCategory</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="subCategoryId" 
+                                [class.isError]="controls.subCategoryId.touched && controls.subCategoryId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Metal Type</option>
+
+                                <option *ngFor="let metal of metalListType" [value]="metal.id">
+                                    {{metal.metalType}}
+                                </option>
+                            </select>
+                            <mat-error *ngIf="controls.subCategoryId.touched && controls.subCategoryId.errors?.required">
+                                Required field</mat-error>
+                        </div>
+                    </div>
+
+                    <!-- <div class="row">
+                      
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">SKU Code</label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="sku" autocomplete="off"
+                                placeholder="Enter SKU Code"
+                                [class.isError]="controls.sku.touched && controls.sku.invalid">
+                            <mat-error *ngIf="controls.sku.touched && controls.sku.errors?.required">Required
+                                field</mat-error>
+                        </div>
+                    </div> -->
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Product Name</label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="productName" autocomplete="off"
+                                placeholder="Enter Conversion Factor"
+                                [class.isError]="controls.productName.touched && controls.productName.invalid">
+                            <mat-error *ngIf="controls.productName.touched && controls.productName.errors?.required">Required
+                                field</mat-error>
+                        </div>
+                    </div>
+
+
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Weight</label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="weight" autocomplete="off"
+                                placeholder="Enter Conversion Factor"
+                                [class.isError]="controls.weight.touched && controls.weight.invalid">
+                            <mat-error *ngIf="controls.weight.touched && controls.weight.errors?.required">Required
+                                field</mat-error>
+                        </div>
+                    </div>
+
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Manufacturing cost/gram</label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="manufacturingCostPerGram" autocomplete="off"
+                                placeholder="Enter Conversion Factor"
+                                [class.isError]="controls.manufacturingCostPerGram.touched && controls.manufacturingCostPerGram.invalid">
+                            <mat-error *ngIf="controls.manufacturingCostPerGram.touched && controls.manufacturingCostPerGram.errors?.required">Required
+                                field</mat-error>
+                        </div>
+                    </div>
+
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Hallmark </label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="hallmarkingPackaging" autocomplete="off"
+                                placeholder="Enter Conversion Factor"
+                                [class.isError]="controls.hallmarkingPackaging.touched && controls.hallmarkingPackaging.invalid">
+                            <mat-error *ngIf="controls.hallmarkingPackaging.touched && controls.hallmarkingPackaging.errors?.required">Required
+                                field</mat-error>
+                        </div>
+                    </div>
+
+                    <div class="row kt-padding-t-15">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">shipping </label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="shipping" autocomplete="off"
+                                placeholder="Enter Conversion Factor"
+                                [class.isError]="controls.shipping.touched && controls.shipping.invalid">
+                            <mat-error *ngIf="controls.shipping.touched && controls.shipping.errors?.required">Required
+                                field</mat-error>
+                        </div>
+                    </div>
+
+                   
+                </div>
+            </form>
+        </div>
+    </div>
+    <kt-portlet-footer *ngIf="data.action != 'view'">
+        <div class="p-3">
+            <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="data.action">
+            </kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>
