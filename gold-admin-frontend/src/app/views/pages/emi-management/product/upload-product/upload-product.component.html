@@ -1,1 +1,54 @@
-<p>upload-product works!</p>
+<kt-portlet>
+    <kt-portlet-header [class]="'kt-portlet__head--lg'">
+        <ng-container ktPortletTitle>
+            <h4 class="ComponentTitle">
+                <span>Bulk Upload Product</span>
+            </h4>
+        </ng-container>
+        <ng-container ktPortletTools>
+            <mat-form-field class="mat-form-field-fluid searchbar example-form-field">
+                <input matInput placeholder="Search Category" #searchInput autocomplete="off">
+            </mat-form-field>&nbsp;&nbsp;
+            <button  class="btn primaryHeaderBtn" (click)="showReportbutton()">Show Report</button> &nbsp; &nbsp; &nbsp; &nbsp;
+        </ng-container>
+    </kt-portlet-header>
+
+    <kt-portlet-body [class]="'kt-portlet__body--fit d-flex align-items-center justify-content-center'">
+        <div class="row row-no-padding row-col-separator-xl">
+            <div class="col-12 text-center">
+                <h5 class="text-dark pb-4">To upload your Worksheet Here click on Attach Excel File.</h5>
+
+                <mat-icon aria-hidden="false" color="primary" aria-label="Example save icon">save</mat-icon>
+                <p style="color:blue;display:inline-block;margin-bottom: 10px;"   (click)="exportAsXLSX()">Download
+                    And Check Format Of Sample File
+                </p>
+
+                <p class="pt-3 pb-1">
+                    <label for="file-upload" class="custom-file-upload font-weight-500">
+                        Attach Excel File
+                    </label>
+                    <input id="file-upload" type="file" accept=".csv"   (change)="onSuccess($event)" />
+
+                    <!-- <input type="file" multiple (change)="getFileDetails($event)" id="designs_input" accept="image/*"> -->
+                  
+                </p>
+                <div *ngIf="!files.length">
+                    <p>No files are choosen</p>
+                    <!-- <p>Design image parameters guideline for upload images:</p>
+                    <div>Size of image - Maximum 1 MB</div>
+                    <div>Image dimensions - 1500 pixels x 1500 pixels</div> -->
+                </div>
+                <div *ngIf="files.length">
+                    <p>{{files.length}} files are selected to upload</p>
+                </div>
+               
+                <p>
+                   
+                    <kt-button [type]="'button'" [value]="'Upload'" class="kt-margin-r-10" (click)="uploadFiles()">
+                    </kt-button>
+                    <kt-button [type]="'reset'" [value]="'Cancel'" (click)="cancelFiles()"></kt-button>
+                </p>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>
