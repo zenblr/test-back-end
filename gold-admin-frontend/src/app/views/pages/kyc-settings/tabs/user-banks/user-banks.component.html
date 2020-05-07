@@ -149,8 +149,10 @@
 
                                     <div *ngIf="passBookImage.length > 0" class="">
                                         <div class="d-inline-block img-container kt-margin-r-15"
-                                            *ngFor="let proof of passBookImage; index as i;">
+                                            *ngFor="let proof of passBookImage; index as idx;">
                                             <img class="fetched-image" *ngIf="passBookImage" [src]="proof">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon" (click)="removeImages(idx);">
                                         </div>
                                     </div>
 

@@ -401,7 +401,7 @@
                 </div>
             </form>
 
-            <form *ngIf="cities0" [formGroup]="customerKycAddressTwo">
+            <form [formGroup]="customerKycAddressTwo">
                 <!-- Address Details -->
 
                 <div class="row kt-margin-t-20">
@@ -451,7 +451,7 @@
                                 <select formControlName="cityId" class="form-control"
                                     [class.isError]="customerKycAddressTwo.controls.cityId.touched && customerKycAddressTwo.controls.cityId.invalid">
                                     <option value="" selected disabled> Select City
-                                    </option>customerKycAddressOne
+                                    </option>
                                     <option *ngFor="let city of cities1" [value]="city.id">
                                         {{city.name}}
                                     </option>
@@ -492,7 +492,7 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="Pin Code" formControlName="pinCode"
-                                    value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}"
+                                    value="{{ data.customerKycReview.customerKycAddress[1].pinCode }}"
                                     [class.isError]="customerKycAddressTwo.controls.pinCode.touched && customerKycAddressTwo.controls.pinCode.invalid" />
                                 <mat-error
                                     *ngIf="customerKycAddressTwo.controls.pinCode.errors?.required && customerKycAddressTwo.controls.pinCode.touched">
