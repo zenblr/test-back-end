@@ -18,7 +18,6 @@ import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsServi
 import { ActionNotificationComponent } from '../../partials/content/crud';
 // Components
 import { EMIManagementComponent } from './emi-management.component';
-import {AddEditCategoryComponent} from '../../../views/pages/emi-management/product/category/add-edit-category/add-edit-category.component';
 
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
@@ -35,17 +34,20 @@ import { CategoryComponent } from './product/category/category.component';
 import { SubCategoryComponent } from './product/sub-category/sub-category.component';
 import { UploadProductComponent } from './product/upload-product/upload-product.component';
 import { UploadDesignComponent } from './product/upload-design/upload-design.component';
-import { BulkUploadReportComponent } from './bulk-upload-report/bulk-upload-report.component';
+import { BulkUploadReportListComponent } from './bulk-upload-report/bulk-upload-report-list/bulk-upload-report-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ConfigDetailsComponent } from './config-details/config-details.component';
 import { WalletPriceListComponent } from './config-details/wallet-price/wallet-price-list/wallet-price-list.component';
 import { WalletPriceAddComponent } from './config-details/wallet-price/wallet-price-add/wallet-price-add.component';
-import { ProductViewComponent } from './product/show-product/product-view/product-view.component';
+import { AddEditCategoryComponent } from './product/category/add-edit-category/add-edit-category.component';
+import {ProductViewComponent} from './product/show-product/product-view/product-view.component';
+
 
 const routes: Routes = [
-	{
-		path: '',
+		{path: '' ,
+
 		component: EMIManagementComponent,
+
 		children: [
 			{ path: '', redirectTo: 'products', pathMatch: 'full' },
 			{
@@ -70,14 +72,14 @@ const routes: Routes = [
 			},
 			{
 				path: 'bulkUploadReport',
-				component: BulkUploadReportComponent
+				component: BulkUploadReportListComponent
 			},
 			{
 				path: 'wallet-price',
 				component: WalletPriceListComponent
 			},
 		]
-	}
+		} 
 ];
 
 @NgModule({
@@ -108,13 +110,12 @@ const routes: Routes = [
 	],
 	entryComponents: [
 		ActionNotificationComponent,
-		AddEditCategoryComponent,
 		WalletPriceAddComponent,
 		ProductEditComponent,
-		ProductViewComponent,
+		ProductViewComponent
+		
 	],
 	declarations: [
-		EMIManagementComponent,
 		ProductEditComponent,
 		ProductListComponent,
 		ProductComponent,
@@ -122,7 +123,7 @@ const routes: Routes = [
 		SubCategoryComponent,
 		UploadProductComponent,
 		UploadDesignComponent,
-		BulkUploadReportComponent,
+		BulkUploadReportListComponent,
 		DashboardComponent,
 		ConfigDetailsComponent,
 		WalletPriceListComponent,

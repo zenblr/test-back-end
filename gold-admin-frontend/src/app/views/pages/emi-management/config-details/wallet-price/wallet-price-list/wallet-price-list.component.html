@@ -1,4 +1,4 @@
-<div class="row" *ngIf="walletPrice$ | async as walletPrice">
+<div class="row" *ngIf="walletPrice">
     <div class="col-12">
         <div *ngIf="walletPrice;then showData;else dataNotFound"></div>
         <ng-template #showData>

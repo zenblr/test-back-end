@@ -115,7 +115,9 @@ export function hljsLanguages(): HighlightLanguage[] {
 		MatProgressSpinnerModule,
 		InlineSVGModule.forRoot(),
 		ThemeModule,
-		ToastrModule.forRoot(),
+		ToastrModule.forRoot({
+			timeOut: 2000,
+		}),
 		NgHttpLoaderModule.forRoot()
 	],
 	exports: [],

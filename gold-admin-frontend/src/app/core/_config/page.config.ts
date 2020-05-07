@@ -88,6 +88,14 @@ export class PageConfig {
 				page: { title: 'Wallet Price', desc: '' }
 			},
 		},
+		'loan-management': {
+			'loan-calculator': {
+				page: { title: 'Loan Calculator', desc: '' }
+			},
+			'loan-application-form': {
+				page: { title: 'Add New Loan', desc: '' }
+			}
+		},
 	};
 
 	public get configs() {

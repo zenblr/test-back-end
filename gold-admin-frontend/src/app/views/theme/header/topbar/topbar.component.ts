@@ -166,6 +166,10 @@ export class TopbarComponent implements OnInit {
 			this.type2 = 'button';
 			this.value2 = 'Edit Wallet Price';
 		}
+		if (this.path == 'bulkUploadReport') {
+			this.showfilter = true;
+			this.showInput = true;
+		}
 	}
 
 	action(event: Event) {
