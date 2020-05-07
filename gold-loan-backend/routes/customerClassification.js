@@ -1,15 +1,15 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
-const { addAppraisalRating, readKycSubmmitedCustomer, addBranchManagerRating, readFirstStageVerifiedCustomer, readAllCustomerClassification, readAllCustomerClassificationById, updateAppraisalRating } = require('../controllers/customerClassification/customerClassification')
+const { addCceRating, readKycSubmmitedCustomer, addBranchManagerRating, readFirstStageVerifiedCustomer, readAllCustomerClassification, readAllCustomerClassificationById, updateCceRating } = require('../controllers/customerClassification/customerClassification')
 
 const checkAuth = require('../middleware/checkAuth');
 
-route.post('/appraisal', checkAuth, wrapper(addAppraisalRating));
+route.post('/cce', checkAuth, wrapper(addCceRating));
 
-route.put('/appraisal/:id', checkAuth, wrapper(updateAppraisalRating));
+route.put('/cce/:id', checkAuth, wrapper(updateCceRating));
 
-route.get('/appraisal', checkAuth, wrapper(readKycSubmmitedCustomer));
+route.get('/cce', checkAuth, wrapper(readKycSubmmitedCustomer));
 
 route.post('/branch-manager', checkAuth, wrapper(addBranchManagerRating));
 

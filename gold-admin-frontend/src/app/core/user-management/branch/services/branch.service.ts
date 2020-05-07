@@ -12,22 +12,22 @@ export class BranchService {
   constructor(private http: HttpClient) { }
 
   addBranch(data): Observable<any> {
-    return this.http.post<any>(`/api/branch`, data);
+    return this.http.post<any>(`/api/partner-branch`, data);
   }
 
   getAllBranch(from?, to?, search?, fromDate?, toDate?, userId?): Observable<any> {
-    return this.http.get<any>(`/api/branch?search=${search}&from=${from}&to=${to}`);
+    return this.http.get<any>(`/api/partner-branch?search=${search}&from=${from}&to=${to}`);
   }
 
   getBranchById(id): Observable<any> {
-    return this.http.get<any>(`/api/branch/${id}`);
+    return this.http.get<any>(`/api/partner-branch/${id}`);
   }
 
   updateBranch(id, data): Observable<any> {
-    return this.http.put<any>(`/api/branch/${id}`, data);
+    return this.http.put<any>(`/api/partner-branch/${id}`, data);
   }
 
   deleteBranch(id): Observable<any> {
-    return this.http.delete<any>(`/api/branch?id=${id}&isActive=${false}`);
+    return this.http.delete<any>(`/api/partner-branch?id=${id}&isActive=${false}`);
   }
 }

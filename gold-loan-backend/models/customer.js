@@ -76,11 +76,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM,
             field: 'kyc_status',
             defaultValue: "pending",
-            values: ['confirm', 'pending', 'complete', 'closed']
+            values: ['approved', 'pending', 'rejected']
         },
         isKycSubmitted: {
             type: DataTypes.BOOLEAN,
             field: 'is_kyc_submitted',
+            defaultValue: false
+        },
+        isAppliedForKyc: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_applied_for_kyc',
             defaultValue: false
         },
         isVerifiedByCce: {

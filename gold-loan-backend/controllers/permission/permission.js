@@ -58,10 +58,40 @@ exports.readPermission = async (req, res, next) => {
             ]
         }
     )
+
+
+    let permissions=[];
+    allPermissions.map(data=>{
+      console.log(data)
+      data.entity.map(entity => {
+        let isExist=entityId.filter(id=>id==entity.dataValues.id)
+        if(isExist.length!=0){
+            entity.dataValues.isSelected=true
+                } else {
+            entity.dataValues.isSelected=false
+        }
+        entity.permission.map(permission => {
+            let isExist=permissionId.filter(id=>id==permission.id)
+            if(isExist.length!=0){
+                      permission.dataValues.isSelected=true
+                      entitySelected=true;
+                    } else {
+                        permission.dataValues.isSelected=false
+            }
+        })
+        
+      })
+      permissions.push(data);
+        return permissions;
+    })
+
+
+
+
     if(!allPermissions){
         res.status(404).json({"message": "data not found"});
     } else {
-        res.status(200).json({moduleId, entityId, permissionId, allPermissions});
+        res.status(200).json({ permissions});
     }
 }
 

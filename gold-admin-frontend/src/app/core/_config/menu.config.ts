@@ -112,47 +112,6 @@ export class MenuConfig {
 					src: 'assets/media/aside-icons/icons-04.svg',
 					page: '/user-management',
 
-					// submenu: [
-					// 	// {
-					// 	// 	title: 'Upload Banner',
-					// 	// 	page: '/upload-data/upload-banner',
-					// 	// 	
-					// 	// },
-					// 	{
-					// 		title: 'Partner Details',
-					// 		page: '/user-management/partner',
-
-					// 	},
-					// 	{
-					// 		title: 'Branch Details',
-					// 		page: '/user-management/branch',
-
-					// 	},
-					// 	{
-					// 		title: 'Internal User Details',
-					// 		page: '/user-management/internal-user-details',
-
-					// 	}, {
-					// 		title: 'Assign Appraiser',
-					// 		page: '/user-management/assign-appraiser',
-
-					// 	},
-					// 	{
-					// 		title: 'Roles and permissions',
-					// 		page: '/user-management/roles',
-
-					// 	},
-					// 	// {
-					// 	// 	title: 'Upload Lender Banner',
-					// 	// 	// page: '/material/form-controls/autocomplete',
-					// 	// 	
-					// 	// },
-					// 	// {
-					// 	// 	title: 'Upload Scheme',
-					// 	// 	// page: '/material/form-controls/autocomplete',
-					// 	// 	
-					// 	// },
-					// ]
 				},
 				{
 					title: 'Lead Management',
@@ -179,19 +138,19 @@ export class MenuConfig {
 					submenu: [
 						{
 							title: 'Loan Calculator',
-							page: '/loan-calculator'
+							page: '/loan-management/loan-calculator'
 						},
 						{
 							title: 'Loan Application Form',
-							page: '/loan-application-form'
+							page: '/loan-management/loan-application-form'
 						},
 						{
 							title: 'Applied Loan',
-							page: '/applied-loan'
+							page: '/loan-management/applied-loan'
 						},
 						{
 							title: 'Package Image Upload',
-							page: '/package-image-upload'
+							page: '/loan-management/package-image-upload'
 						},
 
 					]

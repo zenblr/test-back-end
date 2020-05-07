@@ -6,8 +6,8 @@
 
 					<div class="row kt-padding-t-15">
 						<!-- Mobile -->
-						<div class="col-4 align-self-center">
-							<label  class="mandatory  text-color font-weight-500">Mobile Number</label>
+						<div class="col-4 align-self-center form-label">
+							<label class="mandatory  text-color font-weight-500">Mobile Number</label>
 						</div>
 
 						<div class="col-8">
@@ -88,8 +88,8 @@
 					</div>
 
 					<div class="row kt-padding-t-15">
-						<div class="col-4 align-self-center">
-							<label  class="  text-color font-weight-500">Full Name</label>
+						<div class="col-4 align-self-center form-label">
+							<label class="mandatory  text-color font-weight-500">Full Name</label>
 						</div>
 
 						<div class="col-4">
@@ -97,7 +97,7 @@
 								class="form-control" formControlName="firstName" [class.isError]="
 									controls.firstName.touched &&
 									controls.firstName.invalid
-								" [readOnly]="true" />
+								" [readOnly]="true" style="text-transform: capitalize;" />
 							<mat-error *ngIf="
 									controls.firstName.errors?.required &&
 									controls.firstName.touched
@@ -110,7 +110,7 @@
 								class="form-control" formControlName="lastName" [class.isError]="
 									controls.lastName.touched &&
 									controls.lastName.invalid
-								" [readOnly]="true" />
+								" [readOnly]="true" style="text-transform: capitalize;" />
 
 							<mat-error *ngIf="
 									controls.lastName.errors?.required &&
@@ -125,17 +125,16 @@
 
 					<div class="row kt-padding-t-15">
 						<!-- PAN -->
-						<div class="col-4 align-self-center">
-							<label  class="mandatory  text-color font-weight-500">Pan Number</label>
+						<div class="col-4 align-self-center form-label">
+							<label class="mandatory  text-color font-weight-500">PAN</label>
 						</div>
 
 						<div class="col">
 							<!-- <mat-form-field appearance="outline" class="w-100"> -->
 							<input class="form-control" formControlName="panCardNumber" autocomplete="off"
-								placeholder="PAN Number" [class.isError]="
-									controls.panCardNumber.touched &&
-									controls.panCardNumber.invalid
-								" />
+								placeholder="PAN"
+								[class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+								maxlength="10" style="text-transform: uppercase;" />
 							<mat-error *ngIf="
 									controls.panCardNumber.errors?.required &&
 									controls.panCardNumber.touched
