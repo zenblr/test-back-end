@@ -250,6 +250,10 @@ exports.getAllCustomers = async (req, res, next) => {
       model: models.status,
       as: "status",
     },
+    {
+      model:models.internalBranch,
+      as:"internalBranch"
+    }
   ]
 
   let allCustomers = await models.customer.findAll({
