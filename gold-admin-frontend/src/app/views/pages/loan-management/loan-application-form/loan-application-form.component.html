@@ -10,16 +10,16 @@
                         <kt-kyc-details (kycEmit)="kycEmit($event)" [invalid]="invalid.kyc" [disable]="disabledForm"></kt-kyc-details>
                     </mat-tab>
                     <mat-tab label="Bank Details">
-                        <kt-bank-details [invalid]="invalid.bank" [disable]="disabledForm"></kt-bank-details>
+                        <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [invalid]="invalid.bank" [disable]="disabledForm"></kt-bank-details>
                     </mat-tab>
                     <mat-tab label="Nominee Details">
                         <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [invalid]="invalid.nominee" [disable]="disabledForm"></kt-nominee-details>
                     </mat-tab>
                     <mat-tab label="Final Interest Calculator">
-                        <kt-final-interest-amount [invalid]="invalid.intrest" [disable]="disabledForm"></kt-final-interest-amount>
+                        <kt-final-interest-amount (interestFormEmit)="interestFormEmit($event)" [invalid]="invalid.intrest" [disable]="disabledForm"></kt-final-interest-amount>
                     </mat-tab>
                     <mat-tab label="Approval">
-                        <kt-approval [invalid]="invalid.approval" [disable]="disabledForm"></kt-approval>
+                        <kt-approval (approvalFormEmit)="approvalFormEmit($event)" [invalid]="invalid.approval" [disable]="disabledForm"></kt-approval>
                     </mat-tab>
                 </mat-tab-group>
             </div>

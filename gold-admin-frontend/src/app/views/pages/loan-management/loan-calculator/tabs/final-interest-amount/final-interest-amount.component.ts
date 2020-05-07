@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output,AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -6,11 +6,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './final-interest-amount.component.html',
   styleUrls: ['./final-interest-amount.component.scss']
 })
-export class FinalInterestAmountComponent implements OnInit {
+export class FinalInterestAmountComponent implements OnInit,AfterViewInit {
   
   finalInterestForm: FormGroup;
   @Input() invalid;
   @Input() disable;
+  @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
+
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -31,6 +33,13 @@ export class FinalInterestAmountComponent implements OnInit {
       finalNetWeight: [, [Validators.required]],
       interestRate: [, [Validators.required]],
       currentLtvAmount: [, [Validators.required]],
+    })
+    this.interestFormEmit.emit(this.finalInterestForm)
+  }
+
+  ngAfterViewInit(){
+    this.finalInterestForm.valueChanges.subscribe(()=>{
+      this.interestFormEmit.emit(this.finalInterestForm)
     })
   }
 
