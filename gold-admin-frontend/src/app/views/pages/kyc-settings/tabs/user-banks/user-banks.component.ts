@@ -86,6 +86,10 @@ export class UserBanksComponent implements OnInit {
 
   }
 
+  removeImages(index) {
+    this.passBookImage.splice(index, 1);
+  }
+
   get controls() {
     return this.bankForm.controls;
   }

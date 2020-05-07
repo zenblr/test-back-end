@@ -60,7 +60,7 @@ export class UserReviewComponent implements OnInit {
   //       "panCardNumber": "asass1234a",
   //       "gender": "f",
   //       "martialStatus": "married",
-  //       "occupationId": { id: 1, name: 'B.E' }, // occupation.name
+  //       "occupation": { id: 1, name: 'B.E' }, // occupation.name
   //       "identityType": { id: 1, name: "passport" },  //identityType.name
   //       "identityProof": [
   //         "http://173.249.49.7:8000/uploads/images/1588052018310.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
@@ -90,7 +90,7 @@ export class UserReviewComponent implements OnInit {
   //         ],
   //         "createdAt": "2020-04-28T05:35:06.709Z",
   //         "updatedAt": "2020-04-28T05:35:06.709Z",
-  //         "addressProofTypeId": { id: 4, name: "voter Id" }, // addressProofType.name
+  //         "addressProofType": { id: 4, name: "voter Id" }, // addressProofType.name
   //         "addressProofNumber": "qwewq123"
   //       },
   //       {
@@ -100,14 +100,14 @@ export class UserReviewComponent implements OnInit {
   //         "addressType": "residential",
   //         "address": "assa1212",
   //         "state": { id: 5, name: "Bihar" },
-  //         "city": { id: 448, name: "Amarpur" },
-  //         "pinCode": 122121,
+  //         "city": { id: 454, name: "Bagaha" },
+  //         "pinCode": 232323,
   //         "addressProof": [
   //           "http://173.249.49.7:8000/uploads/images/1588052060956.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
   //         ],
   //         "createdAt": "2020-04-28T05:35:06.709Z",
   //         "updatedAt": "2020-04-28T05:35:06.709Z",
-  //         "addressProofTypeId": { id: 6, name: "aadhar card" },
+  //         "addressProofType": { id: 6, name: "aadhar card" },
   //         "addressProofNumber": "qwewq123"
   //       }
   //     ],
@@ -175,11 +175,11 @@ export class UserReviewComponent implements OnInit {
       customerId: this.data.customerKycReview.customerKycAddress[0].customerId,
       addressType: [this.data.customerKycReview.customerKycAddress[0].addressType, [Validators.required]],
       address: [this.data.customerKycReview.customerKycAddress[0].address, [Validators.required]],
-      stateId: [this.data.customerKycReview.customerKycAddress[0].city.id, [Validators.required]],
+      stateId: [this.data.customerKycReview.customerKycAddress[0].state.id, [Validators.required]],
       cityId: [this.data.customerKycReview.customerKycAddress[0].city.id, [Validators.required]],
       pinCode: [this.data.customerKycReview.customerKycAddress[0].pinCode, [Validators.required]],
       addressProof: [this.data.customerKycReview.customerKycAddress[0].addressProof, [Validators.required]],
-      addressProofTypeId: [this.data.customerKycReview.customerKycAddress[0].addressProofTypeId.id, [Validators.required]],
+      addressProofTypeId: [this.data.customerKycReview.customerKycAddress[0].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[0].addressProofNumber, [Validators.required]],
 
     })
@@ -193,8 +193,8 @@ export class UserReviewComponent implements OnInit {
       cityId: [this.data.customerKycReview.customerKycAddress[1].city.id, [Validators.required]],
       pinCode: [this.data.customerKycReview.customerKycAddress[1].pinCode, [Validators.required]],
       addressProof: [this.data.customerKycReview.customerKycAddress[1].addressProof, [Validators.required]],
-      addressProofTypeId: [this.data.customerKycReview.customerKycAddress[0].addressProofTypeId.id, [Validators.required]],
-      addressProofNumber: [this.data.customerKycReview.customerKycAddress[0].addressProofNumber, [Validators.required]],
+      addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
+      addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
     }),
       this.customerKyc = this.fb.group({
         profileImage: [this.data.customerKycReview.customerKyc.profileImage, [Validators.required]],
@@ -203,7 +203,7 @@ export class UserReviewComponent implements OnInit {
         spouseName: [this.data.customerKycReview.customerKyc.spouseName, [Validators.required]],
         martialStatus: [this.data.customerKycReview.customerKyc.martialStatus, [Validators.required]],
         signatureProof: [this.data.customerKycReview.customerKyc.signatureProof, [Validators.required]],
-        occupationId: [this.data.customerKycReview.customerKyc.occupationId.id, [Validators.required]],
+        occupationId: [this.data.customerKycReview.customerKyc.occupation.id, [Validators.required]],
         dateOfBirth: [this.data.customerKycReview.customerKyc.dateOfBirth, [Validators.required]],
         identityTypeId: [this.data.customerKycReview.customerKyc.identityType.id, [Validators.required]],
         identityProof: [this.data.customerKycReview.customerKyc.identityProof, [Validators.required]],
@@ -231,8 +231,8 @@ export class UserReviewComponent implements OnInit {
     // this.customerKycBank.disable();
     // this.customerKyc.disable();
 
-    this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressOne.controls.stateId.value, cityId: this.customerKycAddressOne.controls.cityId.value });
-    this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressTwo.controls.stateId.value, cityId: this.customerKycAddressTwo.controls.cityId.value });
+    // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressOne.controls.stateId.value, cityId: this.customerKycAddressOne.controls.cityId.value });
+    // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressTwo.controls.stateId.value, cityId: this.customerKycAddressTwo.controls.cityId.value });
 
     this.ref.detectChanges()
   }
@@ -293,7 +293,7 @@ export class UserReviewComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().subscribe(res => {
       this.states = res.message;
-      this.ref.detectChanges();
+      // this.ref.detectChanges();
     });
     // if (this.customerKycAddressOne.controls.addressType.value == 'permanent') {
     this.getCities('permanent');
@@ -313,7 +313,7 @@ export class UserReviewComponent implements OnInit {
     } else if (type == 'residential') {
       stateId = this.customerKycAddressTwo.controls.stateId.value;
     }
-    // console.log(stateId)
+    console.log(stateId)
     this.sharedService.getCities(stateId).subscribe(res => {
       if (type == 'permanent') {
         this.cities0 = res.message;
