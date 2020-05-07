@@ -34,6 +34,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'loan_status_for_bm'
         },
+        totalEligibleAmt: {
+            type: DataTypes.BIGINT,
+            field: 'total_eligible_amt'
+        },
+        totalFinalAmt: {
+            type: DataTypes.BIGINT,
+            field: 'total_final_amt'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -53,12 +61,13 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.customerLoanOrnamentsDetail, { foreignKey: 'loanId', as: 'loanOrnamentsDetail' });
         customerLoan.hasOne(models.customerLoanPersonalDetail, { foreignKey: 'loanId', as: 'loanPersonalDetail' });
         customerLoan.hasMany(models.packageImageUploadForLoan, { foreignKey: 'loanId', as: 'packetDetails' });
+        customerLoan.hasOne(models.finalLoanCalculator, { foreignKey: 'loanId', as: 'finalCalculator' });
     }
 
     // FUNCTION TO ADD CUSTOMER BANK DETAIL
     customerLoan.addCustomerLoan =
-        (customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, t) => customerLoan.create({
-            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, isActive: true
+        (customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, t) => customerLoan.create({
+            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, isActive: true
         }, { t });
 
     // FUNCTION TO GET APPROVAL FROM BM

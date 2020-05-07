@@ -46,6 +46,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ARRAY(DataTypes.STRING),
             field: 'purity_test'
         },
+        karat: {
+            type: DataTypes.STRING,
+            field: 'karat'
+        },
+        purity: {
+            type: DataTypes.STRING,
+            field: 'purity'
+        },
+        ltvRange: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            field: 'ltv_range'
+        },
         ornamentImage: {
             type: DataTypes.STRING,
             field: 'ornament_image'

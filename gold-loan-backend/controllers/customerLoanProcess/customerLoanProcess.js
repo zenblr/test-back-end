@@ -10,12 +10,13 @@ const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB
 //  FUNCTION FOR LOAN APPLICATION FORM
 exports.applyForLoanApplication = async (req, res, next) => {
 
-    let { customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, name,
+    let { customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, name,
         accountNumber, ifscCode, aadharNumber, permanentAddress, pincode, officeAddress, officePin, nomineeData,
-        ornamentData, customerUniqueId, mobile, panCardNumber, startDate } = req.body;
+        ornamentData, customerUniqueId, mobile, panCardNumber, startDate, partnerName, schemeName, finalLoanAmount,
+        loanStartDate, tenure, loanEndDate, paymentType, interestRate } = req.body;
     let appliedForLoanApplication = await sequelize.transaction(async t => {
         let customerLoanCreated = await models.customerLoan.addCustomerLoan(
-            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser
+            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt
             , { transaction: t });
         let loanId = customerLoanCreated.id;
         let customerBankDetailsCreated = await models.customerLoanBankDetail.addCustomerBankDetail(
@@ -33,6 +34,8 @@ exports.applyForLoanApplication = async (req, res, next) => {
         let customerPersonalDetailsCreated = await models.customerLoanPersonalDetail.addCustomerPersonalDetail(
             loanId, customerUniqueId, mobile, panCardNumber, startDate
             , { transaction: t });
+        let finalloanCalculatorCreated = await models.finalLoanCalculator.addFinalLoanCalculator(loanId, partnerName, schemeName,
+            finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentType, interestRate, { transaction: t })
     })
 
     res.status(201).json({ message: 'you have successfully applied for the loan' });
@@ -125,6 +128,10 @@ exports.getLoanDetails = async (req, res, next) => {
     {
         model: models.packageImageUploadForLoan,
         as: 'packetDetails',
+    },
+    {
+        model: models.finalLoanCalculator,
+        as: 'finalCalculator',
         where: { isActive: true }
     }]
 
@@ -234,18 +241,20 @@ exports.customerDetails = async (req, res, next) => {
                 model: models.identityType,
                 as: 'identityType'
             }]
-        }, {
+        },
+        {
             model: models.customerKycAddressDetail,
-            where: { isActive: true },
+            // where: { isActive: true },
             as: 'customerKycAddress',
             attributes: ['id', 'addressType', 'address', 'pinCode', 'addressProof']
         }, {
             model: models.customerKycBankDetail,
-            where: { isActive: true },
+            // where: { isActive: true },
             as: 'customerKycBank',
             attributes: ['id', 'bankName', 'accountNumber', 'ifscCode']
         }]
-    })
+    }
+    )
 
     if (!customerData) {
         res.status(404).json({ message: 'no customer details found' });
