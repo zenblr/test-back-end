@@ -21,7 +21,7 @@ exports.branchValidation = [
     .isInt()
     .withMessage('stateId should be number'),
 
-  body("pincode")
+  body("pinCode")
     .exists()
     .withMessage("Pin code is required")
     .custom((value) => {

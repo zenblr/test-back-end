@@ -1,4 +1,4 @@
-const { addScheme, readScheme, readSchemeById, readSchemeByPartnerId, deactiveScheme, updateScheme } = require("../controllers/scheme/scheme");
+const { addScheme, readScheme, readSchemeById, editScheme,readSchemeByPartnerId, deactiveScheme, updateScheme } = require("../controllers/scheme/scheme");
 
 const { wrapper } = require('../utils/errorWrap');
 const validationError = require('../middleware/validationError');
@@ -14,13 +14,15 @@ route.post('/', schemeValidation, validationError, checkAuth, wrapper(addScheme)
 
 route.get('/', checkAuth, wrapper(readScheme)); // read Scheme route
 
+route.put('/',checkAuth,wrapper(editScheme)); // edit scheme route
+
+route.delete('/', checkAuth, wrapper(deactiveScheme)); // deactive scheme
+
 route.get('/:id', checkAuth, wrapper(readSchemeById)); // read scheme by id route
 
 route.get('/partner-scheme/:id', wrapper(readSchemeByPartnerId))
 
 route.put('/:id', checkAuth, schemeValidation, validationError, wrapper(updateScheme));  // update scheme 
-
-route.delete('/:id', checkAuth, wrapper(deactiveScheme)); // deactive scheme
 
 
 module.exports = route;

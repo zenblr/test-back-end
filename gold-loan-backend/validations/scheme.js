@@ -1,10 +1,13 @@
 const { body } = require("express-validator");
 const models = require('../models');
-const sequelize = models.Sequelize;
-const op = sequelize.Op;
 
+// add scheme Validation
 
 exports.schemeValidation = [
+  body('schemeName')
+    .exists()
+    .withMessage('scheme name is required'),
+
   body('schemeAmountStart')
     .exists()
     .withMessage('amount start is required'),

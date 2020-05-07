@@ -1,6 +1,6 @@
 :host {
     .img-add {
-        background   : #f0f8fc;
+        background   : #efefef;
         height       : 100%;
         width        : 75%;
         border       : transparent;
@@ -13,13 +13,7 @@
         height: 120px;
     }
 
-    .pos-edit {
-        position: absolute;
-        top     : 35px;
-        right   : 10px;
-    }
-
-    .pos-remove {
+    .pos-action {
         position: absolute;
         top     : 5px;
         right   : 10px;

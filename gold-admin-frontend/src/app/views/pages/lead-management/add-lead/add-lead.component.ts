@@ -88,7 +88,7 @@ export class AddLeadComponent implements OnInit {
       mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],
-      panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panCardNumber: ['', [Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
       dateTime: [this.currentDate, [Validators.required]],
@@ -208,6 +208,9 @@ export class AddLeadComponent implements OnInit {
         return
       }
 
+      if (this.controls.panCardNumber.value == '') {
+        this.leadForm.get('panCardNumber').patchValue(null);
+      }
       const leadData = this.leadForm.value;
 
       this.customerManagementService.addLead(leadData).subscribe(res => {

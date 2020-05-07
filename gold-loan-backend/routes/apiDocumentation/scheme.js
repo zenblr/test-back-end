@@ -16,6 +16,8 @@
  *         schema:
  *           type: object
  *           properties:
+ *             schemeName:
+ *               type: string
  *             schemeAmountStart:
  *               type: number
  *             schemeAmountEnd:
@@ -35,6 +37,7 @@
  *             partnerId:
  *               type: number
  *         required:
+ *           - schemeName
  *           - schemeAmountStart
  *           - schemeAmountEnd
  *           - interestRateThirtyDaysMonthly
@@ -48,7 +51,7 @@
  *       201:
  *          description: schemes created
  *       400:
- *          description: interest Rate required/ partnerId is required/start amount is required/end amount is required
+ *          description: interest Rate required/ partnerId is required/start amount is required/end amount is required/ internal branch name is already exist
  *   get:
  *     tags:
  *       - Scheme
@@ -63,6 +66,30 @@
  *          description: Success
  *       404:
  *          description: data not found
+ *   delete:
+ *     tags:
+ *       - Scheme
+ *     summary: To delete by Id
+ *     parameters:
+ *     - name: "id"
+ *       in: "query"
+ *       description: "Id of scheme to delete"
+ *       required: true
+ *       type: "integer"
+ *     - name: "isActive"
+ *       in: "query"
+ *       description: "isActive of scheme to delete"
+ *       required: true
+ *       type: "boolean"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
+ *       404:
+ *         description: data not found
  * /scheme/{id}:
  *   put:
  *     tags:
@@ -84,6 +111,8 @@
  *         schema:
  *           type: object
  *           properties:
+ *             schemeName:
+ *               type: string
  *             schemeAmountStart:
  *               type: number
  *             schemeAmountEnd:
@@ -103,6 +132,7 @@
  *             partnerId:
  *               type: number
  *         required:
+ *           - schemeName
  *           - schemeAmountStart
  *           - schemeAmountEnd
  *           - interestRateThirtyDaysMonthly
@@ -119,25 +149,6 @@
  *          description: data not found
  *       400:
  *          description: interest Rate required/ partnerId is required/start amount is required/end amount is required
- *   delete:
- *     tags:
- *       - Scheme
- *     summary: To delete by Id
- *     parameters:
- *     - name: "id"
- *       in: "path"
- *       description: "Id of scheme to delete"
- *       required: true
- *       type: "integer"
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Success.
- *       404:
- *         description: data not found
  *   get:
  *     tags:
  *       - Scheme

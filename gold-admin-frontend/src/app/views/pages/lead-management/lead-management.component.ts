@@ -102,7 +102,8 @@ export class LeadManagementComponent implements OnInit {
   addLead() {
     // console.log(event);
     const dialogRef = this.dialog.open(AddLeadComponent, {
-      data: { action: 'add' }
+      data: { action: 'add' },
+      width: '500px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -116,7 +117,7 @@ export class LeadManagementComponent implements OnInit {
     const dialogRef = this.dialog.open(AddLeadComponent,
       {
         data: { id: role.id, action: 'edit' },
-        width: '450px'
+        width: '500px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

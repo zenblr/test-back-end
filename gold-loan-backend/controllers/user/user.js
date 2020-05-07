@@ -3,7 +3,7 @@ const sequelize = models.sequelize;
 
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
-
+const paginationFUNC = require("../../utils/pagination");
 const check = require('../../lib/checkLib');
 const request = require('request');
 const { createReferenceCode } = require('../../utils/referenceCode');
@@ -13,7 +13,7 @@ const CONSTANT = require('../../utils/constant');
 const moment = require('moment')
 
 exports.addUser = async (req, res, next) => {
-    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId, userTypeId } = req.body;
+    let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId, userTypeId, internalBranchId } = req.body;
     let userMobileNumberExist = await models.user.findOne({ where: { mobileNumber: mobileNumber } })
     if (!check.isEmpty(userMobileNumberExist)) {
         return res.status(404).json({ message: 'This Mobile number is already Exist' });
@@ -203,9 +203,9 @@ exports.changePassword = async (req, res, next) => {
     if (checkPassword === true) {
         await userinfo.update({ password: newPassword },
             { where: { id: userinfo.id, isActive: true } });
-       return res.status(200).json({ message: 'Success' })
+        return res.status(200).json({ message: 'Success' })
     } else {
-       return res.status(400).json({ message: ' The password you entered is incorrect Please retype your current password.' });
+        return res.status(400).json({ message: ' The password you entered is incorrect Please retype your current password.' });
     }
 }
 
@@ -213,11 +213,9 @@ exports.changePassword = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
     let user = await models.user.findAll({
         include: [{
-            model: models.role,
-            include: [{
-                model: models.permission,
-                attributes: ['id', 'permission_name']
-            }]
+            model: models.role
+        },{
+            model: models.internalBranch
         }]
     });
     return res.json(user)
@@ -261,3 +259,99 @@ exports.addAdmin = async (req, res, next) => {
 //query for add user
 // INSERT INTO "user" (firstName, lastName, password, mobileNumber, email, panCardNumber, userTypeId) 
 // VALUES ('rupesh','ayare', crypt('password1', gen_salt('bf', 10)),"9324495603", "rupesh@nimapinfotech.com","asdfg1234g",1);
+
+//Add internal user
+exports.addInternalUser = async (req, res, next) => {
+    let { firstName, lastName, mobileNumber, email,internalBranchId,roleId,userUniqueId } = req.body;
+    let createdBy = req.userData.id
+    let modifiedBy = req.userData.id
+    let password = firstName.slice(0, 3) + '@' + mobileNumber.slice(mobileNumber.length - 5, 9);
+    await sequelize.transaction(async t => {
+        const user = await models.user.create({ userUniqueId,firstName, lastName, password, mobileNumber, email, userTypeId : 1, createdBy, modifiedBy }, { transaction: t })
+        await models.userRole.create({ userId: user.id, roleId }, { transaction: t })
+        if(internalBranchId != null && internalBranchId != undefined){
+            await models.userInternalBranch.create({ userId: user.id, internalBranchId }, { transaction: t })
+        }
+    })
+    // request(
+    //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=your password is ${password}`
+    //   );
+    return res.status(200).json({ message: 'User Created.' });
+}
+
+exports.updateInternalUser = async (req, res, next) => {
+    const id = req.params.id;
+    let { firstName, lastName, mobileNumber, email,internalBranchId,roleId } = req.body;
+    let modifiedBy = req.userData.id;
+    await sequelize.transaction(async t => {
+        const user = await models.user.update({ firstName, lastName, mobileNumber, email, modifiedBy }, {where : {id : id}})
+        await models.userRole.update({isActive : false},{where:{ userId: user.id} });
+        await models.userRole.create({ userId: user.id, roleId }, { transaction: t });
+        if(internalBranchId != null && internalBranchId != undefined){
+            await models.userInternalBranch.update({isActive : false}, {where:{ userId: user.id} })
+            await models.userInternalBranch.create({ userId: user.id, internalBranchId }, { transaction: t })
+        }
+    })
+    return res.status(200).json({ message: 'User updated.' });
+}
+
+exports.deleteInternalUser = async (req, res, next) => {
+    const id = req.params.id;
+    let modifiedBy = req.userData.id;
+    await sequelize.transaction(async t => {
+        const user = await models.user.update({ isActive:false, modifiedBy }, {where : {id : id}})
+        await models.userRole.update({isActive : false},{where:{ userId: user.id} });
+    })
+    return res.status(200).json({ message: 'User deleted.' });
+}
+
+exports.GetInternalUser = async (req, res) => {
+        const { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(
+            req.query.search,
+            req.query.from,
+            req.query.to
+          );
+          let includeArray = [
+              {
+                model: models.role,
+                where: { isActive: true },
+                subQuery: false
+              },
+              {
+                  model: models.internalBranch,
+                  subQuery: false
+                }
+            ]
+          let searchQuery = {
+              [Sequelize.Op.or]: {
+                  firstName: { [Sequelize.Op.iLike]: search + "%" },
+                  lastName: { [Sequelize.Op.iLike]: search + "%" },
+                  mobileNumber: { [Sequelize.Op.iLike]: search + "%" },
+                  email: { [Sequelize.Op.iLike]: search + "%" },
+                //   "$internalBranch.internal_branch_id$": {
+                //       [Op.iLike]: search + "%",
+                //     },
+                  "$roles.role_name$": {
+                      [Op.iLike]: search + "%",
+                    }
+              },
+              isActive: true,
+              userTypeId : 1
+            }
+          let CategoryData = await models.user.findAll({
+            where: searchQuery,
+            offset: offset,
+            limit: pageSize,
+            include: includeArray,
+            subQuery: false
+          });
+          let count = await models.user.findAll({
+            where: searchQuery,
+              include: includeArray,
+              subQuery: false
+          });
+          res.status(200).json({
+            data: CategoryData,
+            count: count.length
+          });
+  }

@@ -34,8 +34,6 @@
 *               type: array
 *               items: 
 *                type: string 
-*             goldRate:
-*                type: number
 *         required:
 *           - images
 *     responses:

@@ -1,5 +1,8 @@
 :host {
 	::ng-deep {
+		.kt-header {
+			height: 54px !important;
+		}
 		.kt-loading-bar {
 			position: absolute;
 			top: 0;

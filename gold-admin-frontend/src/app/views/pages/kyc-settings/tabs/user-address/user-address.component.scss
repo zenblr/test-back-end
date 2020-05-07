@@ -1,10 +1,22 @@
 :host {
+    kt-portlet {
+        .kt-portlet {
+            padding-top: 25px !important;
+        }
+    }
     kt-portlet-body {
 		height: 69vh;
-		overflow-y: auto;
+        overflow-y: auto;
 	}
     .bg {
         background-color: #454D67 !important;
         color           : rgb(193, 193, 193) !important;
+    }
+    .top-0{
+        top:0px;
+    }
+    .pos{
+        margin-left: auto;
+        width: 23%;
     }
 }

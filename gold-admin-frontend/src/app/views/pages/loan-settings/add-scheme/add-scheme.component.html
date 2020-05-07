@@ -5,7 +5,7 @@
             <a href="../../../../../assets/media/files/schemes.csv" download="schemes.csv"
                 *ngIf="tabGroup.selectedIndex == 1">
                 <span class="text-primary csv_pos">
-                    <img src="../../../../../assets/media/icons/download.svg" alt="download" height="24"> Download
+                    <img src="../../../../../assets/media/icons/download.svg" alt="download" height="20"> Download
                     Sample CSV</span>
             </a>
         </div>
@@ -15,19 +15,19 @@
                 <form [formGroup]="billingForm">
                     <div class="row kt-margin-b-10">
                         <div class="col-3">
-                            <p class="text-color font-weight-bold"> Enter Amount</p>
+                            <p class="text-color font-weight-bold mandatory"> Enter Amount</p>
                         </div>
                         <div class="col-9">
                             <div class="row">
                                 <div class="col-6 amount">
                                     <input type="number" class="form-control" formControlName="schemeAmountStart"
                                         [class.isError]="billingForm.get('schemeAmountStart').touched && billingForm.get('schemeAmountStart').invalid"
-                                        placeholder="From e.g 1,00,000">
+                                        placeholder="From e.g 1,00,000" >
                                 </div>
                                 <div class="col-6 amount">
                                     <input type="number" class="form-control" formControlName="schemeAmountEnd"
                                         [class.isError]="billingForm.get('schemeAmountEnd').touched && billingForm.get('schemeAmountEnd').invalid"
-                                        placeholder="From e.g 2,00,000">
+                                        placeholder="From e.g 2,00,000" >
                                 </div>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                     </div>
                     <div class="row">
                         <div class="col-3">
-                            <p class="text-color font-weight-bold">
+                            <p class="text-color font-weight-bold mandatory">
                                 Rate of Interest <br>
                                 (% / Monthly)
                             </p>
@@ -77,7 +77,7 @@
                     </div>
                     <div class="row">
                         <div class="col-3">
-                            <p class="text-color font-weight-bold">
+                            <p class="text-color font-weight-bold mandatory">
                                 Rate of Interest <br>
                                 (% / Annually)
                             </p>
@@ -98,7 +98,7 @@
                     </div>
                     <div class="row kt-margin-t-20">
                         <div class="col-3">
-                            <p class="text-color font-weight-bold">Select Partner Name</p>
+                            <p class="text-color font-weight-bold mandatory">Select Partner Name</p>
                         </div>
                         <div class="col-9">
                             <select name="" id="" class="form-control selectpicker" formControlName="partnerId"

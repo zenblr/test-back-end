@@ -8,6 +8,13 @@ import { tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'kt-brand',
+	styles: [`.gold-rate{
+		font-weight: 600;
+		color: #ffde9c;
+		 background-color: #454D67; 
+		 padding: 15px 0; 
+		 /* padding-left: 62px ; */
+	}`],
 	templateUrl: './brand.component.html',
 })
 export class BrandComponent implements OnInit, AfterViewInit {
@@ -38,10 +45,9 @@ export class BrandComponent implements OnInit, AfterViewInit {
 				// console.log(res)
 				this.rate = res.goldRate;
 				this.ref.detectChanges();
-
+				this.uploadOfferService.goldRate.next(this.rate);
 			})
 		).subscribe(res => {
-			// this.uploadOfferService.goldRate.next(this.rate);
 
 		});
 		// this.uploadOfferService.goldRate.next(this.rate);

@@ -15,7 +15,7 @@
  *           type: object
  *           properties:
  *             mobileNumber:
- *               type: number
+ *               type: string
  *             password:
  *               type: string
  *               format: password

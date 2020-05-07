@@ -2,14 +2,12 @@
 <kt-portlet>
     <!-- PORTLET LOADING | Binded to TABLE Datasource -->
     <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
-    <kt-portlet-header [title]="'Branch List'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
+    <!-- <kt-portlet-header [title]="'Branch List'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
 
         <ng-container ktPortletTools>
 
-            <!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
-            <!-- mat-raised-button | Rectangular contained button w/ elevation  -->
         </ng-container>
-    </kt-portlet-header>
+    </kt-portlet-header> -->
     <!-- end::Header -->
 
     <kt-portlet-body>
@@ -19,7 +17,7 @@
             <!-- start::GROUP ACTIONS -->
             <!-- Group actions list: 'Delete selected' | 'Fetch selected' | 'Update status for selected' -->
             <!-- Group actions are shared for all LISTS -->
-           
+
             <!-- end::GROUP ACTIONS -->
         </div>
         <!-- end::FILTERS & GROUP ACTIONS -->
@@ -49,33 +47,33 @@
 
                 <ng-container matColumnDef="branchId">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Branch Id</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Branch Id</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.branchId}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="name">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Branch name</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Branch name</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="partner">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Parnter name</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Parnter name</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.partner.name | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="state">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.state.name }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="city">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>City</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.city.name }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}">
-                                <div (click)="viewRole(role)" class="kt-pointer"> View | &nbsp;</div>
-                                <div (click)="editRole(role)" class="kt-pointer"> Edit | &nbsp;</div>
+                            <div (click)="viewRole(role)" class="kt-pointer"> View | &nbsp;</div>
+                            <div (click)="editRole(role)" class="kt-pointer"> Edit | &nbsp;</div>
                             <div class="kt-pointer text-danger" (click)="deleteRole(role)">Delete</div>
                         </div>
                     </mat-cell>

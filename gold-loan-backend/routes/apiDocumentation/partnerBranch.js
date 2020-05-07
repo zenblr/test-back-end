@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /branch:
+ * /partner-branch:
  *   post:
  *     tags:
  *       - Branch
@@ -26,7 +26,7 @@
  *               type: number
  *             address:
  *               type: string
- *             pincode:
+ *             pinCode:
  *               type: number
  *         required:
  *           - name
@@ -34,7 +34,7 @@
  *           - cityId
  *           - stateId
  *           - address
- *           - pincode
+ *           - pinCode
  *     responses:
  *       201:
  *          description: branch created
@@ -143,7 +143,7 @@
  *               type: number
  *             address:
  *               type: string
- *             pincode:
+ *             pinCode:
  *               type: number
  *         required:
  *           - name
@@ -151,7 +151,7 @@
  *           - cityId
  *           - stateId
  *           - addresss
- *           - pincode
+ *           - pinCode
  *     responses:
  *       200:
  *         description: Success

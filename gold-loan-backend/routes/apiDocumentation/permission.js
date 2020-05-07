@@ -29,15 +29,22 @@
  *         description: This Permission is already Exist
  *       422:
  *         description: permission not created
+ * /permission/{roleId}:
  *   get:
  *     tags:
  *       - Permission
  *     name: permission
- *     summary: To read permission
+ *     summary: To read all permission while first adding.
  *     security:
  *       - bearerAuth: []
  *     consumes:
  *        - application/json
+ *     parameters:
+ *       - name: "roleId"
+ *         in: "path"
+ *         description: "roleId of role"
+ *         required: true
+ *         type: "integer"
  *     responses:
  *       200:
  *         description: Success

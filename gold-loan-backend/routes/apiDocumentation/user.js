@@ -1,9 +1,9 @@
 /**
  * @swagger
- * /user/register-otp:
+ * /user:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Registration
  *     summary: To Register  
  *     consumes:
@@ -21,22 +21,30 @@
  *             password:
  *               type: string
  *             mobileNumber:
- *               type: integer
+ *               type: string
  *             email:
  *               type: string
  *             panCardNumber:
  *               type: string  
  *             address:
- *                type: object
- *                properties:
- *                 landMark:
- *                   type: string
- *                 stateId:
- *                   type: number
- *                 cityId:
- *                   type: number
+ *                type: array
+ *                items:
+ *                  type: object  
+ *                  properties:
+ *                   address:
+ *                    type: string
+ *                   landMark:
+ *                    type: string
+ *                   stateId:
+ *                    type: number
+ *                   cityId:
+ *                    type: number
  *             roleId:
- *               type: number       
+ *               type: number 
+ *             userTypeId:
+ *               type: number
+ *             internalBranchId:
+ *              type: number      
  *         required:
  *           - firstName
  *           - lastName
@@ -45,17 +53,30 @@
  *           - email
  *           - panCardNumber
  *           - address
+ *           - cityId
+ *           - stateId
  *           - roleId
- * 
+ *           - userTypeId:
+ *           - internalBranchId
  *     responses:
  *       200:
- *          description: Your otp send it on to the mobile number
+ *          description: User Created
  *       404:
- *          description: This Mobile number is already Exist
+ *          description: This Mobile number is already Exist/This Email id is already exist
+ *   get:
+ *     tags:
+ *      - User Registration
+ *     name: read user
+ *     summary: To read user 
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *          description: Success
  * /user/verify-otp:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Verification Otp
  *     summary: To Verify Otp
  *     consumes:
@@ -83,7 +104,7 @@
  * /user/send-otp:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Resend Otp
  *     summary: Resend Otp
  *     consumes:
@@ -95,7 +116,7 @@
  *           type: object
  *           properties:
  *             mobileNumber:
- *               type: integer
+ *               type: string
  *               
  *         required:
  *           - mobileNumber
@@ -104,38 +125,10 @@
  *          description: Otp send to your Mobile number
  *       400:
  *          description: User does not exists, please contact to Admin
- * /user/verify-register-otp:
- *   post:
- *     tags:
- *       - Customer Registration
- *     name: Verification  Registration Otp
- *     summary: To Verify Registration Otp
- *     consumes:
- *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         schema:
- *           type: object
- *           properties:
- *             referenceCode:
- *               type: string
- *             otp:
- *               type: integer
- *               
- *         required:
- *           - referenceCode
- *           - otp
- *     responses:
- *       200:
- *          description: Success 
- *                       referenceCode
- *       400:
- *          description: Invalid Otp
  * /user/change-password:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Change password
  *     summary: To change password
  *     consumes:
@@ -166,7 +159,7 @@
  * /user/update-password:
  *   post:
  *     tags:
- *       - Customer Registration
+ *       - User Registration
  *     name: Update Password
  *     summary: To update  password
  *     consumes:
@@ -193,16 +186,201 @@
  *       404:
  *          description: User not found . Please contact Admin.
  *       401:
- *          description: wrong credentials
- * /user:
- *  get:
- *     tags:
- *      - Customer Registration
- *     name: read user
- *     summary: To read user 
- *     responses:
+ *          description: wrong credentials   
+ * /user/addAdmin:
+ * post:
+ *    tags:
+ *      - User Registration
+ *    name: add admin
+ *    summary: To add admin
+ *    consumes:
+ *       - application/json
+ *    parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             password:
+ *               type: string
+ *             mobileNumber:
+ *               type: string
+ *             email:
+ *               type: string
+ *             panCardNumber:
+ *               type: string  
+ *             address:
+ *                type: array
+ *                items:
+ *                  type: object  
+ *                  properties:
+ *                   address:
+ *                    type: string
+ *                   landMark:
+ *                    type: string
+ *                   stateId:
+ *                    type: number
+ *                   cityId:
+ *                    type: number
+ *             roleId:
+ *               type: number 
+ *             userTypeId:
+ *               type: number   
+ *         required:
+ *           - firstName
+ *           - lastName
+ *           - password
+ *           - mobileNumber
+ *           - email
+ *           - panCardNumber
+ *           - address
+ *           - cityId
+ *           - stateId
+ *           - roleId
+ *           - userTypeId
+ *    responses:
  *       200:
  *          description: Success
+ * /user/internal-user:
+ *   post:
+ *     tags:
+ *       - Internal User
+ *     name: add internal user
+ *     summary: To add internal user  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             mobileNumber:
+ *               type: string
+ *             email:
+ *               type: string
+ *             roleId:
+ *               type: number   
+ *             internalBranchId:
+ *               type: number     
+ *             userUniqueId:
+ *               type: string      
+ *         required:
+ *           - firstName
+ *           - lastName
+ *           - password
+ *           - mobileNumber
+ *           - email
+ *           - roleId
+ * 
+ *     responses:
+ *       200:
+ *          description: internal user added
+ *       404:
+ *          description: failed to add internal user
+ *   get:
+ *     tags:
+ *       - Internal User
+ *     name: Read Internal User
+ *     summary: To read Internal User with pagination
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Data found
+ *       404:
+ *         description: Data not found
+ * /user/internal-user/{id}:
+ *   put:
+ *     tags:
+ *       - Internal User
+ *     name: add internal user
+ *     summary: To add internal user  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: "id"
+ *         in: "path"
+ *         description: "id to edit internal user"
+ *         required: true
+ *         type: "integer"
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             mobileNumber:
+ *               type: string
+ *             email:
+ *               type: string
+ *             roleId:
+ *               type: number   
+ *             internalBranchId:
+ *               type: number      
+ *         required:
+ *           - firstName
+ *           - lastName
+ *           - password
+ *           - mobileNumber
+ *           - email
+ *           - roleId
+ * 
+ *     responses:
+ *       200:
+ *          description: internal user updated
+ *       404:
+ *          description: failed to update internal user
+ *   delete:
+ *     tags:
+ *       - Internal User
+ *     name: delete internal user
+ *     summary: To add internal user  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: "id"
+ *         in: "path"
+ *         description: "id to edit internal user"
+ *         required: true
+ *         type: "integer"
+ *     responses:
+ *       200:
+ *          description: internal user deleted
+ *       404:
+ *          description: failed to delete internal user
  *    
  * 
  */

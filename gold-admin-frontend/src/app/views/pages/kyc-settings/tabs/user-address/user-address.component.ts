@@ -4,6 +4,7 @@ import { UserAddressService, UserDetailsService } from '../../../../../core/kyc-
 import { ToastrComponent } from '../../../../partials/components';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, catchError } from 'rxjs/operators';
+import { MatCheckbox } from '@angular/material';
 
 @Component({
   selector: 'kt-user-address',
@@ -24,7 +25,7 @@ export class UserAddressComponent implements OnInit {
   identityProofs = [];
   images = { identityProof: [], residential: [], permanent: [] };
   customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2 }
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5 }
 
   constructor(
     private fb: FormBuilder,
@@ -47,8 +48,17 @@ export class UserAddressComponent implements OnInit {
       customerId: [this.customerDetails.customerId],
       customerKycId: [this.customerDetails.customerKycId],
       identityTypeId: ['', [Validators.required]],
-      identityProof: [],
+      identityProof: ['', [Validators.required]],
       address: this.fb.array([
+        this.fb.group({
+          addressType: ['permanent'],
+          addressProofTypeId: ['', [Validators.required]],
+          address: ['', [Validators.required]],
+          stateId: [this.customerDetails.stateId, [Validators.required]],
+          cityId: [this.customerDetails.cityId, [Validators.required]],
+          pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+          addressProof: ['', [Validators.required]]
+        }),
         this.fb.group({
           addressType: ['residential'],
           addressProofTypeId: ['', [Validators.required]],
@@ -56,20 +66,11 @@ export class UserAddressComponent implements OnInit {
           stateId: ['', [Validators.required]],
           cityId: ['', [Validators.required]],
           pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-          addressProof: []
-        }),
-        this.fb.group({
-          addressType: ['permanent'],
-          addressProofTypeId: ['', [Validators.required]],
-          address: ['', [Validators.required]],
-          stateId: ['', [Validators.required]],
-          cityId: ['', [Validators.required]],
-          pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-          addressProof: []
+          addressProof: ['', [Validators.required]]
         })
       ])
     });
-
+    this.getCities(0)
   }
 
   getIdentityType() {
@@ -99,7 +100,6 @@ export class UserAddressComponent implements OnInit {
         if (type == "identityProof") {
           this.images.identityProof.push(res.uploadFile.URL)
           this.identityForm.get('identityProof').patchValue(event.target.files[0].name);
-          this.ref
         } if (type == 0) {
           this.images.residential.push(res.uploadFile.URL)
           this.addressControls.at(0)['controls'].addressProof.patchValue(event.target.files[0].name)
@@ -122,7 +122,7 @@ export class UserAddressComponent implements OnInit {
     });
   }
 
-  getCities(event, index) {
+  getCities(index) {
     console.log(index)
     const stateId = this.addressControls.controls[index]['controls'].stateId.value;
     // console.log(stateId)
@@ -136,8 +136,12 @@ export class UserAddressComponent implements OnInit {
   }
 
   submit() {
-    // this.next.emit(true);
-    // console.log(this.identityForm.value);
+
+    if (this.identityForm.invalid) {
+      this.identityForm.markAllAsTouched()
+      return
+    }
+    this.addressControls.at(1).enable();
 
     this.identityForm.patchValue({ identityProof: this.images.identityProof });
 
@@ -154,10 +158,10 @@ export class UserAddressComponent implements OnInit {
           this.next.emit(true);
         }
         console.log(res);
-      })
+      }),
     ).subscribe();
 
-    this.next.emit(true);
+    // this.next.emit(true);
 
 
   }
@@ -172,6 +176,22 @@ export class UserAddressComponent implements OnInit {
     // console.log(control);
     // return control.at(0) as FormGroup;
 
+  }
+
+  sameAddress(event: MatCheckbox) {
+    if (event) {
+      this.cities1 = this.cities0;
+      this.images.permanent = this.images.residential
+      this.addressControls.at(1).disable();
+      this.addressControls.at(1).patchValue(this.addressControls.at(0).value)
+      this.addressControls.at(1)['controls'].addressType.patchValue('residential')
+    } else {
+      this.cities1 = [];
+      this.images.permanent = [];
+      this.addressControls.at(1).reset();
+      this.addressControls.at(1).enable();
+
+    }
   }
 
 }

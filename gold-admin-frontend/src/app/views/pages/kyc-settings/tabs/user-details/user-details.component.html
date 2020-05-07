@@ -3,9 +3,93 @@
 		<div class="row justify-content-around min-60">
 			<div class="col-6 align-self-center">
 				<form action="" [formGroup]="userBasicForm">
+
+					<div class="row kt-padding-t-15">
+						<!-- Mobile -->
+						<div class="col-4 align-self-center">
+							<label  class="mandatory  text-color font-weight-500">Mobile Number</label>
+						</div>
+
+						<div class="col-8">
+							<!-- <mat-form-field appearance="outline" class="w-100"> -->
+							<input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
+								autocomplete="off" placeholder="Enter mobile number" margin [class.isError]="
+											controls.mobileNumber.touched &&
+											controls.mobileNumber.invalid
+										" />
+							<mat-error *ngIf="
+											controls.mobileNumber.errors?.required &&
+											controls.mobileNumber.touched
+										">
+								Required field
+							</mat-error>
+							<mat-error *ngIf="
+											controls.mobileNumber.errors?.pattern &&
+											controls.mobileNumber.touched
+										">
+								Invalid Input
+							</mat-error>
+							<!-- </mat-form-field> -->
+						</div>
+
+						<!-- <div class="col-3">
+									<div *ngIf="!otpSent">
+										<kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
+											[value]="'Send OTP'" (action)="sendOTP()">
+										</kt-button>
+									</div>
+									<div *ngIf="otpSent && !isMobileVerified">
+										<kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
+											[value]="'Sent'" (action)="verifyOTP()">
+										</kt-button>
+									</div>
+									<div *ngIf="isMobileVerified">
+										<button class="w-100 success-button" mat-raised-button color="success"
+											matTooltip="Pan Verified">
+											Verified
+										</button>
+									</div>
+								</div> -->
+
+						<!-- OTP -->
+
+						<!-- <ng-container *ngIf="otpSent && !isMobileVerified">
+									<div class="col-4 kt-padding-t-15"></div>
+		
+									<div class="col-5 kt-padding-t-15">
+										<input class="form-control" formControlName="otp" autocomplete="off"
+											placeholder="Enter OTP" [class.isError]="
+												controls.otp.touched &&
+												controls.otp.invalid
+											" />
+										<mat-error *ngIf="
+												controls.otp.errors?.required &&
+												controls.otp.touched
+											">
+											Required field
+										</mat-error>
+										<mat-error *ngIf="
+												controls.otp.errors?.pattern &&
+												controls.otp.touched
+											">Invalid Input
+										</mat-error>
+										<mat-hint (click)="resendOTP()" class="kt-pointer">Didn't get an OTP?
+											<strong>Resend</strong></mat-hint>
+									</div>
+		
+									<div class="col-3 kt-padding-t-15">
+										<div *ngIf="!isMobileVerified">
+											<kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Sumbit'"
+												[isDisabled]="isOpverified" (action)="verifyOTP()">
+											</kt-button>
+										</div>
+									</div>
+								</ng-container> -->
+					</div>
+
 					<div class="row kt-padding-t-15">
 						<div class="col-4 align-self-center">
-							<label class="text-color font-weight-500">Full Name</label>
+							<label  class="  text-color font-weight-500">Full Name</label>
 						</div>
 
 						<div class="col-4">
@@ -13,7 +97,7 @@
 								class="form-control" formControlName="firstName" [class.isError]="
 									controls.firstName.touched &&
 									controls.firstName.invalid
-								" />
+								" [readOnly]="true" />
 							<mat-error *ngIf="
 									controls.firstName.errors?.required &&
 									controls.firstName.touched
@@ -26,7 +110,7 @@
 								class="form-control" formControlName="lastName" [class.isError]="
 									controls.lastName.touched &&
 									controls.lastName.invalid
-								" />
+								" [readOnly]="true" />
 
 							<mat-error *ngIf="
 									controls.lastName.errors?.required &&
@@ -37,97 +121,15 @@
 						</div>
 					</div>
 
-					<div class="row kt-padding-t-15">
-						<!-- Mobile -->
-						<div class="col-4 align-self-center">
-							<label class="text-color font-weight-500">Mobile Number</label>
-						</div>
 
-						<div class="col-5">
-							<!-- <mat-form-field appearance="outline" class="w-100"> -->
-							<input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
-								autocomplete="off" placeholder="Enter mobile number" margin [class.isError]="
-									controls.mobileNumber.touched &&
-									controls.mobileNumber.invalid
-								" />
-							<mat-error *ngIf="
-									controls.mobileNumber.errors?.required &&
-									controls.mobileNumber.touched
-								">
-								Required field
-							</mat-error>
-							<mat-error *ngIf="
-									controls.mobileNumber.errors?.pattern &&
-									controls.mobileNumber.touched
-								">
-								Invalid Input
-							</mat-error>
-							<!-- </mat-form-field> -->
-						</div>
-
-						<div class="col-3">
-							<div *ngIf="!otpSent">
-								<kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
-									[value]="'Send OTP'" (action)="sendOTP()">
-								</kt-button>
-							</div>
-							<div *ngIf="otpSent && !isMobileVerified">
-								<kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
-									[value]="'Sent'" (action)="verifyOTP()">
-								</kt-button>
-							</div>
-							<div *ngIf="isMobileVerified">
-								<button class="w-100 success-button" mat-raised-button color="success"
-									matTooltip="Pan Verified">
-									Verified
-								</button>
-							</div>
-						</div>
-
-						<ng-container *ngIf="otpSent && !isMobileVerified">
-							<!-- OTP -->
-							<div class="col-4 kt-padding-t-15"></div>
-
-							<div class="col-5 kt-padding-t-15">
-								<!-- <mat-form-field appearance="outline" class="w-100"> -->
-								<input class="form-control" formControlName="otp" autocomplete="off"
-									placeholder="Enter OTP" [class.isError]="
-										controls.otp.touched &&
-										controls.otp.invalid
-									" />
-								<mat-error *ngIf="
-										controls.otp.errors?.required &&
-										controls.otp.touched
-									">
-									Required field
-								</mat-error>
-								<mat-error *ngIf="
-										controls.otp.errors?.pattern &&
-										controls.otp.touched
-									">Invalid Input
-								</mat-error>
-								<mat-hint (click)="resendOTP()" class="kt-pointer">Didn't get an OTP?
-									<strong>Resend</strong></mat-hint>
-								<!-- </mat-form-field> -->
-							</div>
-
-							<div class="col-3 kt-padding-t-15">
-								<div *ngIf="!isMobileVerified">
-									<kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Sumbit'"
-										[isDisabled]="isOpverified" (action)="verifyOTP()">
-									</kt-button>
-								</div>
-							</div>
-						</ng-container>
-					</div>
 
 					<div class="row kt-padding-t-15">
 						<!-- PAN -->
 						<div class="col-4 align-self-center">
-							<label class="text-color font-weight-500">Pan Number</label>
+							<label  class="mandatory  text-color font-weight-500">Pan Number</label>
 						</div>
 
-						<div class="col-5">
+						<div class="col">
 							<!-- <mat-form-field appearance="outline" class="w-100"> -->
 							<input class="form-control" formControlName="panCardNumber" autocomplete="off"
 								placeholder="PAN Number" [class.isError]="
@@ -149,7 +151,7 @@
 							<!-- </mat-form-field> -->
 						</div>
 
-						<div class="col">
+						<div *ngIf="showVerifyPAN" class="col">
 							<div *ngIf="!isPanVerified">
 								<kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
 									[value]="'Verify'" (action)="verifyPAN()">
@@ -165,7 +167,7 @@
 					</div>
 
 					<div class="row kt-padding-t-15">
-						<div class="col-12">
+						<div class="col-8 offset-4">
 							<kt-button [value]="'Next'" [type]="'button'" (action)="submit()">
 							</kt-button>
 						</div>

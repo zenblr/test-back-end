@@ -23,6 +23,7 @@ export class BranchAddComponent implements OnInit {
   viewOnly = false;
   viewLoading: boolean = false;
   title: string;
+  isMandatory = false
 
   constructor(
     public dialogRef: MatDialogRef<BranchAddComponent>,
@@ -48,9 +49,11 @@ export class BranchAddComponent implements OnInit {
   setForm() {
     if (this.data.action == 'add') {
       this.title = 'Add New Branch'
+      this.isMandatory = true
 
     } else if (this.data.action == 'edit') {
       this.title = 'Edit Branch'
+      this.isMandatory = true
       this.getPartnerById(this.data.partnerId);
     } else {
       this.title = 'View Branch'
@@ -148,7 +151,7 @@ export class BranchAddComponent implements OnInit {
       this.branchService.addBranch(partnerData).subscribe(res => {
         // console.log(res);
         if (res) {
-          const msg = 'Partner Added Successfully';
+          const msg = 'Branch Added Successfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
         }

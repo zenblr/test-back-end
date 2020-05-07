@@ -15,7 +15,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
             defaultValue: true,
-        }
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by',
+        },
+        updatedBy: {
+            type: DataTypes.INTEGER,
+            field: 'updated_by',
+        },
     }, {
         freezeTableName: true,
         allowNull: false,
@@ -28,12 +36,20 @@ module.exports = (sequelize, DataTypes) => {
     //function_to_remove_group
     Role.removeRole = (id) => Role.update({ isActive: false }, { where: { id: id, isActive: true } });
 
-    Role.associate = function(models) {
-        // Role.hasMany(models.userRole, { foreignKey: 'roleId', as: 'role_user' });
-        // Role.hasMany(models.rolePermission, { foreignKey: 'roleId', as: 'rolePermission' });
+    Role.addRole = (roleName, description, createdBy, updatedBy ) => Role.create({roleName, description, createdBy, updatedBy});
 
+    Role.updateRole = (roleName, description, updatedBy, id ) => Role.update({roleName, description, updatedBy}, {where: { id }});
+
+    Role.getAllRole = () => Role.findAll({ where: { isActive: true }, order: [['id', 'ASC']] });
+
+    Role.deleteRole = (id) => Role.update({ isActive: false },{ where: { id}});
+
+    Role.associate = function(models) {
         Role.belongsToMany(models.user,{through: models.userRole});
-        Role.belongsToMany(models.permission,{through: models.rolePermission})
+        Role.belongsToMany(models.module,{through: models.roleModule});
+        Role.belongsToMany(models.permission,{through: models.rolePermission});
+        Role.belongsTo(models.user,{ foreignKey: 'createdBy', as: 'createdByUser' });
+        Role.belongsTo(models.user,{ foreignKey: 'updatedBy', as: 'updatedByUser' });
     }
 
     return Role;

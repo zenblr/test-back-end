@@ -1,5 +1,5 @@
 <div class="kt-portlet">
-	<div class="kt-portlet__head kt-portlet__head__custom">
+	<div class="kt-portlet__head kt-portlet__head__custom" style="padding: 0 15px 0;">
 		<div class="kt-portlet__head-progress">
 			<!-- here can place a progress bar-->
 			<mat-progress-bar mode="indeterminate" *ngIf="viewLoading"></mat-progress-bar>
@@ -19,10 +19,15 @@
 				</div>
 			</div>
 		</div>
-		<div class="kt-portlet__foot kt-portlet__no-border kt-portlet__foot--fit text-right">
-			<div class="kt-form__actions kt-form__actions--sm">
-				<button mat-button (click)="onNoClick()">Cancel</button>&nbsp;
-				<button mat-button (click)="onYesClick()" color="primary" cdkFocusInitial [disabled]="viewLoading">Delete</button>
+		<div class="kt-portlet__foot kt-portlet__no-border kt-portlet__foot--fit text-center">
+			<div class="kt-form__actions kt-form__actions--sm" style="padding: 15px;">
+				<!-- <button mat-button (click)="onNoClick()">Cancel</button>&nbsp;
+				<button mat-button (click)="onYesClick()" color="primary" cdkFocusInitial [disabled]="viewLoading">Delete</button> -->
+				<kt-button [type]="'submit'" [value]="'Yes'" (click)="onYesClick()">
+				</kt-button> &nbsp;
+				<kt-button [type]="'reset'" [value]="'No'" (click)="onNoClick()">
+				</kt-button>
+
 			</div>
 		</div>
 	</div>

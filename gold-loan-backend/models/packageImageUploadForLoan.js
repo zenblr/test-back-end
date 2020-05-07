@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         packetUniqueId: {
             type: DataTypes.STRING,
-            field: 'packet_with_weight'
+            field: 'packet_unique_id'
         },
         isActive: {
             type: DataTypes.BOOLEAN,
