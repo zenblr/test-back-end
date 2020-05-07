@@ -109,7 +109,11 @@ router.use('/modules',modules);
 
 const internalBranch=require('./internalBranch'); // internal branch module
 router.use('/internal-branch',internalBranch)
+
 const goldRate = require('./goldRate');
 router.use('/gold-rate', goldRate)
+
+const logisticPartner=require('./logisticPartner'); // logistic partner module
+router.use('/logistic-partner',logisticPartner)
 
 module.exports = router;
