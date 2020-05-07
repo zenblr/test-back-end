@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         // options
         freezeTableName: true,
-        tableName: 'loan_logger',
+        tableName: 'logger',
         timestamps: false
     });
 
