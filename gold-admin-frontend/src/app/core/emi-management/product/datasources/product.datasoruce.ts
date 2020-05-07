@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import {AddCategoryService} from '../services/add-category.service';
 import { BaseDataSource } from '../../../../core/_base/crud/index';
 
-export class AddCategoryDatasource extends BaseDataSource {
+export class ProductDatasource extends BaseDataSource {
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
     public loading$ = this.loadingSubject.asObservable();
@@ -17,7 +17,11 @@ export class AddCategoryDatasource extends BaseDataSource {
     ) {
         super();
     }
-    getAllProductData(from: number, to: number,search?:string){
+
+ 
+
+    
+    getAllProductListData(from: number, to: number,search?:string){ 
         this.loadingSubject.next(true);
         this.service.getProductList(from,to,search)
         .pipe(
@@ -35,27 +39,5 @@ export class AddCategoryDatasource extends BaseDataSource {
              )
              .subscribe();
      }
-     
-    getAllCategoryData(from: number, to: number,search?:string){ 
-       this.loadingSubject.next(true);
-       this.service.getCategoryList(from,to,search)
-       .pipe(
-           map(
-               data=>{
-                   this.paginatorTotalSubject.next(data.count);
-                   this.entitySubject.next(data.data);
-               }
-               ),
-                catchError(() => of([])),
-                finalize(() => {
-                    this.loadingSubject.next(false);
-                    this.isPreloadTextViewedSubject.next(false);
-                })
-            )
-            .subscribe();
-    }
-
- 
-  
 
 }

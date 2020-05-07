@@ -18,30 +18,30 @@ import { fromEvent, merge, Subscription } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 import {
   DeleteEntityDialogComponent,
-} from "../../../../partials/content/crud/index";
-import {LayoutUtilsService} from '../../../../../core/_base/crud/utils/layout-utils.service';
-import {AddEditCategoryComponent} from './add-edit-category/add-edit-category.component';
-import {AddCategoryDatasource , AddCategoryService,AddCategoryModel} from '../../../../../core/emi-management/product/index';
+} from "../../../../../partials/content/crud/index";
+import {LayoutUtilsService} from '../../../../../../core/_base/crud/utils/layout-utils.service';
+import {ProductEditComponent} from '../product-edit/product-edit.component';
+import {ProductDatasource , AddCategoryService,ProductModel} from '../../../../../../core/emi-management/product/index';
 
 
 
 @Component({
-  selector: 'kt-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.scss']
+  selector: 'kt-product-list',
+  templateUrl: './product-list.component.html',
+  styleUrls: ['./product-list.component.scss']
 })
-export class CategoryComponent implements OnInit, OnDestroy {
-  dataSource: AddCategoryDatasource;
-  displayedColumns: string[] = ["categoryName","conversionFactor","metalType", "action"];
+export class ProductListComponent implements OnInit, OnDestroy{
+  dataSource: ProductDatasource;
+  displayedColumns: string[] = ["productImage","sku","productName", "category" ,"subCategory","weight","price","manufacturingCostPerGram","shipping",'hallmarkingPackaging',"action" ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("searchInput", { static: true }) searchInput: ElementRef;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   filterStatus: string = "";
   filterType: string = "";
-  selection = new SelectionModel<AddCategoryModel>(true, []);
-  positionResult: AddCategoryModel[] = [];
+  selection = new SelectionModel<ProductModel>(true, []);
+  positionResult: ProductModel[] = [];
   private subscriptions: Subscription[] = [];
-  selectedMemberData: AddCategoryModel[] = [];
+  selectedMemberData: ProductModel[] = [];
   positionData = {
     From: 1,
     To: 50,
@@ -62,81 +62,70 @@ export class CategoryComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-  
-    this.dataSource = new AddCategoryDatasource(this.AddCategoryService);
+
+    this.dataSource = new ProductDatasource(this.AddCategoryService);
     const entitiesSubscription = this.dataSource.entitySubject
       .pipe(skip(1), distinctUntilChanged())
       .subscribe(res => {
         console.log(res);
         this.positionResult = res;
-      //  if (res.length) {
-      //      this.noRecords = false;
-      //     this.ref.detectChanges();
-      //   } else {
-      //     this.noRecords = true;
-      //     this.ref.detectChanges();
-      //   }
+        if (res.length) {
+          this.noRecords = false;
+          this.ref.detectChanges();
+        } else {
+          this.noRecords = true;
+          this.ref.detectChanges();
+        }
       });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.getAllCategoryData(
+    this.dataSource.getAllProductListData(
       this.positionData.From,
       this.positionData.To,
       this.positionData.Text
     );
   }
-  addCategory() {
-    const dialogRef = this.dialog.open(AddEditCategoryComponent, {
-      data: { title: "AddCategoryComponent", action: "add" },
-      width: "50vw"
-    });
-    dialogRef.afterClosed().subscribe(res => {
-      this.loadCategoryPage();
-    });
-  }
-
+  
+  
   editCategory(id) {
-    const categoryId = id;
-    const dialogRef = this.dialog.open(AddEditCategoryComponent, {
+    const productId = id;
+    const dialogRef = this.dialog.open(ProductEditComponent, {
       data: {
-        categoryId,
-        title: "AddCategoryComponent",
+        productId,
+        title: "editCategoryComponent",
         action: "edit"
       },
       width: "50vw"
     });
     dialogRef.afterClosed().subscribe(res => {
-      this.loadCategoryPage();
+      this.loadProductsPage();
     });
   }
 
 
-  deleteCategory(id) {
+  deleteProduct(id) {
 
-    const _title = 'Delete Category';
-    const _description = 'Are you sure to permanently delete this Category?';
-    const _waitDesciption = 'Category is deleting...';
-    const _deleteMessage = 'Category has been deleted';
-
+    const _title = 'Delete Product';
+    const _description = 'Are you sure to permanently delete this Product?';
+    const _waitDesciption = 'Product is deleting...';
+    const _deleteMessage = 'Product has been deleted';
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.AddCategoryService.deleteCategory(id).subscribe(
+        this.AddCategoryService.deleteProduct(id).subscribe(
                   res => {
                     this.toast.success("Success", "Category Deleted Successfully", {
                       timeOut: 3000
                     });
-                    this.loadCategoryPage();
+                    this.loadProductsPage();
                   },
                   err => {
                     this.toast.error("Sorry", err["error"]["message"], {
                       timeOut: 3000
                     });
-                    this.loadCategoryPage();
+                    this.loadProductsPage();
                   }
                 );
-
       }
-
     });
   }
 
@@ -150,19 +139,19 @@ export class CategoryComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         tap(() => {
           this.paginator.pageIndex = 0;
-          this.loadCategoryPage();
+          this.loadProductsPage();
         })
       )
       .subscribe();
     this.subscriptions.push(searchSubscription);
 
     const paginatorSubscriptions = merge(this.paginator.page)
-      .pipe(tap(() => this.loadCategoryPage()))
+      .pipe(tap(() => this.loadProductsPage()))
       .subscribe();
     this.subscriptions.push(paginatorSubscriptions);
   }
 
-  loadCategoryPage() {
+  loadProductsPage() {
     this.selection.clear();
     if (
       this.paginator.pageIndex < 0 ||
@@ -175,7 +164,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.positionData.From = from;
     this.positionData.To = to;
     this.positionData.Text = this.searchInput.nativeElement.value;
-    this.dataSource.getAllCategoryData(
+    this.dataSource.getAllProductListData(
       this.positionData.From,
       this.positionData.To,
       this.positionData.Text
@@ -191,7 +180,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   /*** Load Customers List from service through data-source ***/
 
   clearSearch() {
-    this.dataSource.getAllCategoryData(
+    this.dataSource.getAllProductListData(
       this.positionData.From,
       this.positionData.To,
       ""

@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {ProductListComponent} from './product/show-product/product-list/product-list.component';
+import {ProductEditComponent} from './product/show-product/product-edit/product-edit.component';
 // NGRX
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -29,7 +31,6 @@ import {
 import { CoreModule } from "../../../core/core.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ProductComponent } from './product/product.component';
-import { ShowProductsComponent } from './product/show-products/show-products.component';
 import { CategoryComponent } from './product/category/category.component';
 import { SubCategoryComponent } from './product/sub-category/sub-category.component';
 import { UploadProductComponent } from './product/upload-product/upload-product.component';
@@ -39,6 +40,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ConfigDetailsComponent } from './config-details/config-details.component';
 import { WalletPriceListComponent } from './config-details/wallet-price/wallet-price-list/wallet-price-list.component';
 import { WalletPriceAddComponent } from './config-details/wallet-price/wallet-price-add/wallet-price-add.component';
+import { ProductViewComponent } from './product/show-product/product-view/product-view.component';
 
 const routes: Routes = [
 	{
@@ -48,7 +50,7 @@ const routes: Routes = [
 			{ path: '', redirectTo: 'products', pathMatch: 'full' },
 			{
 				path: 'products',
-				component: ShowProductsComponent
+				component: ProductListComponent
 			},
 			{
 				path: 'category',
@@ -108,11 +110,14 @@ const routes: Routes = [
 		ActionNotificationComponent,
 		AddEditCategoryComponent,
 		WalletPriceAddComponent,
+		ProductEditComponent,
+		ProductViewComponent,
 	],
 	declarations: [
 		EMIManagementComponent,
+		ProductEditComponent,
+		ProductListComponent,
 		ProductComponent,
-		ShowProductsComponent,
 		CategoryComponent,
 		SubCategoryComponent,
 		UploadProductComponent,
@@ -123,6 +128,7 @@ const routes: Routes = [
 		WalletPriceListComponent,
 		WalletPriceAddComponent,
 		AddEditCategoryComponent,
+		ProductViewComponent,
 
 	]
 })

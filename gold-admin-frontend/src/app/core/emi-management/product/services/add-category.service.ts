@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {  BehaviorSubject } from 'rxjs';
 
 import { HttpUtilsService, QueryParamsModel } from '../../../../../app/core/_base/crud';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,18 @@ export class AddCategoryService {
   public getCategoryList(from: number, to: number, search: string): Observable<any> {
 		return this._http.get<any>(`http://173.249.49.7:9120/api/category?from=${from}&to=${to}&search=${search}`).pipe(
 
+			(map(allMemberData => {
+				return allMemberData
+			})),
+			(catchError(error => {
+				throw error;
+			}))
+		)
+	}
+
+	public getProductList(from: number, to: number, search: string): Observable<any> {
+		return this._http.get<any>(`http://173.249.49.7:9120/api/products?from=${from}&to=${to}&search=${search}`).pipe(
+
 			(tap(allMemberData => {
 				return allMemberData
 			})),
@@ -25,6 +37,8 @@ export class AddCategoryService {
 			}))
 		)
 	}
+
+	
 	deleteCategory(id){
 		return this._http.delete(`http://173.249.49.7:9120/api/category/`+ id)
 	}
@@ -42,5 +56,17 @@ export class AddCategoryService {
 	}
 	getMetalList(){
 		return this._http.get(`http://173.249.49.7:9120/api/metal-type`);
+	}
+
+
+	deleteProduct(id){
+		return this._http.delete(`http://173.249.49.7:9120/api/products/`+ id)
+	}
+	getSingleProduct(id){
+		return this._http.get(`http://173.249.49.7:9120/api/products/`+ id);
+	}
+	editProduct(data, id){
+
+		return this._http.patch<any>(`http://173.249.49.7:9120/api/products/` + id, data);
 	}
 }
