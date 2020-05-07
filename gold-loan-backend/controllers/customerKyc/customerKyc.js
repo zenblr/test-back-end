@@ -83,9 +83,9 @@ exports.getCustomerDetails = async (req, res, next) => {
         return res.status(404).json({ message: "Your Mobile number does not exist, please add lead first" });
     }
 
-    let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    let status = await models.status.findOne({ where: { statusName: "approved" } })
     if (check.isEmpty(status)) {
-        return res.status(404).json({ message: "Status confirm is not there in status table" });
+        return res.status(404).json({ message: "Status approved is not there in status table" });
     }
     let statusId = status.id
     let checkStatusCustomer = await models.customer.findOne({
