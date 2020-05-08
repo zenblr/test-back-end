@@ -1,5 +1,8 @@
 const models = require('../../models');
 const { paginationWithFromTo } = require("../../utils/pagination");
+const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
+
 
 
 // add logistic partner
@@ -67,4 +70,14 @@ exports.deactiveLogisticPartner = async (req, res) => {
     let deactiveLogisticPartner = await models.logisticPartner.update({ isActive: false }, { where: { id,isActive:true } });
     if (!deactiveLogisticPartner[0]) { return res.status(404).json({ message: 'logistic partner delete failed ' }) }
     return res.status(200).json({ message: 'Updated' })
+}
+
+// get all logistic partner without pagination
+
+exports.getAllLogisticPartner= async (req,res)=>{
+    let getAllLogisticPartner= await models.logisticPartner.findAll({Where:{isActive:true}});
+    if(!getAllLogisticPartner[0]){
+        return res.status(404).json({message:'data not found'})
+    }
+    return res.status(200).json(getAllLogisticPartner);
 }
