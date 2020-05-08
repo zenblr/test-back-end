@@ -8,7 +8,7 @@ import { HttpUtilsService, QueryParamsModel, QueryResultsModel } from '../../_ba
 // Models
 import { ProductModel } from '../_models/product.model';
 
-const API_PRODUCTS_URL = 'api/products';
+const API_PRODUCTS_URL = '';
 // Real REST API
 @Injectable()
 export class ProductsService {
