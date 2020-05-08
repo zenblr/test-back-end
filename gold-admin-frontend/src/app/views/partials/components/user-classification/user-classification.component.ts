@@ -13,7 +13,9 @@ import { ToastrService } from 'ngx-toastr';
 export class UserClassificationComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
-  kycStatus = [{ value: 'confirm', name: 'confirm' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
+  cceKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }];
+  bmKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
+
   // kycStatus = [];
   rating = [];
   custClassificationForm: FormGroup;

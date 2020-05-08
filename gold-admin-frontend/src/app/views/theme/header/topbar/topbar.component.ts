@@ -6,6 +6,7 @@ import { CustomerManagementService } from '../../../../core/customer-management/
 import { LoanSettingsService } from '../.././../../core/loan-setting'
 import { PartnerService } from '../.././../../core/user-management/partner/services/partner.service';
 import { BranchService } from '../.././../../core/user-management/branch/services/branch.service';
+import { WalletPriceService } from '../.././../../core/emi-management/config-details/wallet-price/services/wallet-price.service';
 import { RolesService } from '../.././../../core/user-management/roles';
 import { BrokerService } from '../../../../core/user-management/broker';
 import { SubheaderService } from '../../../../core/_base/layout';
@@ -53,7 +54,8 @@ export class TopbarComponent implements OnInit {
 		private partnerService: PartnerService,
 		private branchService: BranchService,
 		private rolesService: RolesService,
-		private brokerService: BrokerService) {
+		private brokerService: BrokerService,
+		private walletPriceService: WalletPriceService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -159,6 +161,19 @@ export class TopbarComponent implements OnInit {
 			this.type1 = 'button';
 			this.value1 = 'Add Merchant';
 		}
+		if (this.path == 'wallet-price') {
+			this.rightButton = true
+			this.type2 = 'button';
+			this.value2 = 'Edit Wallet Price';
+		}
+		if (this.path == 'bulkUploadReport') {
+			this.showfilter = true;
+			this.showInput = true;
+		}
+		if (this.path == 'products') {
+			this.showfilter = true;
+			this.showInput = true;
+		}
 	}
 
 	action(event: Event) {
@@ -183,6 +198,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'merchant') {
 			this.router.navigate(['/user-management/add-merchant'])
+		}
+		if (this.path == 'wallet-price') {
+			this.walletPriceService.openModal.next(true)
 		}
 	}
 

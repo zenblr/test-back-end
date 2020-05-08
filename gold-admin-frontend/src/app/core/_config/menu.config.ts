@@ -219,60 +219,112 @@ export class MenuConfig {
 					]
 				},
 				{
+					title: 'EMI Management',
+					root: true,
+					src: 'assets/media/aside-icons/icons-04.svg',
+					page: '/emi-management',
+				},
+				{
 					title: 'Log Out',
 					src: 'assets/media/aside-icons/icons-12.svg',
 				}
 			],
-			itemsTwo: [
 
+			itemsTwo: [
 				{
 					title: 'Partner',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/partner',
-
 				},
 				{
 					title: 'Branch',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/branch',
-
 				},
 				{
 					title: 'Internal User',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/internal-user',
-
 				},
 				{
 					title: 'Assign Appraiser',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/assign-appraiser',
-
 				},
 				{
 					title: 'Merchant',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/merchant',
-
 				},
 				{
 					title: 'Broker',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/broker',
-
 				},
 				{
 					title: 'Roles and permissions',
 					icon: 'flaticon2-architecture-and-city',
 					root: true,
 					page: '/user-management/roles',
+				},
+				{
+					title: 'Back',
+					icon: 'flaticon-logout',
+					root: true,
+					page: '/dashboard',
+				},
+			],
 
+			itemsThree: [
+				{
+					title: 'Product',
+					root: true,
+					src: 'assets/media/aside-icons/icons-03.svg',
+					submenu: [
+						{
+							title: 'Show Product',
+							page: '/emi-management/products',
+						},
+						{
+							title: 'Category',
+							page: '/emi-management/category',
+						},
+						{
+							title: 'Sub-Category',
+							page: '/emi-management/sub-category',
+						},
+						{
+							title: 'Bulk Upload Product',
+							page: '/emi-management/upload-product',
+						},
+						{
+							title: 'Upload Design',
+							page: '/emi-management/upload-design',
+						},
+					]
+				},
+				{
+					title: 'Bulk Upload Report',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					page: '/emi-management/bulkUploadReport',
+				},
+				{
+					title: 'Config Details',
+					root: true,
+					src: 'assets/media/aside-icons/icons-03.svg',
+					submenu: [
+						{
+							title: 'Wallet Price',
+							page: '/emi-management/wallet-price',
+						},
+					]
 				},
 				{
 					title: 'Back',
