@@ -276,6 +276,13 @@ export class MenuConfig {
 
 				},
 				{
+					title: 'Store',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					page: '/user-management/store',
+
+				},
+				{
 					title: 'Roles and permissions',
 					icon: 'flaticon2-architecture-and-city',
 					root: true,
