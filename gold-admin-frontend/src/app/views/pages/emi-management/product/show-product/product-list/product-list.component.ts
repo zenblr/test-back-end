@@ -32,15 +32,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   filterStatus: string = "";
   filterType: string = "";
-  // selectedMemberData: ProductModel[] = [];
-  // positionData = {
-  //   From: 1,
-  //   To: 50,
-  //   Text: ""
-  // };
-  // public spinnerValue: boolean = false;
-  // public noRecords: boolean;
-
 
   constructor(
     public dialog: MatDialog,
@@ -130,28 +121,23 @@ export class ProductListComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteProduct(id) {
+  deleteProduct(product) {
     const _title = 'Delete Product';
-    const _description = 'Are you sure to permanently delete this Product?';
+    const _description = 'Are you sure to permanently delete this product?';
     const _waitDesciption = 'Product is deleting...';
-    const _deleteMessage = 'Product has been deleted';
+    const _deleteMessage = `Product has been deleted`;
+
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.productService.deleteProduct(id).subscribe(
-          res => {
-            this.toast.success("Success", "Category Deleted Successfully", {
-              timeOut: 3000
-            });
-            this.loadProductsPage();
-          },
-          err => {
-            this.toast.error("Sorry", err["error"]["message"], {
-              timeOut: 3000
-            });
-            this.loadProductsPage();
-          }
-        );
+        console.log(res);
+        this.productService.deleteProduct(product.id).subscribe(successDelete => {
+          this.toastr.successToastr(_deleteMessage);
+          this.loadProductsPage();
+        },
+          errorDelete => {
+            this.toastr.errorToastr(errorDelete.error.message);
+          });
       }
     });
   }
