@@ -4,7 +4,7 @@
 
 <div class="kt-portlet">
     <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
-    <div class="kt-portlet__body">
+    <div class="kt-portlet__body" *ngIf="data.action != 'view'">
         <div class="kt-form">
             <form [formGroup]="productForm">
 
@@ -118,6 +118,79 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+    <div class="kt-portlet__body font-weight-500" *ngIf="data.action == 'view' && productData">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center">
+                    <img class="viewProductImage" [src]="productData?.productImage">
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">SKU Code:</div>
+                    <div class="col-6">{{productData?.sku}}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Product Name:</div>
+                    <div class="col-6">{{productData?.productName}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Category:</div>
+                    <div class="col-6">{{productData?.subCategory?.category?.categoryName | titlecase}}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Sub Category:</div>
+                    <div class="col-6">{{productData?.subCategory?.subCategoryName | titlecase}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Weight(gm):</div>
+                    <div class="col-6">{{productData?.weight}}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Price:</div>
+                    <div class="col-6">{{productData?.productPrice[0]?.finalProductPrice}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Manufacturing Charges:</div>
+                    <div class="col-6">{{productData?.manufacturingCostPerGram}}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Shipping Charges:</div>
+                    <div class="col-6">{{productData?.shipping}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Hallmarking & Packaging Charges:</div>
+                    <div class="col-6">{{productData?.hallmarkingPackaging}}</div>
+                </div>
+            </div>
         </div>
     </div>
     <kt-portlet-footer *ngIf="data.action != 'view'">

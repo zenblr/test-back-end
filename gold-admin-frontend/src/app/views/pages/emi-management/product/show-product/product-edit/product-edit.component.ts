@@ -15,6 +15,7 @@ export class ProductEditComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   productForm: FormGroup;
   subcategories: any;
+  productData: any;
   editData = false;
   viewOnly = false;
   viewLoading = false;
@@ -35,7 +36,6 @@ export class ProductEditComponent implements OnInit {
     console.log(this.data);
     this.formInitialize();
     this.setForm();
-    this.getSubCategory();
   }
 
   formInitialize() {
@@ -59,6 +59,7 @@ export class ProductEditComponent implements OnInit {
       this.title = 'Edit Product'
       this.isMandatory = true
       this.getSingleProductData(this.data.productId);
+      this.getSubCategory();
     } else {
       this.title = 'View Product'
       this.productForm.disable();
@@ -116,6 +117,7 @@ export class ProductEditComponent implements OnInit {
     this.productService.getSingleProduct(id).subscribe(
       res => {
         console.log(res);
+        this.productData = res;
         this.productForm.patchValue(res);
         this.productForm.controls['price'].patchValue(res.productPrice[0].finalProductPrice);
         this.ref.detectChanges();
