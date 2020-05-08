@@ -21,7 +21,7 @@ export class PartnerService {
     return this.http.get<any>(`/api/partner?search=${search}&from=${from}&to=${to}`);
   }
 
-  getAllPartnerWithoutPagination(search?, from?, to?): Observable<any> {
+  getAllPartnerWithoutPagination(): Observable<any> {
     return this.http.get<any>(`/api/partner?&from=${1}&to=${-1}`);
   }
 

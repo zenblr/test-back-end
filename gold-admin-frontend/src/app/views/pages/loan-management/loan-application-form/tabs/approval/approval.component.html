@@ -1,5 +1,5 @@
 <div class="container">
-    <form >
+    <form [formGroup]="approvalForm">
         <div class="row justify-content-center ">
             <div class="col-8 bordered">
                 <div class="row head">
@@ -12,8 +12,10 @@
                         <label for="">Loan Application Form</label>
                     </div>
                     <div class="col-4 border text-center">
-                        <!-- <img src="../../../../../../../assets/media/icons/correct.svg" alt=""> -->
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" alt="">
+                        <img src="../../../../../../../assets/media/icons/correct.svg" *ngIf="controls.applicationFormForAppraiser.value"
+                        (click)="approvalOfAppraiser(false,'form')">
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" *ngIf="!controls.applicationFormForAppraiser.value"
+                        (click)="approvalOfAppraiser(true,'form')">
                     </div>
                     <div class="col-4 text-center">
                         <!-- <img src="../../../../../../../assets/media/icons/correct.svg" alt=""> -->
@@ -25,8 +27,10 @@
                         <label>Gold Value</label>
                     </div>
                     <div class="col-4 border text-center">
-                        <!-- <img src="../../../../../../../assets/media/icons/correct.svg" alt=""> -->
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" alt="">
+                        <img src="../../../../../../../assets/media/icons/correct.svg" *ngIf="controls.goldValuationForAppraiser.value" 
+                        (click)="approvalOfAppraiser(false,'gold')">
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" *ngIf="!controls.goldValuationForAppraiser.value" 
+                        (click)="approvalOfAppraiser(true,'gold')">
 
                     </div>
                     <div class="col-4 text-center">
@@ -40,7 +44,7 @@
                         <label for="">Final Status</label>
                     </div>
                     <div class="col-4 border text-center select">
-                        <select class="form-control ">
+                        <select class="form-control " formControlName="loanStatusForAppraiser">
                             <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
                             <option [value]="status.value" *ngFor="let status of appraiser">{{status.name | titlecase}}</option>
                         </select>
@@ -54,11 +58,5 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-8 kt-margin-t-20 kt-margin-b-20">
-                <kt-button [value]="'Submit'" [type]="'submit'" (action)="submit()"></kt-button>
-            </div>
-        </div>
-
     </form>
 </div>

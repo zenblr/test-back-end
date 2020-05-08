@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
 @Component({
   selector: 'kt-kyc-details',
@@ -38,16 +38,48 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
 
   initForm() {
     this.kycForm = this.fb.group({
-      aadharNumber: [, [Validators.required, Validators.minLength(12)]],
-      permanentAddress: [, Validators.required],
-      pincode: [, [Validators.required, Validators.minLength(6)]],
-      officeAddress: [, Validators.required]
-    })
+        customerId: [],
+        customerKycId: [],
+        identityTypeId: [''],
+        identityProof: [''],
+        identityProofNumber: [''],
+        address: this.fb.array([
+          this.fb.group({
+            addressType: ['permanent'],
+            addressProofTypeId: [''],
+            addressProofNumber: [],
+            address: [''],
+            stateId: [],
+            cityId: [],
+            pinCode: [],
+            addressProof: ['']
+          }),
+          this.fb.group({
+            addressType: ['residential'],
+            addressProofTypeId: [''],
+            addressProofNumber: [],
+            address: [''],
+            stateId: [''],
+            cityId: [''],
+            pinCode: [''],
+            addressProof: ['']
+          })
+        ])
+      });
     this.kycEmit.emit(this.kycForm)
   }
 
   get controls() {
     return this.kycForm.controls
+  }
+ 
+
+  get addressControls() {
+    return (<FormArray>this.kycForm.controls.address as FormArray);
+
+    // console.log(control);
+    // return control.at(0) as FormGroup;
+
   }
 
 }

@@ -4,20 +4,28 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label>Customer ID</label>
+                        <label>Parnter Name</label>
                     </div>
                     <div class="col-7">
-                        <input class="form-control" formControlName="customerId" placeholder="CUSTID86742" />
+                        <select formControlName="partnerName" class="form-control" (change)="getSchemes()">
+                            <option value="" [selected]="true" [disabled]="true">Select Partner</option>
+                            <option [value]="partner.id" *ngFor="let partner of partnerList">
+                                {{partner.name | titlecase}}
+                            </option>
+                        </select>
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label>Loan ID</label>
+                        <label>Scheme Name</label>
                     </div>
                     <div class="col-7">
-                        <input class="form-control" formControlName="loanId" placeholder="LOANID86742" />
+                        <select formControlName="schemeName" class="form-control">
+                            <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
+                            <option [value]="schemes.id" *ngFor="let schemes of schemesList.schemes">{{schemes.schemeName}}</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -30,7 +38,7 @@
                         <label>Loan Amount</label>
                     </div>
                     <div class="col-7">
-                        <input class="form-control" formControlName="loanAmount" placeholder="0,00,000" />
+                        <input class="form-control" formControlName="finalLoanAmount" placeholder="0,00,000" />
                     </div>
                 </div>
             </div>
@@ -40,7 +48,10 @@
                         <label>Tenure</label>
                     </div>
                     <div class="col-7">
-                        <input class="form-control" formControlName="tenure" placeholder="0 Years" />
+                        <select formControlName="tenure" class="form-control">
+                            <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
+                            <option [value]="ten" *ngFor="let ten of tenure">{{ten}}</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -53,7 +64,7 @@
                         <label>Start Date</label>
                     </div>
                     <div class="col-7">
-                        <input class="form-control" formControlName="startDate" placeholder="01 Januaury, 2020" />
+                        <input class="form-control" formControlName="loanStartDate" placeholder="01 Januaury, 2020" />
                     </div>
                 </div>
             </div>
@@ -63,7 +74,7 @@
                         <label>Loan Repay Date</label>
                     </div>
                     <div class="col-7">
-                        <input class="form-control" formControlName="loanRepayDate" placeholder="02 May, 2020" />
+                        <input class="form-control" formControlName="loanEndDate" placeholder="02 May, 2020" />
                     </div>
                 </div>
             </div>
@@ -86,9 +97,9 @@
                         <label>Repay Date Type</label>
                     </div>
                     <div class="col-7">
-                        <select class="form-control" formControlName="repayDateType">
-                            <option value="monthly" [selected]="true">Monthly</option>
-                            <option value="oneShot" [selected]="true">One Shot Payment</option>
+                        <select class="form-control" formControlName="paymentType">
+                            <option value="" [selected]="true" [disabled]="true">Select Repay Period</option>
+                            <option [value]="pay.name" *ngFor="let pay of repayType">{{pay.name | titlecase}}</option>
                         </select>
                     </div>
                 </div>

@@ -9,35 +9,43 @@
                 <ng-container matColumnDef="fullName">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.firstName | titlecase}}&nbsp;{{role.lastName | titlecase}}
+                    <mat-cell *matCellDef="let role">{{role.customer.firstName | titlecase}}&nbsp;{{role.customer.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
-
+                <ng-container matColumnDef="customerID">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.customer.customerUniqueId}}</mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="mobile">
                     <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.customer.mobileNumber}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.panCardNumber | uppercase}}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="state">
-                    <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.state.name | titlecase}}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="city">
-                    <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.city.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.customer.panCardNumber | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
-                    <mat-header-cell *matHeaderCellDef>Date & Time</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.state.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="schemeName">
+                    <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.finalCalculator.schemeName | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="appraisalApproval">
+                    <mat-header-cell *matHeaderCellDef>Appraisal Approval</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span class="d-block">{{role.updatedAt | date:'mediumDate'}},&nbsp;</span>
-                        <span class="d-block">{{role.updatedAt | date:'shortTime'}}</span>
+                        {{role.loanStatusForAppraiser}}>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="bMApproval">
+                    <mat-header-cell *matHeaderCellDef>Loan Application</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        {{role.loanStatusForBM}}>
                     </mat-cell>
                 </ng-container>
 

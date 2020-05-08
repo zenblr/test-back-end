@@ -82,7 +82,7 @@ export class LoanSchemeComponent implements OnInit {
 
   addScheme() {
     const dialogRef = this.dialog.open(AddSchemeComponent, {
-      width: '650px'
+      width: '600px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

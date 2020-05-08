@@ -40,6 +40,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
       nomineeName:[,[Validators.required,Validators.pattern('^[a-zA-Z ]*$')]],
       nomineeAge:[,Validators.required],
       relationship:[,[Validators.required,Validators.pattern('^[a-zA-Z ]*$')]],
+      nomineeType:["major"],
       guardianName:[,[Validators.required,Validators.pattern('^[a-zA-Z ]*$')]],
       guardianAge:[,[Validators.required,Validators.pattern('^(?:1[01][0-9]|120|1[7-9]|[2-9][0-9])$')]],
       guardianRelationship:[,[Validators.required,Validators.pattern('^[a-zA-Z ]*$')]],
@@ -52,6 +53,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
     console.log(this.controls.nomineeAge.value);
     if(this.controls.nomineeAge.value == null || this.controls.nomineeAge.value > 18){
       this.showHide = false
+      this.controls.nomineeType.patchValue("major")
       this.controls.guardianAge.disable();
       this.controls.guardianName.disable();
       this.controls.guardianRelationship.disable();
@@ -61,6 +63,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
       this.controls.guardianAge.enable();
       this.controls.guardianName.enable();
       this.controls.guardianRelationship.enable();
+      this.controls.nomineeType.patchValue("minor")
     }
     
   }
