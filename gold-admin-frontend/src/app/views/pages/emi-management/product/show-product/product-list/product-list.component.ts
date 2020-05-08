@@ -98,7 +98,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.productResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadProducts(1, 25, this.searchValue, '', '', '');
+    this.dataSource.loadProducts('', '', this.searchValue, '', '', '');
   }
 
   editCategory(id) {
@@ -113,6 +113,20 @@ export class ProductListComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(res => {
       this.loadProductsPage();
+    });
+  }
+
+  editProduct(product) {
+    console.log(product);
+    const dialogRef = this.dialog.open(ProductEditComponent,
+      {
+        data: { productId: product.id, action: 'edit' },
+        width: '550px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadProductsPage();
+      }
     });
   }
 
@@ -164,10 +178,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   /*** On Destroy ***/
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
-  }
-
-  editProduct(product) {
-
   }
 
   viewProduct(product) {

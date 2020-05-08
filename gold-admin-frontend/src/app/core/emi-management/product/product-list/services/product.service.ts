@@ -20,11 +20,11 @@ export class ProductService {
 		return this.http.delete(`/api/products/` + id)
 	}
 
-	getSingleProduct(id) {
-		return this.http.get(`/api/products/` + id);
+	getSingleProduct(id): Observable<any> {
+		return this.http.get<any>(`/api/products/` + id);
 	}
 
-	editProduct(data, id) {
+	editProduct(id, data) {
 		return this.http.put<any>(`/api/products/` + id, data);
 	}
 }

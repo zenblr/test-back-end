@@ -24,7 +24,7 @@
 
         <!-- MATERIAL TABLE | Binded to datasources -->
         <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
-        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
+        <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
                 <!-- Checkbox Column -->
@@ -47,11 +47,11 @@
 
                 <ng-container matColumnDef="productImage">
                     <mat-header-cell *matHeaderCellDef>Design</mat-header-cell>
-                    <span>
-                        <mat-cell *matCellDef="let element" matTooltipClass="primary-tooltip">
-                            <img height="60" width="60" [src]="element?.productImage">
-                        </mat-cell>
-                    </span>
+                    <mat-cell *matCellDef="let element" matTooltipClass="primary-tooltip">
+                        <div class="pt-2 pr-2 pb-2">
+                            <img height="40" width="40" [src]="element?.productImage">
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="sku">
                     <mat-header-cell *matHeaderCellDef>SKU Code</mat-header-cell>
@@ -71,15 +71,15 @@
                     <mat-cell *matCellDef="let element">{{element?.subCategory?.subCategoryName | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="weight">
-                    <mat-header-cell *matHeaderCellDef>Wt(gm)</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Weight(gm)</mat-header-cell>
                     <mat-cell *matCellDef="let element">{{element?.weight}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="price">
                     <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.price}}</mat-cell>
+                    <mat-cell *matCellDef="let element">{{element?.productPrice[0]?.finalProductPrice}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="manufacturingCostPerGram">
-                    <mat-header-cell *matHeaderCellDef>Manufacturing cost/gm</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Manufacturing Charges</mat-header-cell>
                     <mat-cell *matCellDef="let element">{{element?.manufacturingCostPerGram}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="shipping">
@@ -87,23 +87,23 @@
                     <mat-cell *matCellDef="let element">{{element?.shipping}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="hallmarkingPackaging">
-                    <mat-header-cell *matHeaderCellDef>Hallmark Packaging</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Hallmarking & Packaging Charges</mat-header-cell>
                     <mat-cell *matCellDef="let element">{{element?.hallmarkingPackaging}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="viewProduct(element.id)" class="kt-pointer"> View | &nbsp;</div>
-                            <div (click)="editProduct(element.id)" class="kt-pointer"> Edit | &nbsp;</div>
+                            <div (click)="viewProduct(element)" class="kt-pointer"> View | &nbsp;</div>
+                            <div (click)="editProduct(element)" class="kt-pointer"> Edit | &nbsp;</div>
                             <div class="kt-pointer text-danger" (click)="deleteProduct(element.id)">Delete</div>
                         </div>
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 150%;"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 150%;"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
@@ -112,8 +112,7 @@
         </div>
 
         <!-- start: BOTTOM -->
-        <div class="mat-table__bottom">
-            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+        <div class="mat-table__bottom d-none">
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
             <!-- MATERIAL PAGINATOR | Binded to dasources -->
             <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->

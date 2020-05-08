@@ -2,8 +2,9 @@ import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angula
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { ToastrService } from 'ngx-toastr';
-import {ProductService} from '../../../../../../core/emi-management/product/product-list/services/product.service';
+import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
+import { ProductService } from '../../../../../../core/emi-management/product/product-list/services/product.service';
+import { SubCategoryService } from '../../../../../../core/emi-management/product/sub-category/services/sub-category.service';
 
 @Component({
   selector: 'kt-product-edit',
@@ -11,94 +12,121 @@ import {ProductService} from '../../../../../../core/emi-management/product/prod
   styleUrls: ['./product-edit.component.scss']
 })
 export class ProductEditComponent implements OnInit {
-
-
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  productForm: FormGroup;
+  subcategories: any;
+  editData = false;
+  viewOnly = false;
+  viewLoading = false;
   title: string;
-  editProduct: FormGroup;
-  isMandatory: boolean = false;
+  isMandatory = false
 
   constructor(
     public dialogRef: MatDialogRef<ProductEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, public fb: FormBuilder,
-    public ProductService: ProductService,
-    public toast: ToastrService , public ref: ChangeDetectorRef ,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private sharedService: SharedService,
+    private fb: FormBuilder,
+    private productService: ProductService,
+    private subCategoryService: SubCategoryService,
+    private ref: ChangeDetectorRef,
   ) { }
 
-ngOnInit() {
-  console.log(this.data);
-  this.formdata();
-  this.setForm();
-
-}
-formdata() {
-  this.editProduct = this.fb.group({
-    subCategoryName :['',Validators.required],
-    // sku :['', Validators.required],
-    productName : ['',Validators.required],
-    weight: ['',Validators.required],
-    productImage : ['' , Validators.required],
-    manufacturingCostPerGram : ['', Validators.required],
-    hallmarkingPackaging : ['',Validators.required],
-    shipping : ['', Validators.required],
-    productImages : ['',Validators.required],
-
-  });
-}
-setForm() {
-    this.title = 'Edit Category';
-    this.isMandatory = true;
-    this.getSingleProductData(this.data.productId);  
-}
-
-action(event: Event) {
-  if (event) {
-    this.onSubmit();
-  } else if (!event) {
-    this.dialogRef.close();
+  ngOnInit() {
+    console.log(this.data);
+    this.formInitialize();
+    this.setForm();
+    this.getSubCategory();
   }
-}
 
-onSubmit(){
-  const productData = this.editProduct.value;
- 
+  formInitialize() {
+    this.productForm = this.fb.group({
+      id: [''],
+      subCategoryId: ['', Validators.required],
+      sku: [''],
+      productName: ['', Validators.required],
+      weight: ['', Validators.required],
+      price: [],
+      productImage: ['', Validators.required],
+      manufacturingCostPerGram: ['', Validators.required],
+      hallmarkingPackaging: ['', Validators.required],
+      shipping: ['', Validators.required],
+      // productImages: ['', Validators.required],
+    });
+  }
 
-  this.ProductService.editProduct(productData , this.data.categoryId).subscribe(
-    res=>{
-      this.toast.success("Success", "Product Updated Successfully", {
-        timeOut: 3000
-        });
-      this.dialogRef.close();
-    },
-    err=>{
-      this.toast.error('Sorry', err['error']['message'], {
-        timeOut: 3000
-      });
-      this.dialogRef.close();
+  setForm() {
+    if (this.data.action == 'edit') {
+      this.title = 'Edit Product'
+      this.isMandatory = true
+      this.getSingleProductData(this.data.productId);
+    } else {
+      this.title = 'View Product'
+      this.productForm.disable();
+      this.getSingleProductData(this.data.productId);
     }
-  )
+  }
 
-}
+  get controls() {
+    return this.productForm.controls;
+  }
 
-
-
-
-
-get controls() {
-  return this.editProduct.controls;
-}
-getSingleProductData(id){
-  this.ProductService.getSingleProduct(id).subscribe(
-    res=>{
-      console.log(res);
-    //   console.log(res[0]['categoryName']);
-    //   this.addCategory.setValue({categoryName : res['categoryName']});
-    this.editProduct.patchValue(res[0]);
+  getSubCategory() {
+    this.subCategoryService.getSubCategory().subscribe(res => {
+      this.subcategories = res.data;
       this.ref.detectChanges();
     },
-    err =>{
-      console.log(err);
-    }
-  )
-}
+      error => {
+      });
+  }
 
+  action(event: Event) {
+    if (event) {
+      this.onSubmit()
+    } else if (!event) {
+      this.dialogRef.close()
+    }
+  }
+
+  onSubmit() {
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched()
+      return;
+    }
+    const productData = this.productForm.value;
+    const id = this.controls.id.value;
+
+    if (this.data.action == 'edit') {
+      this.productService.editProduct(id, productData).subscribe(res => {
+        if (res) {
+          const msg = 'Product Updated Sucessfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
+    }
+  }
+
+  getSingleProductData(id) {
+    this.viewLoading = true
+    this.productService.getSingleProduct(id).subscribe(
+      res => {
+        console.log(res);
+        this.productForm.patchValue(res);
+        this.productForm.controls['price'].patchValue(res.productPrice[0].finalProductPrice);
+        this.ref.detectChanges();
+      },
+      err => {
+        console.log(err);
+      }
+    )
+  }
+
+  onAlertClose($event) {
+    // this.hasFormErrors = false;
+  }
 }
