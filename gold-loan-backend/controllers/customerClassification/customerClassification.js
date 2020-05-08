@@ -26,18 +26,18 @@ exports.addCceRating = async (req, res, next) => {
         }
 
         await sequelize.transaction(async (t) => {
-            await models.customer.update(
+            await models.customerKyc.update(
                 { cceVerifiedBy: cceId, isKycSubmitted: true },
-                { where: { id: customerId }, transaction: t })
+                { where: { customerId: customerId }, transaction: t })
 
             await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, reasonFromCce, cceId }, { transaction: t })
         });
     } else {
         reasonFromCce = ""
         await sequelize.transaction(async (t) => {
-            await models.customer.update(
+            await models.customerKyc.update(
                 { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true },
-                { where: { id: customerId }, transaction: t })
+                { where: { customerId: customerId }, transaction: t })
 
             await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId }, { transaction: t })
         });
@@ -46,8 +46,8 @@ exports.addCceRating = async (req, res, next) => {
 }
 
 
-exports.updateRating = async(req, res, next) =>{
-    
+exports.updateRating = async (req, res, next) => {
+
 }
 
 
