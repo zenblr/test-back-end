@@ -12,8 +12,8 @@ export class LoanManagementService {
     private http:HttpClient
   ) { }
 
-  getAllLoans(search,from,to):Observable<any>{
-    return this.http.get(`/api/loan-process/loan-details?search=${search}&from=${from}&to=${to}`).pipe(
+  getAplliedLoans(search,from,to):Observable<any>{
+    return this.http.get(`/api/loan-process/applied-loan-details?search=${search}&from=${from}&to=${to}`).pipe(
       map(res =>res)
     )
   }

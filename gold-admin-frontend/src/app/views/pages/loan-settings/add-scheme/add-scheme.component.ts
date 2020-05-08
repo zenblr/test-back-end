@@ -36,7 +36,7 @@ export class AddSchemeComponent implements OnInit {
 
   partner() {
 
-    this.partnerService.getAllPartner('', 1, 50).pipe(
+    this.partnerService.getAllPartnerWithoutPagination().pipe(
       map(res => {
         this.partnerData = res.data;
         this.ref.detectChanges();

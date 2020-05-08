@@ -6,7 +6,7 @@ import { BaseDataSource } from '../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
 import { LoanManagementService } from '../services/loan-management.service';
 
-export class LoanManagementDatasource extends BaseDataSource {
+export class PacketsDatasource extends BaseDataSource {
 
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);

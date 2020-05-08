@@ -27,11 +27,12 @@ export class LoanApplicationFormComponent implements OnInit {
   selected: number;
   intreset: any;
   approval: any;
+  Ornaments: any;
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
   ) {
-
+    
   }
 
   ngOnInit() {
@@ -67,8 +68,12 @@ export class LoanApplicationFormComponent implements OnInit {
     this.intreset = event
   }
 
-  approvalFormEmit() {
+  approvalFormEmit(event) {
     this.approval = event
+  }
+
+  OrnamentsDataEmit(event){
+    this.Ornaments = event
   }
 
   cancel() {
@@ -107,9 +112,24 @@ export class LoanApplicationFormComponent implements OnInit {
       return
     }
 
+    
+
   }
 
   apply() {
-    this.checkForFormValidation()
+    // this.checkForFormValidation();
+    const arrObj = [];
+    let Obj
+  //  arrObj.push(this.Ornaments.value)
+   arrObj.push(this.approval.value)
+   arrObj.push(this.intreset.value)
+   arrObj.push(this.basic.value)
+   arrObj.push(this.bank.value)
+   arrObj.push(this.kyc.value)
+   Obj = arrObj.reduce(((r, c) => Object.assign(r, c)), {});
+   Obj.nomineeData = [this.nominee.value]
+   Obj.ornamentData = this.Ornaments.value;
+   console.log(JSON.stringify(Obj))
+
   }
 }

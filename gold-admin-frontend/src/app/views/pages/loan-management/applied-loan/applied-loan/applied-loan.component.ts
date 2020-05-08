@@ -12,7 +12,7 @@ import { LoanManagementDatasource,LoanManagementService } from '../../../../../c
 export class AppliedLoanComponent implements OnInit {
 
   dataSource: LoanManagementDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'status', 'actions'];
+  displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -37,7 +37,7 @@ export class AppliedLoanComponent implements OnInit {
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
-        this.loadLeadsPage();
+        this.loadAppliedLoansPage();
       })
     )
       .subscribe();
@@ -47,7 +47,7 @@ export class AppliedLoanComponent implements OnInit {
       .subscribe(res => {
         this.searchValue = res;
         this.paginator.pageIndex = 0;
-        this.loadLeadsPage();
+        this.loadAppliedLoansPage();
       });
 
     // Init DataSource
@@ -63,7 +63,7 @@ export class AppliedLoanComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadLeads(this.searchValue,1, 25);
+    this.dataSource.loadAppliedLoans(this.searchValue,1, 25);
 
   }
 
@@ -76,13 +76,13 @@ export class AppliedLoanComponent implements OnInit {
   }
 
 
-  loadLeadsPage() {
+  loadAppliedLoansPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadLeads(this.searchValue,from, to);
+    this.dataSource.loadAppliedLoans(this.searchValue,from, to);
   }
 
   // addLead() {

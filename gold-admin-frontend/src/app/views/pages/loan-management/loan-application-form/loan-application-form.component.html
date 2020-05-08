@@ -2,7 +2,7 @@
     <kt-portlet-body>
         <div class="row">
             <div class="col-12">
-                <mat-tab-group [selectedIndex]="selected">
+                <mat-tab-group [(selectedIndex)]="selected">
                     <mat-tab label="Basic Details">
                         <kt-basic-details (basicFormEmit)="basicForm($event)" [invalid]="invalid.basic" [disable]="disabledForm"></kt-basic-details>
                     </mat-tab>
@@ -26,7 +26,7 @@
         </div>
         <div class="row">
             <div class="col">
-                <kt-ornaments [invalid]="invalid.ornaments" [disable]="disabledForm"></kt-ornaments>
+                <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [invalid]="invalid.ornaments" [disable]="disabledForm"></kt-ornaments>
             </div>
             
         </div>
