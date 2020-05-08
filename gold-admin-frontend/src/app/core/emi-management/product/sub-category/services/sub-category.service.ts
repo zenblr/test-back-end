@@ -15,7 +15,7 @@ export class SubCategoryService {
 		private httpUtils: HttpUtilsService) { }
 
   public getSubCategoryList(from: number, to: number, search: string): Observable<any> {
-		return this._http.get<any>(`http://173.249.49.7:9120/api/sub-category?from=${from}&to=${to}&search=${search}`).pipe(
+		return this._http.get<any>(`/api/sub-category?from=${from}&to=${to}&search=${search}`).pipe(
 
 			(tap(allMemberData => { 
 				return allMemberData
@@ -26,21 +26,21 @@ export class SubCategoryService {
 		)
   }
   deleteSubCategory(id){
-		return this._http.delete(`http://173.249.49.7:9120/api/sub-category/`+ id)
+		return this._http.delete(`/api/sub-category/`+ id)
 
   }
   addNewSubCategory(data){
-	return this._http.post<any>(`http://173.249.49.7:9120/api/sub-category`, data );
+	return this._http.post<any>(`/api/sub-category`, data );
  }
 
   editSubCategory(data, id){
-	return this._http.put<any>(`http://173.249.49.7:9120/api/sub-category/` + id, data);
+	return this._http.put<any>(`/api/sub-category/` + id, data);
  }
  
   getSingleSubCategory(id){
-	return this._http.get(`http://173.249.49.7:9120/api/sub-category/`+ id);
+	return this._http.get(`/api/sub-category/`+ id);
  }
   getCategoryList(){
-	return this._http.get(`http://173.249.49.7:9120/api/category/all-category`);
+	return this._http.get(`/api/category/all-category`);
  }
 }

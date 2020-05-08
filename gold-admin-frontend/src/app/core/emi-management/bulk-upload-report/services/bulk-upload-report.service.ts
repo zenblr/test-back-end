@@ -15,12 +15,12 @@ export class BulkUploadReportService {
 
   getAllBulkUploadReports(from?, to?, search?, fromDate?, toDate?, userId?): Observable<any> {
     return this.http
-      .get<any>(`http://173.249.49.7:9120/api/bulk-upload-file?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
+      .get<any>(`/api/bulk-upload-file?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
       .pipe(map(response => response.body));
   }
 
   reportExport(report): Observable<any> {
-    return this.http.get(`http://173.249.49.7:9120/api/bulk-upload-file/get-bulk-report/by-file-id?fileId=${report.id}`, { responseType: 'arraybuffer' })
+    return this.http.get(`/api/bulk-upload-file/get-bulk-report/by-file-id?fileId=${report.id}`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
           return res;

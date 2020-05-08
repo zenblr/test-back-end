@@ -12,19 +12,19 @@ export class ProductService {
 
 	getAllProducts(from?, to?, search?, fromDate?, toDate?, userId?): Observable<any> {
 		return this.http
-			.get<any>(`http://173.249.49.7:9120/api/products?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
+			.get<any>(`/api/products?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
 			.pipe(map(response => response.body));
 	}
 
 	deleteProduct(id) {
-		return this.http.delete(`http://173.249.49.7:9120/api/products/` + id)
+		return this.http.delete(`/api/products/` + id)
 	}
 
 	getSingleProduct(id) {
-		return this.http.get(`http://173.249.49.7:9120/api/products/` + id);
+		return this.http.get(`/api/products/` + id);
 	}
 
 	editProduct(data, id) {
-		return this.http.put<any>(`http://173.249.49.7:9120/api/products/` + id, data);
+		return this.http.put<any>(`/api/products/` + id, data);
 	}
 }
