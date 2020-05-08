@@ -10,13 +10,13 @@ const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB
 //  FUNCTION FOR LOAN APPLICATION FORM
 exports.applyForLoanApplication = async (req, res, next) => {
 
-    let { customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, name,
-        accountNumber, ifscCode, aadharNumber, permanentAddress, pincode, officeAddress, officePin, nomineeData,
+    let { customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt,
+        name, accountNumber, ifscCode, aadharNumber, permanentAddress, pincode, officeAddress, officePin, nomineeData,
         ornamentData, customerUniqueId, mobile, panCardNumber, startDate, partnerName, schemeName, finalLoanAmount,
         loanStartDate, tenure, loanEndDate, paymentType, interestRate } = req.body;
     let appliedForLoanApplication = await sequelize.transaction(async t => {
         let customerLoanCreated = await models.customerLoan.addCustomerLoan(
-            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt
+            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt
             , { transaction: t });
         let loanId = customerLoanCreated.id;
         let customerBankDetailsCreated = await models.customerLoanBankDetail.addCustomerBankDetail(
@@ -234,7 +234,7 @@ exports.customerDetails = async (req, res, next) => {
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber'],
         include: [{
             model: models.customerKycPersonalDetail,
-            where: { isActive: true },
+            // where: { isActive: true },
             as: 'customerKyc',
             attributes: ['id', 'identityTypeId', 'identityProof', 'identityProofNumber'],
             include: [{

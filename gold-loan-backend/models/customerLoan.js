@@ -38,9 +38,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'total_eligible_amt'
         },
-        totalFinalAmt: {
+        totalFinalInterestAmt: {
             type: DataTypes.BIGINT,
-            field: 'total_final_amt'
+            field: 'total_final_interest_amt'
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -66,8 +66,8 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD CUSTOMER BANK DETAIL
     customerLoan.addCustomerLoan =
-        (customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, t) => customerLoan.create({
-            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, isActive: true
+        (customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, t) => customerLoan.create({
+            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, isActive: true
         }, { t });
 
     // FUNCTION TO GET APPROVAL FROM BM
