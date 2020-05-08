@@ -87,6 +87,9 @@ export class PageConfig {
 			'wallet-price': {
 				page: { title: 'Wallet Price', desc: '' }
 			},
+			'logistic-partner':{
+				page:{ title: 'Logistic Partner', desc:''}
+			}
 		},
 		'loan-management': {
 			'loan-calculator': {

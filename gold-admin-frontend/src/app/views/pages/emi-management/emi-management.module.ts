@@ -41,6 +41,9 @@ import { AddEditCategoryComponent } from './product/category/add-edit-category/a
 import { ProductViewComponent } from './product/show-product/product-view/product-view.component';
 import { ProductListComponent } from './product/show-product/product-list/product-list.component';
 import { ProductEditComponent } from './product/show-product/product-edit/product-edit.component';
+// import { LogisticPartnerComponent} from './logistic-partner/logistic-partner.component';
+import { AddLogisticPartnerComponent } from './logisticPartner/add-logistic-partner/add-logistic-partner.component';
+import { ListLogisticPartnerComponent } from './logisticPartner/list-logistic-partner/list-logistic-partner.component';
 
 const routes: Routes = [
 	{
@@ -78,6 +81,10 @@ const routes: Routes = [
 				path: 'wallet-price',
 				component: WalletPriceListComponent
 			},
+			{
+			  path:'logistic-partner',
+			  component:ListLogisticPartnerComponent	
+			}
 		]
 	}
 ];
@@ -114,7 +121,8 @@ const routes: Routes = [
 		AddEditCategoryComponent,
 		ProductEditComponent,
 		ProductViewComponent,
-		SubCategoryAddEditComponent
+		SubCategoryAddEditComponent,
+		AddLogisticPartnerComponent
 
 	],
 	declarations: [
@@ -135,6 +143,8 @@ const routes: Routes = [
 		ProductViewComponent,
 		SubCategoryAddEditComponent,
 		SubCategoryListComponent,
+		AddLogisticPartnerComponent,
+		ListLogisticPartnerComponent,
 
 	]
 })

@@ -310,6 +310,10 @@ export class MenuConfig {
 					]
 				},
 				{
+					title:'Logistic Partner',
+					page:'/emi-management/logistic-partner'
+				},
+				{
 					title: 'Bulk Upload Report',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',

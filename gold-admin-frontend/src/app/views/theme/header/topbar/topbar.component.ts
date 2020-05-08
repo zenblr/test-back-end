@@ -14,6 +14,7 @@ import { Breadcrumb } from '../../../../core/_base/layout/services/subheader.ser
 import { Subscription, Subject } from 'rxjs';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { takeUntil } from 'rxjs/operators';
+import {LogisticPartnerService} from '../../../../core/emi-management/logistic-partner/service/logistic-partner.service';
 
 @Component({
 	selector: 'kt-topbar',
@@ -55,7 +56,8 @@ export class TopbarComponent implements OnInit {
 		private branchService: BranchService,
 		private rolesService: RolesService,
 		private brokerService: BrokerService,
-		private walletPriceService: WalletPriceService) {
+		private walletPriceService: WalletPriceService,
+		private logisticPartnerService:LogisticPartnerService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -132,6 +134,12 @@ export class TopbarComponent implements OnInit {
 			this.value1 = 'Add Partner';
 			this.type1 = 'button';
 		}
+		if (this.path == 'logistic-partner') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Add Logistic Partner';
+			this.type1 = 'button';
+		}
 		if (this.path == 'customer-list') {
 			this.showfilter = true;
 			this.showInput = true;
@@ -202,6 +210,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'wallet-price') {
 			this.walletPriceService.openModal.next(true)
 		}
+		 if (this.path == 'logistic-partner') {
+			this.logisticPartnerService.openModal.next(true)
+		 }
 	}
 
 	check(val) {
