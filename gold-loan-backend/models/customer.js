@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
         internalBranchId: {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id',
-            allowNull: false,
         },
         firstName: {
             type: DataTypes.STRING,
@@ -118,8 +117,6 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        Customer.belongsTo(models.user, { foreignKey: 'cceVerifiedBy', as: 'cceStageBy' });
-        Customer.belongsTo(models.user, { foreignKey: 'branchManagerVerifiedBy', as: 'branchManagerBy' });
     }
 
     // This hook is always run before create.

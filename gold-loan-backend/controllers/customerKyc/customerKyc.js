@@ -55,11 +55,106 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     if (!check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer Kyc is already submitted." });
     }
+    let KycStage = await models.customerKyc.findOne({ where: { customerId: getCustomerInfo.id } })
+
+    if (!check.isEmpty(KycStage)) {
+
+        if (KycStage.customerKycCurrentStage == "2") {
+            let { id, stateId, cityId, pinCode } = await models.customer.findOne({ where: { id: KycStage.customerId, isActive: true } });
+
+            return res.status(200).json({
+                customerId: KycStage.customerId,
+                customerKycId: KycStage.id,
+                customerKycCurrentStage: KycStage.customerKycCurrentStage,
+                stateId: stateId,
+                cityId: cityId,
+                pinCode: pinCode
+            })
+
+        } else if (KycStage.customerKycCurrentStage == "3") {
+
+            let { firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerId: KycStage.customerId } })
+            let name = `${firstName} ${lastName}`;
+
+            return res.status(200).json({
+                customerId: KycStage.customerId,
+                customerKycId: KycStage.id,
+                name,
+                customerKycCurrentStage: KycStage.customerKycCurrentStage
+            })
+
+        } else if (KycStage.customerKycCurrentStage == "4") {
+
+            return res.status(200).json({
+                customerId: KycStage.customerId,
+                customerKycId: KycStage.id,
+                customerKycCurrentStage: KycStage.customerKycCurrentStage
+            })
+
+        } else if (KycStage.customerKycCurrentStage == "5") {
+
+            let customerKycReview = await models.customer.findOne({
+                where: { id: KycStage.customerId},
+                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber'],
+                include: [{
+                    model: models.customerKycPersonalDetail,
+                    as: 'customerKycPersonal',
+                    attributes: ['id', 'customerId', 'profileImage', 'firstName', 'lastName', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProof', 'identityProofNumber', 'spouseName', 'signatureProof'],
+                    include: [{
+                        model: models.occupation,
+                        as: 'occupation'
+                    }, {
+                        model: models.identityType,
+                        as: 'identityType'
+                    }]
+                }, {
+                    model: models.customerKycAddressDetail,
+                    as: 'customerKycAddress',
+                    attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId', 'addressProofNumber'],
+                    include: [{
+                        model: models.state,
+                        as: 'state'
+                    }, {
+                        model: models.city,
+                        as: 'city'
+                    }, {
+                        model: models.addressProofType,
+                        as: 'addressProofType'
+                    }],
+                    order: [["id", "ASC"]]
+                }, {
+                    model: models.customerKycBankDetail,
+                    as: 'customerKycBank',
+                    attributes: ['id', 'customerKycId', 'customerId', 'bankName', 'bankBranchName', 'accountType', 'accountHolderName', 'accountNumber', 'ifscCode', 'passbookProof']
+                }]
+            })
+
+            return res.status(200).json({
+                customerKycReview,
+                customerId: KycStage.customerId,
+                customerKycId: KycStage.id,
+                customerKycCurrentStage: KycStage.customerKycCurrentStage
+            })
+
+        } else if (KycStage.customerKycCurrentStage == "6") {
+
+            return res.status(200).json({
+                message: `successful`,
+                customerId: KycStage.customerId,
+                customerKycId: KycStage.id,
+                customerKycCurrentStage: KycStage.customerKycCurrentStage
+            })
+
+        }
+
+    }
+
+
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let kyc = await sequelize.transaction(async (t) => {
 
-        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy })
+        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, customerKycCurrentStage: "2" })
 
         let createCustomerKyc = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
@@ -70,12 +165,12 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
             createdBy,
             modifiedBy
         });
-
         return customerKycAdd
     })
     return res.status(200).json({
         customerId: getCustomerInfo.id,
         customerKycId: kyc.id,
+        customerKycCurrentStage: kyc.customerKycCurrentStage,
         stateId: getCustomerInfo.stateId,
         cityId: getCustomerInfo.cityId,
         pinCode: getCustomerInfo.pinCode
@@ -113,11 +208,13 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
     await sequelize.transaction(async t => {
         await models.customerKycPersonalDetail.update({ identityProof, identityTypeId, identityProofNumber }, { where: { id: customerKycId }, transaction: t });
 
+        await models.customerKyc.update({ customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
         await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
     })
 
+    let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
-    return res.status(200).json({ customerId, customerKycId, name })
+    return res.status(200).json({ customerId, customerKycId, name, customerKycCurrentStage })
 }
 
 
@@ -136,12 +233,19 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
         return res.status(400).json({ message: "Your alternate Mobile number is already exist." });
     }
 
-    let details = await models.customerKycPersonalDetail.update({
-        profileImage, dateOfBirth, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof
-    }, { where: { id: customerKycId } });
-    console.log(details)
+    await sequelize.transaction(async t => {
 
-    return res.status(200).json({ customerId, customerKycId })
+        let details = await models.customerKycPersonalDetail.update({
+            profileImage, dateOfBirth, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof
+        }, { where: { id: customerKycId }, transaction: t });
+
+        await models.customerKyc.update({ customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+
+    })
+
+    let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+
+    return res.status(200).json({ customerId, customerKycId, customerKycCurrentStage })
 
 
 }
@@ -155,9 +259,16 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
     if (!check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer bank details is already filled." });
     }
-    await models.customerKycBankDetail.create({
-        customerId, customerKycId, bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, passbookProof
+
+    await sequelize.transaction(async t => {
+
+        await models.customerKycBankDetail.create({
+            customerId, customerKycId, bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, passbookProof
+        })
+        await models.customerKyc.update({ customerKycCurrentStage: "5" }, { where: { customerId }, transaction: t });
     })
+    let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+
 
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
@@ -195,7 +306,9 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
         }]
     })
 
-    return res.status(200).json({ customerKycReview, customerId, customerKycId })
+
+
+    return res.status(200).json({ customerKycReview, customerId, customerKycId, customerKycCurrentStage })
 
 }
 
@@ -218,8 +331,12 @@ exports.submitAllKycInfo = async (req, res, next) => {
 
         await models.customerKycBankDetail.bulkCreate(customerKycBank, { updateOnDuplicate: ["bankName", "bankBranchName", "accountType", "accountHolderName", "accountNumber", "ifscCode", "passbookProof"] }, { transaction: t })
 
+        await models.customerKyc.update({ customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
+
     })
-    return res.status(200).json({ message: `successful`, customerId, customerKycId })
+    let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+
+    return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage })
 
 }
 
@@ -228,7 +345,6 @@ exports.appliedKyc = async (req, res, next) => {
 
     let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
     if (roleName == "bm" || roleName == "cce") {
-        console.log(roleName)
 
         const { search, offset, pageSize } = paginationWithFromTo(
             req.query.search,
@@ -295,7 +411,7 @@ exports.appliedKyc = async (req, res, next) => {
             {
                 model: models.customerKyc,
                 as: 'customerKyc',
-                attributes: ['createdAt','kycStatus']
+                attributes: ['createdAt', 'kycStatus']
             },
             {
                 model: models.customerKycClassification,
@@ -325,4 +441,5 @@ exports.appliedKyc = async (req, res, next) => {
     }
 
 }
+
 

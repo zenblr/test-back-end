@@ -45,8 +45,8 @@ module.exports = (sequelize, DataTypes) => {
         customerKycCurrentStage: {
             type: DataTypes.ENUM,
             field: 'customer_kyc_current_stage',
-            values: ['1', '2', '3','4','5'],
-            defaultValue: "1"
+            values: ['1', '2', '3','4','5','6'],
+            defaultValue: "2"
         },
         createdBy: {
             type: DataTypes.INTEGER,
