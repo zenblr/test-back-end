@@ -69,7 +69,7 @@
                                     <div class="col-10 kt-margin-l-10" >
                                         <label class="custom-checkbox poi">
                                             <span class="label-checkbox">{{module.moduleName | titlecase}}</span>
-                                            <input type="checkbox" (change)="onModuleSelect(module.id,$event.target.checked,i)" name="module"  
+                                            <input type="checkbox" (change)="onModuleSelect($event.target.checked,i)" name="module"  
                                              [value]="module.id" [checked]="module.isSelected" [disabled]="isDisabled">
                                             <span class="checkmark" style="top:0;"></span>
                                         </label>

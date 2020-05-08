@@ -27,7 +27,7 @@
                             <label class="font-weight-500 text-color">Full Name </label>
                         </div>
                         <div class="col-8">
-                            <div class="row kt-margin-t-15">
+                            <div class="row">
                                 <div class="col-6">
                                     <input type="text" class="form-control" formControlName="firstName"
                                         placeholder="e.g John"
@@ -110,8 +110,7 @@
                             <select class="form-control" formControlName="stateId"
                                 [class.isError]="controls.stateId.touched && controls.stateId.invalid"
                                 (change)="getCities()">
-                                <option [value]="stateId.id" *ngFor="let stateId of states">{{stateId.name}}</option>
-                                <option value="1">addd</option>
+                                <option value="" [selected]="true" [disabled]="true" >Select State</option>
                                 <option [value]="stateId.id" *ngFor="let stateId of states">{{stateId.name}}</option>
                             </select>
                             <div *ngIf="controls.stateId.touched && controls.stateId.invalid">
@@ -127,8 +126,7 @@
                         <div class="col-8">
                             <select class="form-control" formControlName="cityId"
                                 [class.isError]="controls.cityId.touched && controls.cityId.invalid">
-                                <option value="" [disabled]="true" [selected]="true">Select City</option>
-                                <option value="1">addd</option>
+                                <option value="" [selected]="true" [disabled]="true" >Select City</option>
                                 <option [value]="c.id" *ngFor="let c of cityId">{{c.name}}</option>
                             </select>
                             <div *ngIf="controls.cityId.touched && controls.cityId.invalid">

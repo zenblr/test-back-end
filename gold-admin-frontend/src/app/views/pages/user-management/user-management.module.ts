@@ -57,12 +57,11 @@ import { ViewMerchantComponent } from './merchant/view-merchant/view-merchant.co
 import { ApiKeyComponent } from './merchant/api-key/api-key.component';
 import { InternalUserBranchListComponent } from './internal-user-branch/internal-user-branch-list/internal-user-branch-list.component';
 import { AddInternalUserBranchComponent } from './internal-user-branch/add-internal-user-branch/add-internal-user-branch.component';
+import { StoreListComponent } from './store/store-list/store-list.component';
+import { CreateStoreComponent } from './store/create-store/create-store.component';
 
 const routes: Routes = [
-	{
-		path: '',
-		component: UserManagementComponent,
-		children: [
+	
 			{
 				path: '',
 				redirectTo: 'partner',
@@ -116,10 +115,12 @@ const routes: Routes = [
 				path: 'edit-merchant/:id',
 				component: MerchantComponent
 			},
+			{
+				path: 'store',
+				component: StoreListComponent
+			},
 
 		]
-	}
-];
 
 @NgModule({
 	imports: [
@@ -158,7 +159,8 @@ const routes: Routes = [
 		AddAppraiserComponent,
 		ViewMerchantComponent,
 		ApiKeyComponent,
-		AddInternalUserBranchComponent
+		AddInternalUserBranchComponent,
+		CreateStoreComponent
 	],
 	declarations: [
 		UserManagementComponent,
@@ -190,6 +192,8 @@ const routes: Routes = [
 		ApiKeyComponent,
 		InternalUserBranchListComponent,
 		AddInternalUserBranchComponent,
+		StoreListComponent,
+		CreateStoreComponent,
 
 	]
 })

@@ -1,31 +1,34 @@
+
 import { catchError, finalize } from 'rxjs/operators';
 // RxJS
 import { map } from 'rxjs/operators';
 // CRUD
-import { BaseDataSource } from '../../_base/crud';
+import { BaseDataSource } from '../../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
-import { LoanManagementService } from '../services/loan-management.service';
+import { StoreService } from '../service/store.service';
 
-export class LoanManagementDatasource extends BaseDataSource {
+export class StoreDatasource extends BaseDataSource {
 
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
 
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
+    desserts: any;
 
-    constructor(private loanManagementService: LoanManagementService) {
+    constructor(private storeService: StoreService) {
         super();
     }
 
-    loadAppliedLoans(from, to, search) {
-        this.loadingSubject.next(true);
-        this.loanManagementService.getAplliedLoans(from, to, search)
+    loadRoles(search, from, to) {
+        
+
+        this.storeService.getStore(search, from, to)
             .pipe(
                 map(
-                    report => {
-                        this.paginatorTotalSubject.next(report.count);
-                        this.entitySubject.next(report.data);
+                    store => {
+                        this.entitySubject.next(store.data);
+                        this.paginatorTotalSubject.next(store.count);
                     }
                 ),
                 catchError(() => of([])),

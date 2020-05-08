@@ -16,6 +16,8 @@ import { Subject, Subscription, from } from 'rxjs';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { SubheaderService } from '../../../../core/_base/layout';
 import { takeUntil } from 'rxjs/operators';
+import { PacketsService } from '../../../../core/loan-management';
+import { StoreService } from '../../../../core/user-management/store/service/store.service';
 
 @Component({
 	selector: 'kt-topbar',
@@ -59,7 +61,9 @@ export class TopbarComponent implements OnInit {
 		private rolesService: RolesService,
 		private internalUserService: InternalUserService,
 		private internalUserBranchService:InternalUserBranchService,
-		private appraiserService: AppraiserService) {
+		private appraiserService: AppraiserService,
+		private packetService:PacketsService,
+		private storeService:StoreService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -119,7 +123,6 @@ export class TopbarComponent implements OnInit {
 	dataSourceHeader(){
 		this.showfilter = true;
 		this.showInput = true;
-		this.value1 = 'Add Partner';
 		this.type1 = 'button';
 	}
 
@@ -176,7 +179,14 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader()
 			this.value1 = 'Add Internal Branch';
 		}
-
+		if (this.path == 'packet') {
+			this.dataSourceHeader()
+			this.value1 = 'Add Packets';
+		}
+		if (this.path == 'store') {
+			this.dataSourceHeader()
+			this.value1 = 'Create Stores';
+		}
 		
 	}
 
@@ -211,7 +221,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'internal-user-branch') {
 			this.internalUserBranchService.openModal.next(true)
-
+		}
+		if (this.path == 'packet') {
+			this.packetService.openModal.next(true)
+		}
+		if (this.path == 'store') {
+			this.storeService.openModal.next(true)
 		}
 	}
 

@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class LoanManagementService {
+export class AppliedLoanService {
 
   constructor(
     private http:HttpClient

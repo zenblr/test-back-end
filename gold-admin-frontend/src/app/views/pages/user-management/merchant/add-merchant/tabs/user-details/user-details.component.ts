@@ -71,11 +71,13 @@ export class UserDetailsComponent implements OnInit {
       lastName: merchantDetails.user.lastName,
       email: merchantDetails.user.email,
       mobileNumber: merchantDetails.user.mobileNumber,
-      stateId: merchantDetails.user.address[0].stateId,
-      cityId: merchantDetails.user.address[0].cityId,
+      stateId: merchantDetails.user.address[0].state.id,
+      cityId: merchantDetails.user.address[0].city.id,
       pinCode:  merchantDetails.user.address[0].postalCode,
     }
+    
     this.userDetails.patchValue(data)
+    this.getCities()
     console.log(this.userDetails.value)
     this.ref.detectChanges()
   }
@@ -93,15 +95,15 @@ export class UserDetailsComponent implements OnInit {
       })).subscribe()
   }
   getCities() {
-    // if (this.controls.stateId.value == '') {
-    //   this.cityId = []
-    // } else {
-    //   this.sharedService.getCities(this.controls.stateId.value).pipe(
-    //     map(res => {
-    //       this.cityId = res.message;
-    //     this.ref.detectChanges();
-    //     })).subscribe()
-    // }
+    if (this.controls.stateId.value == '') {
+      this.cityId = []
+    } else {
+      this.sharedService.getCities(this.controls.stateId.value).pipe(
+        map(res => {
+          this.cityId = res.message;
+        this.ref.detectChanges();
+        })).subscribe()
+    }
   }
 
   submit() {

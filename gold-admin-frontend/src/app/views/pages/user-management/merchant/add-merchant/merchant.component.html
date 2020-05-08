@@ -1,6 +1,6 @@
 <nav ngbNav #nav="ngbNav" [(activeId)]="active"  class="nav-tabs m-0"
 [ngStyle]="{'border':'0'}">
-<ng-container [ngbNavItem]="1" >
+<ng-container [ngbNavItem]="1" [disabled] ="disabled[0]">
     <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
@@ -16,7 +16,7 @@
         </ng-template>
     </ng-container>
 
-    <ng-container [ngbNavItem]="2">
+    <ng-container [ngbNavItem]="2" [disabled] ="disabled[1]">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
@@ -32,7 +32,7 @@
         </ng-template>
     </ng-container>
 
-    <ng-container [ngbNavItem]="3">
+    <ng-container [ngbNavItem]="3" [disabled] ="disabled[2]">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">

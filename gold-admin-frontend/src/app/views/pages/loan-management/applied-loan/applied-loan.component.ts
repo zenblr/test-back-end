@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
-import { DataTableService } from '../../../../../core/shared/services/data-table.service';
-import { LoanManagementDatasource,LoanManagementService } from '../../../../../core/loan-management'
+import { DataTableService } from '../../../../core/shared/services/data-table.service';
+import { AppliedLoanDatasource,AppliedLoanService } from '../../../../core/loan-management'
 @Component({
   selector: 'kt-applied-loan',
   templateUrl: './applied-loan.component.html',
@@ -11,7 +11,7 @@ import { LoanManagementDatasource,LoanManagementService } from '../../../../../c
 })
 export class AppliedLoanComponent implements OnInit {
 
-  dataSource: LoanManagementDatasource;
+  dataSource: AppliedLoanDatasource;
   displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -27,7 +27,7 @@ export class AppliedLoanComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private loanManagementService: LoanManagementService,
+    private AppliedLoanService: AppliedLoanService,
     private dataTableService: DataTableService
   ) {
   }
@@ -51,7 +51,7 @@ export class AppliedLoanComponent implements OnInit {
       });
 
     // Init DataSource
-    this.dataSource = new LoanManagementDatasource(this.loanManagementService);
+    this.dataSource = new AppliedLoanDatasource(this.AppliedLoanService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()

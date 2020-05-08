@@ -145,6 +145,11 @@ export class MenuConfig {
 							page: '/loan-management/loan-application-form'
 						},
 						{
+							title: 'Packet',
+							page: '/loan-management/packet',
+
+						},
+						{
 							title: 'Applied Loan',
 							page: '/loan-management/applied-loan'
 						},

@@ -46,24 +46,13 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 	) { }
 
 	ngOnInit() {
-		this.initForm();
-		this.getCloneRole();
 		this.getAllModules()
-		console.log(this.data)
+		this.getCloneRole();
+		this.initForm();
 		if (this.data.action == 'add') {
 			this.title = 'Add Role'
 		} else {
 			this.title = 'Edit Role'
-			this.roleForm.patchValue(this.data.role);
-			this.checkedModules = []
-			this.data.role.modules.forEach(editMod => {
-				this.checkedModules.push(editMod.id)
-				this.modules.forEach(mod => {
-					if (editMod.id == mod.id)
-						mod.isSelected = false;
-				})
-			});
-			this.controls.moduleId.patchValue(this.checkedModules)
 		}
 
 	}
@@ -75,6 +64,17 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 			description: [''],
 			moduleId: [[], Validators.required]
 		})
+	}
+	setData() {
+		this.roleForm.patchValue(this.data.role);
+		this.checkedModules = []
+		this.data.role.modules.forEach(editMod => {
+			this.modules.forEach(mod => {
+				if (editMod.id == mod.id)
+					mod.isSelected = true;
+			})
+		});
+		console.log(this.modules, this.checkedModules)
 	}
 
 	getCloneRole() {
@@ -95,6 +95,10 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 				this.modules.forEach(mod => {
 					mod.isSelected = false;
 				})
+				console.log(this.modules)
+				if (this.data.action != 'add'){
+					this.setData()
+				}
 			}),
 			catchError(err => {
 				this.toast.error(err.error.message)
@@ -114,33 +118,27 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 			map(res => {
 				this.controls.moduleId.patchValue(res)
 				this.checkedModules = res;
-				this.data.role.modules.forEach(editMod => {
-					this.checkedModules.push(editMod.id)
-					this.modules.forEach(mod => {
-						if (editMod.id == mod.id)
-							mod.isSelected = true;
-					})
-				});
+				this.modules.forEach(mod => {
+					if (this.checkedModules.includes(mod.id))
+						mod.isSelected = true;
+				})
+				console.log(this.modules)
 				this.isDisabled = true
 			}),
 			catchError(err => {
-				this.toast.error(err.error.message)
+				// this.toast.error(err.error.message)
 				throw err;
 			})).subscribe()
 	}
 
-	onModuleSelect(value, event, index) {
-		let temp = [];
-		// Array.prototype.push.apply(temp,this.controls.modules.value)
+	onModuleSelect(event, index) {
+		this.controls.moduleId.markAsUntouched()
 		if (event) {
-			temp = this.controls.moduleId.value;
-			temp.push(value)
-			this.controls.moduleId.patchValue(temp)
-
+			this.modules[index].isSelected = true
+			
 		} else {
-			temp = this.controls.moduleId.value;
-			temp.splice(index, 1)
-			this.controls.moduleId.patchValue(temp)
+			this.modules[index].isSelected = false;
+
 		}
 
 	}
@@ -164,10 +162,19 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 	}
 
 	submit() {
+		let temp = [];
+		this.modules.filter(ele=>{
+			if(ele.isSelected){
+				temp.push(ele.id)
+			}
+		})
+		this.controls.moduleId.patchValue(temp)
+
 		if (this.roleForm.invalid) {
 			this.roleForm.markAllAsTouched();
 			return
 		}
+		
 		if (this.data.action == 'add') {
 			if (this.controls.roleId.value == '') {
 				this.controls.roleId.patchValue(0)

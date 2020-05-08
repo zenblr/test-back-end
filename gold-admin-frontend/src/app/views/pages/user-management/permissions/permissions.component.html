@@ -1,6 +1,4 @@
 <kt-portlet>
-    <kt-portlet-header [title]="'Permissions'" [class]="'kt-portlet__head--lg'"></kt-portlet-header>
-    <kt-portlet>
         <kt-portlet-body>
             <mat-accordion>
                 <mat-expansion-panel *ngFor="let permission of permissions;index as moduleIndex;last as l;" [expanded]="moduleIndex==l">

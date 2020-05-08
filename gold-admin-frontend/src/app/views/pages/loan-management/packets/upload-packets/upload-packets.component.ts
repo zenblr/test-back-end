@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { SharedService } from '../../../../core/shared/services/shared.service';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, catchError } from 'rxjs/operators';
 
 @Component({
-  selector: 'kt-packets',
-  templateUrl: './packets.component.html',
-  styleUrls: ['./packets.component.scss']
+  selector: 'kt-upload-packets',
+  templateUrl: './upload-packets.component.html',
+  styleUrls: ['./upload-packets.component.scss']
 })
-export class PacketsComponent implements OnInit {
+export class UploadPacketsComponent implements OnInit {
 
   left: number = 0;
   packets:any[] = []

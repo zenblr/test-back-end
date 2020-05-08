@@ -19,8 +19,10 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { BankDetailsComponent } from './loan-application-form/tabs/bank-details/bank-details.component';
 import { ApprovalComponent } from './loan-application-form/tabs/approval/approval.component';
-import { PacketsComponent } from './packets/packets.component';
-import { AppliedLoanComponent } from './applied-loan/applied-loan/applied-loan.component';
+import { UploadPacketsComponent } from './packets/upload-packets/upload-packets.component';
+import { AppliedLoanComponent } from './applied-loan/applied-loan.component';
+import { PacketsListComponent } from './packets/packets-list/packets-list.component';
+import { AssignPacketsComponent } from './packets/assign-packets/assign-packets.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -29,6 +31,10 @@ const rout: Routes = [
   {
     path: 'loan-application-form',
     component: LoanApplicationFormComponent
+  },
+  {
+    path: 'packet',
+    component: PacketsListComponent
   },
   {
     path: 'applied-loan',
@@ -53,8 +59,10 @@ const rout: Routes = [
     FinalInterestAmountComponent,
     BankDetailsComponent,
     ApprovalComponent,
-    PacketsComponent,
-    AppliedLoanComponent
+    UploadPacketsComponent,
+    AppliedLoanComponent,
+    PacketsListComponent,
+    AssignPacketsComponent
   ],
   imports: [
     CommonModule,
@@ -78,5 +86,8 @@ const rout: Routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
+  entryComponents:[
+    AssignPacketsComponent
+  ]
 })
 export class LoanManagementModule { }

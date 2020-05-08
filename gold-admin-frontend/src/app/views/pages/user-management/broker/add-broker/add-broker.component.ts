@@ -5,6 +5,7 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { StoreService } from '../../../../../core/user-management/store';
 
 @Component({
   selector: 'kt-add-broker',
@@ -19,6 +20,7 @@ export class AddBrokerComponent implements OnInit {
   brokerFrom: FormGroup;
   merchants: any[] = [];
   status: any[] = [];
+  store: any[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddBrokerComponent>,
@@ -27,7 +29,8 @@ export class AddBrokerComponent implements OnInit {
     private fb: FormBuilder,
     private brokerService: BrokerService,
     private toast: ToastrService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private storeService:StoreService
   ) { }
 
   ngOnInit() {
@@ -46,11 +49,16 @@ export class AddBrokerComponent implements OnInit {
     } else if (this.data.action == 'edit') {
       this.title = 'Edit Broker'
       this.brokerFrom.patchValue(this.data.broker)
+      this.getCities()
+      this.getStore()
     } else {
       this.title = 'View Broker';
       this.brokerFrom.patchValue(this.data.broker)
+      this.getCities()
+      this.getStore()
       this.brokerFrom.disable();
     }
+    console.log(this.controls.approvalStatusId.value)
   }
 
   initForm() {
@@ -72,6 +80,8 @@ export class AddBrokerComponent implements OnInit {
       imgName: [''],
       userId: [],
     })
+   
+    this.controls.imgName.disable()
   }
 
   get controls() {
@@ -113,6 +123,12 @@ export class AddBrokerComponent implements OnInit {
 
   }
 
+  getStore(){
+    this.storeService.getStoreByMerchant(this.controls.merchantId.value).pipe(
+      map(res =>{
+        this.store = res
+      })).subscribe()
+  }
   
 
   action(event: Event) {
@@ -131,7 +147,7 @@ export class AddBrokerComponent implements OnInit {
    if(ext[ext.length-1] == 'jpg' || ext[ext.length-1] =='png' || ext[ext.length-1] == 'jpeg'){
     this.sharedService.uploadFile(event.target.files[0]).pipe(
       map(res =>{
-        this.brokerFrom.controls.imgName.patchValue(event.target.files[0])
+        this.brokerFrom.controls.imgName.patchValue(event.target.files[0].name)
         this.brokerFrom.controls.panCard.patchValue(res.uploadFile.URL)
       })).subscribe()
    }else{

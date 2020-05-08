@@ -21,9 +21,7 @@ export class PageConfig {
 			'scheme': {
 				page: { title: 'Schemes', desc: '' }
 			},
-			packet: {
-				page: { title: 'Packets', desc: '' }
-			},
+			
 		},
 		'upload-data': {
 			'upload-banner': {
@@ -58,6 +56,9 @@ export class PageConfig {
 			'broker': {
 				page: { title: 'All Brokers', desc: '' }
 			},
+			'store': {
+				page: { title: 'All Stores', desc: '' }
+			},
 			'roles': {
 				page: { title: 'Roles', desc: '' }
 			},
@@ -75,8 +76,14 @@ export class PageConfig {
 			'loan-application-form': {
 				page: { title: 'Add New Loan', desc: '' }
 			},
+			'packet': {
+				page: { title: 'Packets', desc: '' }
+			},
 			'package-image-upload': {
 				page: { title: 'Upload Packets', desc: '' }
+			},
+			'applied-loan': {
+				page: { title: 'Applied Loan', desc: '' }
 			}
 		},
 	};

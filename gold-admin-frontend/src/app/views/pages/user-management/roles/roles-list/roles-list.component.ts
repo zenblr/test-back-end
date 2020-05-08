@@ -29,7 +29,6 @@ export class RolesListComponent implements OnInit, OnDestroy {
 	dataSource: RolesDatasource;
 	displayedColumns = ['roleName', 'createdBy', 'modifiedBy', 'modifiedDate', 'modifiedTime', 'action'];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-	@ViewChild('sort1', { static: true }) sort: MatSort;
 	// Selection
 	selection = new SelectionModel<RolesModel>(true, []);
 	rolesResult: RolesModel[] = [];
@@ -69,21 +68,7 @@ export class RolesListComponent implements OnInit, OnDestroy {
 	 * On init
 	 */
 	ngOnInit() {
-		// If the user changes the sort order, reset back to the first page.
-		const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-		this.subscriptions.push(sortSubscription);
-
-		/* Data load will be triggered in two cases:
-		- when a pagination event occurs => this.paginator.page
-		- when a sort event occurs => this.sort.sortChange
-		**/
-		const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-			tap(() => {
-				this.loadRolesList();
-			})
-		)
-			.subscribe();
-		this.subscriptions.push(paginatorSubscriptions);
+	
 
 		// Init DataSource
 		this.dataSource = new RolesDatasource(this.rolesService);

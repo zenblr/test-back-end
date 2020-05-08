@@ -1,2 +1,2 @@
-export { LoanManagementService} from './services/loan-management.service'
-export {LoanManagementDatasource } from './datasources/loan-management.datasource'
+export { AppliedLoanDatasource,AppliedLoanService } from './applied-loans'
+export { PacketsDatasource,PacketsService} from './packet/index'

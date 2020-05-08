@@ -2,9 +2,9 @@ import { catchError, finalize } from 'rxjs/operators';
 // RxJS
 import { map } from 'rxjs/operators';
 // CRUD
-import { BaseDataSource } from '../../_base/crud';
+import { BaseDataSource } from '../../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
-import { LoanManagementService } from '../services/loan-management.service';
+import { PacketsService } from '../services/packets.service';
 
 export class PacketsDatasource extends BaseDataSource {
 
@@ -14,13 +14,13 @@ export class PacketsDatasource extends BaseDataSource {
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
 
-    constructor(private loanManagementService: LoanManagementService) {
+    constructor(private loanManagementService: PacketsService) {
         super();
     }
 
-    loadAppliedLoans(from, to, search) {
+    loadpackets(from, to, search) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getAplliedLoans(from, to, search)
+        this.loanManagementService.getpackets(from, to, search)
             .pipe(
                 map(
                     report => {
