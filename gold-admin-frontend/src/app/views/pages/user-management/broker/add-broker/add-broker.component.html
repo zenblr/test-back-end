@@ -23,47 +23,76 @@
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
                         <!-- Partner Name -->
                         <div class="row">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Merchant Name</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Merchant
+                                    Name</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="merchantName" autocomplete="off"
-                                    [class.isError]="controls.merchantName.touched && controls.merchantName.invalid">
+                                <select class="form-control" formControlName="merchantId" autocomplete="off"
+                                    [class.isError]="controls.merchantId.touched && controls.merchantId.invalid" (change)="getStore()">
                                     <option value="" [selected]="true" [disabled]="true">Select</option>
+                                    <option [value]="merchant.id" *ngFor="let merchant of merchants">
+                                        {{merchant.merchantName | titlecase}}</option>
                                 </select>
-                                <mat-error
-                                    *ngIf="controls.merchantName.touched && controls.merchantName.errors?.required">
+                                <mat-error *ngIf="controls.merchantId.touched && controls.merchantId.errors?.required">
                                     Required
                                     field</mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Broker ID</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Store ID
+                                </label>
                             </div>
                             <div class="col-8">
-                                <input class="form-control" formControlName="brokerId" placeholder="e.g 012345"
-                                    [class.isError]="controls.brokerId.touched && controls.brokerId.invalid">
-                                <mat-error *ngIf="controls.brokerId.errors?.required && controls.brokerId.touched">
+                                <select class="form-control" formControlName="storeId" autocomplete="off"
+                                [class.isError]="controls.storeId.touched && controls.storeId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select</option>
+                                <option [value]="store.id"*ngFor="let store of store">{{store.storeUniqueId}}</option>
+                                </select>
+                                <mat-error *ngIf="controls.storeId.errors?.required && controls.storeId.touched">
                                     Required field
                                 </mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Full Name</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Full Name
+                                </label>
                             </div>
                             <div class="col-8">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" formControlName="firstName"
+                                            placeholder="First Name" ktAlphabets
+                                            [class.isError]="controls.firstName.touched && controls.firstName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" formControlName="lastName"
+                                            placeholder="First Name" ktAlphabets
+                                            [class.isError]="controls.lastName.touched && controls.lastName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.lastName.errors?.required && controls.lastName.touched">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                    <!-- </div>
                                 <input class="form-control" formControlName="fullName" placeholder="e.g John Smith"
                                     [class.isError]="controls.fullName.touched && controls.fullName.invalid">
                                 <mat-error *ngIf="controls.fullName.errors?.required && controls.fullName.touched">
                                     Required field
-                                </mat-error>
+                                </mat-error> -->
+                                </div>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Mobile Number</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Mobile
+                                    Number</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" numbersOnly maxlength="10" formControlName="mobileNumber"
@@ -76,8 +105,9 @@
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Email</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Email
+                                </label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="email" placeholder="e.g abc@123.com"
@@ -91,11 +121,12 @@
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Address</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view"
+                                    class="text-color font-weight-500">Address</label>
                             </div>
                             <div class="col-8">
-                                <textarea cols="10" rows="5" class="form-control" formControlName="address"
+                                <textarea cols="3" rows="3" class="form-control" formControlName="address"
                                     [class.isError]="controls.address.touched && controls.address.invalid"
                                     placeholder="Address"></textarea>
                                 <mat-error *ngIf="controls.address.errors?.required && controls.address.touched">
@@ -105,64 +136,116 @@
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">State</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">State
+                                </label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="state" autocomplete="off"
-                                    [class.isError]="controls.state.touched && controls.state.invalid" (change)="getCities()">
+                                <select class="form-control" formControlName="stateId" autocomplete="off"
+                                    [class.isError]="controls.stateId.touched && controls.stateId.invalid"
+                                    (change)="getCities()">
                                     <option value="" [selected]="true" [disabled]="true">Select</option>
-                                    <option [value]="state.id" *ngFor="let state of states">{{state.name}}</option>
+                                    <option [value]="stateId.id" *ngFor="let stateId of states">{{stateId.name}}
+                                    </option>
                                 </select>
-                                <mat-error
-                                    *ngIf="controls.state.touched && controls.state.errors?.required">
+                                <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">
                                     Required field</mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">City</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">City
+                                </label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="city" autocomplete="off"
-                                    [class.isError]="controls.city.touched && controls.city.invalid">
+                                <select class="form-control" formControlName="cityId" autocomplete="off"
+                                    [class.isError]="controls.cityId.touched && controls.cityId.invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select</option>
-                                    <option [value]="city.id" *ngFor="let city of citys">{{city.name}}</option>
+                                    <option [value]="cityId.id" *ngFor="let cityId of citys">{{cityId.name}}
+                                    </option>
                                 </select>
-                                <mat-error
-                                    *ngIf="controls.city.touched && controls.city.errors?.required">
+                                <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
                                     Required field</mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Pin Code</label>
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Pin Code
+                                </label>
                             </div>
                             <div class="col-8">
-                                <input class="form-control" numbersOnly maxlength="6" formControlName="pincode" placeholder="e.g 012345"
-                                    [class.isError]="controls.pincode.touched && controls.pincode.invalid">
-                                <mat-error *ngIf="controls.pincode.errors?.required && controls.pincode.touched">
-                                    Required field
-                                </mat-error>
+                                <input class="form-control" numbersOnly maxlength="6" formControlName="pinCode"
+                                    placeholder="e.g 012345" [class.isError]="controls.pinCode.touched && controls.pinCode.invalid">
+                                    <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.required">
+                                        Required field</mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Status</label>
+                            <div class="col-4 form-label">
+                                <label for="" class="text-color ">PAN No.
+                                </label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="status" autocomplete="off"
-                                    [class.isError]="controls.status.touched && controls.status.invalid">
-                                    <option value="" [selected]="true" [disabled]="true">Select</option>
+                                <input class="form-control" type="text" formControlName="panCardNumber"
+                                    placeholder="e.g qwert1234q"
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.errors?.pattern">
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.touched && controls.panCardNumber.errors?.pattern">
+                                    Invalid field</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" class="text-color ">Name on PAN
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="text" formControlName="nameOnPanCard"
+                                    placeholder="John">
+
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label  class="text-color ">Upload PAN
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" formControlName="imgName"
+                                        placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                            (click)="file.click()">Attach</span>
+                                    </div>
+                                </div>
+                                <input type="file" id="file" aria-label="File browser example" #file
+                                    (input)="getFileInfo($event)" class="d-none">
+                                <span class="file-custom"></span>
+
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Status
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="approvalStatusId" autocomplete="off"
+                                    [class.isError]="controls.approvalStatusId.touched && controls.approvalStatusId.invalid">
+                                    <option value="" selected disabled>Select</option>
+                                    <option [value]="st.id" *ngFor="let st of status">{{st.statusName | titlecase}}
+                                    </option>
                                 </select>
                                 <mat-error
-                                    *ngIf="controls.status.touched && controls.status.errors?.required">
+                                    *ngIf="controls.approvalStatusId.touched && controls.approvalStatusId.errors?.required">
                                     Required field</mat-error>
                             </div>
                         </div>
 
                     </div>
                 </div>
+                <input type="number" class="d-none" formControlName="userId">
             </form>
         </div>
     </div>

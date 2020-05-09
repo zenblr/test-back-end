@@ -10,7 +10,7 @@ import { UploadOfferService } from '../../../../../../core/upload-data';
 export class FinalLoanAmountComponent implements OnInit {
 
   loanAmount: number = 0;
-  karatArr = [{ value: 18, purity: '18 K' }, { value: 19, name: '19 K' }, { value: 20, name: '20 K' }, { value: 21, name: '21 K' }, { value: 22, name: '22 K' }]
+  karatArr = [{ value: 18, name: '18 K' }, { value: 19, name: '19 K' }, { value: 20, name: '20 K' }, { value: 21, name: '21 K' }, { value: 22, name: '22 K' }]
   purity = [];
   purityBasedDeduction: number;
   currentLtvAmount: any;

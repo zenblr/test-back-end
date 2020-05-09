@@ -1,55 +1,50 @@
 <kt-portlet>
-	<!-- PORTLET LOADING | Binded to TABLE Datasource -->
-	<!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
-	<kt-portlet-header [title]="'Roles list'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
-	</kt-portlet-header>
-	<!-- end::Header -->
+
 	<kt-portlet-body>
 		<!-- MATERIAL TABLE | Binded to datasources -->
 		<!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
 		<div class="mat-table__wrapper">
-			<mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
-				matSortActive="id" matSortDirection="asc" matSortDisableClear>
+			<mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 				<!-- Checkbox Column -->
 
 				<!-- Table with selection -->
 				<!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
 
 				<ng-container matColumnDef="roleName">
-					<!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Role Name</mat-header-cell>
+					<!-- ATTRIBUTE   for sorting | https://material.angular.io/components/sort/overview -->
+					<mat-header-cell *matHeaderCellDef >Role Name</mat-header-cell>
 					<mat-cell *matCellDef="let role">
-						<div class="font-weight-bold text-color" (click)="permissions(role)">
-							{{role.name}}
+						<div class="font-weight-bold text-color kt-pointer" (click)="permissions(role)">
+							{{role.roleName | titlecase}}
 						</div>
 					</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="createdBy">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Created By</mat-header-cell>
-					<mat-cell *matCellDef="let role">{{role.calories}}</mat-cell>
+					<mat-header-cell *matHeaderCellDef >Created By</mat-header-cell>
+					<mat-cell *matCellDef="let role">{{role.createdByUser.firstName | titlecase}} &nbsp; {{role.createdByUser.lastName | titlecase}}</mat-cell>
 				</ng-container>
 				<ng-container matColumnDef="modifiedBy">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Modified By</mat-header-cell>
-					<mat-cell *matCellDef="let role">{{role.carbs}}</mat-cell>
+					<mat-header-cell *matHeaderCellDef >Modified By</mat-header-cell>
+					<mat-cell *matCellDef="let role">{{role.updatedByUser.firstName | titlecase}} &nbsp; {{role.updatedByUser.lastName | titlecase}}</mat-cell>
 				</ng-container>
 				<ng-container matColumnDef="modifiedDate">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Modified Date</mat-header-cell>
-					<mat-cell *matCellDef="let role">{{role.fat}}</mat-cell>
+					<mat-header-cell *matHeaderCellDef >Modified Date</mat-header-cell>
+					<mat-cell *matCellDef="let role">{{role.createdAt | date:'mediumDate'}}</mat-cell>
 				</ng-container>
 				<ng-container matColumnDef="modifiedTime">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Modified Time</mat-header-cell>
-					<mat-cell *matCellDef="let role">{{role.protein}}</mat-cell>
+					<mat-header-cell *matHeaderCellDef >Modified Time</mat-header-cell>
+					<mat-cell *matCellDef="let role">{{role.updatedAt | date:'mediumDate'}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="action">
 					<mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
 					<mat-cell *matCellDef="let role">
 						<div [ngStyle]="{'display': 'inherit'}">
-							<div (click)="editRole(role,'edit')" class="kt-pointer text-color font-weight-bold"> Edit |
+							<div (click)="editRole(role,'Update')" class="kt-pointer text-color font-weight-bold"> Edit |
 								&nbsp;
 							</div>
-							<div class="kt-pointer text-color font-weight-bold" (click)="deleteRole(role)">Delete</div>
+							<div class="kt-pointer text-color font-weight-bold" (click)="deleteRole(role.id)">Delete</div>
 						</div>
 					</mat-cell>
 				</ng-container>

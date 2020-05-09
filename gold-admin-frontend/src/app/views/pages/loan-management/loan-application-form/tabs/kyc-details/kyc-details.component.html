@@ -1,45 +1,187 @@
-<form action="">
+<form action="" [formGroup]="kycForm">
     <div class="row">
-        <div class="col-4 form-label">
-            <label class="text-color kt-padding-l-10">Aadhaar Number</label>
+        <div class="col-6 kt-margin-t-20">
+            <div class="row">
+                <div class="col-3 offset-1 p-0">
+                    <label class="  font-weight-500 text-color">Identity</label>
+                </div>
+                <div class="col-7">
+                    <input type="text" class="form-control" formControlName="identityTypeId">
+                </div>
+            </div>
         </div>
-        <div class="col-6">
-            <input type="text" class="form-control" placeholder="10234501203203">
-        </div>
-    </div>
-    <div class="row kt-margin-t-15">
-        <div class="col-4 form-label">
-            <label class="text-color kt-padding-l-10">Permanent Address</label>
-        </div>
-        <div class="col-6">
-            <textarea  cols="5" rows="3" placeholder="Write Your Permanent Address..." class="form-control"></textarea>
-        </div>
-    </div>
-    
-    <div class="row kt-margin-t-15">
-        <div class="col-4 form-label">
-            <label class="text-color kt-padding-l-10">Pincode</label>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control" placeholder="432134">
-        </div>
-    </div>
-    <div class="row kt-margin-t-15">
-        <div class="col-4 form-label">
-            <label class="text-color kt-padding-l-10">Office Address</label>
-        </div>
-        <div class="col-6">
-            <textarea  cols="5" rows="3" placeholder="Write Your Office Address..." class="form-control"></textarea>
 
+        <div class="col-6 kt-margin-t-20">
+            <div class="row">
+                <div class="col-3 offset-1 p-0">
+                    <label class=" font-weight-500 text-color">Unique Identity No.</label>
+                </div>
+                <div class="col-7">
+                    <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
+                        placeholder="Unique Identity Number" class="form-control" s>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row kt-margin-t-15">
-        <div class="col-4 form-label">
-            <label class="text-color kt-padding-l-10">Pincode</label>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control" placeholder="432134">
+
+    <div class="row kt-margin-t-20 kt-margin-b-20">
+        <div class="offset-2 col">
+            <div class="img-container">
+                <img class="placeholder-image" src="../../../../../../assets/media/icons/image-placeholder.png"
+                    alt="placeholder">
+            </div>
+            <!-- <div *ngIf="images.identityProof.length>0">
+                    <div class="row ">
+                        <div class="kt-margin-r-15" *ngFor="let img of images.identityProof, index as idx">
+                            <div class="img-container">
+                                <img class="border-rad-15 fetched-image" [src]="img" alt="">
+                                <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                    class="kt-pointer remove-icon"
+                                    (click)="removeImages(idx, 'identityProof');">
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
         </div>
     </div>
-    
+
+    <div class="row">
+        <ng-container formArrayName="address"
+            *ngFor="let addressForm of kycForm.get('address')['controls']; index as i;">
+
+            <div [formGroupName]="i" class="col-6">
+
+
+                <div class=" kt-margin-t-20">
+                    <div class="row">
+                        <div class="col-3 offset-1 p-0">
+                            <label class="  font-weight-500 text-color" *ngIf="i == 1">Residential
+                                or
+                                Official
+                                Address</label>
+                            <label class="  font-weight-500 text-color" *ngIf="i == 0"> Permanent
+                                Address</label>
+                        </div>
+                        <div class="col-7">
+                            <textarea formControlName="address" type="text" rows="5" aria-label="Residential Address"
+                                placeholder="Enter your text" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <input *ngIf="i==1" value="residential" formControlName="addressType" type="hidden">
+                    <input *ngIf="i==0" value="permanent" formControlName="addressType" type="hidden">
+                </div>
+                <div>
+                    <div class=" kt-margin-t-20">
+                        <div class="row">
+                            <div class="col-3 offset-1 p-0">
+                                <label class="  font-weight-500 text-color">State
+                                </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" formControlName="stateId" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class=" kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="  font-weight-500 text-color">City
+                                    </label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" formControlName="cityId" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+
+                        <div class=" kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="  font-weight-500 text-color">Pin Code</label>
+                                </div>
+                                <div class="col-7">
+                                    <input formControlName="pinCode" type="text" aria-label="Pin Code"
+                                        placeholder="000000" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=" kt-margin-t-20">
+                        <div class="row">
+                            <div class="col-3 offset-1 p-0">
+                                <label class="  font-weight-500 text-color">Address Proof
+                                </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" formControlName="addressProofTypeId" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kt-margin-t-20">
+                        <div class="row">
+                            <div class="col-3 offset-1 p-0">
+                                <label class=" font-weight-500 text-color">Unique Identity
+                                    No.</label>
+                            </div>
+                            <div class="col-7">
+                                <input formControlName="addressProofNumber" type="text"
+                                    placeholder="Unique Identity Number" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=" kt-margin-t-20 kt-margin-b-20">
+                        <div class="row">
+                            <div class="col">
+                                <div class="offset-4 img-container">
+                                    <img class="placeholder-image"
+                                        src="../../../../../../assets/media/icons/image-placeholder.png"
+                                        alt="placeholder">
+                                </div>
+
+                                <!-- <div *ngIf="i==0 && images.residential.length > 0">
+                                        <div class="row">
+                                            <div class="col-6"
+                                                *ngFor="let img of images.residential, index as idx">
+                                                <div class="img-container">
+                                                    <img class="fetched-image" [src]="img" alt="">
+                                                    <img src="../../../../../assets/media/icons/cancel.svg"
+                                                        alt="" class="kt-pointer remove-icon"
+                                                        (click)="removeImages(idx, 'residential');">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+                                <!-- <div *ngIf="i==1 && images.permanent.length > 0">
+                                        <div class="row">
+                                            <div class="col-6"
+                                                *ngFor="let img of images.permanent, index as idx">
+                                                <div class="img-container">
+                                                    <img class="fetched-image" [src]="img" alt="">
+                                                    <img src="../../../../../assets/media/icons/cancel.svg"
+                                                        alt="" class="kt-pointer remove-icon"
+                                                        (click)="removeImages(idx, 'permanent');">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+    </div>
 </form>
