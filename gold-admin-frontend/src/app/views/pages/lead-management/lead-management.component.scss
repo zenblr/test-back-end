@@ -3,8 +3,9 @@
         height: 79vh !important; //set table height
     }
     .mat-column-fullName{
-        flex: 0 0 20% !important;
-        padding-right: 5px !important;
+        flex: 0 0 18% !important;
+        padding-left: 5px !important;
+
     }
     .mat-column-mobile{
         flex: 0 0 10% !important;
@@ -30,7 +31,7 @@
 
     }
     .mat-column-actions{
-        flex: 0 0 8% !important;
+        flex: 0 0 6% !important;
 
     }
 }

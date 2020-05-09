@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, AfterViewInit, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnChanges, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
@@ -8,46 +8,52 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./basic-details.component.scss'],
   providers: [DatePipe]
 })
-export class BasicDetailsComponent implements OnInit, AfterViewInit, OnChanges {
+export class BasicDetailsComponent implements OnInit, OnChanges {
 
   basicForm: FormGroup;
   @Output() basicFormEmit: EventEmitter<any> = new EventEmitter();
-  @Input() invalid;
-  
+
+  @Input() details;
 
 
   constructor(
     private fb: FormBuilder,
     private datePipe: DatePipe
   ) {
+    this.initForm()
   }
 
 
   ngOnInit() {
-    this.initForm()
+    this.controls.customerUniqueId.valueChanges.subscribe(() => {
+      if (this.controls.customerUniqueId.valid) {
+        this.basicFormEmit.emit(this.basicForm)
+      }
+    })
   }
 
   ngOnChanges() {
-    if (this.invalid) {
-      this.basicForm.markAllAsTouched()
-      this.invalid = false
+    console.log(this.details)
+    if (this.details) {
+      this.basicForm.controls.mobileNumber.patchValue(this.details.mobileNumber)
+      this.basicForm.controls.panCardNumber.patchValue(this.details.panCardNumber)
     }
   }
 
-  ngAfterViewInit() {
-    this.basicForm.valueChanges.subscribe(() => {
-      this.basicFormEmit.emit(this.basicForm);
-    })
+
+  getCustomerDetails() {
+    // if(this.controls.customerUniqueId.valid){
+    //   this.basicFormEmit.emit(this.basicForm)
+    // }
   }
 
   initForm() {
     this.basicForm = this.fb.group({
-      customerId: [, Validators.required],
-      mobile: [, [Validators.required, Validators.minLength(10)]],
-      panCardNumber: [, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      customerUniqueId: [, [Validators.required, Validators.minLength(8)]],
+      mobileNumber: [{ value: '', disabled: true }],
+      panCardNumber: [{ value: '', disabled: true }],
       startDate: [, Validators.required]
     })
-    this.basicFormEmit.emit(this.basicForm);
   }
 
   get controls() {
@@ -59,7 +65,7 @@ export class BasicDetailsComponent implements OnInit, AfterViewInit, OnChanges {
     // console.log(this.datePipe.transform(this.controls.startDate.value, 'MMM d, y'))
     // this.controls.startDate.patchValue(this.datePipe.transform(this.controls.startDate.value, 'MMM d, y'))
     // console.log(this.controls.startDate.value)
-  
+
   }
 
 }
