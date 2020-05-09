@@ -30,13 +30,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'loan_end_date'
         },
-        paymentType: {
+        paymentFrequency: {
             type: DataTypes.STRING,
-            field: 'payment_type'
+            field: 'payment_frequency'
         },
         interestRate: {
             type: DataTypes.STRING,
             field: 'interest_rate'
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -56,9 +64,9 @@ module.exports = (sequelize, DataTypes) => {
     // FUNCTION TO ADD FINAL LOAN CALCULATOR
     finalLoanCalculator.addFinalLoanCalculator =
         (loanId, partnerName, schemeName, finalLoanAmount,
-            loanStartDate, tenure, loanEndDate, paymentType, interestRate, t) => finalLoanCalculator.create({
-                loanId, partnerName, schemeName, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentType, interestRate,
-                isActive: true
+            loanStartDate, tenure, loanEndDate, paymentFrequency, interestRate, createdBy, modifiedBy, t) => finalLoanCalculator.create({
+                loanId, partnerName, schemeName, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, interestRate,
+                createdBy, modifiedBy, isActive: true
             }, { t });
 
     return finalLoanCalculator;

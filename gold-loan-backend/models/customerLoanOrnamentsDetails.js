@@ -74,6 +74,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'current_ltv_amount'
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -91,11 +99,13 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD CUSTOMER ORNAMENTS DETAIL
     customerLoanOrnamentsDetail.addCustomerOrnamentsDetail =
-        (loanId, ornamentData, t) => {
+        (loanId, ornamentData, createdBy, modifiedBy, t) => {
             let finalOrnamentData = ornamentData.map(function (ele) {
                 let obj = Object.assign({}, ele);
                 obj.isActive = true;
                 obj.loanId = loanId;
+                obj.createdBy = createdBy;
+                obj.modifiedBy = modifiedBy;
                 return obj;
             })
             return customerLoanOrnamentsDetail.bulkCreate(finalOrnamentData, { t });

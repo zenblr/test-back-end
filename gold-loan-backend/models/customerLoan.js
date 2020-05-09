@@ -42,6 +42,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'total_final_interest_amt'
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -66,14 +74,14 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD CUSTOMER BANK DETAIL
     customerLoan.addCustomerLoan =
-        (customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, t) => customerLoan.create({
-            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, isActive: true
+        (customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, t) => customerLoan.create({
+            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, isActive: true
         }, { t });
 
     // FUNCTION TO GET APPROVAL FROM BM
     customerLoan.approvalFromBM =
-        (id, applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId) => customerLoan.update({
-            applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId
+        (id, applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId, modifiedBy) => customerLoan.update({
+            applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId, modifiedBy
         }, { where: { id, isActive: true } });
 
     // FUNCTION TO GET LOAN DETAIL BY ID

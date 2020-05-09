@@ -23,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'start_date',
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -40,8 +48,8 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD CUSTOMER PERSONAL DETAIL
     customerLoanPersonalDetail.addCustomerPersonalDetail =
-        (loanId, customerUniqueId, mobile, panCardNumber, startDate, t) => customerLoanPersonalDetail.create({
-            loanId, customerUniqueId, mobile, panCardNumber, startDate, isActive: true
+        (loanId, customerUniqueId, mobile, panCardNumber, startDate, createdBy, modifiedBy, t) => customerLoanPersonalDetail.create({
+            loanId, customerUniqueId, mobile, panCardNumber, startDate, createdBy, modifiedBy, isActive: true
         }, { t });
 
 

@@ -11,31 +11,37 @@ const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB
 exports.applyForLoanApplication = async (req, res, next) => {
 
     let { customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt,
-        name, accountNumber, ifscCode, aadharNumber, permanentAddress, pincode, officeAddress, officePin, nomineeData,
-        ornamentData, customerUniqueId, mobile, panCardNumber, startDate, partnerName, schemeName, finalLoanAmount,
-        loanStartDate, tenure, loanEndDate, paymentType, interestRate } = req.body;
+        name, accountNumber, ifscCode, identityProof, idCardNumber, permanentAddress, permanentAddState, permanentAddCity, permanentAddPin, permanentAddProof,
+        permanentAddCardNumber, residentialAddress, residentialAddState, residentialAddCity, residentialAddPin, residentialAddProof,
+        residentialAddCardNumber, nomineeData, ornamentData, customerUniqueId, mobile, panCardNumber, startDate, partnerName, schemeName, finalLoanAmount,
+        loanStartDate, tenure, loanEndDate, paymentFrequency, interestRate } = req.body;
+
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
     let appliedForLoanApplication = await sequelize.transaction(async t => {
-        let customerLoanCreated = await models.customerLoan.addCustomerLoan(
-            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt
+        let customerLoanCreated = await models.customerLoan.addCustomerLoan(customerId, applicationFormForAppraiser,
+            goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy
             , { transaction: t });
         let loanId = customerLoanCreated.id;
         let customerBankDetailsCreated = await models.customerLoanBankDetail.addCustomerBankDetail(
-            loanId, name, accountNumber, ifscCode
+            loanId, name, accountNumber, ifscCode, createdBy, modifiedBy
             , { transaction: t });
         let customerKycDetailsCreated = await models.customerLoanKycDetail.addCustomerKycDetail(
-            loanId, aadharNumber, permanentAddress, pincode, officeAddress, officePin
+            loanId, identityProof, idCardNumber, permanentAddress, permanentAddState, permanentAddCity, permanentAddPin, permanentAddProof,
+            permanentAddCardNumber, residentialAddress, residentialAddState, residentialAddCity, residentialAddPin, residentialAddProof,
+            residentialAddCardNumber, createdBy, modifiedBy
             , { transaction: t });
         let customerNomineeDetailsCreated = await models.customerLoanNomineeDetail.addCustomerNomineeDetail(
-            loanId, nomineeData
+            loanId, nomineeData, createdBy, modifiedBy
             , { transaction: t });
         let customerOramentsDetailsCreated = await models.customerLoanOrnamentsDetail.addCustomerOrnamentsDetail(
-            loanId, ornamentData
+            loanId, ornamentData, createdBy, modifiedBy
             , { transaction: t });
         let customerPersonalDetailsCreated = await models.customerLoanPersonalDetail.addCustomerPersonalDetail(
-            loanId, customerUniqueId, mobile, panCardNumber, startDate
+            loanId, customerUniqueId, mobile, panCardNumber, startDate, createdBy, modifiedBy
             , { transaction: t });
         let finalloanCalculatorCreated = await models.finalLoanCalculator.addFinalLoanCalculator(loanId, partnerName, schemeName,
-            finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentType, interestRate, { transaction: t })
+            finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, interestRate, createdBy, modifiedBy, { transaction: t })
     })
 
     res.status(201).json({ message: 'you have successfully applied for the loan' });
@@ -43,19 +49,30 @@ exports.applyForLoanApplication = async (req, res, next) => {
 
 
 //  FUNCTION TO UPDATE CUSTOMER ORNAMENTS DETAILS
-exports.updateCustomerOrnamentsDetail = async (req, res, next) => {
-    let { ornamentType, quantity, grossWeight, netWeight, deductionWeight, weightMachineZeroWeight,
-        withOrnamentWeight, stoneTouch, acidTest, purityTest, ornamentImage, ltvPercent, ltvAmount, currentLtvAmount } = req.body;
+exports.updateCustomerLoanDetail = async (req, res, next) => {
+    let { ornamentData, partnerName, schemeName, finalLoanAmount, loanStartDate, tenure, loanEndDate,
+        paymentFrequency, interestRate, totalEligibleAmt, totalFinalInterestAmt } = req.body;
+    let loanId = req.params.loanId;
+    let modifiedBy = req.userData.id;
 
-    let id = req.params.id;
-    let customerOrnamentsDetailsUpdated = await models.customerLoanOrnamentsDetail.editCustomerOrnamentsDetail(
-        id, ornamentType, quantity, grossWeight, netWeight, deductionWeight, weightMachineZeroWeight,
-        withOrnamentWeight, stoneTouch, acidTest, purityTest, ornamentImage, ltvPercent, ltvAmount, currentLtvAmount
-    );
-    if (customerOrnamentsDetailsUpdated[0] == 0) {
-        res.status(422).json({ message: 'customer ornaments details not updated' });
+    let customerOrnamentsDetailsUpdated = await models.customerLoanOrnamentsDetail.bulkCreate(ornamentData, {
+        updateOnDuplicate: ["ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest",
+            "karat", "purity", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount"]
+    })
+
+    let finalLoanCalculatorUpdated = await models.finalLoanCalculator.update({
+        partnerName, schemeName, finalLoanAmount, loanStartDate, tenure, loanEndDate,
+        paymentFrequency, interestRate, modifiedBy
+    }, { where: { loanId, isActive: true } })
+
+    let customerLoanUpdated = await models.customerLoan.update({
+        totalEligibleAmt, totalFinalInterestAmt, modifiedBy
+    }, { where: { id: loanId, isActive: true } })
+
+    if (customerLoanUpdated[0] == 0) {
+        res.status(422).json({ message: 'customer loan details not updated' });
     } else {
-        res.status(200).json({ message: 'customer ornaments details changed successfully' });
+        res.status(200).json({ message: 'customer loan details changed successfully' });
     }
 }
 
@@ -63,11 +80,13 @@ exports.updateCustomerOrnamentsDetail = async (req, res, next) => {
 exports.addPackageImagesForLoan = async (req, res, next) => {
 
     let { loanId, packageImageData } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
 
     if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
         let packageImageUploaded = await models.packageImageUploadForLoan.addPackageImages(
-            loanId, packageImageData);
+            loanId, packageImageData, createdBy, modifiedBy);
         res.status(201).json({ message: 'you have successfully uploaded package images' });
     } else {
         res.status(404).json({ message: 'given loan id is not proper' })
@@ -78,11 +97,13 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
 exports.disbursementOfLoanAmount = async (req, res, next) => {
 
     let { loanId, transactionId, date } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
 
     if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
         let loanAmountDisbursed = await models.disbursementOfLoan.disbursementOfLoanAmount(
-            loanId, transactionId, date);
+            loanId, transactionId, date, createdBy, modifiedBy);
         res.status(201).json({ message: 'you loan amount has been disbursed successfully' });
     } else {
         res.status(404).json({ message: 'given loan id is not proper' })
@@ -160,6 +181,7 @@ exports.approvalFromBM = async (req, res, next) => {
     let { applicationFormForBM, goldValuationForBM, loanStatusForBM } = req.body;
 
     let id = req.params.id;
+    let modifiedBy = req.userData.id;
     let loanUniqueId;
 
     if (applicationFormForBM === true && goldValuationForBM === true && loanStatusForBM === 'confirmed') {
@@ -168,7 +190,7 @@ exports.approvalFromBM = async (req, res, next) => {
         loanUniqueId = null;
     }
     let approvedByBM = await models.customerLoan.approvalFromBM(
-        id, applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId
+        id, applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId, modifiedBy
     );
     if (approvedByBM[0] == 0) {
         res.status(422).json({ message: 'BM approval not working properly' });
@@ -188,11 +210,6 @@ exports.appliedLoanDetails = async (req, res, next) => {
             "$customer.mobile_number$": { [Op.iLike]: search + '%' },
             "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
             "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            createdAt: sequelize.where(
-                sequelize.cast(sequelize.col("createdAt"), "varchar"),
-                {
-                    [Op.iLike]: search + "%"
-                }),
         },
         isActive: true
     };
@@ -202,6 +219,11 @@ exports.appliedLoanDetails = async (req, res, next) => {
         as: 'customer',
         where: { isActive: true },
         attributes: { exclude: ['password'] }
+    },
+    {
+        model: models.finalLoanCalculator,
+        as: 'finalCalculator',
+        where: { isActive: true }
     }]
 
     let appliedLoanDetails = await models.customerLoan.findAll({
@@ -230,12 +252,17 @@ exports.customerDetails = async (req, res, next) => {
 
     let customerUniqueId = req.params.customerUniqueId;
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId, kycStatus: 'confirm', isActive: true },
+        where: { customerUniqueId, isActive: true },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber'],
         include: [{
+            model: models.customerKyc,
+            where: { kycStatus: 'approved' },
+            as: 'customerKyc'
+        },
+        {
             model: models.customerKycPersonalDetail,
             // where: { isActive: true },
-            as: 'customerKyc',
+            as: 'customerKycPersonal',
             attributes: ['id', 'identityTypeId', 'identityProof', 'identityProofNumber'],
             include: [{
                 model: models.identityType,
@@ -246,7 +273,6 @@ exports.customerDetails = async (req, res, next) => {
             model: models.customerKycAddressDetail,
             // where: { isActive: true },
             as: 'customerKycAddress',
-            attributes: ['id', 'addressType', 'address', 'pinCode', 'addressProof']
         }, {
             model: models.customerKycBankDetail,
             // where: { isActive: true },
@@ -262,3 +288,82 @@ exports.customerDetails = async (req, res, next) => {
         res.status(200).json({ message: 'customer details fetch successfully', customerData });
     }
 }
+
+//  FUNCTION FOR ADD PACKET
+exports.addPacket = async (req, res, next) => {
+
+    let { loanUniqueId, customerUniqueId, packetId } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    // let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
+
+    // if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
+    let packetAdded = await models.packet.addPacket(
+        loanUniqueId, customerUniqueId, packetId, createdBy, modifiedBy);
+    res.status(201).json({ message: 'you adeed packet successfully' });
+    // } else {
+    //     res.status(404).json({ message: 'given loan id is not proper' })
+    // }
+}
+
+//  FUNCTION FOR GET PACKET
+exports.viewPacket = async (req, res, next) => {
+    let { search, offset, pageSize } =
+        paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+
+    let searchQuery = {
+        [Op.or]: {
+            loanUniqueId: { [Op.iLike]: search + '%' },
+            customerUniqueId: { [Op.iLike]: search + '%' },
+            packetId: { [Op.iLike]: search + '%' },
+        },
+        isActive: true
+    };
+
+    let appliedLoanDetails = await models.packet.findAll({
+        where: searchQuery,
+        // include: associateModel,
+        order: [
+            ['id', 'DESC']
+        ],
+        offset: offset,
+        limit: pageSize,
+
+    });
+    let count = await models.packet.findAll({
+        where: searchQuery,
+        // include: associateModel,
+    });
+    if (appliedLoanDetails.length === 0) {
+        res.status(404).json({ message: 'no loan details found' });
+    } else {
+        res.status(200).json({ message: 'applied loan details fetch successfully', appliedLoanDetails, count: count.length });
+    }
+}
+
+// FUNCTION TO UPDATE PACKET
+exports.changePacket = async (req, res, next) => {
+    let id = req.params.id;
+    let { packetId } = req.body;
+    let modifiedBy = req.userData.id;
+
+    let packet = await models.packet.updatePacket(id, packetId, modifiedBy);
+
+    if (packet[0] == 0) {
+        return res.status(404).json({ message: "packet not update" });
+    }
+    return res.status(200).json({ message: "packet updated successfully" });
+};
+
+// FUNCTION TO REMOVE PACKET
+exports.deletePacket = async (req, res, next) => {
+    let id = req.params.id;
+    let modifiedBy = req.userData.modifiedBy;
+
+    let packet = await models.packet.removePacket(id, modifiedBy);
+
+    if (packet[0] == 0) {
+        return res.status(404).json({ message: "packet not delete" });
+    }
+    return res.status(200).json({ message: "packet deleted successfully" });
+};
