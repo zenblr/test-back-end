@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { UserAddressService, UserBankService, UserPersonalService } from '../../../../../core/kyc-settings';
+import { UserAddressService, UserBankService, UserPersonalService, UserDetailsService } from '../../../../../core/kyc-settings';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, filter, finalize, catchError } from 'rxjs/operators';
@@ -17,7 +17,7 @@ export class UserReviewComponent implements OnInit {
   identityProofs = [];
   addressProofs = [];
   customerKycBank: FormGroup
-  customerKyc: FormGroup
+  customerKycPersonal: FormGroup
   reviewForm: FormGroup;
   customerKycAddressOne: FormGroup
   customerKycAddressTwo: FormGroup
@@ -49,7 +49,7 @@ export class UserReviewComponent implements OnInit {
   //     "lastLogin": null,
   //     "createdAt": "2020-04-28T05:31:32.245Z",
   //     "updatedAt": "2020-04-28T05:31:32.245Z",
-  //     "customerKyc": {
+  //     "customerKycPersonal": {
   //       "id": 1,
   //       "customerId": 1,
   //       "profileImage": "http://173.249.49.7:8000/uploads/images/1588052119361.png",
@@ -143,12 +143,17 @@ export class UserReviewComponent implements OnInit {
     private sharedService: SharedService,
     private ref: ChangeDetectorRef,
     private userBankService: UserBankService,
+    private userDetailsService: UserDetailsService,
     private toastr: ToastrService,
     private userPersonalService: UserPersonalService) { }
 
   ngOnInit() {
     console.log(this.data)
-    this.data = this.userBankService.kycDetails;
+    if (!this.userBankService.kycDetails) {
+      this.data = this.userDetailsService.userData;
+    } else {
+      this.data = this.userBankService.kycDetails;
+    }
     this.initForm();
     this.getStates();
     this.getIdentityType();
@@ -160,14 +165,14 @@ export class UserReviewComponent implements OnInit {
 
   initForm() {
     this.reviewForm = this.fb.group({
-      profileImage: [this.data.customerKycReview.customerKyc.profileImage, [Validators.required]],
+      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
       firstName: [this.data.customerKycReview.firstName, [Validators.required]],
       lastName: [this.data.customerKycReview.lastName, [Validators.required]],
       mobileNumber: [this.data.customerKycReview.mobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
-      identityTypeId: [this.data.customerKycReview.customerKyc.identityType.id, [Validators.required]],
-      identityProof: [this.data.customerKycReview.customerKyc.identityProof, [Validators.required]],
-      identityProofNumber: [this.data.customerKycReview.customerKyc.identityProofNumber, [Validators.required]],
+      identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
+      identityProof: [this.data.customerKycReview.customerKycPersonal.identityProof, [Validators.required]],
+      identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
     })
     this.customerKycAddressOne = this.fb.group({
       id: this.data.customerKycReview.customerKycAddress[0].id,
@@ -196,18 +201,18 @@ export class UserReviewComponent implements OnInit {
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
     }),
-      this.customerKyc = this.fb.group({
-        profileImage: [this.data.customerKycReview.customerKyc.profileImage, [Validators.required]],
-        alternateMobileNumber: [this.data.customerKycReview.customerKyc.alternateMobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-        gender: [this.data.customerKycReview.customerKyc.gender, [Validators.required]],
-        spouseName: [this.data.customerKycReview.customerKyc.spouseName, [Validators.required]],
-        martialStatus: [this.data.customerKycReview.customerKyc.martialStatus, [Validators.required]],
-        signatureProof: [this.data.customerKycReview.customerKyc.signatureProof, [Validators.required]],
-        occupationId: [this.data.customerKycReview.customerKyc.occupation.id, [Validators.required]],
-        dateOfBirth: [this.data.customerKycReview.customerKyc.dateOfBirth, [Validators.required]],
-        identityTypeId: [this.data.customerKycReview.customerKyc.identityType.id, [Validators.required]],
-        identityProof: [this.data.customerKycReview.customerKyc.identityProof, [Validators.required]],
-        identityProofNumber: [this.data.customerKycReview.customerKyc.identityProofNumber, [Validators.required]],
+      this.customerKycPersonal = this.fb.group({
+        profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
+        alternateMobileNumber: [this.data.customerKycReview.customerKycPersonal.alternateMobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+        gender: [this.data.customerKycReview.customerKycPersonal.gender, [Validators.required]],
+        spouseName: [this.data.customerKycReview.customerKycPersonal.spouseName, [Validators.required]],
+        martialStatus: [this.data.customerKycReview.customerKycPersonal.martialStatus, [Validators.required]],
+        signatureProof: [this.data.customerKycReview.customerKycPersonal.signatureProof, [Validators.required]],
+        occupationId: [this.data.customerKycReview.customerKycPersonal.occupation.id, [Validators.required]],
+        dateOfBirth: [this.data.customerKycReview.customerKycPersonal.dateOfBirth, [Validators.required]],
+        identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
+        identityProof: [this.data.customerKycReview.customerKycPersonal.identityProof, [Validators.required]],
+        identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
       }),
 
       this.customerKycBank = this.fb.group({
@@ -229,7 +234,7 @@ export class UserReviewComponent implements OnInit {
     // this.customerKycAddressOne.disable();
     // this.customerKycAddressTwo.disable();
     // this.customerKycBank.disable();
-    // this.customerKyc.disable();
+    // this.customerKycPersonal.disable();
 
     // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressOne.controls.stateId.value, cityId: this.customerKycAddressOne.controls.cityId.value });
     // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressTwo.controls.stateId.value, cityId: this.customerKycAddressTwo.controls.cityId.value });
@@ -238,11 +243,11 @@ export class UserReviewComponent implements OnInit {
   }
 
   submit() {
-    // console.log(this.customerKyc.value, this.customerKycBank.value, this.customerKycAddressOne.value, this.customerKycAddressTwo.value)
+    // console.log(this.customerKycPersonal.value, this.customerKycBank.value, this.customerKycAddressOne.value, this.customerKycAddressTwo.value)
 
-    // FINAL OBJ {customerKyc: {}, customerKycBank: [], customerKycAddress: []}
+    // FINAL OBJ {customerKycPersonal: {}, customerKycBank: [], customerKycAddress: []}
 
-    this.customerKyc.patchValue({
+    this.customerKycPersonal.patchValue({
       identityTypeId: this.reviewForm.get('identityTypeId').value,
       identityProofNumber: this.reviewForm.get('identityProofNumber').value,
     })
@@ -256,14 +261,14 @@ export class UserReviewComponent implements OnInit {
     const data = {
       customerId: this.data.customerId,
       customerKycId: this.data.customerKycId,
-      customerKyc: this.customerKyc.value,
+      customerKycPersonal: this.customerKycPersonal.value,
       customerKycAddress: customerKycAddress,
       customerKycBank: customerKycBank
     }
     console.log(data)
 
-    if (this.customerKyc.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid || this.customerKycBank.invalid) {
-      this.customerKyc.markAllAsTouched();
+    if (this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid || this.customerKycBank.invalid) {
+      this.customerKycPersonal.markAllAsTouched();
       this.customerKycAddressOne.markAllAsTouched();
       this.customerKycAddressTwo.markAllAsTouched();
       this.customerKycBank.markAllAsTouched();
@@ -341,7 +346,7 @@ export class UserReviewComponent implements OnInit {
   removeImages(index, type) {
     // console.log(index, type)
     if (type == 'identityProof') {
-      this.data.customerKycReview.customerKyc.identityProof.splice(index, 1)
+      this.data.customerKycReview.customerKycPersonal.identityProof.splice(index, 1)
     } else if (type == 'residential') {
       this.data.customerKycReview.customerKycAddress[1].addressProof.splice(index, 1)
     } else if (type == 'permanent') {
@@ -358,13 +363,13 @@ export class UserReviewComponent implements OnInit {
     this.sharedService.uploadFile(this.file).pipe(
       map(res => {
         if (type == "profile") {
-          this.data.customerKycReview.customerKyc.profileImage = res.uploadFile.URL;
-          this.customerKyc.patchValue({ profileImage: res.uploadFile.URL })
+          this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
+          this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.URL })
           this.ref.markForCheck();
         }
         if (type == "identityProof") {
-          this.data.customerKycReview.customerKyc.identityProof.push(res.uploadFile.URL)
-          this.customerKyc.patchValue({ identityProof: this.data.customerKycReview.customerKyc.identityProof })
+          this.data.customerKycReview.customerKycPersonal.identityProof.push(res.uploadFile.URL)
+          this.customerKycPersonal.patchValue({ identityProof: this.data.customerKycReview.customerKycPersonal.identityProof })
 
         }
         if (type == 'permanent') {
@@ -374,12 +379,12 @@ export class UserReviewComponent implements OnInit {
         if (type == 'residential') {
           this.data.customerKycReview.customerKycAddress[1].addressProof.push(res.uploadFile.URL)
           this.customerKycAddressTwo.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[1].addressProof })
-          console.log(this.customerKyc.value)
+          console.log(this.customerKycPersonal.value)
         }
         if (type == "signature") {
-          this.data.customerKycReview.customerKyc.signatureProof = res.uploadFile.URL;
-          this.customerKyc.patchValue({ signatureProof: res.uploadFile.URL })
-          console.log(this.customerKyc.value)
+          this.data.customerKycReview.customerKycPersonal.signatureProof = res.uploadFile.URL;
+          this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.URL })
+          console.log(this.customerKycPersonal.value)
           this.ref.markForCheck();
         }
         if (type == 'passbook') {

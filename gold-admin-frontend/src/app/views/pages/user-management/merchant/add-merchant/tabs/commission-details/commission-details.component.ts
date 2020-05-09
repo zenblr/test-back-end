@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { MerchantService } from '../../../../../../../core/user-management/merchant';
+import { map, catchError } from 'rxjs/operators';
+import { ToastrComponent } from '../../../../../../../views/partials/components';
+import {  ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kt-commission-details',
@@ -8,33 +12,88 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class CommissionDetailsComponent implements OnInit {
 
-  category: FormGroup;
+  categoryCommission:any[] = []
+  commissionForm: FormGroup;
+  userId:number;
+  commission:[]
+  @Output() next: EventEmitter<any> = new EventEmitter<any>();
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+
+
   constructor(
-    public fb: FormBuilder
-  ) { }
+    public fb: FormBuilder,
+    private merchantSercvice:MerchantService,
+    private ref:ChangeDetectorRef,
+    private rout: ActivatedRoute
+  ) {
+    this.merchantSercvice.userId$.subscribe(res =>{
+      this.userId = res
+    })
+   }
 
   ngOnInit() {
+    var id = this.rout.snapshot.params.id;
+    if (id) {
+      this.userId = id;
+    }
     this.initForm()
+    this.merchantSercvice.getMerchantCommssion(this.userId).pipe(
+      map(res =>{
+        this.commission = res;
+        console.log(this.commission)
+        this.createFormArray()
+      }),
+      catchError(err =>{
+        // this.toastr.errorToastr(err.error.message)
+        throw err
+      })).subscribe()
+    
   }
 
   initForm() {
-    this.category = this.fb.group({
-      category1: ['', [Validators.required]],
-      category2: ['', [Validators.required]],
-      category3: ['', [Validators.required]]
+    this.commissionForm = this.fb.group({
+      category:this.fb.array([])
     })
   }
 
-  get controls() {
-    if (this.category)
-      return this.category.controls
+  get categoryArray() {
+    if (this.commissionForm)
+      return this.commissionForm.controls.category as FormArray
   }
 
-  next() {
-    if (this.category.invalid) {
-      this.category.markAllAsTouched()
+  createFormArray(){
+    this.commission.forEach(com=>{
+      this.categoryArray.push(
+        this.fb.group({
+          category:[com['category'],Validators.required],
+          categoryId:[com['categoryId'],Validators.required],
+          commission:[com['commission'],Validators.required],
+        })
+      )
+    })
+    console.log(this.categoryArray.controls)
+    this.ref.detectChanges()
+  }
+
+
+
+  submit() {
+    if (this.commissionForm.invalid) {
+      this.commissionForm.markAllAsTouched()
       return
     }
+    console.log(this.userId)
+    console.log(this.categoryCommission)
+    this.merchantSercvice.merchantCommission(this.categoryArray.value,this.userId).pipe(
+      map(res=>{
+        this.next.emit(true);
+      }
+    ),catchError(err=>{
+      this.toastr.errorToastr(err.error.message)
+      throw err
+    })).subscribe()
+   
+
   }
 
 }

@@ -150,42 +150,42 @@
 				</ng-container>
 
 				<ng-container matColumnDef="id">
-					<!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
-					<mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+					<!-- ATTRIBUTE   for sorting | https://material.angular.io/components/sort/overview -->
+					<mat-header-cell *matHeaderCellDef >ID</mat-header-cell>
 					<mat-cell *matCellDef="let customer">{{customer.id}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="firstName">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Firstname</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Firstname</mat-header-cell>
 					<mat-cell *matCellDef="let customer">{{customer.firstName}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="lastName">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Lastname</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Lastname</mat-header-cell>
 					<mat-cell *matCellDef="let customer">{{customer.lastName}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="email">
-					<mat-header-cell *matHeaderCellDef mat-sort-header class="email-cell">Email</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef  class="email-cell">Email</mat-header-cell>
 					<mat-cell *matCellDef="let customer" class="email-cell">
 						<a href="ecommerce/customers#" class="kt-link">{{customer.email}}</a>
 					</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="gender">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Gender</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Gender</mat-header-cell>
 					<mat-cell *matCellDef="let customer">{{customer.gender}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="status">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Status</mat-header-cell>
 					<mat-cell *matCellDef="let customer">
 						<span class="kt-badge kt-badge--inline kt-badge--pill kt-badge--{{ getItemCssClassByStatus(customer.status) }} kt-badge--wide">{{  getItemStatusString(customer.status) }}</span>
 					</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="type">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Type</mat-header-cell>
 					<mat-cell *matCellDef="let customer">
 						<span class="kt-badge kt-badge--{{ getItemCssClassByType(customer.type) }} kt-badge--dot"></span>&nbsp;
 						<span class="kt--font-bold kt-font-{{ getItemCssClassByType(customer.type) }}">{{ getItemTypeString(customer.type) }}</span>

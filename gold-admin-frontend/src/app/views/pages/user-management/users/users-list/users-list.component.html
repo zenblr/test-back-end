@@ -86,25 +86,25 @@
 				</ng-container>
 
 				<ng-container matColumnDef="id">
-					<!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
-					<mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+					<!-- ATTRIBUTE   for sorting | https://material.angular.io/components/sort/overview -->
+					<mat-header-cell *matHeaderCellDef >ID</mat-header-cell>
 					<mat-cell *matCellDef="let user">{{user.id}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="username">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Username</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Username</mat-header-cell>
 					<mat-cell *matCellDef="let user">{{user.username}}</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="email">
-					<mat-header-cell *matHeaderCellDef mat-sort-header class="email-cell">Email</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef  class="email-cell">Email</mat-header-cell>
 					<mat-cell *matCellDef="let user" class="email-cell">
 						<a href="user-management/users#" class="kt-link">{{user.email}}</a>
 					</mat-cell>
 				</ng-container>
 
 				<ng-container matColumnDef="fullname">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>Full name</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef >Full name</mat-header-cell>
 					<mat-cell *matCellDef="let user">{{user.fullname}}</mat-cell>
 				</ng-container>
 

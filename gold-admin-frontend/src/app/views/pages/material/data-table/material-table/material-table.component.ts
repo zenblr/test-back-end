@@ -202,22 +202,22 @@ const sorting = {
   <mat-table #table [dataSource]="dataSource" matSort>
     <!-- Position Column -->
     <ng-container matColumnDef="position">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> No. </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef > No. </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
     </ng-container>
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef > Name </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
     </ng-container>
     <!-- Weight Column -->
     <ng-container matColumnDef="weight">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Weight </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef > Weight </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
     </ng-container>
     <!-- Symbol Column -->
     <ng-container matColumnDef="symbol">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Symbol </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef > Symbol </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -285,7 +285,7 @@ const ELEMENT_DATA: Element[] = [
   overflow: auto;
   max-height: 500px;
 }
-.mat-header-cell.mat-sort-header-sorted {
+.mat-header-cell.-sorted {
   color: black;
 }`,
 	viewCode: ``,
@@ -516,22 +516,22 @@ const main = {
   <mat-table [dataSource]="dataSource" matSort>
     <!-- ID Column -->
     <ng-container matColumnDef="id">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef > ID </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
     </ng-container>
     <!-- Progress Column -->
     <ng-container matColumnDef="progress">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Progress </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef > Progress </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
     </ng-container>
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef > Name </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
     </ng-container>
     <!-- Color Column -->
     <ng-container matColumnDef="color">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Color </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef > Color </mat-header-cell>
       <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.color}} </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -657,7 +657,7 @@ const hTTP = {
     <!-- Created Column -->
     <ng-container matColumnDef="created">
       <mat-header-cell *matHeaderCellDef
-        mat-sort-header
+        
         disableClear="true">
         Created
       </mat-header-cell>
@@ -911,7 +911,7 @@ function createNewUser(id: number): UserData {
 		max-height: 500px;
 	  }
 
-	  .mat-header-cell.mat-sort-header-sorted {
+	  .mat-header-cell.-sorted {
 		color: black;
 	  }
 

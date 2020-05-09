@@ -1,0 +1,28 @@
+:host{
+    .mat-column-branchId{
+        flex: 0 0 10% !important;
+
+    }
+    .mat-column-branchName{
+        flex: 0 0 12% !important;
+    }
+    .mat-column-address{
+        flex: 0 0 19% !important;
+
+    }
+    .mat-column-state{
+        flex: 0 0 15% !important;
+    }
+    .mat-column-city{
+        flex: 0 0 15% !important;
+
+    }
+    .mat-column-pincode{
+        flex: 0 0 8% !important;
+
+    }
+    .mat-column-action{
+        flex: 0 0 12% !important;
+    }
+
+}

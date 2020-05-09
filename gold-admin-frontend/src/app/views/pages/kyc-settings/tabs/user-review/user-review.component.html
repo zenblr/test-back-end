@@ -20,7 +20,7 @@
                                 <div class="profile-div">
                                     <!-- <img class="" src="../../../../../../assets/media/icons/user.png" alt="" /> -->
                                     <img *ngIf="data" class="profile-pic"
-                                        [src]="data.customerKycReview.customerKyc.profileImage" alt="" />
+                                        [src]="data.customerKycReview.customerKycPersonal.profileImage" alt="" />
                                 </div>
                             </div>
                             <div class="col-7 d-flex">
@@ -135,7 +135,7 @@
                             </div>
                             <div class="col-7">
                                 <!-- <input class="form-control"
-                                    value="{{ data.customerKycReview.customerKyc.identityType.name | titlecase }}" /> -->
+                                    value="{{ data.customerKycReview.customerKycPersonal.identityType.name | titlecase }}" /> -->
                                 <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof"
                                     [class.isError]="reviewForm.controls.identityTypeId.invalid && reviewForm.controls.identityTypeId.touched">
                                     <option value="" [disabled]="true" [selected]="true"> Select Proof</option>
@@ -200,7 +200,7 @@
                 </div> -->
 
                 <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
-                    <ng-container *ngIf="data.customerKycReview.customerKyc.identityProof.length == 0">
+                    <ng-container *ngIf="data.customerKycReview.customerKycPersonal.identityProof.length == 0">
                         <div class="col-4">
                             <div class="img-container">
                                 <img class="placeholder-image" src="assets/media/icons/image-placeholder.png"
@@ -208,9 +208,9 @@
                             </div>
                         </div>
                     </ng-container>
-                    <ng-container *ngIf="data.customerKycReview.customerKyc.identityProof.length > 0">
+                    <ng-container *ngIf="data.customerKycReview.customerKycPersonal.identityProof.length > 0">
                         <div class="col-4"
-                            *ngFor="let pass of data.customerKycReview.customerKyc.identityProof, index as idx">
+                            *ngFor="let pass of data.customerKycReview.customerKycPersonal.identityProof, index as idx">
                             <div class="img-container">
                                 <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
                                 <img src="../../../../../assets/media/icons/cancel.svg" alt=""
@@ -597,7 +597,7 @@
             </form>
 
             <!-- Personal Details -->
-            <form action="" [formGroup]="customerKyc">
+            <form action="" [formGroup]="customerKycPersonal">
                 <div class="row kt-margin-t-50">
                     <div class="col-6">
                         <div class="row">
@@ -617,13 +617,13 @@
                             <div class="col-7">
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                     formControlName="dateOfBirth"
-                                    [class.isError]="customerKyc.controls.dateOfBirth.touched && customerKyc.controls.dateOfBirth.invalid"
+                                    [class.isError]="customerKycPersonal.controls.dateOfBirth.touched && customerKycPersonal.controls.dateOfBirth.invalid"
                                     readonly placeholder="4/5/2020"
-                                    value="{{ data.customerKycReview.customerKyc.dateOfBirth | date: 'mediumDate' }}" />
+                                    value="{{ data.customerKycReview.customerKycPersonal.dateOfBirth | date: 'mediumDate' }}" />
                                 <mat-datepicker #picker></mat-datepicker>
 
                                 <mat-error
-                                    *ngIf="customerKyc.controls.dateOfBirth.errors?.required && customerKyc.controls.dateOfBirth.touched">
+                                    *ngIf="customerKycPersonal.controls.dateOfBirth.errors?.required && customerKycPersonal.controls.dateOfBirth.touched">
                                     Required field
                                 </mat-error>
                             </div>
@@ -636,27 +636,27 @@
                                 <label class="mandatory">Gender</label>
                             </div>
                             <div class="col-7">
-                                <!-- <ng-container *ngIf="data.customerKycReview.customerKyc.gender == 'm'">
+                                <!-- <ng-container *ngIf="data.customerKycReview.customerKycPersonal.gender == 'm'">
                                     <input type="text" class="form-control" placeholder="" value="Male" />
                                 </ng-container>
 
-                                <ng-container *ngIf="data.customerKycReview.customerKyc.gender == 'f'">
+                                <ng-container *ngIf="data.customerKycReview.customerKycPersonal.gender == 'f'">
                                     <input type="text" class="form-control" placeholder="" value="Female" />
                                 </ng-container>
 
-                                <ng-container *ngIf="data.customerKycReview.customerKyc.gender == '0'">
+                                <ng-container *ngIf="data.customerKycReview.customerKycPersonal.gender == '0'">
                                     <input type="text" class="form-control" placeholder="" value="Other" />
                                 </ng-container> -->
 
                                 <select formControlName="gender" class="form-control"
-                                    [class.isError]="customerKyc.controls.gender.touched && customerKyc.controls.gender.invalid">
+                                    [class.isError]="customerKycPersonal.controls.gender.touched && customerKycPersonal.controls.gender.invalid">
                                     <option value="" disabled selected> Select </option>
                                     <option value="m">Male</option>
                                     <option value="f">Female</option>
                                     <option value="o">Other</option>
                                 </select>
                                 <mat-error
-                                    *ngIf="customerKyc.controls.gender.errors?.required && customerKyc.controls.gender.touched">
+                                    *ngIf="customerKycPersonal.controls.gender.errors?.required && customerKycPersonal.controls.gender.touched">
                                     Required field
                                 </mat-error>
                             </div>
@@ -673,14 +673,14 @@
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="Mobile Number"
                                     formControlName="alternateMobileNumber" maxlength="10" numbersOnly
-                                    [value]="data.customerKycReview.customerKyc.alternateMobileNumber"
-                                    [class.isError]="customerKyc.controls.alternateMobileNumber.touched && customerKyc.controls.alternateMobileNumber.invalid" />
+                                    [value]="data.customerKycReview.customerKycPersonal.alternateMobileNumber"
+                                    [class.isError]="customerKycPersonal.controls.alternateMobileNumber.touched && customerKycPersonal.controls.alternateMobileNumber.invalid" />
                                 <mat-error
-                                    *ngIf="customerKyc.controls.alternateMobileNumber.errors?.required && customerKyc.controls.alternateMobileNumber.touched">
+                                    *ngIf="customerKycPersonal.controls.alternateMobileNumber.errors?.required && customerKycPersonal.controls.alternateMobileNumber.touched">
                                     Required field
                                 </mat-error>
                                 <mat-error
-                                    *ngIf="customerKyc.controls.alternateMobileNumber.errors?.pattern && customerKyc.controls.alternateMobileNumber.touched">
+                                    *ngIf="customerKycPersonal.controls.alternateMobileNumber.errors?.pattern && customerKycPersonal.controls.alternateMobileNumber.touched">
                                     Invalid Input
                                 </mat-error>
                             </div>
@@ -693,25 +693,25 @@
                                 <label class="mandatory">Marital Status</label>
                             </div>
                             <div class="col-7">
-                                <!-- <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'single'">
+                                <!-- <ng-container *ngIf="data.customerKycReview.customerKycPersonal.martialStatus == 'single'">
                                     <input type="text" class="form-control" placeholder="" value="Single" />
                                 </ng-container>
-                                <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'married'">
+                                <ng-container *ngIf="data.customerKycReview.customerKycPersonal.martialStatus == 'married'">
                                     <input type="text" class="form-control" placeholder="" value="Married" />
                                 </ng-container>
-                                <ng-container *ngIf="data.customerKycReview.customerKyc.martialStatus == 'divorced'">
+                                <ng-container *ngIf="data.customerKycReview.customerKycPersonal.martialStatus == 'divorced'">
                                     <input type="text" class="form-control" placeholder="" value="Divorced" />
                                 </ng-container> -->
 
                                 <select formControlName="martialStatus" class="form-control"
-                                    [class.isError]="customerKyc.controls.martialStatus.touched && customerKyc.controls.martialStatus.invalid">
+                                    [class.isError]="customerKycPersonal.controls.martialStatus.touched && customerKycPersonal.controls.martialStatus.invalid">
                                     <option value="" selected disabled>Select Status</option>
                                     <option value="single">Single</option>
                                     <option value="married">Married</option>
                                     <option value="divorced">Divorced</option>
                                 </select>
                                 <mat-error
-                                    *ngIf="customerKyc.controls.martialStatus.errors?.required && customerKyc.controls.martialStatus.touched">
+                                    *ngIf="customerKycPersonal.controls.martialStatus.errors?.required && customerKycPersonal.controls.martialStatus.touched">
                                     Required field
                                 </mat-error>
                             </div>
@@ -728,18 +728,18 @@
                             <div class="col-7">
                                 <select name="" id="" formControlName="occupationId" class="form-control"
                                     placeholder="Select Occupation"
-                                    [class.isError]="customerKyc.controls.occupationId.touched && customerKyc.controls.occupationId.invalid">
+                                    [class.isError]="customerKycPersonal.controls.occupationId.touched && customerKycPersonal.controls.occupationId.invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select Occupation
                                     </option>
                                     <option [value]="occ.id" *ngFor="let occ of occupations;"> {{occ.name}}
                                     </option>
                                 </select>
                                 <mat-error
-                                    *ngIf="customerKyc.controls.occupationId.errors?.required && customerKyc.controls.occupationId.touched">
+                                    *ngIf="customerKycPersonal.controls.occupationId.errors?.required && customerKycPersonal.controls.occupationId.touched">
                                     Required field
                                 </mat-error>
                                 <!-- <input type="text" class="form-control" placeholder="" formControlName="occupationId"
-                                    value="{{ data.customerKycReview.customerKyc.occupation.name }}" /> -->
+                                    value="{{ data.customerKycReview.customerKycPersonal.occupation.name }}" /> -->
                                 <!-- <mat-error
                                     *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
                                     Required field
@@ -755,10 +755,10 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="" formControlName="spouseName"
-                                    value="{{ data.customerKycReview.customerKyc.spouseName | titlecase }}"
-                                    [class.isError]="customerKyc.controls.spouseName.touched && customerKyc.controls.spouseName.invalid" />
+                                    value="{{ data.customerKycReview.customerKycPersonal.spouseName | titlecase }}"
+                                    [class.isError]="customerKycPersonal.controls.spouseName.touched && customerKycPersonal.controls.spouseName.invalid" />
                                 <mat-error
-                                    *ngIf="customerKyc.controls.spouseName.errors?.required && customerKyc.controls.spouseName.touched">
+                                    *ngIf="customerKycPersonal.controls.spouseName.errors?.required && customerKycPersonal.controls.spouseName.touched">
                                     Required field
                                 </mat-error>
                             </div>
@@ -794,7 +794,8 @@
                         <div class="col-8 offset-4">
                             <div class="img-container kt-margin-r-15">
                                 <ng-container>
-                                    <img class="fetched-image" [src]="data.customerKycReview.customerKyc.signatureProof"
+                                    <img class="fetched-image"
+                                        [src]="data.customerKycReview.customerKycPersonal.signatureProof"
                                         style="border-radius: 15px;" alt="" />
                                 </ng-container>
                             </div>

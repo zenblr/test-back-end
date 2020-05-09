@@ -16,7 +16,6 @@ export class CustomerDetailsComponent implements OnInit {
   ngOnInit() {
     this.loans = [1, 1, 1, 1];
     this.customerId = this.rout.snapshot.params.id
-    console.log(this.customerId)
   }
 
   viewLoan(loanId: number) {

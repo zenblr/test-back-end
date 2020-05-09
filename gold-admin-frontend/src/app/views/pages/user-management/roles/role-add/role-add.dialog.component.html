@@ -23,41 +23,58 @@
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
                         <!-- Partner Name -->
                         <div class="row">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">Role Name</label>
+                            <div class="col-4 form-label">
+                                <label for="" class="text-color font-weight-bold mandatory">Role Name</label>
                             </div>
                             <div class="col-8">
-                                <input class="form-control" formControlName="name" autocomplete="off"
-                                    placeholder="Enter Partner name"
-                                    [class.isError]="controls.name.touched && controls.name.invalid">
-                                <mat-error *ngIf="controls.name.touched && controls.name.errors?.required">
+                                <input class="form-control" formControlName="roleName" autocomplete="off"
+                                    placeholder="Enter Partner roleName"
+                                    [class.isError]="controls.roleName.touched && controls.roleName.invalid">
+                                <mat-error *ngIf="controls.roleName.touched && controls.roleName.errors?.required">
                                     Required
                                     field</mat-error>
                             </div>
                         </div>
 
-                        <div class="row kt-padding-t-15" *ngIf="data.action != 'edit'">
-                            <div class="col-4">
-                                <label for="" class="text-color font-weight-bold">clone Role</label>
+                        <div class="row kt-padding-t-15" *ngIf="data.action != 'Update'">
+                            <div class="col-4 form-label">
+                                <label for="" class="text-color font-weight-bold ">clone Role</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="cloneRoles"
-                                    [class.isError]="controls.cloneRoles.touched && controls.cloneRoles.invalid">
-                                    <option></option>
+                                <select class="form-control" formControlName="roleId" (change)="getModules()">
+                                    <option [selected]="true" value="">Select Role</option>
+                                    <option *ngFor="let clone of cloneRoles" [value]="clone.id">{{clone.roleName}}</option>
                                 </select>
-                                <mat-error *ngIf="controls.cloneRoles.errors?.required && controls.cloneRoles.touched">
-                                    Required field
-                                </mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
-                            <div class="col-4">
+                            <div class="col-4 form-label">
                                 <label for="" class="text-color font-weight-bold">Role Description</label>
                             </div>
                             <div class="col-8">
-                                <textarea cols="10" rows="5" class="form-control" formControlName="roleDescription"
+                                <textarea cols="10" rows="5" class="form-control" formControlName="description"
                                     placeholder="Role Description"></textarea>
 
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" class="text-color font-weight-bold mandatory">Modules</label>
+                            </div>
+                            <div class="col-8">
+                                <mat-error *ngIf="controls.moduleId.touched && controls.moduleId.errors?.required">
+                                    Required
+                                    field</mat-error>
+                                <div class="row " *ngFor="let module of modules;index as i">
+                                    <div class="col-10 kt-margin-l-10" >
+                                        <label class="custom-checkbox poi">
+                                            <span class="label-checkbox">{{module.moduleName | titlecase}}</span>
+                                            <input type="checkbox" (change)="onModuleSelect($event.target.checked,i)" name="module"  
+                                             [value]="module.id" [checked]="module.isSelected" [disabled]="isDisabled">
+                                            <span class="checkmark" style="top:0;"></span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -67,7 +84,7 @@
     </div>
     <kt-portlet-footer>
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)" [value]="'data.action'"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="data.action"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 </div>

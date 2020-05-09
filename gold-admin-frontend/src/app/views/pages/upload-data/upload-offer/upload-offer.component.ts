@@ -19,6 +19,7 @@ export class UploadOfferComponent implements OnInit {
 
   goldRate = new FormControl(null, Validators.required);
 
+  gold: any;
 
   constructor(
     private uploadOfferService: UploadOfferService,
@@ -45,6 +46,7 @@ export class UploadOfferComponent implements OnInit {
   getGoldRate() {
     this.uploadOfferService.getGoldRate().pipe(
       map(res => {
+        this.gold = res;
         this.goldRate.patchValue(res.goldRate)
         this.uploadOfferService.goldRate.next(res.goldRate);
       })).subscribe()

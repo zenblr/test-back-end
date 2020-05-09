@@ -1,0 +1,104 @@
+<!-- <kt-action-natification></kt-action-natification> -->
+
+<kt-toastr #toastr></kt-toastr>
+
+<div class="kt-portlet">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-form">
+            <form [formGroup]="addInternalBranchForm">
+
+
+                <div class="kt-portlet__body-progress">
+                    <mat-spinner [diameter]="20"></mat-spinner>
+                </div>
+
+                <!-- <kt-alert type="warn" [duration]="30000" [showCloseButton]="true" (close)="onAlertClose($event)">
+                                            Oh snap! Change a few things up and try submitting again.
+                                        </kt-alert> -->
+
+
+
+                <div class="form-group kt-form__group row">
+                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+                        <!-- Partner Name -->
+                        <div class="row">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color font-weight-bold">Branch Name</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="name" placeholder="Branch Name"
+                                    [class.isError]="controls.name.touched && controls.name.invalid">
+                                <mat-error *ngIf="controls.name.errors?.required && controls.name.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4  form-label">
+                                <label for=""  [class.mandatory]="data.action!='view'" class="text-color font-weight-bold">Address</label>
+                            </div>
+                            <div class="col-8">
+                                <textarea class="form-control" placeholder="Enter Address" formControlName="address"
+                                    placeholder="e.g 012345"
+                                    [class.isError]="controls.address.touched && controls.address.invalid" cols="20"
+                                    rows="5"></textarea>
+                                <mat-error *ngIf="controls.address.errors?.required && controls.address.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color font-weight-bold">State</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="stateId" autocomplete="off"
+                                    [class.isError]="controls.stateId.touched && controls.stateId.invalid"
+                                    (change)="getCites()">
+                                    <option value="" [selected]="true" [disabled]="true">Select</option>
+                                    <option [value]="state.id" *ngFor="let state of states">{{state.name}}</option>
+                                </select>
+                                <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">
+                                    Required field</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color font-weight-bold">City</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="cityId" autocomplete="off"
+                                    [class.isError]="controls.cityId.touched && controls.cityId.invalid">
+                                    <option value="" [selected]="true" [disabled]="true">Select</option>
+                                    <option [value]="city.id" *ngFor="let city of cities">{{city.name}}</option>
+
+                                </select>
+                                <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
+                                    Required field</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color font-weight-bold">Pincode</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" numbersOnly maxlength="6" formControlName="pinCode"
+                                    placeholder="eg.123465"
+                                    [class.isError]="controls.pinCode.touched && controls.pinCode.invalid">
+                                <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <kt-portlet-footer *ngIf="data.action != 'view'">
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="data.action"></kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>

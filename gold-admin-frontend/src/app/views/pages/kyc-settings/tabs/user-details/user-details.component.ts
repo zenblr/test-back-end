@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, EventEmitter, Output, ChangeDetectorRef }
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../../views/partials/components';
 import { UserDetailsService } from '../../../../../core/kyc-settings';
-import { map, finalize } from 'rxjs/operators';
+import { map, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -94,6 +94,8 @@ export class UserDetailsComponent implements OnInit {
         // const msg = 'Otp has been sent to the registered mobile number';
         // this.toastr.success(msg);
       }
+    }, err => {
+      // console.log(err.message);
     });
   }
 
@@ -130,10 +132,8 @@ export class UserDetailsComponent implements OnInit {
     //     this.isPanVerified = true;
     //   }
     // });
-    setTimeout(() => {
-      this.isPanVerified = true;
-    }, 1000);
-    this.ref.detectChanges();
+
+    this.isPanVerified = true;
   }
 
   submit() {
@@ -149,12 +149,22 @@ export class UserDetailsComponent implements OnInit {
       map(res => {
         console.log(res);
         if (res) {
-          this.next.emit(true);
+          // this.next.emit(true);
+          this.next.emit(res.customerKycCurrentStage);
         }
+      }),
+      catchError(err => {
+        console.log(err.error.message);
+        if (err.error.message == 'This customer Kyc information is already created.' && err.status == 404) {
+          //   const kycStage = 2;
+          // this.next.emit(true);
+        }
+        throw (err);
       }),
       finalize(() => {
         this.userBasicForm.disable();
         this.userBasicForm.controls.mobileNumber.enable()
+        this.userBasicForm.controls.panCardNumber.enable()
       })
     ).subscribe();
 
