@@ -88,7 +88,7 @@
                                         </mat-error>
                                         <mat-error
                                             *ngIf="controls.alternateMobileNumber.errors?.pattern && controls.alternateMobileNumber.touched">
-                                            Required field
+                                            Invalid Input
                                         </mat-error>
                                     </div>
                                 </div>
@@ -177,27 +177,18 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="row kt-margin-t-20 kt-margin-b-20">
                             <div class="col-6">
                                 <div class="col-8 offset-4">
                                     <div class="img-container">
-                                        <div class="">
-                                            <img *ngIf="!signatureJSON.isImage" class=""
-                                                src="../../../../../../assets/media/icons/image-placeholder.png"
-                                                alt="" />
-                                            <img *ngIf="signatureJSON.isImage" [src]="signatureJSON.url"
-                                                style="border-radius: 15px;" alt="" />
-                                            <!-- <img src="http://173.249.49.7:8000/uploads/images/1587974614144.png"
-                                                alt="" /> -->
-                                        </div>
-
+                                        <!-- <div class=""> -->
+                                        <img *ngIf="!signatureJSON.isImage" class=""
+                                            src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+                                        <img class="fetched-image" *ngIf="signatureJSON.isImage"
+                                            [src]="signatureJSON.url" style="border-radius: 15px;" alt="" />
+                                        <!-- </div> -->
                                     </div>
-                                    <!-- <img *ngIf="signatureJSON.url" [src]="signature.url" alt="" /> -->
-
-
-
-                                    <!-- <img src="../../../../../../assets/media/users/300_10.jpg" alt="" height="150px"
-                                        width="250px"> -->
                                     <div class="kt-margin-t-20 text-color font-11">
                                         (Please verify the detail before moving forward)
                                     </div>

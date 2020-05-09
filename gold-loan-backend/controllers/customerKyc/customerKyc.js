@@ -6,73 +6,9 @@ const request = require("request");
 const { createReferenceCode } = require("../../utils/referenceCode");
 const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
+const { paginationWithFromTo } = require("../../utils/pagination");
 
 const check = require("../../lib/checkLib");
-
-
-
-exports.sendOtpKycNumber = async (req, res, next) => {
-
-    // let { mobileNumber } = req.body
-    // let numberExistInCustomer = await models.customer.findOne({ where: { mobileNumber } })
-    // if (check.isEmpty(numberExistInCustomer)) {
-    //     return res.status(404).json({ message: "Your Mobile number does not exist, please add lead first" });
-    // }
-
-    // let status = await models.status.findOne({ where: { statusName: "confirm" } })
-    // if (check.isEmpty(status)) {
-    //     return res.status(404).json({ message: "Status confirm is not there in status table" });
-    // }
-    // let statusId = status.id
-    // let checkStatusCustomer = await models.customer.findOne({ where: { statusId, id: numberExistInCustomer.id } })
-    // if (check.isEmpty(checkStatusCustomer)) {
-    //     return res.status(404).json({ message: "Please proceed after confirming your lead stage status" });
-    // }
-    // await models.customerOtp.destroy({ where: { mobileNumber } });
-
-    // const referenceCode = await createReferenceCode(5);
-    // let otp = Math.floor(1000 + Math.random() * 9000);
-    // let createdTime = new Date();
-    // let expiryTime = moment.utc(createdTime).add(10, "m");
-
-    // await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
-    // request(
-    //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`
-    // );
-
-    // return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, });
-}
-
-
-exports.verifyCustomerKycNumber = async (req, res, next) => {
-    // let { referenceCode, otp } = req.body;
-    // var todayDateTime = new Date();
-
-    // let verifyUser = await models.customerOtp.findOne({
-    //     where: {
-    //         referenceCode,
-    //         otp,
-    //         expiryTime: {
-    //             [Op.gte]: todayDateTime,
-    //         },
-    //     },
-    // });
-    // if (check.isEmpty(verifyUser)) {
-    //     return res.status(404).json({ message: `Invalid otp.` });
-    // }
-
-    // let verifyFlag = await models.customerOtp.update(
-    //     { isVerified: true },
-    //     { where: { id: verifyUser.id } }
-    // );
-
-    // let customerInfo = await models.customer.findOne({
-    //     where: { mobileNumber: verifyUser.mobileNumber },
-    //     attributes: ['firstName', 'lastName', 'panCardNumber']
-    // })
-
-    // return res.status(200).json({ message: "Success", referenceCode, customerInfo });
-}
 
 
 exports.getCustomerDetails = async (req, res, next) => {
@@ -92,7 +28,7 @@ exports.getCustomerDetails = async (req, res, next) => {
         attributes: ['firstName', 'lastName', 'panCardNumber']
     })
     if (check.isEmpty(checkStatusCustomer)) {
-        return res.status(404).json({ message: "Please proceed after confirming your lead stage status" });
+        return res.status(400).json({ message: "Please proceed after confirm your lead stage status" });
     }
     return res.status(200).json({ message: "Success", customerInfo: checkStatusCustomer });
 }
@@ -115,24 +51,31 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         return res.status(404).json({ message: "Your status is not confirm" });
     }
 
-    let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { customerId: getCustomerInfo.id } })
+    let findCustomerKyc = await models.customerKyc.findOne({ where: { customerId: getCustomerInfo.id, isKycSubmitted: true } })
     if (!check.isEmpty(findCustomerKyc)) {
-        return res.status(404).json({ message: "This customer Kyc information is already created." });
+        return res.status(404).json({ message: "This customer Kyc is already submitted." });
     }
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+    let kyc = await sequelize.transaction(async (t) => {
 
-    let createCustomerKyc = await models.customerKycPersonalDetail.create({
-        customerId: getCustomerInfo.id,
-        firstName: getCustomerInfo.firstName,
-        lastName: getCustomerInfo.lastName,
-        panCardNumber: panCardNumber,
-        createdBy,
-        modifiedBy
-    });
+        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy })
+
+        let createCustomerKyc = await models.customerKycPersonalDetail.create({
+            customerId: getCustomerInfo.id,
+            customerKycId: customerKycAdd.id,
+            firstName: getCustomerInfo.firstName,
+            lastName: getCustomerInfo.lastName,
+            panCardNumber: panCardNumber,
+            createdBy,
+            modifiedBy
+        });
+
+        return customerKycAdd
+    })
     return res.status(200).json({
         customerId: getCustomerInfo.id,
-        customerKycId: createCustomerKyc.id,
+        customerKycId: kyc.id,
         stateId: getCustomerInfo.stateId,
         cityId: getCustomerInfo.cityId,
         pinCode: getCustomerInfo.pinCode
@@ -164,7 +107,7 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
         address[i]['customerKycId'] = customerKycId
         addressArray.push(address[i])
     }
-    let { firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { id: customerKycId } })
+    let { firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
     let name = `${firstName} ${lastName}`;
 
     await sequelize.transaction(async t => {
@@ -185,12 +128,12 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     let customer = await models.customer.findOne({ where: { id: customerId } })
 
     if (customer.mobileNumber == alternateMobileNumber) {
-        return res.status(200).json({ message: "Your alternate Mobile number is same as your previous Mobile bumber " });
+        return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
     }
     let findAlternateNumberExist = await models.customerKycPersonalDetail.findOne({ where: { alternateMobileNumber } })
 
     if (!check.isEmpty(findAlternateNumberExist)) {
-        return res.status(404).json({ message: "Your alternate Mobile number is already exist." });
+        return res.status(400).json({ message: "Your alternate Mobile number is already exist." });
     }
 
     let details = await models.customerKycPersonalDetail.update({
@@ -221,7 +164,7 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber'],
         include: [{
             model: models.customerKycPersonalDetail,
-            as: 'customerKyc',
+            as: 'customerKycPersonal',
             attributes: ['id', 'customerId', 'profileImage', 'firstName', 'lastName', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProof', 'identityProofNumber', 'spouseName', 'signatureProof'],
             include: [{
                 model: models.occupation,
@@ -233,7 +176,7 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
         }, {
             model: models.customerKycAddressDetail,
             as: 'customerKycAddress',
-            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId','addressProofNumber'],
+            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId', 'addressProofNumber'],
             include: [{
                 model: models.state,
                 as: 'state'
@@ -243,7 +186,8 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
             }, {
                 model: models.addressProofType,
                 as: 'addressProofType'
-            }]
+            }],
+            order: [["id", "ASC"]]
         }, {
             model: models.customerKycBankDetail,
             as: 'customerKycBank',
@@ -258,13 +202,127 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 
 exports.submitAllKycInfo = async (req, res, next) => {
 
-    let { customerId, customerKycId } = req.body;
+    let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank } = req.body;
 
-    let findCustomerKyc = await models.customerKycPersonalDetail.findOne({ where: { id: customerKycId } })
-    if (check.isEmpty(findCustomerKyc)) {
-        return res.status(404).json({ message: "This customer kyc detailes is not filled." });
-    }
-    let abc = await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId } })
+    // let findCustomerKyc = await models.customerKyc.findOne({ where: { id: customerKycId } })
+    // if (check.isEmpty(findCustomerKyc)) {
+    //     return res.status(404).json({ message: "This customer kyc detailes is not filled." });
+    // }
+
+    await sequelize.transaction(async (t) => {
+        // await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId }, transaction: t });
+
+        await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t })
+
+        await models.customerKycAddressDetail.bulkCreate(customerKycAddress, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProof", "addressProofTypeId", "addressProofNumber"] }, { transaction: t })
+
+        await models.customerKycBankDetail.bulkCreate(customerKycBank, { updateOnDuplicate: ["bankName", "bankBranchName", "accountType", "accountHolderName", "accountNumber", "ifscCode", "passbookProof"] }, { transaction: t })
+
+    })
     return res.status(200).json({ message: `successful`, customerId, customerKycId })
+
+}
+
+
+exports.appliedKyc = async (req, res, next) => {
+
+    let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
+    if (roleName == "bm" || roleName == "cce") {
+        console.log(roleName)
+
+        const { search, offset, pageSize } = paginationWithFromTo(
+            req.query.search,
+            req.query.from,
+            req.query.to
+        );
+
+        let query = {};
+        if (req.query.kycStatus) {
+            query.kycStatus = sequelize.where(
+                sequelize.cast(sequelize.col("customerKyc.kyc_status"), "varchar"),
+                {
+                    [Op.iLike]: req.query.kycStatus + "%",
+                }
+            );
+        }
+        if (req.query.cceRating) {
+            query.cceRating = sequelize.where(
+                sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
+                {
+                    [Op.iLike]: req.query.cceRating + "%",
+                }
+            );
+        }
+        if (req.query.bmRating) {
+            query.bmRating = sequelize.where(
+                sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
+                {
+                    [Op.iLike]: search + "%",
+                }
+            )
+        }
+        const searchQuery = {
+            [Op.and]: [query, {
+                [Op.or]: {
+                    first_name: { [Op.iLike]: search + "%" },
+                    last_name: { [Op.iLike]: search + "%" },
+                    mobile_number: { [Op.iLike]: search + "%" },
+                    pan_card_number: { [Op.iLike]: search + "%" },
+                    kyc_status: sequelize.where(
+                        sequelize.cast(sequelize.col("customerKyc.kyc_status"), "varchar"),
+                        {
+                            [Op.iLike]: search + "%",
+                        }
+                    ),
+                    kyc_rating_cce: sequelize.where(
+                        sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
+                        {
+                            [Op.iLike]: search + "%",
+                        }
+                    ),
+                    kyc_rating_bm: sequelize.where(
+                        sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
+                        {
+                            [Op.iLike]: search + "%",
+                        }
+                    )
+                }
+            }],
+            isActive: true,
+            // isKycSubmitted: true
+        };
+        let includeArray = [
+            {
+                model: models.customerKyc,
+                as: 'customerKyc',
+                attributes: ['createdAt','kycStatus']
+            },
+            {
+                model: models.customerKycClassification,
+                as: 'customerKycClassification',
+                attributes: ['kycStatusFromCce', 'reasonFromCce', 'kycStatusFromBm', 'reasonFromBm']
+            }
+        ]
+
+        if (roleName == "bm") {
+            searchQuery.isVerifiedByCce = true
+        }
+
+        let getAppliedKyc = await models.customer.findAll({
+            where: searchQuery,
+            attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'panCardNumber'],
+            offset: offset,
+            limit: pageSize,
+            include: includeArray
+        })
+        let count = await models.customer.count({
+            where: searchQuery,
+            include: includeArray,
+        });
+        return res.status(200).json({ data: getAppliedKyc, count })
+    } else {
+        return res.status(400).json({ message: `You do not have authority.` })
+    }
+
 }
 

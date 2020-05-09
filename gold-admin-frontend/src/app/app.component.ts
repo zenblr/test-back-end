@@ -12,7 +12,8 @@ import { locale as jpLang } from './core/_config/i18n/jp';
 import { locale as deLang } from './core/_config/i18n/de';
 import { locale as frLang } from './core/_config/i18n/fr';
 import { SharedService } from './core/shared/services/shared.service';
-import { NgxSpinnerService } from "ngx-spinner";
+
+import { Spinkit } from 'ng-http-loader';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
 	loader: boolean;
 	private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
+	public spinkit = Spinkit;
 	/**
 	 * Component constructor
 	 *
@@ -41,20 +43,19 @@ export class AppComponent implements OnInit, OnDestroy {
 		private layoutConfigService: LayoutConfigService,
 		private splashScreenService: SplashScreenService,
 		private sharedService: SharedService,
-		private spinner: NgxSpinnerService,
 		private ref: ChangeDetectorRef
 	) {
 
 		// register translations
 		this.translationService.loadTranslations(enLang, chLang, esLang, jpLang, deLang, frLang);
-		this.sharedService.loader$.subscribe(res => {
-			if (res) {
-				this.spinner.show()
-			} else {
-				this.spinner.hide()
-				this.ref.markForCheck()
-			}
-		})
+		// this.sharedService.loader$.subscribe(res => {
+		// 	if (res) {
+		// 		this.spinner.show()
+		// 	} else {
+		// 		this.spinner.hide()
+		// 		this.ref.markForCheck()
+		// 	}
+		// })
 	}
 
 	/**

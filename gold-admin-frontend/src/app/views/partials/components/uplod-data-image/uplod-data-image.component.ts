@@ -2,10 +2,11 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetect
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { finalize, catchError, map } from 'rxjs/operators';
 import { ToastrComponent } from '../toastr/toastr.component';
-import {MatDialog } from '@angular/material'
+import { MatDialog } from '@angular/material'
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-uplod-data-image',
@@ -22,19 +23,25 @@ export class UplodDataImageComponent implements OnInit {
 
   @ViewChild("file", { static: false }) file;
   @ViewChild(ToastrComponent, { static: false }) toastr: ToastrComponent;
+  promotionPage = false;
 
 
   constructor(
     private ref: ChangeDetectorRef,
     private sharedService: SharedService,
-    public dilaog:MatDialog,
+    public dilaog: MatDialog,
     private layoutUtilsService: LayoutUtilsService,
-    private ele:ElementRef,
-    private toastrService:ToastrService
+    private ele: ElementRef,
+    private toastrService: ToastrService,
+    private router: Router
   ) { }
 
 
   ngOnInit() {
+    const currentPage = this.router.url;
+    if (currentPage == '/upload-data/upload-banner') {
+      this.promotionPage = true;
+    }
   }
 
   uploadImages(event) {
@@ -54,10 +61,10 @@ export class UplodDataImageComponent implements OnInit {
           const width = img.naturalWidth;
           const height = img.naturalHeight;
           window.URL.revokeObjectURL(img.src);
-          if (width !== 600 || height !== 300) {  
+          if (width !== 600 || height !== 300) {
             this.toastrService.error('Please Upload Image of Valid Size');
-            console.log(width , height)
-          }else{
+            console.log(width, height)
+          } else {
             this.sharedService.uploadFile(details[0]).pipe(map(res => {
               if (this.index != null) {
                 this.images.splice(this.index, 1, res.uploadFile.URL)
@@ -77,7 +84,7 @@ export class UplodDataImageComponent implements OnInit {
           this.ref.detectChanges();
         }, 2000);
       }
-      
+
     }
   }
 
@@ -106,13 +113,13 @@ export class UplodDataImageComponent implements OnInit {
 
   }
 
-  open(index){
-    this.dilaog.open(ImagePreviewDialogComponent,{
-      data:{
-        images:this.images,
-        index:index
+  open(index) {
+    this.dilaog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: this.images,
+        index: index
       },
-      width:"auto"
+      width: "auto"
     })
   }
 

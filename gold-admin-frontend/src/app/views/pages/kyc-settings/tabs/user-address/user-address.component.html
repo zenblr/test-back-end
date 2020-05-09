@@ -22,6 +22,23 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-6 kt-margin-t-20">
+                        <div class="row">
+                            <div class="col-3 offset-1 p-0">
+                                <label class="mandatory font-weight-500 text-color">Unique Identity No.</label>
+                            </div>
+                            <div class="col-7">
+                                <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
+                                    placeholder="Unique Identity Number" class="form-control"
+                                    [class.isError]="controls.identityProofNumber.touched && controls.identityProofNumber.invalid">
+                                <mat-error
+                                    *ngIf="controls.identityProofNumber.errors?.required && controls.identityProofNumber.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- <div class="col-6 kt-margin-t-20">
@@ -66,14 +83,21 @@
                 </div>
 
                 <div class="row kt-margin-t-20 kt-margin-b-20">
-                    <div class="col-6">
-                        <div class="col-8 offset-4">
-                            <div class="img-container">
-                                <img class="placeholder-image"
-                                    src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder"
-                                    *ngIf="images.identityProof.length==0">
-                                <img class="border-rad-15 fetched-image" [src]="images.identityProof[0]" alt=""
-                                    *ngIf="images.identityProof.length>0">
+                    <div class="offset-2 col">
+                        <div *ngIf="images.identityProof.length==0" class="img-container">
+                            <img class="placeholder-image"
+                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
+                        </div>
+                        <div *ngIf="images.identityProof.length>0">
+                            <div class="row ">
+                                <div class="kt-margin-r-15" *ngFor="let img of images.identityProof, index as idx">
+                                    <div class="img-container">
+                                        <img class="border-rad-15 fetched-image" [src]="img" alt="">
+                                        <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                            class="kt-pointer remove-icon"
+                                            (click)="removeImages(idx, 'identityProof');">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -127,13 +151,27 @@
             </div> -->
 
                 <div class="row">
-                    <div class=" offset-6 kt-padding-l-25" style="position: relative; left: 35px;">
-                        <div class="">
+                    <div class="offset-6">
+                        <!-- <div class="">
                             <label class="custom-checkbox ">
                                 <span class="label-checkbox">Residential Same as Permanent</span>
                                 <input type="checkbox" class="" (change)="sameAddress($event.target.checked)">
                                 <span class="checkmark top-0"></span>
                             </label>
+                        </div> -->
+                    </div>
+
+                    <div class="col">
+                        <div class="row">
+                            <div class="offset-1 col">
+                                <!-- <mat-checkbox (change)="sameAddress($event.target.checked)">Residential Same as
+                                    Permanent</mat-checkbox> -->
+                                <label class="custom-checkbox ">
+                                    <span class="label-checkbox">Residential Same as Permanent</span>
+                                    <input type="checkbox" class="" (change)="sameAddress($event.target.checked)">
+                                    <span class="checkmark top-0"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -318,7 +356,7 @@
                                 <div class=" kt-margin-t-20">
                                     <div class="row">
                                         <div class="col-3 offset-1 p-0">
-                                            <label class="mandatory  font-weight-500 text-color">Address
+                                            <label class="mandatory  font-weight-500 text-color">Address Proof
                                             </label>
                                         </div>
                                         <div class="col-7">
@@ -332,6 +370,24 @@
                                             </select>
                                             <mat-error
                                                 *ngIf="addressForm.controls.addressProofTypeId.errors?.required && addressForm.controls.addressProofTypeId.touched">
+                                                Required field
+                                            </mat-error>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="kt-margin-t-20">
+                                    <div class="row">
+                                        <div class="col-3 offset-1 p-0">
+                                            <label class="mandatory font-weight-500 text-color">Unique Identity
+                                                No.</label>
+                                        </div>
+                                        <div class="col-7">
+                                            <input formControlName="addressProofNumber" type="text"
+                                                placeholder="Unique Identity Number" class="form-control"
+                                                [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
+                                            <mat-error
+                                                *ngIf="addressForm.controls.addressProofNumber.errors?.required && addressForm.controls.addressProofNumber.touched">
                                                 Required field
                                             </mat-error>
                                         </div>
@@ -393,12 +449,14 @@
                                 <div class=" kt-margin-t-20 kt-margin-b-20">
                                     <div class="row">
                                         <div class="col">
-                                            <div class="img-container" *ngIf="(i==0 && images.residential.length== 0)">
+                                            <div class="offset-4 img-container"
+                                                *ngIf="(i==0 && images.residential.length== 0)">
                                                 <img class="placeholder-image"
                                                     src="../../../../../../assets/media/icons/image-placeholder.png"
                                                     alt="placeholder">
                                             </div>
-                                            <div class="img-container" *ngIf="(i==1 && images.permanent.length==0)">
+                                            <div class="offset-4 img-container"
+                                                *ngIf="(i==1 && images.permanent.length==0)">
                                                 <img class="placeholder-image"
                                                     src="../../../../../../assets/media/icons/image-placeholder.png"
                                                     alt="placeholder">
@@ -406,9 +464,13 @@
 
                                             <div *ngIf="i==0 && images.residential.length > 0">
                                                 <div class="row">
-                                                    <div class="col-6" *ngFor="let img of images.residential">
+                                                    <div class="col-6"
+                                                        *ngFor="let img of images.residential, index as idx">
                                                         <div class="img-container">
                                                             <img class="fetched-image" [src]="img" alt="">
+                                                            <img src="../../../../../assets/media/icons/cancel.svg"
+                                                                alt="" class="kt-pointer remove-icon"
+                                                                (click)="removeImages(idx, 'residential');">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -416,9 +478,13 @@
 
                                             <div *ngIf="i==1 && images.permanent.length > 0">
                                                 <div class="row">
-                                                    <div class="col-6" *ngFor="let img of images.permanent">
+                                                    <div class="col-6"
+                                                        *ngFor="let img of images.permanent, index as idx">
                                                         <div class="img-container">
                                                             <img class="fetched-image" [src]="img" alt="">
+                                                            <img src="../../../../../assets/media/icons/cancel.svg"
+                                                                alt="" class="kt-pointer remove-icon"
+                                                                (click)="removeImages(idx, 'permanent');">
                                                         </div>
                                                     </div>
                                                 </div>

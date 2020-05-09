@@ -69,6 +69,7 @@ export class UserPersonalComponent implements OnInit {
           this.signatureJSON.url = res.uploadFile.URL;
           this.signatureJSON.isImage = true;
           this.personalForm.get('signatureProof').patchValue(event.target.files[0].name);
+          this.ref.detectChanges();
         }
 
       }), catchError(err => {

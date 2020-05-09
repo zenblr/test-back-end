@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
@@ -20,7 +20,8 @@ export class UserBanksComponent implements OnInit {
   passBookImage = [];
 
   constructor(private fb: FormBuilder, private sharedService: SharedService,
-    private userBankService: UserBankService, private userDetailsService: UserDetailsService) { }
+    private userBankService: UserBankService, private userDetailsService: UserDetailsService,
+    private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.initForm();
@@ -49,6 +50,7 @@ export class UserBanksComponent implements OnInit {
         // this.bankForm.patchValue({ passbookProof: this.passBookImage });
 
         this.bankForm.get('passbookProof').patchValue(event.target.files[0].name);
+        this.ref.detectChanges();
         console.log(this.bankForm.value);
       }), catchError(err => {
         // this.toastr.errorToastr(err.error.message);
@@ -82,6 +84,10 @@ export class UserBanksComponent implements OnInit {
       })
     ).subscribe();
 
+  }
+
+  removeImages(index) {
+    this.passBookImage.splice(index, 1);
   }
 
   get controls() {

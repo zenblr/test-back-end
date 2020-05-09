@@ -41,7 +41,7 @@ export class InterceptService implements HttpInterceptor {
 		// console.log('----request----');
 		// console.log(request);
 		// console.log('--- end of request---');
-		this.sharedSerivce.loader.next(true)
+		// this.sharedSerivce.loader.next(true)
 		return next.handle(request).pipe(
 			tap(
 				event => {
@@ -78,7 +78,7 @@ export class InterceptService implements HttpInterceptor {
 				}
 			),
 			finalize(() => {
-				this.sharedSerivce.loader.next(false)
+				// this.sharedSerivce.loader.next(false)
 			})
 		);
 	}

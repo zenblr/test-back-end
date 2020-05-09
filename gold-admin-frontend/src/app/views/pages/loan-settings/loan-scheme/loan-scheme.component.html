@@ -1,21 +1,26 @@
 <div class="">
     <label class="text-color font-weight-bold h-v-text-center min-vh-100" *ngIf="noResults.length==0">No Schemes
-        Available</label>   
+        Available</label>
 </div>
 
 
 <kt-portlet *ngIf="noResults.length>0">
     <kt-portlet-body>
         <mat-tab-group #matTab>
-            <mat-tab [label]='scheme.name' *ngFor="let scheme of schemes" >
-                <label class="text-color font-weight-bold h-v-text-center min-vh-60 m-0" *ngIf="scheme.schemes.length==0">No Schemes
+            <mat-tab label='{{scheme.name | titlecase}}' *ngFor="let scheme of schemes">
+                <label class="text-color font-weight-bold h-v-text-center min-vh-60 m-0"
+                    *ngIf="scheme.schemes.length==0">No Schemes
                     Available</label>
                 <div class="row kt-padding-10" *ngFor="let schemeDeatils of scheme.schemes">
-                    
+
                     <div class="col-2 from-style">
                         <span class="text-gray">From</span>
-                        <h3>{{schemeDeatils.schemeAmountStart | slice:0:-5}}L to
-                            {{schemeDeatils.schemeAmountEnd | slice:0:-5}}L</h3>
+                        <h3>
+                            {{schemeDeatils.schemeAmountStart | schemeAmount }}
+                            <!-- <span
+                                *ngIf="schemeDeatils.schemeAmountStart.length >= 6">{{schemeDeatils.schemeAmountStart | schemeAmount</span> -->
+                            to
+                            {{schemeDeatils.schemeAmountEnd | schemeAmount}}</h3>
                     </div>
                     <div class="col-10 border-radius">
                         <div class="row border-bottom">
