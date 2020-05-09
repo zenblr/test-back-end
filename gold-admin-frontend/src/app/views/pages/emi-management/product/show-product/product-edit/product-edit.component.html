@@ -124,7 +124,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="text-center">
-                    <img class="viewProductImage" [src]="productData?.productImage">
+                    <kt-image-preview-dialog [viewImages]="productData?.productImages" [type]="'view'">
+                    </kt-image-preview-dialog>
                 </div>
             </div>
         </div>

@@ -50,7 +50,7 @@ export class ProductEditComponent implements OnInit {
       manufacturingCostPerGram: ['', Validators.required],
       hallmarkingPackaging: ['', Validators.required],
       shipping: ['', Validators.required],
-      // productImages: ['', Validators.required],
+      productImages: [''],
     });
   }
 
@@ -95,6 +95,11 @@ export class ProductEditComponent implements OnInit {
     }
     const productData = this.productForm.value;
     const id = this.controls.id.value;
+
+    delete productData.id;
+    delete productData.sku;
+    delete productData.price;
+    // delete productData.productImage;
 
     if (this.data.action == 'edit') {
       this.productService.editProduct(id, productData).subscribe(res => {
