@@ -94,7 +94,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         } else if (KycStage.customerKycCurrentStage == "5") {
 
             let customerKycReview = await models.customer.findOne({
-                where: { id: KycStage.customerId},
+                where: { id: KycStage.customerId },
                 attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber'],
                 include: [{
                     model: models.customerKycPersonalDetail,
@@ -344,102 +344,107 @@ exports.submitAllKycInfo = async (req, res, next) => {
 exports.appliedKyc = async (req, res, next) => {
 
     let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
+    console.log(roleName)
     if (roleName == "bm" || roleName == "cce") {
 
-        const { search, offset, pageSize } = paginationWithFromTo(
-            req.query.search,
-            req.query.from,
-            req.query.to
-        );
-
-        let query = {};
-        if (req.query.kycStatus) {
-            query.kycStatus = sequelize.where(
-                sequelize.cast(sequelize.col("customerKyc.kyc_status"), "varchar"),
-                {
-                    [Op.iLike]: req.query.kycStatus + "%",
-                }
-            );
-        }
-        if (req.query.cceRating) {
-            query.cceRating = sequelize.where(
-                sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
-                {
-                    [Op.iLike]: req.query.cceRating + "%",
-                }
-            );
-        }
-        if (req.query.bmRating) {
-            query.bmRating = sequelize.where(
-                sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
-                {
-                    [Op.iLike]: search + "%",
-                }
-            )
-        }
-        const searchQuery = {
-            [Op.and]: [query, {
-                [Op.or]: {
-                    first_name: { [Op.iLike]: search + "%" },
-                    last_name: { [Op.iLike]: search + "%" },
-                    mobile_number: { [Op.iLike]: search + "%" },
-                    pan_card_number: { [Op.iLike]: search + "%" },
-                    kyc_status: sequelize.where(
-                        sequelize.cast(sequelize.col("customerKyc.kyc_status"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    ),
-                    kyc_rating_cce: sequelize.where(
-                        sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    ),
-                    kyc_rating_bm: sequelize.where(
-                        sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    )
-                }
-            }],
-            isActive: true,
-            // isKycSubmitted: true
-        };
-        let includeArray = [
+    const { search, offset, pageSize } = paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+    let query = {};
+    if (req.query.kycStatus) {
+        query.kycStatus = sequelize.where(
+            sequelize.cast(sequelize.col("customerKyc.kyc_status"), "varchar"),
             {
-                model: models.customerKyc,
-                as: 'customerKyc',
-                attributes: ['createdAt', 'kycStatus']
-            },
-            {
-                model: models.customerKycClassification,
-                as: 'customerKycClassification',
-                attributes: ['kycStatusFromCce', 'reasonFromCce', 'kycStatusFromBm', 'reasonFromBm']
+                [Op.iLike]: req.query.kycStatus + "%",
             }
-        ]
+        );
+    }
+    if (req.query.cceRating) {
+        query.cceRating = sequelize.where(
+            sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
+            {
+                [Op.iLike]: req.query.cceRating + "%",
+            }
+        );
+    }
+    if (req.query.bmRating) {
+        query.bmRating = sequelize.where(
+            sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
+            {
+                [Op.iLike]: search + "%",
+            }
+        )
+    }
 
-        if (roleName == "bm") {
-            searchQuery.isVerifiedByCce = true
+    const searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$customer.first_name$": { [Op.iLike]: search + "%" },
+                "$customer.last_name$": { [Op.iLike]: search + "%" },
+                "$customer.mobile_number$": { [Op.iLike]: search + "%" },
+                "$customer.pan_card_number$": { [Op.iLike]: search + "%" },
+                kyc_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customerKyc.kyc_status"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                kyc_rating_cce: sequelize.where(
+                    sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                kyc_rating_bm: sequelize.where(
+                    sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                )
+            }
+        }],
+        isActive: true,
+        isKycSubmitted: true
+    }
+
+    const includeArray = [
+        {
+            model: models.customerKycClassification,
+            as: 'customerKycClassification',
+            attributes: ['kycStatusFromCce', 'reasonFromCce', 'kycStatusFromBm', 'reasonFromBm']
+        },
+        {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['firstName', 'lastName', 'mobileNumber', 'panCardNumber']
         }
+    ]
 
-        let getAppliedKyc = await models.customer.findAll({
-            where: searchQuery,
-            attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'panCardNumber'],
-            offset: offset,
-            limit: pageSize,
-            include: includeArray
-        })
-        let count = await models.customer.count({
-            where: searchQuery,
-            include: includeArray,
-        });
-        return res.status(200).json({ data: getAppliedKyc, count })
+     
+    if (roleName == "bm") {
+        searchQuery.isVerifiedByCce = true
+    }
+
+    let getAppliedKyc = await models.customerKyc.findAll({
+        where: searchQuery,
+        attributes: ['id', 'customerId', 'kycStatus'],
+        offset: offset,
+        limit: pageSize,
+        include: includeArray
+    })
+    let count = await models.customerKyc.count({
+        where: searchQuery,
+        include: includeArray,
+    });
+    return res.status(200).json({ data: getAppliedKyc, count })
+
     } else {
         return res.status(400).json({ message: `You do not have authority.` })
     }
 
 }
+
 
 
