@@ -39,7 +39,7 @@ exports.addCustomer = async (req, res, next) => {
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
   let stageId = getStageId.id;
   let email = "nimap@infotech.com";
-  let password = firstName;
+  let password = `${firstName}@1234`;
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(

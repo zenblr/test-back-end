@@ -429,7 +429,7 @@ exports.appliedKyc = async (req, res, next) => {
 
     let getAppliedKyc = await models.customerKyc.findAll({
         where: searchQuery,
-        attributes: ['id', 'customerId', 'kycStatus'],
+        attributes: ['id', 'customerId', 'kycStatus','createdAt'],
         offset: offset,
         limit: pageSize,
         include: includeArray
