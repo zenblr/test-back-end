@@ -10,23 +10,26 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
 
   kycForm: FormGroup;
   @Output() kycEmit: EventEmitter<any> = new EventEmitter()
-  @Input() invalid
 
+  @Input() details
 
 
 
   constructor(
     public fb: FormBuilder
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.initForm()
   }
 
+  ngOnInit() {
+
+  }
+
   ngOnChanges() {
-    if (this.invalid) {
-      this.kycForm.markAllAsTouched()
-      this.invalid = false
+    if (this.details) {
+      console.log(this.details)
+      console.log("IN")
+      this.setValue()
     }
   }
 
@@ -38,10 +41,8 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
 
   initForm() {
     this.kycForm = this.fb.group({
-      customerId: [],
-      customerKycId: [],
       identityTypeId: [''],
-      identityProof: [''],
+      identityProof: [[]],
       identityProofNumber: [''],
       address: this.fb.array([
         this.fb.group({
@@ -52,7 +53,7 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
           stateId: [],
           cityId: [],
           pinCode: [],
-          addressProof: ['']
+          addressProof: [[]]
         }),
         this.fb.group({
           addressType: ['residential'],
@@ -62,13 +63,30 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
           stateId: [''],
           cityId: [''],
           pinCode: [''],
-          addressProof: ['']
+          addressProof: [[]]
         })
       ])
     });
-    this.kycEmit.emit(this.kycForm)
+    this.kycForm.disable()
+
   }
 
+  setValue() {
+    this.controls.identityProof.patchValue(this.details.customerKycPersonal.identityProof)
+    this.controls.identityProofNumber.patchValue(this.details.customerKycPersonal.identityProofNumber)
+    this.controls.identityTypeId.patchValue(this.details.customerKycPersonal.identityType.name)
+    const add1 = this.addressControls.at(0) as FormGroup
+    const add2 = this.addressControls.at(1) as FormGroup
+    add1.patchValue(this.details.customerKycAddress[0])
+    add1.controls.cityId.patchValue(this.details.customerKycAddress[0].city.name)
+    add1.controls.stateId.patchValue(this.details.customerKycAddress[0].state.name)
+    add1.controls.addressProofTypeId.patchValue(this.details.customerKycAddress[0].addressProofType.name)
+    add2.patchValue(this.details.customerKycAddress[1])
+    add2.controls.cityId.patchValue(this.details.customerKycAddress[1].city.name)
+    add2.controls.stateId.patchValue(this.details.customerKycAddress[1].state.name)
+    add2.controls.addressProofTypeId.patchValue(this.details.customerKycAddress[1].addressProofType.name)
+    this.kycEmit.emit(this.kycForm)
+  }
   get controls() {
     return this.kycForm.controls
   }

@@ -156,10 +156,11 @@ export class InternalUserListComponent implements OnInit {
       width: '450px'
     });
     dialogRef.afterClosed().subscribe(res => {
-      if (!res) {
-        return;
+      if (res) {
+        this.internalUserService.openModal.next(false);
+        this.loadRolesList();
+
       }
-      this.loadRolesList();
     });
   }
 
