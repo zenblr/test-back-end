@@ -389,6 +389,7 @@ mat-header-row {
 // scroll
 /* width */
 ::-webkit-scrollbar {
+	height: 6px !important;
 	width: 4px !important;
 }
 

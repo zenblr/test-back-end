@@ -6,6 +6,7 @@ import { MerchantService } from '../../../../../../../core/user-management/merch
 import { ToastrComponent } from '../../../../../../../views/partials/components';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { BrokerService } from '../../../../../../../core/user-management/broker';
 
 @Component({
   selector: 'kt-user-details',
@@ -19,6 +20,7 @@ export class UserDetailsComponent implements OnInit {
   cityId: [] = [];
   userId: number
   userInfo:any[]=[]
+  status:any []=[]
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
  
@@ -29,7 +31,8 @@ export class UserDetailsComponent implements OnInit {
     private merchantService: MerchantService,
     private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
-    private toast:ToastrService
+    private toast:ToastrService,
+    private brokerService:BrokerService,
   ) {
     this.merchantService.userId$.subscribe();
   }
@@ -37,6 +40,7 @@ export class UserDetailsComponent implements OnInit {
   ngOnInit() {
     this.initForm()
     this.getStates()
+    this.getStatus()
     this.userId = this.route.snapshot.params.id
     if (this.userId) {
       this.merchantService.getMerchantById(this.userId).pipe(
@@ -56,10 +60,11 @@ export class UserDetailsComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      mobileNumber: ['', Validators.required],
+      mobileNumber: ['', [Validators.required,Validators.minLength(10)]],
       stateId: [Validators.required],
       cityId: [Validators.required],
-      pinCode: ['', Validators.required]
+      pinCode: ['', [Validators.required,Validators.minLength(6)]],
+      approvalStatusId:['',Validators.required]
     })
   }
  
@@ -87,6 +92,13 @@ export class UserDetailsComponent implements OnInit {
       return this.userDetails.controls
   }
 
+  getStatus(){
+    this.brokerService.getStatus().pipe(
+      map(res =>{
+        this.status = res;
+      })
+    ).subscribe()
+  }
   getStates() {
     this.sharedService.getStates().pipe(
       map(res => {

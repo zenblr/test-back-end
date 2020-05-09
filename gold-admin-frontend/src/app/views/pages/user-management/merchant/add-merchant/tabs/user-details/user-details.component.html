@@ -31,7 +31,8 @@
                                 <div class="col-6">
                                     <input type="text" class="form-control" formControlName="firstName"
                                         placeholder="e.g John"
-                                        [class.isError]="controls.firstName.touched && controls.firstName.invalid" ktAlphabets>
+                                        [class.isError]="controls.firstName.touched && controls.firstName.invalid"
+                                        ktAlphabets>
                                     <div *ngIf="controls.firstName.touched && controls.firstName.invalid">
                                         <mat-error
                                             *ngIf="controls.firstName.touched && controls.firstName.errors?.required">
@@ -42,7 +43,8 @@
                                 <div class="col-6">
                                     <input type="text" class="form-control" formControlName="lastName"
                                         placeholder="e.g Smith"
-                                        [class.isError]="controls.lastName.touched && controls.lastName.invalid" ktAlphabets>
+                                        [class.isError]="controls.lastName.touched && controls.lastName.invalid"
+                                        ktAlphabets>
                                     <div *ngIf="controls.lastName.touched && controls.lastName.invalid">
                                         <mat-error
                                             *ngIf="controls.lastName.touched && controls.lastName.errors?.required">
@@ -99,6 +101,10 @@
                                 <mat-error
                                     *ngIf="controls.mobileNumber.touched && controls.mobileNumber.errors?.required">
                                     Field is required</mat-error>
+                                <mat-error
+                                    *ngIf="controls.mobileNumber.touched && controls.mobileNumber.errors?.minlength">
+                                    Length Should be 10    
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -110,11 +116,12 @@
                             <select class="form-control" formControlName="stateId"
                                 [class.isError]="controls.stateId.touched && controls.stateId.invalid"
                                 (change)="getCities()">
-                                <option value="" [selected]="true" [disabled]="true" >Select State</option>
+                                <option value="" [selected]="true" [disabled]="true">Select State</option>
                                 <option [value]="stateId.id" *ngFor="let stateId of states">{{stateId.name}}</option>
                             </select>
                             <div *ngIf="controls.stateId.touched && controls.stateId.invalid">
-                                <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">Field is
+                                <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">Field
+                                    is
                                     required</mat-error>
                             </div>
                         </div>
@@ -126,7 +133,7 @@
                         <div class="col-8">
                             <select class="form-control" formControlName="cityId"
                                 [class.isError]="controls.cityId.touched && controls.cityId.invalid">
-                                <option value="" [selected]="true" [disabled]="true" >Select City</option>
+                                <option value="" [selected]="true" [disabled]="true">Select City</option>
                                 <option [value]="c.id" *ngFor="let c of cityId">{{c.name}}</option>
                             </select>
                             <div *ngIf="controls.cityId.touched && controls.cityId.invalid">
@@ -145,6 +152,25 @@
                                 maxlength="6">
                             <div *ngIf="controls.pinCode.touched && controls.pinCode.invalid">
                                 <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.required">Field
+                                    is required</mat-error>
+                                <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.minlength"> Length Should be 6 </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Status</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="approvalStatusId"
+                            [class.isError]="controls.approvalStatusId.touched && controls.approvalStatusId.invalid">
+                            <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                            <option [value]="status.id" *ngFor="let status of status">{{status.statusName}}</option>
+                        </select>
+                            <div *ngIf="controls.approvalStatusId.touched && controls.approvalStatusId.invalid">
+                                <mat-error
+                                    *ngIf="controls.approvalStatusId.touched && controls.approvalStatusId.errors?.required">
+                                    Field
                                     is required</mat-error>
                             </div>
                         </div>
