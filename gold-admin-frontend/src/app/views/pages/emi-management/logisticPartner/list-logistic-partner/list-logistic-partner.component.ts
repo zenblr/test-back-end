@@ -7,8 +7,11 @@ import { Subject, Subscription, merge } from 'rxjs';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { LogisticPartnerDataSource} from '../../../../../core/emi-management/logistic-partner/datasource/logistic-partner.datasource';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
-// import { ToastrComponent } from 'src/app/views/partials/components';
+import { Role } from '../../../../../core/auth';
+ import { ToastrComponent } from '../../../../../views/partials/components';
 // import { BranchModel } from 'src/app/core/user-management/branch/models/branch.model';
+import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -23,18 +26,24 @@ export class ListLogisticPartnerComponent implements OnInit {
   dataSource: LogisticPartnerDataSource;
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
-
+ /**
+  * @param layoutUtilsService:LayoutUtilsService
+  */
   displayedColumns = ['name','actions'];
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
+  partnerService: any;
  
-  constructor(public dialog: MatDialog, private logisticPartnerService: LogisticPartnerService,    private dataTableService: DataTableService
+  constructor(public dialog: MatDialog, private logisticPartnerService: LogisticPartnerService,    private dataTableService: DataTableService,    private layoutUtilsService: LayoutUtilsService,
+    private toast:ToastrService
+
     ) {
     
       this.logisticPartnerService.openModal$.pipe(
         map(res => {
           if (res) {
-            this.openDialog();
+            this.addRole();
           }
         }),
         takeUntil(this.destroy$)).subscribe();
@@ -89,20 +98,64 @@ export class ListLogisticPartnerComponent implements OnInit {
 
     this.dataSource.loadLogisticPartners(from, to, this.searchValue);
   }
+   /** ACTIONS */
+	/**
+	 * Delete role
+	 *
+	 * @param _item: Role
+	 */
+  deleteRole(_item: Role) {
+    const role = _item;
+    const _title = 'Delete  Logistic Partner';
+    const _description = 'Are you sure to permanently delete this logistic partner?';
+    const _waitDesciption = ' Logistic Partner is deleting.';
+    const _deleteMessage = ` Logistic Partner has been deleted`;
+
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+        this.logisticPartnerService.deleteLogisticPartner(role.id).subscribe(successDelete => {
+          this.toast.success(_deleteMessage);
+          this.loadBranchPage();
+        },
+          errorDelete => {
+            this.toastr.errorToastr(errorDelete.error.message);
+          });
+      }
+    });
+  }
 
 
-  openDialog(): void {
+
+  addRole(): void {
       const dialogRef = this.dialog.open(AddLogisticPartnerComponent, {
-        // width: '250px',
-        // data: {name: this.name, animal: this.animal}
+         data: { action: 'add' }, width: '450px' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadBranchPage();
+      }
+    })
+    this.logisticPartnerService.openModal.next(false);
+  }
+  /**
+	 * Edit role
+	 *
+	 * @param role: Role
+	 */
+    editRole(role: Role) {
+      const _saveMessage = `Role successfully has been saved.`;
+      const _messageType = role.id ? MessageType.Update : MessageType.Create;
+      const dialogRef = this.dialog.open(AddLogisticPartnerComponent, {
+        data: { partnerId: role.id, action: 'edit' },
+        width: '450px'
       });
-
-      dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-        // this.animal = result;
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.loadBranchPage();
+        }
       });
-    }
-
+    
 }
 // export interface PeriodicElement {
 //   name: string;
@@ -133,4 +186,4 @@ export class ListLogisticPartnerComponent implements OnInit {
 //   {position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K'},
 //   {position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca'},
 // ];
-
+}

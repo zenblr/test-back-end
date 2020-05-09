@@ -24,6 +24,8 @@ import {
 // Module
 import { CoreModule } from "../../../core/core.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+
 // Components
 import { EMIManagementComponent } from './emi-management.component';
 import { SubCategoryListComponent } from './product/sub-category/sub-category-list/sub-category-list.component';
@@ -103,6 +105,8 @@ const routes: Routes = [
 		AngularMaterialModule,
 		CoreModule,
 		NgbModule,
+		MatDialogModule
+		
 	],
 	providers: [
 		InterceptService,
@@ -111,6 +115,18 @@ const routes: Routes = [
 			useClass: InterceptService,
 			multi: true
 		},
+		{
+			provide: MAT_DIALOG_DEFAULT_OPTIONS,
+			useValue: {
+			  hasBackdrop: true,
+			  panelClass: 'kt-mat-dialog-container__wrapper',
+			  height: 'auto',
+			  width: '600px'
+			}
+		  },
+		  { provide: MAT_DIALOG_DATA, useValue: {} },
+		  { provide: MatDialogRef, useValue: {} },
+	  
 		HttpUtilsService,
 		TypesUtilsService,
 		LayoutUtilsService

@@ -6,13 +6,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'karat',
             allowNull: false,
         },
-        deductionBasedOnPurity:{
-            type: DataTypes.STRING,
-            field:'deduction_based_on_purity'
-        },
         percentage:{
             type: DataTypes.STRING,
-            field:'percentage'
+            field:'percentage',
+            allowNull:false
         },
         createdBy:{
             type:DataTypes.INTEGER,
@@ -24,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         isActive:{
             type:DataTypes.BOOLEAN,
-            field:'is_active'
+            field:'is_active',
+            defaultValue:true
         }
     },
        {
@@ -32,5 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         tableName: 'karat_details',
     });
+    KaratDetails.associate = function (models) {
+
+        KaratDetails.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        KaratDetails.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+        }
     return KaratDetails;
 }
