@@ -345,7 +345,7 @@ exports.appliedKyc = async (req, res, next) => {
 
     let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
     console.log(roleName)
-    if (roleName == "bm" || roleName == "cce") {
+    if (roleName == "Branch Manager" || roleName == "Customer Care Executive") {
 
     const { search, offset, pageSize } = paginationWithFromTo(
         req.query.search,
@@ -423,7 +423,7 @@ exports.appliedKyc = async (req, res, next) => {
     ]
 
      
-    if (roleName == "bm") {
+    if (roleName == "Branch Manager") {
         searchQuery.isVerifiedByCce = true
     }
 
