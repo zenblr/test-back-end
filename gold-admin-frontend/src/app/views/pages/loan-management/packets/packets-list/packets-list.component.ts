@@ -3,7 +3,7 @@ import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
-import { PacketsDatasource,PacketsService} from '../../../../../core/loan-management'
+import { PacketsDatasource, PacketsService } from '../../../../../core/loan-management'
 import { AssignPacketsComponent } from '../assign-packets/assign-packets.component';
 @Component({
   selector: 'kt-packets-list',
@@ -12,7 +12,7 @@ import { AssignPacketsComponent } from '../assign-packets/assign-packets.compone
 })
 export class PacketsListComponent implements OnInit {
   dataSource: PacketsDatasource;
-  displayedColumns = ['customerID', 'loanId', 'packetId','actions'];
+  displayedColumns = ['customerID', 'loanId', 'packetId', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -40,7 +40,7 @@ export class PacketsListComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
@@ -70,7 +70,7 @@ export class PacketsListComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadpackets(this.searchValue,1, 25);
+    this.dataSource.loadpackets(this.searchValue, 1, 25);
 
   }
 
@@ -89,7 +89,7 @@ export class PacketsListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadpackets(this.searchValue,from, to);
+    this.dataSource.loadpackets(this.searchValue, from, to);
   }
 
   assignPackets() {
@@ -106,16 +106,18 @@ export class PacketsListComponent implements OnInit {
     });
   }
 
-  // editLead(role) {
-  //   const dialogRef = this.dialog.open(AddLeadComponent,
-  //     {
-  //       data: { id: role.id, action: 'edit' },
-  //       width: '500px'
-  //     });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.loadLeadsPage();
-  //     }
-  //   });
-  // }
+  editLead(role) {
+    const dialogRef = this.dialog.open(AssignPacketsComponent,
+      {
+        data: { packetData: role, action: 'edit' },
+        width: '400px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPackets();
+      }
+    });
+  }
+
+
 }

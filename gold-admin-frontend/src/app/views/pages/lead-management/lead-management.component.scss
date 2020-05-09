@@ -7,13 +7,13 @@
         padding-right: 5px !important;
     }
     .mat-column-mobile{
-        flex: 0 0 12% !important;
+        flex: 0 0 10% !important;
     }
     .mat-column-pan{
-        flex: 0 0 11% !important;
+        flex: 0 0 9% !important;
     }
     .mat-column-state{
-        flex: 0 0 13% !important;
+        flex: 0 0 11% !important;
     }
     .mat-column-city{
         flex: 0 0 12% !important;
@@ -22,7 +22,15 @@
         flex: 0 0 14% !important;
     }
     .mat-column-status{
-        flex: 0 0 10% !important;
+        flex: 0 0 8% !important;
+
+    }
+    .mat-column-kyc{
+        flex: 0 0 8% !important;
+
+    }
+    .mat-column-actions{
+        flex: 0 0 8% !important;
 
     }
 }
