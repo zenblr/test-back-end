@@ -38,7 +38,6 @@ import { ConfigDetailsComponent } from './config-details/config-details.componen
 import { WalletPriceListComponent } from './config-details/wallet-price/wallet-price-list/wallet-price-list.component';
 import { WalletPriceAddComponent } from './config-details/wallet-price/wallet-price-add/wallet-price-add.component';
 import { AddEditCategoryComponent } from './product/category/add-edit-category/add-edit-category.component';
-import { ProductViewComponent } from './product/show-product/product-view/product-view.component';
 import { ProductListComponent } from './product/show-product/product-list/product-list.component';
 import { ProductEditComponent } from './product/show-product/product-edit/product-edit.component';
 
@@ -113,7 +112,6 @@ const routes: Routes = [
 		WalletPriceAddComponent,
 		AddEditCategoryComponent,
 		ProductEditComponent,
-		ProductViewComponent,
 		SubCategoryAddEditComponent
 
 	],
@@ -132,7 +130,6 @@ const routes: Routes = [
 		WalletPriceListComponent,
 		WalletPriceAddComponent,
 		AddEditCategoryComponent,
-		ProductViewComponent,
 		SubCategoryAddEditComponent,
 		SubCategoryListComponent,
 
