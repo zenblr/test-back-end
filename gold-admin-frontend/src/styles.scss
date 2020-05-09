@@ -307,6 +307,10 @@ mat-header-row{
 	min-height: 70vh !important; //set table height
 }
 
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+    background-color: transparent;
+}
+
 .border-rad-15 {
 	border-radius: 15px;
 	overflow: hidden;
