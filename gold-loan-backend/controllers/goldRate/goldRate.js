@@ -40,7 +40,13 @@ exports.addGoldRate = async (req, res, next) => {
 }
 
 exports.readGoldRate = async (req, res, next) => {
-    let goldRate = await models.goldRate.findAll()
+    let goldRate = await models.goldRate.findAll({
+        include: [{
+            model: models.user,
+            as:'Modifiedby',
+            attributes:['id','firstName','lastName']
+        }]
+    })
     
     if (!goldRate) {
         res.status(404).json({ message: 'Data not found' });

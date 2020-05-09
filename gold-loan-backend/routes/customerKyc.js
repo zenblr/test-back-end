@@ -8,10 +8,6 @@ const { sendOtpKycNumber, verifyCustomerKycNumber, getCustomerDetails, submitCus
 
 const checkAuth = require('../middleware/checkAuth');
 
-route.post('/send-otp-kyc-number', checkAuth, wrapper(sendOtpKycNumber))
-
-route.post('/verify-kyc-number', checkAuth, wrapper(verifyCustomerKycNumber))
-
 route.post('/get-customer-detail', getCustomerDetailsValidation, validationError, checkAuth, wrapper(getCustomerDetails))
 
 route.post('/customer-info', submitCustomerKycInfoValidation, validationError, checkAuth, wrapper(submitCustomerKycinfo))

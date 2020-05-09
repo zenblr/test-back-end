@@ -1,4 +1,7 @@
 :host {
+    .mat-table__wrapper {
+        height: 79vh !important; //set table height
+    }
     .mat-column-fullName{
         flex: 0 0 20% !important;
         padding-right: 5px !important;

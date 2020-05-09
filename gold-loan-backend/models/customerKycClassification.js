@@ -1,17 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycClassification = sequelize.define('customerKycClassification', {
         // attributes
-        customerKycId: {
-            type: DataTypes.INTEGER,
-            field: 'customer_kyc_id',
-            allowNull: false
-        },
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id',
             allowNull: false
         },
-
+        customerKycId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_kyc_id',
+            allowNull: false
+        },
         behaviourRatingCce: {
             type: DataTypes.INTEGER,
             field: 'behaviour_rating_cce',
@@ -59,8 +58,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         kycStatusFromBm: {
             type: DataTypes.ENUM,
-            field: 'kyc_status_from_branch_manager',
+            field: 'kyc_status_from_bm',
             values: ['approved', 'pending', 'rejected'],
+            defaultValue: "pending"
         },
         reasonFromBm: {
             type: DataTypes.TEXT,
@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerKycClassification.associate = function (models) {
 
-        CustomerKycClassification.belongsTo(models.customerKycPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
+        CustomerKycClassification.belongsTo(models.customerKyc, { foreignKey: 'customerKycId', as: 'customerKyc' });
         CustomerKycClassification.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'cceId', as: 'cceInfo' });

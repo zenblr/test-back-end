@@ -1,0 +1,45 @@
+
+<kt-portlet>
+    <kt-modal-header [title]='"Assign Packet"' (action)="action($event)"></kt-modal-header>
+    <kt-portlet-body>
+        <form action="">
+            <div class="row ">
+                <div class="col-12">
+                    <div class="row justify-content-center">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10">Customer Id</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" id="">
+                                <option value="" [selected]="true" [disabled]="true"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10">Loan Id</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" id="">
+                                <option value="" [selected]="true" [disabled]="true"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10">Packet Id</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </kt-portlet-body>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="'Assign'"></kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>

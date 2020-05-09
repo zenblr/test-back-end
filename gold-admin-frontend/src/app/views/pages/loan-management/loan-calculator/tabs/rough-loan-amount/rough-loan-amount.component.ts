@@ -9,31 +9,31 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class RoughLoanAmountComponent implements OnInit {
 
   roughLoanForm: FormGroup;
-  loanAmount:number = 0;
+  loanAmount: number = 0;
 
   constructor(public fb: FormBuilder) { }
 
   ngOnInit() {
-    this.initForm()
+    this.initForm();
   }
 
   initForm() {
     this.roughLoanForm = this.fb.group({
-      grossWeight:[],
-      netWeight:[,Validators.required],
-      currentLTV:[,Validators.required]
+      grossWeight: [],
+      netWeight: [, Validators.required],
+      currentLTV: [, Validators.required]
     })
 
   }
 
-  get controls(){
-    if(this.roughLoanForm){
+  get controls() {
+    if (this.roughLoanForm) {
       return this.roughLoanForm.controls
     }
   }
 
   calculate() {
-    if(this.roughLoanForm.invalid){
+    if (this.roughLoanForm.invalid) {
       this.roughLoanForm.markAllAsTouched();
       return
     }

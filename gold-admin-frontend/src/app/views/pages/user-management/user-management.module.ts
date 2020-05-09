@@ -49,12 +49,19 @@ import { LoanSchemeComponent } from '../loan-settings/loan-scheme/loan-scheme.co
 import { BrokerListComponent } from './broker/broker-list/broker-list.component';
 import { AddBrokerComponent } from './broker/add-broker/add-broker.component';
 import { MerchantListComponent } from './merchant/merchant-list/merchant-list.component';
+import { InternalUserListComponent } from './internal-user/internal-user-list/internal-user-list.component';
+import { AddInternalUserComponent } from './internal-user/add-internal-user/add-internal-user.component';
+import { AddAppraiserComponent } from './assign-appraiser/add-appraiser/add-appraiser.component';
+import { AppraiserListComponent } from './assign-appraiser/appraiser-list/appraiser-list.component';
+import { ViewMerchantComponent } from './merchant/view-merchant/view-merchant.component';
+import { ApiKeyComponent } from './merchant/api-key/api-key.component';
+import { InternalUserBranchListComponent } from './internal-user-branch/internal-user-branch-list/internal-user-branch-list.component';
+import { AddInternalUserBranchComponent } from './internal-user-branch/add-internal-user-branch/add-internal-user-branch.component';
+import { StoreListComponent } from './store/store-list/store-list.component';
+import { CreateStoreComponent } from './store/create-store/create-store.component';
 
 const routes: Routes = [
-	{
-		path: '',
-		component: UserManagementComponent,
-		children: [
+	
 			{
 				path: '',
 				redirectTo: 'partner',
@@ -78,11 +85,15 @@ const routes: Routes = [
 			},
 			{
 				path: 'internal-user',
-				component: RolesListComponent,
+				component: InternalUserListComponent,
+			},
+			{
+				path: 'internal-user-branch',
+				component: InternalUserBranchListComponent,
 			},
 			{
 				path: 'assign-appraiser',
-				component: RolesListComponent,
+				component: AppraiserListComponent,
 			},
 			{
 				path: 'branch',
@@ -100,10 +111,16 @@ const routes: Routes = [
 				path: 'add-merchant',
 				component: MerchantComponent
 			},
+			{
+				path: 'edit-merchant/:id',
+				component: MerchantComponent
+			},
+			{
+				path: 'store',
+				component: StoreListComponent
+			},
 
 		]
-	}
-];
 
 @NgModule({
 	imports: [
@@ -138,6 +155,12 @@ const routes: Routes = [
 		BranchAddComponent,
 		PartnerAddComponent,
 		AddBrokerComponent,
+		AddInternalUserComponent,
+		AddAppraiserComponent,
+		ViewMerchantComponent,
+		ApiKeyComponent,
+		AddInternalUserBranchComponent,
+		CreateStoreComponent
 	],
 	declarations: [
 		UserManagementComponent,
@@ -161,6 +184,16 @@ const routes: Routes = [
 		BrokerListComponent,
 		AddBrokerComponent,
 		MerchantListComponent,
+		InternalUserListComponent,
+		AddInternalUserComponent,
+		AddAppraiserComponent,
+		AppraiserListComponent,
+		ViewMerchantComponent,
+		ApiKeyComponent,
+		InternalUserBranchListComponent,
+		AddInternalUserBranchComponent,
+		StoreListComponent,
+		CreateStoreComponent,
 
 	]
 })

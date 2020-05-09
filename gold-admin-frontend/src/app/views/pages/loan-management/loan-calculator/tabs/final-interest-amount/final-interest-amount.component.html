@@ -1,152 +1,212 @@
 <div class="container minHeight">
-    <div class="row kt-margin-b-20">
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Customer ID</label>
+    <form [formGroup]="finalInterestForm">
+        <div class="row kt-margin-b-20 kt-margin-t-30">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Parnter Name</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="partnerName" class="form-control" (change)="getSchemes()">
+                            <option value="" [selected]="true" [disabled]="true">Select Partner</option>
+                            <option [value]="partner.id" *ngFor="let partner of partnerList">
+                                {{partner.name | titlecase}}
+                            </option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="CUSTID86742" />
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Scheme Name</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="schemeName" class="form-control">
+                            <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
+                            <option [value]="schemes.id" *ngFor="let schemes of schemesList">{{schemes.schemeName}}
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Loan ID</label>
+
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Loan Amount</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" formControlName="finalLoanAmount" placeholder="0,00,000" />
+                    </div>
                 </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Tenure</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="tenure" class="form-control">
+                            <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
+                            <option [value]="ten" *ngFor="let ten of tenure">{{ten}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Start Date</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" formControlName="loanStartDate" placeholder="01 Januaury, 2020" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Loan Repay Date</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" formControlName="loanEndDate" placeholder="02 May, 2020" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Gold Gross Weight</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" formControlName="goldGrossWeight" placeholder="0.00 gram" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Repay Date Type</label>
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" formControlName="paymentType">
+                            <option value="" [selected]="true" [disabled]="true">Select Repay Period</option>
+                            <option [value]="pay.name" *ngFor="let pay of repayType">{{pay.name | titlecase}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Gold Net Weight</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" formControlName="goldNetWeight" placeholder="0.00 gram" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Final Net weight</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" formControlName="finalNetWeight" placeholder="0.00 gram" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Interest Rate</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" formControlName="interestRate" placeholder="00%" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Current LTV Amount</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" formControlName="currentLtvAmount" placeholder="0,00,000" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 kt-margin-t-30 kt-margin-b-30">
+                <div class="row">
+                    <div class="offset-4 col">
+                        <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcInterestAmount()"></kt-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row justify-content-center kt-margin-b-20">
+        <div class="col-6">
+            <div class="row justify-content-center">
+
                 <div class="col-7">
-                    <input class="form-control" placeholder="LOANID86742" />
+                    <div class="table-div">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 50%" class="rating-title">Company</th>
+                                    <th scope="col" style="width: 50%" class="rating-cce">CCE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>05/06/2020</td>
+                                    <td>10,000</td>
+                                </tr>
+                                <tr>
+                                    <td>05/06/2020</td>
+                                    <td>10,000</td>
+                                </tr>
+                                <tr>
+                                    <td>05/06/2020</td>
+                                    <td>10,000</td>
+                                </tr>
+                                <tr>
+                                    <td>05/06/2020</td>
+                                    <td>10,000</td>
+                                </tr>
+                                <tr>
+                                    <td>05/06/2020</td>
+                                    <td>10,000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="kt-margin-t-20 kt-margin-b-30">
+                        <kt-button [value]="'Print Now'" [type]="'button'"></kt-button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row kt-margin-b-20">
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Loan Amount</label>
-                </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="0,00,000" />
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Tenure</label>
-                </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="0 Years" />
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="row kt-margin-b-20">
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Start Date</label>
-                </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="01 Januaury, 2020" />
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Loan Repay Date</label>
-                </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="02 May, 2020" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row kt-margin-b-20">
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Gold Gross Weight</label>
-                </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="0.00 gram" />
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Repay Date Type</label>
-                </div>
-                <div class="col-7">
-                    <select class="form-control">
-                        <option value="monthly" [selected]="true">Monthly</option>
-                        <option value="oneShot" [selected]="true">One Shot Payment</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row kt-margin-b-20">
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Gold Net Weight</label>
-                </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="0.00 gram" />
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Final Net weight</label>
-                </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="0.00 gram" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row kt-margin-b-20">
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Interest Rate</label>
-                </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="00%" />
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="offset-1 col-3 form-label">
-                    <label>Current LTV Amount</label>
-                </div>
-                <div class="col-7">
-                    <input class="form-control" placeholder="0,00,000" />
-                </div>
-            </div>
-        </div>
-
-        <div class="col-6 kt-margin-t-30">
-            <div class="row">
-                <div class="offset-1">
-                    <kt-button [value]="'Calculate'" [type]="'button'"></kt-button>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
 </div>

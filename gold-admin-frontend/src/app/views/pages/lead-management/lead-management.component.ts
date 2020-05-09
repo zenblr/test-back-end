@@ -19,7 +19,7 @@ export class LeadManagementComponent implements OnInit {
   displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'status', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild('sort1', { static: true }) sort: MatSort;
+ 
   // Filter fields
   // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -47,16 +47,9 @@ export class LeadManagementComponent implements OnInit {
   }
 
   ngOnInit() {
-    const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    this.subscriptions.push(sortSubscription);
+   
 
-    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-      tap(() => {
-        this.loadLeadsPage();
-      })
-    )
-      .subscribe();
-    this.subscriptions.push(paginatorSubscriptions);
+    
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {

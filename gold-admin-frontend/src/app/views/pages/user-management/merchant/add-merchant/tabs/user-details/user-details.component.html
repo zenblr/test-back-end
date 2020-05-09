@@ -1,3 +1,4 @@
+<kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body>
         <div class="row justify-content-center scroll  kt-padding-t-10 kt-padding-b-10">
@@ -26,7 +27,33 @@
                             <label class="font-weight-500 text-color">Full Name </label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control" formControlName="fullName"
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="text" class="form-control" formControlName="firstName"
+                                        placeholder="e.g John"
+                                        [class.isError]="controls.firstName.touched && controls.firstName.invalid"
+                                        ktAlphabets>
+                                    <div *ngIf="controls.firstName.touched && controls.firstName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.firstName.touched && controls.firstName.errors?.required">
+                                            Field
+                                            is required</mat-error>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control" formControlName="lastName"
+                                        placeholder="e.g Smith"
+                                        [class.isError]="controls.lastName.touched && controls.lastName.invalid"
+                                        ktAlphabets>
+                                    <div *ngIf="controls.lastName.touched && controls.lastName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.lastName.touched && controls.lastName.errors?.required">
+                                            Field
+                                            is required</mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <input type="text" class="form-control" formControlName="firstName"
                                 placeholder="e.g John Smith"
                                 [class.isError]="controls.fullName.touched && controls.fullName.invalid">
                             <div *ngIf="controls.fullName.touched && controls.fullName.invalid">
@@ -34,7 +61,7 @@
                                     is required</mat-error>
                                 <mat-error *ngIf="controls.fullName.touched && controls.fullName.errors?.pattern">Enter
                                     Valid Name</mat-error>
-                            </div>
+                            </div> -->
                             <!-- <div class="row kt-margin-t-15">
                                 <div class="col-6">
                                     <input type="text" class="form-control">
@@ -74,6 +101,10 @@
                                 <mat-error
                                     *ngIf="controls.mobileNumber.touched && controls.mobileNumber.errors?.required">
                                     Field is required</mat-error>
+                                <mat-error
+                                    *ngIf="controls.mobileNumber.touched && controls.mobileNumber.errors?.minlength">
+                                    Length Should be 10    
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -82,12 +113,15 @@
                             <label class="font-weight-500 text-color">State</label>
                         </div>
                         <div class="col-8">
-                            <select class="form-control" formControlName="state"
-                                [class.isError]="controls.state.touched && controls.state.invalid">
-                                <option [value]="" [disabled]="true" [selected]="true">Select State</option>
+                            <select class="form-control" formControlName="stateId"
+                                [class.isError]="controls.stateId.touched && controls.stateId.invalid"
+                                (change)="getCities()">
+                                <option value="" [selected]="true" [disabled]="true">Select State</option>
+                                <option [value]="stateId.id" *ngFor="let stateId of states">{{stateId.name}}</option>
                             </select>
-                            <div *ngIf="controls.state.touched && controls.state.invalid">
-                                <mat-error *ngIf="controls.state.touched && controls.state.errors?.required">Field is
+                            <div *ngIf="controls.stateId.touched && controls.stateId.invalid">
+                                <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">Field
+                                    is
                                     required</mat-error>
                             </div>
                         </div>
@@ -97,12 +131,13 @@
                             <label class="font-weight-500 text-color">Select City</label>
                         </div>
                         <div class="col-8">
-                            <select class="form-control" formControlName="city"
-                                [class.isError]="controls.city.touched && controls.city.invalid">
-                                <option [value]="" [disabled]="true" [selected]="true">Select City</option>
+                            <select class="form-control" formControlName="cityId"
+                                [class.isError]="controls.cityId.touched && controls.cityId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select City</option>
+                                <option [value]="c.id" *ngFor="let c of cityId">{{c.name}}</option>
                             </select>
-                            <div *ngIf="controls.city.touched && controls.city.invalid">
-                                <mat-error *ngIf="controls.city.touched && controls.city.errors?.required">Field is
+                            <div *ngIf="controls.cityId.touched && controls.cityId.invalid">
+                                <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">Field is
                                     required</mat-error>
                             </div>
                         </div>
@@ -112,18 +147,37 @@
                             <label class="font-weight-500 text-color">Pin Code</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control" formControlName="pincode" placeholder="112345"
-                                numbersOnly [class.isError]="controls.pincode.touched && controls.pincode.invalid"
+                            <input type="text" class="form-control" formControlName="pinCode" placeholder="112345"
+                                numbersOnly [class.isError]="controls.pinCode.touched && controls.pinCode.invalid"
                                 maxlength="6">
-                            <div *ngIf="controls.pincode.touched && controls.pincode.invalid">
-                                <mat-error *ngIf="controls.pincode.touched && controls.pincode.errors?.required">Field
+                            <div *ngIf="controls.pinCode.touched && controls.pinCode.invalid">
+                                <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.required">Field
+                                    is required</mat-error>
+                                <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.minlength"> Length Should be 6 </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Status</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="approvalStatusId"
+                            [class.isError]="controls.approvalStatusId.touched && controls.approvalStatusId.invalid">
+                            <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                            <option [value]="status.id" *ngFor="let status of status">{{status.statusName}}</option>
+                        </select>
+                            <div *ngIf="controls.approvalStatusId.touched && controls.approvalStatusId.invalid">
+                                <mat-error
+                                    *ngIf="controls.approvalStatusId.touched && controls.approvalStatusId.errors?.required">
+                                    Field
                                     is required</mat-error>
                             </div>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
                         <div class="col-12">
-                            <kt-button [value]="'Next'" [type]="'button'" (click)="next()"></kt-button>
+                            <kt-button [value]="'Next'" [type]="'button'" (click)="submit()"></kt-button>
                         </div>
                     </div>
                 </form>

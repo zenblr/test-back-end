@@ -128,6 +128,10 @@ export class MenuConfig {
 						{
 							title: 'KYC Setting',
 							page: '/kyc-setting'
+						},
+						{
+							title: 'Applied Kyc',
+							page: '/applied-kyc'
 						}
 					]
 				},
@@ -143,6 +147,11 @@ export class MenuConfig {
 						{
 							title: 'Loan Application Form',
 							page: '/loan-management/loan-application-form'
+						},
+						{
+							title: 'Packet',
+							page: '/loan-management/packet',
+
 						},
 						{
 							title: 'Applied Loan',
@@ -233,17 +242,25 @@ export class MenuConfig {
 
 				},
 				{
-					title: 'Branch',
+					title: 'Partner Branch ',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/branch',
 
 				},
+				
 				{
 					title: 'Internal User',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/internal-user',
+
+				},
+				{
+					title: 'Internal User Branch',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					page: '/user-management/internal-user-branch',
 
 				},
 				{
@@ -265,6 +282,13 @@ export class MenuConfig {
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/broker',
+
+				},
+				{
+					title: 'Store',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					page: '/user-management/store',
 
 				},
 				{

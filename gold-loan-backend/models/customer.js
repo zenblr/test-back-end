@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
         internalBranchId: {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id',
-            allowNull: false,
         },
         firstName: {
             type: DataTypes.STRING,
@@ -72,42 +71,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'pin_code',
         },
-        kycStatus: {
-            type: DataTypes.ENUM,
-            field: 'kyc_status',
-            defaultValue: "pending",
-            values: ['approved', 'pending', 'rejected']
-        },
-        isKycSubmitted: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_kyc_submitted',
-            defaultValue: false
-        },
-        isAppliedForKyc: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_applied_for_kyc',
-            defaultValue: false
-        },
-        isVerifiedByCce: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_verified_by_Cce',
-            defaultValue: false
-        },
-        cceVerifiedBy: {
-            type: DataTypes.INTEGER,
-            field: 'cce_verified_by',
-            defaultValue: null
-        },
-        isVerifiedByBranchManager: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_verified_by_branch_manager',
-            defaultValue: false
-        },
-        branchManagerVerifiedBy: {
-            type: DataTypes.INTEGER,
-            field: 'branch_manager_verified_by',
-            defaultValue: null
-        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -135,7 +98,8 @@ module.exports = (sequelize, DataTypes) => {
     Customer.associate = function (models) {
         Customer.belongsTo(models.internalBranch, { foreignKey: 'internalBranchId', as: 'internalBranch' })
 
-        Customer.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerId', as: 'customerKyc' });
+        Customer.hasOne(models.customerKyc, { foreignKey: 'customerId', as: 'customerKyc' });
+        Customer.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerId', as: 'customerKycPersonal' });
         Customer.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });
         Customer.hasMany(models.customerKycBankDetail, { foreignKey: 'customerId', as: 'customerKycBank' });
 
@@ -144,7 +108,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.hasMany(models.customerLoan, { foreignKey: 'customerId', as: 'customerLoan' });
 
-
+        
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
         Customer.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
@@ -153,8 +117,6 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        Customer.belongsTo(models.user, { foreignKey: 'cceVerifiedBy', as: 'cceStageBy' });
-        Customer.belongsTo(models.user, { foreignKey: 'branchManagerVerifiedBy', as: 'branchManagerBy' });
     }
 
     // This hook is always run before create.

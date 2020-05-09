@@ -1,0 +1,27 @@
+<kt-portlet>
+    <kt-modal-header [title]='"Create StoreId"' (action)="action($event)"></kt-modal-header>
+    <kt-portlet-body>
+        <form action="">
+            <div class="row ">
+                <div class="col-12">
+                    <div class="row justify-content-center">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10">Mercant</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" id="" [formControl]="merchantId">
+                                <option value="" [selected]="true" [disabled]="true">Select Merchant</option>
+                                <option [value]="merchant.id" *ngFor="let merchant of merchant">{{merchant.merchantName | titlecase}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </kt-portlet-body>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="'Generate'"></kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>

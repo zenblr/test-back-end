@@ -1,0 +1,24 @@
+:host{
+    ::ng-deep.mat-tab-header {
+		max-width: 90%;
+	}
+	.addMore {
+		position: absolute;
+		top: 15px;
+		left: 15%;
+		z-index: 99999 !important;
+		background: transparent;
+		border: thin solid #454D67;
+		border-radius: 5px;
+		padding: 5px;
+    }
+    .packets {
+        height: 195px;
+        width: 100%;
+        border-radius: 15px;
+    }
+    .pacekts-label {
+        font-size: 12px;
+        margin   : 15px auto;
+    }
+}

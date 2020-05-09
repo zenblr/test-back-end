@@ -1,37 +1,108 @@
+<kt-toastr #toastr></kt-toastr>
 <kt-portlet>
-    <kt-portlet-body>
-        <div class="row height">
-            <div class="col-8">
-                <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-                      <button mat-icon-button disabled></button>
-                      <mat-checkbox class="checklist-leaf-node"
-                                    [checked]="checklistSelection.isSelected(node)"
-                                    (change)="todoLeafItemSelectionToggle(node)">{{node.item}}</mat-checkbox>
-                    </mat-tree-node>
-                  
-                    <mat-tree-node *matTreeNodeDef="let node; when: hasNoContent" matTreeNodePadding>
-                      <button mat-icon-button disabled></button>
-                      <mat-form-field>
-                        <mat-label>New item...</mat-label>
-                        <input matInput #itemValue placeholder="Ex. Lettuce">
-                      </mat-form-field>
-                      <button mat-button (click)="saveNode(node, itemValue.value)">Save</button>
-                    </mat-tree-node>
-                  
-                    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-                      <button mat-icon-button matTreeNodeToggle
-                              [attr.aria-label]="'toggle ' + node.filename">
-                        <mat-icon class="mat-icon-rtl-mirror">
-                          {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                        </mat-icon>
-                      </button>
-                      <mat-checkbox [checked]="descendantsAllSelected(node)"
-                                    [indeterminate]="descendantsPartiallySelected(node)"
-                                    (change)="todoItemSelectionToggle(node)">{{node.item}}</mat-checkbox>
-                    </mat-tree-node>
-                  </mat-tree>                  
+  <kt-portlet-body>
+    <div class="row height justify-content-center">
+      <div class="col-7 scroll">
+        <mat-tab-group>
+          <mat-tab label="Category">
+            <div class="row justify-content-center">
+              <div class="col-10">
+                <label class="custom-checkbox">
+                  <span class="label-checkbox text-color font-weight-500">Select All</span>
+                  <input type="checkbox" class="" id="view" [checked]="selectAll.cat"
+                    (change)="selectAllCat($event.target.checked,'category')" >
+                  <span class="checkmark top-0" #checkboxOne></span>
+                </label>
+                <div class="row kt-margin-t-15">
+                  <div class="col-12 kt-margin-t-10" *ngFor="let category of permissions;index as idx">
+                    <label class="custom-checkbox">
+                      <span
+                        class="label-checkbox text-color font-weight-500">{{category.categoryName | titlecase}}</span>
+                      <input type="checkbox" class="" id="view" [checked]="category.isSelected"
+                        (change)=categoryCheckBox($event.target.checked,idx)>
+                      <span class="checkmark top-0"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
-    </kt-portlet-body>
+          </mat-tab>
+          <mat-tab label="Sub-Category" [disabled]="checkedCategory.length == 0">
+            <div class="row justify-content-center">
+              <div class="col-10">
+                <label class="custom-checkbox">
+                  <span class="label-checkbox text-color font-weight-500">Select All</span>
+                  <input type="checkbox" class="" id="view" value="View" [checked]="selectAll.subCat"
+                    (change)="selectAllSub($event.target.checked)">
+                  <span class="checkmark top-0" #checkboxTwo></span>
+                </label>
+                <div class="row kt-margin-t-15">
+                  <div class="col-12 kt-margin-t-10" *ngFor="let category of permissions;index as Catidx">
+                    <div *ngIf="category.isSelected">
+                    <p class=" text-color font-weight-500">{{category.categoryName | titlecase}}</p>
+                    <div *ngFor="let sub of category.subCategory;index as Subidx"
+                      class="position-relative kt-margin-l-15">
+                      <label class="custom-checkbox">
+                        <span
+                          class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{sub.subCategoryName | titlecase}}</span>
+                        <input type="checkbox" class="" id="view" [checked]="sub.isSelected"
+                          (change)=subCategoryCheckBox($event.target.checked,Catidx,Subidx)>
+                        <span class="checkmark top-0"></span>
+                      </label>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Product" [disabled]="checkedSubCategory.length == 0">
+            <div class="row justify-content-center">
+              <div class="col-10">
+                <label class="custom-checkbox">
+                  <span class="label-checkbox text-color font-weight-500">Select All</span>
+                  <input type="checkbox" class="" id="view" value="View" [checked]="selectAll.pro"
+                    (change)="selectAllProd($event.target.checked)">
+                  <span class="checkmark top-0" #checkboxThree></span>
+                </label>
+                <div class="row kt-margin-t-15">
+                  <div class="col-12 kt-margin-t-10" *ngFor="let category of permissions;index as catIndex">
+                    <div *ngIf="category.isSelected">
+                      <p class="tree text-color font-weight-500">{{category.categoryName | titlecase}}</p>
+                      <div *ngFor="let sub of category.subCategory;last as las; first as fir;index as subIndex">
+                        <div *ngIf="sub.isSelected">
+                          <ul  class="tree" >
+                          <li class="text-color font-weight-500 kt-margin-l-15" [class.last]="las|| (las==fir)">{{sub.subCategoryName | titlecase}}
+                        <div class="row justify-content-start kt-margin-l-40">
+                          <div *ngFor="let product of sub.products;index as idx" class="col-4">
+                                <span class="position-relative ">
+                                  <label class="custom-checkbox">
+                                    <span
+                                      class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{product.productName | titlecase}}</span>
+                                    <input type="checkbox" [checked]="product.isSelected"
+                                      (change)="generateProduct($event.target.checked,catIndex,subIndex,idx)">
+                                    <span class="checkmark top-0"></span>
+                                  </label>
+                                </span>
+                          </div>
+                        </div>
+                        </li>
+                        </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 p-2">
+        <kt-modal-footer [value]="'create'" (action)="submit($event)"></kt-modal-footer>
+      </div>
+    </div>
+  </kt-portlet-body>
 </kt-portlet>
