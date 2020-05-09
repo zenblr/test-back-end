@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input, EventEmitter, Output, OnChanges, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, EventEmitter, Output, OnChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -6,44 +6,40 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   templateUrl: './bank-details.component.html',
   styleUrls: ['./bank-details.component.scss']
 })
-export class BankDetailsComponent implements OnInit,AfterViewInit,OnChanges {
+export class BankDetailsComponent implements OnInit,OnChanges {
 
   @Input() disable;
-  @Input() invalid;
+  @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
 
   bankForm: FormGroup;
   constructor(
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
-  ) { }
-
-  ngOnInit() {
+  ) { 
     this.initForm()
   }
 
-  ngAfterViewInit() {
-    this.bankForm.valueChanges.subscribe(() => {
-      this.bankFormEmit.emit(this.bankForm);
-    })
+  ngOnInit() {
+    
   }
 
+
+
   ngOnChanges() {
-    if (this.invalid) {
-      this.bankForm.markAllAsTouched()
-      this.invalid = false
+    if(this.details){
+      this.bankForm.patchValue(this.details)
+      this.bankFormEmit.emit(this.bankForm);
     }
   }
 
   initForm() {
     this.bankForm = this.fb.group({
-      name: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      accountNumber: [, Validators.required],
-      ifscCode: [, [
-        Validators.required,
-        Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]]
+      bankName: [],
+      accountNumber: [],
+      ifscCode: []
     })
-    this.bankFormEmit.emit(this.bankForm);
+    this.bankForm.disable()
   }
 
   get controls() {

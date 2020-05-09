@@ -6,37 +6,21 @@
                     <label class="text-color kt-padding-l-10">Customer ID</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control" placeholder="10234501203203" formControlName="customerId"
-                        numbersOnly [class.isError]="controls.customerId.touched && controls.customerId.invalid">
-                    <mat-error *ngIf="controls.customerId.touched && controls.customerId.invalid">
+                    <input type="text" class="form-control" placeholder="10234501203203" formControlName="customerUniqueId"
+                        maxlength="8" [class.isError]="controls.customerUniqueId.touched && controls.customerUniqueId.invalid"
+                        (keyup)="getCustomerDetails()">
+                    <mat-error *ngIf="controls.customerUniqueId.touched && controls.customerUniqueId.invalid">
                         Field is Required
                     </mat-error>
                 </div>
             </div>
-            <!-- <div class="row kt-margin-t-15">
-            <div class="col-4 form-label">
-                <label class="text-color kt-padding-l-10">Loan ID</label>
-            </div>
-            <div class="col-6">
-                <input type="text" class="form-control" placeholder="10234501203203" formControlName="customerUniqueId"
-                    [class.isError]="controls.customerUniqueId.touched && controls.customerUniqueId.invalid">
-                <mat-error *ngIf="controls.customerUniqueId.touched && controls.customerUniqueId.invalid">
-                    Field is Required
-                </mat-error>
-            </div>
-        </div> -->
-
             <div class="row kt-margin-t-15">
                 <div class="col-4 form-label">
                     <label class="text-color kt-padding-l-10">Mobile Number</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control" placeholder="9845678991" formControlName="mobile"
-                        numbersOnly maxlength="10" [class.isError]="controls.mobile.touched && controls.mobile.invalid">
-                    <mat-error *ngIf="controls.mobile.touched && controls.mobile.invalid">
-                        <span *ngIf="controls.mobile.errors?.required">Field is Required</span>
-                        <span *ngIf="controls.mobile.errors?.minlength">Length Should be 10</span>
-                    </mat-error>
+                    <input type="text" class="form-control" placeholder="9845678991" formControlName="mobileNumber"
+                        numbersOnly maxlength="10" >
                 </div>
             </div>
             <div class="row kt-margin-t-15">
@@ -44,12 +28,7 @@
                     <label class="text-color kt-padding-l-10">PAN Number</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control" placeholder="qwert1234q" formControlName="panCardNumber"
-                        [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid">
-                    <mat-error *ngIf="controls.panCardNumber.touched && controls.panCardNumber.invalid">
-                        <span *ngIf="controls.panCardNumber.errors?.required">Field is Required</span>
-                        <span *ngIf="controls.panCardNumber.errors?.pattern">Invalid Pan</span>
-                    </mat-error>
+                    <input type="text" class="form-control" placeholder="qwert1234q" formControlName="panCardNumber">
                 </div>
             </div>
             <div class="row kt-margin-t-15">

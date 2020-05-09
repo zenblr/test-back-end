@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoanApplicationFormService } from "../../../../core/loan-management";
+import { map, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-loan-application-form',
@@ -21,6 +22,7 @@ export class LoanApplicationFormComponent implements OnInit {
   totalAmount: number = 0;
   basic: any;
   bank: any;
+  bankDetails: any;
   disable: boolean = false;
   kyc: any;
   nominee: any;
@@ -28,9 +30,11 @@ export class LoanApplicationFormComponent implements OnInit {
   intreset: any;
   approval: any;
   Ornaments: any;
+  customerDetail: any;
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
+    public loanApplicationForm:LoanApplicationFormService
   ) {
     
   }
@@ -47,9 +51,26 @@ export class LoanApplicationFormComponent implements OnInit {
     }, 500)
   }
 
+  customerDetails(){
+    this.loanApplicationForm.customerDetails(this.basic.controls.customerUniqueId.value).pipe(
+      map(res => {
+        this.customerDetail = res.customerData
+        this.bankDetails = res.customerData.customerKycBank[0]
+        this.selected = 3;
+      }),
+      catchError(err=>{
+        throw err;
+      })
+    ).subscribe()
+  }
 
   basicForm(event) {
     this.basic = event
+    // this.basic.controls.customerUniqueId.valueChanges.subscribe(()=>{
+      if(this.basic.controls.customerUniqueId.valid){
+        this.customerDetails()
+      }
+    // })
   }
 
   kycEmit(event) {
@@ -86,16 +107,7 @@ export class LoanApplicationFormComponent implements OnInit {
       this.invalid.basic = true;
       return
     }
-    if (this.kyc.invalid) {
-      this.selected = 1;
-      this.invalid.kyc = true;
-      return
-    }
-    if (this.bank.invalid) {
-      this.selected = 2;
-      this.invalid.bank = true;
-      return
-    }
+
     if (this.nominee.invalid) {
       this.selected = 3;
       this.invalid.nominee = true;

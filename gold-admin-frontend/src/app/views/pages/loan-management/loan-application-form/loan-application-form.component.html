@@ -4,13 +4,13 @@
             <div class="col-12">
                 <mat-tab-group [(selectedIndex)]="selected">
                     <mat-tab label="Basic Details">
-                        <kt-basic-details (basicFormEmit)="basicForm($event)" [invalid]="invalid.basic" [disable]="disabledForm"></kt-basic-details>
+                        <kt-basic-details (basicFormEmit)="basicForm($event)" [details]="customerDetail" [disable]="disabledForm"></kt-basic-details>
                     </mat-tab>
                     <mat-tab label="KYC Details">
-                        <kt-kyc-details (kycEmit)="kycEmit($event)" [invalid]="invalid.kyc" [disable]="disabledForm"></kt-kyc-details>
+                        <kt-kyc-details (kycEmit)="kycEmit($event)" [details]="customerDetail" [disable]="disabledForm"></kt-kyc-details>
                     </mat-tab>
                     <mat-tab label="Bank Details">
-                        <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [invalid]="invalid.bank" [disable]="disabledForm"></kt-bank-details>
+                        <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [details]="bankDetails" [disable]="disabledForm"></kt-bank-details>
                     </mat-tab>
                     <mat-tab label="Nominee Details">
                         <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [invalid]="invalid.nominee" [disable]="disabledForm"></kt-nominee-details>
