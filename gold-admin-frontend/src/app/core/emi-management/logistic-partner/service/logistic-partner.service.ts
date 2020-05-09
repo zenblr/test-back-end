@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +12,18 @@ export class LogisticPartnerService {
   openModal$ = this.openModal.asObservable();
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private toast:ToastrService) { }
 
   addLogisticPartner(data): Observable<any> {
-    return this.http.post<any>(`/api/logistic-partner`, data);
+    return this.http.post<any>(`/api/logistic-partner`, data)
+    .pipe(
+      map(
+      res=>res
+    ),catchError(error=>{
+      this.toast.error(error.error.message);
+      throw(error); 
+    })
+  );
   }
 
   getAllLogisticPartner(from, to,search): Observable<any> {
@@ -30,9 +40,23 @@ export class LogisticPartnerService {
 
   updateLogisticPartner(id, data): Observable<any> {
     delete data.id
-    return this.http.put<any>(`/api/logistic-partner/${id}`, data);
+    return this.http.put<any>(`/api/logistic-partner/${id}`, data).pipe(
+      map(
+      res=>res
+    ),catchError(error=>{
+      this.toast.error(error.error.message);
+      throw(error); 
+    })
+  );;
   }
 
-  deletePartner(id): Observable<any> {
-    return this.http.delete<any>(`/api/partner?id=${id}&isActive=${false}`);
+  deleteLogisticPartner(id): Observable<any> {
+    return this.http.delete<any>(`/api/logistic-partner?id=${id}`).pipe(
+      map(
+      res=>res
+    ),catchError(error=>{
+      this.toast.error(error.error.message);
+      throw(error); 
+    })
+  );;
   }}
