@@ -24,7 +24,8 @@
                     <div class="col-7">
                         <select formControlName="schemeName" class="form-control">
                             <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
-                            <option [value]="schemes.id" *ngFor="let schemes of schemesList.schemes">{{schemes.schemeName}}</option>
+                            <option [value]="schemes.id" *ngFor="let schemes of schemesList">{{schemes.schemeName}}
+                            </option>
                         </select>
                     </div>
                 </div>

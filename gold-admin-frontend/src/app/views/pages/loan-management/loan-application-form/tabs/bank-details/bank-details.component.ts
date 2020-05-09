@@ -8,7 +8,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class BankDetailsComponent implements OnInit,AfterViewInit,OnChanges {
 
-  @Input() disable;
+  
   @Input() invalid;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
 

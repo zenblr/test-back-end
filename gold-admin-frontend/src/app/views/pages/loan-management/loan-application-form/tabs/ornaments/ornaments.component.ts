@@ -14,7 +14,7 @@ import { ImagePreviewDialogComponent } from '../../../../../../views/partials/co
 })
 export class OrnamentsComponent implements OnInit,AfterViewInit {
 
-  @Input() disable;
+  
   @Input() invalid;
   @Output() OrnamentsDataEmit:EventEmitter<any> = new EventEmitter()
   left: number = 0

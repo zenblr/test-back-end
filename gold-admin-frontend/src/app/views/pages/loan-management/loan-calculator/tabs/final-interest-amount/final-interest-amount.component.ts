@@ -16,7 +16,7 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit {
   repayType = [{ name: "monthly" }, { name: "quarterly" }, { name: "half Yearly" }]
   finalInterestForm: FormGroup;
   @Input() invalid;
-  @Input() disable;
+
   @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
@@ -40,7 +40,7 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit {
   getSchemes() {
     this.partnerService.getSchemesByParnter(Number(this.controls.partnerName.value)).pipe(
       map(res => {
-        this.schemesList = res.data
+        this.schemesList = res.data.schemes;
         console.log(this.schemesList)
       })).subscribe()
   }
@@ -52,7 +52,7 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit {
       finalLoanAmount: [, [Validators.required]],
       tenure: [, [Validators.required]],
       loanStartDate: [, [Validators.required]],
-      loanEndDate:[,[Validators.required]],
+      loanEndDate: [, [Validators.required]],
       goldGrossWeight: [, [Validators.required]],
       paymentType: [, [Validators.required]],
       goldNetWeight: [, [Validators.required]],

@@ -13,7 +13,7 @@ export class BasicDetailsComponent implements OnInit, AfterViewInit, OnChanges {
   basicForm: FormGroup;
   @Output() basicFormEmit: EventEmitter<any> = new EventEmitter();
   @Input() invalid;
-  @Input() disable;
+  
 
 
   constructor(

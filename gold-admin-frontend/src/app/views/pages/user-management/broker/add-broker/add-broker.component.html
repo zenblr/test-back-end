@@ -24,12 +24,13 @@
                         <!-- Partner Name -->
                         <div class="row">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Merchant
+                                <label for="" [class.mandatory]="data.action!='view'" class="text-color ">Merchant
                                     Name</label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="merchantId" autocomplete="off"
-                                    [class.isError]="controls.merchantId.touched && controls.merchantId.invalid" (change)="getStore()">
+                                    [class.isError]="controls.merchantId.touched && controls.merchantId.invalid"
+                                    (change)="getStore()">
                                     <option value="" [selected]="true" [disabled]="true">Select</option>
                                     <option [value]="merchant.id" *ngFor="let merchant of merchants">
                                         {{merchant.merchantName | titlecase}}</option>
@@ -41,14 +42,15 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Store ID
+                                <label for="" [class.mandatory]="data.action!='view'" class="text-color ">Store ID
                                 </label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="storeId" autocomplete="off"
-                                [class.isError]="controls.storeId.touched && controls.storeId.invalid">
-                                <option value="" [selected]="true" [disabled]="true">Select</option>
-                                <option [value]="store.id"*ngFor="let store of store">{{store.storeUniqueId}}</option>
+                                    [class.isError]="controls.storeId.touched && controls.storeId.invalid">
+                                    <option value="" [selected]="true" [disabled]="true">Select</option>
+                                    <option [value]="store.id" *ngFor="let store of store">{{store.storeUniqueId}}
+                                    </option>
                                 </select>
                                 <mat-error *ngIf="controls.storeId.errors?.required && controls.storeId.touched">
                                     Required field
@@ -57,7 +59,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Full Name
+                                <label for="" [class.mandatory]="data.action!='view'" class="text-color ">Full Name
                                 </label>
                             </div>
                             <div class="col-8">
@@ -91,7 +93,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Mobile
+                                <label for="" [class.mandatory]="data.action!='view'" class="text-color ">Mobile
                                     Number</label>
                             </div>
                             <div class="col-8">
@@ -106,7 +108,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Email
+                                <label for="" [class.mandatory]="data.action!='view'" class="text-color ">Email
                                 </label>
                             </div>
                             <div class="col-8">
@@ -122,7 +124,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view"
+                                <label for="" [class.mandatory]="data.action!='view'"
                                     class="text-color font-weight-500">Address</label>
                             </div>
                             <div class="col-8">
@@ -137,7 +139,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">State
+                                <label for="" [class.mandatory]="data.action!='view'" class="text-color ">State
                                 </label>
                             </div>
                             <div class="col-8">
@@ -154,7 +156,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">City
+                                <label for="" [class.mandatory]="data.action!='view'" class="text-color ">City
                                 </label>
                             </div>
                             <div class="col-8">
@@ -170,14 +172,15 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Pin Code
+                                <label for="" [class.mandatory]="data.action!='view'" class="text-color ">Pin Code
                                 </label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" numbersOnly maxlength="6" formControlName="pinCode"
-                                    placeholder="e.g 012345" [class.isError]="controls.pinCode.touched && controls.pinCode.invalid">
-                                    <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.required">
-                                        Required field</mat-error>
+                                    placeholder="e.g 012345"
+                                    [class.isError]="controls.pinCode.touched && controls.pinCode.invalid">
+                                <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.required">
+                                    Required field</mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
@@ -207,7 +210,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label  class="text-color ">Upload PAN
+                                <label class="text-color ">Upload PAN
                                 </label>
                             </div>
                             <div class="col-8">
@@ -227,7 +230,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!=view" class="text-color ">Status
+                                <label for="" [class.mandatory]="data.action!='view'" class="text-color ">Status
                                 </label>
                             </div>
                             <div class="col-8">
