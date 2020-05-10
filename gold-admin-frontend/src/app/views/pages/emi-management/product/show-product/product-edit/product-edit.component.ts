@@ -46,7 +46,7 @@ export class ProductEditComponent implements OnInit {
       productName: ['', Validators.required],
       weight: ['', Validators.required],
       price: [],
-      productImage: ['', Validators.required],
+      productImage: [''],
       manufacturingCostPerGram: ['', Validators.required],
       hallmarkingPackaging: ['', Validators.required],
       shipping: ['', Validators.required],
@@ -93,16 +93,15 @@ export class ProductEditComponent implements OnInit {
       this.productForm.markAllAsTouched()
       return;
     }
-    const productData = this.productForm.value;
+    const _productData = this.productForm.value;
     const id = this.controls.id.value;
 
-    delete productData.id;
-    delete productData.sku;
-    delete productData.price;
-    // delete productData.productImage;
+    delete _productData.id;
+    delete _productData.sku;
+    delete _productData.price;
 
     if (this.data.action == 'edit') {
-      this.productService.editProduct(id, productData).subscribe(res => {
+      this.productService.editProduct(id, _productData).subscribe(res => {
         if (res) {
           const msg = 'Product Updated Sucessfully';
           this.toastr.successToastr(msg);
@@ -131,6 +130,38 @@ export class ProductEditComponent implements OnInit {
         console.log(err);
       }
     )
+  }
+
+  uploadImage(data, type) {
+    debugger;
+    if (type == 'inList') {
+      if (this.productData.productImages.length) {
+        for (const product of this.productData.productImages) {
+          if (product.id === data.id) {
+            product.URL = data.URL;
+          }
+        }
+        this.productForm.controls['productImages'].patchValue(this.productData.productImages);
+      }
+    } else {
+      this.productForm.controls['productImage'].patchValue(data.URL);
+    }
+  }
+
+  uploadImages(data, type) {
+    debugger;
+    if (type == 'inList') {
+      if (this.productData.productImages.length) {
+        for (const product of this.productData.productImages) {
+          if (product.id === data.id) {
+            product.URL = data.URL;
+          }
+        }
+        this.productForm.controls['productImages'].patchValue(this.productData.productImages);
+      }
+    } else {
+      this.productForm.controls['productImage'].patchValue(data.URL);
+    }
   }
 
   onAlertClose($event) {

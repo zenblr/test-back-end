@@ -19,6 +19,28 @@
                 <div class="form-group kt-form__group row">
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
                         <div class="row">
+                            <div class="col-12"><label>Images</label></div>
+                            <div class="col-3" *ngIf="controls?.productImage?.value">
+                                <kt-uplod-preview-image [image]="controls?.productImage?.value"
+                                    (upload)="uploadImage($event, '')">
+                                </kt-uplod-preview-image>
+                                <!-- <label for="file-upload" class="custom-file-upload font-weight-500">
+                                    <img class="editProductImage border" [src]="controls?.productImage?.value" />
+                                </label>
+                                <input id="file-upload" type="file" accept="image/*" /> -->
+                            </div>
+                            <div class="col-3" *ngFor="let img of controls?.productImages?.value">
+                                <kt-uplod-preview-image [image]="img?.url" [action]="'cancel'"
+                                    (upload)="uploadImage($event, 'inList')"></kt-uplod-preview-image>
+                                <!-- <label for="file-upload" class="custom-file-upload font-weight-500">
+                                    <img class="editProductImage border" [src]="img?.url" />
+                                </label>
+                                <img class="cancelProductImage" [src]="'assets/media/icons/cancel.png'"
+                                    *ngIf="img?.url" />
+                                <input id="file-upload" type="file" accept="image/*" /> -->
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
                             <div class="col-5">
                                 <label [class.mandatory]="isMandatory">Select SubCategory</label>
                             </div>
@@ -121,11 +143,14 @@
         </div>
     </div>
     <div class="kt-portlet__body font-weight-500" *ngIf="data.action == 'view' && productData">
-        <div class="row">
+        <div class="row py-2">
             <div class="col-12">
                 <div class="text-center">
                     <kt-image-preview-dialog [viewImages]="productData?.productImages" [type]="'view'">
                     </kt-image-preview-dialog>
+                    <div class="py-5" *ngIf="!productData?.productImages?.length">
+                        <img [src]="'assets/media/icons/image-placeholder.png'" />
+                    </div>
                 </div>
             </div>
         </div>
