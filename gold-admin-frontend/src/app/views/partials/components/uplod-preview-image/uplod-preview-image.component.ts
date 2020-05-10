@@ -61,7 +61,6 @@ export class UplodPreviewImageComponent implements OnInit {
     }
     this.sharedService.fileUpload(this.formData).subscribe(
       res => {
-        debugger
         this.upload.emit(res.uploadFile);
         // this.toast.success('Image Uploaded Successfully');
         this.ref.detectChanges();

@@ -1,32 +1,34 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-
-import { HttpUtilsService, QueryParamsModel } from '../../../../../../app/core/_base/crud';
-import { tap, catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class SubCategoryService {
+	openModal = new BehaviorSubject<any>(false);
+	openModal$ = this.openModal.asObservable();
 
-	constructor(
-		private http: HttpClient,
-		private httpUtils: HttpUtilsService
-	) { }
+	constructor(private http: HttpClient) { }
 
-	getSubCategoryList(from: number, to: number, search: string): Observable<any> {
-		return this.http.get<any>(`/api/sub-category?from=${from}&to=${to}&search=${search}`).pipe(
-
-			(tap(allMemberData => {
-				return allMemberData
-			})),
-			(catchError(error => {
-				throw error;
-			}))
-		)
+	getAllSubCategories(from?, to?, search?): Observable<any> {
+		return this.http
+			.get<any>(`/api/sub-category?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
+			.pipe(map(response => response.body));
 	}
+
+	// getSubCategoryList(from: number, to: number, search: string): Observable<any> {
+	// 	return this.http.get<any>(`/api/sub-category?from=${from}&to=${to}&search=${search}`).pipe(
+	// 		(tap(allMemberData => {
+	// 			return allMemberData
+	// 		})),
+	// 		(catchError(error => {
+	// 			throw error;
+	// 		}))
+	// 	)
+	// }
 
 	deleteSubCategory(id) {
 		return this.http.delete(`/api/sub-category/` + id)

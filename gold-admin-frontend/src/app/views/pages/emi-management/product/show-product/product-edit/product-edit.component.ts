@@ -133,7 +133,6 @@ export class ProductEditComponent implements OnInit {
   }
 
   uploadImage(data, type) {
-    debugger;
     if (type == 'inList') {
       if (this.productData.productImages.length) {
         for (const product of this.productData.productImages) {
@@ -149,7 +148,6 @@ export class ProductEditComponent implements OnInit {
   }
 
   uploadImages(data, type) {
-    debugger;
     if (type == 'inList') {
       if (this.productData.productImages.length) {
         for (const product of this.productData.productImages) {

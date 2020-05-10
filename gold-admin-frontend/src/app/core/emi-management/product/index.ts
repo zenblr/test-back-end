@@ -1,11 +1,11 @@
-export { AddCategoryDatasource } from './category/datasources/addCategory.datasource';
-export { AddCategoryModel } from './category/models/addCategory.model';
-export { AddCategoryService } from './category/services/add-category.service';
+export { CategoryDatasource } from './category/datasources/category.datasource';
+export { CategoryModel } from './category/models/category.model';
+export { CategoryService } from './category/services/category.service';
 
-export { ProductDatasource } from './product-list/datasources/product.datasource';
-export { ProductModel } from './product-list/models/product.model';
-export { ProductService } from './product-list/services/product.service';
+export { ProductDatasource } from './show-product/datasources/product.datasource';
+export { ProductModel } from './show-product/models/product.model';
+export { ProductService } from './show-product/services/product.service';
 
-export { SubCategoryDatasource } from './sub-category/datasources/subCategory.datasource';
-export { SubCategoryModel } from './sub-category/models/subCategory.model';
+export { SubCategoryDatasource } from './sub-category/datasources/sub-category.datasource';
+export { SubCategoryModel } from './sub-category/models/sub-category.model';
 export { SubCategoryService } from './sub-category/services/sub-category.service';

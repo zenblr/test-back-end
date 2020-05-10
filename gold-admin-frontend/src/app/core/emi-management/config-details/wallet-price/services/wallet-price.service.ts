@@ -7,7 +7,6 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class WalletPriceService {
-
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 

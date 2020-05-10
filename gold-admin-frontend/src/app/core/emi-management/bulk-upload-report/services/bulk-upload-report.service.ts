@@ -13,7 +13,7 @@ export class BulkUploadReportService {
 
   constructor(private http: HttpClient, private excelService: ExcelService) { }
 
-  getAllBulkUploadReports(from?, to?, search?, fromDate?, toDate?, userId?): Observable<any> {
+  getAllBulkUploadReports(from?, to?, search?): Observable<any> {
     return this.http
       .get<any>(`/api/bulk-upload-file?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
       .pipe(map(response => response.body));

@@ -1,24 +1,24 @@
 import { catchError, finalize } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
-import { BaseDataSource } from '../../../_base/crud';
-import { BulkUploadReportService } from '../services/bulk-upload-report.service';
+import { BaseDataSource } from '../../../../_base/crud';
+import { CategoryService } from '../services/category.service';
 
-export class BulkUploadReportDatasource extends BaseDataSource {
+export class CategoryDatasource extends BaseDataSource {
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
 
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
 
-    constructor(private bulkUploadReportService: BulkUploadReportService) {
+    constructor(private categoryService: CategoryService) {
         super();
     }
 
-    loadBulkUploadReports(from, to, search) {
+    loadCategories(from, to, search) {
         this.loadingSubject.next(true);
 
-        this.bulkUploadReportService.getAllBulkUploadReports(from, to, search)
+        this.categoryService.getAllCategories(from, to, search)
             .pipe(
                 map(
                     report => {
@@ -34,5 +34,4 @@ export class BulkUploadReportDatasource extends BaseDataSource {
             )
             .subscribe();
     }
-
 }
