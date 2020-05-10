@@ -1,14 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
     const packet = sequelize.define('packet', {
         // attributes
-        loanUniqueId: {
-            type: DataTypes.STRING,
-            field: 'loan_unique_id',
-            allowNull: false
+        loanId: {
+            type: DataTypes.INTEGER,
+            field: 'loan_id',
         },
-        customerUniqueId: {
-            type: DataTypes.STRING,
-            field: 'customer_unique_id'
+        customerId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_id'
         },
         packetId: {
             type: DataTypes.STRING,
@@ -22,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by'
         },
+        packetAssigned: {
+            type: DataTypes.BOOLEAN,
+            field: 'packet_assigned'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -32,19 +35,32 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'loan_packet',
     });
 
+
+    // PACKET ASSOCIATION WITH MODULES
+    packet.associate = function (models) {
+        packet.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+        packet.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+    }
+
     // FUNCTION TO ADD PACKET
     packet.addPacket =
-        (loanUniqueId, customerUniqueId, packetId, createdBy, modifiedBy) => packet.create({
-            loanUniqueId, customerUniqueId, packetId, createdBy, modifiedBy, isActive: true
+        (packetId, createdBy, modifiedBy) => packet.create({
+            packetId, createdBy, modifiedBy, packetAssigned: false, isActive: true
         });
+
+    // FUNCTION TO ASSIGN PACKET
+    packet.assignPacket =
+        (customerId, loanId, modifiedBy, id) => packet.update({
+            customerId, loanId, modifiedBy, packetAssigned: true
+        }, { where: { id, isActive: true } });
 
     // FUNCTION TO UPDATE PACKET
     packet.updatePacket =
-        (id, packetId, modifiedBy) => packet.update({ packetId, modifiedBy }, { where: { id, isActive: true } });
+        (id, packetId, modifiedBy) => packet.update({ packetId, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
 
     // FUNCTION TO REMOVE PACKET
     packet.removePacket =
-        (id, modifiedBy) => packet.update({ isActive: false, modifiedBy }, { where: { id, isActive: true } });
+        (id, modifiedBy) => packet.update({ isActive: false, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
 
     return packet;
 }

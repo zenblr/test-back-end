@@ -2,8 +2,8 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { applyForLoanApplication, updateCustomerLoanDetail, addPackageImagesForLoan, disbursementOfLoanAmount,
-    getLoanDetails, approvalFromBM, appliedLoanDetails, customerDetails, addPacket, viewPacket, changePacket, deletePacket } =
+const { applyForLoanApplication, updateCustomerLoanDetail, addPackageImagesForLoan, disbursementOfLoanAmount,getLoanDetails,
+     approvalFromBM, appliedLoanDetails, customerDetails, addPacket, assignPacket, viewPacket, changePacket, deletePacket, availablePacket } =
     require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
@@ -24,12 +24,16 @@ route.get('/applied-loan-details', checkAuth, wrapper(appliedLoanDetails)); // F
 
 route.get('/customer-loan-details/:customerUniqueId', checkAuth, wrapper(customerDetails)); // FETCH CUSTOMER DETAILS
 
-route.post('/add-packet', checkAuth, wrapper(addPacket)); // ADD CUSTOMER BANK DETAIL
+route.post('/add-packet', checkAuth, wrapper(addPacket)); // ADD PACKET
 
-route.get('/view-packet', checkAuth, wrapper(viewPacket)); // FETCH APLLIED LOAN DETAILS
+route.get('/view-packet', checkAuth, wrapper(viewPacket)); // FETCH PACKET
 
-route.put('/update-packet/:id', checkAuth, wrapper(changePacket)); // APPROVAL FROM BM
+route.get('/available-packet', checkAuth, wrapper(availablePacket)); // FETCH AVAILABLE PACKET
 
-route.delete('/remove-packet/:id', checkAuth, wrapper(deletePacket)); // APPROVAL FROM BM
+route.put('/assign-packet/:id', checkAuth, wrapper(assignPacket)); // ASSIGN PACKET
+
+route.put('/update-packet/:id', checkAuth, wrapper(changePacket)); // UPDATE PACKET
+
+route.delete('/remove-packet/:id', checkAuth, wrapper(deletePacket)); // DELETE PACKET
 
 module.exports = route; // EXPORTING ALL ROUTES

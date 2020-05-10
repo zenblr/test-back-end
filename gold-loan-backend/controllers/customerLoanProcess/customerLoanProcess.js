@@ -273,6 +273,16 @@ exports.customerDetails = async (req, res, next) => {
             model: models.customerKycAddressDetail,
             // where: { isActive: true },
             as: 'customerKycAddress',
+            include: [{
+                model: models.state,
+                as: 'state'
+            }, {
+                model: models.city,
+                as: 'city'
+            }, {
+                model: models.addressProofType,
+                as: 'addressProofType'
+            }]
         }, {
             model: models.customerKycBankDetail,
             // where: { isActive: true },
@@ -292,37 +302,51 @@ exports.customerDetails = async (req, res, next) => {
 //  FUNCTION FOR ADD PACKET
 exports.addPacket = async (req, res, next) => {
 
-    let { loanUniqueId, customerUniqueId, packetId } = req.body;
+    let { packetId } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    // let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
-
-    // if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
     let packetAdded = await models.packet.addPacket(
-        loanUniqueId, customerUniqueId, packetId, createdBy, modifiedBy);
+        packetId, createdBy, modifiedBy);
     res.status(201).json({ message: 'you adeed packet successfully' });
-    // } else {
-    //     res.status(404).json({ message: 'given loan id is not proper' })
-    // }
 }
 
-//  FUNCTION FOR GET PACKET
+//  FUNCTION FOR VIEW PACKET
 exports.viewPacket = async (req, res, next) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
+    let query = {};
+    if (req.query.packetAssigned) {
+        query.packetAssigned = req.query.packetAssigned;
+    }
     let searchQuery = {
-        [Op.or]: {
-            loanUniqueId: { [Op.iLike]: search + '%' },
-            customerUniqueId: { [Op.iLike]: search + '%' },
-            packetId: { [Op.iLike]: search + '%' },
-        },
-        isActive: true
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$loan.loan_unique_id$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                packetId: { [Op.iLike]: search + '%' },
+            },
+        }],
+        isActive: true,
     };
 
-    let appliedLoanDetails = await models.packet.findAll({
+    let associateModel = [{
+        model: models.customer,
+        required: false,
+        as: 'customer',
+        where: { isActive: true },
+        attributes: { exclude: ['password'] }
+    },
+    {
+        model: models.customerLoan,
+        required: false,
+        as: 'loan',
+        where: { isActive: true }
+    }];
+
+    let packetDetails = await models.packet.findAll({
         where: searchQuery,
-        // include: associateModel,
+        include: associateModel,
         order: [
             ['id', 'DESC']
         ],
@@ -332,14 +356,41 @@ exports.viewPacket = async (req, res, next) => {
     });
     let count = await models.packet.findAll({
         where: searchQuery,
-        // include: associateModel,
+        include: associateModel,
     });
-    if (appliedLoanDetails.length === 0) {
-        res.status(404).json({ message: 'no loan details found' });
+    if (packetDetails.length === 0) {
+        res.status(404).json({ message: 'no packet details found' });
     } else {
-        res.status(200).json({ message: 'applied loan details fetch successfully', appliedLoanDetails, count: count.length });
+        res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count.length });
     }
 }
+
+//  FUNCTION FOR GET AVAILABLE PACKET
+exports.availablePacket = async (req, res, next) => {
+    let availablePacketDetails = await models.packet.findAll({
+        where: { isActive: true, packetAssigned: false },
+    });
+    if (availablePacketDetails.length === 0) {
+        res.status(404).json({ message: 'no packet details found' });
+    } else {
+        res.status(200).json({ message: 'avalable packet details fetch successfully', availablePacketDetails });
+    }
+}
+
+
+// FUNCTION TO ASSIGN PACKET
+exports.assignPacket = async (req, res, next) => {
+    let id = req.params.id;
+    let { customerId, loanId } = req.body;
+    let modifiedBy = req.userData.id;
+
+    let packet = await models.packet.assignPacket(customerId, loanId, modifiedBy, id);
+
+    if (packet[0] == 0) {
+        return res.status(404).json({ message: "not assigned packet" });
+    }
+    return res.status(200).json({ message: "packet assigned successfully" });
+};
 
 // FUNCTION TO UPDATE PACKET
 exports.changePacket = async (req, res, next) => {
@@ -358,7 +409,7 @@ exports.changePacket = async (req, res, next) => {
 // FUNCTION TO REMOVE PACKET
 exports.deletePacket = async (req, res, next) => {
     let id = req.params.id;
-    let modifiedBy = req.userData.modifiedBy;
+    let modifiedBy = req.userData.id;
 
     let packet = await models.packet.removePacket(id, modifiedBy);
 
