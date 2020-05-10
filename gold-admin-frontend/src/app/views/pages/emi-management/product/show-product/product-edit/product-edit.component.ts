@@ -3,7 +3,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
-import { ProductService } from '../../../../../../core/emi-management/product/product-list/services/product.service';
+import { ProductService } from '../../../../../../core/emi-management/product/show-product/services/product.service';
 import { SubCategoryService } from '../../../../../../core/emi-management/product/sub-category/services/sub-category.service';
 
 @Component({

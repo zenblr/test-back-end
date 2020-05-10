@@ -9,6 +9,7 @@ import { BranchService } from '../.././../../core/user-management/branch/service
 import { WalletPriceService } from '../.././../../core/emi-management/config-details/wallet-price/services/wallet-price.service';
 import { RolesService } from '../.././../../core/user-management/roles';
 import { BrokerService } from '../../../../core/user-management/broker';
+import { CategoryService, SubCategoryService } from '../../../../core/emi-management/product';
 import { SubheaderService } from '../../../../core/_base/layout';
 import { Breadcrumb } from '../../../../core/_base/layout/services/subheader.service';
 import { Subscription, Subject } from 'rxjs';
@@ -55,7 +56,9 @@ export class TopbarComponent implements OnInit {
 		private branchService: BranchService,
 		private rolesService: RolesService,
 		private brokerService: BrokerService,
-		private walletPriceService: WalletPriceService) {
+		private walletPriceService: WalletPriceService,
+		private categoryService: CategoryService,
+		private subCategoryService: SubCategoryService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -162,7 +165,7 @@ export class TopbarComponent implements OnInit {
 			this.value1 = 'Add Merchant';
 		}
 		if (this.path == 'wallet-price') {
-			this.rightButton = true
+			this.rightButton = true;
 			this.type2 = 'button';
 			this.value2 = 'Edit Wallet Price';
 		}
@@ -173,6 +176,20 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'products') {
 			this.showfilter = true;
 			this.showInput = true;
+		}
+		if (this.path == 'category') {
+			this.rightButton = true
+			this.showfilter = true;
+			this.showInput = true;
+			this.value2 = 'Add Category';
+			this.type2 = 'button';
+		}
+		if (this.path == 'sub-category') {
+			this.rightButton = true
+			this.showfilter = true;
+			this.showInput = true;
+			this.value2 = 'Add Sub Category';
+			this.type2 = 'button';
 		}
 	}
 
@@ -201,6 +218,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'wallet-price') {
 			this.walletPriceService.openModal.next(true)
+		}
+		if (this.path == 'category') {
+			this.categoryService.openModal.next(true)
+		}
+		if (this.path == 'sub-category') {
+			this.subCategoryService.openModal.next(true)
 		}
 	}
 

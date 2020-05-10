@@ -82,7 +82,7 @@ export class BulkUploadReportListComponent implements OnInit {
       this.bulkUploadReportResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadBulkUploadReports(1, 25, this.searchValue, '', '', '');
+    this.dataSource.loadBulkUploadReports(1, 25, this.searchValue);
   }
 
 	/**
@@ -102,7 +102,7 @@ export class BulkUploadReportListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadBulkUploadReports(from, to, this.searchValue, '', '', '');
+    this.dataSource.loadBulkUploadReports(from, to, this.searchValue);
   }
 
 	/**

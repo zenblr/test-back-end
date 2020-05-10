@@ -7,23 +7,23 @@ import { Subscription, merge, fromEvent, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
-import { SubCategoryDatasource, SubCategoryService, SubCategoryModel } from '../../../../../../core/emi-management/product';
-import { SubCategoryAddComponent } from '../sub-category-add/sub-category-add.component';
+import { CategoryDatasource, CategoryService, CategoryModel } from '../../../../../../core/emi-management/product';
+import { CategoryAddComponent } from '../category-add/category-add.component';
 
 @Component({
-  selector: 'kt-sub-category-list',
-  templateUrl: './sub-category-list.component.html',
-  styleUrls: ['./sub-category-list.component.scss']
+  selector: 'kt-category-list',
+  templateUrl: './category-list.component.html',
+  styleUrls: ['./category-list.component.scss']
 })
-export class SubCategoryListComponent implements OnInit, OnDestroy {
-  dataSource: SubCategoryDatasource;
+export class CategoryListComponent implements OnInit, OnDestroy {
+  dataSource: CategoryDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ["subCategoryName", "categoryName", "action"];
+  displayedColumns = ["categoryName", "conversionFactor", "metalType", "action"];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  subCategoryResult: SubCategoryModel[] = [];
+  categoryResult: CategoryModel[] = [];
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private destroy$ = new Subject();
@@ -34,7 +34,7 @@ export class SubCategoryListComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private subCategoryService: SubCategoryService,
+    private categoryService: CategoryService,
     private dataTableService: DataTableService,
     private toast: ToastrService,
   ) { }
@@ -50,7 +50,7 @@ export class SubCategoryListComponent implements OnInit, OnDestroy {
 		**/
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {
-        this.loadSubCategoryPage();
+        this.loadCategoryPage();
       })
     )
       .subscribe();
@@ -73,130 +73,76 @@ export class SubCategoryListComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         this.searchValue = res;
         this.paginator.pageIndex = 0;
-        this.loadSubCategoryPage();
+        this.loadCategoryPage();
       });
 
     // Init DataSource
-    this.dataSource = new SubCategoryDatasource(this.subCategoryService);
+    this.dataSource = new CategoryDatasource(this.categoryService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      this.subCategoryResult = res;
+      this.categoryResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadSubCategories(1, 25, this.searchValue);
+    this.dataSource.loadCategories(1, 25, this.searchValue);
   }
 
-  loadSubCategoryPage() {
+  loadCategoryPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadSubCategories(from, to, this.searchValue);
+    this.dataSource.loadCategories(from, to, this.searchValue);
   }
 
-  // addCategory() {
-  //   const dialogRef = this.dialog.open(SubCategoryAddComponent, {
-  //     data: { title: "AddCategoryComponent", action: "add" },
-  //     width: "50vw"
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     this.loadSubCategoryPage();
-  //   });
-  // }
-
-  // editCategory(id) {
-  //   const categoryId = id;
-  //   const dialogRef = this.dialog.open(CategoryAddComponent, {
-  //     data: {
-  //       categoryId,
-  //       title: "AddCategoryComponent",
-  //       action: "edit"
-  //     },
-  //     width: "50vw"
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     this.loadSubCategoryPage();
-  //   });
-  // }
-
-  // deleteCategory(id) {
-  //   const _title = 'Delete Category';
-  //   const _description = 'Are you sure to permanently delete this Category?';
-  //   const _waitDesciption = 'Category is deleting...';
-  //   const _deleteMessage = 'Category has been deleted';
-
-  //   const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.subCategoryService.deleteCategory(id).subscribe(
-  //         res => {
-  //           this.toast.success("Success", "Category Deleted Successfully", {
-  //             timeOut: 3000
-  //           });
-  //           this.loadSubCategoryPage();
-  //         },
-  //         err => {
-  //           this.toast.error("Sorry", err["error"]["message"], {
-  //             timeOut: 3000
-  //           });
-  //           this.loadSubCategoryPage();
-  //         }
-  //       );
-
-  //     }
-
-  //   });
-  // }
-
-  addSubCategory() {
-    const dialogRef = this.dialog.open(SubCategoryAddComponent, {
-      data: { title: "SubCategoryListComponent", action: "add" },
+  addCategory() {
+    const dialogRef = this.dialog.open(CategoryAddComponent, {
+      data: { title: "AddCategoryComponent", action: "add" },
       width: "50vw"
     });
     dialogRef.afterClosed().subscribe(res => {
-      this.loadSubCategoryPage();
+      this.loadCategoryPage();
     });
   }
 
-  editSubCategory(id) {
-    const subCategoryId = id;
-    const dialogRef = this.dialog.open(SubCategoryAddComponent, {
+  editCategory(id) {
+    const categoryId = id;
+    const dialogRef = this.dialog.open(CategoryAddComponent, {
       data: {
-        subCategoryId,
-        title: "SubCategoryListComponent",
+        categoryId,
+        title: "AddCategoryComponent",
         action: "edit"
       },
       width: "50vw"
     });
     dialogRef.afterClosed().subscribe(res => {
-      this.loadSubCategoryPage();
+      this.loadCategoryPage();
     });
   }
 
-  deleteSubCategory(id) {
-    const _title = 'Delete Sub-Category';
-    const _description = 'Are you sure to permanently delete this Sub-Category?';
-    const _waitDesciption = 'Sub-Category is deleting...';
-    const _deleteMessage = 'Sub-Category has been deleted';
+  deleteCategory(id) {
+    const _title = 'Delete Category';
+    const _description = 'Are you sure to permanently delete this Category?';
+    const _waitDesciption = 'Category is deleting...';
+    const _deleteMessage = 'Category has been deleted';
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.subCategoryService.deleteSubCategory(id).subscribe(
+        this.categoryService.deleteCategory(id).subscribe(
           res => {
-            this.toast.success("Success", "Sub-Category Deleted Successfully", {
+            this.toast.success("Success", "Category Deleted Successfully", {
               timeOut: 3000
             });
-            this.loadSubCategoryPage();
+            this.loadCategoryPage();
           },
           err => {
             this.toast.error("Sorry", err["error"]["message"], {
               timeOut: 3000
             });
-            this.loadSubCategoryPage();
+            this.loadCategoryPage();
           }
         );
 

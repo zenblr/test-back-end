@@ -23,15 +23,15 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 // Components
 import { EMIManagementComponent } from './emi-management.component';
 import { SubCategoryListComponent } from './product/sub-category/sub-category-list/sub-category-list.component';
-import { SubCategoryAddEditComponent } from './product/sub-category/sub-category-add-edit/sub-category-add-edit.component';
-import { CategoryComponent } from './product/category/category.component';
+import { SubCategoryAddComponent } from './product/sub-category/sub-category-add/sub-category-add.component';
+import { CategoryListComponent } from './product/category/category-list/category-list.component';
 import { UploadProductComponent } from './product/upload-product/upload-product.component';
 import { UploadDesignComponent } from './product/upload-design/upload-design.component';
 import { BulkUploadReportListComponent } from './bulk-upload-report/bulk-upload-report-list/bulk-upload-report-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { WalletPriceListComponent } from './config-details/wallet-price/wallet-price-list/wallet-price-list.component';
 import { WalletPriceAddComponent } from './config-details/wallet-price/wallet-price-add/wallet-price-add.component';
-import { AddEditCategoryComponent } from './product/category/add-edit-category/add-edit-category.component';
+import { CategoryAddComponent } from './product/category/category-add/category-add.component';
 import { ProductListComponent } from './product/show-product/product-list/product-list.component';
 import { ProductEditComponent } from './product/show-product/product-edit/product-edit.component';
 
@@ -49,7 +49,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'category',
-				component: CategoryComponent
+				component: CategoryListComponent
 			},
 			{
 				path: 'sub-category',
@@ -104,23 +104,23 @@ const routes: Routes = [
 	entryComponents: [
 		ActionNotificationComponent,
 		WalletPriceAddComponent,
-		AddEditCategoryComponent,
+		CategoryAddComponent,
 		ProductEditComponent,
-		SubCategoryAddEditComponent
+		SubCategoryAddComponent
 	],
 	declarations: [
 		EMIManagementComponent,
 		ProductEditComponent,
 		ProductListComponent,
-		CategoryComponent,
+		CategoryListComponent,
 		UploadProductComponent,
 		UploadDesignComponent,
 		BulkUploadReportListComponent,
 		DashboardComponent,
 		WalletPriceListComponent,
 		WalletPriceAddComponent,
-		AddEditCategoryComponent,
-		SubCategoryAddEditComponent,
+		CategoryAddComponent,
+		SubCategoryAddComponent,
 		SubCategoryListComponent,
 	]
 })
