@@ -40,8 +40,8 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/loan-management/loan-management.module').then(m => m.LoanManagementModule)
 			},
 			{
-				path:'upload-data',
-				loadChildren:() => import('../app/views/pages/upload-data/upload-data.module').then(m=>m.UploadDataModule),
+				path: 'upload-data',
+				loadChildren: () => import('../app/views/pages/upload-data/upload-data.module').then(m => m.UploadDataModule),
 			},
 			{
 				path: 'customer-management',
@@ -50,6 +50,10 @@ const routes: Routes = [
 			{
 				path: 'kyc-setting',
 				loadChildren: () => import('../app/views/pages/kyc-settings/kyc-settings.module').then(m => m.KycSettingsModule)
+			},
+			{
+				path: 'applied-kyc',
+				loadChildren: () => import('../app/views/pages/applied-kyc/applied-kyc.module').then(m => m.AppliedKycModule)
 			},
 			{
 				path: 'lead-management',

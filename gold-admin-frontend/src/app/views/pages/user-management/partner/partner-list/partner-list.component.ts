@@ -38,7 +38,7 @@ export class PartnerListComponent implements OnInit {
   displayedColumns = ['partnerId', 'name', 'commission', 'actions'];
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild('sort1', { static: true }) sort: MatSort;
+ 
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   // Selection
@@ -84,36 +84,7 @@ export class PartnerListComponent implements OnInit {
 	 * On init
 	 */
   ngOnInit() {
-    // If the user changes the sort order, reset back to the first page.
-    const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    this.subscriptions.push(sortSubscription);
 
-		/* Data load will be triggered in two cases:
-		- when a pagination event occurs => this.paginator.page
-		- when a sort event occurs => this.sort.sortChange
-		**/
-    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-      tap(() => {
-        // this.loadRolesList();
-        this.loadPartnersPage();
-      })
-    )
-      .subscribe();
-    this.subscriptions.push(paginatorSubscriptions);
-
-    // Filtration, bind to searchInput
-    // const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(
-    //   // tslint:disable-next-line:max-line-length
-    //   debounceTime(150), // The user can type quite quickly in the input box, and that could trigger a lot of server requests. With this operator, we are limiting the amount of server requests emitted to a maximum of one every 150ms
-    //   distinctUntilChanged(), // This operator will eliminate duplicate values
-    //   tap(() => {
-    //     this.paginator.pageIndex = 0;
-    //     // this.loadRolesList();
-    //     this.loadPartnersPage();
-    //   })
-    // )
-    //   .subscribe();
-    // this.subscriptions.push(searchSubscription);
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
@@ -157,22 +128,7 @@ export class PartnerListComponent implements OnInit {
     this.dataSource.loadPartners(this.searchValue, from, to, '', '', '');
   }
 
-	/**
-	 * Load Roles List
-	 */
-  loadRolesList() {
-    this.selection.clear();
-    const queryParams = new QueryParamsModel(
-      this.filterConfiguration(),
-      this.sort.direction,
-      this.sort.active,
-      this.paginator.pageIndex,
-      this.paginator.pageSize
-    );
-    // Call request from server
-    this.store.dispatch(new RolesPageRequested({ page: queryParams }));
-    this.selection.clear();
-  }
+
 
 	/**
 	 * Returns object for filter

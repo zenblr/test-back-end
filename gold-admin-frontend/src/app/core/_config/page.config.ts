@@ -21,9 +21,7 @@ export class PageConfig {
 			'scheme': {
 				page: { title: 'Schemes', desc: '' }
 			},
-			packet: {
-				page: { title: 'Packets', desc: '' }
-			},
+
 		},
 		'upload-data': {
 			'upload-banner': {
@@ -41,10 +39,13 @@ export class PageConfig {
 				page: { title: 'All Partners', desc: '' }
 			},
 			'branch': {
-				page: { title: 'All Branches', desc: '' }
+				page: { title: 'All Partner Branches', desc: '' }
 			},
 			'internal-user': {
 				page: { title: 'Internal User', desc: '' }
+			},
+			'internal-user-branch': {
+				page: { title: 'Internal User Branch', desc: '' }
 			},
 			'assign-appraiser': {
 				page: { title: 'Assign Appraiser', desc: '' }
@@ -54,6 +55,9 @@ export class PageConfig {
 			},
 			'broker': {
 				page: { title: 'All Brokers', desc: '' }
+			},
+			'store': {
+				page: { title: 'All Stores', desc: '' }
 			},
 			'roles': {
 				page: { title: 'Roles', desc: '' }
@@ -88,12 +92,24 @@ export class PageConfig {
 				page: { title: 'Wallet Price', desc: '' }
 			},
 		},
+		'applied-kyc': {
+			page: { title: 'Applied KYC', desc: '' }
+		},
 		'loan-management': {
 			'loan-calculator': {
 				page: { title: 'Loan Calculator', desc: '' }
 			},
 			'loan-application-form': {
 				page: { title: 'Add New Loan', desc: '' }
+			},
+			'packet': {
+				page: { title: 'Packets', desc: '' }
+			},
+			'package-image-upload': {
+				page: { title: 'Upload Packets', desc: '' }
+			},
+			'applied-loan': {
+				page: { title: 'Applied Loan', desc: '' }
 			}
 		},
 	};

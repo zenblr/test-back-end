@@ -14,7 +14,6 @@ export class CustomerManagementComponent implements OnInit {
   ) {
     this.customerManagementService.toggle$.subscribe(res => {
       this.toogler = res;
-      console.log(this.toogler)
     })
   }
 

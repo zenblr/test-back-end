@@ -10,11 +10,16 @@ import { WalletPriceService } from '../.././../../core/emi-management/config-det
 import { RolesService } from '../.././../../core/user-management/roles';
 import { BrokerService } from '../../../../core/user-management/broker';
 import { CategoryService, SubCategoryService } from '../../../../core/emi-management/product';
-import { SubheaderService } from '../../../../core/_base/layout';
+import { InternalUserService } from '../.././../../core/user-management/internal-user';
+import { AppraiserService } from '../../../../core/user-management/appraiser';
+import { InternalUserBranchService } from '../../../../core/user-management/internal-user-branch'
 import { Breadcrumb } from '../../../../core/_base/layout/services/subheader.service';
-import { Subscription, Subject } from 'rxjs';
+import { Subject, Subscription, from } from 'rxjs';
 import { SharedService } from '../../../../core/shared/services/shared.service';
+import { SubheaderService } from '../../../../core/_base/layout';
 import { takeUntil } from 'rxjs/operators';
+import { PacketsService } from '../../../../core/loan-management';
+import { StoreService } from '../../../../core/user-management/store/service/store.service';
 
 @Component({
 	selector: 'kt-topbar',
@@ -58,7 +63,12 @@ export class TopbarComponent implements OnInit {
 		private brokerService: BrokerService,
 		private walletPriceService: WalletPriceService,
 		private categoryService: CategoryService,
-		private subCategoryService: SubCategoryService) {
+		private subCategoryService: SubCategoryService,
+		private internalUserService: InternalUserService,
+		private internalUserBranchService: InternalUserBranchService,
+		private appraiserService: AppraiserService,
+		private packetService: PacketsService,
+		private storeService: StoreService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -115,6 +125,12 @@ export class TopbarComponent implements OnInit {
 		this.toogle = false;
 	}
 
+	dataSourceHeader() {
+		this.showfilter = true;
+		this.showInput = true;
+		this.type1 = 'button';
+	}
+
 	setTopbar(path: string) {
 		var pathArray = path.split('/')
 		this.path = pathArray[pathArray.length - 1]
@@ -124,16 +140,13 @@ export class TopbarComponent implements OnInit {
 			this.type2 = 'button';
 		}
 		if (this.path == 'lead-management') {
-			this.showfilter = true;
-			this.showInput = true;
+			this.dataSourceHeader()
 			this.value1 = 'Add New Lead';
-			this.type1 = 'button';
+
 		}
 		if (this.path == 'partner') {
-			this.showfilter = true;
-			this.showInput = true;
+			this.dataSourceHeader()
 			this.value1 = 'Add Partner';
-			this.type1 = 'button';
 		}
 		if (this.path == 'customer-list') {
 			this.showfilter = true;
@@ -141,10 +154,12 @@ export class TopbarComponent implements OnInit {
 			this.toogle = true;
 		}
 		if (this.path == 'branch') {
-			this.showfilter = true;
-			this.showInput = true;
+			this.dataSourceHeader()
 			this.value1 = 'Add New Branch';
-			this.type1 = 'button';
+		}
+		if (this.path == 'assign-appraiser') {
+			this.dataSourceHeader()
+			this.value1 = 'Add Appraiser';
 		}
 		if (this.path == 'roles') {
 			this.showInput = true;
@@ -153,15 +168,11 @@ export class TopbarComponent implements OnInit {
 			this.value2 = 'Add New Role';
 		}
 		if (this.path == 'broker') {
-			this.showInput = true;
-			this.rightButton = true
-			this.type1 = 'button';
+			this.dataSourceHeader()
 			this.value1 = 'Add Broker';
 		}
 		if (this.path == 'merchant') {
-			this.showInput = true;
-			this.rightButton = true
-			this.type1 = 'button';
+			this.dataSourceHeader()
 			this.value1 = 'Add Merchant';
 		}
 		if (this.path == 'wallet-price') {
@@ -191,6 +202,23 @@ export class TopbarComponent implements OnInit {
 			this.value2 = 'Add Sub Category';
 			this.type2 = 'button';
 		}
+		if (this.path == 'internal-user') {
+			this.dataSourceHeader()
+			this.value1 = 'Add Internal User';
+		}
+		if (this.path == 'internal-user-branch') {
+			this.dataSourceHeader()
+			this.value1 = 'Add Internal Branch';
+		}
+		if (this.path == 'packet') {
+			this.dataSourceHeader()
+			this.value1 = 'Add Packets';
+		}
+		if (this.path == 'store') {
+			this.dataSourceHeader()
+			this.value1 = 'Create Stores';
+		}
+
 	}
 
 	action(event: Event) {
@@ -213,6 +241,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'broker') {
 			this.brokerService.openModal.next(true)
 		}
+		if (this.path == 'internal-user') {
+			this.internalUserService.openModal.next(true)
+		}
+		if (this.path == 'assign-appraiser') {
+			this.appraiserService.openModal.next(true)
+		}
 		if (this.path == 'merchant') {
 			this.router.navigate(['/user-management/add-merchant'])
 		}
@@ -224,6 +258,15 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'sub-category') {
 			this.subCategoryService.openModal.next(true)
+		}
+		if (this.path == 'internal-user-branch') {
+			this.internalUserBranchService.openModal.next(true)
+		}
+		if (this.path == 'packet') {
+			this.packetService.openModal.next(true)
+		}
+		if (this.path == 'store') {
+			this.storeService.openModal.next(true)
 		}
 	}
 

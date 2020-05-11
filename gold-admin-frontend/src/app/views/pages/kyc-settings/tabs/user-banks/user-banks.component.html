@@ -14,10 +14,12 @@
                                         <input type="text" class="form-control" placeholder="Enter Bank Name"
                                             formControlName="bankName"
                                             [class.isError]="controls.bankName.touched && controls.bankName.invalid" />
+                                        <mat-error
+                                            *ngIf="controls.bankName.errors?.required && controls.bankName.touched">
+                                            Required field
+                                        </mat-error>
                                     </div>
-                                    <mat-error *ngIf="controls.bankName.errors?.required && controls.bankName.touched">
-                                        Required field
-                                    </mat-error>
+
                                 </div>
                             </div>
                             <div class="col-6">
@@ -147,8 +149,10 @@
 
                                     <div *ngIf="passBookImage.length > 0" class="">
                                         <div class="d-inline-block img-container kt-margin-r-15"
-                                            *ngFor="let proof of passBookImage; index as i;">
+                                            *ngFor="let proof of passBookImage; index as idx;">
                                             <img class="fetched-image" *ngIf="passBookImage" [src]="proof">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon" (click)="removeImages(idx);">
                                         </div>
                                     </div>
 

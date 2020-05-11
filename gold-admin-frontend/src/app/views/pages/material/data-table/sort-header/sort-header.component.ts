@@ -7,11 +7,11 @@ const basic = {
 	htmlCode: `
 <table matSort (matSortChange)="sortData($event)">
   <tr>
-    <th mat-sort-header="name">Dessert (100g)</th>
-    <th mat-sort-header="calories">Calories</th>
-    <th mat-sort-header="fat">Fat (g)</th>
-    <th mat-sort-header="carbs">Carbs (g)</th>
-    <th mat-sort-header="protein">Protein (g)</th>
+    <th ="name">Dessert (100g)</th>
+    <th ="calories">Calories</th>
+    <th ="fat">Fat (g)</th>
+    <th ="carbs">Carbs (g)</th>
+    <th ="protein">Protein (g)</th>
   </tr>
   <tr *ngFor="let dessert of sortedData">
     <td>{{dessert.name}}</td>
@@ -67,7 +67,7 @@ function compare(a, b, isAsc) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }`,
 	cssCode: `
-.mat-sort-header-container {
+.-container {
   align-items: center;
 }`,
 	viewCode: ``,
@@ -82,22 +82,22 @@ const config = {
   <mat-table #table [dataSource]="dataSource" matSort>
   <!-- Position Column -->
   <ng-container matColumnDef="position">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> No. </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef > No. </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
   </ng-container>
   <!-- Name Column -->
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef > Name </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
   </ng-container>
   <!-- Weight Column -->
   <ng-container matColumnDef="weight">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Weight </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef > Weight </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
   </ng-container>
   <!-- Symbol Column -->
   <ng-container matColumnDef="symbol">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Symbol </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef > Symbol </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
   </ng-container>
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -165,7 +165,7 @@ const ELEMENT_DATA: Element[] = [
   overflow: auto;
   max-height: 500px;
 }
-.mat-header-cell.mat-sort-header-sorted {
+.mat-header-cell.-sorted {
   color: black;
 }`,
 	viewCode: ``,
@@ -211,7 +211,7 @@ function compare(a, b, isAsc) {
 	templateUrl: './sort-header.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	styles: [`
-	.mat-sort-header-container {
+	.-container {
 		align-items: center;
 	  }
 	  .example-container {
@@ -223,7 +223,7 @@ function compare(a, b, isAsc) {
 		overflow: auto;
 		max-height: 500px;
 	  }
-	  .mat-header-cell.mat-sort-header-sorted {
+	  .mat-header-cell.-sorted {
 		color: black;
 	  }
 	`]

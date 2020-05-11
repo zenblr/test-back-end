@@ -1,47 +1,27 @@
+<kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body>
         <div class="row justify-content-center min-height">
             <div class="col-6 align-self-center">
-                <form [formGroup]="category">
-                    <div class="row kt-margin-t-15">
-                        <div class="col-3  align-self-center">
-                            <label class="font-weight-500 text-color">Category 1</label>
-                        </div>
-                        <div class="col-9 ">
-                            <input type="text" class="form-control" placeholder="Enter Commission(%)" 
-                            formControlName="category1" [class.isError]="controls.category1.touched && controls.category1.touched">
-                        <div *ngIf="controls.category1.touched && controls.category1.invalid">
-                            <mat-error *ngIf="controls.category1.errors?.required">Field is required</mat-error>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="row kt-margin-t-15">
-                        <div class="col-3  align-self-center">
-                            <label class="font-weight-500 text-color">Category 2</label>
-                        </div>
-                        <div class="col-9 ">
-                            <input type="text" class="form-control" placeholder="Enter Commission(%)" 
-                            formControlName="category2" [class.isError]="controls.category2.touched && controls.category2.touched">
-                        <div *ngIf="controls.category2.touched && controls.category2.invalid">
-                            <mat-error *ngIf="controls.category2.errors?.required">Field is required</mat-error>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="row kt-margin-t-15">
-                        <div class="col-3  align-self-center">
-                            <label class="font-weight-500 text-color">Category 3</label>
-                        </div>
-                        <div class="col-9 ">
-                            <input type="text" class="form-control" placeholder="Enter Commission(%)"
-                            formControlName="category3" [class.isError]="controls.category3.touched && controls.category3.touched">
-                        <div *ngIf="controls.category3.touched && controls.category3.invalid">
-                            <mat-error *ngIf="controls.category3.errors?.required">Field is required</mat-error>
-                        </div>
+                <form [formGroup]="commissionForm">
+                    <div formArrayName="category" *ngFor="let cat of commissionForm.get('category')['controls'];index as idx">
+                        <div [formGroupName]="idx">
+                            <div class="row kt-margin-t-15">
+                                <div class="col-3  align-self-center">
+                                    <label class="font-weight-500 text-color">{{cat.controls.category.value.categoryName | titlecase}} %</label>
+                                </div>
+                                <div class="col-9 ">
+                                    <input type="number" class="form-control" placeholder="Enter Commission(%)" 
+                                    formControlName="commission" [class.isError]="cat.controls.commission.touched && cat.controls.commission.invalid">
+                                    <mat-error *ngIf="cat.controls.commission.touched && cat.controls.commission.errors?.required">Field is Required </mat-error>
+                                    <mat-error *ngIf="cat.controls.commission.touched && cat.controls.commission.errors?.pattern">Invalid Input</mat-error>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
                         <div class="col-12">
-                            <kt-button [value]="'Next'" [type]="'button'" (click)="next()"></kt-button>
+                            <kt-button [value]="'Next'" [type]="'button'" (click)="submit()"></kt-button>
                         </div>
                     </div>
                 </form>
