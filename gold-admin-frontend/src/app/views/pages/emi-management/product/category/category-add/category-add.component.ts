@@ -2,10 +2,8 @@ import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angula
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
 import { CategoryService } from '../../../../../../core/emi-management/product/category/services/category.service';
-
-type NewType = FormGroup;
 
 @Component({
   selector: 'kt-category-add',
@@ -13,41 +11,73 @@ type NewType = FormGroup;
   styleUrls: ['./category-add.component.scss']
 })
 export class CategoryAddComponent implements OnInit {
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  categoryForm: FormGroup;
+  metalType: any;
+  viewLoading = false;
   title: string;
-  addCategory: FormGroup;
-  isMandatory: boolean = false;
-  metalListType: any;
+  isMandatory = false
 
   constructor(
     public dialogRef: MatDialogRef<CategoryAddComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, public fb: FormBuilder,
-    public addCategoryService: CategoryService,
-    public toast: ToastrService, public ref: ChangeDetectorRef,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private sharedService: SharedService,
+    private fb: FormBuilder,
+    private categoryService: CategoryService,
+    private ref: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
     console.log(this.data);
-    this.formdata();
+    this.formInitialize();
     this.setForm();
-    this.getMetalTypeList();
+    this.getMetalType();
   }
-  formdata() {
-    this.addCategory = this.fb.group({
+
+  formInitialize() {
+    this.categoryForm = this.fb.group({
+      id: [''],
       categoryName: ['', Validators.required],
       conversionFactor: ['', Validators.required],
       metalTypeId: ['', Validators.required],
     });
   }
+
   setForm() {
     if (this.data.action === 'add') {
-      this.title = 'Add New Category';
+      this.title = 'Add Category';
       this.isMandatory = true;
-
     } else if (this.data.action === 'edit') {
       this.title = 'Edit Category';
       this.isMandatory = true;
-      this.getCategoryData(this.data.categoryId);
+      this.categoryForm.patchValue(this.data.data);
     }
+  }
+
+  get controls() {
+    return this.categoryForm.controls;
+  }
+
+  getMetalType() {
+    this.categoryService.getMetalType().subscribe(
+      res => {
+        console.log(res);
+        this.metalType = res;
+      }
+    )
+  }
+
+  getCategoryData(id) {
+    this.categoryService.getSingleCategory(id).subscribe(
+      res => {
+        console.log(res);
+        this.categoryForm.patchValue(res[0]);
+        this.ref.detectChanges();
+      },
+      err => {
+        console.log(err);
+      }
+    )
   }
 
   action(event: Event) {
@@ -59,69 +89,39 @@ export class CategoryAddComponent implements OnInit {
   }
 
   onSubmit() {
-    const categoryData = this.addCategory.value;
-    if (this.data.action === 'add') {
+    if (this.categoryForm.invalid) {
+      this.categoryForm.markAllAsTouched();
+      return;
+    }
+    const categoryData = this.categoryForm.value;
+    const id = this.controls.id.value;
 
-      this.addCategoryService.addNewCategory(categoryData).subscribe(
-        res => {
-          this.toast.success("Success", "Category Added Successfully", {
-            timeOut: 3000
-          });
-          this.dialogRef.close();
-        },
-        err => {
-          this.toast.error('Sorry', err['error']['message'], {
-            timeOut: 3000
-          });
-          this.dialogRef.close();
+    if (this.data.action === 'add') {
+      this.categoryService.addCategory(categoryData).subscribe(res => {
+        if (res) {
+          const msg = 'Category Added Sucessfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
         }
-      )
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
     } else if (this.data.action === 'edit') {
-      this.addCategoryService.editCategory(categoryData, this.data.categoryId).subscribe(
-        res => {
-          this.toast.success("Success", "Category Updated Successfully", {
-            timeOut: 3000
-          });
-          this.dialogRef.close();
-        },
-        err => {
-          this.toast.error('Sorry', err['error']['message'], {
-            timeOut: 3000
-          });
-          this.dialogRef.close();
+      this.categoryService.editCategory(id, categoryData).subscribe(res => {
+        if (res) {
+          const msg = 'Category Updated Sucessfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
         }
-      )
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
     }
   }
-
-
-  getMetalTypeList() {
-    this.addCategoryService.getMetalList().subscribe(
-      res => {
-        console.log(res);
-        this.metalListType = res;
-      }
-    )
-  }
-
-
-
-  get controls() {
-    return this.addCategory.controls;
-  }
-  getCategoryData(id) {
-    this.addCategoryService.getSingleCategory(id).subscribe(
-      res => {
-        console.log(res);
-        //   console.log(res[0]['categoryName']);
-        //   this.addCategory.setValue({categoryName : res['categoryName']});
-        this.addCategory.patchValue(res[0]);
-        this.ref.detectChanges();
-      },
-      err => {
-        console.log(err);
-      }
-    )
-  }
 }
-

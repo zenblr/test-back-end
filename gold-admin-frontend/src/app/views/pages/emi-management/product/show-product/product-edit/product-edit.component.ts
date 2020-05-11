@@ -16,8 +16,6 @@ export class ProductEditComponent implements OnInit {
   productForm: FormGroup;
   subcategories: any;
   productData: any;
-  editData = false;
-  viewOnly = false;
   viewLoading = false;
   title: string;
   isMandatory = false
@@ -72,7 +70,7 @@ export class ProductEditComponent implements OnInit {
   }
 
   getSubCategory() {
-    this.subCategoryService.getSubCategory().subscribe(res => {
+    this.subCategoryService.getAllSubCategory().subscribe(res => {
       this.subcategories = res.data;
       this.ref.detectChanges();
     },

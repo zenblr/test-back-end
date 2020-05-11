@@ -1,5 +1,3 @@
-import { ToastrService } from "ngx-toastr";
-
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { LayoutUtilsService, QueryParamsModel } from '../../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
@@ -36,8 +34,13 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     private layoutUtilsService: LayoutUtilsService,
     private categoryService: CategoryService,
     private dataTableService: DataTableService,
-    private toast: ToastrService,
-  ) { }
+  ) {
+    this.categoryService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.addCategory();
+      }
+    });
+  }
 
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
@@ -98,56 +101,51 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   addCategory() {
-    const dialogRef = this.dialog.open(CategoryAddComponent, {
-      data: { title: "AddCategoryComponent", action: "add" },
-      width: "50vw"
-    });
+    const dialogRef = this.dialog.open(CategoryAddComponent,
+      {
+        data: { action: 'add' },
+        width: '450px'
+      });
     dialogRef.afterClosed().subscribe(res => {
-      this.loadCategoryPage();
-    });
+      if (res) {
+        this.loadCategoryPage();
+      }
+    })
+    this.categoryService.openModal.next(false);
   }
 
-  editCategory(id) {
-    const categoryId = id;
-    const dialogRef = this.dialog.open(CategoryAddComponent, {
-      data: {
-        categoryId,
-        title: "AddCategoryComponent",
-        action: "edit"
-      },
-      width: "50vw"
-    });
+  editCategory(category) {
+    const dialogRef = this.dialog.open(CategoryAddComponent,
+      {
+        data: { data: category, action: 'edit' },
+        width: '450px'
+      });
     dialogRef.afterClosed().subscribe(res => {
-      this.loadCategoryPage();
+      if (res) {
+        this.loadCategoryPage();
+      }
     });
+    this.categoryService.openModal.next(false);
   }
 
-  deleteCategory(id) {
+  deleteCategory(category) {
     const _title = 'Delete Category';
-    const _description = 'Are you sure to permanently delete this Category?';
+    const _description = 'Are you sure to permanently delete this category?';
     const _waitDesciption = 'Category is deleting...';
-    const _deleteMessage = 'Category has been deleted';
+    const _deleteMessage = `Category has been deleted`;
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.categoryService.deleteCategory(id).subscribe(
-          res => {
-            this.toast.success("Success", "Category Deleted Successfully", {
-              timeOut: 3000
-            });
-            this.loadCategoryPage();
-          },
-          err => {
-            this.toast.error("Sorry", err["error"]["message"], {
-              timeOut: 3000
-            });
-            this.loadCategoryPage();
-          }
-        );
-
+        console.log(res);
+        this.categoryService.deleteCategory(category.id).subscribe(successDelete => {
+          this.toastr.successToastr(_deleteMessage);
+          this.loadCategoryPage();
+        },
+          errorDelete => {
+            this.toastr.errorToastr(errorDelete.error.message);
+          });
       }
-
     });
   }
 

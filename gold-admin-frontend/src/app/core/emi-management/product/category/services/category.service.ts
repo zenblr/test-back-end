@@ -19,35 +19,23 @@ export class CategoryService {
 			.pipe(map(response => response.body));
 	}
 
-	// public getCategoryList(from: number, to: number, search: string): Observable<any> {
-	// 	return this.http.get<any>(`/api/category?from=${from}&to=${to}&search=${search}`).pipe(
-	// 		(map(allMemberData => {
-	// 			return allMemberData
-	// 		})),
-	// 		(catchError(error => {
-	// 			throw error;
-	// 		}))
-	// 	)
-	// }
-
-	deleteCategory(id) {
-		return this.http.delete(`/api/category/` + id)
-	}
-
-	addNewCategory(data) {
+	addCategory(data) {
 		return this.http.post<any>(`/api/category`, data);
 	}
 
-	editCategory(data, id) {
-
+	editCategory(id, data) {
 		return this.http.patch<any>(`/api/category/` + id, data);
 	}
 
-	getSingleCategory(id) {
-		return this.http.get(`/api/category/` + id);
+	deleteCategory(id) {
+		return this.http.delete(`/api/category/` + id);
 	}
-	
-	getMetalList() {
-		return this.http.get(`/api/metal-type`);
+
+	getMetalType(): Observable<any> {
+		return this.http.get<any>(`/api/metal-type`);
+	}
+
+	getSingleCategory(id): Observable<any> {
+		return this.http.get<any>(`/api/category/` + id);
 	}
 }

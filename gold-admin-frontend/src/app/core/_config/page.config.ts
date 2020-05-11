@@ -73,7 +73,7 @@ export class PageConfig {
 				page: { title: 'Category', desc: '' }
 			},
 			'sub-category': {
-				page: { title: 'Sub-category', desc: '' }
+				page: { title: 'Sub-Category', desc: '' }
 			},
 			'upload-product': {
 				page: { title: 'Bulk Upload Product', desc: '' }

@@ -1,5 +1,3 @@
-import { ToastrService } from "ngx-toastr";
-
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { LayoutUtilsService, QueryParamsModel } from '../../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
@@ -36,8 +34,13 @@ export class SubCategoryListComponent implements OnInit, OnDestroy {
     private layoutUtilsService: LayoutUtilsService,
     private subCategoryService: SubCategoryService,
     private dataTableService: DataTableService,
-    private toast: ToastrService,
-  ) { }
+  ) {
+    this.subCategoryService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.addSubCategory();
+      }
+    });
+  }
 
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
@@ -97,111 +100,52 @@ export class SubCategoryListComponent implements OnInit, OnDestroy {
     this.dataSource.loadSubCategories(from, to, this.searchValue);
   }
 
-  // addCategory() {
-  //   const dialogRef = this.dialog.open(SubCategoryAddComponent, {
-  //     data: { title: "AddCategoryComponent", action: "add" },
-  //     width: "50vw"
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     this.loadSubCategoryPage();
-  //   });
-  // }
-
-  // editCategory(id) {
-  //   const categoryId = id;
-  //   const dialogRef = this.dialog.open(CategoryAddComponent, {
-  //     data: {
-  //       categoryId,
-  //       title: "AddCategoryComponent",
-  //       action: "edit"
-  //     },
-  //     width: "50vw"
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     this.loadSubCategoryPage();
-  //   });
-  // }
-
-  // deleteCategory(id) {
-  //   const _title = 'Delete Category';
-  //   const _description = 'Are you sure to permanently delete this Category?';
-  //   const _waitDesciption = 'Category is deleting...';
-  //   const _deleteMessage = 'Category has been deleted';
-
-  //   const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.subCategoryService.deleteCategory(id).subscribe(
-  //         res => {
-  //           this.toast.success("Success", "Category Deleted Successfully", {
-  //             timeOut: 3000
-  //           });
-  //           this.loadSubCategoryPage();
-  //         },
-  //         err => {
-  //           this.toast.error("Sorry", err["error"]["message"], {
-  //             timeOut: 3000
-  //           });
-  //           this.loadSubCategoryPage();
-  //         }
-  //       );
-
-  //     }
-
-  //   });
-  // }
-
   addSubCategory() {
-    const dialogRef = this.dialog.open(SubCategoryAddComponent, {
-      data: { title: "SubCategoryListComponent", action: "add" },
-      width: "50vw"
-    });
+    const dialogRef = this.dialog.open(SubCategoryAddComponent,
+      {
+        data: { action: 'add' },
+        width: '450px'
+      });
     dialogRef.afterClosed().subscribe(res => {
-      this.loadSubCategoryPage();
-    });
+      if (res) {
+        this.loadSubCategoryPage();
+      }
+    })
+    this.subCategoryService.openModal.next(false);
   }
 
-  editSubCategory(id) {
-    const subCategoryId = id;
-    const dialogRef = this.dialog.open(SubCategoryAddComponent, {
-      data: {
-        subCategoryId,
-        title: "SubCategoryListComponent",
-        action: "edit"
-      },
-      width: "50vw"
-    });
+  editSubCategory(category) {
+    const dialogRef = this.dialog.open(SubCategoryAddComponent,
+      {
+        data: { data: category, action: 'edit' },
+        width: '450px'
+      });
     dialogRef.afterClosed().subscribe(res => {
-      this.loadSubCategoryPage();
+      if (res) {
+        this.loadSubCategoryPage();
+      }
     });
+    this.subCategoryService.openModal.next(false);
   }
 
-  deleteSubCategory(id) {
+  deleteSubCategory(category) {
     const _title = 'Delete Sub-Category';
-    const _description = 'Are you sure to permanently delete this Sub-Category?';
+    const _description = 'Are you sure to permanently delete this sub-category?';
     const _waitDesciption = 'Sub-Category is deleting...';
-    const _deleteMessage = 'Sub-Category has been deleted';
+    const _deleteMessage = `Sub-Category has been deleted`;
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.subCategoryService.deleteSubCategory(id).subscribe(
-          res => {
-            this.toast.success("Success", "Sub-Category Deleted Successfully", {
-              timeOut: 3000
-            });
-            this.loadSubCategoryPage();
-          },
-          err => {
-            this.toast.error("Sorry", err["error"]["message"], {
-              timeOut: 3000
-            });
-            this.loadSubCategoryPage();
-          }
-        );
-
+        console.log(res);
+        this.subCategoryService.deleteSubCategory(category.id).subscribe(successDelete => {
+          this.toastr.successToastr(_deleteMessage);
+          this.loadSubCategoryPage();
+        },
+          errorDelete => {
+            this.toastr.errorToastr(errorDelete.error.message);
+          });
       }
-
     });
   }
 

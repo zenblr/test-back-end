@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angula
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
 import { SubCategoryService } from '../../../../../../core/emi-management/product/sub-category/services/sub-category.service';
 
 @Component({
@@ -11,41 +11,72 @@ import { SubCategoryService } from '../../../../../../core/emi-management/produc
   styleUrls: ['./sub-category-add.component.scss']
 })
 export class SubCategoryAddComponent implements OnInit {
+  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  subCategoryForm: FormGroup;
+  category: any;
+  viewLoading = false;
   title: string;
-  addEditSubCategory: FormGroup;
-  isMandatory: boolean = false;
-  categoryList: any;
+  isMandatory = false
 
   constructor(
     public dialogRef: MatDialogRef<SubCategoryAddComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, public fb: FormBuilder,
-    public SubCategoryService: SubCategoryService,
-    public toast: ToastrService, public ref: ChangeDetectorRef,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private sharedService: SharedService,
+    private fb: FormBuilder,
+    private subCategoryService: SubCategoryService,
+    private ref: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
     console.log(this.data);
-    this.formdata();
+    this.formInitialize();
     this.setForm();
-    this.getCategoryList();
+    this.getCategory();
   }
-  formdata() {
-    this.addEditSubCategory = this.fb.group({
+
+  formInitialize() {
+    this.subCategoryForm = this.fb.group({
+      id: [''],
       categoryId: ['', Validators.required],
       subCategoryName: ['', Validators.required],
-
     });
   }
+
   setForm() {
     if (this.data.action === 'add') {
-      this.title = 'Add New Sub Category';
+      this.title = 'Add Sub-Category';
       this.isMandatory = true;
-
     } else if (this.data.action === 'edit') {
-      this.title = 'Edit Sub Category';
+      this.title = 'Edit Sub-Category';
       this.isMandatory = true;
-      this.getSubCategoryData(this.data.subCategoryId);
+      this.subCategoryForm.patchValue(this.data.data);
     }
+  }
+
+  get controls() {
+    return this.subCategoryForm.controls;
+  }
+
+  getCategory() {
+    this.subCategoryService.getAllCategory().subscribe(
+      res => {
+        console.log(res);
+        this.category = res;
+      }
+    )
+  }
+
+  getSubCategoryData(id) {
+    this.subCategoryService.getSingleSubCategory(id).subscribe(
+      res => {
+        console.log(res);
+        this.subCategoryForm.patchValue(res[0]);
+        this.ref.detectChanges();
+      },
+      err => {
+        console.log(err);
+      }
+    )
   }
 
   action(event: Event) {
@@ -57,65 +88,39 @@ export class SubCategoryAddComponent implements OnInit {
   }
 
   onSubmit() {
-    const subCategoryData = this.addEditSubCategory.value;
-    if (this.data.action === 'add') {
-
-      this.SubCategoryService.addNewSubCategory(subCategoryData).subscribe(
-        res => {
-          this.toast.success("Success", "Sub Category Added Successfully", {
-            timeOut: 3000
-          });
-          this.dialogRef.close();
-        },
-        err => {
-          this.toast.error('Sorry', err['error']['message'], {
-            timeOut: 3000
-          });
-          this.dialogRef.close();
-        }
-      )
-    } else if (this.data.action === 'edit') {
-      this.SubCategoryService.editSubCategory(subCategoryData, this.data.subCategoryId).subscribe(
-        res => {
-          this.toast.success("Success", "Sub Category Updated Successfully", {
-            timeOut: 3000
-          });
-          this.dialogRef.close();
-        },
-        err => {
-          this.toast.error('Sorry', err['error']['message'], {
-            timeOut: 3000
-          });
-          this.dialogRef.close();
-        }
-      )
+    if (this.subCategoryForm.invalid) {
+      this.subCategoryForm.markAllAsTouched();
+      return;
     }
-  }
+    const categoryData = this.subCategoryForm.value;
+    const id = this.controls.id.value;
 
-
-  getCategoryList() {
-    this.SubCategoryService.getCategoryList().subscribe(
-      res => {
-        console.log(res);
-        this.categoryList = res;
-      }
-    )
-  }
-
-  get controls() {
-    return this.addEditSubCategory.controls;
-  }
-
-  getSubCategoryData(id) {
-    this.SubCategoryService.getSingleSubCategory(id).subscribe(
-      res => {
-        console.log(res);
-        this.addEditSubCategory.patchValue(res[0]);
-        this.ref.detectChanges();
+    if (this.data.action === 'add') {
+      this.subCategoryService.addSubCategory(categoryData).subscribe(res => {
+        if (res) {
+          const msg = 'Sub-Category Added Sucessfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
+        }
       },
-      err => {
-        console.log(err);
-      }
-    )
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
+    } else if (this.data.action === 'edit') {
+      this.subCategoryService.editSubCategory(id, categoryData).subscribe(res => {
+        if (res) {
+          const msg = 'Sub-Category Updated Sucessfully';
+          this.toastr.successToastr(msg);
+          this.dialogRef.close(true);
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
+    }
   }
 }

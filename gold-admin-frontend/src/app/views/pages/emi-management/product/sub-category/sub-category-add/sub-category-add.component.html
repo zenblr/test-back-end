@@ -1,56 +1,55 @@
+<!-- <kt-action-natification></kt-action-natification> -->
+
+<kt-toastr #toastr></kt-toastr>
 
 <div class="kt-portlet">
     <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
     <div class="kt-portlet__body">
         <div class="kt-form">
-            <form [formGroup]="addEditSubCategory">
+            <form [formGroup]="subCategoryForm">
 
-                <!-- <div class="kt-portlet__body-progress" *ngIf="viewLoading">
+                <div class="kt-portlet__body-progress" *ngIf="viewLoading">
                     <mat-spinner [diameter]="20"></mat-spinner>
-                </div> -->
+                </div>
 
+                <!-- <kt-alert type="warn" [duration]="30000" [showCloseButton]="true" (close)="onAlertClose($event)">
+                            Oh snap! Change a few things up and try submitting again.
+                        </kt-alert> -->
 
-
-
-
-                <div class="col-lg-12 kt-margin-bottom-20-mobile">
-
-                    <div class="row kt-padding-t-15">
-                        <div class="col-4 form-label">
-                            <label [class.mandatory]="isMandatory ">Category Name</label>
+                <div class="form-group kt-form__group row">
+                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+                        <div class="row">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Category Name</label>
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" name="categoryId" formControlName="categoryId"
+                                    [class.isError]="controls.categoryId.touched && controls.categoryId.invalid">
+                                    <option value="" [selected]="true" [disabled]="true">Select Category</option>
+                                    <option *ngFor="let item of category" [value]="item?.id">
+                                        {{item?.categoryName}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="controls.categoryId.touched && controls.categoryId.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
                         </div>
-
-                        <div class="col-8">
-                            <select class="form-control" formControlName="categoryId" 
-                                [class.isError]="controls.categoryId.touched && controls.categoryId.invalid">
-                                <option value="" [selected]="true" [disabled]="true">Select Catgeory</option>
-
-                                <option *ngFor="let category of categoryList" [value]="category.id">
-                                    {{category.categoryName}}
-                                </option>
-                            </select>
-                            <mat-error *ngIf="controls.categoryId.touched && controls.categoryId.errors?.required">
-                                Required field</mat-error>
-                        </div>
-
-                    </div>
-
-
-                    <div class="row mt-3">
-                        <!-- Partner Name -->
-                        <div class="col-4 form-label">
-                            <label [class.mandatory]="isMandatory ">Sub Category Name</label>
-                        </div>
-                        <div class="col-8">
-                            <input class="form-control" formControlName="subCategoryName" autocomplete="off"
-                                placeholder="Enter Category Name"
-                                [class.isError]="controls.subCategoryName.touched && controls.subCategoryName.invalid">
-                            <mat-error *ngIf="controls.subCategoryName.touched && controls.subCategoryName.errors?.required">Required
-                                field</mat-error>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Sub-Category Name</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="subCategoryName" type="text"
+                                    placeholder="eg: gold"
+                                    [class.isError]="controls.subCategoryName.touched && controls.subCategoryName.invalid">
+                                <mat-error
+                                    *ngIf="controls.subCategoryName.errors?.required && controls.subCategoryName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
                         </div>
                     </div>
-
-                
                 </div>
             </form>
         </div>
