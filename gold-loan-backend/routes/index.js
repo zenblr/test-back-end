@@ -112,6 +112,7 @@ router.use('/modules',modules);
 
 const internalBranch=require('./internalBranch'); // internal branch module
 router.use('/internal-branch',internalBranch)
+
 const goldRate = require('./goldRate');
 router.use('/gold-rate', goldRate)
 

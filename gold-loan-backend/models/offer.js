@@ -15,5 +15,14 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'loan_offer',
     });
 
+     //Add_Offer
+     Offer.addOffer = (images, userId) => Offer.create({ images, userId });
+
+     //Update_Offer
+     Offer.updateOffer = (id, images, userId) => Offer.update({ images, userId }, { where: { id } })
+ 
+     //Read_Offer
+     Offer.readOffer = () => Offer.findAll();
+     
     return Offer;
 }
