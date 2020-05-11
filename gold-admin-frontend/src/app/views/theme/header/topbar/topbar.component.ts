@@ -218,7 +218,11 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader()
 			this.value1 = 'Create Stores';
 		}
-
+		if (this.path == 'bulk-upload-product') {
+			this.rightButton = true;
+			this.type2 = 'button';
+			this.value2 = 'Show Report';
+		}
 	}
 
 	action(event: Event) {
@@ -267,6 +271,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'store') {
 			this.storeService.openModal.next(true)
+		}
+		if (this.path == 'bulk-upload-product') {
+			this.router.navigate(['/emi-management/bulk-upload-report']);
 		}
 	}
 

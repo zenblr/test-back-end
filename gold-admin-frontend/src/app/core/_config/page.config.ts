@@ -79,13 +79,13 @@ export class PageConfig {
 			'sub-category': {
 				page: { title: 'Sub-Category', desc: '' }
 			},
-			'upload-product': {
+			'bulk-upload-product': {
 				page: { title: 'Bulk Upload Product', desc: '' }
 			},
 			'upload-design': {
 				page: { title: 'Upload Design', desc: '' }
 			},
-			'bulkUploadReport': {
+			'bulk-upload-report': {
 				page: { title: 'Bulk Upload Report', desc: '' }
 			},
 			'wallet-price': {

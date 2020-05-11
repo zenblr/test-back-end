@@ -25,7 +25,7 @@ import { EMIManagementComponent } from './emi-management.component';
 import { SubCategoryListComponent } from './product/sub-category/sub-category-list/sub-category-list.component';
 import { SubCategoryAddComponent } from './product/sub-category/sub-category-add/sub-category-add.component';
 import { CategoryListComponent } from './product/category/category-list/category-list.component';
-import { UploadProductComponent } from './product/upload-product/upload-product.component';
+import { BulkUploadProductComponent } from './product/bulk-upload-product/bulk-upload-product.component';
 import { UploadDesignComponent } from './product/upload-design/upload-design.component';
 import { BulkUploadReportListComponent } from './bulk-upload-report/bulk-upload-report-list/bulk-upload-report-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -56,15 +56,15 @@ const routes: Routes = [
 				component: SubCategoryListComponent
 			},
 			{
-				path: 'upload-product',
-				component: UploadProductComponent
+				path: 'bulk-upload-product',
+				component: BulkUploadProductComponent
 			},
 			{
 				path: 'upload-design',
 				component: UploadDesignComponent
 			},
 			{
-				path: 'bulkUploadReport',
+				path: 'bulk-upload-report',
 				component: BulkUploadReportListComponent
 			},
 			{
@@ -113,7 +113,7 @@ const routes: Routes = [
 		ProductEditComponent,
 		ProductListComponent,
 		CategoryListComponent,
-		UploadProductComponent,
+		BulkUploadProductComponent,
 		UploadDesignComponent,
 		BulkUploadReportListComponent,
 		DashboardComponent,

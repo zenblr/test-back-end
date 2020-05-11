@@ -1,0 +1,38 @@
+<kt-portlet>
+    <kt-portlet-body [class]="'kt-portlet__body--fit d-flex align-items-center justify-content-center'">
+        <div class="row row-no-padding row-col-separator-xl">
+            <div class="col-12 text-center">
+                <h5 class="text-dark">To upload on worksheet here click on attach Excel File.</h5>
+                <p class="pt-3"><span class="font-weight-bold kt-pointer" (click)="getProductReport()">Click Here</span>
+                    To Download All Excel File</p>
+
+                <a href="" download>Click to download sample file</a>
+
+                <!-- <mat-icon aria-hidden="false" color="primary" aria-label="Example save icon">save</mat-icon>
+                <p style="color:blue;display:inline-block;margin-bottom: 10px;" (click)="exportAsXLSX()">Download
+                    And Check Format Of Sample File
+                </p> -->
+
+                <p class="pt-3">
+                    <label for="file-upload" class="custom-file-upload font-weight-500">
+                        Attach Excel File
+                    </label>
+                    <input #file id="file-upload" type="file" accept=".xlsx, .xls, .csv" (change)="getFileDetails($event)" />
+                </p>
+                <div *ngIf="!files.length">
+                    <p>No files are choosen</p>
+                </div>
+                <div class="pb-3" *ngIf="files.length">
+                    <div class="font-weight-normal" *ngFor="let file of files">
+                        <span class="pr-2">{{file?.name}}</span>
+                        <img class="cancelLogo kt-pointer" [src]="'assets/media/icons/cancel.png'"  (click)="clearFiles()" />
+                    </div>
+                </div>
+                <p>
+                    <kt-button [type]="'button'" [value]="'Upload'" class="kt-margin-r-10" (click)="uploadFiles()">
+                    </kt-button>
+                </p>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

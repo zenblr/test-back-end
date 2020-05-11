@@ -325,7 +325,7 @@ export class MenuConfig {
 						},
 						{
 							title: 'Bulk Upload Product',
-							page: '/emi-management/upload-product',
+							page: '/emi-management/bulk-upload-product',
 						},
 						{
 							title: 'Upload Design',
@@ -337,7 +337,7 @@ export class MenuConfig {
 					title: 'Bulk Upload Report',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
-					page: '/emi-management/bulkUploadReport',
+					page: '/emi-management/bulk-upload-report',
 				},
 				{
 					title: 'Config Details',
