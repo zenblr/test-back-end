@@ -21,6 +21,7 @@ export class UserPersonalComponent implements OnInit {
   file: any;
   profile = '';
   signatureJSON = { url: null, isImage: false };
+  minDate = new Date();
 
   constructor(private fb: FormBuilder, private userDetailsService: UserDetailsService,
     private userPersonalService: UserPersonalService,

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NgbNavChangeEvent, NgbNav } from '@ng-bootstrap/ng-bootstrap';
+import { AppliedKycService } from '../../../core/applied-kyc/services/applied-kyc.service';
 
 @Component({
   selector: 'kt-kyc-settings',
@@ -13,10 +14,21 @@ export class KycSettingsComponent implements OnInit {
   // disabled: boolean[] = [false, false, false, false, false, false]; // delete this line
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;
 
-  constructor(private ref: ChangeDetectorRef) { }
+  constructor(
+    private ref: ChangeDetectorRef,
+    private appliedKycService: AppliedKycService) { }
 
   ngOnInit() {
     // this.next();
+    // console.log(this.appliedKycService.editKyc.getValue());
+    const EDIT_KYC = this.appliedKycService.editKyc.getValue();
+    if (EDIT_KYC.editable) {
+      this.active = 5;
+      for (let index = 0; index < this.disabled.length; index++) {
+        this.disabled[index] = true;
+      }
+      this.disabled[4] = false;
+    }
   }
 
   onNavChange(changeEvent: NgbNavChangeEvent) {

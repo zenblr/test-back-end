@@ -63,7 +63,7 @@
                     <mat-cell *matCellDef="let role">
                         <ng-container *ngIf="role.status.id == '1'">
                             <div [ngStyle]="{'display': 'inherit'}">
-                                <div class="kt-pointer" (click)="goToKyc(role.mobileNumber)" class="kt-pointer">Apply
+                                <div class="kt-pointer text-primary" (click)="goToKyc(role.mobileNumber)">Apply
                                     KYC</div>
                             </div>
                         </ng-container>
@@ -77,7 +77,7 @@
                             <div class="kt-pointer" (click)="editLead(role)" class="kt-pointer">Edit</div>
                         </div>
                         <div *ngIf="role.status.id == 1" [ngStyle]="{'display': 'inherit'}">
-                            <div class="kt-pointer" class="kt-pointer">-</div>
+                            <div>-</div>
                         </div>
                     </mat-cell>
                 </ng-container>

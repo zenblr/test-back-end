@@ -3,8 +3,9 @@ import { AppliedKycDatasource } from '../../../core/applied-kyc/datasources/appl
 import { AppliedKycService } from '../../../core/applied-kyc/services/applied-kyc.service';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subject, Subscription, merge } from 'rxjs';
-import { tap, takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
+import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators';
 import { DataTableService } from '../../../core/shared/services/data-table.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-applied-kyc',
@@ -26,7 +27,8 @@ export class AppliedKycComponent implements OnInit {
   constructor(
     private appliedKycService: AppliedKycService,
     public dialog: MatDialog,
-    private dataTableService: DataTableService
+    private dataTableService: DataTableService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -81,6 +83,14 @@ export class AppliedKycComponent implements OnInit {
   }
 
   editKyc(data) {
-    console.log(data)
+    // console.log(data.customerId, data.id);
+    const params = { customerId: data.customerId, customerKycId: data.id };
+    this.appliedKycService.editKycDetails(params).pipe(
+      map(res => {
+        console.log(res);
+      })
+    ).subscribe();
+    this.appliedKycService.editKyc.next({ editable: true });
+    this.router.navigate(['/kyc-setting']);
   }
 }

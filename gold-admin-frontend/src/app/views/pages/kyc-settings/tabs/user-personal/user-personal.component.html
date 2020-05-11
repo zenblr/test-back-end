@@ -37,7 +37,7 @@
                                         <input type="text" class="form-control" [matDatepicker]="picker"
                                             (click)="picker.open()" formControlName="dateOfBirth"
                                             [class.isError]="controls.dateOfBirth.touched && controls.dateOfBirth.invalid"
-                                            readonly placeholder="4/5/2020">
+                                            readonly placeholder="4/5/2020" [max]="minDate">
                                         <!-- <mat-datepicker-toggle matSuffix [for]="picker">
                                             <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
                                         </mat-datepicker-toggle> -->

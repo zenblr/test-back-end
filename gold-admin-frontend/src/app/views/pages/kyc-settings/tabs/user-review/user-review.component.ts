@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, filter, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { AppliedKycService } from '../../../../../core/applied-kyc/services/applied-kyc.service';
 
 @Component({
   selector: 'kt-user-review',
@@ -24,119 +25,120 @@ export class UserReviewComponent implements OnInit {
   states = [];
   cities0 = [];
   cities1 = [];
-  // data = {
-  //   "customerKycReview": {
-  //     "id": 1,
-  //     "customerUniqueId": null,
-  //     "firstName": "bhushan",
-  //     "lastName": "madaye",
-  //     "mobileNumber": "8424004296",
-  //     "email": "nimap@infotech.com",
-  //     "panCardNumber": "asass1234a",
-  //     "stageId": 1,
-  //     "statusId": 1,
-  //     "stateId": 1,
-  //     "cityId": 1,
-  //     "kycStatus": "pending",
-  //     "isKycSubmitted": false,
-  //     "isVerifiedByCce": false,
-  //     "cceVerifiedBy": null,
-  //     "isVerifiedByBranchManager": false,
-  //     "branchManagerVerifiedBy": null,
-  //     "isActive": true,
-  //     "createdBy": 36,
-  //     "modifiedBy": 36,
-  //     "lastLogin": null,
-  //     "createdAt": "2020-04-28T05:31:32.245Z",
-  //     "updatedAt": "2020-04-28T05:31:32.245Z",
-  //     "customerKycPersonal": {
-  //       "id": 1,
-  //       "customerId": 1,
-  //       "profileImage": "http://173.249.49.7:8000/uploads/images/1588052119361.png",
-  //       "firstName": "bhushan",
-  //       "lastName": "madaye",
-  //       "dateOfBirth": "2020-04-08T18:30:00.000Z",
-  //       "alternateMobileNumber": "1232132132",
-  //       "panCardNumber": "asass1234a",
-  //       "gender": "f",
-  //       "martialStatus": "married",
-  //       "occupation": { id: 1, name: 'B.E' }, // occupation.name
-  //       "identityType": { id: 1, name: "passport" },  //identityType.name
-  //       "identityProof": [
-  //         "http://173.249.49.7:8000/uploads/images/1588052018310.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
-  //       ],
-  //       "identityProofNumber": "asd432asd",
-  //       "spouseName": "asd",
-  //       "signatureProof": "http://173.249.49.7:8000/uploads/images/1588052173393.png",
-  //       "createdBy": 36,
-  //       "modifiedBy": 36,
-  //       "isActive": false,
-  //       "createdAt": "2020-04-28T05:33:23.145Z",
-  //       "updatedAt": "2020-04-28T05:36:22.176Z"
-  //     },
-  //     "customerKycAddress": [
-  //       {
-  //         "id": 1,
-  //         "customerKycId": 1,
-  //         "customerId": 1,
-  //         "addressType": "permanent",
-  //         "address": "assa1212",
-  //         "state": { id: 1, name: "Andaman and Nicobar Islands" }, // state.name
-  //         "city": { id: 3, name: "Port Blair" }, // city.name
-  //         "pinCode": 122121,
-  //         "addressProof": [
-  //           "http://173.249.49.7:8000/uploads/images/1588052060956.png",
-  //           "http://173.249.49.7:8000/uploads/images/1588052086540.png"
-  //         ],
-  //         "createdAt": "2020-04-28T05:35:06.709Z",
-  //         "updatedAt": "2020-04-28T05:35:06.709Z",
-  //         "addressProofType": { id: 4, name: "voter Id" }, // addressProofType.name
-  //         "addressProofNumber": "qwewq123"
-  //       },
-  //       {
-  //         "id": 2,
-  //         "customerKycId": 1,
-  //         "customerId": 1,
-  //         "addressType": "residential",
-  //         "address": "assa1212",
-  //         "state": { id: 5, name: "Bihar" },
-  //         "city": { id: 454, name: "Bagaha" },
-  //         "pinCode": 232323,
-  //         "addressProof": [
-  //           "http://173.249.49.7:8000/uploads/images/1588052060956.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
-  //         ],
-  //         "createdAt": "2020-04-28T05:35:06.709Z",
-  //         "updatedAt": "2020-04-28T05:35:06.709Z",
-  //         "addressProofType": { id: 6, name: "aadhar card" },
-  //         "addressProofNumber": "qwewq123"
-  //       }
-  //     ],
-  //     "customerKycBank": [
-  //       {
-  //         "id": 4,
-  //         "customerKycId": 1,
-  //         "customerId": 1,
-  //         "bankName": "nkgsb",
-  //         "bankBranchName": "virar",
-  //         "accountType": "saving",
-  //         "accountHolderName": "bhushan",
-  //         "accountNumber": "123467126876872137",
-  //         "ifscCode": "bkid1233123",
-  //         "passbookProof": [
-  //           "http://173.249.49.7:8000/uploads/images/1588052315608.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
-  //         ],
-  //         "createdAt": "2020-04-28T05:44:52.576Z",
-  //         "updatedAt": "2020-04-28T05:44:52.576Z"
-  //       }
-  //     ]
-  //   },
-  //   "customerId": 1,
-  //   "customerKycId": 1
-  // }
+  maxDate = new Date();
+  data = {
+    "customerKycReview": {
+      "id": 1,
+      "customerUniqueId": null,
+      "firstName": "bhushan",
+      "lastName": "madaye",
+      "mobileNumber": "8424004296",
+      "email": "nimap@infotech.com",
+      "panCardNumber": "asass1234a",
+      "stageId": 1,
+      "statusId": 1,
+      "stateId": 1,
+      "cityId": 1,
+      "kycStatus": "pending",
+      "isKycSubmitted": false,
+      "isVerifiedByCce": false,
+      "cceVerifiedBy": null,
+      "isVerifiedByBranchManager": false,
+      "branchManagerVerifiedBy": null,
+      "isActive": true,
+      "createdBy": 36,
+      "modifiedBy": 36,
+      "lastLogin": null,
+      "createdAt": "2020-04-28T05:31:32.245Z",
+      "updatedAt": "2020-04-28T05:31:32.245Z",
+      "customerKycPersonal": {
+        "id": 1,
+        "customerId": 1,
+        "profileImage": "http://173.249.49.7:8000/uploads/images/1588052119361.png",
+        "firstName": "bhushan",
+        "lastName": "madaye",
+        "dateOfBirth": "2020-04-08T18:30:00.000Z",
+        "alternateMobileNumber": "1232132132",
+        "panCardNumber": "asass1234a",
+        "gender": "f",
+        "martialStatus": "married",
+        "occupation": { id: 1, name: 'B.E' }, // occupation.name
+        "identityType": { id: 1, name: "passport" },  //identityType.name
+        "identityProof": [
+          "http://173.249.49.7:8000/uploads/images/1588052018310.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
+        ],
+        "identityProofNumber": "asd432asd",
+        "spouseName": "asd",
+        "signatureProof": "http://173.249.49.7:8000/uploads/images/1588052173393.png",
+        "createdBy": 36,
+        "modifiedBy": 36,
+        "isActive": false,
+        "createdAt": "2020-04-28T05:33:23.145Z",
+        "updatedAt": "2020-04-28T05:36:22.176Z"
+      },
+      "customerKycAddress": [
+        {
+          "id": 1,
+          "customerKycId": 1,
+          "customerId": 1,
+          "addressType": "permanent",
+          "address": "assa1212",
+          "state": { id: 1, name: "Andaman and Nicobar Islands" }, // state.name
+          "city": { id: 3, name: "Port Blair" }, // city.name
+          "pinCode": 122121,
+          "addressProof": [
+            "http://173.249.49.7:8000/uploads/images/1588052060956.png",
+            "http://173.249.49.7:8000/uploads/images/1588052086540.png"
+          ],
+          "createdAt": "2020-04-28T05:35:06.709Z",
+          "updatedAt": "2020-04-28T05:35:06.709Z",
+          "addressProofType": { id: 4, name: "voter Id" }, // addressProofType.name
+          "addressProofNumber": "qwewq123"
+        },
+        {
+          "id": 2,
+          "customerKycId": 1,
+          "customerId": 1,
+          "addressType": "residential",
+          "address": "assa1212",
+          "state": { id: 5, name: "Bihar" },
+          "city": { id: 454, name: "Bagaha" },
+          "pinCode": 232323,
+          "addressProof": [
+            "http://173.249.49.7:8000/uploads/images/1588052060956.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
+          ],
+          "createdAt": "2020-04-28T05:35:06.709Z",
+          "updatedAt": "2020-04-28T05:35:06.709Z",
+          "addressProofType": { id: 6, name: "aadhar card" },
+          "addressProofNumber": "qwewq123"
+        }
+      ],
+      "customerKycBank": [
+        {
+          "id": 4,
+          "customerKycId": 1,
+          "customerId": 1,
+          "bankName": "nkgsb",
+          "bankBranchName": "virar",
+          "accountType": "saving",
+          "accountHolderName": "bhushan",
+          "accountNumber": "123467126876872137",
+          "ifscCode": "bkid1233123",
+          "passbookProof": [
+            "http://173.249.49.7:8000/uploads/images/1588052315608.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
+          ],
+          "createdAt": "2020-04-28T05:44:52.576Z",
+          "updatedAt": "2020-04-28T05:44:52.576Z"
+        }
+      ]
+    },
+    "customerId": 1,
+    "customerKycId": 1
+  }
   file: any;
   occupations = [];
 
-  data: any = {};
+  // data: any = {};
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -145,14 +147,17 @@ export class UserReviewComponent implements OnInit {
     private userBankService: UserBankService,
     private userDetailsService: UserDetailsService,
     private toastr: ToastrService,
-    private userPersonalService: UserPersonalService) { }
+    private userPersonalService: UserPersonalService,
+    private appliedKycService: AppliedKycService) { }
 
   ngOnInit() {
     console.log(this.data)
-    if (!this.userBankService.kycDetails) {
+    if (this.userDetailsService.userData) {
       this.data = this.userDetailsService.userData;
-    } else {
+    } else if (this.userBankService.kycDetails) {
       this.data = this.userBankService.kycDetails;
+    } else if (this.appliedKycService.userData) {
+      this.data = this.appliedKycService.userData;
     }
     this.initForm();
     this.getStates();

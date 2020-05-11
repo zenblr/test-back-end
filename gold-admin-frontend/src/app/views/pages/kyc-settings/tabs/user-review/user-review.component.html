@@ -626,8 +626,7 @@
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                     formControlName="dateOfBirth"
                                     [class.isError]="customerKycPersonal.controls.dateOfBirth.touched && customerKycPersonal.controls.dateOfBirth.invalid"
-                                    readonly placeholder="4/5/2020"
-                                    value="{{ data.customerKycReview.customerKycPersonal.dateOfBirth | date: 'mediumDate' }}" />
+                                    readonly placeholder="4/5/2020" [max]="maxDate" />
                                 <mat-datepicker #picker></mat-datepicker>
 
                                 <mat-error
