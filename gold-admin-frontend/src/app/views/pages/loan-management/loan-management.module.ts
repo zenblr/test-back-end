@@ -10,8 +10,19 @@ import { FinalLoanAmountComponent } from './loan-calculator/tabs/final-loan-amou
 import { LoanApplicationFormComponent } from './loan-application-form/loan-application-form.component';
 import { BasicDetailsComponent } from './loan-application-form/tabs/basic-details/basic-details.component';
 import { KycDetailsComponent } from './loan-application-form/tabs/kyc-details/kyc-details.component';
-import { NomineeDetailsComponent } from './loan-application-form/tabs/nominee-details/nominee-details.component';
+import { NomineeDetailsComponent } from './loan-application-form/tabs/nominee-details/nominee-details.component'
+import { CoreModule } from '../../../core/core.module';
+import { OrnamentsComponent } from './loan-application-form/tabs/ornaments/ornaments.component';
 import { FinalInterestAmountComponent } from './loan-calculator/tabs/final-interest-amount/final-interest-amount.component'
+import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../core/_base/crud';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { BankDetailsComponent } from './loan-application-form/tabs/bank-details/bank-details.component';
+import { ApprovalComponent } from './loan-application-form/tabs/approval/approval.component';
+import { UploadPacketsComponent } from './packets/upload-packets/upload-packets.component';
+import { AppliedLoanComponent } from './applied-loan/applied-loan.component';
+import { PacketsListComponent } from './packets/packets-list/packets-list.component';
+import { AssignPacketsComponent } from './packets/assign-packets/assign-packets.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -20,18 +31,63 @@ const rout: Routes = [
   {
     path: 'loan-application-form',
     component: LoanApplicationFormComponent
+  },
+  {
+    path: 'packet',
+    component: PacketsListComponent
+  },
+  {
+    path: 'applied-loan',
+    component: AppliedLoanComponent
+  },
+  {
+    path: 'package-image-upload',
+    component: LoanApplicationFormComponent
   }
 ]
 
 @NgModule({
-  declarations: [LoanCalculatorComponent, RoughLoanAmountComponent, FinalLoanAmountComponent, LoanApplicationFormComponent, BasicDetailsComponent, KycDetailsComponent, NomineeDetailsComponent, FinalInterestAmountComponent],
+  declarations: [
+    LoanCalculatorComponent,
+    RoughLoanAmountComponent,
+    FinalLoanAmountComponent,
+    LoanApplicationFormComponent,
+    BasicDetailsComponent,
+    KycDetailsComponent,
+    NomineeDetailsComponent,
+    OrnamentsComponent,
+    FinalInterestAmountComponent,
+    BankDetailsComponent,
+    ApprovalComponent,
+    UploadPacketsComponent,
+    AppliedLoanComponent,
+    PacketsListComponent,
+    AssignPacketsComponent
+  ],
   imports: [
     CommonModule,
     RouterModule.forChild(rout),
     AngularMaterialModule,
     ReactiveFormsModule,
     FormsModule,
-    PartialsModule
+    PartialsModule,
+    CoreModule
+  ],
+  providers: [
+    InterceptService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptService,
+      multi: true
+    },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
+    HttpUtilsService,
+    TypesUtilsService,
+    LayoutUtilsService
+  ],
+  entryComponents:[
+    AssignPacketsComponent
   ]
 })
 export class LoanManagementModule { }

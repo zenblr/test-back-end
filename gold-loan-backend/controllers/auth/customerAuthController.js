@@ -1,4 +1,7 @@
 const models = require('../../models');
+const sequelize = models.sequelize;
+const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
 const jwt = require('jsonwebtoken');
 
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
@@ -31,5 +34,62 @@ exports.customerLogin = async (req, res, next) => {
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
+
+}
+
+
+exports.verifyCustomerLoginOtp = async (req, res, next) => {
+    let { referenceCode, otp } = req.body
+    var todayDateTime = new Date();
+
+    let verifyCustomer = await models.customerOtp.findOne({
+        where: {
+            referenceCode, otp,
+            expiryTime: {
+                [Op.gte]: todayDateTime
+            }
+        }
+    })
+    if (check.isEmpty(verifyCustomer)) {
+        return res.status(401).json({ message: `Invalid Otp` })
+    }
+
+
+    var token = await sequelize.transaction(async t => {
+        let verifyFlag = await models.customerOtp.update({ isVerified: true }, { where: { id: verifyCustomer.id }, transaction: t });
+        let user = await models.user.findOne({ where: { mobileNumber: verifyCustomer.mobileNumber }, transaction: t });
+        let checkUser = await models.user.findOne({
+            where: { id: user.id, isActive: true },
+            include: [{ model: models.role }],
+            transaction: t
+        });
+
+        Token = jwt.sign({
+            id: checkUser.dataValues.id,
+            mobile: checkUser.dataValues.mobileNumber,
+            firstName: checkUser.dataValues.firstName,
+            lastName: checkUser.dataValues.lastName,
+        },
+            JWT_SECRETKEY, {
+            expiresIn: JWT_EXPIRATIONTIME
+        });
+
+        const decoded = jwt.verify(Token, JWT_SECRETKEY);
+        const createdTime = new Date(decoded.iat * 1000).toGMTString();
+        const expiryTime = new Date(decoded.exp * 1000).toGMTString();
+
+        await models.customer.update({ lastLogin: createdTime }, {
+            where: { id: decoded.id }, transaction: t
+        });
+        await models.customerLogger.create({
+            customerId: decoded.id,
+            token: Token,
+            expiryDate: expiryTime,
+            createdDate: createdTime
+        }, { transaction: t });
+        return Token
+
+    })
+    return res.status(200).json({ message: 'login successful', token });
 
 }

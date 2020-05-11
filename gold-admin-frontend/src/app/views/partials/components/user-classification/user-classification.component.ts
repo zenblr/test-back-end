@@ -13,12 +13,15 @@ import { ToastrService } from 'ngx-toastr';
 export class UserClassificationComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
-  kycStatus = [{ value: 'confirm', name: 'confirm' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
+  cceKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }];
+  bmKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
+
   // kycStatus = [];
   rating = [];
   custClassificationForm: FormGroup;
   customerDetails = this.userDetailsService.userData;
   // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
+  showTextBoxCce = true;
 
   constructor(
     private userDetailsService: UserDetailsService,
@@ -30,6 +33,18 @@ export class UserClassificationComponent implements OnInit {
   ngOnInit() {
     this.getRating();
     this.initForm();
+
+    this.custClassificationForm.get('kycStatusFromCce').valueChanges.subscribe(res => {
+      if (res == 'pending') {
+        this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
+        this.showTextBoxCce = true;
+      } else if (res == 'approved') {
+        this.custClassificationForm.get('reasonFromCce').clearValidators();
+        this.custClassificationForm.get('reasonFromCce').patchValue('');
+        this.showTextBoxCce = false;
+      }
+      this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
+    })
   }
 
   initForm() {
@@ -40,6 +55,7 @@ export class UserClassificationComponent implements OnInit {
       idProofRatingCce: ['', [Validators.required]],
       addressProofRatingCce: ['', [Validators.required]],
       kycStatusFromCce: ['', [Validators.required]],
+      reasonFromCce: []
     })
   }
 
@@ -59,6 +75,8 @@ export class UserClassificationComponent implements OnInit {
       return;
     }
 
+    console.log(this.custClassificationForm.value)
+
     this.custClassificationForm.patchValue({
       behaviourRatingCce: +(this.custClassificationForm.get('behaviourRatingCce').value),
       idProofRatingCce: +(this.custClassificationForm.get('idProofRatingCce').value),
@@ -75,5 +93,8 @@ export class UserClassificationComponent implements OnInit {
     ).subscribe();
   }
 
+  get cceControls() {
+    return this.custClassificationForm.controls;
+  }
 
 }

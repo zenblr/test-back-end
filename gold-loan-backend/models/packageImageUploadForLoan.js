@@ -26,6 +26,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'packet_unique_id'
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -38,11 +46,13 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD PACKAGE IMAGE UPLOAD
     packageImageUploadForLoan.addPackageImages =
-        (loanId, packageData, t) => {
+        (loanId, packageData, createdBy, modifiedBy, t) => {
             let finalPackageData = packageData.map(function (ele) {
                 let obj = Object.assign({}, ele);
                 obj.isActive = true;
                 obj.loanId = loanId;
+                obj.createdBy = createdBy;
+                obj.modifiedBy = modifiedBy;
                 return obj;
             })
             return packageImageUploadForLoan.bulkCreate(finalPackageData);

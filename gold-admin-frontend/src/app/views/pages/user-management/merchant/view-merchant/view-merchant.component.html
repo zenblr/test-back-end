@@ -1,0 +1,131 @@
+<div class="kt-portlet">
+    <div class="kt-portlet__body">
+        <div class="row">
+            <div class="col-12">
+                <h5 class="text-color kt-padding-b-15 kt-padding-t-15">Basic Details</h5>
+                <div class="row kt-margin-t-10">
+                    <div class="col-7">
+                        <div class="row">
+                            <div class="col-5">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-gray font-weight-500">Merchant Name</label>
+                            </div>
+                            <div class="col-7">
+                                <label
+                                    class=" kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{merchant.merchantData.merchantName | titlecase}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="row">
+                            <div class="col-6">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-gray font-weight-500">Full Name</label>
+                            </div>
+                            <div class="col-6">
+                                <label
+                                    class=" kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{merchant.merchantData.user.firstName | titlecase}}
+                                    {{merchant.merchantData.user.lastName | titlecase}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        <div class="row">
+                            <div class="col-5">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-gray font-weight-500">Email ID</label>
+                            </div>
+                            <div class="col-7">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{merchant.merchantData.user.email}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="row">
+                            <div class="col-6">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-gray font-weight-500">Mobile Number</label>
+                            </div>
+                            <div class="col-6">
+                                <label
+                                    class="kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{merchant.merchantData.user.mobileNumber}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        <div class="row">
+                            <div class="col-5">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-gray font-weight-500">State</label>
+                            </div>
+                            <div class="col-7">
+                                <label
+                                    class="kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{merchant.merchantData.user.address[0].state.name}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="row">
+                            <div class="col-6">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-gray font-weight-500">City</label>
+                            </div>
+                            <div class="col-6">
+                                <label
+                                    class="kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{merchant.merchantData.user.address[0].city.name}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        <div class="row">
+                            <div class="col-5">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-gray font-weight-500">Pincode</label>
+                            </div>
+                            <div class="col-7">
+                                <label
+                                    class="kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{merchant.merchantData.user.address[0].postalCode}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row kt-margin-t-10 kt-margin-b-10">
+            <div class="col-12">
+                <h5 class="text-color kt-padding-b-15 kt-padding-t-15">Commission Details</h5>
+                <div class="row kt-margin-t-10">
+                    <div [ngClass]="idx%2==0 ? 'col-7' :'col-5'"
+                     *ngFor="let commisson of merchant.commissionData;index as idx">
+                        <div class="row">
+                            <div [ngClass]="idx%2==0 ? 'col-5' :'col-6'">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-gray font-weight-500">{{commisson.category.categoryName}}</label>
+                            </div>
+                            <div [ngClass]="idx%2==0 ? 'col-7' :'col-6'">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{commisson.commission}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h5 class="text-color kt-padding-b-15 kt-padding-t-15">Permission Details</h5>
+                <div class="row kt-margin-t-10" *ngFor="let category of merchant.catlogData">
+                    <div class="col-3">
+                        <label class=" kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{category.categoryName |titlecase}}</label>
+                    </div>
+                    <div class="col-9">
+                        <div class="row" *ngFor="let subCategory of category.subCategory">
+                            <div class="kt-padding-t-5 kt-padding-b-5  text-color font-weight-500 w-100" style="margin-left:8px">{{subCategory.subCategoryName | titlecase}}
+                            </div>
+                            <div class="col-4" *ngFor="let product of subCategory.products">
+                                <label class=" kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{product.productName | titlecase}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

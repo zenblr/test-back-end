@@ -39,7 +39,7 @@ exports.addCustomer = async (req, res, next) => {
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
   let stageId = getStageId.id;
   let email = "nimap@infotech.com";
-  let password = firstName;
+  let password = `${firstName}@1234`;
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
@@ -173,7 +173,13 @@ exports.editCustomer = async (req, res, next) => {
   const { customerId } = req.params;
 
   let { cityId, stateId, pinCode, internalBranchId, statusId } = req.body;
+
+  let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
+
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
+if(id == customerExist.statusId){
+  return res.status(400).json({message: `This customer status is confirm, You cannot change any information of that customer.`})
+}
   if (check.isEmpty(customerExist)) {
     return res.status(404).json({ message: "Customer does not exist" });
   }
@@ -212,7 +218,7 @@ exports.getAllCustomers = async (req, res, next) => {
   );
   let stage = await models.stage.findOne({ where: { stageName } });
 
-  console.log(search, offset, pageSize, stage.id);
+  // console.log(search, offset, pageSize, stage.id);
 
   const searchQuery = {
     [Op.or]: {

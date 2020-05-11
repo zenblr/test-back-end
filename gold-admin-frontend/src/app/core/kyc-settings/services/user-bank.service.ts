@@ -24,8 +24,8 @@ export class UserBankService {
       }))
   }
 
-  kycSubmit(customerId,customerKycId){
-    return this.http.post(`/api/kyc/submit-all-kyc-info`, {customerId,customerKycId}).pipe(
+  kycSubmit(data) {
+    return this.http.post(`/api/kyc/submit-all-kyc-info`, data).pipe(
       map(res => {
         this.kycDetails = res;
       }))

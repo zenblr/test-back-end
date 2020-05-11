@@ -21,7 +21,9 @@ export class UserBanksComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private sharedService: SharedService,
     private userBankService: UserBankService, private userDetailsService: UserDetailsService,
-    private ref: ChangeDetectorRef) { }
+    private ref: ChangeDetectorRef) {
+    console.log(this.customerDetails);
+  }
 
   ngOnInit() {
     this.initForm();
@@ -84,6 +86,10 @@ export class UserBanksComponent implements OnInit {
       })
     ).subscribe();
 
+  }
+
+  removeImages(index) {
+    this.passBookImage.splice(index, 1);
   }
 
   get controls() {

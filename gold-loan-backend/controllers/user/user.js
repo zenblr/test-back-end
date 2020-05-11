@@ -294,7 +294,7 @@ exports.addInternalUser = async (req, res, next) => {
     let modifiedBy = req.userData.id
     let password = firstName.slice(0, 3) + '@' + mobileNumber.slice(mobileNumber.length - 5, 9);
     await sequelize.transaction(async t => {
-        const user = await models.user.create({ userUniqueId,firstName, lastName, password, mobileNumber, email, userTypeId : 1, createdBy, modifiedBy }, { transaction: t })
+        const user = await models.user.create({ userUniqueId,firstName, lastName, password, mobileNumber, email, userTypeId : 4, createdBy, modifiedBy }, { transaction: t })
         await models.userRole.create({ userId: user.id, roleId }, { transaction: t })
         if(internalBranchId != null && internalBranchId != undefined){
             await models.userInternalBranch.create({ userId: user.id, internalBranchId }, { transaction: t })
@@ -363,7 +363,7 @@ exports.GetInternalUser = async (req, res) => {
                     }
               },
               isActive: true,
-              userTypeId : 1
+              userTypeId : 4
             }
           let CategoryData = await models.user.findAll({
             where: searchQuery,

@@ -152,14 +152,14 @@
 			</ng-container>
 
 			<ng-container matColumnDef="id">
-				<mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column mat-column-id">ID</mat-header-cell>
+				<mat-header-cell *matHeaderCellDef  class="mat-column mat-column-id">ID</mat-header-cell>
 				<mat-cell *matCellDef="let remark" class="mat-column mat-column-id">
 					<span>{{remark.id}}</span>
 				</mat-cell>
 			</ng-container>
 
 			<ng-container matColumnDef="text">
-				<mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column mat-column-main">Text</mat-header-cell>
+				<mat-header-cell *matHeaderCellDef  class="mat-column mat-column-main">Text</mat-header-cell>
 				<mat-cell *matCellDef="let remark" class="mat-column mat-column-main">
 					<mat-form-field *ngIf="remark._isEditMode" class="mat-form-field-fluid">
 						<input matInput placeholder="Enter Remark text" formControlName="editText">
@@ -172,7 +172,7 @@
 			</ng-container>
 
 			<ng-container matColumnDef="type">
-				<mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column">Type</mat-header-cell>
+				<mat-header-cell *matHeaderCellDef  class="mat-column">Type</mat-header-cell>
 				<mat-cell *matCellDef="let remark" class="mat-column">
 					<span *ngIf="!remark._isEditMode">{{getTypeStr(remark)}}</span>
 					<mat-form-field class="mat-form-field-fluid" *ngIf="remark._isEditMode">
@@ -189,7 +189,7 @@
 			</ng-container>
 
 			<ng-container matColumnDef="dueDate">
-				<mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column">Due date</mat-header-cell>
+				<mat-header-cell *matHeaderCellDef  class="mat-column">Due date</mat-header-cell>
 				<mat-cell *matCellDef="let remark" class="mat-column">
 					<span *ngIf="!remark._isEditMode">{{remark.dueDate}}</span>
 					<span *ngIf="remark._isEditMode">

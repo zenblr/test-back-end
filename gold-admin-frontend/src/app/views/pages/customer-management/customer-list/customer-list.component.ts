@@ -20,7 +20,7 @@ export class CustomerListComponent implements OnInit {
   displayedColumns = ['fullName', 'customerId', 'mobile', 'pan', 'state', 'city', 'actions'];
   leadsResult = [];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild('sort1', { static: true }) sort: MatSort;
+ 
   // Filter fields
   // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -36,18 +36,7 @@ export class CustomerListComponent implements OnInit {
   }
 
   ngOnInit() {
-    const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    this.subscriptions.push(sortSubscription);
-
-    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-      tap(() => {
-        this.loadLeadsPage();
-      })
-    )
-      .subscribe();
-    this.subscriptions.push(paginatorSubscriptions);
-
-    // Init DataSource
+       // Init DataSource
     this.dataSource = new CustomerManagementDatasource(this.customerManagementService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),

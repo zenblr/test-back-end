@@ -6,21 +6,69 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
-        aadharNumber: {
+        identityProof: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'identity_proof'
+        },
+        idCardNumber: {
             type: DataTypes.STRING,
-            field: 'aadhar_number'
+            field: 'id_card_number'
         },
         permanentAddress: {
             type: DataTypes.STRING,
             field: 'permanent_address'
         },
-        pincode: {
+        permanentAddState: {
             type: DataTypes.STRING,
-            field: 'pin_code'
+            field: 'permanent_add_state'
         },
-        officeAddress: {
+        permanentAddCity: {
             type: DataTypes.STRING,
-            field: 'office_address'
+            field: 'permanent_add_city'
+        },
+        permanentAddPin: {
+            type: DataTypes.INTEGER,
+            field: 'permanent_add_pin'
+        },
+        permanentAddProof: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            field: 'permanent_add_proof'
+        },
+        permanentAddCardNumber: {
+            type: DataTypes.STRING,
+            field: 'permanent_add_card_number'
+        },
+        residentialAddress: {
+            type: DataTypes.STRING,
+            field: 'residential_address'
+        },
+        residentialAddState: {
+            type: DataTypes.STRING,
+            field: 'residential_add_state'
+        },
+        residentialAddCity: {
+            type: DataTypes.STRING,
+            field: 'residential_add_city'
+        },
+        residentialAddPin: {
+            type: DataTypes.INTEGER,
+            field: 'residential_add_pin'
+        },
+        residentialAddProof: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            field: 'residential_add_proof'
+        },
+        residentialAddCardNumber: {
+            type: DataTypes.STRING,
+            field: 'residential_add_card_number'
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -39,9 +87,13 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD CUSTOMER KYC DETAIL
     customerLoanKycDetail.addCustomerKycDetail =
-        (loanId, aadharNumber, permanentAddress, pincode, officeAddress, t) => customerLoanKycDetail.create({
-            loanId, aadharNumber, permanentAddress, pincode, officeAddress, isActive: true
-        }, { t });
+        (loanId, identityProof, idCardNumber, permanentAddress, permanentAddState, permanentAddCity, permanentAddPin, permanentAddProof,
+            permanentAddCardNumber, residentialAddress, residentialAddState, residentialAddCity, residentialAddPin, residentialAddProof,
+            residentialAddCardNumber, createdBy, modifiedBy, t) => customerLoanKycDetail.create({
+                loanId, identityProof, idCardNumber, permanentAddress, permanentAddState, permanentAddCity, permanentAddPin, permanentAddProof,
+                permanentAddCardNumber, residentialAddress, residentialAddState, residentialAddCity, residentialAddPin, residentialAddProof,
+                residentialAddCardNumber, createdBy, modifiedBy, isActive: true
+            }, { t });
 
     return customerLoanKycDetail;
 }

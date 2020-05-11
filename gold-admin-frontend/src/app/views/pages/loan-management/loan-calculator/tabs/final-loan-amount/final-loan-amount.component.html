@@ -46,13 +46,10 @@
                         <label for="" class="text-color">Purity</label>
                     </div>
                     <div class="col-6">
-                        <select class="form-control" formControlName="purity">
-                            <option value="" [disabled]="true" [selected]="true">Select Purity</option>
-                            <option value="purity" *ngFor="let purity of purity">{{purity}}</option>
-                        </select>
+                        <input type="number" class="form-control" formControlName="purity" placeholder="00%">
                     </div>
                 </div>
-                <div class="row kt-margin-t-10">
+                <div class="row kt-margin-t-30">
                     <div class="offset-4 col-6">
                         <kt-button [value]="'Calculate'" [type]="'button'" (action)="calFinalNetWeight()"></kt-button>
                     </div>
@@ -64,7 +61,7 @@
                         <label for="" class="text-color">Final Net Weight </label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="finalNetWeight" placeholder="123123">
+                        <input type="number" class="form-control" formControlName="finalNetWeight" placeholder="48,000">
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
@@ -72,7 +69,7 @@
                         <label for="" class="text-color">LTV Amount</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="ltvAmount" placeholder="123123">
+                        <input type="number" class="form-control" formControlName="ltvAmount" placeholder="4,800">
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
@@ -80,7 +77,10 @@
                         <label for="" class="text-color">LTV %</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="ltvPercent" placeholder="123123">
+                        <select class="form-control" formControlName="ltvPercent">
+                            <option value="" [disabled]="true" [selected]="true">Select Purity</option>
+                            <option [value]="purity" *ngFor="let purity of purity">{{purity}} %</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
@@ -88,14 +88,13 @@
                         <label for="" class="text-color">Current LTV Amount</label>
                     </div>
                     <div class="col-6">
-                        <select class="form-control" formControlName="currentLtvAmount" placeholder="123123">
-                            <option value="" [selected]="true" [disabled]="true"></option>
-                        </select>
+                        <input type="number" class="form-control" formControlName="currentLtvAmount"
+                            placeholder="4,800">
                     </div>
                 </div>
-                <div class="row kt-margin-t-10">
+                <div class="row kt-margin-t-30">
                     <div class="offset-4 col-6">
-                        <kt-button [value]="'Calculate'" [type]="'button'"></kt-button>
+                        <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcLoanAmount()"></kt-button>
                     </div>
                 </div>
             </form>

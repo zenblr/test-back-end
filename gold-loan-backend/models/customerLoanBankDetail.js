@@ -18,6 +18,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'ifsc_code'
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -35,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD CUSTOMER BANK DETAIL
     customerLoanBankDetail.addCustomerBankDetail =
-        (loanId, name, accountNumber, ifscCode, t) => customerLoanBankDetail.create({
-            loanId, name, accountNumber, ifscCode, isActive: true
+        (loanId, name, accountNumber, ifscCode, createdBy, modifiedBy, t) => customerLoanBankDetail.create({
+            loanId, name, accountNumber, ifscCode, createdBy, modifiedBy, isActive: true
         }, { t });
 
     return customerLoanBankDetail;

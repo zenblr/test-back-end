@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { BranchService } from '../../../../../core/user-management/branch/services/branch.service';
-import { LayoutUtilsService, QueryParamsModel } from '../../../../../core/_base/crud';
+import { LayoutUtilsService, } from '../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { BranchDatasource } from '../../../../../core/user-management/branch/datasources/branch.datasource';
-import { Subscription, merge, fromEvent, Subject } from 'rxjs';
-import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
-import { RolesPageRequested, Role } from '../../../../../core/auth';
+import { Subscription, merge, Subject } from 'rxjs';
+import { tap, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { BranchAddComponent } from '../branch-add/branch-add.component';
-import { SelectionModel } from '@angular/cdk/collections';
 import { BranchModel } from '../../../../../core/user-management/branch/models/branch.model';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
@@ -24,7 +22,7 @@ export class BranchListComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   displayedColumns = ['branchId', 'name', 'partner', 'state', 'city', 'actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild('sort1', { static: true }) sort: MatSort;
+ 
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   branchResult: BranchModel[] = [];
@@ -52,22 +50,7 @@ export class BranchListComponent implements OnInit {
   }
 
   ngOnInit() {
-    // If the user changes the sort order, reset back to the first page.
-    const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    this.subscriptions.push(sortSubscription);
-
-		/* Data load will be triggered in two cases:
-		- when a pagination event occurs => this.paginator.page
-		- when a sort event occurs => this.sort.sortChange
-		**/
-    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-      tap(() => {
-        this.loadBranchPage();
-      })
-    )
-      .subscribe();
-    this.subscriptions.push(paginatorSubscriptions);
-
+   
     // Filtration, bind to searchInput
     // const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(
     //   // tslint:disable-next-line:max-line-length
