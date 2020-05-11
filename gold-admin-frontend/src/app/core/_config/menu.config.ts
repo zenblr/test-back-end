@@ -83,6 +83,10 @@ export class MenuConfig {
 									page: '/loan-setting/packet',
 
 								},
+								{
+									title:'Karat details',
+									page:'/loan-setting/karat-details'
+								}
 							]
 						},
 						{

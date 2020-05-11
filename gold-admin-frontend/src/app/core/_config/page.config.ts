@@ -24,6 +24,9 @@ export class PageConfig {
 			packet: {
 				page: { title: 'Packets', desc: '' }
 			},
+			'karat-details':{
+				page:{title:'karat-details', desc:''}
+			}
 		},
 		'upload-data': {
 			'upload-banner': {

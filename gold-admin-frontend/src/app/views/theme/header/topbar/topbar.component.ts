@@ -15,7 +15,7 @@ import { Subscription, Subject } from 'rxjs';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { takeUntil } from 'rxjs/operators';
 import {LogisticPartnerService} from '../../../../core/emi-management/logistic-partner/service/logistic-partner.service';
-
+import {KaratDetailsService} from '../../../../core/loan-setting/karat-details/services/karat-details.service'
 @Component({
 	selector: 'kt-topbar',
 	templateUrl: './topbar.component.html',
@@ -57,7 +57,8 @@ export class TopbarComponent implements OnInit {
 		private rolesService: RolesService,
 		private brokerService: BrokerService,
 		private walletPriceService: WalletPriceService,
-		private logisticPartnerService:LogisticPartnerService) {
+		private logisticPartnerService:LogisticPartnerService,
+		private karatDetailsService:KaratDetailsService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -140,6 +141,12 @@ export class TopbarComponent implements OnInit {
 			this.value1 = 'Add Logistic Partner';
 			this.type1 = 'button';
 		}
+		if (this.path == 'karat-details') {
+			 this.showfilter = true;
+			// this.showInput = true;
+			this.value1 = 'Add Karat Details';
+			this.type1 = 'button';
+		}
 		if (this.path == 'customer-list') {
 			this.showfilter = true;
 			this.showInput = true;
@@ -212,6 +219,9 @@ export class TopbarComponent implements OnInit {
 		}
 		 if (this.path == 'logistic-partner') {
 			this.logisticPartnerService.openModal.next(true)
+		 }
+		 if (this.path == 'karat-details') {
+			this.karatDetailsService.openModal.next(true)
 		 }
 	}
 
