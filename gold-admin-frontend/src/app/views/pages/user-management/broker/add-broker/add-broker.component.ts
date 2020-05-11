@@ -20,7 +20,7 @@ export class AddBrokerComponent implements OnInit {
   brokerFrom: FormGroup;
   merchants: any[] = [];
   status: any[] = [];
-  store: any[] = [];
+  store: any;
 
   constructor(
     public dialogRef: MatDialogRef<AddBrokerComponent>,
