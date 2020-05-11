@@ -20,15 +20,15 @@ module.exports = (req, res, next) => {
             const token = req.headers.authorization.split(" ")[1];
             console.log(token)
 
-            // client.get(token, (err, result) => {
-                // if (err) {
-                //     res.status(400).json({
-                //         message: err
-                //     })
-                // } else if (result) {
-                //     customerApiLogger(req, token, createdDateTime)
-                //     next();
-                // } else {
+            client.get(token, (err, result) => {
+                if (err) {
+                    res.status(400).json({
+                        message: err
+                    })
+                } else if (result) {
+                    customerApiLogger(req, token, createdDateTime)
+                    next();
+                } else {
                     models.customerLogger.findOne({
                             where: {
                                 token: token
@@ -51,8 +51,8 @@ module.exports = (req, res, next) => {
                                 messgage: "Wrong Credential"
                             })
                         })
-                // }
-            // })
+                }
+            })
         } catch (error) {
             res.status(401).json({
                 message: "please login first"
