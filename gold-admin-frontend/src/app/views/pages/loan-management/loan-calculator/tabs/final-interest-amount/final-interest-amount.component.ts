@@ -12,6 +12,7 @@ import { DatePipe } from '@angular/common';
 })
 export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnChanges {
 
+  @Input() disable
   colJoin:any;
   intrestAmount:any = 0;
   dateOfPayment: any[] = []

@@ -10,6 +10,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
 
   nominee: FormGroup;
   showHide: boolean;
+  @Input() disable
   @Output() nomineeEmit: EventEmitter<any> = new EventEmitter()
   @Input() invalid;
 

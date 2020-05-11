@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
-
+  @Input() disable
   @Input() invalid;
   @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
   appraiser = [{ value: 'confirmed', name: 'approved' }, { value: 'pending', name: 'pending' }];

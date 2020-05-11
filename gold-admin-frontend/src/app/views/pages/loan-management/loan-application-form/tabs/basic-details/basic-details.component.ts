@@ -12,7 +12,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
 
   basicForm: FormGroup;
   @Output() basicFormEmit: EventEmitter<any> = new EventEmitter();
-
+  @Input() disable
   @Input() details;
 
 

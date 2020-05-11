@@ -10,7 +10,7 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
 
   kycForm: FormGroup;
   @Output() kycEmit: EventEmitter<any> = new EventEmitter()
-
+  @Input() disable
   @Input() details
 
 

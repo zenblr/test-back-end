@@ -172,7 +172,7 @@
                             <div class="col-8">
                                 <select class="form-control" formControlName="internalBranchId"
                                     [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
-                                    <option [disabled]="true" [selected]="true" value=""> Select Internal Branch
+                                    <option value="" [disabled]="true" [selected]="true" > Select Internal Branch
                                     </option>
                                     <option *ngFor="let branch of branches" [value]="branch.id">
                                         {{branch.name | titlecase}}

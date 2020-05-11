@@ -11,6 +11,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
   @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
+  @Input() disable
 
   bankForm: FormGroup;
   constructor(

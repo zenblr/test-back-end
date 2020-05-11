@@ -54,30 +54,30 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   customerDetails() {
-    // this.loanApplicationForm.customerDetails(this.basic.controls.customerUniqueId.value).pipe(
-    //   map(res => {
-    //     this.customerDetail = res.customerData
-    //     this.bankDetails = res.customerData.customerKycBank[0]
+    this.loanApplicationForm.customerDetails(this.basic.controls.customerUniqueId.value).pipe(
+      map(res => {
+        this.customerDetail = res.customerData
+        this.bankDetails = res.customerData.customerKycBank[0]
     for (let index = 0; index < this.disabled.length; index++) {
       if (index <= 3) {
         this.disabled[index] = false;
       }
     }
     this.selected = 3;
-    //   }),
-    //   catchError(err => {
-    //     throw err;
-    //   })
-    // ).subscribe()
+      }),
+      catchError(err => {
+        throw err;
+      })
+    ).subscribe()
   }
 
   basicForm(event) {
     this.basic = event
-    // this.basic.controls.customerUniqueId.valueChanges.subscribe(()=>{
+    this.basic.controls.customerUniqueId.valueChanges.subscribe(()=>{
     if (this.basic.controls.customerUniqueId.valid) {
       this.customerDetails()
     }
-    // })
+    })
   }
 
   kycEmit(event) {
