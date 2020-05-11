@@ -19,11 +19,12 @@ export class LoanApplicationFormComponent implements OnInit {
     ornaments: false,
     intreset: false,
   }
+  disabledForm:boolean
   totalAmount: number = 0;
   basic: any;
   bank: any;
   bankDetails: any;
-  disable: boolean = false;
+  disable: boolean;
   kyc: any;
   nominee: any;
   selected: number;
@@ -42,11 +43,11 @@ export class LoanApplicationFormComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       if (this.router.url == "/loan-management/package-image-upload") {
-        this.disable = false;
+        this.disabledForm = true;
         const test = document.getElementById('packets');
         test.scrollIntoView({ behavior: "smooth" });
       } else {
-        this.disable = true;
+        this.disabledForm = false;
       }
     }, 500)
   }

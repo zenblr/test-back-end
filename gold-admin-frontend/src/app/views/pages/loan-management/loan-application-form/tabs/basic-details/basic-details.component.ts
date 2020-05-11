@@ -38,6 +38,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
       this.basicForm.controls.mobileNumber.patchValue(this.details.mobileNumber)
       this.basicForm.controls.panCardNumber.patchValue(this.details.panCardNumber)
     }
+    if(this.disable){
+      this.basicForm.disable()
+    }
   }
 
 

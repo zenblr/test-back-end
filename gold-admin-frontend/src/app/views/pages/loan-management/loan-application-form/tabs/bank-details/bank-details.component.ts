@@ -31,6 +31,9 @@ export class BankDetailsComponent implements OnInit,OnChanges {
       this.bankForm.patchValue(this.details)
       this.bankFormEmit.emit(this.bankForm);
     }
+    if(this.disable){
+      this.bankForm.disable()
+    }
   }
 
   initForm() {

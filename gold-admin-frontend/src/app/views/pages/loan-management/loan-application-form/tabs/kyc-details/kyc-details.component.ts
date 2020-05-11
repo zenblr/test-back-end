@@ -27,9 +27,10 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
 
   ngOnChanges() {
     if (this.details) {
-      console.log(this.details)
-      console.log("IN")
       this.setValue()
+    }
+    if(this.disable){
+      this.kycForm.disable()
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PartnerService } from '../../../../../../core/user-management/partner/services/partner.service';
 import { map } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./final-interest-amount.component.scss'],
   providers: [DatePipe]
 })
-export class FinalInterestAmountComponent implements OnInit, AfterViewInit {
+export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnChanges {
 
   colJoin:any;
   intrestAmount:any = 0;
@@ -26,16 +26,24 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit {
   @Input() invalid;
   @Input() disable;
   @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
+  @ViewChild('print',{static:false}) print :ElementRef
 
   constructor(
     private fb: FormBuilder,
     private partnerService: PartnerService,
-    public datePipe: DatePipe
+    public datePipe: DatePipe,
+    public eleRef:ElementRef
   ) { }
 
   ngOnInit() {
     this.initForm();
     this.partner()
+  }
+
+  ngOnChanges(){
+    if(this.disable){
+      this.finalInterestForm.disable()
+    }
   }
 
   partner() {
@@ -58,7 +66,7 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit {
     this.finalInterestForm = this.fb.group({
       partnerName: [, [Validators.required]],
       schemeName: [, [Validators.required]],
-      finalLoanAmount: [, [Validators.required]],
+      finalLoanAmount: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       tenure: [, [Validators.required]],
       loanStartDate: [, [Validators.required]],
       loanEndDate: [, [Validators.required]],
@@ -66,8 +74,9 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit {
       paymentType: [, [Validators.required]],
       goldNetWeight: [, [Validators.required]],
       finalNetWeight: [, [Validators.required]],
-      interestRate: [, [Validators.required]],
+      interestRate: [, [Validators.required,Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]],
       currentLtvAmount: [, [Validators.required]],
+      processingCharge:[,[Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]]
     })
     this.interestFormEmit.emit(this.finalInterestForm)
     this.controls.loanEndDate.disable()
@@ -153,6 +162,16 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit {
 
   get controls() {
     return this.finalInterestForm.controls;
+  }
+
+
+  printNow(){
+    const printTable =document.getElementById("print").innerHTML;
+    // // window.print(printTable)
+    var a = window.open('', '', 'height=500, width=500'); 
+    a.document.write(printTable)
+    a.print()
+    console.log(printTable)
   }
 
 }

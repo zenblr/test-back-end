@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output,EventEmitter } from '@angular/core';
+import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError } from 'rxjs/operators';
@@ -12,19 +12,20 @@ import { ImagePreviewDialogComponent } from '../../../../../../views/partials/co
   templateUrl: './ornaments.component.html',
   styleUrls: ['./ornaments.component.scss']
 })
-export class OrnamentsComponent implements OnInit,AfterViewInit {
+export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() disable;
   @Input() invalid;
-  @Output() OrnamentsDataEmit:EventEmitter<any> = new EventEmitter()
-  left: number = 0
+  @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter()
+  left: number = 150
+  width: number = 0
   ornamentsForm: FormGroup;
-  images = [];
+  images: any = [];
   karatArr = [{ value: 18, name: '18 K' },
-    { value: 19, name: '19 K' },
-    { value: 20, name: '20 K' },
-    { value: 21, name: '21 K' },
-    { value: 22, name: '22 K' }]
+  { value: 19, name: '19 K' },
+  { value: 20, name: '20 K' },
+  { value: 21, name: '21 K' },
+  { value: 22, name: '22 K' }]
   purityBasedDeduction: number;
   ltvPercent = [];
 
@@ -34,7 +35,7 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
     public toast: ToastrService,
     public ele: ElementRef,
     public dilaog: MatDialog,
-    public ref:ChangeDetectorRef
+    public ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -50,10 +51,16 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
 
   }
 
-  ngAfterViewInit(){
-   this.OrnamentsData.valueChanges.subscribe(()=>{
-    this.OrnamentsDataEmit.emit(this.OrnamentsData)
-   }) 
+  ngOnChanges() {
+    if (this.disable) {
+      this.ornamentsForm.disable()
+    }
+  }
+
+  ngAfterViewInit() {
+    this.OrnamentsData.valueChanges.subscribe(() => {
+      this.OrnamentsDataEmit.emit(this.OrnamentsData)
+    })
   }
   get OrnamentsData() {
     if (this.ornamentsForm)
@@ -62,11 +69,16 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
 
 
   addmore() {
-    if (this.left < 90) {
-      this.left = this.left + 15
-      const left = (this.left).toString() + '%'
-      const width = (document.querySelector('.addmore') as HTMLElement);
-      width.style.left = left
+    if (this.left < 900) {
+      this.width = this.width + 130
+      if (this.width > 130)
+        this.left = this.left + 130
+      const left = (this.left).toString() + 'px'
+      const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
+      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
+      width.style.maxWidth = left
+      addmore.style.left = left
+
     }
     this.OrnamentsData.push(this.fb.group({
       ornamentType: [],
@@ -79,9 +91,9 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
       withOrnamentWeight: [],
       stoneTouch: [],
       acidTest: [],
-      karat:[],
-      purity:[],
-      ltvRange:[[]],
+      karat: [],
+      purity: [],
+      ltvRange: [[]],
       purityTest: [[]],
       ltvPercent: [, [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]],
       ltvAmount: [, [Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
@@ -159,8 +171,8 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
         break;
       case 'purity':
         let temp = []
-        if(controls.controls.purityTest.value.length > 0)
-        temp = controls.controls.purityTest.value
+        if (controls.controls.purityTest.value.length > 0)
+          temp = controls.controls.purityTest.value
         temp.push(url)
         controls.controls.purityTest.patchValue(temp)
         break;
@@ -169,7 +181,8 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
         controls.controls.ornamentImage.patchValue(url)
         break;
     }
-    // this.images[index].push(url)
+    let data = { index: index, url: url }
+    this.images.push(data)
 
   }
 
@@ -199,14 +212,20 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
     this.images[index].splice(idx, 1)
   }
 
-  // preview(value, formIndex) {
-  //   var index = this.images[formIndex].indexOf(value)
-  //   this.dilaog.open(ImagePreviewDialogComponent, {
-  //     data: {
-  //       images: this.images[formIndex],
-  //       index: index
-  //     },
-  //     width: "auto"
-  //   })
-  // }
+  preview(value, formIndex) {
+    let filterImage = []
+    this.images.forEach(img => {
+      if (img.index === formIndex)
+        filterImage.push(img.url)
+    })
+    let img = Object.values(filterImage)
+    let index = img.indexOf(value)
+    this.dilaog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: img,
+        index: index
+      },
+      width: "auto"
+    })
+  }
 }

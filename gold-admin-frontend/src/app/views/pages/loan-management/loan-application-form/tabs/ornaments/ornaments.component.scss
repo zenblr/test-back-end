@@ -3,13 +3,12 @@
 		height: 220px;
 	}
 	::ng-deep.mat-tab-header {
-		max-width: 90%;
+		position: relative !important;
 	}
 	.addmore {
 		position: absolute;
-		top: 15px;
-		left: 30%;
-		z-index: 99999 !important;
+		top: 10px;
+		left: 150px;
 		background: transparent;
 		border: thin solid #454D67;
 		border-radius: 5px;

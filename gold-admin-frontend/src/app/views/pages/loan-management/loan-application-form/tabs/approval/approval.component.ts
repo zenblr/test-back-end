@@ -43,6 +43,9 @@ export class ApprovalComponent implements OnInit,AfterViewInit,OnChanges {
     if(this.invalid){
       this.approvalForm.markAllAsTouched()
     }
+    if(this.disable){
+      this.approvalForm.disable()
+    }
   }
 
   ngAfterViewInit(){

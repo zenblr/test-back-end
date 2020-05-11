@@ -28,6 +28,9 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
       this.nominee.markAllAsTouched()
       this.invalid = false
     }
+    if(this.disable){
+      this.nominee.disable()
+    }
   }
   ngAfterViewInit() {
     this.nominee.valueChanges.subscribe(() => {
