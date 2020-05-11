@@ -7,6 +7,7 @@ import { CustomerManagementService } from '../../../core/customer-management/ser
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { AddLeadComponent } from './add-lead/add-lead.component';
 import { DataTableService } from '../../../core/shared/services/data-table.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-lead-management',
@@ -16,10 +17,10 @@ import { DataTableService } from '../../../core/shared/services/data-table.servi
 export class LeadManagementComponent implements OnInit {
 
   dataSource: CustomerManagementDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'status', 'actions'];
+  displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'status', 'kyc', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
- 
+
   // Filter fields
   // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -35,7 +36,8 @@ export class LeadManagementComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private customerManagementService: CustomerManagementService,
-    private dataTableService: DataTableService
+    private dataTableService: DataTableService,
+    private router: Router
   ) {
     this.customerManagementService.openModal$.pipe(
       map(res => {
@@ -47,9 +49,9 @@ export class LeadManagementComponent implements OnInit {
   }
 
   ngOnInit() {
-   
 
-    
+
+
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
@@ -117,5 +119,9 @@ export class LeadManagementComponent implements OnInit {
         this.loadLeadsPage();
       }
     });
+  }
+
+  goToKyc() {
+    this.router.navigate(['/kyc-setting']);
   }
 }

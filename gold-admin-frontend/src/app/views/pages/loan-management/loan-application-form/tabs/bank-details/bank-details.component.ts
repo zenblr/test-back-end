@@ -6,9 +6,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   templateUrl: './bank-details.component.html',
   styleUrls: ['./bank-details.component.scss']
 })
-export class BankDetailsComponent implements OnInit,OnChanges {
+export class BankDetailsComponent implements OnInit, OnChanges {
 
-  @Input() disable;
+
   @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
 
@@ -16,18 +16,18 @@ export class BankDetailsComponent implements OnInit,OnChanges {
   constructor(
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
-  ) { 
+  ) {
     this.initForm()
   }
 
   ngOnInit() {
-    
+
   }
 
 
 
   ngOnChanges() {
-    if(this.details){
+    if (this.details) {
       this.bankForm.patchValue(this.details)
       this.bankFormEmit.emit(this.bankForm);
     }

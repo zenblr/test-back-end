@@ -24,7 +24,7 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
   selectedScheme: any = []
   finalInterestForm: FormGroup;
   @Input() invalid;
-  @Input() disable;
+
   @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('print',{static:false}) print :ElementRef
 
@@ -57,7 +57,7 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
   getSchemes() {
     this.partnerService.getSchemesByParnter(Number(this.controls.partnerName.value)).pipe(
       map(res => {
-        this.schemesList = res.data
+        this.schemesList = res.data.schemes;
         console.log(this.schemesList)
       })).subscribe()
   }

@@ -128,6 +128,10 @@ export class MenuConfig {
 						{
 							title: 'KYC Setting',
 							page: '/kyc-setting'
+						},
+						{
+							title: 'Applied Kyc',
+							page: '/applied-kyc'
 						}
 					]
 				},

@@ -7,9 +7,9 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './approval.component.html',
   styleUrls: ['./approval.component.scss']
 })
-export class ApprovalComponent implements OnInit,AfterViewInit,OnChanges {
+export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
-  @Input() disable;
+
   @Input() invalid;
   @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
   appraiser = [{ value: 'confirmed', name: 'approved' }, { value: 'pending', name: 'pending' }];
@@ -35,12 +35,12 @@ export class ApprovalComponent implements OnInit,AfterViewInit,OnChanges {
     this.approvalFormEmit.emit(this.approvalForm)
 
   }
-  get controls(){
+  get controls() {
     return this.approvalForm.controls
   }
 
-  ngOnChanges(){
-    if(this.invalid){
+  ngOnChanges() {
+    if (this.invalid) {
       this.approvalForm.markAllAsTouched()
     }
     if(this.disable){
@@ -48,16 +48,16 @@ export class ApprovalComponent implements OnInit,AfterViewInit,OnChanges {
     }
   }
 
-  ngAfterViewInit(){
-    this.approvalForm.valueChanges.subscribe(()=>{
+  ngAfterViewInit() {
+    this.approvalForm.valueChanges.subscribe(() => {
       this.approvalFormEmit.emit(this.approvalForm)
     })
   }
 
-  approvalOfAppraiser(value:boolean,type:string){
-    if(type == 'gold'){
+  approvalOfAppraiser(value: boolean, type: string) {
+    if (type == 'gold') {
       this.controls.goldValuationForAppraiser.patchValue(value)
-    }else{
+    } else {
       this.controls.applicationFormForAppraiser.patchValue(value)
 
     }

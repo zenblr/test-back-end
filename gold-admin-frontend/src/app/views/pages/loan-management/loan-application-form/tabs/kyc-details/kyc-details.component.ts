@@ -10,8 +10,8 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
 
   kycForm: FormGroup;
   @Output() kycEmit: EventEmitter<any> = new EventEmitter()
+
   @Input() details
-  @Input() disable;
 
 
 
@@ -72,7 +72,7 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
 
   }
 
-  setValue(){
+  setValue() {
     this.controls.identityProof.patchValue(this.details.customerKycPersonal.identityProof)
     this.controls.identityProofNumber.patchValue(this.details.customerKycPersonal.identityProofNumber)
     this.controls.identityTypeId.patchValue(this.details.customerKycPersonal.identityType.name)

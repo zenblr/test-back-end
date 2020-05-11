@@ -12,8 +12,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
 
   basicForm: FormGroup;
   @Output() basicFormEmit: EventEmitter<any> = new EventEmitter();
+
   @Input() details;
-  @Input() disable;
 
 
   constructor(
@@ -25,10 +25,10 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
 
 
   ngOnInit() {
-    this.controls.customerUniqueId.valueChanges.subscribe(()=>{
-      if(this.controls.customerUniqueId.valid){
-          this.basicFormEmit.emit(this.basicForm)
-        }
+    this.controls.customerUniqueId.valueChanges.subscribe(() => {
+      if (this.controls.customerUniqueId.valid) {
+        this.basicFormEmit.emit(this.basicForm)
+      }
     })
   }
 
@@ -44,7 +44,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
   }
 
 
-  getCustomerDetails(){
+  getCustomerDetails() {
     // if(this.controls.customerUniqueId.valid){
     //   this.basicFormEmit.emit(this.basicForm)
     // }

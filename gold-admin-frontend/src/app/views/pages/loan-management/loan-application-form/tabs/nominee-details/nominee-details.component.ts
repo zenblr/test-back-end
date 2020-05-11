@@ -12,7 +12,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
   showHide:boolean;
   @Output() nomineeEmit: EventEmitter<any> = new EventEmitter()
   @Input() invalid;
-  @Input() disable;
+  
 
 
   constructor(

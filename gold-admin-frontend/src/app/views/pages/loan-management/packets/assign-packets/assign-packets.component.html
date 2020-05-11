@@ -1,37 +1,20 @@
-
 <kt-portlet>
-    <kt-modal-header [title]='"Assign Packet"' (action)="action($event)"></kt-modal-header>
+    <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
     <kt-portlet-body>
-        <form action="">
+        <form [formGroup]="packetForm">
             <div class="row ">
                 <div class="col-12">
-                    <div class="row justify-content-center">
-                        <div class="col-4 form-label">
-                            <label class="kt-padding-l-10">Customer Id</label>
-                        </div>
-                        <div class="col-8">
-                            <select class="form-control" id="">
-                                <option value="" [selected]="true" [disabled]="true"></option>
-                            </select>
-                        </div>
-                    </div>
                     <div class="row justify-content-center kt-margin-t-10">
                         <div class="col-4 form-label">
-                            <label class="kt-padding-l-10">Loan Id</label>
+                            <label class="kt-padding-l-10 mandatory">Packet Id</label>
                         </div>
                         <div class="col-8">
-                            <select class="form-control" id="">
-                                <option value="" [selected]="true" [disabled]="true"></option>
-                            </select>
+                            <input type="text" class="form-control" formControlName="packetId"
+                                [class.isError]="packetForm.controls.packetId.invalid &&  packetForm.controls.packetId.touched">
                         </div>
-                    </div>
-                    <div class="row justify-content-center kt-margin-t-10">
-                        <div class="col-4 form-label">
-                            <label class="kt-padding-l-10">Packet Id</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="text" class="form-control">
-                        </div>
+                        <mat-error *ngIf="controls.packetId.touched && controls.packetId.errors?.required">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
             </div>
@@ -39,7 +22,8 @@
     </kt-portlet-body>
     <kt-portlet-footer>
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)" [value]="'Assign'"></kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="'Add'"></kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Edit'"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 </kt-portlet>

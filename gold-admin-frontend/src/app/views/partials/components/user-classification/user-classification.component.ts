@@ -21,6 +21,7 @@ export class UserClassificationComponent implements OnInit {
   custClassificationForm: FormGroup;
   customerDetails = this.userDetailsService.userData;
   // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
+  showTextBoxCce = true;
 
   constructor(
     private userDetailsService: UserDetailsService,
@@ -32,6 +33,18 @@ export class UserClassificationComponent implements OnInit {
   ngOnInit() {
     this.getRating();
     this.initForm();
+
+    this.custClassificationForm.get('kycStatusFromCce').valueChanges.subscribe(res => {
+      if (res == 'pending') {
+        this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
+        this.showTextBoxCce = true;
+      } else if (res == 'approved') {
+        this.custClassificationForm.get('reasonFromCce').clearValidators();
+        this.custClassificationForm.get('reasonFromCce').patchValue('');
+        this.showTextBoxCce = false;
+      }
+      this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
+    })
   }
 
   initForm() {
@@ -42,6 +55,7 @@ export class UserClassificationComponent implements OnInit {
       idProofRatingCce: ['', [Validators.required]],
       addressProofRatingCce: ['', [Validators.required]],
       kycStatusFromCce: ['', [Validators.required]],
+      reasonFromCce: []
     })
   }
 
@@ -61,6 +75,8 @@ export class UserClassificationComponent implements OnInit {
       return;
     }
 
+    console.log(this.custClassificationForm.value)
+
     this.custClassificationForm.patchValue({
       behaviourRatingCce: +(this.custClassificationForm.get('behaviourRatingCce').value),
       idProofRatingCce: +(this.custClassificationForm.get('idProofRatingCce').value),
@@ -77,5 +93,8 @@ export class UserClassificationComponent implements OnInit {
     ).subscribe();
   }
 
+  get cceControls() {
+    return this.custClassificationForm.controls;
+  }
 
 }
