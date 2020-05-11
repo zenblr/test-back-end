@@ -46,6 +46,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ARRAY(DataTypes.STRING),
             field: 'purity_test'
         },
+        karat: {
+            type: DataTypes.STRING,
+            field: 'karat'
+        },
+        purity: {
+            type: DataTypes.STRING,
+            field: 'purity'
+        },
+        ltvRange: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            field: 'ltv_range'
+        },
         ornamentImage: {
             type: DataTypes.STRING,
             field: 'ornament_image'
@@ -61,6 +73,14 @@ module.exports = (sequelize, DataTypes) => {
         currentLtvAmount: {
             type: DataTypes.BIGINT,
             field: 'current_ltv_amount'
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -79,11 +99,13 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD CUSTOMER ORNAMENTS DETAIL
     customerLoanOrnamentsDetail.addCustomerOrnamentsDetail =
-        (loanId, ornamentData, t) => {
+        (loanId, ornamentData, createdBy, modifiedBy, t) => {
             let finalOrnamentData = ornamentData.map(function (ele) {
                 let obj = Object.assign({}, ele);
                 obj.isActive = true;
                 obj.loanId = loanId;
+                obj.createdBy = createdBy;
+                obj.modifiedBy = modifiedBy;
                 return obj;
             })
             return customerLoanOrnamentsDetail.bulkCreate(finalOrnamentData, { t });
