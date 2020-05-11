@@ -14,4 +14,10 @@
 		border-radius: 5px;
 		padding: 5px;
 	}
+	.min-height-attach{
+		min-height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
 }

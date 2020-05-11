@@ -32,12 +32,13 @@ export class LoanApplicationFormComponent implements OnInit {
   approval: any;
   Ornaments: any;
   customerDetail: any;
+  disabled = [false, true, true, true, false, false];
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
-    public loanApplicationForm:LoanApplicationFormService
+    public loanApplicationForm: LoanApplicationFormService
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -52,25 +53,30 @@ export class LoanApplicationFormComponent implements OnInit {
     }, 500)
   }
 
-  customerDetails(){
-    this.loanApplicationForm.customerDetails(this.basic.controls.customerUniqueId.value).pipe(
-      map(res => {
-        this.customerDetail = res.customerData
-        this.bankDetails = res.customerData.customerKycBank[0]
-        this.selected = 3;
-      }),
-      catchError(err=>{
-        throw err;
-      })
-    ).subscribe()
+  customerDetails() {
+    // this.loanApplicationForm.customerDetails(this.basic.controls.customerUniqueId.value).pipe(
+    //   map(res => {
+    //     this.customerDetail = res.customerData
+    //     this.bankDetails = res.customerData.customerKycBank[0]
+    for (let index = 0; index < this.disabled.length; index++) {
+      if (index <= 3) {
+        this.disabled[index] = false;
+      }
+    }
+    this.selected = 3;
+    //   }),
+    //   catchError(err => {
+    //     throw err;
+    //   })
+    // ).subscribe()
   }
 
   basicForm(event) {
     this.basic = event
     // this.basic.controls.customerUniqueId.valueChanges.subscribe(()=>{
-      if(this.basic.controls.customerUniqueId.valid){
-        this.customerDetails()
-      }
+    if (this.basic.controls.customerUniqueId.valid) {
+      this.customerDetails()
+    }
     // })
   }
 
@@ -79,7 +85,11 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   nomineeEmit(event) {
-    this.nominee = event
+    this.nominee = event.nominee
+    if (event.scroll) {
+      const test = document.getElementById('ornaments');
+      test.scrollIntoView({ behavior: "smooth" });
+    }
   }
 
   bankFormEmit(event) {
@@ -94,7 +104,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.approval = event
   }
 
-  OrnamentsDataEmit(event){
+  OrnamentsDataEmit(event) {
     this.Ornaments = event
   }
 
@@ -125,7 +135,7 @@ export class LoanApplicationFormComponent implements OnInit {
       return
     }
 
-    
+
 
   }
 
@@ -133,16 +143,16 @@ export class LoanApplicationFormComponent implements OnInit {
     // this.checkForFormValidation();
     const arrObj = [];
     let Obj
-  //  arrObj.push(this.Ornaments.value)
-   arrObj.push(this.approval.value)
-   arrObj.push(this.intreset.value)
-   arrObj.push(this.basic.value)
-   arrObj.push(this.bank.value)
-   arrObj.push(this.kyc.value)
-   Obj = arrObj.reduce(((r, c) => Object.assign(r, c)), {});
-   Obj.nomineeData = [this.nominee.value]
-   Obj.ornamentData = this.Ornaments.value;
-   console.log(JSON.stringify(Obj))
+    //  arrObj.push(this.Ornaments.value)
+    arrObj.push(this.approval.value)
+    arrObj.push(this.intreset.value)
+    arrObj.push(this.basic.value)
+    arrObj.push(this.bank.value)
+    arrObj.push(this.kyc.value)
+    Obj = arrObj.reduce(((r, c) => Object.assign(r, c)), {});
+    Obj.nomineeData = [this.nominee.value]
+    Obj.ornamentData = this.Ornaments.value;
+    console.log(JSON.stringify(Obj))
 
   }
 }

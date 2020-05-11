@@ -3,33 +3,33 @@
         <div class="row">
             <div class="col-12">
                 <mat-tab-group [(selectedIndex)]="selected">
-                    <mat-tab label="Basic Details">
+                    <mat-tab label="Basic Details" [disabled]="disabled[0]">
                         <kt-basic-details (basicFormEmit)="basicForm($event)" [details]="customerDetail">
                         </kt-basic-details>
                     </mat-tab>
-                    <mat-tab label="KYC Details">
+                    <mat-tab label="KYC Details" [disabled]="disabled[1]">
                         <kt-kyc-details (kycEmit)="kycEmit($event)" [details]="customerDetail"></kt-kyc-details>
                     </mat-tab>
-                    <mat-tab label="Bank Details">
+                    <mat-tab label="Bank Details" [disabled]="disabled[2]">
                         <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [details]="bankDetails">
                         </kt-bank-details>
                     </mat-tab>
-                    <mat-tab label="Nominee Details">
+                    <mat-tab label="Nominee Details" [disabled]="disabled[3]">
                         <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [invalid]="invalid.nominee">
                         </kt-nominee-details>
                     </mat-tab>
-                    <mat-tab label="Final Interest Calculator">
+                    <mat-tab label="Final Interest Calculator" [disabled]="disabled[4]">
                         <kt-final-interest-amount (interestFormEmit)="interestFormEmit($event)"
                             [invalid]="invalid.intreset"></kt-final-interest-amount>
                     </mat-tab>
-                    <mat-tab label="Approval">
+                    <mat-tab label="Approval" [disabled]="disabled[5]">
                         <kt-approval (approvalFormEmit)="approvalFormEmit($event)" [invalid]="invalid.approval">
                         </kt-approval>
                     </mat-tab>
                 </mat-tab-group>
             </div>
         </div>
-        <div class="row">
+        <div class="row" id="ornaments">
             <div class="col">
                 <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [invalid]="invalid.ornaments">
                 </kt-ornaments>

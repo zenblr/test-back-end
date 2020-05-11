@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { ToastrComponent } from '../../../views/partials/components';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +16,9 @@ export class CustomerManagementService {
   toggle = new BehaviorSubject<any>('list');
   toggle$ = this.toggle.asObservable();
 
-  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
+  // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getAllLeads(from, to, search, stageName): Observable<any> {
     return this.http.get<any>(`/api/customer?search=${search}&from=${from}&to=${to}&stageName=${stageName}`); // stageName=lead in queryParams
@@ -31,7 +32,7 @@ export class CustomerManagementService {
     return this.http.get<any>(`/api/status`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.errorToastr(err.error.message);
+        this.toastr.error(err.error.message);
         throw (err);
       })
     );
@@ -41,7 +42,7 @@ export class CustomerManagementService {
     return this.http.get<any>(`/api/customer/${id}`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.errorToastr(err.error.message)
+        this.toastr.error(err.error.message)
         throw (err)
       })
     );;
@@ -51,7 +52,7 @@ export class CustomerManagementService {
     return this.http.put<any>(`/api/customer/${id}`, data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.errorToastr(err.error.message)
+        this.toastr.error(err.error.message)
         throw (err)
       })
     );
@@ -62,7 +63,13 @@ export class CustomerManagementService {
   }
 
   verifyOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/customer/verify-otp`, data); // ref,otp
+    return this.http.post<any>(`/api/customer/verify-otp`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        this.toastr.error(err.error.message)
+        throw (err)
+      })
+    ); // ref,otp
   }
 
   resendOtp(data): Observable<any> {
