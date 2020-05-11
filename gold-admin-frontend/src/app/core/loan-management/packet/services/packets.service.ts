@@ -15,7 +15,7 @@ export class PacketsService {
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   getpackets(search, from, to): Observable<any> {
-    return this.http.get(`/api/view-packets/?search=${search}&from=${from}&to=${to}`).pipe(
+    return this.http.get(`/api/loan-process/view-packet?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);
@@ -35,7 +35,7 @@ export class PacketsService {
   }
 
   updatePacket(id, data): Observable<any> {
-    return this.http.put<any>(`/api/update-packet/${id}`, data).pipe(
+    return this.http.put<any>(`/api/loan-process/update-packet/${id}`, data).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);

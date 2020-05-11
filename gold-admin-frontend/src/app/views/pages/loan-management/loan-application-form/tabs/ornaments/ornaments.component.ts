@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output,EventEmitter } from '@angular/core';
+import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError } from 'rxjs/operators';
@@ -12,19 +12,19 @@ import { ImagePreviewDialogComponent } from '../../../../../../views/partials/co
   templateUrl: './ornaments.component.html',
   styleUrls: ['./ornaments.component.scss']
 })
-export class OrnamentsComponent implements OnInit,AfterViewInit {
+export class OrnamentsComponent implements OnInit, AfterViewInit {
 
-  
+
   @Input() invalid;
-  @Output() OrnamentsDataEmit:EventEmitter<any> = new EventEmitter()
+  @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter()
   left: number = 0
   ornamentsForm: FormGroup;
   images = [];
   karatArr = [{ value: 18, name: '18 K' },
-    { value: 19, name: '19 K' },
-    { value: 20, name: '20 K' },
-    { value: 21, name: '21 K' },
-    { value: 22, name: '22 K' }]
+  { value: 19, name: '19 K' },
+  { value: 20, name: '20 K' },
+  { value: 21, name: '21 K' },
+  { value: 22, name: '22 K' }]
   purityBasedDeduction: number;
   ltvPercent = [];
 
@@ -34,7 +34,7 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
     public toast: ToastrService,
     public ele: ElementRef,
     public dilaog: MatDialog,
-    public ref:ChangeDetectorRef
+    public ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -50,10 +50,10 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
 
   }
 
-  ngAfterViewInit(){
-   this.OrnamentsData.valueChanges.subscribe(()=>{
-    this.OrnamentsDataEmit.emit(this.OrnamentsData)
-   }) 
+  ngAfterViewInit() {
+    this.OrnamentsData.valueChanges.subscribe(() => {
+      this.OrnamentsDataEmit.emit(this.OrnamentsData)
+    })
   }
   get OrnamentsData() {
     if (this.ornamentsForm)
@@ -79,9 +79,9 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
       withOrnamentWeight: [],
       stoneTouch: [],
       acidTest: [],
-      karat:[],
-      purity:[],
-      ltvRange:[[]],
+      karat: [],
+      purity: [],
+      ltvRange: [[]],
       purityTest: [[]],
       ltvPercent: [, [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]],
       ltvAmount: [, [Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
@@ -159,8 +159,8 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
         break;
       case 'purity':
         let temp = []
-        if(controls.controls.purityTest.value.length > 0)
-        temp = controls.controls.purityTest.value
+        if (controls.controls.purityTest.value.length > 0)
+          temp = controls.controls.purityTest.value
         temp.push(url)
         controls.controls.purityTest.patchValue(temp)
         break;

@@ -43,10 +43,11 @@
                     </div>
                     <div class="col-4 form-label">
                         <label *ngIf="ornament.controls.withOrnamentWeight.value"
-                         class="my-auto text-primary text-center kt-padding-l-15"(click)="preview(ornament.controls.withOrnamentWeight.value,idx)">View
+                            class="my-auto text-primary text-center kt-padding-l-15"
+                            (click)="preview(ornament.controls.withOrnamentWeight.value,idx)">View
                             Image</label>
                     </div>
-                    <div class="col-4 text-right">
+                    <div class="col-4 text-right min-height-attach">
                         <input type="file" #withOrnamentWeight class="d-none"
                             (change)="uploadFile(idx,$event,'withOrnamentWeight')">
                         <kt-button *ngIf="!ornament.controls.withOrnamentWeight.value" [type]="'button'"
@@ -63,10 +64,11 @@
                         <label class="my-auto text-color ">Acid Test</label>
                     </div>
                     <div class="col-4 form-label">
-                        <label *ngIf="ornament.controls.acidTest.value" class="my-auto text-primary text-center kt-padding-l-15"
-                        (click)="preview(ornament.controls.acidTest.value,idx)">View Image</label>
+                        <label *ngIf="ornament.controls.acidTest.value"
+                            class="my-auto text-primary text-center kt-padding-l-15"
+                            (click)="preview(ornament.controls.acidTest.value,idx)">View Image</label>
                     </div>
-                    <div class="col-4 text-right">
+                    <div class="col-4 text-right min-height-attach">
                         <input type="file" #acidTest class="d-none" (change)="uploadFile(idx,$event,'acidTest')">
                         <kt-button *ngIf="!ornament.controls.acidTest.value" [type]="'button'" [value]="'Attach'"
                             (click)="acidTest.click()"></kt-button>
@@ -93,11 +95,11 @@
                         <label class="my-auto text-color ">LTV%</label>
                     </div>
                     <div class="col-8">
-                        <select class="form-control" formControlName="ltvPercent" 
-                        [class.isError]="ornament.controls.ltvPercent.touched && ornament.controls.ltvPercent.invalid">
+                        <select class="form-control" formControlName="ltvPercent"
+                            [class.isError]="ornament.controls.ltvPercent.touched && ornament.controls.ltvPercent.invalid">
                             <option value="" [disabled]="true" [selected]="true">Select Purity</option>
                             <option *ngFor="let pure of ltvPercent;index as i">{{pure}} %</option>
-                        </select>                            
+                        </select>
                         <mat-error *ngIf="ornament.controls.ltvPercent.touched && ornament.controls.ltvPercent.invalid">
                             <span *ngIf="ornament.controls.ltvPercent.errors?.pattern">Enter a valid Number</span>
                         </mat-error>
@@ -130,10 +132,11 @@
                         <label class="my-auto text-color ">WM 00 wt.</label>
                     </div>
                     <div class="col-4 form-label">
-                        <label *ngIf="ornament.controls.weightMachineZeroWeight.value" class="my-auto text-primary text-center kt-padding-l-15"
-                        (click)="preview(ornament.controls.weightMachineZeroWeight.value,idx)">View Image</label>
+                        <label *ngIf="ornament.controls.weightMachineZeroWeight.value"
+                            class="my-auto text-primary text-center kt-padding-l-15"
+                            (click)="preview(ornament.controls.weightMachineZeroWeight.value,idx)">View Image</label>
                     </div>
-                    <div class="col-4 text-right">
+                    <div class="col-4 text-right min-height-attach">
                         <input type="file" #vm class="d-none" (change)="uploadFile(idx,$event,'vm')">
                         <kt-button *ngIf="!ornament.controls.weightMachineZeroWeight.value" [type]="'button'"
                             [value]="'Attach'" (click)="vm.click()"></kt-button>
@@ -150,10 +153,11 @@
                         <label class="my-auto text-color ">Stone Touch</label>
                     </div>
                     <div class="col-4 form-label">
-                        <label *ngIf="ornament.controls.stoneTouch.value" class="my-auto text-primary text-center kt-padding-l-15"
-                        (click)="preview(ornament.controls.stoneTouch.value,idx)">View Image</label>
+                        <label *ngIf="ornament.controls.stoneTouch.value"
+                            class="my-auto text-primary text-center kt-padding-l-15"
+                            (click)="preview(ornament.controls.stoneTouch.value,idx)">View Image</label>
                     </div>
-                    <div class="col-4 text-right">
+                    <div class="col-4 text-right min-height-attach">
                         <input type="file" #stoneTouch class="d-none" (change)="uploadFile(idx,$event,'stoneTouch')">
                         <kt-button *ngIf="!ornament.controls.stoneTouch.value" [type]="'button'" [value]="'Attach'"
                             (click)="stoneTouch.click()"></kt-button>
@@ -169,13 +173,14 @@
                         <label class="my-auto text-color ">Purity Test</label>
                     </div>
                     <div class="col-4 form-label">
-                        <label *ngIf="ornament.controls.purityTest.value.length > 0" class="my-auto text-primary text-center kt-padding-l-15"
-                        (click)="preview(ornament.controls.purityTest.value,idx)">View Image</label>
+                        <label *ngIf="ornament.controls.purityTest.value.length > 0"
+                            class="my-auto text-primary text-center kt-padding-l-15"
+                            (click)="preview(ornament.controls.purityTest.value,idx)">View Image</label>
                     </div>
-                    <div class="col-4 text-right">
+                    <div class="col-4 text-right min-height-attach">
                         <input type="file" #purity class="d-none" (change)="uploadFile(idx,$event,'purity')">
-                        <kt-button *ngIf="ornament.controls.purityTest.value.length == 0" [type]="'button'" [value]="'Attach'"
-                            (click)="purity.click()"></kt-button>
+                        <kt-button *ngIf="ornament.controls.purityTest.value.length == 0" [type]="'button'"
+                            [value]="'Attach'" (click)="purity.click()"></kt-button>
                         <div class="form-label">
                             <label *ngIf="ornament.controls.purityTest.value.length > 0"
                                 class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
@@ -188,7 +193,8 @@
                         <label for="" class="text-color">Purity</label>
                     </div>
                     <div class="col-8">
-                        <input type="number" class="form-control" formControlName="purity" placeholder="00%" [readonly]='true'>
+                        <input type="number" class="form-control" formControlName="purity" placeholder="00%"
+                            [readonly]='true'>
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
