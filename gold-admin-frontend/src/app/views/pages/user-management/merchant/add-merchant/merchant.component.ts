@@ -9,7 +9,7 @@ import { NgbNavChangeEvent, NgbNav } from '@ng-bootstrap/ng-bootstrap';
 export class MerchantComponent implements OnInit {
 
   active = 1;
-  disabled: boolean[] = [false, true, true];
+  disabled: boolean[] = [false, false, false];
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;
 
   constructor(private ref: ChangeDetectorRef) { }
