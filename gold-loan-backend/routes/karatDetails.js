@@ -3,12 +3,14 @@ const express=require('express');
 const route=express.Router();
 const {wrapper}=require('../utils/errorWrap');
 const checkAuth=require('../middleware/checkAuth');
+const validationError=require('../middleware/validationError');
+const {karatDetailsValidation,karatDedtailsUpdateValidation}=require('../validations/karatDetails');
 
 
-route.post('/',checkAuth,wrapper(addKaratDetails));
+route.post('/',karatDetailsValidation,validationError,checkAuth,wrapper(addKaratDetails));
 route.get('/',checkAuth,wrapper(readKaratDetails));
 route.delete('/',checkAuth,wrapper(deactiveKaratdetails));
 route.get('/:id',checkAuth,wrapper(readKaratDetailsById));
-route.put('/:id',checkAuth,wrapper(updateKaratDetails));
+route.put('/:id',karatDedtailsUpdateValidation,validationError,checkAuth,wrapper(updateKaratDetails));
 
 module.exports=route;

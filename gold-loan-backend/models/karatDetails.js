@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         percentage:{
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field:'percentage',
             allowNull:false
         },

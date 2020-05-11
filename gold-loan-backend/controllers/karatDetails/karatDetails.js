@@ -2,7 +2,7 @@ const models=require('../../models');
 
 // add karat details
 exports.addKaratDetails=async(req,res)=>{
-    const {karat,percentage,}=req.body;
+    const {karat,percentage}=req.body;
     let createdBy=req.userData.id;
     let modifiedBy=req.userData.id;
     let addKaratDetails = await models.karatDetails.create({ karat,percentage ,createdBy,modifiedBy})
@@ -15,6 +15,7 @@ return res.status(201).json({message:'karat details is created'});
 // read karat details
 exports.readKaratDetails=async(req,res)=>{
     let readKaratDetails=await models.karatDetails.findAll({where:{isActive:true},
+        order: [["id", "DESC"]],
         include:[
             {
                 model: models.user,
