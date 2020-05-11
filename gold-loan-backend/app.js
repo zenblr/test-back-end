@@ -13,6 +13,9 @@ const swagger = require('./swagger');
 // api logger middleware.
 const apiLogger = require("./middleware/apiLogger");
 
+//customer api logger middleware
+const customerApiLogger = require("./middleware/customerApiLogger");
+
 //model
 const models = require('./models');
 
@@ -38,6 +41,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //middleware for apiLogger
 app.use(apiLogger);
+
+//middleware for customerApiLogger
+app.use(customerApiLogger);
+
 //index Route
 var indexRouter = require('./routes/index');
 app.use('/api', indexRouter);

@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
      Offer.updateOffer = (id, images, userId) => Offer.update({ images, userId }, { where: { id } })
  
      //Read_Offer
-     Offer.readOffer = () => Offer.findAll();
+     Offer.readOffer = () => Offer.findAll({attributes: ['id', 'images']});
      
     return Offer;
 }

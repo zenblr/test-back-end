@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     Banner.updateBanner = (id, images, userId) => Banner.update({ images, userId }, { where: { id } })
 
     //Read_Banner
-    Banner.readBanner = () => Banner.findAll();
+    Banner.readBanner = () => Banner.findAll({attributes: ['id', 'images']});
 
 
     return Banner;
