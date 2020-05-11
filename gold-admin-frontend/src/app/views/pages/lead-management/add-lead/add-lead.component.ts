@@ -94,7 +94,7 @@ export class AddLeadComponent implements OnInit {
       panCardNumber: ['', [Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
-      pinCode: ['', [Validators.required]],
+      pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
       address: this.fb.array([])
@@ -186,9 +186,9 @@ export class AddLeadComponent implements OnInit {
     //     this.isPanVerified = true;
     //   }
     // });
-    setTimeout(() => {
-      this.isPanVerified = true;
-    }, 1000);
+    // setTimeout(() => {
+    this.isPanVerified = true;
+    // }, 1000);
   }
 
   resendOTP() {

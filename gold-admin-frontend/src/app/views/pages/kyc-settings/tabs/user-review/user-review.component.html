@@ -316,6 +316,10 @@
                                     *ngIf="customerKycAddressOne.controls.pinCode.errors?.required && customerKycAddressOne.controls.pinCode.touched">
                                     Required field
                                 </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycAddressOne.controls.pinCode.errors?.pattern && customerKycAddressOne.controls.pinCode.touched">
+                                    Required field
+                                </mat-error>
                             </div>
 
                             <div class="offset-1 col-3 form-label kt-margin-t-20">
@@ -496,6 +500,10 @@
                                     [class.isError]="customerKycAddressTwo.controls.pinCode.touched && customerKycAddressTwo.controls.pinCode.invalid" />
                                 <mat-error
                                     *ngIf="customerKycAddressTwo.controls.pinCode.errors?.required && customerKycAddressTwo.controls.pinCode.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycAddressTwo.controls.pinCode.errors?.pattern && customerKycAddressTwo.controls.pinCode.touched">
                                     Required field
                                 </mat-error>
                             </div>

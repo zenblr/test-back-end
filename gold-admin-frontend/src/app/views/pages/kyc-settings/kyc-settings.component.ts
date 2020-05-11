@@ -35,6 +35,7 @@ export class KycSettingsComponent implements OnInit {
         this.disabled[i] = true;
         this.active = +(event);
       }
+      this.disabled[+(event) - 1] = false
     } else {
       if (this.active < this.disabled.length) {
         for (let i = 0; i < this.disabled.length; i++) {
