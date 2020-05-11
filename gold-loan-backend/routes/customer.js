@@ -8,6 +8,8 @@ const { customerValidation, customerUpdateValidation } = require('../validations
 const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, filterCustomer } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 
+const customerCheckAuth = require('../middleware/customerCheckAuth')
+
 const { readBanner, readOffer, readLenderBanner } = require('../controllers/customer/customerApp')
 
 //customer
@@ -29,11 +31,11 @@ router.get('/filter-customer', checkAuth, wrapper(filterCustomer));
 
 
 //customer App
-router.get('/banner', checkAuth, wrapper(readBanner));
+router.get('/banner', customerCheckAuth, wrapper(readBanner));
 
-router.get('/offer', checkAuth, wrapper(readOffer));
+router.get('/offer', customerCheckAuth, wrapper(readOffer));
 
-router.get('/lender-banner', checkAuth, wrapper(readLenderBanner));
+router.get('/lender-banner', customerCheckAuth, wrapper(readLenderBanner));
 //customer App
 
 
