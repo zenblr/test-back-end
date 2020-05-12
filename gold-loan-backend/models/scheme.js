@@ -1,56 +1,60 @@
-module.exports=(sequelize,DATATYPES)=>{
-    const Schemes=sequelize.define('schemes',{
+module.exports = (sequelize, DataTypes) => {
+    const Scheme = sequelize.define('scheme', {
         //attribute
-        schemeAmountStart:{
-           type:DATATYPES.BIGINT,
-           field:'scheme_amount_start'
+        schemeName:{
+            type:DataTypes.STRING,
+            field:'scheme_name'
         },
-        schemeAmountEnd:{
-        type:DATATYPES.BIGINT,
-        field:'scheme_amount_end'
+        schemeAmountStart: {
+            type: DataTypes.BIGINT,
+            field: 'scheme_amount_start'
         },
-        interestRateThirtyDaysMonthly:{
-            type:DATATYPES.FLOAT,
-            field:'interest_rate_thirty_days_monthly'
+        schemeAmountEnd: {
+            type: DataTypes.BIGINT,
+            field: 'scheme_amount_end'
         },
-        interestRateSixtyDaysMonthly:{
-            type:DATATYPES.FLOAT,
-            field:'nterest_rate_sixty_days_monthly'
+        interestRateThirtyDaysMonthly: {
+            type: DataTypes.FLOAT,
+            field: 'interest_rate_thirty_days_monthly'
         },
-        interestRateNinetyDaysMonthly:{
-            type:DATATYPES.FLOAT,
-            field:'nterest_rate_ninety_days_monthly'
+        interestRateNinetyDaysMonthly: {
+            type: DataTypes.FLOAT,
+            field: 'interest_rate_ninety_days_monthly'
         },
-        interestRateThirtyDaysAnnually:{
-            type:DATATYPES.FLOAT,
-            field:'interest_rate_thirty_days_annually'
+        interestRateOneHundredEightyDaysMonthly: {
+            type: DataTypes.FLOAT,
+            field: 'interest_rate_one_hundred_eighty_days_monthly'
         },
-        interestRateSixtyDaysAnnually:{
-            type:DATATYPES.FLOAT,
-            field:'interest_rate_sixty_days_annually'
+        interestRateThirtyDaysAnnually: {
+            type: DataTypes.FLOAT,
+            field: 'interest_rate_thirty_days_annually'
         },
-        interestRateNinetyDaysAnnually:{
-            type:DATATYPES.FLOAT,
-            field:'interest_rate_ninety_days_annually'
+        interestRateNinetyDaysAnnually: {
+            type: DataTypes.FLOAT,
+            field: 'interest_rate_ninety_days_annually'
         },
-        isActive:{
-            type:DATATYPES.BOOLEAN,
-            field:'is_active',
-            defaultValue:true
+        interestRateOneHundredEightyDaysAnnually: {
+            type: DataTypes.FLOAT,
+            field: 'interest_rate_one_hundred_eighty_days_annually'
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true
 
         }
     },
         {
             freezeTableName: true,
             allowNull: false,
-            tableName: 'schemes',
+            tableName: 'loan_scheme',
         },
     )
-    Schemes.associate = function(models) {
+    Scheme.associate = function (models) {
 
-        Schemes.belongsToMany(models.partner, {through: models.partner_schemes})
-  
+        Scheme.belongsToMany(models.partner, { through: models.partnerScheme })
+
     }
-    return Schemes;
-    
+    return Scheme;
+
 }

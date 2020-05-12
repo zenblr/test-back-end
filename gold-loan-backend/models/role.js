@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Roles = sequelize.define('roles', {
+    const Role = sequelize.define('role', {
         // attributes
         roleName: {
             type: DataTypes.STRING,
@@ -15,26 +15,42 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
             defaultValue: true,
-        }
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by',
+        },
+        updatedBy: {
+            type: DataTypes.INTEGER,
+            field: 'updated_by',
+        },
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'roles',
+        tableName: 'role',
     });
 
     //Find Role name
-    Roles.findUniqueRole = (roleName) => Roles.findOne({ where: { roleName } });
+    Role.findUniqueRole = (roleName) => Role.findOne({ where: { roleName } });
 
     //function_to_remove_group
-    Roles.removeRole = (id) => Roles.update({ isActive: false }, { where: { id: id, isActive: true } });
+    Role.removeRole = (id) => Role.update({ isActive: false }, { where: { id: id, isActive: true } });
 
-    Roles.associate = function(models) {
-        // Roles.hasMany(models.user_role, { foreignKey: 'roleId', as: 'role_user' });
-        // Roles.hasMany(models.role_permission, { foreignKey: 'roleId', as: 'role_permission' });
+    Role.addRole = (roleName, description, createdBy, updatedBy ) => Role.create({roleName, description, createdBy, updatedBy});
 
-        Roles.belongsToMany(models.users,{through: models.user_role});
-        Roles.belongsToMany(models.permission,{through: models.role_permission})
+    Role.updateRole = (roleName, description, updatedBy, id ) => Role.update({roleName, description, updatedBy}, {where: { id }});
+
+    Role.getAllRole = () => Role.findAll({ where: { isActive: true }, order: [['id', 'ASC']] });
+
+    Role.deleteRole = (id) => Role.update({ isActive: false },{ where: { id}});
+
+    Role.associate = function(models) {
+        Role.belongsToMany(models.user,{through: models.userRole});
+        Role.belongsToMany(models.module,{through: models.roleModule});
+        Role.belongsToMany(models.permission,{through: models.rolePermission});
+        Role.belongsTo(models.user,{ foreignKey: 'createdBy', as: 'createdByUser' });
+        Role.belongsTo(models.user,{ foreignKey: 'updatedBy', as: 'updatedByUser' });
     }
 
-    return Roles;
+    return Role;
 }

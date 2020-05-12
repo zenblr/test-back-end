@@ -83,6 +83,10 @@ export class MenuConfig {
 									page: '/loan-setting/packet',
 
 								},
+								{
+									title:'Karat details',
+									page:'/loan-setting/karat-details'
+								}
 							]
 						},
 						{
@@ -336,6 +340,11 @@ export class MenuConfig {
 							page: '/emi-management/upload-design',
 						},
 					]
+				},
+				{
+					title:'Logistic Partner',
+					icon: 'flaticon2-architecture-and-city',
+					page:'/emi-management/logistic-partner',
 				},
 				{
 					title: 'Bulk Upload Report',

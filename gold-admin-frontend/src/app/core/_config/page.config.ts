@@ -21,7 +21,12 @@ export class PageConfig {
 			'scheme': {
 				page: { title: 'Schemes', desc: '' }
 			},
-
+			'packet': {
+				page: { title: 'Packets', desc: '' }
+			},
+			'karat-details': {
+				page: { title: 'karat-details', desc: '' }
+			}
 		},
 		'upload-data': {
 			'upload-banner': {
@@ -100,6 +105,9 @@ export class PageConfig {
 		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }
+		},
+		'logistic-partner': {
+			page: { title: 'Logistic Partner', desc: '' }
 		},
 		'loan-management': {
 			'loan-calculator': {

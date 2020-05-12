@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const apiLogger = sequelize.define('apilogger', {
+    const ApiLogger = sequelize.define('apiLogger', {
         userToken: {
             type: DataTypes.TEXT,
             field: 'user_token'
@@ -26,9 +26,9 @@ module.exports = (sequelize, DataTypes) => {
 
     }, {
         freezeTableName: true,
-        tableName: 'apilogger',
+        tableName: 'api_logger',
         timestamps: false
     });
 
-    return apiLogger;
+    return ApiLogger;
 }

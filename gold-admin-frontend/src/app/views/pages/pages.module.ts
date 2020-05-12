@@ -12,6 +12,7 @@ import { ECommerceModule } from './apps/e-commerce/e-commerce.module';
 import { UserManagementModule } from './user-management/user-management.module';
 import { MyPageComponent } from './my-page/my-page.component';
 import { EMIManagementModule } from './emi-management/emi-management.module';
+//	import { LogisticPartnerComponent } from './emi-maangement/logistic-partner/logistic-partner.component';
 
 @NgModule({
 	declarations: [MyPageComponent],

@@ -20,6 +20,8 @@ import { SubheaderService } from '../../../../core/_base/layout';
 import { takeUntil } from 'rxjs/operators';
 import { PacketsService } from '../../../../core/loan-management';
 import { StoreService } from '../../../../core/user-management/store/service/store.service';
+import { LogisticPartnerService } from '../../../../core/emi-management/logistic-partner/service/logistic-partner.service';
+import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
 
 @Component({
 	selector: 'kt-topbar',
@@ -68,7 +70,9 @@ export class TopbarComponent implements OnInit {
 		private internalUserBranchService: InternalUserBranchService,
 		private appraiserService: AppraiserService,
 		private packetService: PacketsService,
-		private storeService: StoreService) {
+		private storeService: StoreService,
+		private logisticPartnerService: LogisticPartnerService,
+		private karatDetailsService: KaratDetailsService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -147,6 +151,18 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'partner') {
 			this.dataSourceHeader()
 			this.value1 = 'Add Partner';
+		}
+		if (this.path == 'logistic-partner') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Add Logistic Partner';
+			this.type1 = 'button';
+		}
+		if (this.path == 'karat-details') {
+			this.showfilter = true;
+			// this.showInput = true;
+			this.value1 = 'Add Karat Details';
+			this.type1 = 'button';
 		}
 		if (this.path == 'customer-list') {
 			this.showfilter = true;
@@ -278,6 +294,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'bulk-upload-product') {
 			this.router.navigate(['/emi-management/bulk-upload-report']);
+		}
+		if (this.path == 'logistic-partner') {
+			this.logisticPartnerService.openModal.next(true)
+		}
+		if (this.path == 'karat-details') {
+			this.karatDetailsService.openModal.next(true)
 		}
 	}
 
