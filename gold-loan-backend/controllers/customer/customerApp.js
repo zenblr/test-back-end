@@ -30,3 +30,26 @@ exports.readLenderBanner = async (req, res, next) => {
         res.status(200).json(lenderBanner[0]);
     }
 };
+
+exports.readGoldRate=async (req,res,next)=>{
+    let readGoldRate=await models.goldRate.finAll({where:{isActive:true}})
+    if(!readGoldRate[0])
+    {
+        res.status(404).json({message:'Data not found'});
+    }
+    else{
+        res.status(200).json(readGoldRate);
+    }
+}
+
+exports.personalDetailsOfCustomer=async (req,res,next)=>{
+    let readPersonalDetailsOfCustomer=await models.customerKyc.finAll({isActive:true});
+    if(!readPersonalDetailsOfCustomer[0])
+    {
+        res.status(404).json({message:'Data not found'})
+    }
+    else{
+        res.status(200).json(readPersonalDetailsOfCustomer);
+    }
+}
+

@@ -13,6 +13,7 @@ module.exports = (req, res, next) => {
         "/api/customer/banner",
         "/api/customer/offer",
         "/api/customer/lender-banner",
+        "/api/customer-feedback",
 
 
         

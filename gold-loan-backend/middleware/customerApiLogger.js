@@ -12,7 +12,8 @@ module.exports = (req, res, next) => {
     let includeUrls = [        
        "/api/customer/banner",
        "/api/customer/offer",
-       "/api/customer/lender-banner"
+       "/api/customer/lender-banner",
+       "/api/customer-feedback"
     ];
     console.log(req.originalUrl)
     if (includeUrls.includes(req.originalUrl)) {
