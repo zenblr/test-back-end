@@ -10,7 +10,8 @@ exports.logisticPartnerValidation = [
     .withMessage('logistic partner name is required')
     .custom(async (value,{req}) => {
       return await models.logisticPartner.findOne({ where: { 
-        name: req.body.name,
+       name:{
+        [op.iLike]: value},
           isActive: true 
         }}).then(logisticPartner => {
         if (logisticPartner) {
