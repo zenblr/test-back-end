@@ -8,7 +8,7 @@ const express = require('express');
 const route=express.Router();
 
 route.post('/',customerCheckAuth,wrapper(addFeedBack));
-route.get('/',checkAuth,wrapper(readFeedBack));
+route.get('/',customerCheckAuth,wrapper(readFeedBack));
 route.delete('/',checkAuth,wrapper(deactiveFeedBack))
 route.get('/:id',checkAuth,wrapper(readFeedBackById));
 route.put('/:id',customerCheckAuth,wrapper(updateFeedBack));

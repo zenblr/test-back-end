@@ -14,6 +14,12 @@ module.exports = (req, res, next) => {
         "/api/customer/offer",
         "/api/customer/lender-banner",
         "/api/customer-feedback",
+        "/api/customer/gold-rate",
+        "/api/customer/personal-detail",
+        "/api/customer/bank-detail",
+        "/api/customer/address-detail",
+        "/api/customer/address-proof-image-detail",
+        "/api/customer/pan-card-image-detail",
 
 
         
