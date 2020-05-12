@@ -3,8 +3,8 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 const validationError = require('../middleware/validationError');
 const { submitCustomerKycAddressValidation, submitAllKycInfoValidation, submitCustomerKycBankDetailValidation,
-        submitCustomerKycInfoValidation, submitCustomerKycpersonalDetailValidation, getCustomerDetailsValidation } = require('../validations/customerKyc');
-const { sendOtpKycNumber, verifyCustomerKycNumber, getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitAllKycInfo, appliedKyc } = require('../controllers/customerKyc/customerKyc')
+    submitCustomerKycInfoValidation, submitCustomerKycpersonalDetailValidation, getCustomerDetailsValidation } = require('../validations/customerKyc');
+const { getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitAllKycInfo, appliedKyc, getReviewAndSubmit } = require('../controllers/customerKyc/customerKyc')
 
 const checkAuth = require('../middleware/checkAuth');
 
@@ -21,5 +21,8 @@ route.post('/customer-kyc-bank', submitCustomerKycBankDetailValidation, validati
 route.post('/submit-all-kyc-info', submitAllKycInfoValidation, validationError, checkAuth, wrapper(submitAllKycInfo))
 
 route.get('/applied-kyc', checkAuth, wrapper(appliedKyc))
+
+route.get('/kyc-form-review', checkAuth, wrapper(getReviewAndSubmit))
+
 
 module.exports = route;
