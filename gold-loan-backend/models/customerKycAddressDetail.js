@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'pin_code'
         },
+        addressProofTypeId:{
+            type: DataTypes.INTEGER,
+            field: 'address_proof_type_id'
+        },
         addressProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'address_proof'
