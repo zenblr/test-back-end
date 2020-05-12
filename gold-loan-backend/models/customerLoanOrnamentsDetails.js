@@ -85,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
     }, {
         freezeTableName: true,
@@ -95,6 +95,9 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanOrnamentsDetail.associate = function (models) {
         customerLoanOrnamentsDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+
+        customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // FUNCTION TO ADD CUSTOMER ORNAMENTS DETAIL

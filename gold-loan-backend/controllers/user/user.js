@@ -41,13 +41,21 @@ exports.addUser = async (req, res, next) => {
                 }, { transaction: t })
             }
         }
+        // console.log(req.body.internalBranchId);
+        // console.log(internalBranchId.length)
+        if(check.isEmpty(internalBranchId)){
+            let data =await models.userInternalBranch.create({
+               userId:user.id,
+               internalBranchId:internalBranchId
+            },{transaction:t})
+        }
         await models.userRole.create({ userId: user.id, roleId: roleId }, { transaction: t })
-    })
+
 
     return res.status(200).json({ message: 'User Created.' });
 
+})
 }
-
 
 exports.registerSendOtp = async (req, res, next) => {
     // let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId } = req.body;
@@ -213,14 +221,33 @@ exports.changePassword = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
     let user = await models.user.findAll({
         include: [{
-            model: models.role
+            model: models.role,
+            where:{
+                isActive:true
+            }
         },{
-            model: models.internalBranch
+            model: models.internalBranch,
+            where:{
+                isActive:true
+            }
+            
         }]
     });
     return res.json(user)
 }
 
+exports.getInternalBranchUser=async(req,res,next)=>{
+    let internalBranchUser=await models.internalBranch.findAll({
+        include:[
+        {
+            model: models.user,
+            where:{
+                isActive:true
+            }
+        }]
+    });
+    return res.json(internalBranchUser);
+}
 
 //only for adding admin temporary
 exports.addAdmin = async (req, res, next) => {

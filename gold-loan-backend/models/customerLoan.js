@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'loan_status_for_appraiser'
         },
+        commentByAppraiser: {
+            type: DataTypes.TEXT,
+            field: 'comment_by_appraiser'
+        },
         applicationFormForBM: {
             type: DataTypes.BOOLEAN,
             field: 'application_form_for_bm'
@@ -33,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
         loanStatusForBM: {
             type: DataTypes.STRING,
             field: 'loan_status_for_bm'
+        },
+        commentByBM: {
+            type: DataTypes.TEXT,
+            field: 'comment_by_bm'
         },
         totalEligibleAmt: {
             type: DataTypes.BIGINT,
@@ -53,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
     }, {
         freezeTableName: true,
@@ -69,7 +77,10 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.customerLoanOrnamentsDetail, { foreignKey: 'loanId', as: 'loanOrnamentsDetail' });
         customerLoan.hasOne(models.customerLoanPersonalDetail, { foreignKey: 'loanId', as: 'loanPersonalDetail' });
         customerLoan.hasMany(models.packageImageUploadForLoan, { foreignKey: 'loanId', as: 'packetDetails' });
-        customerLoan.hasOne(models.finalLoanCalculator, { foreignKey: 'loanId', as: 'finalCalculator' });
+        customerLoan.hasOne(models.customerFinalLoan, { foreignKey: 'loanId', as: 'finalLoan' });
+
+        customerLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // FUNCTION TO ADD CUSTOMER BANK DETAIL

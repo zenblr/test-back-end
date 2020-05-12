@@ -33,7 +33,7 @@ export class FakeApiService implements InMemoryDbService {
 			// customers
 			customers: ECommerceDataContext.customers,
 			// products
-			products: ECommerceDataContext.cars,
+			// products: ECommerceDataContext.cars,
 			productRemarks: ECommerceDataContext.remarks,
 			productSpecs: ECommerceDataContext.carSpecs,
 

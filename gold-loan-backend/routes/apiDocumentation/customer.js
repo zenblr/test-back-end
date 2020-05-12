@@ -122,6 +122,8 @@
  *                   type: number
  *                 cityId:
  *                   type: number
+ *                 pinCode: 
+ *                   type: number
  *             statusId:
  *               type: number  
  *         required:
@@ -170,70 +172,6 @@
  *          description: Success
  *       500:
  *          description: Internal server error
- *   put:
- *     tags:
- *       - Customer Registration
- *     name: update customer
- *     summary: To update customer
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         schema:
- *           type: object
- *           properties:
- *             id:
- *               type: number
- *             firstName:
- *               type: string
- *             lastName:
- *               type: string
- *             mobileNumber:
- *               type: integer
- *             email:
- *               type: string
- *             panCardNumber:
- *               type: string  
- *             address:
- *               type: array
- *               items:
- *                type: object
- *                properties:
- *                 address:
- *                   type: string
- *                 landMark:
- *                   type: string
- *                 stateId:
- *                   type: number
- *                 cityId:
- *                   type: number 
- *             statusId:
- *               type: number 
- *             stageId:
- *               type: number
- *             isActive:
- *               type: boolean
- *         required:
- *           - id
- *           - firstName
- *           - lastName
- *           - mobileNumber
- *           - email
- *           - panCardNumber
- *           - address
- *           - cityId
- *           - stateId
- *           - statusId
- *           - stageId
- *           - isActive
- *     responses:
- *       200:
- *          description: User Updated
- *       404:
- *          description: Customer is not exist/This Mobile number is already Exist
  *   delete:
  *     tags:
  *       - Customer Registration
@@ -268,7 +206,7 @@
  *       in: "path"
  *       description: "Id of customer to read"
  *       required: true
- *       type: "integer"
+ *       type: integer
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -278,4 +216,42 @@
  *         description: Success.
  *       404:
  *         description: Customer not found    
+ *   put:
+ *     tags:
+ *       - Customer Registration
+ *     name: update customer
+ *     summary: To update customer
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: "id"
+ *         in: "path"
+ *         description: "Id of customer to update"
+ *         required: true
+ *         type: integer
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *                 stateId:
+ *                   type: number
+ *                 cityId:
+ *                   type: number 
+ *                 pinCode:
+ *                   type: integer
+ *                 internalBranchId:
+ *                   type: number
+ *         required:
+ *           - cityId
+ *           - stateId
+ *           - pinCode
+ *           - internalBranchId
+ *     responses:
+ *       200:
+ *          description: User Updated
+ *       404:
+ *          description: Customer is not exist
  */
