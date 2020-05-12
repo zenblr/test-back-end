@@ -19,11 +19,11 @@ export class LoanApplicationFormComponent implements OnInit {
     ornaments: false,
     intreset: false,
   }
+  disabledForm: boolean
   totalAmount: number = 0;
   basic: any;
   bank: any;
   bankDetails: any;
-  disable: boolean = false;
   kyc: any;
   nominee: any;
   selected: number;
@@ -31,11 +31,11 @@ export class LoanApplicationFormComponent implements OnInit {
   approval: any;
   Ornaments: any;
   customerDetail: any;
-  disabled = [false, true, true, true, false, false];
+  disabled = [false, true, true, true, true, true];
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
-    public loanApplicationForm: LoanApplicationFormService
+    public loanApplicationFormService: LoanApplicationFormService
   ) {
 
   }
@@ -43,48 +43,171 @@ export class LoanApplicationFormComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       if (this.router.url == "/loan-management/package-image-upload") {
-        this.disable = false;
+        this.disabledForm = true;
         const test = document.getElementById('packets');
         test.scrollIntoView({ behavior: "smooth" });
       } else {
-        this.disable = true;
+        this.disabledForm = false;
       }
     }, 500)
   }
 
-  customerDetails() {
-    // this.loanApplicationForm.customerDetails(this.basic.controls.customerUniqueId.value).pipe(
-    //   map(res => {
-    //     this.customerDetail = res.customerData
-    //     this.bankDetails = res.customerData.customerKycBank[0]
+  customerDetails(event) {
+    this.loanApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
+      map(res => {
+    this.customerDetail = res.customerData
+    // this.customerDetail = {
+    //   "id": 1,
+    //   "customerUniqueId": "LOAN1",
+    //   "panCardNumber": "AAAAA5555F",
+    //   "mobileNumber": "9819228963",
+    //   "customerKyc": {
+    //     "id": 1,
+    //     "customerId": 1,
+    //     "kycStatus": "approved",
+    //     "isKycSubmitted": true,
+    //     "isAppliedForKyc": true,
+    //     "isVerifiedByCce": true,
+    //     "cceVerifiedBy": 3,
+    //     "isVerifiedByBranchManager": true,
+    //     "branchManagerVerifiedBy": 3,
+    //     "customerKycCurrentStage": "6",
+    //     "createdBy": 1,
+    //     "isActive": true,
+    //     "createdAt": "2020-05-12T07:43:49.496Z",
+    //     "updatedAt": "2020-05-12T08:41:14.075Z"
+    //   },
+    //   "customerKycPersonal": {
+    //     "id": 1,
+    //     "identityTypeId": 2,
+    //     "identityProof": [
+    //       "http://173.249.49.7:8000/uploads/images/1589269438230.jpeg"
+    //     ],
+    //     "identityProofNumber": "khviv",
+    //     "identityType": {
+    //       "id": 2,
+    //       "name": "aadhar card",
+    //       "isActive": true,
+    //       "createdAt": "2020-04-30T12:45:20.327Z",
+    //       "updatedAt": "2020-04-30T12:45:20.327Z"
+    //     }
+    //   },
+    //   "customerKycAddress": [
+    //     {
+    //       "id": 1,
+    //       "customerId": 1,
+    //       "customerKycId": 1,
+    //       "addressType": "permanent",
+    //       "address": "dawda",
+    //       "stateId": 16,
+    //       "cityId": 1367,
+    //       "pinCode": 777777,
+    //       "addressProofTypeId": 1,
+    //       "addressProof": [
+    //         "http://173.249.49.7:8000/uploads/images/1589269445931.jpeg"
+    //       ],
+    //       "addressProofNumber": "dwaww",
+    //       "createdAt": "2020-05-12T07:44:13.466Z",
+    //       "updatedAt": "2020-05-12T07:44:13.466Z",
+    //       "state": {
+    //         "id": 16,
+    //         "name": "Jharkhand",
+    //         "isActive": true
+    //       },
+    //       "city": {
+    //         "id": 1367,
+    //         "name": "Basukinath",
+    //         "stateId": 16,
+    //         "slug": null,
+    //         "isActive": true
+    //       },
+    //       "addressProofType": {
+    //         "id": 1,
+    //         "name": "voter Id",
+    //         "isActive": true,
+    //         "createdAt": "2020-04-30T12:46:11.364Z",
+    //         "updatedAt": "2020-04-30T12:46:11.364Z"
+    //       }
+    //     },
+    //     {
+    //       "id": 2,
+    //       "customerId": 1,
+    //       "customerKycId": 1,
+    //       "addressType": "residential",
+    //       "address": "dawda",
+    //       "stateId": 16,
+    //       "cityId": 1367,
+    //       "pinCode": 777777,
+    //       "addressProofTypeId": 1,
+    //       "addressProof": [
+    //         "http://173.249.49.7:8000/uploads/images/1589269445931.jpeg"
+    //       ],
+    //       "addressProofNumber": "dwaww",
+    //       "createdAt": "2020-05-12T07:44:13.466Z",
+    //       "updatedAt": "2020-05-12T07:44:13.466Z",
+    //       "state": {
+    //         "id": 16,
+    //         "name": "Jharkhand",
+    //         "isActive": true
+    //       },
+    //       "city": {
+    //         "id": 1367,
+    //         "name": "Basukinath",
+    //         "stateId": 16,
+    //         "slug": null,
+    //         "isActive": true
+    //       },
+    //       "addressProofType": {
+    //         "id": 1,
+    //         "name": "voter Id",
+    //         "isActive": true,
+    //         "createdAt": "2020-04-30T12:46:11.364Z",
+    //         "updatedAt": "2020-04-30T12:46:11.364Z"
+    //       }
+    //     }
+    //   ],
+    //   "customerKycBank": [
+    //     {
+    //       "id": 1,
+    //       "bankName": "dawd",
+    //       "accountNumber": "222222222222222222",
+    //       "ifscCode": "dddd2222222"
+    //     }
+    //   ]
+    // }
+    this.bankDetails = this.customerDetail.customerKycBank[0]
     for (let index = 0; index < this.disabled.length; index++) {
       if (index <= 3) {
         this.disabled[index] = false;
       }
     }
     this.selected = 3;
-    //   }),
-    //   catchError(err => {
-    //     throw err;
-    //   })
-    // ).subscribe()
+      }),
+      catchError(err => {
+        throw err;
+      })
+    ).subscribe()
   }
 
   basicForm(event) {
     this.basic = event
-    // this.basic.controls.customerUniqueId.valueChanges.subscribe(()=>{
-    if (this.basic.controls.customerUniqueId.valid) {
-      this.customerDetails()
-    }
-    // })
+    this.invalid.basic = false
+
+    // if(this.basic.valid){
+    //   this.customerDetails()
+    // }
   }
 
   kycEmit(event) {
     this.kyc = event
+    this.invalid.kyc = false
+
   }
 
   nomineeEmit(event) {
     this.nominee = event.nominee
+    this.invalid.nominee = false
+
     if (event.scroll) {
       const test = document.getElementById('ornaments');
       test.scrollIntoView({ behavior: "smooth" });
@@ -93,18 +216,41 @@ export class LoanApplicationFormComponent implements OnInit {
 
   bankFormEmit(event) {
     this.bank = event
+    this.invalid.bank = false
   }
 
   interestFormEmit(event) {
     this.intreset = event
+    this.invalid.intreset = false
+    if (this.intreset.valid) {
+      this.disabled[5] = false
+    } else {
+      this.disabled[5] = true;
+    }
   }
 
   approvalFormEmit(event) {
     this.approval = event
+    this.invalid.approval = false
+
   }
 
   OrnamentsDataEmit(event) {
     this.Ornaments = event
+    this.invalid.ornaments = false
+    if (this.Ornaments.valid) {
+      this.calculateTotalEligibleAmount()
+      this.disabled[4] = false
+    } else {
+      this.disabled[4] = true;
+    }
+  }
+
+  calculateTotalEligibleAmount() {
+    this.Ornaments.value.forEach(element => {
+      this.totalAmount += element.ltvAmount
+    });
+    console.log(this.Ornaments.value)
   }
 
   cancel() {
@@ -115,43 +261,67 @@ export class LoanApplicationFormComponent implements OnInit {
     if (this.basic.invalid) {
       this.selected = 0;
       this.invalid.basic = true;
-      return
+      window.scrollTo(0,0)
+      return true
     }
 
     if (this.nominee.invalid) {
       this.selected = 3;
       this.invalid.nominee = true;
-      return
+      window.scrollTo(0,0)
+      return true
+    }
+    if (this.Ornaments.invalid) {
+      this.invalid.ornaments = true;
+      const test = document.getElementById('ornaments');
+      test.scrollIntoView({ behavior: "smooth" });
+      return true
     }
     if (this.intreset.invalid) {
       this.selected = 4;
       this.invalid.intreset = true;
-      return
+      window.scrollTo(0,0)
+      return true
     }
+   
     if (this.approval.invalid) {
       this.selected = 5;
       this.invalid.approval = true;
-      return
+      window.scrollTo(0,0)
+      return true
     }
 
+    
 
 
+
+  }
+  createData() {
+    let Obj = {
+      loanOrnmanets: this.Ornaments.value,
+      loanApproval: this.approval.value,
+      loanFinalCalculator: this.intreset.value,
+      loanPersonal: this.basic.value,
+      loanBank: this.bank.value,
+      loanKyc: this.kyc.value,
+      loanNominee: this.nominee.value,
+      customerId:this.basic.controls.customerId.value,
+      totalEligibleAmt:this.totalAmount,
+      totalFinalInterestAmt:(this.intreset.controls.intresetAmt.value)
+    }
+    return Obj
   }
 
   apply() {
-    // this.checkForFormValidation();
-    const arrObj = [];
-    let Obj
-    //  arrObj.push(this.Ornaments.value)
-    arrObj.push(this.approval.value)
-    arrObj.push(this.intreset.value)
-    arrObj.push(this.basic.value)
-    arrObj.push(this.bank.value)
-    arrObj.push(this.kyc.value)
-    Obj = arrObj.reduce(((r, c) => Object.assign(r, c)), {});
-    Obj.nomineeData = [this.nominee.value]
-    Obj.ornamentData = this.Ornaments.value;
-    console.log(JSON.stringify(Obj))
-
+   let valid =  this.checkForFormValidation();
+   if(valid){
+     
+     return 
+   }
+  //  let data = this.createData()
+  //  this.loanApplicationFormService.applyForLoan(data).pipe(
+  //    map(res =>res)
+  //  ).subscribe()
   }
+  
 }

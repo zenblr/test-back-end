@@ -138,6 +138,13 @@ export class PermissionComponent implements OnInit {
     this.checkedCategory = this.permissions.filter(cat => {
       return cat.isSelected
     })
+    this.checkedProduct = []
+    this.permissions.forEach(cat => {
+      cat.subCategory.forEach(sub => {
+        if (sub.isSelected)
+        Array.prototype.push.apply(this.checkedProduct,sub.products)
+      })
+    })
     this.calculateLength()
     this.checked('cat')
   }
