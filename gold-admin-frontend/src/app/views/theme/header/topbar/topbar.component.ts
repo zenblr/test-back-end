@@ -6,8 +6,10 @@ import { CustomerManagementService } from '../../../../core/customer-management/
 import { LoanSettingsService } from '../.././../../core/loan-setting'
 import { PartnerService } from '../.././../../core/user-management/partner/services/partner.service';
 import { BranchService } from '../.././../../core/user-management/branch/services/branch.service';
+import { WalletPriceService } from '../.././../../core/emi-management/config-details/wallet-price/services/wallet-price.service';
 import { RolesService } from '../.././../../core/user-management/roles';
-import { BrokerService } from '../.././../../core/user-management/broker';
+import { BrokerService } from '../../../../core/user-management/broker';
+import { CategoryService, SubCategoryService } from '../../../../core/emi-management/product';
 import { InternalUserService } from '../.././../../core/user-management/internal-user';
 import { AppraiserService } from '../../../../core/user-management/appraiser';
 import { InternalUserBranchService } from '../../../../core/user-management/internal-user-branch'
@@ -18,6 +20,8 @@ import { SubheaderService } from '../../../../core/_base/layout';
 import { takeUntil } from 'rxjs/operators';
 import { PacketsService } from '../../../../core/loan-management';
 import { StoreService } from '../../../../core/user-management/store/service/store.service';
+import { LogisticPartnerService } from '../../../../core/emi-management/logistic-partner/service/logistic-partner.service';
+import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
 
 @Component({
 	selector: 'kt-topbar',
@@ -53,17 +57,22 @@ export class TopbarComponent implements OnInit {
 		public subheaderService: SubheaderService,
 		private router: Router,
 		private location: Location,
-		private brokerService:BrokerService,
 		private customerManagementServiceCustomer: CustomerManagementService,
 		private loanSettingService: LoanSettingsService,
 		private partnerService: PartnerService,
 		private branchService: BranchService,
 		private rolesService: RolesService,
+		private brokerService: BrokerService,
+		private walletPriceService: WalletPriceService,
+		private categoryService: CategoryService,
+		private subCategoryService: SubCategoryService,
 		private internalUserService: InternalUserService,
-		private internalUserBranchService:InternalUserBranchService,
+		private internalUserBranchService: InternalUserBranchService,
 		private appraiserService: AppraiserService,
-		private packetService:PacketsService,
-		private storeService:StoreService) {
+		private packetService: PacketsService,
+		private storeService: StoreService,
+		private logisticPartnerService: LogisticPartnerService,
+		private karatDetailsService: KaratDetailsService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -120,7 +129,7 @@ export class TopbarComponent implements OnInit {
 		this.toogle = false;
 	}
 
-	dataSourceHeader(){
+	dataSourceHeader() {
 		this.showfilter = true;
 		this.showInput = true;
 		this.type1 = 'button';
@@ -142,6 +151,18 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'partner') {
 			this.dataSourceHeader()
 			this.value1 = 'Add Partner';
+		}
+		if (this.path == 'logistic-partner') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Add Logistic Partner';
+			this.type1 = 'button';
+		}
+		if (this.path == 'karat-details') {
+			this.showfilter = true;
+			// this.showInput = true;
+			this.value1 = 'Add Karat Details';
+			this.type1 = 'button';
 		}
 		if (this.path == 'customer-list') {
 			this.showfilter = true;
@@ -170,7 +191,33 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader()
 			this.value1 = 'Add Merchant';
 		}
-
+		if (this.path == 'wallet-price') {
+			this.rightButton = true;
+			this.type2 = 'button';
+			this.value2 = 'Edit Wallet Price';
+		}
+		if (this.path == 'bulk-upload-report') {
+			this.showfilter = true;
+			this.showInput = true;
+		}
+		if (this.path == 'products') {
+			this.showfilter = true;
+			this.showInput = true;
+		}
+		if (this.path == 'category') {
+			this.rightButton = true
+			this.showfilter = true;
+			this.showInput = true;
+			this.value2 = 'Add Category';
+			this.type2 = 'button';
+		}
+		if (this.path == 'sub-category') {
+			this.rightButton = true
+			this.showfilter = true;
+			this.showInput = true;
+			this.value2 = 'Add Sub Category';
+			this.type2 = 'button';
+		}
 		if (this.path == 'internal-user') {
 			this.dataSourceHeader()
 			this.value1 = 'Add Internal User';
@@ -187,7 +234,15 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader()
 			this.value1 = 'Create Stores';
 		}
-		
+		if (this.path == 'bulk-upload-product') {
+			this.rightButton = true;
+			this.type2 = 'button';
+			this.value2 = 'Show Report';
+		}
+		if (this.path == 'admin-log') {
+			this.showfilter = true;
+			this.showInput = true;
+		}
 	}
 
 	action(event: Event) {
@@ -219,6 +274,15 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'merchant') {
 			this.router.navigate(['/user-management/add-merchant'])
 		}
+		if (this.path == 'wallet-price') {
+			this.walletPriceService.openModal.next(true)
+		}
+		if (this.path == 'category') {
+			this.categoryService.openModal.next(true)
+		}
+		if (this.path == 'sub-category') {
+			this.subCategoryService.openModal.next(true)
+		}
 		if (this.path == 'internal-user-branch') {
 			this.internalUserBranchService.openModal.next(true)
 		}
@@ -227,6 +291,15 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'store') {
 			this.storeService.openModal.next(true)
+		}
+		if (this.path == 'bulk-upload-product') {
+			this.router.navigate(['/emi-management/bulk-upload-report']);
+		}
+		if (this.path == 'logistic-partner') {
+			this.logisticPartnerService.openModal.next(true)
+		}
+		if (this.path == 'karat-details') {
+			this.karatDetailsService.openModal.next(true)
 		}
 	}
 

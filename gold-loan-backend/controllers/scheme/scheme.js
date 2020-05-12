@@ -101,6 +101,26 @@ exports.deactiveScheme = async (req, res, next) => {
     return res.status(200).json({ message: 'Success' });
 } 
 
+// filter scheme
+
+exports.filterScheme= async(req,res,next)=>{
+        var { isActive } = req.query;
+        const query = {};
+        if(isActive){
+        query.isActive=isActive;
+        }
+        let schemeFilterData = await models.scheme.findAll({
+          where: query,
+          include:{
+              model:models.partner
+          }
+        });
+        if (!schemeFilterData[0]) {
+          return res.status(404).json({ message: "data not found" });
+        }
+        return res.status(200).json({schemeFilterData });    
+}
+
 // update Scheme By id
 
 // exports.updateScheme = async (req, res, next) => {

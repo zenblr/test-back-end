@@ -116,4 +116,10 @@ router.use('/internal-branch',internalBranch)
 const goldRate = require('./goldRate');
 router.use('/gold-rate', goldRate)
 
+const logisticPartner=require('./logisticPartner'); // logistic partner module
+router.use('/logistic-partner',logisticPartner)
+
+const karatDetails=require('./karatDetails'); // karat details module
+router.use('/karat-details',karatDetails)
+
 module.exports = router;

@@ -1,0 +1,80 @@
+<!-- <kt-action-natification></kt-action-natification> -->
+
+<kt-toastr #toastr></kt-toastr>
+
+<div class="kt-portlet">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-form">
+            <form [formGroup]="categoryForm">
+
+                <div class="kt-portlet__body-progress" *ngIf="viewLoading">
+                    <mat-spinner [diameter]="20"></mat-spinner>
+                </div>
+
+                <!-- <kt-alert type="warn" [duration]="30000" [showCloseButton]="true" (close)="onAlertClose($event)">
+                            Oh snap! Change a few things up and try submitting again.
+                        </kt-alert> -->
+
+                <div class="form-group kt-form__group row">
+                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+                        <div class="row">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Category Name</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="categoryName" type="text"
+                                    placeholder="eg: gold"
+                                    [class.isError]="controls.categoryName.touched && controls.categoryName.invalid">
+                                <mat-error
+                                    *ngIf="controls.categoryName.errors?.required && controls.categoryName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Metal Type</label>
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" name="metalTypeId" formControlName="metalTypeId"
+                                    [class.isError]="controls.metalTypeId.touched && controls.metalTypeId.invalid">
+                                    <option value="" [selected]="true" [disabled]="true">Metal Type</option>
+                                    <option *ngFor="let item of metalType" [value]="item?.id">
+                                        {{item?.metalType}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.metalTypeId.touched && controls.metalTypeId.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Conversion Factor</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="conversionFactor" type="number"
+                                    placeholder="eg: 999"
+                                    [class.isError]="controls.conversionFactor.touched && controls.conversionFactor.invalid">
+                                <mat-error
+                                    *ngIf="controls.conversionFactor.errors?.required && controls.conversionFactor.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <kt-portlet-footer *ngIf="data.action != 'view'">
+        <div class="p-3">
+            <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="data.action">
+            </kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>

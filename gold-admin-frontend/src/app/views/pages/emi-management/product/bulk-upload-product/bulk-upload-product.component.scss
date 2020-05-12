@@ -1,0 +1,22 @@
+:host {
+    kt-portlet-body {
+        height: calc(100vh - 90px);
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            border: 1px solid #454d67;
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .cancelLogo {
+            width: 14px;
+            height: 14px;
+        }
+    }
+}

@@ -83,6 +83,10 @@ export class MenuConfig {
 									page: '/loan-setting/packet',
 
 								},
+								{
+									title:'Karat details',
+									page:'/loan-setting/karat-details'
+								}
 							]
 						},
 						{
@@ -228,33 +232,36 @@ export class MenuConfig {
 					]
 				},
 				{
+					title: 'EMI Management',
+					root: true,
+					src: 'assets/media/aside-icons/icons-04.svg',
+					page: '/emi-management',
+				},
+				{
 					title: 'Log Out',
 					src: 'assets/media/aside-icons/icons-12.svg',
 				}
 			],
-			itemsTwo: [
 
+			itemsTwo: [
 				{
 					title: 'Partner',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/partner',
-
 				},
 				{
 					title: 'Partner Branch ',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/branch',
-
 				},
-				
+
 				{
 					title: 'Internal User',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/internal-user',
-
 				},
 				{
 					title: 'Internal User Branch',
@@ -268,21 +275,18 @@ export class MenuConfig {
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/assign-appraiser',
-
 				},
 				{
 					title: 'Merchant',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/merchant',
-
 				},
 				{
 					title: 'Broker',
 					root: true,
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/broker',
-
 				},
 				{
 					title: 'Store',
@@ -296,7 +300,72 @@ export class MenuConfig {
 					icon: 'flaticon2-architecture-and-city',
 					root: true,
 					page: '/user-management/roles',
+				},
+				{
+					title: 'Back',
+					icon: 'flaticon-logout',
+					root: true,
+					page: '/dashboard',
+				},
+			],
 
+			itemsThree: [
+				{
+					title: 'Product',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					submenu: [
+						{
+							title: 'Show Product',
+							page: '/emi-management/products',
+						},
+						{
+							title: 'Category',
+							page: '/emi-management/category',
+						},
+						{
+							title: 'Sub-Category',
+							page: '/emi-management/sub-category',
+						},
+						{
+							title: 'Bulk Upload Product',
+							page: '/emi-management/bulk-upload-product',
+						},
+						{
+							title: 'Bulk Edit Product',
+							page: '/emi-management/bulk-edit-product',
+						},
+						{
+							title: 'Upload Design',
+							page: '/emi-management/upload-design',
+						},
+					]
+				},
+				{
+					title:'Logistic Partner',
+					icon: 'flaticon2-architecture-and-city',
+					page:'/emi-management/logistic-partner',
+				},
+				{
+					title: 'Bulk Upload Report',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					page: '/emi-management/bulk-upload-report',
+				},
+				{
+					title: 'Config Details',
+					root: true,
+					icon: 'flaticon2-architecture-and-city',
+					submenu: [
+						{
+							title: 'Wallet Price',
+							page: '/emi-management/wallet-price',
+						},
+						{
+							title: 'Admin Log',
+							page: '/emi-management/admin-log',
+						},
+					]
 				},
 				{
 					title: 'Back',

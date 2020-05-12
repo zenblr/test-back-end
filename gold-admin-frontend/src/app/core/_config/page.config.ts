@@ -21,7 +21,12 @@ export class PageConfig {
 			'scheme': {
 				page: { title: 'Schemes', desc: '' }
 			},
-			
+			'packet': {
+				page: { title: 'Packets', desc: '' }
+			},
+			'karat-details': {
+				page: { title: 'karat-details', desc: '' }
+			}
 		},
 		'upload-data': {
 			'upload-banner': {
@@ -69,8 +74,40 @@ export class PageConfig {
 		'kyc-setting': {
 			page: { title: 'Customer KYC', desc: '' }
 		},
+		'emi-management': {
+			'products': {
+				page: { title: 'Show Poducts', desc: '' }
+			},
+			'category': {
+				page: { title: 'Category', desc: '' }
+			},
+			'sub-category': {
+				page: { title: 'Sub-Category', desc: '' }
+			},
+			'bulk-upload-product': {
+				page: { title: 'Bulk Upload Product', desc: '' }
+			},
+			'bulk-edit-product': {
+				page: { title: 'Bulk Edit Product', desc: '' }
+			},
+			'upload-design': {
+				page: { title: 'Upload Design', desc: '' }
+			},
+			'bulk-upload-report': {
+				page: { title: 'Bulk Upload Report', desc: '' }
+			},
+			'wallet-price': {
+				page: { title: 'Wallet Price', desc: '' }
+			},
+			'admin-log': {
+				page: { title: 'Admin Log', desc: '' }
+			},
+		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }
+		},
+		'logistic-partner': {
+			page: { title: 'Logistic Partner', desc: '' }
 		},
 		'loan-management': {
 			'loan-calculator': {
