@@ -34,6 +34,7 @@ import { WalletPriceAddComponent } from './config-details/wallet-price/wallet-pr
 import { CategoryAddComponent } from './product/category/category-add/category-add.component';
 import { ProductListComponent } from './product/show-product/product-list/product-list.component';
 import { ProductEditComponent } from './product/show-product/product-edit/product-edit.component';
+import { AdminLogListComponent } from './config-details/admin-log/admin-log-list/admin-log-list.component';
 
 const routes: Routes = [
 	{
@@ -74,6 +75,10 @@ const routes: Routes = [
 			{
 				path: 'wallet-price',
 				component: WalletPriceListComponent
+			},
+			{
+				path: 'admin-log',
+				component: AdminLogListComponent
 			},
 		]
 	}
@@ -126,6 +131,7 @@ const routes: Routes = [
 		CategoryAddComponent,
 		SubCategoryAddComponent,
 		SubCategoryListComponent,
+		AdminLogListComponent,
 	]
 })
 export class EMIManagementModule { }

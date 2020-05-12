@@ -180,7 +180,7 @@ export class TopbarComponent implements OnInit {
 			this.type2 = 'button';
 			this.value2 = 'Edit Wallet Price';
 		}
-		if (this.path == 'bulkUploadReport') {
+		if (this.path == 'bulk-upload-report') {
 			this.showfilter = true;
 			this.showInput = true;
 		}
@@ -222,6 +222,10 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.type2 = 'button';
 			this.value2 = 'Show Report';
+		}
+		if (this.path == 'admin-log') {
+			this.showfilter = true;
+			this.showInput = true;
 		}
 	}
 

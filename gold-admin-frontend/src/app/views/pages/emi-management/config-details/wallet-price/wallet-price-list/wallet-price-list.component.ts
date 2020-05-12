@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material';
 import { tap, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 // Services
-import { WalletPriceService } from '../../../../../../core/emi-management/config-details/wallet-price';
+import { WalletPriceService } from '../../../../../../core/emi-management/config-details';
 import { WalletPriceAddComponent } from '../wallet-price-add/wallet-price-add.component';
 
 @Component({

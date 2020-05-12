@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { WalletPriceService } from '../../../../../../core/emi-management/config-details/wallet-price';
+import { WalletPriceService } from '../../../../../../core/emi-management/config-details';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';

@@ -309,7 +309,7 @@ export class MenuConfig {
 				{
 					title: 'Product',
 					root: true,
-					src: 'assets/media/aside-icons/icons-03.svg',
+					icon: 'flaticon2-architecture-and-city',
 					submenu: [
 						{
 							title: 'Show Product',
@@ -346,11 +346,15 @@ export class MenuConfig {
 				{
 					title: 'Config Details',
 					root: true,
-					src: 'assets/media/aside-icons/icons-03.svg',
+					icon: 'flaticon2-architecture-and-city',
 					submenu: [
 						{
 							title: 'Wallet Price',
 							page: '/emi-management/wallet-price',
+						},
+						{
+							title: 'Admin Log',
+							page: '/emi-management/admin-log',
 						},
 					]
 				},

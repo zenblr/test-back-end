@@ -1,1 +1,0 @@
-export { WalletPriceService } from './services/wallet-price.service'

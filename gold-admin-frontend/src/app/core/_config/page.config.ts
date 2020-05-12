@@ -94,6 +94,9 @@ export class PageConfig {
 			'wallet-price': {
 				page: { title: 'Wallet Price', desc: '' }
 			},
+			'admin-log': {
+				page: { title: 'Admin Log', desc: '' }
+			},
 		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }
