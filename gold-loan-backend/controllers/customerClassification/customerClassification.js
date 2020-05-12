@@ -9,6 +9,7 @@ const moment = require("moment");
 
 const check = require("../../lib/checkLib");
 
+
 exports.addCceRating = async (req, res, next) => {
 
     let { customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, reasonFromCce } = req.body;
@@ -127,6 +128,12 @@ exports.updateRating = async (req, res, next) => {
 
                     await models.customerKycClassification.update({ customerId, customerKycId, behaviourRatingVerifiedByBm, idProofRatingVerifiedByBm, addressProofRatingVerifiedBm, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
                 });
+
+                let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+                let cusMobile = getMobileNumber.mobileNumber
+                request(
+                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message=For Your customer unoque Id is= ${customerUniqueId} `
+                );
                 return res.status(200).json({ message: 'success' })
             }
             return res.status(200).json({ message: `One of field is not verified` })

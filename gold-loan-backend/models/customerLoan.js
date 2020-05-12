@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'total_eligible_amt'
         },
         totalFinalInterestAmt: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.STRING,
             field: 'total_final_interest_amt'
         },
         createdBy: {
