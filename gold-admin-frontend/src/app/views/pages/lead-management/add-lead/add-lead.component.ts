@@ -87,7 +87,7 @@ export class AddLeadComponent implements OnInit {
     this.leadForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      internalBranchId: [1],
+      internalBranchId: ['',Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],

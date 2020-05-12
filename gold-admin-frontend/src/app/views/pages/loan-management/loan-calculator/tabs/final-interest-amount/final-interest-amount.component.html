@@ -28,7 +28,7 @@
                         <select formControlName="schemeName" class="form-control"
                             [class.isError]="controls.schemeName.touched && controls.schemeName.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
-                            <option [value]="schemes.id" *ngFor="let schemes of schemesList.schemes">
+                            <option [value]="schemes.id" *ngFor="let schemes of schemesList">
                                 {{schemes.schemeName}}</option>
                         </select>
                         <mat-error *ngIf="controls.schemeName.touched && controls.schemeName.invalid">Filed is required

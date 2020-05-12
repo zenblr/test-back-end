@@ -53,7 +53,8 @@ export class LoanApplicationFormComponent implements OnInit {
     }, 500)
   }
 
-  customerDetails() {
+  customerDetails(event) {
+    this.basic = event
     this.loanApplicationForm.customerDetails(this.basic.controls.customerUniqueId.value).pipe(
       map(res => {
         this.customerDetail = res.customerData
@@ -73,11 +74,6 @@ export class LoanApplicationFormComponent implements OnInit {
 
   basicForm(event) {
     this.basic = event
-    this.basic.controls.customerUniqueId.valueChanges.subscribe(()=>{
-    if (this.basic.controls.customerUniqueId.valid) {
-      this.customerDetails()
-    }
-    })
   }
 
   kycEmit(event) {

@@ -30,7 +30,7 @@ export class AddBrokerComponent implements OnInit {
     private brokerService: BrokerService,
     private toast: ToastrService,
     private ref: ChangeDetectorRef,
-    private storeService:StoreService
+    private storeService: StoreService
   ) { }
 
   ngOnInit() {
@@ -74,13 +74,13 @@ export class AddBrokerComponent implements OnInit {
       cityId: ['', Validators.required],
       pinCode: ['', Validators.required],
       approvalStatusId: ['', Validators.required],
-      panCardNumber: ['',  Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')],
+      panCardNumber: ['', Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')],
       nameOnPanCard: [''],
       panCard: [''],
       imgName: [''],
       userId: [],
     })
-   
+
     this.controls.imgName.disable()
   }
 
@@ -123,13 +123,13 @@ export class AddBrokerComponent implements OnInit {
 
   }
 
-  getStore(){
+  getStore() {
     this.storeService.getStoreByMerchant(this.controls.merchantId.value).pipe(
-      map(res =>{
+      map(res => {
         this.store = res
       })).subscribe()
   }
-  
+
 
   action(event: Event) {
 
@@ -142,18 +142,22 @@ export class AddBrokerComponent implements OnInit {
   }
 
   getFileInfo(event) {
-   var name =  event.target.files[0].name
-   var ext = name.split('.')
-   if(ext[ext.length-1] == 'jpg' || ext[ext.length-1] =='png' || ext[ext.length-1] == 'jpeg'){
-    this.sharedService.uploadFile(event.target.files[0]).pipe(
-      map(res =>{
-        this.brokerFrom.controls.imgName.patchValue(event.target.files[0].name)
-        this.brokerFrom.controls.panCard.patchValue(res.uploadFile.URL)
-      })).subscribe()
-   }else{
-     this.toast.error('Upload Valid File Format');
-   }
-    
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      this.sharedService.uploadFile(event.target.files[0]).pipe(
+        map(res => {
+          this.brokerFrom.controls.imgName.patchValue(event.target.files[0].name)
+          this.brokerFrom.controls.panCard.patchValue(res.uploadFile.URL)
+        }), catchError(err => {
+          this.toast.error(err.error.message);
+          throw err
+        })
+      ).subscribe()
+    } else {
+      this.toast.error('Upload Valid File Format');
+    }
+
   }
 
   submit() {

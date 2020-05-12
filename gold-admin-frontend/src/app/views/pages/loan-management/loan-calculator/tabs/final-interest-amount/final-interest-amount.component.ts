@@ -65,8 +65,8 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
 
   initForm() {
     this.finalInterestForm = this.fb.group({
-      partnerName: [, [Validators.required]],
-      schemeName: [, [Validators.required]],
+      partnerName: ['', [Validators.required]],
+      schemeName: ['', [Validators.required]],
       finalLoanAmount: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       tenure: [, [Validators.required]],
       loanStartDate: [, [Validators.required]],
@@ -102,7 +102,7 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
   amountValidation() {
     if (this.controls.partnerName.valid) {
       let amt = this.controls.finalLoanAmount.value;
-      this.schemesList.schemes.forEach(scheme => {
+      this.schemesList.forEach(scheme => {
         if (amt <= scheme.schemeAmountEnd && amt >= scheme.schemeAmountStart) {
           this.controls.finalLoanAmount.setErrors(null)
           this.selectedScheme = scheme;

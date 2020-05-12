@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnChanges, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
@@ -6,7 +6,8 @@ import { DatePipe } from '@angular/common';
   selector: 'kt-basic-details',
   templateUrl: './basic-details.component.html',
   styleUrls: ['./basic-details.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasicDetailsComponent implements OnInit, OnChanges {
 
@@ -14,11 +15,13 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
   @Output() basicFormEmit: EventEmitter<any> = new EventEmitter();
   @Input() disable
   @Input() details;
-
+  @Output() apiHit: EventEmitter<any> = new EventEmitter();;
+  currentDate = new Date()
 
   constructor(
     private fb: FormBuilder,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private ref: ChangeDetectorRef
   ) {
     this.initForm()
   }
@@ -38,24 +41,25 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
       this.basicForm.controls.mobileNumber.patchValue(this.details.mobileNumber)
       this.basicForm.controls.panCardNumber.patchValue(this.details.panCardNumber)
     }
-    if(this.disable){
+    if (this.disable) {
       this.basicForm.disable()
     }
+    this.ref.detectChanges()
   }
 
 
   getCustomerDetails() {
-    // if(this.controls.customerUniqueId.valid){
-    //   this.basicFormEmit.emit(this.basicForm)
-    // }
+    if (this.controls.customerUniqueId.valid) {
+      this.apiHit.emit(this.basicForm)
+    }
   }
 
   initForm() {
     this.basicForm = this.fb.group({
-      customerUniqueId: [, [Validators.required, Validators.minLength(8)]],
+      customerUniqueId: [, [Validators.required, Validators.minLength(4)]],
       mobileNumber: [{ value: '', disabled: true }],
       panCardNumber: [{ value: '', disabled: true }],
-      startDate: [, Validators.required]
+      startDate: [{ value: this.currentDate, disabled: true }]
     })
   }
 

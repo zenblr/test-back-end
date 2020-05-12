@@ -55,7 +55,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
 
   checkForMinor() {
     console.log(this.controls.nomineeAge.value);
-    if (this.controls.nomineeAge.value == null || this.controls.nomineeAge.value > 18) {
+    if (this.controls.nomineeAge.value == null || this.controls.nomineeAge.value >= 18) {
       this.showHide = false
       this.controls.nomineeType.patchValue("major")
       this.controls.guardianAge.disable();
