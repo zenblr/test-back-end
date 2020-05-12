@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
+        identityTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'identity_type_id'
+        },
         identityProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'identity_proof'
@@ -18,17 +22,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'permanent_address'
         },
-        permanentAddState: {
-            type: DataTypes.STRING,
-            field: 'permanent_add_state'
+        permanentAddStateId: {
+            type: DataTypes.INTEGER,
+            field: 'permanent_add_state_id'
         },
-        permanentAddCity: {
-            type: DataTypes.STRING,
-            field: 'permanent_add_city'
+        permanentAddCityId: {
+            type: DataTypes.INTEGER,
+            field: 'permanent_add_city_id'
         },
         permanentAddPin: {
             type: DataTypes.INTEGER,
             field: 'permanent_add_pin'
+        },
+        permanentAddProofTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'permanent_add_proof_type_id'
         },
         permanentAddProof: {
             type: DataTypes.ARRAY(DataTypes.STRING),
@@ -42,17 +50,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'residential_address'
         },
-        residentialAddState: {
-            type: DataTypes.STRING,
-            field: 'residential_add_state'
+        residentialAddStateId: {
+            type: DataTypes.INTEGER,
+            field: 'residential_add_state_id'
         },
-        residentialAddCity: {
-            type: DataTypes.STRING,
-            field: 'residential_add_city'
+        residentialAddCityId: {
+            type: DataTypes.INTEGER,
+            field: 'residential_add_city_id'
         },
         residentialAddPin: {
             type: DataTypes.INTEGER,
             field: 'residential_add_pin'
+        },
+        residentialAddProofTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'residential_add_proof_type_id'
         },
         residentialAddProof: {
             type: DataTypes.ARRAY(DataTypes.STRING),
@@ -83,6 +95,20 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanKycDetail.associate = function (models) {
         customerLoanKycDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+
+        customerLoanKycDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        customerLoanKycDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        customerLoanKycDetail.belongsTo(models.identityType, { foreignKey: 'identityTypeId', as: 'identityType' });
+
+        customerLoanKycDetail.belongsTo(models.state, { foreignKey: 'permanentAddStateId', as: 'perState' });
+        customerLoanKycDetail.belongsTo(models.city, { foreignKey: 'permanentAddCityId', as: 'perCity' });
+        customerLoanKycDetail.belongsTo(models.addressProofType, { foreignKey: 'permanentAddProofTypeId', as: 'perAddressProofType' });
+
+        customerLoanKycDetail.belongsTo(models.state, { foreignKey: 'residentialAddStateId', as: 'resState' });
+        customerLoanKycDetail.belongsTo(models.city, { foreignKey: 'residentialAddCityId', as: 'resCity' });
+        customerLoanKycDetail.belongsTo(models.addressProofType, { foreignKey: 'residentialAddProofTypeId', as: 'resAddressProofType' });
+
     }
 
     // FUNCTION TO ADD CUSTOMER KYC DETAIL

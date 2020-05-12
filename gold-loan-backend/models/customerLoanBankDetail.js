@@ -39,6 +39,9 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanBankDetail.associate = function (models) {
         customerLoanBankDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+
+        customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // FUNCTION TO ADD CUSTOMER BANK DETAIL

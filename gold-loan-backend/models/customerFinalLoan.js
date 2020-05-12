@@ -1,18 +1,18 @@
 module.exports = (sequelize, DataTypes) => {
-    const finalLoanCalculator = sequelize.define('finalLoanCalculator', {
+    const CustomerFinalLoan = sequelize.define('customerFinalLoan', {
         // attributes
         loanId: {
             type: DataTypes.INTEGER,
             field: 'loan_id',
             allowNull: false
         },
-        partnerName: {
-            type: DataTypes.STRING,
-            field: 'partner_name'
+        partnerId: {
+            type: DataTypes.INTEGER,
+            field: 'partner_id'
         },
-        schemeName: {
-            type: DataTypes.STRING,
-            field: 'scheme_name'
+        schemeId: {
+            type: DataTypes.INTEGER,
+            field: 'scheme_id'
         },
         finalLoanAmount: {
             type: DataTypes.BIGINT,
@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'payment_frequency'
         },
+        processingCharge:{
+            type: DataTypes.STRING,
+            field: 'processing_charge'
+        },
         interestRate: {
             type: DataTypes.STRING,
             field: 'interest_rate'
@@ -53,21 +57,27 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'final_loan_calculator',
+        tableName: 'customer_final_loan',
     });
 
 
-    finalLoanCalculator.associate = function (models) {
-        finalLoanCalculator.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+    CustomerFinalLoan.associate = function (models) {
+        CustomerFinalLoan.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+        CustomerFinalLoan.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
+        CustomerFinalLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
+
+        CustomerFinalLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerFinalLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
     }
 
     // FUNCTION TO ADD FINAL LOAN CALCULATOR
-    finalLoanCalculator.addFinalLoanCalculator =
+    CustomerFinalLoan.addFinalLoanCalculator =
         (loanId, partnerName, schemeName, finalLoanAmount,
-            loanStartDate, tenure, loanEndDate, paymentFrequency, interestRate, createdBy, modifiedBy, t) => finalLoanCalculator.create({
+            loanStartDate, tenure, loanEndDate, paymentFrequency, interestRate, createdBy, modifiedBy, t) => CustomerFinalLoan.create({
                 loanId, partnerName, schemeName, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, interestRate,
                 createdBy, modifiedBy, isActive: true
             }, { t });
 
-    return finalLoanCalculator;
+    return CustomerFinalLoan;
 }

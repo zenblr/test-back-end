@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'customer_unique_id'
         },
-        mobile: {
+        mobileNumber: {
             type: DataTypes.STRING,
-            field: 'mobile'
+            field: 'mobile_number'
         },
         panCardNumber: {
             type: DataTypes.STRING,
@@ -44,6 +44,8 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanPersonalDetail.associate = function (models) {
         customerLoanPersonalDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+        customerLoanPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        customerLoanPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // FUNCTION TO ADD CUSTOMER PERSONAL DETAIL
