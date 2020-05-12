@@ -61,7 +61,6 @@
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
-                                {{(roles == 'Branch Manager' && role.customerKycClassification.kycStatusFromCce == 'approved')}}
                                 <span
                                     *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'pending') || (roles == 'Branch Manager' && role.customerKycClassification.kycStatusFromCce == 'approved' && role.kycStatus == 'pending')">Edit</span>
                             </div>
