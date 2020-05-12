@@ -26,7 +26,11 @@ export class BulkUploadReportService {
           return res;
         }),
         tap(
-          data => this.excelService.saveAsExcelFile(data, 'BulkReport' + report.id),
+          data => {
+            const fileName = report.originalname.split('.');
+            const file = fileName['0'];
+            this.excelService.saveAsExcelFile(data, file)
+          },
           error => console.log(error),
         ),
         catchError(err => {
