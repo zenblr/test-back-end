@@ -1,1 +1,0 @@
-export { UploadDesignService } from './services/upload-design.service'

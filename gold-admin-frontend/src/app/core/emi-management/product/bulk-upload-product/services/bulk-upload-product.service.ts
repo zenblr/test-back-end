@@ -15,11 +15,11 @@ export class BulkUploadProductService {
   }
 
   addProductFromExcel(data): Observable<any> {
-    return this.http.post(`/api/products/from-excel`, data);
+    return this.http.post<any>(`/api/products/from-excel`, data);
   }
 
   editProductFromExcel(data): Observable<any> {
-    return this.http.put(`/api/products/from-excel`, data);
+    return this.http.put<any>(`/api/products/from-excel`, data);
   }
 
   getProductReport(): Observable<any> {

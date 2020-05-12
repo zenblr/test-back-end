@@ -11,3 +11,5 @@ export { SubCategoryModel } from './sub-category/models/sub-category.model';
 export { SubCategoryService } from './sub-category/services/sub-category.service';
 
 export { BulkUploadProductService } from './bulk-upload-product/services/bulk-upload-product.service';
+
+export { UploadDesignService } from './upload-design/services/upload-design.service';

@@ -19,16 +19,16 @@ export class CategoryService {
 			.pipe(map(response => response.body));
 	}
 
-	addCategory(data) {
+	addCategory(data): Observable<any> {
 		return this.http.post<any>(`/api/category`, data);
 	}
 
-	editCategory(id, data) {
+	editCategory(id, data): Observable<any> {
 		return this.http.patch<any>(`/api/category/` + id, data);
 	}
 
-	deleteCategory(id) {
-		return this.http.delete(`/api/category/` + id);
+	deleteCategory(id): Observable<any> {
+		return this.http.delete<any>(`/api/category/` + id);
 	}
 
 	getMetalType(): Observable<any> {

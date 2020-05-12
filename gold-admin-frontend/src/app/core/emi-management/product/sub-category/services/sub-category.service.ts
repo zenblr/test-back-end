@@ -19,16 +19,16 @@ export class SubCategoryService {
 			.pipe(map(response => response.body));
 	}
 
-	addSubCategory(data) {
+	addSubCategory(data): Observable<any> {
 		return this.http.post<any>(`/api/sub-category`, data);
 	}
 
-	editSubCategory(id, data) {
+	editSubCategory(id, data): Observable<any> {
 		return this.http.put<any>(`/api/sub-category/` + id, data);
 	}
 
-	deleteSubCategory(id) {
-		return this.http.delete(`/api/sub-category/` + id)
+	deleteSubCategory(id): Observable<any> {
+		return this.http.delete<any>(`/api/sub-category/` + id)
 	}
 
 	getSingleSubCategory(id): Observable<any> {

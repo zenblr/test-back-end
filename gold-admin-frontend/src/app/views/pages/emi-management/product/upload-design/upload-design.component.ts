@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { UploadDesignService } from '../../../../../core/emi-management/upload-design';
+import { UploadDesignService } from '../../../../../core/emi-management/product';
 
 @Component({
   selector: 'kt-upload-design',

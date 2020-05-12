@@ -16,15 +16,15 @@ export class ProductService {
 			.pipe(map(response => response.body));
 	}
 
-	deleteProduct(id) {
-		return this.http.delete(`/api/products/` + id)
+	editProduct(id, data): Observable<any> {
+		return this.http.put<any>(`/api/products/` + id, data);
+	}
+
+	deleteProduct(id): Observable<any> {
+		return this.http.delete<any>(`/api/products/` + id)
 	}
 
 	getSingleProduct(id): Observable<any> {
 		return this.http.get<any>(`/api/products/` + id);
-	}
-
-	editProduct(id, data) {
-		return this.http.put<any>(`/api/products/` + id, data);
 	}
 }
