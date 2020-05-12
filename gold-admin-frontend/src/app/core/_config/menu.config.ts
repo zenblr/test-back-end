@@ -252,7 +252,7 @@ export class MenuConfig {
 					icon: 'flaticon2-architecture-and-city',
 					page: '/user-management/branch',
 				},
-				
+
 				{
 					title: 'Internal User',
 					root: true,
@@ -326,6 +326,10 @@ export class MenuConfig {
 						{
 							title: 'Bulk Upload Product',
 							page: '/emi-management/bulk-upload-product',
+						},
+						{
+							title: 'Bulk Edit Product',
+							page: '/emi-management/bulk-edit-product',
 						},
 						{
 							title: 'Upload Design',

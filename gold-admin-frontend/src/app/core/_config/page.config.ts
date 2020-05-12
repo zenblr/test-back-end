@@ -82,6 +82,9 @@ export class PageConfig {
 			'bulk-upload-product': {
 				page: { title: 'Bulk Upload Product', desc: '' }
 			},
+			'bulk-edit-product': {
+				page: { title: 'Bulk Edit Product', desc: '' }
+			},
 			'upload-design': {
 				page: { title: 'Upload Design', desc: '' }
 			},

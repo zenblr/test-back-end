@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { BulkUploadProductService } from '../../../../../core/emi-management/product';
-import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-bulk-upload-product',
@@ -12,14 +12,25 @@ export class BulkUploadProductComponent implements OnInit {
   @ViewChild("file", { static: false }) file;
   formData: any;
   files = [];
+  editUpload = false;
 
   constructor(
     private bulkUploadProductService: BulkUploadProductService,
     private ref: ChangeDetectorRef,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private router: Router
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    const pathArr = this.router.url.split('/');
+    const path = pathArr[pathArr.length - 1];
+    switch (path) {
+      case 'bulk-upload-product': this.editUpload = false;
+        break;
+      case 'bulk-edit-product': this.editUpload = true;
+        break;
+    }
+  }
 
   getFileDetails(e) {
     this.files = e.target.files;
@@ -52,15 +63,17 @@ export class BulkUploadProductComponent implements OnInit {
             path: res['uploadFile']['path']
           }
 
-          console.log(fileData);
-          this.bulkUploadProductService.uploadBulkProduct(fileData).subscribe(
-            res => {
-              console.log(res);
-            },
-            error => {
-              console.log(error);
-            }
-          );
+          if (this.editUpload) {
+            this.bulkUploadProductService.editProductFromExcel(fileData).subscribe(
+              res => console.log(res),
+              error => console.log(error)
+            );
+          } else {
+            this.bulkUploadProductService.addProductFromExcel(fileData).subscribe(
+              res => console.log(res),
+              error => console.log(error)
+            );
+          }
           this.ref.detectChanges();
         }
       },

@@ -60,6 +60,10 @@ const routes: Routes = [
 				component: BulkUploadProductComponent
 			},
 			{
+				path: 'bulk-edit-product',
+				component: BulkUploadProductComponent
+			},
+			{
 				path: 'upload-design',
 				component: UploadDesignComponent
 			},
