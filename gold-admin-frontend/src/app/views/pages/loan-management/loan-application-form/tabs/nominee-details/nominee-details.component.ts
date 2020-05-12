@@ -58,18 +58,20 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
     if (this.controls.nomineeAge.value == null || this.controls.nomineeAge.value >= 18) {
       this.showHide = false
       this.controls.nomineeType.patchValue("major")
-      this.controls.guardianAge.disable();
-      this.controls.guardianName.disable();
-      this.controls.guardianRelationship.disable();
+      this.controls.guardianAge.clearValidators();
+      this.controls.guardianName.clearValidators();
+      this.controls.guardianRelationship.clearValidators();
     }
     else if (this.controls.nomineeAge.value < 18) {
       this.showHide = true
-      this.controls.guardianAge.enable();
-      this.controls.guardianName.enable();
-      this.controls.guardianRelationship.enable();
+      this.controls.guardianAge.setValidators(Validators.required);
+      this.controls.guardianName.setValidators(Validators.required);
+      this.controls.guardianRelationship.setValidators(Validators.required);
       this.controls.nomineeType.patchValue("minor")
     }
-
+    this.controls.guardianAge.updateValueAndValidity()
+    this.controls.guardianName.updateValueAndValidity()
+    this.controls.guardianRelationship.updateValueAndValidity()
   }
 
   get controls() {

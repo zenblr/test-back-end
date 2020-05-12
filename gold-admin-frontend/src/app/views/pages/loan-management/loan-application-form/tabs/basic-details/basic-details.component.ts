@@ -15,7 +15,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
   @Output() basicFormEmit: EventEmitter<any> = new EventEmitter();
   @Input() disable
   @Input() details;
-  @Output() apiHit: EventEmitter<any> = new EventEmitter();;
+  @Input() invalid
+  @Output() apiHit: EventEmitter<any> = new EventEmitter();
   currentDate = new Date()
 
   constructor(
@@ -28,6 +29,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
 
 
   ngOnInit() {
+    this.basicFormEmit.emit(this.basicForm)
     this.controls.customerUniqueId.valueChanges.subscribe(() => {
       if (this.controls.customerUniqueId.valid) {
         this.basicFormEmit.emit(this.basicForm)
@@ -39,10 +41,14 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
     console.log(this.details)
     if (this.details) {
       this.basicForm.controls.mobileNumber.patchValue(this.details.mobileNumber)
-      this.basicForm.controls.panCardNumber.patchValue(this.details.panCardNumber)
+      this.basicForm.controls.panCardNumber.patchValue(this.details.panCardNumber) 
+      this.basicForm.controls.customerId.patchValue(this.details.id)
     }
     if (this.disable) {
       this.basicForm.disable()
+    }
+    if(this.invalid){
+      this.basicForm.markAllAsTouched()
     }
     this.ref.detectChanges()
   }
@@ -57,9 +63,10 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
   initForm() {
     this.basicForm = this.fb.group({
       customerUniqueId: [, [Validators.required, Validators.minLength(4)]],
-      mobileNumber: [{ value: '', disabled: true }],
-      panCardNumber: [{ value: '', disabled: true }],
-      startDate: [{ value: this.currentDate, disabled: true }]
+      mobileNumber: [''],
+      panCardNumber: [''],
+      startDate: [this.currentDate],
+      customerId:[]
     })
   }
 

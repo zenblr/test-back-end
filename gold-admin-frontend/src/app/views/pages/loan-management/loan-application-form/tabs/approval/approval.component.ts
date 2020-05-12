@@ -13,7 +13,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() invalid;
   @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
   appraiser = [{ value: 'confirmed', name: 'approved' }, { value: 'pending', name: 'pending' }];
-  branchManager = [{ value: 'confirmed', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
+  branchManager = [{ value: 'confirmed', name: 'confirmed' }, { value: 'rejected', name: 'rejected' }];
 
   // kycStatus = [];
   approvalForm: FormGroup;
@@ -30,7 +30,12 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.approvalForm = this.fb.group({
       applicationFormForAppraiser: [false],
       goldValuationForAppraiser: [false],
-      loanStatusForAppraiser: ['', Validators.required]
+      loanStatusForAppraiser: ['', Validators.required],
+      commentByAppraiser:[''],
+      applicationFormForBM: [false],
+      goldValuationForBM: [false],
+      loanStatusForBM: [''],
+      commentByBM:[''],
     })
     this.approvalFormEmit.emit(this.approvalForm)
 
@@ -49,7 +54,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit() {
-    this.approvalForm.valueChanges.subscribe(() => {
+    this.approvalForm.valueChanges.subscribe(() => {     
       this.approvalFormEmit.emit(this.approvalForm)
     })
   }
@@ -60,6 +65,32 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     } else {
       this.controls.applicationFormForAppraiser.patchValue(value)
 
+    }
+  }
+  approvalOfBM(value: boolean, type: string) {
+    if (type == 'gold') {
+      this.controls.goldValuationForBM.patchValue(value)
+    } else {
+      this.controls.applicationFormForBM.patchValue(value)
+
+    }
+  }
+  statusAppraiser(){
+    if(this.controls.loanStatusForAppraiser.value == 'pending'){
+      this.controls.commentByAppraiser.setValidators(Validators.required);
+      this.controls.commentByAppraiser.updateValueAndValidity()
+    }else{
+      this.controls.commentByAppraiser.clearAsyncValidators();
+      this.controls.commentByAppraiser.updateValueAndValidity()
+    }
+  }
+  statusBM(){
+    if(this.controls.loanStatusForBM.value == 'rejected'){
+      this.controls.commentByBM.setValidators(Validators.required);
+      this.controls.commentByBM.updateValueAndValidity()
+    }else{
+      this.controls.commentByBM.clearValidators();
+      this.controls.commentByBM.updateValueAndValidity()
     }
   }
 }

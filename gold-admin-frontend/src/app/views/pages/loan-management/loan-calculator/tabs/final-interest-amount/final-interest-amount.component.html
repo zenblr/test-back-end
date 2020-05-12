@@ -7,14 +7,14 @@
                         <label class="mandatory">Parnter Name</label>
                     </div>
                     <div class="col-7">
-                        <select formControlName="partnerName" class="form-control" (change)="getSchemes()"
-                            [class.isError]="controls.partnerName.touched && controls.partnerName.invalid">
+                        <select formControlName="partnerId" class="form-control" (change)="getSchemes()"
+                            [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Partner</option>
                             <option [value]="partner.id" *ngFor="let partner of partnerList">
                                 {{partner.name | titlecase}}
                             </option>
                         </select>
-                        <mat-error *ngIf="controls.partnerName.touched && controls.partnerName.invalid">Filed is
+                        <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.invalid">Filed is
                             required</mat-error>
                     </div>
                 </div>
@@ -25,13 +25,13 @@
                         <label class="mandatory">Scheme Name</label>
                     </div>
                     <div class="col-7">
-                        <select formControlName="schemeName" class="form-control"
-                            [class.isError]="controls.schemeName.touched && controls.schemeName.invalid">
+                        <select formControlName="schemeId" class="form-control"
+                            [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
                             <option [value]="schemes.id" *ngFor="let schemes of schemesList">
                                 {{schemes.schemeName}}</option>
                         </select>
-                        <mat-error *ngIf="controls.schemeName.touched && controls.schemeName.invalid">Filed is required
+                        <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Filed is required
                         </mat-error>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                     </div>
                     <div class="col-7">
                         <input class="form-control" formControlName="loanEndDate" placeholder="02 May, 2020" [matDatepicker]="picker1"
-                        [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid"/>
+                        [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid" readonly/>
                         <mat-datepicker #picker1></mat-datepicker>
                         <mat-error *ngIf="controls.loanEndDate.errors?.required && controls.loanEndDate.touched">
                             Required field
@@ -122,12 +122,12 @@
                         <label class="mandatory">Payment Frequency</label>
                     </div>
                     <div class="col-7">
-                        <select class="form-control" formControlName="paymentType" (change)="getIntrest()"
-                        [class.isError]="controls.paymentType.touched && controls.paymentType.invalid">
+                        <select class="form-control" formControlName="paymentFrequency" (change)="getIntrest()"
+                        [class.isError]="controls.paymentFrequency.touched && controls.paymentFrequency.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Repay Period</option>
                             <option [value]="pay.value" *ngFor="let pay of repayType">{{pay.name | titlecase}}</option>
                         </select>
-                        <mat-error *ngIf="controls.paymentType.errors?.required && controls.paymentType.touched">
+                        <mat-error *ngIf="controls.paymentFrequency.errors?.required && controls.paymentFrequency.touched">
                             Required field
                         </mat-error>
                     </div>

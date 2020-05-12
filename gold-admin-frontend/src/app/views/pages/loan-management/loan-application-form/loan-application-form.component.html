@@ -4,7 +4,8 @@
             <div class="col-12">
                 <mat-tab-group [(selectedIndex)]="selected">
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
-                        <kt-basic-details (basicFormEmit)="basicForm($event)" [details]="customerDetail" [disable]="disabledForm" (apiHit)="customerDetails($event)">
+                        <kt-basic-details (basicFormEmit)="basicForm($event)" [details]="customerDetail" [disable]="disabledForm" [invalid]="invalid.basic" 
+                        (apiHit)="customerDetails($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <mat-tab label="KYC Details" [disabled]="disabled[1]">
@@ -51,14 +52,14 @@
                 <mat-divider></mat-divider>
             </div>
         </div>
-        <div class="row py-3" *ngIf="disable">
+        <div class="row py-3" *ngIf="!disabledForm">
             <div class="col-12">
                 <kt-button [value]="'Apply'" [type]="'button'" (click)="apply()"></kt-button>
                 <span class="kt-padding-10"></span>
                 <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>
             </div>
         </div>
-        <div class="row" id="packets" *ngIf="!disable">
+        <div class="row" id="packets" *ngIf="disabledForm">
             <div class="col">
                 <kt-upload-packets></kt-upload-packets>
             </div>
