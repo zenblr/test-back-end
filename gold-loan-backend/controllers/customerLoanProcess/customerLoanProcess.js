@@ -90,7 +90,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
     })
 
 
-    res.status(201).json({ message: 'you have successfully applied for the loan' });
+    return res.status(201).json({ message: 'you have successfully applied for the loan' });
 }
 
 
