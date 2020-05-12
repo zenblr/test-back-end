@@ -5,8 +5,10 @@ const models=require('../../models');
 exports.addFeedBack=async (req,res)=>{
     const{customerName,contactNumber,feedBack,rating}=req.body;
     let customerId= req.userData.id;
-
-    let addFeedBackData=await models.feedBack.create({customerName,contactNumber,feedBack,rating,customerId});
+    let customerPersonalDetails=await models.customerKycPersonalDetail.findOne({where:{id:customerId}});
+    let profileImage=customerPersonalDetails.dataValues.profileImage;
+    console.log(profileImage);
+    let addFeedBackData=await models.feedBack.create({customerName,contactNumber,feedBack,rating,customerId,profileImage});
     if(!addFeedBackData){
         return res.status(422).json({message:'feedback is not created'});
     }
@@ -21,7 +23,8 @@ let readCustomerFeedBack=await models.feedBack.findAll({where:{isActive:true},
         include: [
     {
         model:models.customer,
-        as: "customer"
+        as: "customer",
+        attributes:['firstName',"lastName"]
     }
 ], });
 if(!readCustomerFeedBack[0]){
