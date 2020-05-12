@@ -6,6 +6,7 @@ import { Subject, Subscription, merge } from 'rxjs';
 import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators';
 import { DataTableService } from '../../../core/shared/services/data-table.service';
 import { Router } from '@angular/router';
+import { SharedService } from '../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-applied-kyc',
@@ -23,13 +24,19 @@ export class AppliedKycComponent implements OnInit {
   private subscriptions: Subscription[] = [];
 
   private unsubscribeSearch$ = new Subject();
+  roles = '';
 
   constructor(
     private appliedKycService: AppliedKycService,
     public dialog: MatDialog,
     private dataTableService: DataTableService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private sharedService: SharedService
+  ) {
+    this.sharedService.role$.subscribe(res => {
+      this.roles = res;
+    });
+  }
 
   ngOnInit() {
     // const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
@@ -88,9 +95,9 @@ export class AppliedKycComponent implements OnInit {
     this.appliedKycService.editKycDetails(params).pipe(
       map(res => {
         console.log(res);
+        this.appliedKycService.editKyc.next({ editable: true });
+        this.router.navigate(['/kyc-setting']);
       })
     ).subscribe();
-    this.appliedKycService.editKyc.next({ editable: true });
-    this.router.navigate(['/kyc-setting']);
   }
 }

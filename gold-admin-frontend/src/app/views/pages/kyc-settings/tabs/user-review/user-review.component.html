@@ -25,7 +25,7 @@
                             </div>
                             <div class="col-7 d-flex">
                                 <div class="align-self-center">
-                                    <input type="file" #profile class="d-none"
+                                    <input type="file" accept="image/png, image/jpeg" #profile class="d-none"
                                         (input)="getFileInfo($event, 'profile')" />
                                     <label (click)="profile.click()" class="kt-pointer text-primary"
                                         style="font-weight: 600;">Change Profile
@@ -178,7 +178,7 @@
                                             (click)="identity.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #identity
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #identity
                                         (input)="getFileInfo($event, 'identityProof')">
                                 </div>
                             </div>
@@ -358,7 +358,7 @@
                                             (click)="permanent.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #permanent
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #permanent
                                         (input)="getFileInfo($event, 'permanent')">
                                 </div>
                             </div>
@@ -557,7 +557,7 @@
                                             (click)="residential.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #residential
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #residential
                                         (input)="getFileInfo($event, 'residential')">
                                 </div>
                             </div>
@@ -788,7 +788,7 @@
                                             (click)="signature.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #signature
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #signature
                                         (input)="getFileInfo($event, 'signature')">
                                 </div>
                             </div>
@@ -970,7 +970,8 @@
                                             (click)="pass.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #pass (input)="getFileInfo($event, 'passbook')">
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #pass
+                                        (input)="getFileInfo($event, 'passbook')">
                                 </div>
                             </div>
                         </div>

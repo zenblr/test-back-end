@@ -127,7 +127,7 @@
                                 <td class="rating-cce">
                                     <select class="form-control" formControlName="kycStatusFromCce"
                                         [class.isError]="cceControls.kycStatusFromCce.invalid && cceControls.kycStatusFromCce.touched">
-                                        <option value="" [disabled]=true [selected]="true"> Select Status
+                                        <option value="" disabled selected> Select Status
                                         </option>
                                         <option *ngFor="let status of cceKycStatus" [value]="status.value">
                                             {{status.name | titlecase}}
@@ -135,8 +135,8 @@
                                     </select>
                                 </td>
                                 <td class="rating-bm">
-                                    <select class="form-control">
-                                        <option value="" [disabled]=true [selected]="true"> Select Status
+                                    <select class="form-control" formControlName="kycStatusFromBm">
+                                        <option value="" disabled selected> Select Status
                                         </option>
                                         <option *ngFor="let status of bmKycStatus" [value]="status.value">
                                             {{status.name | titlecase}}

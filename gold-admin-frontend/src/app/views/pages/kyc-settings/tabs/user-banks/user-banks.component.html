@@ -132,7 +132,8 @@
                                                 <span class="input-group-text bg kt-pointer font-weight"
                                                     id="basic-addon2" (click)="signature.click()">Attach</span>
                                             </div>
-                                            <input type="file" class="d-none" #signature (input)="getFileInfo($event)">
+                                            <input type="file" class="d-none" accept="image/png, image/jpeg" #signature
+                                                (input)="getFileInfo($event)">
                                         </div>
                                     </div>
                                 </div>

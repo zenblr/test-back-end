@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { UserAddressService, UserDetailsService } from '../../../../../core/kyc-settings';
 import { ToastrComponent } from '../../../../partials/components';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, finalize } from 'rxjs/operators';
 import { MatCheckbox } from '@angular/material';
 
 @Component({
@@ -15,7 +15,9 @@ export class UserAddressComponent implements OnInit {
 
   identityForm: FormGroup;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
-  file: any;
+  files: any;
+  @ViewChild("identity", { static: false }) identity;
+  @ViewChild("address", { static: false }) address;
 
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
   states = [];
@@ -95,10 +97,10 @@ export class UserAddressComponent implements OnInit {
   }
 
   getFileInfo(event, type: any) {
-    this.file = event.target.files[0];
+    this.files = event.target.files[0];
     // console.log(type);
     // console.log(this.addressControls)
-    this.sharedService.uploadFile(this.file).pipe(
+    this.sharedService.uploadFile(this.files).pipe(
       map(res => {
         if (type == "identityProof") {
           this.images.identityProof.push(res.uploadFile.URL)
@@ -115,7 +117,12 @@ export class UserAddressComponent implements OnInit {
       }), catchError(err => {
         this.toastr.errorToastr(err.error.message);
         throw err
-      })).subscribe()
+      }),
+      finalize(() => {
+        this.identity.nativeElement.value = '';
+        this.address.nativeElement.value = '';
+      })
+    ).subscribe()
 
   }
 
@@ -201,10 +208,13 @@ export class UserAddressComponent implements OnInit {
     // console.log(index, type)
     if (type == 'identityProof') {
       this.images.identityProof.splice(index, 1);
+      this.identityForm.get('identityProof').patchValue('');
     } else if (type == 'residential') {
       this.images.residential.splice(index, 1);
+      // this.addressControls.at(0)['controls'].addressProof.patchValue('')
     } else if (type == 'permanent') {
       this.images.permanent.splice(index, 1);
+      // this.addressControls.at(1)['controls'].addressProof.patchValue('')
     }
   }
 

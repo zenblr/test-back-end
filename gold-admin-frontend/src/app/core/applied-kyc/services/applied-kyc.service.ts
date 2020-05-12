@@ -10,7 +10,8 @@ import { map, catchError, tap } from 'rxjs/operators';
 export class AppliedKycService {
 
   editKyc = new BehaviorSubject({ editable: false });
-  public userData: any;
+  userData = new BehaviorSubject(undefined);
+  userData$ = this.userData.asObservable();
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
@@ -25,11 +26,8 @@ export class AppliedKycService {
   }
 
   editKycDetails(params) {
-    return this.http.get<any>(`api/kyc-form-review?customerId=${params.customerId}&customerKycId=${params.customerKycId}`).pipe(
-      tap(res => {
-        res;
-        this.userData = res;
-      }),
+    return this.http.get<any>(`api/kyc/kyc-form-review?customerId=${params.customerId}&customerKycId=${params.customerKycId}`).pipe(
+      tap(res => this.userData.next(res)),
       catchError(err => {
         this.toastr.error(err.error.message);
         throw (err);

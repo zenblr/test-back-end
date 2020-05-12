@@ -52,7 +52,7 @@
                         <span class="text-warning" *ngIf="role.status.id == '2'">
                             {{role.status.statusName | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="role.status.id == '3'">
+                        <span class="text-danger" *ngIf="role.status.id == '5'">
                             {{role.status.statusName | titlecase}}
                         </span>
                     </mat-cell>
@@ -64,7 +64,7 @@
                         <ng-container *ngIf="role.status.id == '1'">
                             <div [ngStyle]="{'display': 'inherit'}">
                                 <div class="kt-pointer text-primary" (click)="goToKyc(role.mobileNumber)">Apply
-                                    KYC</div>
+                                    for KYC</div>
                             </div>
                         </ng-container>
                     </mat-cell>

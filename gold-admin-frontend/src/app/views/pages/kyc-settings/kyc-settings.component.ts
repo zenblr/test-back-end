@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NgbNavChangeEvent, NgbNav } from '@ng-bootstrap/ng-bootstrap';
 import { AppliedKycService } from '../../../core/applied-kyc/services/applied-kyc.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kt-kyc-settings',
@@ -16,18 +17,26 @@ export class KycSettingsComponent implements OnInit {
 
   constructor(
     private ref: ChangeDetectorRef,
-    private appliedKycService: AppliedKycService) { }
+    private appliedKycService: AppliedKycService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     // this.next();
     // console.log(this.appliedKycService.editKyc.getValue());
-    const EDIT_KYC = this.appliedKycService.editKyc.getValue();
-    if (EDIT_KYC.editable) {
-      this.active = 5;
-      for (let index = 0; index < this.disabled.length; index++) {
-        this.disabled[index] = true;
+    // this.active = 1;
+    console.log(this.route);
+    if (this.route.snapshot.queryParams.mob) {
+      this.active = 1;
+    } else {
+      const EDIT_KYC = this.appliedKycService.editKyc.getValue();
+      if (EDIT_KYC.editable) {
+        this.active = 5;
+        for (let index = 0; index < this.disabled.length; index++) {
+          this.disabled[index] = true;
+        }
+        this.disabled[4] = false;
       }
-      this.disabled[4] = false;
+
     }
   }
 
