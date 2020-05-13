@@ -7,74 +7,77 @@
 
                 <ng-container matColumnDef="fullName">
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.firstName | titlecase}}&nbsp;{{role.lastName | titlecase}}
+                    <mat-cell *matCellDef="let lead">{{lead.firstName | titlecase}}&nbsp;{{lead.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="mobile">
                     <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead.mobileNumber}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead.panCardNumber | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="internalBranch">
                     <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.internalBranch.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead.internalBranch.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="state">
                     <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.state.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead.state.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="city">
                     <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.city.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead.city.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="pincode">
                     <mat-header-cell *matHeaderCellDef>Pin Code</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.pinCode }}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead.pinCode }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date & Time</mat-header-cell>
-                    <mat-cell *matCellDef="let role">
-                        <span class="d-block">{{role.updatedAt | date:'mediumDate'}},&nbsp;</span>
-                        <span class="d-block">{{role.updatedAt | date:'shortTime'}}</span>
+                    <mat-cell *matCellDef="let lead">
+                        <div class="d-block">
+                            <div class="d-block">{{lead.updatedAt | date:'mediumDate'}}</div>
+                            <div class="d-block">{{lead.updatedAt | date:'shortTime'}}</div>
+                        </div>
                     </mat-cell>
                 </ng-container>
 
                 <!-- <ng-container matColumnDef="time">
                     <mat-header-cell *matHeaderCellDef >Time</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.updatedAt | date:'shortTime'}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead.updatedAt | date:'shortTime'}}</mat-cell>
                 </ng-container> -->
 
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-                    <mat-cell *matCellDef="let role">
-                        <span class="text-success" *ngIf="role.status.id == '1'">
-                            {{role.status.statusName | titlecase}} </span>
-                        <span class="text-warning" *ngIf="role.status.id == '2'">
-                            {{role.status.statusName | titlecase}}
+                    <mat-cell *matCellDef="let lead">
+                        <span class="text-success" *ngIf="lead.status.id == '1'">
+                            {{lead.status.statusName | titlecase}} </span>
+                        <span class="text-warning" *ngIf="lead.status.id == '2'">
+                            {{lead.status.statusName | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="role.status.id == '5'">
-                            {{role.status.statusName | titlecase}}
+                        <span class="text-danger" *ngIf="lead.status.id == '5'">
+                            {{lead.status.statusName | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="kyc">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let role">
-                        <ng-container *ngIf="role.status.id == '1'">
+                    <mat-cell *matCellDef="let lead">
+                        <ng-container *ngIf="lead.status.id == '1'">
                             <div [ngStyle]="{'display': 'inherit'}">
-                                <div class="kt-pointer" (click)="goToKyc(role.mobileNumber)">
-                                    <button mat-stroked-button>Apply KYC</button></div>
+                                <div class="kt-pointer" (click)="goToKyc(lead.mobileNumber)">
+                                    <button mat-stroked-button class="border-apply">Apply KYC</button>
+                                </div>
                             </div>
                         </ng-container>
                     </mat-cell>
@@ -82,19 +85,19 @@
 
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-                    <mat-cell *matCellDef="let role">
-                        <div *ngIf="role.status.id !== 1" [ngStyle]="{'display': 'inherit'}">
-                            <div class="kt-pointer" (click)="editLead(role)" class="kt-pointer">Edit</div>
+                    <mat-cell *matCellDef="let lead">
+                        <div *ngIf="lead.status.id !== 1" [ngStyle]="{'display': 'inherit'}">
+                            <div class="kt-pointer" (click)="editLead(lead)" class="kt-pointer">Edit</div>
                         </div>
-                        <div *ngIf="role.status.id == 1" [ngStyle]="{'display': 'inherit'}">
+                        <div *ngIf="lead.status.id == 1" [ngStyle]="{'display': 'inherit'}">
                             <div>-</div>
                         </div>
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row [ngStyle]="{'width': '120%'}" *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row  *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-                <mat-row [ngStyle]="{'width': '120%'}" *matRowDef="let row; columns: displayedColumns"></mat-row>
+                <mat-row  *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
