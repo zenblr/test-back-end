@@ -32,7 +32,7 @@ export class LoanApplicationFormComponent implements OnInit {
   approval: any;
   Ornaments: any;
   customerDetail: any;
-  disabled = [false, true, true, true, true, true];
+  disabled = [false, true, true, true, false, true];
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
@@ -119,11 +119,11 @@ export class LoanApplicationFormComponent implements OnInit {
     this.Ornaments = event
     this.invalid.ornaments = false
     if (this.Ornaments.valid) {
-      this.disabled[4] = false
+      // this.disabled[4] = false
     this.calculateTotalEligibleAmount()
 
     } else {
-      this.disabled[4] = true;
+      // this.disabled[4] = true;
     }
 
   }

@@ -12,8 +12,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() disable
   @Input() invalid;
   @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
-  appraiser = [{ value: 'confirmed', name: 'approved' }, { value: 'pending', name: 'pending' }];
-  branchManager = [{ value: 'confirmed', name: 'confirmed' }, { value: 'rejected', name: 'rejected' }];
+  appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }];
+  branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
 
   // kycStatus = [];
   approvalForm: FormGroup;

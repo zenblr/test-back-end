@@ -23,9 +23,9 @@ export class AppliedLoanDatasource extends BaseDataSource {
         this.loanManagementService.getAplliedLoans(from, to, search)
             .pipe(
                 map(
-                    report => {
-                        this.paginatorTotalSubject.next(report.count);
-                        this.entitySubject.next(report.data);
+                    loan => {
+                        this.paginatorTotalSubject.next(loan.count);
+                        this.entitySubject.next(loan.appliedLoanDetails);
                     }
                 ),
                 catchError(() => of([])),
