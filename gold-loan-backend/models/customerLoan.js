@@ -19,8 +19,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'gold_valuation_for_appraiser'
         },
         loanStatusForAppraiser: {
-            type: DataTypes.STRING,
-            field: 'loan_status_for_appraiser'
+            type: DataTypes.ENUM,
+            field: 'loan_status_for_appraiser',
+            values: ['approved', 'pending', 'rejected']
         },
         commentByAppraiser: {
             type: DataTypes.TEXT,
@@ -35,8 +36,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'gold_valuation_for_bm'
         },
         loanStatusForBM: {
-            type: DataTypes.STRING,
-            field: 'loan_status_for_bm'
+            type: DataTypes.ENUM,
+            field: 'loan_status_for_bm',
+            values: ['approved', 'pending', 'rejected'],
+            defaultValue:'pending'
         },
         commentByBM: {
             type: DataTypes.TEXT,

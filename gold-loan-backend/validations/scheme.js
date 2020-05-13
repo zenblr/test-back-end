@@ -28,17 +28,17 @@ exports.schemeValidation = [
     .exists()
     .withMessage('interest rate for 180 Days Monthly  is required'),
 
-  body('interestRateThirtyDaysAnnually')
-    .exists()
-    .withMessage('interest rate for 30 Days Annually  is required'),
+  // body('interestRateThirtyDaysAnnually')
+  //   .exists()
+  //   .withMessage('interest rate for 30 Days Annually  is required'),
 
-  body('interestRateNinetyDaysAnnually')
-    .exists()
-    .withMessage('interest rate for 90 Days Annually  is required'),
+  // body('interestRateNinetyDaysAnnually')
+  //   .exists()
+  //   .withMessage('interest rate for 90 Days Annually  is required'),
 
-  body('interestRateOneHundredEightyDaysAnnually')
-    .exists()
-    .withMessage('interest rate for 180 Days Annually  is required'),
+  // body('interestRateOneHundredEightyDaysAnnually')
+  //   .exists()
+  //   .withMessage('interest rate for 180 Days Annually  is required'),
 
   body('partnerId')
     .exists()
