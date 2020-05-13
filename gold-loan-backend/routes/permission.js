@@ -1,17 +1,11 @@
-const {addPermission,deactivePermission,updatePermission,readPermission} =require("../controllers/permission/permission");
+const {  readPermission } = require("../controllers/permission/permission");
 
-const {wrapper} =require('../utils/errorWrap');
+const { wrapper } = require('../utils/errorWrap');
 
-const express=require('express');
-const route=express.Router();
+const express = require('express');
+const route = express.Router();
+const checkAuth = require('../middleware/checkAuth');
 
+route.get('/:roleId', checkAuth, wrapper(readPermission)); //get permission
 
-route.post('/',wrapper(addPermission));// add  permission
-
-route.get('/',wrapper(readPermission)); //get permission
-
-route.delete('/:id',wrapper(deactivePermission)); // delete permission
-
-route.put("/:id",wrapper(updatePermission)); // update permission
-
-module.exports=route;
+module.exports = route;

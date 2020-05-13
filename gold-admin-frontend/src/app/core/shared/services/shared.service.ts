@@ -43,4 +43,7 @@ export class SharedService {
     console.log(this.role);
     // }
   }
+  fileUpload(data) {
+    return this.http.post<any>(`/api/file-upload`, data);
+  }
 }

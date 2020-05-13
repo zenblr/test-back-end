@@ -9,6 +9,8 @@ services:
         - redis:redis
       ports:
         - "8000:3000"
+      volumes:
+        - gold-loan-public-data:/usr/src/app/public/uploads
         
     
 
@@ -46,6 +48,7 @@ services:
       links:
         - web
 volumes:
+    gold-loan-public-data:
     gold-loan-pg-data:
     front-horse:
 

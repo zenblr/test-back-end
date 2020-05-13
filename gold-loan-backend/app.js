@@ -13,6 +13,10 @@ const swagger = require('./swagger');
 // api logger middleware.
 const apiLogger = require("./middleware/apiLogger");
 
+//model
+const models = require('./models');
+
+
 
 var app = express();
 
@@ -45,13 +49,12 @@ app.use(function (req, res, next) {
     next(createError(404));
 });
 
-const models = require('./models');
 
 
 // error handler
 app.use(function (err, req, res, next) {
 
-    models.error_logger.create({
+    models.errorLogger.create({
         message: err.message,
         url:req.url,
         method:req.method,

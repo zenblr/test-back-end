@@ -21,5 +21,9 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
+    Logger.associate = function (models) {
+        Logger.belongsTo(models.user, { foreignKey: 'userId', as: 'singleUser' });
+    }
+
     return Logger;
 }

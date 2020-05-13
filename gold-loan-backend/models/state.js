@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const States = sequelize.define('states', {
+    const State = sequelize.define('state', {
         // attributes
         name: {
             type: DataTypes.STRING,
@@ -14,14 +14,14 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'states',
+        tableName: 'state',
         timestamps: false
     });
 
-    States.associate = function(models) {
-        States.hasMany(models.cities, { foreignKey: 'stateId', as: 'city' });
+    State.associate = function(models) {
+        State.hasMany(models.city, { foreignKey: 'stateId', as: 'city' });
     }
 
 
-    return States;
+    return State;
 }

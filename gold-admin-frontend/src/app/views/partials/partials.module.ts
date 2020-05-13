@@ -86,7 +86,7 @@ import { LoanSchemeComponent } from "../../views/pages/loan-settings/loan-scheme
 import { UplodDataImageComponent } from './components/uplod-data-image/uplod-data-image.component';
 import { ImagePreviewDialogComponent } from './components/image-preview-dialog/image-preview-dialog.component';
 import { UserClassificationComponent } from './components/user-classification/user-classification.component';
-
+import { UplodPreviewImageComponent } from './components/uplod-preview-image/uplod-preview-image.component';
 
 @NgModule({
 	declarations: [
@@ -143,6 +143,8 @@ import { UserClassificationComponent } from './components/user-classification/us
 		LoanSchemeComponent,
 
 		UserClassificationComponent,
+
+		UplodPreviewImageComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -191,8 +193,8 @@ import { UserClassificationComponent } from './components/user-classification/us
 		UplodDataImageComponent,
 		ImagePreviewDialogComponent,
 		LoanSchemeComponent,
-		UserClassificationComponent
-
+		UserClassificationComponent,
+		UplodPreviewImageComponent,
 		// spinner
 
 	],
