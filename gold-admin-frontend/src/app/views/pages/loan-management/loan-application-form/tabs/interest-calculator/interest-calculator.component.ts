@@ -25,6 +25,8 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() invalid;
   @Input() totalAmt
   @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() nextEmit: EventEmitter<any> = new EventEmitter<any>();
+  
   @ViewChild('print',{static:false}) print :ElementRef
 
   constructor(
@@ -71,14 +73,9 @@ export class InterestCalculatorComponent implements OnInit {
       tenure: [, [Validators.required]],
       loanStartDate: [this.currentDate],
       loanEndDate: [, [Validators.required]],
-      goldGrossWeight: [],
       paymentFrequency: [, [Validators.required]],
-      goldNetWeight: [],
-      finalNetWeight: [],
       intresetAmt:[],
-      interestRate: [, [Validators.required,Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]],
-      currentLtvAmount: [],
-      processingCharge:[],
+      interestRate: [, [Validators.required,Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]],      processingCharge:[],
       processingChargeFixed:[,[Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       processingChargePercent:[,[Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]]
     })
@@ -104,14 +101,14 @@ export class InterestCalculatorComponent implements OnInit {
 
   scheme(){
     this.selectedScheme = this.schemesList.filter(scheme => {
-      return scheme.id == this.controls.schemeId
+      return scheme.id == this.controls.schemeId.value
     })
   }
   amountValidation() {
     this.dateOfPayment = []
     if (this.controls.partnerId.valid) {
       let amt = this.controls.finalLoanAmount.value;
-        if (amt <= this.selectedScheme.schemeAmountEnd && amt >= this.selectedScheme.schemeAmountStart) {
+        if (amt <= this.selectedScheme[0].schemeAmountEnd && amt >= this.selectedScheme[0].schemeAmountStart) {
           this.controls.finalLoanAmount.setErrors(null)
         } else {
           this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
@@ -190,13 +187,8 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
 
-  printNow(){
-    // const printTable =document.getElementById("print").innerHTML;
-    // // // window.print(printTable)
-    // var a = window.open('', '', 'height=500, width=500'); 
-    // a.document.write(printTable)
-    // a.print()
-    // console.log(printTable)
+  next(){
+    this.nextEmit.emit(true)
   }
 
 }

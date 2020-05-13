@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
 import { UploadOfferService } from '../../../../../../core/upload-data';
+import { KaratDetailsService } from '../../../../../../core/loan-setting/karat-details/services/karat-details.service';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { UploadOfferService } from '../../../../../../core/upload-data';
 })
 export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
-  selected:number= 0
+  selected: number = 0
   goldRate: any;
   @Input() invalid;
   @Input() disable
@@ -39,17 +40,27 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public ele: ElementRef,
     public dilaog: MatDialog,
     public ref: ChangeDetectorRef,
-    public uploadOfferService: UploadOfferService
+    public uploadOfferService: UploadOfferService,
+    public karatService: KaratDetailsService
   ) {
-    
+
   }
 
   ngOnInit() {
+    this.getKarat()
     this.initForm()
     this.ornamentsForm.valueChanges.subscribe(() => {
       this.OrnamentsDataEmit.emit(this.OrnamentsData)
       console.log('jkhjs')
     })
+  }
+
+  getKarat() {
+    this.karatService.getAllKaratDetails().pipe(
+      map(res => {
+        this.karatArr = res
+      })
+    )
   }
 
   initForm() {
@@ -91,6 +102,22 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       return this.ornamentsForm.controls.ornamentData as FormArray;
   }
 
+  calcGoldDeductionWeight(index) {
+    const group = this.OrnamentsData.at(index) as FormGroup;
+    if(group.controls.grossWeight.valid && group.controls.netWeight.valid){
+    const deductionWeight = group.controls.grossWeight.value - group.controls.netWeight.value;
+    group.controls.deductionWeight.patchValue(deductionWeight);
+    console.log(deductionWeight)
+    }
+  }
+
+  currentNetWeight(index){
+    const group = this.OrnamentsData.at(index) as FormGroup;
+    if(group.controls.purity.valid && group.controls.netWeight.valid){
+      const netWeight = group.controls.netWeight.value - (group.controls.purity.value/100)
+      group.controls.currentNetWeight.patchValue(netWeight)
+    }
+  }
 
   addmore() {
     if (this.left < 900) {
@@ -107,20 +134,22 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.OrnamentsData.push(this.fb.group({
       ornamentType: [, Validators.required],
       quantity: [, Validators.required],
-      grossWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      netWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      deductionWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      grossWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      deductionWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ornamentImage: [, Validators.required],
       weightMachineZeroWeight: [, Validators.required],
       withOrnamentWeight: [, Validators.required],
       stoneTouch: [, Validators.required],
       acidTest: [, Validators.required],
       karat: [, Validators.required],
-      purity: [, Validators.required],
+      purity: [, [Validators.required]],
       ltvRange: [[]],
+      currentNetWeight:[],
       purityTest: [[], Validators.required],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
+      loanAmount:[],
       currentLtvAmount: [this.goldRate]
     }))
     console.log(this.OrnamentsData.controls)
@@ -129,6 +158,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   selectKarat(index) {
     const controls = this.OrnamentsData.at(index) as FormGroup;;
     console.log(controls.controls.ltvPercent.patchValue(''));
+    controls.controls.ltvAmount.patchValue(null)
     switch (controls.controls.karat.value) {
       case '18':
         this.ltvPercent = ['75', '76', '77', '78', '79'];
@@ -164,6 +194,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         break;
     }
     this.ref.detectChanges()
+    this.currentNetWeight(index)
     console.log(this.ltvPercent)
   }
 
@@ -255,8 +286,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   calculateLtvAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
+    if(controls.controls.currentNetWeight.valid && controls.controls.purity.valid
+      && controls.controls.ltvPercent.valid ){
     let ltvPercent = controls.controls.ltvPercent.value
     let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
     controls.controls.ltvAmount.patchValue(ltv)
+    controls.controls.loanAmount.patchValue(ltv*controls.controls.currentNetWeight.value)
+    console.log(ltv*controls.controls.netWeight.value)
+    }
   }
 }

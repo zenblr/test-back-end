@@ -25,7 +25,7 @@
                         <label class="mandatory">Scheme Name</label>
                     </div>
                     <div class="col-7">
-                        <select formControlName="schemeId" class="form-control" (change)="selectedScheme()"
+                        <select formControlName="schemeId" class="form-control" (change)="scheme()"
                             [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
                             <option [value]="schemes.id" *ngFor="let schemes of schemesList">
@@ -228,7 +228,7 @@
                     </div>
 
                     <div class="kt-margin-t-20 kt-margin-b-30">
-                        <kt-button [value]="'Print Now'" [type]="'button'" (click)="printNow()"></kt-button>
+                        <kt-button [value]="'Next'" [type]="'button'" (click)="next()"></kt-button>
                     </div>
                 </div>
             </div>
