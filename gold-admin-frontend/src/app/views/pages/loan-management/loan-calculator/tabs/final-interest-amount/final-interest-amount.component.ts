@@ -78,10 +78,12 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
       paymentFrequency: [, [Validators.required]],
       goldNetWeight: [],
       finalNetWeight: [],
-      intresetAmt:[Validators.required],
+      intresetAmt:[],
       interestRate: [, [Validators.required,Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]],
       currentLtvAmount: [],
-      processingCharge:[,[Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]]
+      processingCharge:[],
+      processingChargeFixed:[,[Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      processingChargePercent:[,[Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]]
     })
     this.interestFormEmit.emit(this.finalInterestForm)
   }
@@ -93,16 +95,18 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
   }
 
   setEndDate() {
+    this.dateOfPayment = []
     if (this.controls.loanStartDate.valid && this.controls.tenure.valid) {
       let startDate = this.controls.loanStartDate.value;
       let date =  new Date(startDate.toLocaleDateString())
-      this.controls.loanEndDate.patchValue(new Date(date.setMonth(date.getMonth() + this.controls.tenure.value)))
+      this.controls.loanEndDate.patchValue(new Date(date.setMonth(date.getMonth() + Number(this.controls.tenure.value))))
     } else {
       this.controls.loanStartDate.markAsTouched()
     }
   }
 
   amountValidation() {
+    this.dateOfPayment = []
     if (this.controls.partnerId.valid) {
       let amt = this.controls.finalLoanAmount.value;
       this.schemesList.forEach(scheme => {
@@ -143,18 +147,28 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
   }
 
   calcInterestAmount() {
-    // if (this.finalInterestForm.invalid) {
-    //   this.finalInterestForm.markAllAsTouched();
-    //   return;
-    // }
+    if (this.finalInterestForm.invalid) {
+      this.finalInterestForm.markAllAsTouched();
+      return;
+    }
     let intrest = (this.controls.finalLoanAmount.value *
       this.controls.interestRate.value) * this.controls.tenure.value
       / 360
     this.intrestAmount = intrest.toFixed(2);
     this.controls.intresetAmt.patchValue(this.intrestAmount)
+    this.CheckProcessingCharge()
     this.generateTable()
   }
 
+  CheckProcessingCharge(){
+    let processingChargePercent= (this.controls.finalLoanAmount.value *this.controls.processingChargePercent.value) / 100
+    if(processingChargePercent > parseFloat(this.controls.processingChargeFixed.value)){
+      this.controls.processingCharge.patchValue(processingChargePercent)
+    }else{
+      this.controls.processingCharge.patchValue(this.controls.processingChargeFixed.value)
+
+    }
+  }
   generateTable() {
     this.dateOfPayment = []
     let length = Number(this.controls.tenure.value)
@@ -171,12 +185,12 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
 
 
   printNow(){
-    const printTable =document.getElementById("print").innerHTML;
-    // // window.print(printTable)
-    var a = window.open('', '', 'height=500, width=500'); 
-    a.document.write(printTable)
-    a.print()
-    console.log(printTable)
+    // const printTable =document.getElementById("print").innerHTML;
+    // // // window.print(printTable)
+    // var a = window.open('', '', 'height=500, width=500'); 
+    // a.document.write(printTable)
+    // a.print()
+    // console.log(printTable)
   }
 
 }

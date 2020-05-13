@@ -270,6 +270,7 @@
                     <img class="w-100" [src]="ornament.controls.ornamentImage.value" alt="placeholder">
                 </div>
                 <div class="form-label">
+                    <label *ngIf="!ornament.controls.ornamentImage.value" class="my-auto m-auto ">Upload Ornaments Image</label>
                     <label *ngIf="ornament.controls.ornamentImage.value" class="my-auto text-danger m-auto kt-pointer"
                         (click)="removeImage('ornamentImage',idx)">Remove</label>
                         <mat-error *ngIf="ornament.controls.ornamentImage.touched && ornament.controls.ornamentImage.invalid">
