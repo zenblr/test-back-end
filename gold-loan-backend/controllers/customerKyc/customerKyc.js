@@ -348,7 +348,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
     let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
-    console.log(KycClassification);
+    // console.log(KycClassification);
     return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification })
 
 }
