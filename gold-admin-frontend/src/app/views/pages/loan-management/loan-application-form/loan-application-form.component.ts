@@ -55,133 +55,133 @@ export class LoanApplicationFormComponent implements OnInit {
   customerDetails(event) {
     this.loanApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
       map(res => {
-    this.customerDetail = res.customerData
-    // this.customerDetail = {
-    //   "id": 1,
-    //   "customerUniqueId": "LOAN1",
-    //   "panCardNumber": "AAAAA5555F",
-    //   "mobileNumber": "9819228963",
-    //   "customerKyc": {
-    //     "id": 1,
-    //     "customerId": 1,
-    //     "kycStatus": "approved",
-    //     "isKycSubmitted": true,
-    //     "isAppliedForKyc": true,
-    //     "isVerifiedByCce": true,
-    //     "cceVerifiedBy": 3,
-    //     "isVerifiedByBranchManager": true,
-    //     "branchManagerVerifiedBy": 3,
-    //     "customerKycCurrentStage": "6",
-    //     "createdBy": 1,
-    //     "isActive": true,
-    //     "createdAt": "2020-05-12T07:43:49.496Z",
-    //     "updatedAt": "2020-05-12T08:41:14.075Z"
-    //   },
-    //   "customerKycPersonal": {
-    //     "id": 1,
-    //     "identityTypeId": 2,
-    //     "identityProof": [
-    //       "http://173.249.49.7:8000/uploads/images/1589269438230.jpeg"
-    //     ],
-    //     "identityProofNumber": "khviv",
-    //     "identityType": {
-    //       "id": 2,
-    //       "name": "aadhar card",
-    //       "isActive": true,
-    //       "createdAt": "2020-04-30T12:45:20.327Z",
-    //       "updatedAt": "2020-04-30T12:45:20.327Z"
-    //     }
-    //   },
-    //   "customerKycAddress": [
-    //     {
-    //       "id": 1,
-    //       "customerId": 1,
-    //       "customerKycId": 1,
-    //       "addressType": "permanent",
-    //       "address": "dawda",
-    //       "stateId": 16,
-    //       "cityId": 1367,
-    //       "pinCode": 777777,
-    //       "addressProofTypeId": 1,
-    //       "addressProof": [
-    //         "http://173.249.49.7:8000/uploads/images/1589269445931.jpeg"
-    //       ],
-    //       "addressProofNumber": "dwaww",
-    //       "createdAt": "2020-05-12T07:44:13.466Z",
-    //       "updatedAt": "2020-05-12T07:44:13.466Z",
-    //       "state": {
-    //         "id": 16,
-    //         "name": "Jharkhand",
-    //         "isActive": true
-    //       },
-    //       "city": {
-    //         "id": 1367,
-    //         "name": "Basukinath",
-    //         "stateId": 16,
-    //         "slug": null,
-    //         "isActive": true
-    //       },
-    //       "addressProofType": {
-    //         "id": 1,
-    //         "name": "voter Id",
-    //         "isActive": true,
-    //         "createdAt": "2020-04-30T12:46:11.364Z",
-    //         "updatedAt": "2020-04-30T12:46:11.364Z"
-    //       }
-    //     },
-    //     {
-    //       "id": 2,
-    //       "customerId": 1,
-    //       "customerKycId": 1,
-    //       "addressType": "residential",
-    //       "address": "dawda",
-    //       "stateId": 16,
-    //       "cityId": 1367,
-    //       "pinCode": 777777,
-    //       "addressProofTypeId": 1,
-    //       "addressProof": [
-    //         "http://173.249.49.7:8000/uploads/images/1589269445931.jpeg"
-    //       ],
-    //       "addressProofNumber": "dwaww",
-    //       "createdAt": "2020-05-12T07:44:13.466Z",
-    //       "updatedAt": "2020-05-12T07:44:13.466Z",
-    //       "state": {
-    //         "id": 16,
-    //         "name": "Jharkhand",
-    //         "isActive": true
-    //       },
-    //       "city": {
-    //         "id": 1367,
-    //         "name": "Basukinath",
-    //         "stateId": 16,
-    //         "slug": null,
-    //         "isActive": true
-    //       },
-    //       "addressProofType": {
-    //         "id": 1,
-    //         "name": "voter Id",
-    //         "isActive": true,
-    //         "createdAt": "2020-04-30T12:46:11.364Z",
-    //         "updatedAt": "2020-04-30T12:46:11.364Z"
-    //       }
-    //     }
-    //   ],
-    //   "customerKycBank": [
-    //     {
-    //       "id": 1,
-    //       "bankName": "dawd",
-    //       "accountNumber": "222222222222222222",
-    //       "ifscCode": "dddd2222222"
-    //     }
-    //   ]
-    // }
-    this.bankDetails = this.customerDetail.customerKycBank[0]
-    for (let index = 0; index < this.disabled.length; index++) {
-      if (index <= 3) {
-        this.disabled[index] = false;
-      }
-    }
-    this.selected = 3;
+        this.customerDetail = res.customerData
+        // this.customerDetail = {
+        //   "id": 1,
+        //   "customerUniqueId": "LOAN1",
+        //   "panCardNumber": "AAAAA5555F",
+        //   "mobileNumber": "9819228963",
+        //   "customerKyc": {
+        //     "id": 1,
+        //     "customerId": 1,
+        //     "kycStatus": "approved",
+        //     "isKycSubmitted": true,
+        //     "isAppliedForKyc": true,
+        //     "isVerifiedByCce": true,
+        //     "cceVerifiedBy": 3,
+        //     "isVerifiedByBranchManager": true,
+        //     "branchManagerVerifiedBy": 3,
+        //     "customerKycCurrentStage": "6",
+        //     "createdBy": 1,
+        //     "isActive": true,
+        //     "createdAt": "2020-05-12T07:43:49.496Z",
+        //     "updatedAt": "2020-05-12T08:41:14.075Z"
+        //   },
+        //   "customerKycPersonal": {
+        //     "id": 1,
+        //     "identityTypeId": 2,
+        //     "identityProof": [
+        //       "http://173.249.49.7:8000/uploads/images/1589269438230.jpeg"
+        //     ],
+        //     "identityProofNumber": "khviv",
+        //     "identityType": {
+        //       "id": 2,
+        //       "name": "aadhar card",
+        //       "isActive": true,
+        //       "createdAt": "2020-04-30T12:45:20.327Z",
+        //       "updatedAt": "2020-04-30T12:45:20.327Z"
+        //     }
+        //   },
+        //   "customerKycAddress": [
+        //     {
+        //       "id": 1,
+        //       "customerId": 1,
+        //       "customerKycId": 1,
+        //       "addressType": "permanent",
+        //       "address": "dawda",
+        //       "stateId": 16,
+        //       "cityId": 1367,
+        //       "pinCode": 777777,
+        //       "addressProofTypeId": 1,
+        //       "addressProof": [
+        //         "http://173.249.49.7:8000/uploads/images/1589269445931.jpeg"
+        //       ],
+        //       "addressProofNumber": "dwaww",
+        //       "createdAt": "2020-05-12T07:44:13.466Z",
+        //       "updatedAt": "2020-05-12T07:44:13.466Z",
+        //       "state": {
+        //         "id": 16,
+        //         "name": "Jharkhand",
+        //         "isActive": true
+        //       },
+        //       "city": {
+        //         "id": 1367,
+        //         "name": "Basukinath",
+        //         "stateId": 16,
+        //         "slug": null,
+        //         "isActive": true
+        //       },
+        //       "addressProofType": {
+        //         "id": 1,
+        //         "name": "voter Id",
+        //         "isActive": true,
+        //         "createdAt": "2020-04-30T12:46:11.364Z",
+        //         "updatedAt": "2020-04-30T12:46:11.364Z"
+        //       }
+        //     },
+        //     {
+        //       "id": 2,
+        //       "customerId": 1,
+        //       "customerKycId": 1,
+        //       "addressType": "residential",
+        //       "address": "dawda",
+        //       "stateId": 16,
+        //       "cityId": 1367,
+        //       "pinCode": 777777,
+        //       "addressProofTypeId": 1,
+        //       "addressProof": [
+        //         "http://173.249.49.7:8000/uploads/images/1589269445931.jpeg"
+        //       ],
+        //       "addressProofNumber": "dwaww",
+        //       "createdAt": "2020-05-12T07:44:13.466Z",
+        //       "updatedAt": "2020-05-12T07:44:13.466Z",
+        //       "state": {
+        //         "id": 16,
+        //         "name": "Jharkhand",
+        //         "isActive": true
+        //       },
+        //       "city": {
+        //         "id": 1367,
+        //         "name": "Basukinath",
+        //         "stateId": 16,
+        //         "slug": null,
+        //         "isActive": true
+        //       },
+        //       "addressProofType": {
+        //         "id": 1,
+        //         "name": "voter Id",
+        //         "isActive": true,
+        //         "createdAt": "2020-04-30T12:46:11.364Z",
+        //         "updatedAt": "2020-04-30T12:46:11.364Z"
+        //       }
+        //     }
+        //   ],
+        //   "customerKycBank": [
+        //     {
+        //       "id": 1,
+        //       "bankName": "dawd",
+        //       "accountNumber": "222222222222222222",
+        //       "ifscCode": "dddd2222222"
+        //     }
+        //   ]
+        // }
+        this.bankDetails = this.customerDetail.customerKycBank[0]
+        for (let index = 0; index < this.disabled.length; index++) {
+          if (index <= 3) {
+            this.disabled[index] = false;
+          }
+        }
+        this.selected = 3;
       }),
       catchError(err => {
         throw err;
@@ -261,14 +261,14 @@ export class LoanApplicationFormComponent implements OnInit {
     if (this.basic.invalid) {
       this.selected = 0;
       this.invalid.basic = true;
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
       return true
     }
 
     if (this.nominee.invalid) {
       this.selected = 3;
       this.invalid.nominee = true;
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
       return true
     }
     if (this.Ornaments.invalid) {
@@ -280,18 +280,18 @@ export class LoanApplicationFormComponent implements OnInit {
     if (this.intreset.invalid) {
       this.selected = 4;
       this.invalid.intreset = true;
-      window.scrollTo(0,0)
-      return true
-    }
-   
-    if (this.approval.invalid) {
-      this.selected = 5;
-      this.invalid.approval = true;
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
       return true
     }
 
-    
+    if (this.approval.invalid) {
+      this.selected = 5;
+      this.invalid.approval = true;
+      window.scrollTo(0, 0)
+      return true
+    }
+
+
 
 
 
@@ -305,23 +305,23 @@ export class LoanApplicationFormComponent implements OnInit {
       loanBank: this.bank.value,
       loanKyc: this.kyc.value,
       loanNominee: this.nominee.value,
-      customerId:this.basic.controls.customerId.value,
-      totalEligibleAmt:this.totalAmount,
-      totalFinalInterestAmt:(this.intreset.controls.intresetAmt.value)
+      customerId: this.basic.controls.customerId.value,
+      totalEligibleAmt: this.totalAmount,
+      totalFinalInterestAmt: (this.intreset.controls.intresetAmt.value)
     }
     return Obj
   }
 
   apply() {
-   let valid =  this.checkForFormValidation();
-   if(valid){
-     
-     return 
-   }
-  //  let data = this.createData()
-  //  this.loanApplicationFormService.applyForLoan(data).pipe(
-  //    map(res =>res)
-  //  ).subscribe()
+    let valid = this.checkForFormValidation();
+    if (valid) {
+
+      return
+    }
+    let data = this.createData()
+    this.loanApplicationFormService.applyForLoan(data).pipe(
+      map(res => res)
+    ).subscribe()
   }
-  
+
 }
