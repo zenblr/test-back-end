@@ -267,8 +267,8 @@ exports.appliedLoanDetails = async (req, res, next) => {
         attributes: { exclude: ['password'] }
     },
     {
-        model: models.finalLoanCalculator,
-        as: 'finalCalculator',
+        model: models.customerFinalLoan,
+        as: 'finalLoan',
         where: { isActive: true }
     }]
 

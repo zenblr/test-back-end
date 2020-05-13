@@ -138,11 +138,14 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
         } else if (KycStage.customerKycCurrentStage == "6") {
 
+            let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: KycStage.customerId } })
+
             return res.status(200).json({
                 message: `successful`,
                 customerId: KycStage.customerId,
                 customerKycId: KycStage.id,
-                customerKycCurrentStage: KycStage.customerKycCurrentStage
+                customerKycCurrentStage: KycStage.customerKycCurrentStage,
+                KycClassification
             })
 
         }
@@ -155,6 +158,8 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let kyc = await sequelize.transaction(async (t) => {
 
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, customerKycCurrentStage: "2" })
+
+        await models.customer.update({ panCardNumber: panCardNumber }, { where: { id: getCustomerInfo.id }, transaction: t })
 
         let createCustomerKyc = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
