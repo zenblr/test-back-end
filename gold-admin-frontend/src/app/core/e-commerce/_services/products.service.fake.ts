@@ -10,7 +10,7 @@ import { HttpUtilsService, QueryParamsModel, QueryResultsModel } from '../../_ba
 import { ProductModel } from '../_models/product.model';
 import { each } from 'lodash';
 
-const API_PRODUCTS_URL = 'api/products';
+const API_PRODUCTS_URL = '';
 // Fake REST API (Mock)
 // This method emulates server calls
 @Injectable()

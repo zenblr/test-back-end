@@ -16,7 +16,7 @@ route.delete('/', checkAuth, wrapper(deactiveLogisticPartner)); // delete logist
 
 route.get('/:id', checkAuth, wrapper(readLogisticPartnerById)); // read logistic partner by id
 
-route.put('/:id',logisticPartnerUpdateValidation,validationError, checkAuth, wrapper(updateLogisticPartner)); // update logistic partner
+route.put('/:id',logisticPartnerUpdateValidation,validationError,checkAuth, wrapper(updateLogisticPartner)); // update logistic partner
 
 
 module.exports = route;

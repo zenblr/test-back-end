@@ -24,6 +24,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         tableName: 'logistic_partner',
     });
+    LogisticPartner.associate = function (models) {
 
+    LogisticPartner.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+    LogisticPartner.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+    }
     return LogisticPartner;
+
 }

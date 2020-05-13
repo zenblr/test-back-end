@@ -27,4 +27,8 @@ export class SharedService {
     fd.append('avatar', files)
     return this.http.post<any>(`/api/upload-file`, fd);
   }
+
+  fileUpload(data) {
+    return this.http.post<any>(`/api/file-upload`, data);
+  }
 }

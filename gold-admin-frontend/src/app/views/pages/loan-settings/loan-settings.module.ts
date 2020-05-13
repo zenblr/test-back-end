@@ -16,16 +16,21 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AddSchemeComponent } from './add-scheme/add-scheme.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoanSchemeComponent } from './loan-scheme/loan-scheme.component';
-import{ CoreModule } from '../../../core/core.module'
+import{ CoreModule } from '../../../core/core.module';
+import { AddKaratDetailsComponent } from './karat-details/add-karat-details/add-karat-details.component';
+import { ListKaratDetailsComponent } from './karat-details/list-karat-details/list-karat-details.component'
 const routes: Routes = [
   { path: 'loan-status', component: LoanStatusComponent },
   { path: 'scheme', component: LoanSchemeComponent },
+  {path:'karat-details',component:ListKaratDetailsComponent}
 ]
 
 @NgModule({
   declarations: [
     LoanStatusComponent,
-    AddSchemeComponent
+    AddSchemeComponent,
+    AddKaratDetailsComponent,
+    ListKaratDetailsComponent
   ],
   imports: [
     CommonModule,
@@ -55,7 +60,8 @@ const routes: Routes = [
   ],
   entryComponents: [
     ActionNotificationComponent,
-    AddSchemeComponent
+    AddSchemeComponent,
+    AddKaratDetailsComponent
   ],
 })
 export class LoanSettingsModule { }

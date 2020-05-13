@@ -10,10 +10,10 @@ exports.logisticPartnerValidation = [
     .withMessage('logistic partner name is required')
     .custom(async (value,{req}) => {
       return await models.logisticPartner.findOne({ where: { 
-        name: {
-          [op.iLike]: value},
-          isActive: true }
-        }).then(logisticPartner => {
+       name:{
+        [op.iLike]: value},
+          isActive: true 
+        }}).then(logisticPartner => {
         if (logisticPartner) {
           return Promise.reject("logistic partner name already exit !");
         }

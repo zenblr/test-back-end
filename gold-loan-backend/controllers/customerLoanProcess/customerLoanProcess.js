@@ -10,41 +10,87 @@ const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB
 //  FUNCTION FOR LOAN APPLICATION FORM
 exports.applyForLoanApplication = async (req, res, next) => {
 
-    let { customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt,
-        name, accountNumber, ifscCode, identityProof, idCardNumber, permanentAddress, permanentAddState, permanentAddCity, permanentAddPin, permanentAddProof,
-        permanentAddCardNumber, residentialAddress, residentialAddState, residentialAddCity, residentialAddPin, residentialAddProof,
-        residentialAddCardNumber, nomineeData, ornamentData, customerUniqueId, mobile, panCardNumber, startDate, partnerName, schemeName, finalLoanAmount,
-        loanStartDate, tenure, loanEndDate, paymentFrequency, interestRate } = req.body;
 
+    let { customerId, totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanBank, loanOrnmanets, loanFinalCalculator, loanPersonal, loanKyc, loanNominee } = req.body
+
+    let checkKycStatus = await models.customerKyc.findOne({ where: { customerId, kycStatus: "approved" } })
+    if (check.isEmpty(checkKycStatus)) {
+        return res.status(400).json({ message: `customer Kyc status is not approved` })
+    }
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+    //customerLoan
+    let { applicationFormForAppraiser,
+        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
+
+    // customerLoanBank
+    let { bankName, accountNumber, ifscCode } = loanBank
+
+    // customerLoanKycAddress
+    let { identityTypeId, identityProof, idCardNumber, permanentAddProofTypeId, permanentAddress, permanentAddStateId, permanentAddCityId, permanentAddPin, permanentAddProof, permanentAddCardNumber, residentialAddProofTypeId, residentialAddress, residentialAddStateId, residentialAddCityId, residentialAddPin, residentialAddProof, residentialAddCardNumber } = loanKyc
+
+    //customerLoanNominee
+    let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
+
+    //customerFinalLoan
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
+
+    //customerPersonal
+    let { customerUniqueId, mobileNumber, panCardNumber, startDate } = loanPersonal
+
+    //customerLoanOrnamanetsDetails
+    // console.log(loanOrnmanets)
+
     let appliedForLoanApplication = await sequelize.transaction(async t => {
-        let customerLoanCreated = await models.customerLoan.addCustomerLoan(customerId, applicationFormForAppraiser,
-            goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy
-            , { transaction: t });
+        // customerLoan
+        let customerLoanCreated = await models.customerLoan.create({
+            customerId, applicationFormForAppraiser,
+            goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy
+        }, { transaction: t })
         let loanId = customerLoanCreated.id;
-        let customerBankDetailsCreated = await models.customerLoanBankDetail.addCustomerBankDetail(
-            loanId, name, accountNumber, ifscCode, createdBy, modifiedBy
-            , { transaction: t });
-        let customerKycDetailsCreated = await models.customerLoanKycDetail.addCustomerKycDetail(
-            loanId, identityProof, idCardNumber, permanentAddress, permanentAddState, permanentAddCity, permanentAddPin, permanentAddProof,
-            permanentAddCardNumber, residentialAddress, residentialAddState, residentialAddCity, residentialAddPin, residentialAddProof,
+
+        // customerLoanBank
+        await models.customerLoanBankDetail.create({
+            loanId, bankName, accountNumber, ifscCode, createdBy, modifiedBy
+        }, { transaction: t });
+
+        //customerLoanKycAddress
+        await models.customerLoanKycDetail.create({
+            loanId, identityTypeId, identityProof, idCardNumber, permanentAddProofTypeId, permanentAddress, permanentAddStateId, permanentAddCityId, permanentAddPin, permanentAddProof,
+            permanentAddCardNumber, residentialAddProofTypeId, residentialAddress, residentialAddStateId, residentialAddCityId, residentialAddPin, residentialAddProof,
             residentialAddCardNumber, createdBy, modifiedBy
-            , { transaction: t });
-        let customerNomineeDetailsCreated = await models.customerLoanNomineeDetail.addCustomerNomineeDetail(
-            loanId, nomineeData, createdBy, modifiedBy
-            , { transaction: t });
-        let customerOramentsDetailsCreated = await models.customerLoanOrnamentsDetail.addCustomerOrnamentsDetail(
-            loanId, ornamentData, createdBy, modifiedBy
-            , { transaction: t });
-        let customerPersonalDetailsCreated = await models.customerLoanPersonalDetail.addCustomerPersonalDetail(
-            loanId, customerUniqueId, mobile, panCardNumber, startDate, createdBy, modifiedBy
-            , { transaction: t });
-        let finalloanCalculatorCreated = await models.finalLoanCalculator.addFinalLoanCalculator(loanId, partnerName, schemeName,
-            finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, interestRate, createdBy, modifiedBy, { transaction: t })
+        }, { transaction: t });
+
+        //customerLoanNominee
+        await models.customerLoanNomineeDetail.create({
+            loanId, nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, createdBy, modifiedBy
+        }, { transaction: t });
+
+        //customerPersonalData
+        await models.customerLoanPersonalDetail.create({
+            loanId, customerUniqueId, mobileNumber, panCardNumber, startDate, createdBy, modifiedBy
+        }, { transaction: t });
+
+        //customerFinalLoan
+        await models.customerFinalLoan.create({
+            loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate, createdBy, modifiedBy
+        }, { transaction: t })
+
+        let allOrnmanets = []
+        for (let i = 0; i < loanOrnmanets.length; i++) {
+            loanOrnmanets[i]['createdBy'] = createdBy
+            loanOrnmanets[i]['modifiedBy'] = modifiedBy
+            loanOrnmanets[i]['loanId'] = loanId
+            allOrnmanets.push(loanOrnmanets[i])
+        }
+
+        //customerOrnamentDetails
+        await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
+
     })
 
-    res.status(201).json({ message: 'you have successfully applied for the loan' });
+
+    return res.status(201).json({ message: 'you have successfully applied for the loan' });
 }
 
 

@@ -32,14 +32,28 @@ exports.readLogisticPartner = async (req, res) => {
 
     let allLogisticPartner = await models.logisticPartner.findAll({
         where: searchQuery,
+        order: [["id", "DESC"]],
         offset: offset,
-        limit: pageSize
+        limit: pageSize,
+        include: [
+            {
+                model: models.user,
+                as: "Createdby",
+            },
+            {
+                model: models.user,
+                as: "Modifiedby",
+            },  
+        ]
     });
     let count = await models.logisticPartner.count({
         where: searchQuery
     });
-    if (!allLogisticPartner[0]) {
-        return res.status(404).json({ message: 'data not found' });
+    if (!allLogisticPartner) {
+        res.status(200).json({
+            data: [],
+            count: 0
+        })
     }
     return res.status(200).json({ data: allLogisticPartner, count: count });
 }

@@ -14,14 +14,26 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'nominee_age'
         },
+        relationship: {
+            type: DataTypes.STRING,
+            field: 'relationship'
+        },
         nomineeType: {
             type: DataTypes.ENUM,
             field: 'nominee_type',
             values: ['minor', 'major']
         },
-        relationship: {
+        guardianName: {
             type: DataTypes.STRING,
-            field: 'relationship'
+            field:'guardian_name'
+        },
+        guardianAge: {
+            type: DataTypes.INTEGER,
+            field: 'guardian_age'
+        },
+        guardianRelationship: {
+            type: DataTypes.STRING,
+            field: 'guardian_relationship'
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -34,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
     }, {
         freezeTableName: true,
@@ -44,6 +56,9 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanNomineeDetail.associate = function (models) {
         customerLoanNomineeDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+
+        customerLoanNomineeDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        customerLoanNomineeDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // FUNCTION TO ADD CUSTOMER NOMINEE DETAIL

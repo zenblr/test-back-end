@@ -206,7 +206,11 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
     let name = `${firstName} ${lastName}`;
 
     await sequelize.transaction(async t => {
-        await models.customerKycPersonalDetail.update({ identityProof, identityTypeId, identityProofNumber }, { where: { id: customerKycId }, transaction: t });
+        await models.customerKycPersonalDetail.update({
+            identityProof: identityProof,
+            identityTypeId: identityTypeId,
+            identityProofNumber: identityProofNumber
+        }, { where: { id: customerKycId }, transaction: t });
 
         await models.customerKyc.update({ customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
         await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
@@ -236,7 +240,14 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     await sequelize.transaction(async t => {
 
         let details = await models.customerKycPersonalDetail.update({
-            profileImage, dateOfBirth, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof
+            profileImage: profileImage,
+            dateOfBirth: dateOfBirth,
+            alternateMobileNumber: alternateMobileNumber,
+            gender: gender,
+            martialStatus: martialStatus,
+            occupationId: occupationId,
+            spouseName: spouseName,
+            signatureProof: signatureProof
         }, { where: { id: customerKycId }, transaction: t });
 
         await models.customerKyc.update({ customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
@@ -337,7 +348,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
     let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
-    console.log(KycClassification);
+    // console.log(KycClassification);
     return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification })
 
 }
