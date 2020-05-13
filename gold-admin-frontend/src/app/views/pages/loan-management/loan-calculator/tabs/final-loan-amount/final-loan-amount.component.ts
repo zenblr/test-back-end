@@ -140,4 +140,15 @@ export class FinalLoanAmountComponent implements OnInit {
     return this.finalLoanForm.controls;
   }
 
+  chnageLtvPercent() {
+    const ltvPercent = +(this.controls.ltvPercent.value);
+    const currentLtvAmount = +(this.controls.currentLtvAmount.value);
+
+    const ltvAmount = currentLtvAmount * ltvPercent / 100;
+    console.log(ltvAmount);
+
+    this.controls.ltvAmount.patchValue(ltvAmount);
+
+  }
+
 }

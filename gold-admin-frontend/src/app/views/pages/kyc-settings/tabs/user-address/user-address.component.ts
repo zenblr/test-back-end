@@ -17,7 +17,8 @@ export class UserAddressComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   files: any;
   @ViewChild("identity", { static: false }) identity;
-  @ViewChild("address", { static: false }) address;
+  @ViewChild("permanent", { static: false }) permanent;
+  @ViewChild("residential", { static: false }) residential;
 
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
   states = [];
@@ -26,8 +27,8 @@ export class UserAddressComponent implements OnInit {
   addressProofs = [];
   identityProofs = [];
   images = { identityProof: [], residential: [], permanent: [] };
-  customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
+  // customerDetails = this.userDetailsService.userData;
+  customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
 
   constructor(
     private fb: FormBuilder,
@@ -120,7 +121,8 @@ export class UserAddressComponent implements OnInit {
       }),
       finalize(() => {
         this.identity.nativeElement.value = '';
-        this.address.nativeElement.value = '';
+        this.permanent.nativeElement.value = '';
+        this.residential.nativeElement.value = '';
       })
     ).subscribe()
 

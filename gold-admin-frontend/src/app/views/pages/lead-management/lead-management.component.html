@@ -21,6 +21,11 @@
                     <mat-cell *matCellDef="let role">{{role.panCardNumber | uppercase}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="internalBranch">
+                    <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.internalBranch.name | titlecase}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="state">
                     <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.state.name | titlecase}}</mat-cell>
@@ -29,6 +34,11 @@
                 <ng-container matColumnDef="city">
                     <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.city.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="pincode">
+                    <mat-header-cell *matHeaderCellDef>Pin Code</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role.pinCode }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
@@ -63,8 +73,8 @@
                     <mat-cell *matCellDef="let role">
                         <ng-container *ngIf="role.status.id == '1'">
                             <div [ngStyle]="{'display': 'inherit'}">
-                                <div class="kt-pointer text-primary" (click)="goToKyc(role.mobileNumber)">Apply
-                                    for KYC</div>
+                                <div class="kt-pointer" (click)="goToKyc(role.mobileNumber)">
+                                    <button mat-stroked-button>Apply KYC</button></div>
                             </div>
                         </ng-container>
                     </mat-cell>
@@ -82,9 +92,9 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row [ngStyle]="{'width': '120%'}" *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                <mat-row [ngStyle]="{'width': '120%'}" *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
