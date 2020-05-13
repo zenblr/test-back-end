@@ -67,13 +67,14 @@
                                         [class.isError]="controls.identityProof.invalid && controls.identityProof.touched">
                                     <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                            (click)="file.click()"
+                                            (click)="identity.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
 
                                 </div>
                                 <label class="mandatory  file d-none">
-                                    <input type="file" id="file" aria-label="File browser example" #file
+                                    <input type="file" accept="image/png, image/jpeg" id="file"
+                                        aria-label="File browser example" #identity
                                         (input)="getFileInfo($event,'identityProof')">
                                     <span class="file-custom"></span>
                                 </label>
@@ -409,12 +410,13 @@
                                                         formControlName="addressProof">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text bg kt-pointer font-weight"
-                                                            id="basic-addon2" (click)="file.click()"
+                                                            id="basic-addon2" (click)="address.click()"
                                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                                     </div>
                                                 </div>
                                                 <label class="mandatory  file d-none">
-                                                    <input type="file" id="file" aria-label="File browser example" #file
+                                                    <input type="file" accept="image/png, image/jpeg" id="file"
+                                                        aria-label="File browser example" #address
                                                         (input)="getFileInfo($event,i)">
                                                     <span class="file-custom"></span>
                                                 </label>
@@ -437,7 +439,7 @@
                                                 </div>
                                             </div>
                                             <label  class="mandatory  file d-none">
-                                                <input type="file" id="file" aria-label="File browser example" #file
+                                                <input type="file"  accept="image/png, image/jpeg" id="file" aria-label="File browser example" #file
                                                     (input)="getFileInfo($event)">
                                                 <span class="file-custom"></span>
                                             </label>

@@ -70,7 +70,7 @@ body {
 	color: #fff !important;
 	background-color: rgb(24, 179, 24) !important;
 	border-radius: 9px !important;
-	font-family: 'Poppins';
+	font-family: "Poppins";
 }
 
 .form-label {
@@ -87,17 +87,20 @@ body {
 
 .form-control {
 	display: block;
-    width: 100%;
-    padding: .65rem !important;
-    font-size: 1rem !important;
-    font-weight: 400 !important;
-    line-height: 1.5 !important;
-    color: #454d67 !important;
-    border-radius: 9px !important;
-    background-color: #f2f3f7 !important;
-    background-clip: padding-box !important;
-    border: 1px solid #e2e5ec!important;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+	width: 100%;
+	padding: 0.65rem !important;
+	font-size: 1rem !important;
+	font-weight: 400 !important;
+	line-height: 1.5 !important;
+	color: #454d67 !important;
+	border-radius: 9px !important;
+	background-color: #f2f3f7 !important;
+	background-clip: padding-box !important;
+	border: 1px solid #e2e5ec !important;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.form-control:disabled{
+	cursor: not-allowed !important;
 }
 
 .isError {
@@ -194,11 +197,12 @@ input[type="number"] {
 	background-color: #454d67 !important;
 }
 
-.mat-tab-nav-bar, .mat-tab-header{
+.mat-tab-nav-bar,
+.mat-tab-header {
 	border: none !important;
 }
 
-.kt-aside-menu .kt-menu__nav{
+.kt-aside-menu .kt-menu__nav {
 	padding-top: 0 !important;
 }
 // custom checkbox
@@ -211,9 +215,6 @@ input[type="number"] {
 	height: 0;
 	width: 0;
 }
-
-
-
 
 .checkmark {
 	position: absolute;
@@ -260,9 +261,9 @@ input[type="number"] {
 /* Style the checkmark/indicator */
 .custom-checkbox .checkmark:after {
 	left: 7px;
-    top: 3px;
-    width: 6px;
-    height: 12px;
+	top: 3px;
+	width: 6px;
+	height: 12px;
 	border: solid white;
 	border-width: 0 3px 3px 0;
 	-webkit-transform: rotate(45deg);
@@ -271,8 +272,6 @@ input[type="number"] {
 }
 
 // custom checkbox 2
-
-
 
 /* Create a custom checkbox */
 .checkmark2 {
@@ -284,7 +283,6 @@ input[type="number"] {
 	background-color: #eee;
 	border-radius: 5px;
 }
-
 
 /* On mouse-over, add a background color */
 .custom-checkbox :hover input ~ .checkmark2 {
@@ -316,7 +314,7 @@ input[type="number"] {
 
 /* Style the checkmark/indicator */
 .custom-checkbox .checkmark2:after {
-	content: ' ';
+	content: " ";
 	position: absolute;
 	top: 50%;
 	left: 10%;
@@ -325,9 +323,6 @@ input[type="number"] {
 	height: 3px;
 	background: white;
 }
-
-
-
 
 // modal
 .mat-dialog-container {
@@ -367,7 +362,7 @@ mat-header-row {
 }
 
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
-    background-color: transparent;
+	background-color: transparent;
 }
 
 .border-rad-15 {
@@ -381,7 +376,9 @@ mat-header-row {
 	}
 }
 
-.mat-table,.mat-tab-group, .mat-raised-button{
+.mat-table,
+.mat-tab-group,
+.mat-raised-button {
 	font-family: Poppins, Helvetica, sans-serif !important;
 }
 
@@ -452,8 +449,6 @@ mat-header-row {
 	}
 }
 
-
-
 .carousel-control-prev-icon{
     position: absolute;
 	left: -30px;
@@ -467,15 +462,17 @@ mat-header-row {
 
   .input-group-text{
 	//   border-radius: 9px !important;
-	  margin-left: -10px;
-	  z-index: 2;
-	  border-top-right-radius: 9px !important;
-	  border-bottom-right-radius: 9px !important;
-  }
+	margin-left: -10px;
+	z-index: 2;
+	border-top-right-radius: 9px !important;
+	border-bottom-right-radius: 9px !important;
+	background-color: #454d67 !important;
+	font-weight: 600 !important;
+	color: #fff !important;
+}
 
-  .mandatory::after{
-	content: '*';
+.mandatory::after {
+	content: "*";
 	color: red !important;
 	margin-left: 5px;
-
-  }
+}

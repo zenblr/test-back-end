@@ -40,6 +40,9 @@ module.exports = (sequelize, DataTypes) => {
         Partner.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Partner.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
+        Partner.hasMany(models.partnerBranch, { foreignKey: 'partnerId', as: 'partnerBranch' });
+
+
         Partner.hasMany(models.partnerCommissionHistory, { foreignKey: 'partnerId', as: 'partnerCommissionHistory' });
 
     }

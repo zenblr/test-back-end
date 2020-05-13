@@ -3,6 +3,7 @@
     <p class="forgot-title">{{title}}</p>
     <p class="forgot-sub-title text-gray m-0">OTP has been sent to your Registered</p>
     <p class="forgot-sub-title text-gray">Mobile number which end with xxxxx x{{mobile | slice:6:10}}</p>
+    <p class="forgot-sub-title text-gray">OTP is valid for 10 mins</p>
 </div>
 
 <form [formGroup]="singInOtp" autocomplete="off">
@@ -24,6 +25,7 @@
                 (input)="input($event,'four')" formControlName="four">
         </div>
     </div>
+
     <div class="row">
         <div class="col"><button (click)="submit()" id="kt_login_signin_submit" class="btn btn-sign-otp w-100"
                 [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">Submit

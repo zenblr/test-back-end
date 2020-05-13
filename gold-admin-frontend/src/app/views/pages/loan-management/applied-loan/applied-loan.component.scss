@@ -1,0 +1,14 @@
+:host{
+    .mat-column-pan{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-date{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-fullName{
+        padding-left: 0 !important;
+    }
+    .mat-column-actions{
+        flex:1 !important;
+    }
+}

@@ -25,7 +25,7 @@
                             </div>
                             <div class="col-7 d-flex">
                                 <div class="align-self-center">
-                                    <input type="file" #profile class="d-none"
+                                    <input type="file" accept="image/png, image/jpeg" #profile class="d-none"
                                         (input)="getFileInfo($event, 'profile')" />
                                     <label (click)="profile.click()" class="kt-pointer text-primary"
                                         style="font-weight: 600;">Change Profile
@@ -178,7 +178,7 @@
                                             (click)="identity.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #identity
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #identity
                                         (input)="getFileInfo($event, 'identityProof')">
                                 </div>
                             </div>
@@ -316,6 +316,10 @@
                                     *ngIf="customerKycAddressOne.controls.pinCode.errors?.required && customerKycAddressOne.controls.pinCode.touched">
                                     Required field
                                 </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycAddressOne.controls.pinCode.errors?.pattern && customerKycAddressOne.controls.pinCode.touched">
+                                    Required field
+                                </mat-error>
                             </div>
 
                             <div class="offset-1 col-3 form-label kt-margin-t-20">
@@ -354,7 +358,7 @@
                                             (click)="permanent.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #permanent
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #permanent
                                         (input)="getFileInfo($event, 'permanent')">
                                 </div>
                             </div>
@@ -498,6 +502,10 @@
                                     *ngIf="customerKycAddressTwo.controls.pinCode.errors?.required && customerKycAddressTwo.controls.pinCode.touched">
                                     Required field
                                 </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycAddressTwo.controls.pinCode.errors?.pattern && customerKycAddressTwo.controls.pinCode.touched">
+                                    Required field
+                                </mat-error>
                             </div>
 
                             <div class="offset-1 col-3 form-label kt-margin-t-20">
@@ -549,7 +557,7 @@
                                             (click)="residential.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #residential
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #residential
                                         (input)="getFileInfo($event, 'residential')">
                                 </div>
                             </div>
@@ -618,8 +626,7 @@
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                     formControlName="dateOfBirth"
                                     [class.isError]="customerKycPersonal.controls.dateOfBirth.touched && customerKycPersonal.controls.dateOfBirth.invalid"
-                                    readonly placeholder="4/5/2020"
-                                    value="{{ data.customerKycReview.customerKycPersonal.dateOfBirth | date: 'mediumDate' }}" />
+                                    readonly placeholder="4/5/2020" [max]="maxDate" />
                                 <mat-datepicker #picker></mat-datepicker>
 
                                 <mat-error
@@ -781,7 +788,7 @@
                                             (click)="signature.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #signature
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #signature
                                         (input)="getFileInfo($event, 'signature')">
                                 </div>
                             </div>
@@ -963,7 +970,8 @@
                                             (click)="pass.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" #pass (input)="getFileInfo($event, 'passbook')">
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #pass
+                                        (input)="getFileInfo($event, 'passbook')">
                                 </div>
                             </div>
                         </div>

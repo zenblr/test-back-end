@@ -29,7 +29,7 @@ export class UploadOfferService {
     return this.http.get(`/api/gold-rate`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        this.toastr.error(err.error.messgage);
         throw (err);
       })
     )
