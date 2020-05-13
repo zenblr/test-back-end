@@ -1,35 +1,44 @@
-module.exports=(sequelize,DATATYPES)=>{
-    const Partner=sequelize.define('partner',{
-        partnerId:{
-            type:DATATYPES.STRING,
-            field:'partner_id'
+module.exports = (sequelize, DataTypes) => {
+    const Partner = sequelize.define('partner', {
+        partnerId: {
+            type: DataTypes.STRING,
+            field: 'partner_id'
         },
-        name:{
-            type:DATATYPES.STRING,
-            field:'name'
+        name: {
+            type: DataTypes.STRING,
+            field: 'name'
         },
-        commission:{
-            type:DATATYPES.FLOAT,
-            field:'commission'
+        commission: {
+            type: DataTypes.FLOAT,
+            field: 'commission'
         },
-    
-    isActive:{
-        type:DATATYPES.BOOLEAN,
-        field:'is_active',
-        defaultValue:true,
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by',
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by',
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true,
 
-    }
-},
+        }
+    },
         {
             freezeTableName: true,
-            tableName: 'partner',
+            tableName: 'loan_partner',
         }
     );
 
 
-    Partner.associate = function(models) {
-     
-        Partner.belongsToMany(models.schemes, {through: models.partner_schemes})
+    Partner.associate = function (models) {
+
+        Partner.belongsToMany(models.scheme, { through: models.partnerScheme })
+        Partner.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        Partner.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
 

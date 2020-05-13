@@ -23,6 +23,7 @@ import { UploadPacketsComponent } from './packets/upload-packets/upload-packets.
 import { AppliedLoanComponent } from './applied-loan/applied-loan.component';
 import { PacketsListComponent } from './packets/packets-list/packets-list.component';
 import { AssignPacketsComponent } from './packets/assign-packets/assign-packets.component';
+import { InterestCalculatorComponent } from './loan-application-form/tabs/interest-calculator/interest-calculator.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -30,6 +31,10 @@ const rout: Routes = [
   },
   {
     path: 'loan-application-form',
+    component: LoanApplicationFormComponent
+  },
+  {
+    path: 'loan-application-form/:id',
     component: LoanApplicationFormComponent
   },
   {
@@ -62,7 +67,8 @@ const rout: Routes = [
     UploadPacketsComponent,
     AppliedLoanComponent,
     PacketsListComponent,
-    AssignPacketsComponent
+    AssignPacketsComponent,
+    InterestCalculatorComponent
   ],
   imports: [
     CommonModule,

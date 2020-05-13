@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core'
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from "../../../../core/loan-management";
 import { map, catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-loan-application-form',
@@ -31,11 +32,12 @@ export class LoanApplicationFormComponent implements OnInit {
   approval: any;
   Ornaments: any;
   customerDetail: any;
-  disabled = [false, true, true, true, true, true];
+  disabled = [false, true, true, true, false, true];
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
-    public loanApplicationFormService: LoanApplicationFormService
+    public loanApplicationFormService: LoanApplicationFormService,
+    public toast:ToastrService,
   ) {
 
   }
@@ -55,135 +57,17 @@ export class LoanApplicationFormComponent implements OnInit {
   customerDetails(event) {
     this.loanApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
       map(res => {
-        this.customerDetail = res.customerData
-        // this.customerDetail = {
-        //   "id": 1,
-        //   "customerUniqueId": "LOAN1",
-        //   "panCardNumber": "AAAAA5555F",
-        //   "mobileNumber": "9819228963",
-        //   "customerKyc": {
-        //     "id": 1,
-        //     "customerId": 1,
-        //     "kycStatus": "approved",
-        //     "isKycSubmitted": true,
-        //     "isAppliedForKyc": true,
-        //     "isVerifiedByCce": true,
-        //     "cceVerifiedBy": 3,
-        //     "isVerifiedByBranchManager": true,
-        //     "branchManagerVerifiedBy": 3,
-        //     "customerKycCurrentStage": "6",
-        //     "createdBy": 1,
-        //     "isActive": true,
-        //     "createdAt": "2020-05-12T07:43:49.496Z",
-        //     "updatedAt": "2020-05-12T08:41:14.075Z"
-        //   },
-        //   "customerKycPersonal": {
-        //     "id": 1,
-        //     "identityTypeId": 2,
-        //     "identityProof": [
-        //       "http://173.249.49.7:8000/uploads/images/1589269438230.jpeg"
-        //     ],
-        //     "identityProofNumber": "khviv",
-        //     "identityType": {
-        //       "id": 2,
-        //       "name": "aadhar card",
-        //       "isActive": true,
-        //       "createdAt": "2020-04-30T12:45:20.327Z",
-        //       "updatedAt": "2020-04-30T12:45:20.327Z"
-        //     }
-        //   },
-        //   "customerKycAddress": [
-        //     {
-        //       "id": 1,
-        //       "customerId": 1,
-        //       "customerKycId": 1,
-        //       "addressType": "permanent",
-        //       "address": "dawda",
-        //       "stateId": 16,
-        //       "cityId": 1367,
-        //       "pinCode": 777777,
-        //       "addressProofTypeId": 1,
-        //       "addressProof": [
-        //         "http://173.249.49.7:8000/uploads/images/1589269445931.jpeg"
-        //       ],
-        //       "addressProofNumber": "dwaww",
-        //       "createdAt": "2020-05-12T07:44:13.466Z",
-        //       "updatedAt": "2020-05-12T07:44:13.466Z",
-        //       "state": {
-        //         "id": 16,
-        //         "name": "Jharkhand",
-        //         "isActive": true
-        //       },
-        //       "city": {
-        //         "id": 1367,
-        //         "name": "Basukinath",
-        //         "stateId": 16,
-        //         "slug": null,
-        //         "isActive": true
-        //       },
-        //       "addressProofType": {
-        //         "id": 1,
-        //         "name": "voter Id",
-        //         "isActive": true,
-        //         "createdAt": "2020-04-30T12:46:11.364Z",
-        //         "updatedAt": "2020-04-30T12:46:11.364Z"
-        //       }
-        //     },
-        //     {
-        //       "id": 2,
-        //       "customerId": 1,
-        //       "customerKycId": 1,
-        //       "addressType": "residential",
-        //       "address": "dawda",
-        //       "stateId": 16,
-        //       "cityId": 1367,
-        //       "pinCode": 777777,
-        //       "addressProofTypeId": 1,
-        //       "addressProof": [
-        //         "http://173.249.49.7:8000/uploads/images/1589269445931.jpeg"
-        //       ],
-        //       "addressProofNumber": "dwaww",
-        //       "createdAt": "2020-05-12T07:44:13.466Z",
-        //       "updatedAt": "2020-05-12T07:44:13.466Z",
-        //       "state": {
-        //         "id": 16,
-        //         "name": "Jharkhand",
-        //         "isActive": true
-        //       },
-        //       "city": {
-        //         "id": 1367,
-        //         "name": "Basukinath",
-        //         "stateId": 16,
-        //         "slug": null,
-        //         "isActive": true
-        //       },
-        //       "addressProofType": {
-        //         "id": 1,
-        //         "name": "voter Id",
-        //         "isActive": true,
-        //         "createdAt": "2020-04-30T12:46:11.364Z",
-        //         "updatedAt": "2020-04-30T12:46:11.364Z"
-        //       }
-        //     }
-        //   ],
-        //   "customerKycBank": [
-        //     {
-        //       "id": 1,
-        //       "bankName": "dawd",
-        //       "accountNumber": "222222222222222222",
-        //       "ifscCode": "dddd2222222"
-        //     }
-        //   ]
-        // }
-        this.bankDetails = this.customerDetail.customerKycBank[0]
-        for (let index = 0; index < this.disabled.length; index++) {
-          if (index <= 3) {
-            this.disabled[index] = false;
-          }
-        }
-        this.selected = 3;
+    this.customerDetail = res.customerData
+    this.bankDetails = this.customerDetail.customerKycBank[0]
+    for (let index = 0; index < this.disabled.length; index++) {
+      if (index <= 3) {
+        this.disabled[index] = false;
+      }
+    }
+    this.selected = 3;
       }),
       catchError(err => {
+        this.toast.error(err.error.message)
         throw err;
       })
     ).subscribe()
@@ -192,10 +76,6 @@ export class LoanApplicationFormComponent implements OnInit {
   basicForm(event) {
     this.basic = event
     this.invalid.basic = false
-
-    // if(this.basic.valid){
-    //   this.customerDetails()
-    // }
   }
 
   kycEmit(event) {
@@ -239,17 +119,21 @@ export class LoanApplicationFormComponent implements OnInit {
     this.Ornaments = event
     this.invalid.ornaments = false
     if (this.Ornaments.valid) {
-      this.calculateTotalEligibleAmount()
-      this.disabled[4] = false
+      // this.disabled[4] = false
+    this.calculateTotalEligibleAmount()
+
     } else {
-      this.disabled[4] = true;
+      // this.disabled[4] = true;
     }
+
   }
 
   calculateTotalEligibleAmount() {
+    this.totalAmount = 0;
     this.Ornaments.value.forEach(element => {
       this.totalAmount += element.ltvAmount
     });
+  
     console.log(this.Ornaments.value)
   }
 
@@ -313,15 +197,21 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   apply() {
-    let valid = this.checkForFormValidation();
-    if (valid) {
-
-      return
-    }
-    let data = this.createData()
-    this.loanApplicationFormService.applyForLoan(data).pipe(
-      map(res => res)
-    ).subscribe()
+   let valid =  this.checkForFormValidation();
+   if(valid){
+     return 
+   }
+   let data = this.createData()
+   this.loanApplicationFormService.applyForLoan(data).pipe(
+     map(res =>{
+       this.toast.success(res.message)
+       this.router.navigate(['/loan-management/applied-loan'])
+     }),
+     catchError(err =>{
+      this.toast.error(err.error.message)
+       throw err
+     })
+   ).subscribe()
   }
 
 }

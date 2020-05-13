@@ -9,17 +9,23 @@ module.exports = (req, res, next) => {
 
     const createdDateTime = new Date();
 
-    let skipUrls = [
-        "/api/user",
+    let skipUrls = [        
+        "/api/user/addadmin",
         "/",
-        "/api/customer/verified-register-otp",
+
+        "/api/customer/verify-register-otp",
         "/api/customer/send-register-otp",
+
         "/api/auth/user-login",
         "/api/auth/customer-login",
+        "/api/auth/verify-login",
+
+        "/api/user/",
         "/api/user/register-otp",
         "/api/user/verify-otp",
         "/api/user/send-otp",
-        "/api/user/update-password"
+        "/api/user/update-password",
+        "/api/user/verify-register-otp",
     ];
     if (!skipUrls.includes(req.originalUrl)) {
         try {
@@ -41,7 +47,7 @@ module.exports = (req, res, next) => {
                         })
                         .then(loggedInUser => {
                             if (!loggedInUser) {
-                                res.status(400).json({
+                                res.status(401).json({
                                     messgage: "You are not login user"
                                 })
                             } else {
@@ -52,14 +58,14 @@ module.exports = (req, res, next) => {
                                 next();
                             }
                         }).catch(error => {
-                            res.status(400).json({
+                            res.status(401).json({
                                 messgage: "Wrong Credential"
                             })
                         })
                 }
             })
         } catch (error) {
-            res.status(400).json({
+            res.status(401).json({
                 message: "please login first"
             })
         }
@@ -71,7 +77,7 @@ module.exports = (req, res, next) => {
 
 let apilogger = (req, token, createdDateTime) => {
 
-    models.apilogger.create({
+    models.apiLogger.create({
         userToken: token,
         url: req.url,
         method: req.method,

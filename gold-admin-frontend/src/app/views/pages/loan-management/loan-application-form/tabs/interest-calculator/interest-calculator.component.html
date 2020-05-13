@@ -1,0 +1,237 @@
+<div class="container minHeight">
+    <form [formGroup]="finalInterestForm">
+        <div class="row kt-margin-b-20 kt-margin-t-30">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Parnter Name</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="partnerId" class="form-control" (change)="getSchemes()"
+                            [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
+                            <option value="" [selected]="true" [disabled]="true">Select Partner</option>
+                            <option [value]="partner.id" *ngFor="let partner of partnerList">
+                                {{partner.name | titlecase}}
+                            </option>
+                        </select>
+                        <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.invalid">Filed is
+                            required</mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Scheme Name</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="schemeId" class="form-control" (change)="selectedScheme()"
+                            [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
+                            <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
+                            <option [value]="schemes.id" *ngFor="let schemes of schemesList">
+                                {{schemes.schemeName}} {{schemes.schemeAmountStart}} - {{schemes.schemeAmountEnd}}</option>
+                        </select>
+                        <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Filed is required
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Start Date</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="text" class="form-control" [matDatepicker]="picker" 
+                            formControlName="loanStartDate"
+                            [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
+                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()" readonly>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="controls.loanStartDate.errors?.required && controls.loanStartDate.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Tenure</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="tenure" class="form-control" (change)="setEndDate()"
+                            [class.isError]="controls.tenure.touched && controls.tenure.invalid">
+                            <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
+                            <option [value]="ten" *ngFor="let ten of tenure">{{ten}}</option>
+                        </select>
+                        <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Loan End Date</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" formControlName="loanEndDate" placeholder="02 May, 2020"
+                            [matDatepicker]="picker1"
+                            [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid" readonly />
+                        <mat-datepicker #picker1></mat-datepicker>
+                        <mat-error *ngIf="controls.loanEndDate.errors?.required && controls.loanEndDate.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Loan Amount</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="number" class="form-control" formControlName="finalLoanAmount"
+                            placeholder="0,00,000" (blur)="amountValidation()"
+                            [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
+                        <mat-error
+                            *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
+                            Required field
+                        </mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
+                            Invalid
+                        </mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">Enter Loan Amount as Per Scheme</mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.eligibleAmt">Amount should be less then Eligible Amount</mat-error>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-margin-b-20">
+
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Interest Rest Days</label>
+                    </div>
+                    <div class="col-7">
+                        <select class="form-control" formControlName="paymentFrequency" (change)="getIntrest()"
+                            [class.isError]="controls.paymentFrequency.touched && controls.paymentFrequency.invalid">
+                            <option value="" [selected]="true" [disabled]="true">Select Repay Period</option>
+                            <option [value]="pay.value" *ngFor="let pay of repayType">{{pay.name | titlecase}}</option>
+                        </select>
+                        <mat-error
+                            *ngIf="controls.paymentFrequency.errors?.required && controls.paymentFrequency.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Interest Rate</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="number" class="form-control" formControlName="interestRate" placeholder="00%"
+                            [class.isError]="controls.interestRate.touched && controls.interestRate.invalid" />
+                        <mat-error *ngIf="controls.interestRate.errors?.required && controls.interestRate.touched">
+                            Required field
+                        </mat-error>
+                        <mat-error *ngIf="controls.interestRate.errors?.pattern && controls.interestRate.touched">
+                            Invalid Input
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Processing Charges(fixed)</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="number" class="form-control" formControlName="processingChargeFixed"
+                            placeholder="00%"
+                            [class.isError]="controls.processingChargeFixed.touched && controls.processingChargeFixed.invalid" />
+                        <mat-error
+                            *ngIf="controls.processingChargeFixed.errors?.pattern && controls.processingChargeFixed.touched">
+                            Invalid Input
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label>Processing Charges(%)</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="number" class="form-control" formControlName="processingChargePercent"
+                            placeholder="00%"
+                            [class.isError]="controls.processingChargePercent.touched && controls.processingChargePercent.invalid" />
+                        <mat-error
+                            *ngIf="controls.processingChargePercent.errors?.pattern && controls.processingChargePercent.touched">
+                            Invalid Input
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <div class="row">
+            <div class="col-6 kt-margin-t-30 kt-margin-b-30">
+
+                <div class="offset-4 col">
+                    <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcInterestAmount()"></kt-button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row justify-content-center kt-margin-b-20" *ngIf="dateOfPayment.length > 0">
+        <div class="col-6">
+            <div class="row justify-content-center">
+                <div class="col-7">
+                    <!-- <div>
+                        <label for="" class="text-color font-weight-500">Processing Charges :-
+                            {{controls.processingCharge.value}}</label>
+                    </div> -->
+                    <div class="table-div" id="print">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 50%" class="rating-title text-left">Date</th>
+                                    <th scope="col" style="width: 50%" class="rating-cce">Interest Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let date of dateOfPayment;index as idx">
+                                    <td>{{date | date :'mediumDate'}}</td>
+                                    <td [attr.rowspan]="colJoin" *ngIf="idx%colJoin == 0 || colJoin == null">
+                                        {{intrestAmount | currency : 'INR'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="kt-margin-t-20 kt-margin-b-30">
+                        <kt-button [value]="'Print Now'" [type]="'button'" (click)="printNow()"></kt-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

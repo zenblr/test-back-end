@@ -1,14 +1,18 @@
 module.exports = (sequelize, DataTypes) => {
     const Permission = sequelize.define('permission', {
         // attributes
-        permissionName: {
+        actionName: {
             type: DataTypes.STRING,
-            field: 'permission_name',
+            field: 'action_name',
             allowNull: false,
         },
         description:{
             type: DataTypes.TEXT,
-            field: 'description',
+            field: 'description'
+        },
+        entityId:{
+            type: DataTypes.INTEGER,
+            field: 'entity_id',
             allowNull: false,
         },
         isActive: {
@@ -24,11 +28,10 @@ module.exports = (sequelize, DataTypes) => {
 
 
     Permission.associate = function(models) {
-        // Permission.hasMany(models.role_permission, { foreignKey: 'permissionId', as: 'permission_role' });
-
-        Permission.belongsToMany(models.roles,{through: models.role_permission})
+        Permission.belongsTo(models.entity, { foreignKey: 'entityId', as: 'entity' });
+        Permission.belongsToMany(models.role,{through: models.rolePermission});
+        Permission.hasMany(models.permissionSystemInfo,{foreignKey:'permissionId', as:'systemInfo'});
     }
-
 
     return Permission;
 }
