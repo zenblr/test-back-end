@@ -87,7 +87,12 @@
                                     </select>
                                 </td>
                                 <td class="rating-bm text-center">
-                                    <img src="assets/media/icons/incorrect.svg">
+                                    <img src="../../../../../../../assets/media/icons/correct.svg"
+                                        *ngIf="cceControls.behaviourRatingVerifiedByBm.value"
+                                        (click)="approvalOfBM(false,'behaviour')">
+                                    <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                        *ngIf="!cceControls.behaviourRatingVerifiedByBm.value"
+                                        (click)="approvalOfBM(true,'behaviour')">
                                 </td>
                             </tr>
                             <tr>
@@ -103,7 +108,12 @@
                                     </select>
                                 </td>
                                 <td class="rating-bm text-center">
-                                    <img src="assets/media/icons/incorrect.svg">
+                                    <img src="../../../../../../../assets/media/icons/correct.svg"
+                                        *ngIf="cceControls.idProofRatingVerifiedByBm.value"
+                                        (click)="approvalOfBM(false,'identity')">
+                                    <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                        *ngIf="!cceControls.idProofRatingVerifiedByBm.value"
+                                        (click)="approvalOfBM(true,'identity')">
                                 </td>
                             </tr>
                             <tr>
@@ -119,7 +129,12 @@
                                     </select>
                                 </td>
                                 <td class="rating-bm text-center">
-                                    <img src="assets/media/icons/incorrect.svg">
+                                    <img src="../../../../../../../assets/media/icons/correct.svg"
+                                        *ngIf="cceControls.addressProofRatingVerifiedBm.value"
+                                        (click)="approvalOfBM(false,'address')">
+                                    <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                        *ngIf="!cceControls.addressProofRatingVerifiedBm.value"
+                                        (click)="approvalOfBM(true,'address')">
                                 </td>
                             </tr>
                             <tr>
@@ -147,10 +162,15 @@
                     </table>
                 </div>
 
-                <div *ngIf="showTextBoxCce" class="col kt-margin-t-20 kt-margin-b-20"
-                    style="width: 600px; margin: auto">
+                <div *ngIf="showTextBoxCce  && role == 'Customer Care Executive'"
+                    class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
                     <textarea class="form-control" formControlName="reasonFromCce"
                         [class.isError]="cceControls.reasonFromCce.invalid && cceControls.reasonFromCce.touched"></textarea>
+                </div>
+                <div *ngIf="showTextBoxBM && role== 'Branch Manager'" class="col kt-margin-t-20 kt-margin-b-20"
+                    style="width: 600px; margin: auto">
+                    <textarea class="form-control" formControlName="reasonFromBm"
+                        [class.isError]="cceControls.reasonFromBm.invalid && cceControls.reasonFromBm.touched"></textarea>
                 </div>
                 <div class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
                     <kt-button [value]="'Submit'" [type]="'submit'" (action)="submit()"></kt-button>

@@ -79,6 +79,10 @@ export class KycSettingsComponent implements OnInit {
 
   }
 
+  ngOnDestroy(): void {
+    this.appliedKycService.editKyc.next({ editable: false });
+  }
+
 
 
 }

@@ -145,14 +145,14 @@ export class LoanApplicationFormComponent implements OnInit {
     if (this.basic.invalid) {
       this.selected = 0;
       this.invalid.basic = true;
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
       return true
     }
 
     if (this.nominee.invalid) {
       this.selected = 3;
       this.invalid.nominee = true;
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
       return true
     }
     if (this.Ornaments.invalid) {
@@ -164,18 +164,18 @@ export class LoanApplicationFormComponent implements OnInit {
     if (this.intreset.invalid) {
       this.selected = 4;
       this.invalid.intreset = true;
-      window.scrollTo(0,0)
-      return true
-    }
-   
-    if (this.approval.invalid) {
-      this.selected = 5;
-      this.invalid.approval = true;
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
       return true
     }
 
-    
+    if (this.approval.invalid) {
+      this.selected = 5;
+      this.invalid.approval = true;
+      window.scrollTo(0, 0)
+      return true
+    }
+
+
 
 
 
@@ -189,9 +189,9 @@ export class LoanApplicationFormComponent implements OnInit {
       loanBank: this.bank.value,
       loanKyc: this.kyc.value,
       loanNominee: this.nominee.value,
-      customerId:this.basic.controls.customerId.value,
-      totalEligibleAmt:this.totalAmount,
-      totalFinalInterestAmt:(this.intreset.controls.intresetAmt.value)
+      customerId: this.basic.controls.customerId.value,
+      totalEligibleAmt: this.totalAmount,
+      totalFinalInterestAmt: (this.intreset.controls.intresetAmt.value)
     }
     return Obj
   }
@@ -213,5 +213,5 @@ export class LoanApplicationFormComponent implements OnInit {
      })
    ).subscribe()
   }
-  
+
 }

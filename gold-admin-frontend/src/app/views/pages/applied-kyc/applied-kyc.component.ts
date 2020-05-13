@@ -25,6 +25,7 @@ export class AppliedKycComponent implements OnInit {
 
   private unsubscribeSearch$ = new Subject();
   roles = '';
+  private destroy$ = new Subject();
 
   constructor(
     private appliedKycService: AppliedKycService,
@@ -33,7 +34,7 @@ export class AppliedKycComponent implements OnInit {
     private router: Router,
     private sharedService: SharedService
   ) {
-    this.sharedService.role$.subscribe(res => {
+    this.sharedService.getRole().subscribe(res => {
       this.roles = res;
     });
   }
@@ -87,6 +88,8 @@ export class AppliedKycComponent implements OnInit {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   editKyc(data) {

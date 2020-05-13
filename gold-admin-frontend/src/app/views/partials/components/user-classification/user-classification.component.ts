@@ -5,6 +5,8 @@ import { CustomerClassificationService } from '../../../../core/kyc-settings/ser
 import { map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { UserBankService } from '../../../../core/kyc-settings/services/user-bank.service';
+import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-user-classification',
@@ -58,7 +60,9 @@ export class UserClassificationComponent implements OnInit {
     private custClassificationService: CustomerClassificationService,
     private fb: FormBuilder,
     private toastr: ToastrService,
-    private userBankService: UserBankService
+    private userBankService: UserBankService,
+    private appliedKycService: AppliedKycService,
+    private route: Router
   ) {
     var token = localStorage.getItem('accessToken');
     var decodedValue = JSON.parse(atob(token.split('.')[1]));
@@ -67,10 +71,11 @@ export class UserClassificationComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.userBankService.kycDetails.KycClassification !== null) {
-      this.customerDetails = this.userBankService.kycDetails.KycClassification
+    if (this.userBankService.kycDetails) {
+      if (this.userBankService.kycDetails.KycClassification !== null)
+        this.customerDetails = this.userBankService.kycDetails.KycClassification
     } else {
-      this.userDetailsService.userData;
+      this.customerDetails = this.userDetailsService.userData;
     }
     this.getRating();
     this.initForm();
@@ -79,7 +84,8 @@ export class UserClassificationComponent implements OnInit {
   }
 
   dataBindingEdit() {
-    if (this.customerDetails) {
+    const editable = this.appliedKycService.editKyc.getValue()
+    if (editable.editable) {
       this.editRating = true;
       console.log(this.customerDetails.KycClassification)
       this.custClassificationForm.patchValue(this.customerDetails)
@@ -198,7 +204,8 @@ export class UserClassificationComponent implements OnInit {
         map(res => {
           if (res) {
             this.toastr.success(res.message);
-            this.next.emit(true);
+            // this.next.emit(true);
+            this.route.navigate(['/applied-kyc']);
           }
         })
       ).subscribe();
@@ -207,7 +214,9 @@ export class UserClassificationComponent implements OnInit {
         map(res => {
           if (res) {
             this.toastr.success(res.message);
-            this.next.emit(true);
+            // this.next.emit(true);
+            this.route.navigate(['/applied-kyc']);
+
           }
         })
       ).subscribe();
@@ -217,6 +226,19 @@ export class UserClassificationComponent implements OnInit {
 
   get cceControls() {
     return this.custClassificationForm.controls;
+  }
+
+  approvalOfBM(value: boolean, type: string) {
+    if (this.role == 'Customer Care Executive') {
+      return
+    }
+    if (type == 'behaviour') {
+      this.cceControls.behaviourRatingVerifiedByBm.patchValue(value)
+    } else if (type == 'identity') {
+      this.cceControls.idProofRatingVerifiedByBm.patchValue(value)
+    } else if (type == 'address') {
+      this.cceControls.addressProofRatingVerifiedBm.patchValue(value)
+    }
   }
 
 }
