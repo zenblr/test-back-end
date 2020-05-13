@@ -107,14 +107,14 @@ export class FinalLoanAmountComponent implements OnInit {
     // current weight
     let goldNetWeight = +(this.controls.goldNetWeight.value);
 
-    const currentNetWeight = (goldNetWeight - this.purityBasedDeduction) / 100;
+    const currentNetWeight = goldNetWeight - (this.purityBasedDeduction / 100);
     // console.log(currentNetWeight);
 
     // final weight
-    const finalNetWeight = goldNetWeight - currentNetWeight;
+    // const finalNetWeight = goldNetWeight - currentNetWeight;
     // console.log(finalNetWeight);
 
-    this.controls.finalNetWeight.patchValue(finalNetWeight);
+    this.controls.finalNetWeight.patchValue(currentNetWeight);
 
     // current LTV amount
     this.controls.ltvPercent.patchValue(+(this.controls.purity.value));
