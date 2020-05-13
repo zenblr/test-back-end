@@ -130,30 +130,15 @@ export class ProductEditComponent implements OnInit {
     )
   }
 
-  uploadImage(data, type) {
-    if (type == 'inList') {
-      if (this.productData.productImages.length) {
-        for (const product of this.productData.productImages) {
-          if (product.id === data.id) {
-            product.URL = data.URL;
-          }
+  uploadImage(data) {
+    if (data.listView) {
+      for (let i = 0; i < this.productData.productImages.length; i++) {
+        const prod = this.productData.productImages[i];
+        if (i == data.index) {
+          prod.id = data.uploadData.id;
+          prod.url = data.uploadData.URL;
+          this.productForm.controls['productImages'].patchValue(this.productData.productImages);
         }
-        this.productForm.controls['productImages'].patchValue(this.productData.productImages);
-      }
-    } else {
-      this.productForm.controls['productImage'].patchValue(data.URL);
-    }
-  }
-
-  uploadImages(data, type) {
-    if (type == 'inList') {
-      if (this.productData.productImages.length) {
-        for (const product of this.productData.productImages) {
-          if (product.id === data.id) {
-            product.URL = data.URL;
-          }
-        }
-        this.productForm.controls['productImages'].patchValue(this.productData.productImages);
       }
     } else {
       this.productForm.controls['productImage'].patchValue(data.URL);

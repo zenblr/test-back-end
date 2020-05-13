@@ -1,12 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { SharedService } from '../../../../core/shared/services/shared.service';
-import { finalize, catchError, map } from 'rxjs/operators';
 import { ToastrComponent } from '../toastr/toastr.component';
 import { MatDialog } from '@angular/material'
-import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-uplod-preview-image',
@@ -16,8 +13,9 @@ import { Router } from '@angular/router';
 export class UplodPreviewImageComponent implements OnInit {
   @Input() image: any;
   @Input() action: any;
+  @Input() type: any;
+  @Input() index: any;
   @Output() upload = new EventEmitter();
-  @Output() uploadInList = new EventEmitter();
   formData: any;
 
   @ViewChild(ToastrComponent, { static: false }) toastr: ToastrComponent;
@@ -28,8 +26,6 @@ export class UplodPreviewImageComponent implements OnInit {
     public dilaog: MatDialog,
     private layoutUtilsService: LayoutUtilsService,
     private ele: ElementRef,
-    private toastrService: ToastrService,
-    private router: Router,
     private toast: ToastrService
   ) { }
 
@@ -54,15 +50,23 @@ export class UplodPreviewImageComponent implements OnInit {
 
   }
 
-  uploadFiles(event) {
+  uploadFile(event) {
     this.formData = new FormData();
     for (const file of event.target.files) {
       this.formData.append("avatar", file);
     }
     this.sharedService.fileUpload(this.formData).subscribe(
       res => {
-        this.upload.emit(res.uploadFile);
-        // this.toast.success('Image Uploaded Successfully');
+        if (this.index != null && this.index != undefined) {
+          const data = {
+            index: this.index,
+            uploadData: res.uploadFile,
+            listView: true
+          }
+          this.upload.emit(data);
+        } else {
+          this.upload.emit(res.uploadFile);
+        }
         this.ref.detectChanges();
       },
       err => {
@@ -71,5 +75,4 @@ export class UplodPreviewImageComponent implements OnInit {
       }
     );
   }
-
 }
