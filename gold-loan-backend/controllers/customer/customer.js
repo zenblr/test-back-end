@@ -226,7 +226,7 @@ exports.getAllCustomers = async (req, res, next) => {
       last_name: { [Op.iLike]: search + "%" },
       mobile_number: { [Op.iLike]: search + "%" },
       pan_card_number: { [Op.iLike]: search + "%" },
-      "$loan_internal_branch.name$": {
+      "$internalBranch.name$": {
         [Op.iLike]: search + "%",
       },
       "$status.status_name$": {
