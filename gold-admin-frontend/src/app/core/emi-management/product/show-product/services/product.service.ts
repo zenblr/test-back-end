@@ -27,4 +27,8 @@ export class ProductService {
 	getSingleProduct(id): Observable<any> {
 		return this.http.get<any>(`/api/products/` + id);
 	}
+
+	deleteProductImage(id): Observable<any> {
+		return this.http.delete<any>(`/api/products/image/` + id)
+	}
 }
