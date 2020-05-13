@@ -95,7 +95,7 @@ export class AddInternalUserBranchComponent implements OnInit {
     if(this.data.action == 'add'){
       this.internalUserBranchService.addInternalBranch(this.addInternalBranchForm.value).pipe(
         map(res => {
-        this.toast.success(res.message)
+        this.toast.success(res['message'])
          this.dialogRef.close(res)
         }),
         catchError(err=>{
@@ -106,7 +106,7 @@ export class AddInternalUserBranchComponent implements OnInit {
  
     this.internalUserBranchService.editInternalBranch(this.addInternalBranchForm.value,this.data.branch.userId).pipe(
       map(res => {
-      this.toast.success(res.message)
+      this.toast.success(res['message'])
        this.dialogRef.close(res)
       }),
       catchError(err=>{

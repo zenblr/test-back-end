@@ -18,7 +18,7 @@ export class InternalUserBranchService {
     )
   }
 
-  getInternalBranch(search, from, to): Observable<any> {
+  getInternalBranch(search, from, to):Observable<any> {
     return this.http.get(`/api/internal-branch?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res)
     )

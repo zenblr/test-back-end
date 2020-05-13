@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { UserPersonalService } from '../../../../../core/kyc-settings/services/user-personal.service';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
@@ -21,6 +21,9 @@ export class UserPersonalComponent implements OnInit {
   file: any;
   profile = '';
   signatureJSON = { url: null, isImage: false };
+  minDate = new Date();
+  @ViewChild("files", { static: false }) files;
+  @ViewChild("signature", { static: false }) signature;
 
   constructor(private fb: FormBuilder, private userDetailsService: UserDetailsService,
     private userPersonalService: UserPersonalService,
@@ -75,7 +78,12 @@ export class UserPersonalComponent implements OnInit {
       }), catchError(err => {
         // this.toastr.errorToastr(err.error.message);
         throw err
-      })).subscribe()
+      }),
+      finalize(() => {
+        this.files.nativeElement.value = '';
+        this.signature.nativeElement.value = '';
+      })
+    ).subscribe()
   }
 
   submit() {

@@ -15,6 +15,7 @@ import * as objectPath from 'object-path';
 import { LayoutConfigService, MenuAsideService, MenuOptions, OffcanvasOptions } from '../../../core/_base/layout';
 import { HtmlClassService } from '../html-class.service';
 import { AuthService } from '../../../core/auth';
+import { SharedService } from '../../../core/shared/services/shared.service';
 
 @Component({
 	selector: 'kt-aside-left',
@@ -77,7 +78,8 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		private router: Router,
 		private render: Renderer2,
 		private cdr: ChangeDetectorRef,
-		private auth:AuthService
+		private auth: AuthService,
+		private sharedService: SharedService
 	) {
 	}
 
@@ -95,7 +97,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			});
 
 		const config = this.layoutConfigService.getConfig();
-			console.log(config)
+		console.log(config)
 		if (objectPath.get(config, 'aside.menu.dropdown')) {
 			this.render.setAttribute(this.asideMenu.nativeElement, 'data-ktmenu-dropdown', '1');
 			// tslint:disable-next-line:max-line-length
@@ -225,13 +227,14 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 
 		return toggle;
 	}
-	logout(){
+	logout() {
 		this.auth.logout().pipe(map(
-			res=>{
+			res => {
 				localStorage.clear();
+				this.sharedService.role.next(null);
 				this.router.navigate(['/auth/login']);
 			}
-		),catchError(err=>{
+		), catchError(err => {
 			throw err
 		})).subscribe()
 	}

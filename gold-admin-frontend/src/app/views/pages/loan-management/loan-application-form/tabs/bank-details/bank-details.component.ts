@@ -11,6 +11,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
   @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
+  @Input() disable
 
   bankForm: FormGroup;
   constructor(
@@ -30,6 +31,9 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     if (this.details) {
       this.bankForm.patchValue(this.details)
       this.bankFormEmit.emit(this.bankForm);
+    }
+    if(this.disable){
+      this.bankForm.disable()
     }
   }
 

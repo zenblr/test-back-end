@@ -28,4 +28,13 @@ export class CustomerClassificationService {
         throw (err)
       }))
   }
+
+  updateCceRating(data): Observable<any> {
+    return this.http.put(`/api/classification`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        this.toastr.error(err.error.message);
+        throw (err)
+      }))
+  }
 }

@@ -19,7 +19,6 @@ export class InterceptService implements HttpInterceptor {
 		private sharedSerivce: SharedService,
 		private router: Router
 	) {
-		this.sharedSerivce.loader$.subscribe()
 	}
 	// intercept request and add token
 	intercept(

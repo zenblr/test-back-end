@@ -12,7 +12,7 @@ import { AssignPacketsComponent } from '../assign-packets/assign-packets.compone
 })
 export class PacketsListComponent implements OnInit {
   dataSource: PacketsDatasource;
-  displayedColumns = ['customerID', 'loanId', 'packetId', 'actions'];
+  displayedColumns = ['packetId', 'customerID', 'loanId', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -107,6 +107,7 @@ export class PacketsListComponent implements OnInit {
   }
 
   editLead(role) {
+    console.log(role)
     const dialogRef = this.dialog.open(AssignPacketsComponent,
       {
         data: { packetData: role, action: 'edit' },

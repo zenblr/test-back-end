@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
@@ -18,6 +18,7 @@ export class UserBanksComponent implements OnInit {
   // customerDetails = { customerId: 1, customerKycId: 2 }
   file: any;
   passBookImage = [];
+  @ViewChild("signature", { static: false }) signature;
 
   constructor(private fb: FormBuilder, private sharedService: SharedService,
     private userBankService: UserBankService, private userDetailsService: UserDetailsService,
@@ -57,7 +58,10 @@ export class UserBanksComponent implements OnInit {
       }), catchError(err => {
         // this.toastr.errorToastr(err.error.message);
         throw err
-      })).subscribe()
+      }), finalize(() => {
+        this.signature.nativeElement.value = ''
+      })).subscribe();
+    this.ref.detectChanges();
   }
 
   submit() {
@@ -90,6 +94,7 @@ export class UserBanksComponent implements OnInit {
 
   removeImages(index) {
     this.passBookImage.splice(index, 1);
+    this.bankForm.get('passbookProof').patchValue('');
   }
 
   get controls() {

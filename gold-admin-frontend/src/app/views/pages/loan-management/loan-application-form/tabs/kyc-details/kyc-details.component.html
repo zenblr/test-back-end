@@ -6,7 +6,7 @@
                     <label class="  font-weight-500 text-color">Identity</label>
                 </div>
                 <div class="col-7">
-                    <input type="text" class="form-control" formControlName="identityTypeId">
+                    <input type="text" class="form-control" formControlName="identityTypeName">
                 </div>
             </div>
         </div>
@@ -17,7 +17,7 @@
                     <label class=" font-weight-500 text-color">Unique Identity No.</label>
                 </div>
                 <div class="col-7">
-                    <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
+                    <input formControlName="idCardNumber" type="text" aria-label="Pin Code"
                         placeholder="Unique Identity Number" class="form-control" s>
                 </div>
             </div>
@@ -43,32 +43,23 @@
     </div>
 
     <div class="row">
-        <ng-container formArrayName="address"
-            *ngFor="let addressForm of kycForm.get('address')['controls']; index as i;">
+        <ng-container>
 
-            <div [formGroupName]="i" class="col-6">
+            <div class="col-6">
 
 
                 <div class=" kt-margin-t-20">
                     <div class="row">
                         <div class="col-3 offset-1 p-0">
-                            <label class="  font-weight-500 text-color" *ngIf="i == 1">Residential
-                                or
-                                Official
-                                Address</label>
-                            <label class="  font-weight-500 text-color" *ngIf="i == 0"> Permanent
+                            <label class="  font-weight-500 text-color"> Permanent
                                 Address</label>
                         </div>
                         <div class="col-7">
-                            <textarea formControlName="address" type="text" rows="5" aria-label="Residential Address"
-                                placeholder="Enter your text" class="form-control"></textarea>
+                            <textarea formControlName="permanentAddress" type="text" rows="5"
+                                aria-label="Residential Address" placeholder="Enter your text"
+                                class="form-control"></textarea>
                         </div>
                     </div>
-                </div>
-
-                <div>
-                    <input *ngIf="i==1" value="residential" formControlName="addressType" type="hidden">
-                    <input *ngIf="i==0" value="permanent" formControlName="addressType" type="hidden">
                 </div>
                 <div>
                     <div class=" kt-margin-t-20">
@@ -78,7 +69,7 @@
                                 </label>
                             </div>
                             <div class="col-7">
-                                <input type="text" formControlName="stateId" class="form-control">
+                                <input type="text" formControlName="permanentAddStateName" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -90,7 +81,7 @@
                                     </label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" formControlName="cityId" class="form-control">
+                                    <input type="text" formControlName="permanentAddCityName" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -103,7 +94,7 @@
                                     <label class="  font-weight-500 text-color">Pin Code</label>
                                 </div>
                                 <div class="col-7">
-                                    <input formControlName="pinCode" type="text" aria-label="Pin Code"
+                                    <input formControlName="permanentAddPin" type="text" aria-label="Pin Code"
                                         placeholder="000000" class="form-control">
                                 </div>
                             </div>
@@ -117,7 +108,7 @@
                                 </label>
                             </div>
                             <div class="col-7">
-                                <input type="text" formControlName="addressProofTypeId" class="form-control">
+                                <input type="text" formControlName="permanentAddProofTypeName" class="form-control">
 
                             </div>
                         </div>
@@ -130,7 +121,7 @@
                                     No.</label>
                             </div>
                             <div class="col-7">
-                                <input formControlName="addressProofNumber" type="text"
+                                <input formControlName="permanentAddCardNumber" type="text"
                                     placeholder="Unique Identity Number" class="form-control">
 
                             </div>
@@ -141,15 +132,124 @@
                         <div class="row">
                             <div class="col">
                                 <div class="offset-4 img-container"
-                                    *ngIf="addressForm.controls.addressProof.value.length ==0">
+                                    *ngIf="kycForm.controls.residentialAddProof.value.length == 0">
                                     <img class="placeholder-image"
                                         src="../../../../../../assets/media/icons/image-placeholder.png"
                                         alt="placeholder">
                                 </div>
 
-                                <div *ngIf="addressForm.controls.addressProof.value.length > 0">
+                                <div *ngIf="kycForm.controls.permanentAddProof.value.length > 0">
                                     <div class="row">
-                                        <div class="col-6" *ngFor="let img of addressForm.controls.addressProof.value, index as idx">
+                                        <div class="col-6"
+                                            *ngFor="let img of kycForm.controls.permanentAddProof.value, index as idx">
+                                            <div class="img-container">
+                                                <img class="fetched-image" [src]="img" alt="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class=" kt-margin-t-20">
+                    <div class="row">
+                        <div class="col-3 offset-1 p-0">
+                            <label class="  font-weight-500 text-color">Residential
+                                or
+                                Official
+                                Address</label>
+                        </div>
+                        <div class="col-7">
+                            <textarea formControlName="residentialAddress" type="text" rows="5"
+                                aria-label="Residential Address" placeholder="Enter your text"
+                                class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class=" kt-margin-t-20">
+                        <div class="row">
+                            <div class="col-3 offset-1 p-0">
+                                <label class="  font-weight-500 text-color">State
+                                </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" formControlName="residentialAddStateName" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class=" kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="  font-weight-500 text-color">City
+                                    </label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" formControlName="residentialAddCityName" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+
+                        <div class=" kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="  font-weight-500 text-color">Pin Code</label>
+                                </div>
+                                <div class="col-7">
+                                    <input formControlName="residentialAddPin" type="text" aria-label="Pin Code"
+                                        placeholder="000000" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=" kt-margin-t-20">
+                        <div class="row">
+                            <div class="col-3 offset-1 p-0">
+                                <label class="  font-weight-500 text-color">Address Proof
+                                </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" formControlName="residentialAddProofTypeName" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kt-margin-t-20">
+                        <div class="row">
+                            <div class="col-3 offset-1 p-0">
+                                <label class=" font-weight-500 text-color">Unique Identity
+                                    No.</label>
+                            </div>
+                            <div class="col-7">
+                                <input formControlName="residentialAddCardNumber" type="text"
+                                    placeholder="Unique Identity Number" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=" kt-margin-t-20 kt-margin-b-20">
+                        <div class="row">
+                            <div class="col">
+                                <div class="offset-4 img-container"
+                                    *ngIf="kycForm.controls.residentialAddProof.value.length == 0">
+                                    <img class="placeholder-image"
+                                        src="../../../../../../assets/media/icons/image-placeholder.png"
+                                        alt="placeholder">
+                                </div>
+
+                                <div *ngIf="kycForm.controls.residentialAddProof.value.length > 0">
+                                    <div class="row">
+                                        <div class="col-6"
+                                            *ngFor="let img of kycForm.controls.residentialAddProof.value, index as idx">
                                             <div class="img-container">
                                                 <img class="fetched-image" [src]="img" alt="">
                                             </div>
