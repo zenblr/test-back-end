@@ -41,7 +41,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef,
     public layoutUtilsService: LayoutUtilsService,
     private dataTableService: DataTableService
-  ) { }
+  ) {
+    this.productService.applyFilter$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.applyFilter(res);
+      }
+    });
+  }
 
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
@@ -178,5 +184,22 @@ export class ProductListComponent implements OnInit, OnDestroy {
         console.log(res);
       }
     });
+  }
+
+  applyFilter(data) {
+    console.log(data);
+    // this.customerData.CountryId = data.filterData.CountryId;
+		// this.customerData.CityId = data.filterData.CityId;
+		// this.customerData.StateId = data.filterData.StateId;
+		// this.customerData.LocalityIds = data.filterData.LocalityId;
+		// this.customerData.StatusIds = data.filterData.StatusIds;
+		// this.customerData.LeadStageIds = data.filterData.StageIds;
+		// this.customerData.LeadTypeIds = data.filterData.TypeIds;
+		// this.customerData.LeadSourceIds = data.filterData.SourceIds;
+		// this.customerData.TerritoryIds = data.filterData.TerritoryIds;
+		// this.customerData.TagIds = data.filterData.TagIds;
+		// this.customerData.UserIds = data.filterData.UserIds;
+		// this.selectedActionId = 0;
+		// this.dataSource.loadCustomers(this.customerData);
   }
 }

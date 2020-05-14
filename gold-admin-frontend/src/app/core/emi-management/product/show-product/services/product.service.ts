@@ -7,6 +7,8 @@ import { tap, catchError, map } from 'rxjs/operators';
 	providedIn: 'root'
 })
 export class ProductService {
+	applyFilter = new BehaviorSubject<any>({});
+	applyFilter$ = this.applyFilter.asObservable();
 
 	constructor(private http: HttpClient) { }
 

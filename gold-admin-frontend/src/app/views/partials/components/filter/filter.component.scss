@@ -1,7 +1,19 @@
-:host{
-    .filter{
+:host {
+    .filter {
         background-color: #454D67 !important;
         height: 35px !important;
         width: 35px !important;
+    }
+    .kt-filter-dropdown {
+        width: 500px;
+        // font-family: Poppins;
+    }
+    // .dynamic-width {
+    //     width: 300px;
+    // }
+    .btn-absolute-bottom-right {
+        position: absolute;
+        bottom: 0;
+        right: 10px;
     }
 }

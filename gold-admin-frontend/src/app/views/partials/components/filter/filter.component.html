@@ -1,3 +1,66 @@
-<button mat-raised-button class="filter">
-    <img src="../../../../../assets/media/icons/svg/General/filter.svg" alt="" height="20" width="20">
-  </button>
+<!-- Filtered Dialog  -->
+<div ngbDropdown class="dropdown dropdown-inline" #filterDropdown="ngbDropdown" aria-haspopup="true"
+  aria-expanded="false" (openChange)="toggleDropdown($event)">
+
+  <button ngbDropdownToggle id="filterDropdown" class="filter" mat-raised-button type="button">
+    <img src="assets/media/icons/svg/General/filter.svg" height="20" width="20"></button>
+
+  <div ngbDropdownMenu class="p-0" aria-labelledby="filterDropdown">
+    <div class="kt-filter-dropdown" [ngClass]="{'dynamic-width': filterName =='form' || filterName =='LRM'}">
+      <div class="kt-portlet m-0">
+
+        <div class="kt-pointer d-none" (click)="filterDropdown.close()">
+          <i class="fa fa-times pull-right"></i>
+        </div>
+
+        <!-- Product -->
+        <div class="kt-portlet__body">
+          <div class="kt-form">
+            <form [formGroup]="filterForm" *ngIf="filterName =='product'">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row pb-3">
+                    <div class="col-6">
+                      <label>By Category</label>
+                      <select class="form-control" name="categoryId" formControlName="categoryId">
+                        <option value="" [selected]="true" [disabled]="true">Select Category</option>
+                        <option *ngFor="let item of categoryList" [value]="item?.id">
+                          {{item?.categoryName}}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label>By Sub-Category</label>
+                      <select class="form-control" name="subCategoryId" formControlName="subCategoryId">
+                        <option value="" [selected]="true" [disabled]="true">Select Sub-Category</option>
+                        <option *ngFor="let item of subCategoryList" [value]="item?.id">
+                          {{item?.subCategoryName}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <label>Price From</label>
+                      <input class="form-control" formControlName="priceFrom" type="number" />
+                    </div>
+                    <div class="col-4">
+                      <label>Price To</label>
+                      <input class="form-control" formControlName="priceTo" type="number" />
+                    </div>
+                    <div class="col-4">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

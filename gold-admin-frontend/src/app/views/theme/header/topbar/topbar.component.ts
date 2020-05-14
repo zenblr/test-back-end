@@ -9,7 +9,7 @@ import { BranchService } from '../.././../../core/user-management/branch/service
 import { WalletPriceService } from '../.././../../core/emi-management/config-details/wallet-price/services/wallet-price.service';
 import { RolesService } from '../.././../../core/user-management/roles';
 import { BrokerService } from '../../../../core/user-management/broker';
-import { CategoryService, SubCategoryService } from '../../../../core/emi-management/product';
+import { CategoryService, SubCategoryService, ProductService } from '../../../../core/emi-management/product';
 import { InternalUserService } from '../.././../../core/user-management/internal-user';
 import { AppraiserService } from '../../../../core/user-management/appraiser';
 import { InternalUserBranchService } from '../../../../core/user-management/internal-user-branch'
@@ -52,6 +52,9 @@ export class TopbarComponent implements OnInit {
 	toogle: boolean;
 	toogler: string;
 	path: string;
+	filterName = '';
+	listType = '';
+
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -72,7 +75,8 @@ export class TopbarComponent implements OnInit {
 		private packetService: PacketsService,
 		private storeService: StoreService,
 		private logisticPartnerService: LogisticPartnerService,
-		private karatDetailsService: KaratDetailsService) {
+		private karatDetailsService: KaratDetailsService,
+		private productService: ProductService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -83,6 +87,7 @@ export class TopbarComponent implements OnInit {
 	ngOnInit() {
 		this.setTopbar(this.router.url)
 	}
+
 	ngAfterViewInit(): void {
 
 		this.subscriptions.push(this.sharedService.totalCount$.pipe(
@@ -111,12 +116,14 @@ export class TopbarComponent implements OnInit {
 			});
 		}));
 	}
+
 	/**
 	 * On destroy
 	 */
 	ngOnDestroy(): void {
 		this.subscriptions.forEach(sb => sb.unsubscribe());
 	}
+
 	reset() {
 		this.totalRecords = 0;
 		this.rightButton = false;
@@ -203,6 +210,8 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'products') {
 			this.showfilter = true;
 			this.showInput = true;
+			this.filterName = 'product';
+			this.listType = 'category,sub-category';
 		}
 		if (this.path == 'category') {
 			this.rightButton = true
@@ -246,7 +255,6 @@ export class TopbarComponent implements OnInit {
 	}
 
 	action(event: Event) {
-
 		if (this.path == 'lead-management') {
 			this.customerManagementServiceCustomer.openModal.next(true);
 		}
@@ -306,5 +314,10 @@ export class TopbarComponent implements OnInit {
 	check(val) {
 		this.customerManagementServiceCustomer.toggle.next(val)
 		console.log('hi1');
+	}
+
+	applyFilter(data) {
+		console.log(data);
+		this.productService.applyFilter.next(data);
 	}
 }

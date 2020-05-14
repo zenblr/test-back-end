@@ -43,7 +43,16 @@ export class SharedService {
     console.log(this.role);
     // }
   }
-  fileUpload(data) {
+
+  fileUpload(data): Observable<any> {
     return this.http.post<any>(`/api/file-upload`, data);
+  }
+
+  getAllCategory(): Observable<any> {
+    return this.http.get<any>(`/api/category/all-category`);
+  }
+
+  getAllSubCategory(): Observable<any> {
+    return this.http.get<any>(`/api/sub-category`);
   }
 }
