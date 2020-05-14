@@ -12,9 +12,31 @@ export class ProductService {
 
 	constructor(private http: HttpClient) { }
 
-	getAllProducts(from?, to?, search?, fromDate?, toDate?, userId?): Observable<any> {
-		return this.http
-			.get<any>(`/api/products?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
+	getAllProducts(event?: any): Observable<any> {
+		// return this.http
+		// 	.get<any>(`/api/products?search=${prodData.search}&from=${prodData.from}&to=${prodData.to}`, { observe: 'response' })
+		// 	.pipe(map(response => response.body));
+
+		const reqParams: any = {};
+		if (event && event.search) {
+			reqParams.search = event.search;
+		}
+		if (event && event.categoryId) {
+			reqParams.categoryId = event.categoryId;
+		}
+		if (event && event.subCategoryId) {
+			reqParams.subCategoryId = event.subCategoryId;
+		}
+		if (event && event.selectedGrade) {
+			reqParams.grade = event.selectedGrade;
+		}
+		if (event && event.priceFrom) {
+			reqParams.priceFrom = event.priceFrom;
+		}
+		if (event && event.priceTo) {
+			reqParams.priceTo = event.priceTo;
+		}
+		return this.http.get<any[]>(`/api/products`, { params: reqParams, observe: 'response' })
 			.pipe(map(response => response.body));
 	}
 
@@ -23,7 +45,7 @@ export class ProductService {
 	}
 
 	deleteProduct(id): Observable<any> {
-		return this.http.delete<any>(`/api/products/` + id)
+		return this.http.delete<any>(`/api/products/` + id);
 	}
 
 	getSingleProduct(id): Observable<any> {
@@ -31,6 +53,6 @@ export class ProductService {
 	}
 
 	deleteProductImage(id): Observable<any> {
-		return this.http.delete<any>(`/api/products/image/` + id)
+		return this.http.delete<any>(`/api/products/image/` + id);
 	}
 }

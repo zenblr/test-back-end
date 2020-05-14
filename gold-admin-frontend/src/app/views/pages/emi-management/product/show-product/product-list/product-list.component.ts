@@ -1,5 +1,3 @@
-import { ToastrService } from "ngx-toastr";
-
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { LayoutUtilsService, QueryParamsModel } from '../../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
@@ -29,6 +27,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject();
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
+  productData = {
+    from: 0,
+    to: 0,
+    search: '',
+    categoryId: 0,
+    subCategoryId: 0,
+    priceFrom: 0,
+    priceTo: 0,
+  }
 
   filterStatus: string = "";
   filterType: string = "";
@@ -37,13 +44,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private productService: ProductService,
-    private toast: ToastrService,
     private ref: ChangeDetectorRef,
     public layoutUtilsService: LayoutUtilsService,
     private dataTableService: DataTableService
   ) {
     this.productService.applyFilter$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-      if (res) {
+      if (Object.entries(res).length) {
         this.applyFilter(res);
       }
     });
@@ -95,7 +101,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.productResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadProducts('', '', this.searchValue, '', '', '');
+    this.dataSource.loadProducts(this.productData);
   }
 
   editCategory(id) {
@@ -163,8 +169,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-
-    this.dataSource.loadProducts(from, to, this.searchValue, '', '', '');
+    this.productData.from = from;
+    this.productData.to = to;
+    this.productData.search = this.searchInput.nativeElement.value;
+    this.dataSource.loadProducts(this.productData);
   }
 
   /*** On Destroy ***/
@@ -188,18 +196,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   applyFilter(data) {
     console.log(data);
-    // this.customerData.CountryId = data.filterData.CountryId;
-		// this.customerData.CityId = data.filterData.CityId;
-		// this.customerData.StateId = data.filterData.StateId;
-		// this.customerData.LocalityIds = data.filterData.LocalityId;
-		// this.customerData.StatusIds = data.filterData.StatusIds;
-		// this.customerData.LeadStageIds = data.filterData.StageIds;
-		// this.customerData.LeadTypeIds = data.filterData.TypeIds;
-		// this.customerData.LeadSourceIds = data.filterData.SourceIds;
-		// this.customerData.TerritoryIds = data.filterData.TerritoryIds;
-		// this.customerData.TagIds = data.filterData.TagIds;
-		// this.customerData.UserIds = data.filterData.UserIds;
-		// this.selectedActionId = 0;
-		// this.dataSource.loadCustomers(this.customerData);
+    this.productData.categoryId = data.filterData.categoryId;
+    this.productData.subCategoryId = data.filterData.subCategoryId;
+    this.productData.priceFrom = data.filterData.priceFrom;
+    this.productData.priceTo = data.filterData.priceTo;
+    this.dataSource.loadProducts(this.productData);
   }
 }

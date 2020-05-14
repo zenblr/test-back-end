@@ -386,7 +386,6 @@ export class FilterComponent implements OnInit, OnChanges {
   }
 
   applyFilter() {
-    debugger;
     this.clearData = false;
     if (this.filterForm.invalid) {
       return;
