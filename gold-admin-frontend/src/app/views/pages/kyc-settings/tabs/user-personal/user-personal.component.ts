@@ -61,29 +61,35 @@ export class UserPersonalComponent implements OnInit {
 
   getFileInfo(event, type: any) {
     this.file = event.target.files[0];
-    console.log(this.file, type);
-    this.sharedService.uploadFile(this.file).pipe(
-      map(res => {
-        if (type == "profile") {
-          this.profile = res.uploadFile.URL;
-          this.personalForm.get('profileImage').patchValue(event.target.files[0].name);
-        } else if (type == "signature") {
-          this.signatureJSON = { url: null, isImage: false };
-          this.signatureJSON.url = res.uploadFile.URL;
-          this.signatureJSON.isImage = true;
-          this.personalForm.get('signatureProof').patchValue(event.target.files[0].name);
-          this.ref.detectChanges();
-        }
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      console.log(this.file, type);
+      this.sharedService.uploadFile(this.file).pipe(
+        map(res => {
+          if (type == "profile") {
+            this.profile = res.uploadFile.URL;
+            this.personalForm.get('profileImage').patchValue(event.target.files[0].name);
+          } else if (type == "signature") {
+            this.signatureJSON = { url: null, isImage: false };
+            this.signatureJSON.url = res.uploadFile.URL;
+            this.signatureJSON.isImage = true;
+            this.personalForm.get('signatureProof').patchValue(event.target.files[0].name);
+            this.ref.detectChanges();
+          }
 
-      }), catchError(err => {
-        // this.toastr.errorToastr(err.error.message);
-        throw err
-      }),
-      finalize(() => {
-        this.files.nativeElement.value = '';
-        this.signature.nativeElement.value = '';
-      })
-    ).subscribe()
+        }), catchError(err => {
+          this.toastr.error(err.error.message);
+          throw err
+        }),
+        finalize(() => {
+          this.files.nativeElement.value = '';
+          this.signature.nativeElement.value = '';
+        })
+      ).subscribe()
+    } else {
+      this.toastr.error('Upload Valid File Format');
+    }
   }
 
   submit() {

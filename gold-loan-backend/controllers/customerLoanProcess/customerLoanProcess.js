@@ -256,6 +256,18 @@ exports.appliedLoanDetails = async (req, res, next) => {
             "$customer.mobile_number$": { [Op.iLike]: search + '%' },
             "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
             "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+            appraiser_status: sequelize.where(
+                sequelize.cast(sequelize.col("customerLoan.loan_status_for_appraiser"), "varchar"),
+                {
+                    [Op.iLike]: search + "%",
+                }
+            ),
+            bm_status: sequelize.where(
+                sequelize.cast(sequelize.col("customerLoan.loan_status_for_bm"), "varchar"),
+                {
+                    [Op.iLike]: search + "%",
+                }
+            )
         },
         isActive: true
     };
@@ -264,17 +276,24 @@ exports.appliedLoanDetails = async (req, res, next) => {
         model: models.customer,
         as: 'customer',
         where: { isActive: true },
-        attributes: { exclude: ['password'] }
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId', 'mobileNumber']
     },
     {
         model: models.customerFinalLoan,
         as: 'finalLoan',
-        where: { isActive: true }
+        where: { isActive: true },
+        attributes: ['loanStartDate'],
+        include: [{
+            model: models.scheme,
+            as: 'scheme',
+            attributes: ['id', 'schemeName']
+        }]
     }]
 
     let appliedLoanDetails = await models.customerLoan.findAll({
         where: searchQuery,
         include: associateModel,
+        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM'],
         order: [
             ['id', 'DESC']
         ],
@@ -297,6 +316,16 @@ exports.appliedLoanDetails = async (req, res, next) => {
 exports.customerDetails = async (req, res, next) => {
 
     let customerUniqueId = req.params.customerUniqueId;
+    let reqId = req.userData.id;
+    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } })
+
+    if(check.isEmpty(getAppraiserId)){
+        return res.status(400).json({message: 'This customer Did not assign in to anyone'})
+    }
+    if(reqId != getAppraiserId.appraiserId){
+        return res.status(400).json({message: `This customer is not assign to you`})
+    }
+
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber'],

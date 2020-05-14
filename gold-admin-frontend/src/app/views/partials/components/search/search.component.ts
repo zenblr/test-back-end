@@ -25,7 +25,7 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(
-      debounceTime(500), // The user can type quite quickly in the input box, and that could trigger a lot of server requests. With this operator, we are limiting the amount of server requests emitted to a maximum of one every 150ms
+      debounceTime(1000), // The user can type quite quickly in the input box, and that could trigger a lot of server requests. With this operator, we are limiting the amount of server requests emitted to a maximum of one every 150ms
       distinctUntilChanged(), // This operator will eliminate duplicate values
       tap((res) => {
         this.searchValue = res['target']['value'];

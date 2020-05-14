@@ -70,7 +70,7 @@ export class AppraiserListComponent implements OnInit {
     // First load
     // this.loadBranchPage();
 
-    this.dataSource.loadBranches(1, 25, this.searchValue,);
+    this.dataSource.loadBranches(this.searchValue,1, 25);
   }
 
 	/**
@@ -91,46 +91,10 @@ export class AppraiserListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadBranches(from, to, this.searchValue);
+    this.dataSource.loadBranches(this.searchValue,from, to, );
   }
 
-	/**
-	 * Returns object for filter
-	 */
-  filterConfiguration(): any {
-    const filter: any = {};
-    const searchText: string = this.searchInput.nativeElement.value;
-    filter.title = searchText;
-    return filter;
-  }
 
-  /** ACTIONS */
-	/**
-	 * Delete role
-	 *
-	 * @param _item: Role
-	 */
-  // deleteRole(_item) {
-  //   const role = _item;
-  //   const _title = 'Delete Branch';
-  //   const _description = 'Are you sure to permanently delete this branch?';
-  //   const _waitDesciption = 'Branch is deleting...';
-  //   const _deleteMessage = `Branch has been deleted`;
-
-  //   const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       console.log(res);
-  //       this.appraiserService.deleteBranch(role.id).subscribe(successDelete => {
-  //         this.toastr.successToastr(_deleteMessage);
-  //         this.loadBranchPage();
-  //       },
-  //         errorDelete => {
-  //           this.toastr.errorToastr(errorDelete.error.message);
-  //         });
-  //     }
-  //   });
-  // }
 
   addAppraiser() {
     const dialogRef = this.dialog.open(AddAppraiserComponent, {
@@ -146,17 +110,17 @@ export class AppraiserListComponent implements OnInit {
   }
 
 	/**
-	 * Edit role
+	 * Edit appraiser
 	 *
-	 * @param role: Role
+	 * @param appraiser: appraiser
 	 */
-  editRole(role) {
-    console.log(role);
-    // const _saveMessage = `Role successfully has been saved.`;
-    // const _messageType = role.id ? MessageType.Update : MessageType.Create;
+  editappraiser(appraiser,action) {
+    console.log(appraiser);
+    // const _saveMessage = `appraiser successfully has been saved.`;
+    // const _messageType = appraiser.id ? MessageType.Update : MessageType.Create;
     const dialogRef = this.dialog.open(AddAppraiserComponent,
       {
-        data: { partnerId: role.id, action: 'edit' },
+        data: { appraiser: appraiser, action: action },
         width: '450px'
       });
     dialogRef.afterClosed().subscribe(res => {
@@ -165,21 +129,5 @@ export class AppraiserListComponent implements OnInit {
       }
     });
   }
-
-  viewRole(role) {
-    const dialogRef = this.dialog.open(AddAppraiserComponent, {
-      data: { partnerId: role.id, action: 'view' },
-      width: '450px'
-    });
-
-    dialogRef.afterClosed().subscribe(res => {
-      if (!res) {
-        return;
-      }
-    });
-  }
-
-
-
 
 }

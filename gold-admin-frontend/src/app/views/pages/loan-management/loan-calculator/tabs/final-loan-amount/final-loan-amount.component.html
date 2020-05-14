@@ -77,7 +77,7 @@
                         <label for="" class="text-color">LTV %</label>
                     </div>
                     <div class="col-6">
-                        <select class="form-control" formControlName="ltvPercent">
+                        <select class="form-control" formControlName="ltvPercent" (change)="chnageLtvPercent()">
                             <option value="" [disabled]="true" [selected]="true">Select Purity</option>
                             <option [value]="purity" *ngFor="let purity of purity">{{purity}} %</option>
                         </select>
@@ -90,6 +90,7 @@
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="currentLtvAmount"
                             placeholder="4,800">
+                        <mat-hint>This amount is 75% of the gold rate</mat-hint>
                     </div>
                 </div>
                 <div class="row kt-margin-t-30">

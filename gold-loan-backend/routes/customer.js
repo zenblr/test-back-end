@@ -5,7 +5,7 @@ const { wrapper } = require('../utils/errorWrap')
 const validationError = require('../middleware/validationError');
 const { customerValidation, customerUpdateValidation } = require('../validations/customer');
 
-const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, filterCustomer } = require('../controllers/customer/customer')
+const { addCustomer, editCustomer, deactivateCustomer, getAllCustomers, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, filterCustomer, getCustomerUniqueId } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 
 const customerCheckAuth = require('../middleware/customerCheckAuth')
@@ -37,6 +37,8 @@ router.get('/offer', customerCheckAuth, wrapper(readOffer));
 
 router.get('/lender-banner', customerCheckAuth, wrapper(readLenderBanner));
 //customer App
+
+router.get('/customer-unique', checkAuth, wrapper(getCustomerUniqueId));
 
 
 router.get('/:customerId', checkAuth, wrapper(getSingleCustomer));
