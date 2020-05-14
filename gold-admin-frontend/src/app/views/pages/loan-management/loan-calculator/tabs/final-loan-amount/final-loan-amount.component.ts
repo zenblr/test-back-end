@@ -30,7 +30,7 @@ export class FinalLoanAmountComponent implements OnInit {
 
     this.uploadOfferService.goldRate$.subscribe(res => {
       this.currentLtvAmount = res;
-      this.controls.currentLtvAmount.patchValue(this.currentLtvAmount);
+      this.controls.currentLtvAmount.patchValue(this.currentLtvAmount * 0.75);
     })
   }
 
