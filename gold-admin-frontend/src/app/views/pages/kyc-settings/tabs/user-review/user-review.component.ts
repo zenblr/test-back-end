@@ -154,7 +154,7 @@ export class UserReviewComponent implements OnInit {
     private userDetailsService: UserDetailsService,
     private toastr: ToastrService,
     private userPersonalService: UserPersonalService,
-    private appliedKycService: AppliedKycService) {
+    private appliedKycService: AppliedKycService, ) {
 
   }
 
@@ -166,9 +166,6 @@ export class UserReviewComponent implements OnInit {
       if (this.userDetailsService.userData) {
         this.data = this.userDetailsService.userData;
       }
-    // else if (this.appliedKycService.userData) {
-    //   this.data = this.appliedKycService.userData;
-    // }
 
     this.appliedKycService.userData$.subscribe(res => {
       if (res) {
@@ -383,50 +380,56 @@ export class UserReviewComponent implements OnInit {
     this.file = event.target.files[0];
     // console.log(type);
     // console.log(this.addressControls)
-    this.sharedService.uploadFile(this.file).pipe(
-      map(res => {
-        if (type == "profile") {
-          this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
-          this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.URL })
-          this.ref.markForCheck();
-        }
-        if (type == "identityProof") {
-          this.data.customerKycReview.customerKycPersonal.identityProof.push(res.uploadFile.URL)
-          this.customerKycPersonal.patchValue({ identityProof: this.data.customerKycReview.customerKycPersonal.identityProof })
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      this.sharedService.uploadFile(this.file).pipe(
+        map(res => {
+          if (type == "profile") {
+            this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
+            this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.URL })
+            this.ref.markForCheck();
+          }
+          if (type == "identityProof") {
+            this.data.customerKycReview.customerKycPersonal.identityProof.push(res.uploadFile.URL)
+            this.customerKycPersonal.patchValue({ identityProof: this.data.customerKycReview.customerKycPersonal.identityProof })
 
-        }
-        if (type == 'permanent') {
-          this.data.customerKycReview.customerKycAddress[0].addressProof.push(res.uploadFile.URL)
-          this.customerKycAddressOne.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[0].addressProof })
-        }
-        if (type == 'residential') {
-          this.data.customerKycReview.customerKycAddress[1].addressProof.push(res.uploadFile.URL)
-          this.customerKycAddressTwo.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[1].addressProof })
-          console.log(this.customerKycPersonal.value)
-        }
-        if (type == "signature") {
-          this.data.customerKycReview.customerKycPersonal.signatureProof = res.uploadFile.URL;
-          this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.URL })
-          console.log(this.customerKycPersonal.value)
-          this.ref.markForCheck();
-        }
-        if (type == 'passbook') {
-          this.data.customerKycReview.customerKycBank[0].passbookProof.push(res.uploadFile.URL)
-          this.customerKycBank.patchValue({ passbookProof: this.data.customerKycReview.customerKycBank[0].passbookProof })
-        }
-        this.ref.detectChanges();
-        // console.log(this.addressControls)
-      }), catchError(err => {
-        this.toastr.error(err.error.message);
-        throw err
-      }),
-      finalize(() => {
-        this.identity.nativeElement.value = '';
-        this.permanent.nativeElement.value = '';
-        this.residential.nativeElement.value = '';
-        this.pass.nativeElement.value = '';
-      })
-    ).subscribe()
+          }
+          if (type == 'permanent') {
+            this.data.customerKycReview.customerKycAddress[0].addressProof.push(res.uploadFile.URL)
+            this.customerKycAddressOne.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[0].addressProof })
+          }
+          if (type == 'residential') {
+            this.data.customerKycReview.customerKycAddress[1].addressProof.push(res.uploadFile.URL)
+            this.customerKycAddressTwo.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[1].addressProof })
+            console.log(this.customerKycPersonal.value)
+          }
+          if (type == "signature") {
+            this.data.customerKycReview.customerKycPersonal.signatureProof = res.uploadFile.URL;
+            this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.URL })
+            console.log(this.customerKycPersonal.value)
+            this.ref.markForCheck();
+          }
+          if (type == 'passbook') {
+            this.data.customerKycReview.customerKycBank[0].passbookProof.push(res.uploadFile.URL)
+            this.customerKycBank.patchValue({ passbookProof: this.data.customerKycReview.customerKycBank[0].passbookProof })
+          }
+          this.ref.detectChanges();
+          // console.log(this.addressControls)
+        }), catchError(err => {
+          this.toastr.error(err.error.message);
+          throw err
+        }),
+        finalize(() => {
+          this.identity.nativeElement.value = '';
+          this.permanent.nativeElement.value = '';
+          this.residential.nativeElement.value = '';
+          this.pass.nativeElement.value = '';
+        })
+      ).subscribe()
+    } else {
+      this.toastr.error('Upload Valid File Format');
+    }
 
   }
 

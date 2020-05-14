@@ -175,7 +175,7 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'assign-appraiser') {
 			this.dataSourceHeader()
-			this.value1 = 'Add Appraiser';
+			this.value1 = 'Assign Appraiser';
 		}
 		if (this.path == 'roles') {
 			this.showInput = true;

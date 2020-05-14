@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 export class LeadManagementComponent implements OnInit {
 
   dataSource: CustomerManagementDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'state', 'city', 'date', 'status', 'kyc', 'actions'];
+  displayedColumns = ['fullName', 'mobile', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kyc', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 

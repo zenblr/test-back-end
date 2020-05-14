@@ -1,4 +1,7 @@
 :host {
+	.cursor-not-allowed{
+		cursor: not-allowed !important;
+	}
 	img{
 		cursor: pointer;
 	}

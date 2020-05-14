@@ -19,6 +19,15 @@
                         <p>{{gold.previousGoldRate}} per gram</p>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-4 offset-1" style="font-weight: 500;">
+                        <p>Last Updated</p>
+                    </div>
+                    <div class="col" style="font-weight: 400;">
+                        <p>{{ gold.updatedAt | date:'medium'}}</p>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-4 offset-1" style="font-weight: 500;">
                         <p>Updated By</p>
@@ -26,14 +35,6 @@
                     <div class="col" style="font-weight: 400;">
                         <p>{{ gold.Modifiedby.firstName | titlecase }} &nbsp; {{ gold.Modifiedby.lastName | titlecase }}
                         </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-4 offset-1" style="font-weight: 500;">
-                        <p>Last Updated</p>
-                    </div>
-                    <div class="col" style="font-weight: 400;">
-                        <p>{{ gold.updatedAt | date:'medium'}}</p>
                     </div>
                 </div>
             </div>

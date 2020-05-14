@@ -1,18 +1,16 @@
-import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PartnerService } from '../../../../../../core/user-management/partner/services/partner.service';
-import { map } from 'rxjs/operators';
-import { DatePipe } from '@angular/common';
+
 
 @Component({
   selector: 'kt-final-interest-amount',
   templateUrl: './final-interest-amount.component.html',
   styleUrls: ['./final-interest-amount.component.scss'],
-  providers: [DatePipe]
 })
-export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnChanges {
+export class FinalInterestAmountComponent implements OnInit {
 
-  @Input() disable
+  currentDate = new Date()
   colJoin:any;
   intrestAmount:any = 0;
   dateOfPayment: any[] = []
@@ -24,59 +22,30 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
   { name: "half Yearly", value: 180 }]
   selectedScheme: any = []
   finalInterestForm: FormGroup;
-  @Input() invalid;
-
-  @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('print',{static:false}) print :ElementRef
 
   constructor(
     private fb: FormBuilder,
     private partnerService: PartnerService,
-    public datePipe: DatePipe,
     public eleRef:ElementRef
   ) { }
 
   ngOnInit() {
     this.initForm();
-    this.partner()
   }
 
-  ngOnChanges(){
-    if(this.disable){
-      this.finalInterestForm.disable()
-    }
-    if(this.invalid){
-      this.finalInterestForm.markAllAsTouched()
-    }
-  }
 
-  partner() {
-    this.partnerService.getAllPartnerWithoutPagination().pipe(
-      map(res => {
-        this.partnerList = res.data;
-        console.log(this.partnerList)
-      })).subscribe()
-  }
-
-  getSchemes() {
-    this.partnerService.getSchemesByParnter(Number(this.controls.partnerId.value)).pipe(
-      map(res => {
-        this.schemesList = res.data.schemes;
-        console.log(this.schemesList)
-      })).subscribe()
-  }
+ 
 
   initForm() {
     this.finalInterestForm = this.fb.group({
-      partnerId: ['', [Validators.required]],
-      schemeId: ['', [Validators.required]],
       finalLoanAmount: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       tenure: [, [Validators.required]],
       loanStartDate: [, [Validators.required]],
       loanEndDate: [, [Validators.required]],
-      goldGrossWeight: [],
+      goldGrossWeight: [ [Validators.required]],
       paymentFrequency: [, [Validators.required]],
-      goldNetWeight: [],
+      goldNetWeight: [ [Validators.required]],
       finalNetWeight: [],
       intresetAmt:[],
       interestRate: [, [Validators.required,Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]],
@@ -85,14 +54,9 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
       processingChargeFixed:[,[Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       processingChargePercent:[,[Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]]
     })
-    this.interestFormEmit.emit(this.finalInterestForm)
+   
   }
 
-  ngAfterViewInit() {
-    this.finalInterestForm.valueChanges.subscribe(() => {
-      this.interestFormEmit.emit(this.finalInterestForm)
-    })
-  }
 
   setEndDate() {
     this.dateOfPayment = []
@@ -105,46 +69,9 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
     }
   }
 
-  amountValidation() {
-    this.dateOfPayment = []
-    if (this.controls.partnerId.valid) {
-      let amt = this.controls.finalLoanAmount.value;
-      this.schemesList.forEach(scheme => {
-        if (amt <= scheme.schemeAmountEnd && amt >= scheme.schemeAmountStart) {
-          this.controls.finalLoanAmount.setErrors(null)
-          this.selectedScheme = scheme;
-          return
-        } else {
-          this.controls.finalLoanAmount.setErrors({ invalidAmt: true })
-        }
-      });
-    } else {
-      this.controls.schemeId.markAsTouched()
-      this.controls.partnerId.markAsTouched()
-    }
-    this.getIntrest()
-  }
 
-  getIntrest() {
-    if (this.controls.finalLoanAmount.valid) {
-      switch (this.controls.paymentFrequency.value) {
-        case "30":
-          this.controls.interestRate.patchValue(this.selectedScheme.interestRateThirtyDaysMonthly)
-           this.colJoin = null
-          break;
-        case "90":
-          this.controls.interestRate.patchValue(this.selectedScheme.interestRateNinetyDaysMonthly)
-           this.colJoin = 3
 
-          break;
-        case "180":
-          this.controls.interestRate.patchValue(this.selectedScheme.interestRateOneHundredEightyDaysMonthly)
-          this.colJoin = 6
-
-          break;
-      }
-    }
-  }
+ 
 
   calcInterestAmount() {
     if (this.finalInterestForm.invalid) {
@@ -152,11 +79,11 @@ export class FinalInterestAmountComponent implements OnInit, AfterViewInit,OnCha
       return;
     }
     let intrest = (this.controls.finalLoanAmount.value *
-      this.controls.interestRate.value) * this.controls.tenure.value
+      (this.controls.interestRate.value/100)) * this.controls.paymentFrequency.value
       / 360
     this.intrestAmount = intrest.toFixed(2);
     this.controls.intresetAmt.patchValue(this.intrestAmount)
-    this.CheckProcessingCharge()
+    // this.CheckProcessingCharge()
     this.generateTable()
   }
 

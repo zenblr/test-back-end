@@ -130,12 +130,14 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationForm.controls.addressProofRatingVerifiedBm.disable();
       this.custClassificationForm.controls.kycStatusFromBm.disable();
       this.custClassificationForm.controls.reasonFromBm.disable();
-    } else {
+    } else if (this.role == 'Branch Manager') {
       this.custClassificationForm.controls.behaviourRatingCce.disable();
       this.custClassificationForm.controls.idProofRatingCce.disable();
       this.custClassificationForm.controls.addressProofRatingCce.disable();
       this.custClassificationForm.controls.kycStatusFromCce.disable();
       this.custClassificationForm.controls.reasonFromCce.disable();
+    } else{
+      this.custClassificationForm.disable()
     }
 
     // this.custClassificationFormBM = this.fb.group({
@@ -229,16 +231,14 @@ export class UserClassificationComponent implements OnInit {
   }
 
   approvalOfBM(value: boolean, type: string) {
-    if (this.role == 'Customer Care Executive') {
-      return
-    }
-    if (type == 'behaviour') {
-      this.cceControls.behaviourRatingVerifiedByBm.patchValue(value)
-    } else if (type == 'identity') {
-      this.cceControls.idProofRatingVerifiedByBm.patchValue(value)
-    } else if (type == 'address') {
-      this.cceControls.addressProofRatingVerifiedBm.patchValue(value)
+    if (this.role == 'Branch Manager') {
+      if (type == 'behaviour') {
+        this.cceControls.behaviourRatingVerifiedByBm.patchValue(value)
+      } else if (type == 'identity') {
+        this.cceControls.idProofRatingVerifiedByBm.patchValue(value)
+      } else if (type == 'address') {
+        this.cceControls.addressProofRatingVerifiedBm.patchValue(value)
+      }
     }
   }
-
 }
