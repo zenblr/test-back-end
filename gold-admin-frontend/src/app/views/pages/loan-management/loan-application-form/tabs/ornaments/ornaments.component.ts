@@ -92,7 +92,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngAfterViewInit() {
     this.uploadOfferService.goldRate$.subscribe(res => {
-      this.goldRate = res
+      this.goldRate = res*(75/100)
       const group = this.OrnamentsData.at(0) as FormGroup
       group.controls.currentLtvAmount.patchValue(this.goldRate)
     })
