@@ -25,6 +25,8 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() invalid;
   @Input() totalAmt
   @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() nextEmit: EventEmitter<any> = new EventEmitter<any>();
+
   @ViewChild('print', { static: false }) print: ElementRef
 
   constructor(
@@ -71,14 +73,9 @@ export class InterestCalculatorComponent implements OnInit {
       tenure: [, [Validators.required]],
       loanStartDate: [this.currentDate],
       loanEndDate: [, [Validators.required]],
-      goldGrossWeight: [],
       paymentFrequency: [, [Validators.required]],
-      goldNetWeight: [],
-      finalNetWeight: [],
       intresetAmt: [],
-      interestRate: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      currentLtvAmount: [],
-      processingCharge: [],
+      interestRate: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]], processingCharge: [],
       processingChargeFixed: [, [Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       processingChargePercent: [, [Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]]
     })
@@ -104,14 +101,14 @@ export class InterestCalculatorComponent implements OnInit {
 
   scheme() {
     this.selectedScheme = this.schemesList.filter(scheme => {
-      return scheme.id == this.controls.schemeId
+      return scheme.id == this.controls.schemeId.value
     })
   }
   amountValidation() {
     this.dateOfPayment = []
     if (this.controls.partnerId.valid) {
       let amt = this.controls.finalLoanAmount.value;
-      if (amt <= this.selectedScheme.schemeAmountEnd && amt >= this.selectedScheme.schemeAmountStart) {
+      if (amt <= this.selectedScheme[0].schemeAmountEnd && amt >= this.selectedScheme[0].schemeAmountStart) {
         this.controls.finalLoanAmount.setErrors(null)
       } else {
         this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
@@ -135,16 +132,16 @@ export class InterestCalculatorComponent implements OnInit {
     if (this.controls.finalLoanAmount.valid) {
       switch (this.controls.paymentFrequency.value) {
         case "30":
-          this.controls.interestRate.patchValue(this.selectedScheme.interestRateThirtyDaysMonthly)
+          this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateThirtyDaysMonthly)
           this.colJoin = null
           break;
         case "90":
-          this.controls.interestRate.patchValue(this.selectedScheme.interestRateNinetyDaysMonthly)
+          this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateNinetyDaysMonthly)
           this.colJoin = 3
 
           break;
         case "180":
-          this.controls.interestRate.patchValue(this.selectedScheme.interestRateOneHundredEightyDaysMonthly)
+          this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateOneHundredEightyDaysMonthly)
           this.colJoin = 6
 
           break;
@@ -190,13 +187,8 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
 
-  printNow() {
-    // const printTable =document.getElementById("print").innerHTML;
-    // // // window.print(printTable)
-    // var a = window.open('', '', 'height=500, width=500'); 
-    // a.document.write(printTable)
-    // a.print()
-    // console.log(printTable)
+  next() {
+    this.nextEmit.emit(true)
   }
 
 }

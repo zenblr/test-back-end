@@ -32,7 +32,7 @@ export class LoanApplicationFormComponent implements OnInit {
   approval: any;
   Ornaments: any;
   customerDetail: any;
-  disabled = [false, true, true, true, false, true];
+  disabled = [false, true, true, true, true, true];
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
@@ -119,11 +119,11 @@ export class LoanApplicationFormComponent implements OnInit {
     this.Ornaments = event
     this.invalid.ornaments = false
     if (this.Ornaments.valid) {
-      // this.disabled[4] = false
+      this.disabled[4] = false
     this.calculateTotalEligibleAmount()
 
     } else {
-      // this.disabled[4] = true;
+      this.disabled[4] = true;
     }
 
   }
@@ -131,7 +131,7 @@ export class LoanApplicationFormComponent implements OnInit {
   calculateTotalEligibleAmount() {
     this.totalAmount = 0;
     this.Ornaments.value.forEach(element => {
-      this.totalAmount += element.ltvAmount
+      this.totalAmount += element.loanAmount
     });
   
     console.log(this.Ornaments.value)
@@ -190,7 +190,7 @@ export class LoanApplicationFormComponent implements OnInit {
       loanKyc: this.kyc.value,
       loanNominee: this.nominee.value,
       customerId: this.basic.controls.customerId.value,
-      totalEligibleAmt: this.totalAmount,
+      totalEligibleAmt: Math.ceil(this.totalAmount),
       totalFinalInterestAmt: (this.intreset.controls.intresetAmt.value)
     }
     return Obj
@@ -212,6 +212,12 @@ export class LoanApplicationFormComponent implements OnInit {
        throw err
      })
    ).subscribe()
+  }
+
+  next(event){
+    this.selected = 5;
+    window.scrollTo(0, 0)
+    this.disabled[5] = false;
   }
 
 }

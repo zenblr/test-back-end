@@ -103,6 +103,6 @@ export class AppliedLoanComponent implements OnInit {
   // }
 
   editLoan(loan) {
-    this.router.navigate(['/loan-management/loan-application-form',loan.finalLoan.id])
+    this.router.navigate(['/loan-management/loan-application-form',loan.id])
   }
 }

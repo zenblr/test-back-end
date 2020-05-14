@@ -22,7 +22,8 @@
                     </div>
                     <div class="col-8">
                         <input type="text" class="form-control" placeholder="12.02 gram" formControlName="grossWeight"
-                            [class.isError]="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid">
+                            [class.isError]="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid"
+                            (blur)="calcGoldDeductionWeight(idx)">
                         <mat-error
                             *ngIf="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid">
                             <span *ngIf="ornament.controls.grossWeight.errors?.pattern">Enter a valid Number</span>
@@ -35,7 +36,8 @@
                         <label class="text-color ">Deduction Wt.</label>
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control" placeholder="14.04" formControlName="deductionWeight"
+                        <input type="text" class="form-control" [readonly]="true" placeholder="14.04"
+                            formControlName="deductionWeight"
                             [class.isError]="ornament.controls.deductionWeight.touched && ornament.controls.deductionWeight.invalid">
                         <mat-error
                             *ngIf="ornament.controls.deductionWeight.touched && ornament.controls.deductionWeight.invalid">
@@ -113,8 +115,8 @@
                         <label class="my-auto text-color ">LTV Range</label>
                     </div>
                     <div class="offset-6 col-2 form-label min-height-attach">
-                        <label class="text-color w-100 m-auto">{{ltvPercent[0]}} &nbsp;-
-                            &nbsp;{{ltvPercent[ltvPercent.length-1]}}</label>
+                        <label class="text-color w-100 m-auto">{{ornament.controls.ltvRange.value[0]}} &nbsp;-
+                            &nbsp;{{ornament.controls.ltvRange.value[ltvPercent.length-1]}}</label>
                     </div>
                 </div>
                 <div class="row kt-margin-t-30">
@@ -152,7 +154,8 @@
                     </div>
                     <div class="col-8">
                         <input type="text" class="form-control" placeholder="10.20" formControlName="netWeight"
-                            [class.isError]="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid">
+                            [class.isError]="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid"
+                            (blur)="calcGoldDeductionWeight(idx);currentNetWeight(idx)">
                         <mat-error *ngIf="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid">
                             <span *ngIf="ornament.controls.netWeight.errors?.pattern">Enter a valid Number</span>
                             <span *ngIf="ornament.controls.netWeight.errors?.required">Field Required</span>
@@ -236,7 +239,11 @@
                     </div>
                     <div class="col-8">
                         <input type="number" class="form-control" formControlName="purity" placeholder="00%"
-                            [readonly]='true'>
+                            (input)="currentNetWeight(idx);calculateLtvAmount(idx)"
+                            [class.isError]="ornament.controls.purity.touched && ornament.controls.purity.invalid">
+                        <mat-error *ngIf="ornament.controls.purity.touched && ornament.controls.purity.invalid">
+                            <span *ngIf="ornament.controls.purity.errors?.pattern">Enter a valid Number</span>
+                        </mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
@@ -274,14 +281,16 @@
                     <img class="w-100" [src]="ornament.controls.ornamentImage.value" alt="placeholder">
                 </div>
                 <div class="form-label">
-                    <label *ngIf="!ornament.controls.ornamentImage.value" class="my-auto m-auto ">Upload Ornaments
+                    <label *ngIf="!ornament.controls.ornamentImage.value" class="my-auto m-auto pt-2">Upload Ornaments
                         Image</label>
                     <label *ngIf="ornament.controls.ornamentImage.value" class="my-auto text-danger m-auto kt-pointer"
                         (click)="removeImage('ornamentImage',idx)">Remove</label>
-                    <mat-error
-                        *ngIf="ornament.controls.ornamentImage.touched && ornament.controls.ornamentImage.invalid">
-                        <span *ngIf="ornament.controls.ornamentImage.errors?.required">Upload Image</span>
-                    </mat-error>
+                    <div>
+                        <mat-error
+                            *ngIf="ornament.controls.ornamentImage.touched && ornament.controls.ornamentImage.invalid">
+                            <span *ngIf="ornament.controls.ornamentImage.errors?.required">Upload Image</span>
+                        </mat-error>
+                    </div>
                 </div>
 
             </div>

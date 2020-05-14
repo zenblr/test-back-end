@@ -1,42 +1,5 @@
 <div class="container minHeight">
     <form [formGroup]="finalInterestForm">
-        <div class="row kt-margin-b-20 kt-margin-t-30">
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class="mandatory">Parnter Name</label>
-                    </div>
-                    <div class="col-7">
-                        <select formControlName="partnerId" class="form-control" (change)="getSchemes()"
-                            [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
-                            <option value="" [selected]="true" [disabled]="true">Select Partner</option>
-                            <option [value]="partner.id" *ngFor="let partner of partnerList">
-                                {{partner.name | titlecase}}
-                            </option>
-                        </select>
-                        <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.invalid">Filed is
-                            required</mat-error>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class="mandatory">Scheme Name</label>
-                    </div>
-                    <div class="col-7">
-                        <select formControlName="schemeId" class="form-control"
-                            [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
-                            <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
-                            <option [value]="schemes.id" *ngFor="let schemes of schemesList">
-                                {{schemes.schemeName}}</option>
-                        </select>
-                        <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Filed is required
-                        </mat-error>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row kt-margin-b-20">
             <div class="col-6">
@@ -46,7 +9,7 @@
                     </div>
                     <div class="col-7">
                         <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                            formControlName="loanStartDate"
+                            formControlName="loanStartDate" [min]="currentDate"
                             [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
                             placeholder="4/5/2020" readonly (dateChange)="setEndDate()">
                         <mat-datepicker #picker></mat-datepicker>
@@ -102,7 +65,7 @@
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000" (blur)="amountValidation()"
+                            placeholder="0,00,000"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
                         <mat-error
                             *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
@@ -125,7 +88,7 @@
                         <label class="mandatory">Interest Rest Days</label>
                     </div>
                     <div class="col-7">
-                        <select class="form-control" formControlName="paymentFrequency" (change)="getIntrest()"
+                        <select class="form-control" formControlName="paymentFrequency"
                             [class.isError]="controls.paymentFrequency.touched && controls.paymentFrequency.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Repay Period</option>
                             <option [value]="pay.value" *ngFor="let pay of repayType">{{pay.name | titlecase}}</option>
@@ -156,7 +119,7 @@
             </div>
         </div>
 
-        <!-- <div class="row kt-margin-b-20">
+        <div class="row kt-margin-b-20">
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
@@ -177,9 +140,9 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
 
-        <div class="row kt-margin-b-20">
+        <!-- <div class="row kt-margin-b-20">
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
@@ -212,18 +175,18 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="row">
-            <!-- <div class="col-6"> -->
-            <!-- <div class="row">
+            <div class="col-6">
+            <div class="row">
                     <div class="col-4 form-label">
                         <label class ="mandatory">Current LTV Amount</label>
                     </div>
                     <div class="col-7">
                         <input class="form-control" formControlName="currentLtvAmount" placeholder="0,00,000" />
                     </div>
-                </div> -->
-            <!-- </div> -->
+                </div>
+            </div>
 
             <div class="col-6 kt-margin-t-30 kt-margin-b-30">
 
@@ -259,9 +222,9 @@
                         </table>
                     </div>
 
-                    <div class="kt-margin-t-20 kt-margin-b-30">
+                    <!-- <div class="kt-margin-t-20 kt-margin-b-30">
                         <kt-button [value]="'Print Now'" [type]="'button'" (click)="printNow()"></kt-button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

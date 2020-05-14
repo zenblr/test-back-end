@@ -38,7 +38,11 @@ import {
   MatButtonToggleModule,
 } from '@angular/material';
 
+import {ScrollingModule,ScrollDispatchModule } from '@angular/cdk/scrolling';
+
 const MaterialModule = [
+  ScrollDispatchModule,
+  ScrollingModule,
   MatInputModule,
   MatFormFieldModule,
   MatDatepickerModule,

@@ -18,39 +18,23 @@ export class AppraiserDatasource extends BaseDataSource {
         super();
     }
 
-    loadBranches(from, to, search) {
-        this.loadingSubject.next(true);
-        let data: any = [
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-            { 'customerId': '655656g', 'customerName': 'Nimap' },
-        ]
-        this.paginatorTotalSubject.next(10);
-        this.entitySubject.next(data);
-        this.loadingSubject.next(false);
-        this.isPreloadTextViewedSubject.next(false);
-        //     this.appraiserService.getAppraiser(from, to, search)
-        //         .pipe(
-        //             map(
-        //                 report => {
-        //                     this.paginatorTotalSubject.next(report.count);
-        //                     this.entitySubject.next(report.data);
-        //                 }
-        //             ),
-        //             catchError(() => of([])),
-        //             finalize(() => {
-        //                 this.loadingSubject.next(false);
-        //                 this.isPreloadTextViewedSubject.next(false);
-        //             })
-        //         )
-        //         .subscribe();
+    loadBranches(search,from, to, ) {
+
+            this.appraiserService.getAppraiserList(search,from, to, )
+                .pipe(
+                    map(
+                        report => {
+                            this.paginatorTotalSubject.next(report.count);
+                            this.entitySubject.next(report.data);
+                        }
+                    ),
+                    catchError(() => of([])),
+                    finalize(() => {
+                        this.loadingSubject.next(false);
+                        this.isPreloadTextViewedSubject.next(false);
+                    })
+                )
+                .subscribe();
     }
 
 }
