@@ -4,6 +4,7 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { map, catchError, finalize } from 'rxjs/operators';
 import { UserBankService } from '../../../../../core/kyc-settings/services/user-bank.service';
 import { UserDetailsService } from '../../../../../core/kyc-settings';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-user-banks',
@@ -22,7 +23,7 @@ export class UserBanksComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private sharedService: SharedService,
     private userBankService: UserBankService, private userDetailsService: UserDetailsService,
-    private ref: ChangeDetectorRef) {
+    private ref: ChangeDetectorRef, private toastr: ToastrService) {
     console.log(this.customerDetails);
   }
 
@@ -46,22 +47,28 @@ export class UserBanksComponent implements OnInit {
 
   getFileInfo(event) {
     this.file = event.target.files[0];
-    console.log(this.file);
-    this.sharedService.uploadFile(this.file).pipe(
-      map(res => {
-        this.passBookImage.push(res.uploadFile.URL);
-        // this.bankForm.patchValue({ passbookProof: this.passBookImage });
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      console.log(this.file);
+      this.sharedService.uploadFile(this.file).pipe(
+        map(res => {
+          this.passBookImage.push(res.uploadFile.URL);
+          // this.bankForm.patchValue({ passbookProof: this.passBookImage });
 
-        this.bankForm.get('passbookProof').patchValue(event.target.files[0].name);
-        this.ref.detectChanges();
-        console.log(this.bankForm.value);
-      }), catchError(err => {
-        // this.toastr.errorToastr(err.error.message);
-        throw err
-      }), finalize(() => {
-        this.signature.nativeElement.value = ''
-      })).subscribe();
-    this.ref.detectChanges();
+          this.bankForm.get('passbookProof').patchValue(event.target.files[0].name);
+          this.ref.detectChanges();
+          console.log(this.bankForm.value);
+        }), catchError(err => {
+          this.toastr.error(err.error.message);
+          throw err
+        }), finalize(() => {
+          this.signature.nativeElement.value = ''
+        })).subscribe();
+      this.ref.detectChanges();
+    } else {
+      this.toastr.error('Upload Valid File Format');
+    }
   }
 
   submit() {

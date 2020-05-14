@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class KycSettingsComponent implements OnInit {
 
-  active = 2;
+  active = 1;
   disabled: boolean[] = [false, true, true, true, true, true];
   // disabled: boolean[] = [false, false, false, false, false, false]; // delete this line
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;
