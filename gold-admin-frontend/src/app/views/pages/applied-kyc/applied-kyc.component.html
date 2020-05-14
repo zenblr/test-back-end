@@ -62,10 +62,11 @@
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
                                 <span
-                                    *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'pending') || (roles == 'Branch Manager' && role.customerKycClassification.kycStatusFromCce == 'approved' && (role.kycStatus == 'rejected' || role.kycStatus == 'pending'))">Edit</span>
+                                    *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'pending') || (roles == 'Branch Manager' && role.customerKycClassification.kycStatusFromCce == 'approved' && (role.kycStatus == 'rejected' || role.kycStatus == 'pending'))">
+                                    <img src="../../../../assets/media/icons/action.svg"></span>
                             </div>
                             <span
-                                *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'approved') || (roles == 'Branch Manager' && role.kycStatus == 'approved')">-</span>
+                                *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'approved') || (roles == 'Branch Manager' && role.kycStatus == 'approved')"></span>
 
 
                         </div>

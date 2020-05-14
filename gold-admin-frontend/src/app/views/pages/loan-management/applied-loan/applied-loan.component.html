@@ -38,7 +38,7 @@
                 <ng-container matColumnDef="appraisalApproval">
                     <mat-header-cell *matHeaderCellDef>Appraisal Approval</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan.loanStatusForAppraiser | titlecase}}
+                        <span [ngClass]="loan.approvalStatus.id == 'pending' ? 'text-warning' :merchant.approvalStatus.id == 'approved' ? 'text-success' : 'text-danger'"></span>{{loan.loanStatusForAppraiser | titlecase}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bMApproval">
@@ -51,7 +51,9 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div class="kt-pointer" (click)="editLoan(loan)" class="kt-pointer">Edit</div>
+                            <div class="kt-pointer" (click)="editLoan(loan)" class="kt-pointer">
+                                <img src="../../../../../assets/media/icons/action.svg" alt="">
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>

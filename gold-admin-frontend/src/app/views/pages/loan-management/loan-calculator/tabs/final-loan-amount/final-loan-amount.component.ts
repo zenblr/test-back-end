@@ -30,7 +30,7 @@ export class FinalLoanAmountComponent implements OnInit {
 
     this.uploadOfferService.goldRate$.subscribe(res => {
       this.currentLtvAmount = res;
-      this.controls.currentLtvAmount.patchValue(this.currentLtvAmount);
+      this.controls.currentLtvAmount.patchValue(this.currentLtvAmount * 0.75);
     })
   }
 
@@ -107,14 +107,14 @@ export class FinalLoanAmountComponent implements OnInit {
     // current weight
     let goldNetWeight = +(this.controls.goldNetWeight.value);
 
-    const currentNetWeight = (goldNetWeight - this.purityBasedDeduction) / 100;
+    const currentNetWeight = goldNetWeight - (this.purityBasedDeduction / 100);
     // console.log(currentNetWeight);
 
     // final weight
-    const finalNetWeight = goldNetWeight - currentNetWeight;
+    // const finalNetWeight = goldNetWeight - currentNetWeight;
     // console.log(finalNetWeight);
 
-    this.controls.finalNetWeight.patchValue(finalNetWeight);
+    this.controls.finalNetWeight.patchValue(currentNetWeight);
 
     // current LTV amount
     this.controls.ltvPercent.patchValue(+(this.controls.purity.value));
@@ -138,6 +138,17 @@ export class FinalLoanAmountComponent implements OnInit {
 
   get controls() {
     return this.finalLoanForm.controls;
+  }
+
+  chnageLtvPercent() {
+    const ltvPercent = +(this.controls.ltvPercent.value);
+    const currentLtvAmount = +(this.controls.currentLtvAmount.value);
+
+    const ltvAmount = currentLtvAmount * ltvPercent / 100;
+    console.log(ltvAmount);
+
+    this.controls.ltvAmount.patchValue(ltvAmount);
+
   }
 
 }

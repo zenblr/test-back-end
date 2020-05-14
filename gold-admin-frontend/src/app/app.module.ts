@@ -116,7 +116,7 @@ export function hljsLanguages(): HighlightLanguage[] {
 		InlineSVGModule.forRoot(),
 		ThemeModule,
 		ToastrModule.forRoot({
-			timeOut: 2000,
+			timeOut: 3500,
 		}),
 		NgHttpLoaderModule.forRoot()
 	],
