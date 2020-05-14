@@ -1,4 +1,4 @@
-<form action="" [formGroup]="basicForm">
+<form [formGroup]="basicForm">
     <div class="row justify-content-center">
         <div class="col-6">
             <div class="row">
@@ -7,8 +7,8 @@
                 </div>
                 <div class="col-6">
                     <input type="text" class="form-control" placeholder="10234501203203" formControlName="customerUniqueId"
-                        maxlength="8" [class.isError]="controls.customerUniqueId.touched && controls.customerUniqueId.invalid"
-                        (keyup)="getCustomerDetails()">
+                         [class.isError]="controls.customerUniqueId.touched && controls.customerUniqueId.invalid"
+                        (keyup.enter)="getCustomerDetails()">
                     <mat-error *ngIf="controls.customerUniqueId.touched && controls.customerUniqueId.invalid">
                         Field is Required
                     </mat-error>
@@ -20,7 +20,7 @@
                 </div>
                 <div class="col-6">
                     <input type="text" class="form-control" placeholder="9845678991" formControlName="mobileNumber"
-                        numbersOnly maxlength="10" >
+                        numbersOnly maxlength="10" readonly >
                 </div>
             </div>
             <div class="row kt-margin-t-15">
@@ -28,7 +28,7 @@
                     <label class="text-color kt-padding-l-10">PAN Number</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control" placeholder="qwert1234q" formControlName="panCardNumber">
+                    <input type="text" class="form-control" placeholder="qwert1234q" formControlName="panCardNumber" readonly>
                 </div>
             </div>
             <div class="row kt-margin-t-15">
@@ -36,14 +36,8 @@
                     <label class="text-color kt-padding-l-10">Start Date</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                        formControlName="startDate"
-                        [class.isError]="controls.startDate.touched && controls.startDate.invalid"
-                        placeholder="4/5/2020" (dateInput)="transform()" readonly>
-                    <mat-datepicker #picker></mat-datepicker>
-                    <mat-error *ngIf="controls.startDate.errors?.required && controls.startDate.touched">
-                        Required field
-                    </mat-error>
+                    <input type="text" class="form-control"  formControlName="startDate" value="{{currentDate |  date:'mediumDate'}}"
+                        placeholder="4/5/2020" readonly>
                 </div>
             </div>
         </div>

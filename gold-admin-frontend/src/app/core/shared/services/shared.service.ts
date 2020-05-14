@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +9,17 @@ export class SharedService {
 
   totalCount = new BehaviorSubject(0);
   totalCount$ = this.totalCount.asObservable()
-  loader = new BehaviorSubject(false)
-  loader$ = this.loader.asObservable();
+  role = new BehaviorSubject(null)
+  role$ = this.role.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    var token = localStorage.getItem('accessToken');
+    if (token) {
+      var decodedValue = JSON.parse(atob(token.split('.')[1]));
+      this.role.next(decodedValue.roleName[0]);
+      console.log(this.role);
+    }
+  }
 
   getStates(): Observable<any> {
     return this.http.get(`/api/state`);
@@ -28,6 +35,14 @@ export class SharedService {
     return this.http.post<any>(`/api/upload-file`, fd);
   }
 
+  getRole(): Observable<any> {
+    var token = localStorage.getItem('accessToken');
+    // if (token) {
+    var decodedValue = JSON.parse(atob(token.split('.')[1]));
+    return of(decodedValue.roleName[0]);
+    console.log(this.role);
+    // }
+  }
   fileUpload(data) {
     return this.http.post<any>(`/api/file-upload`, data);
   }

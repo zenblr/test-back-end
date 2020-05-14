@@ -4,6 +4,7 @@ import { ToastrComponent } from '../../../../../views/partials/components';
 import { UserDetailsService } from '../../../../../core/kyc-settings';
 import { map, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kt-user-details',
@@ -26,10 +27,22 @@ export class UserDetailsComponent implements OnInit {
 
 
   constructor(public fb: FormBuilder, private userDetailsService: UserDetailsService,
-    private toastr: ToastrService, private ref: ChangeDetectorRef) { }
+    private toastr: ToastrService, private ref: ChangeDetectorRef,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.initForm();
+    this.route.queryParamMap.subscribe(params => {
+      // if (params) {
+      const MOB = params.get("mob");
+      if (MOB) {
+        this.controls.mobileNumber.patchValue(MOB);
+        this.sendOTP();
+      }
+
+      // this.ref.detectChanges();
+      // }
+    })
     this.controls.mobileNumber.valueChanges.subscribe(res => {
       if (this.controls.mobileNumber.valid) {
         this.sendOTP();

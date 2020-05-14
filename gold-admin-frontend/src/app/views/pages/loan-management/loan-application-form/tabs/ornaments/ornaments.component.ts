@@ -1,10 +1,11 @@
-import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output,EventEmitter } from '@angular/core';
+import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
+import { UploadOfferService } from '../../../../../../core/upload-data';
 
 
 @Component({
@@ -12,19 +13,22 @@ import { ImagePreviewDialogComponent } from '../../../../../../views/partials/co
   templateUrl: './ornaments.component.html',
   styleUrls: ['./ornaments.component.scss']
 })
-export class OrnamentsComponent implements OnInit,AfterViewInit {
+export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
-  
+  selected:number= 0
+  goldRate: any;
   @Input() invalid;
-  @Output() OrnamentsDataEmit:EventEmitter<any> = new EventEmitter()
-  left: number = 0
+  @Input() disable
+  @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter()
+  left: number = 150
+  width: number = 0
   ornamentsForm: FormGroup;
-  images = [];
+  images: any = [];
   karatArr = [{ value: 18, name: '18 K' },
-    { value: 19, name: '19 K' },
-    { value: 20, name: '20 K' },
-    { value: 21, name: '21 K' },
-    { value: 22, name: '22 K' }]
+  { value: 19, name: '19 K' },
+  { value: 20, name: '20 K' },
+  { value: 21, name: '21 K' },
+  { value: 22, name: '22 K' }]
   purityBasedDeduction: number;
   ltvPercent = [];
 
@@ -34,11 +38,18 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
     public toast: ToastrService,
     public ele: ElementRef,
     public dilaog: MatDialog,
-    public ref:ChangeDetectorRef
-  ) { }
+    public ref: ChangeDetectorRef,
+    public uploadOfferService: UploadOfferService
+  ) {
+    
+  }
 
   ngOnInit() {
     this.initForm()
+    this.ornamentsForm.valueChanges.subscribe(() => {
+      this.OrnamentsDataEmit.emit(this.OrnamentsData)
+      console.log('jkhjs')
+    })
   }
 
   initForm() {
@@ -50,10 +61,30 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
 
   }
 
-  ngAfterViewInit(){
-   this.OrnamentsData.valueChanges.subscribe(()=>{
-    this.OrnamentsDataEmit.emit(this.OrnamentsData)
-   }) 
+  ngOnChanges() {
+    if (this.disable) {
+      this.ornamentsForm.disable()
+    }
+    if (this.invalid) {
+      let array = this.OrnamentsData.controls
+      for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if (element.invalid) {
+          element.markAllAsTouched();
+          this.selected = index
+          return
+        }
+      }
+      this.ornamentsForm.markAllAsTouched()
+    }
+  }
+
+  ngAfterViewInit() {
+    this.uploadOfferService.goldRate$.subscribe(res => {
+      this.goldRate = res
+      const group = this.OrnamentsData.at(0) as FormGroup
+      group.controls.currentLtvAmount.patchValue(this.goldRate)
+    })
   }
   get OrnamentsData() {
     if (this.ornamentsForm)
@@ -62,37 +93,42 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
 
 
   addmore() {
-    if (this.left < 90) {
-      this.left = this.left + 15
-      const left = (this.left).toString() + '%'
-      const width = (document.querySelector('.addmore') as HTMLElement);
-      width.style.left = left
+    if (this.left < 900) {
+      this.width = this.width + 130
+      if (this.width > 130)
+        this.left = this.left + 130
+      const left = (this.left).toString() + 'px'
+      const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
+      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
+      width.style.maxWidth = left
+      addmore.style.left = left
+
     }
     this.OrnamentsData.push(this.fb.group({
-      ornamentType: [],
-      quantity: [],
-      grossWeight: [, [Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      netWeight: [, [Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      deductionWeight: [, [Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      ornamentImage: [],
-      weightMachineZeroWeight: [],
-      withOrnamentWeight: [],
-      stoneTouch: [],
-      acidTest: [],
-      karat:[],
-      purity:[],
-      ltvRange:[[]],
-      purityTest: [[]],
-      ltvPercent: [, [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]],
-      ltvAmount: [, [Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      currentLtvAmount: []
+      ornamentType: [, Validators.required],
+      quantity: [, Validators.required],
+      grossWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      netWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      deductionWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      ornamentImage: [, Validators.required],
+      weightMachineZeroWeight: [, Validators.required],
+      withOrnamentWeight: [, Validators.required],
+      stoneTouch: [, Validators.required],
+      acidTest: [, Validators.required],
+      karat: [, Validators.required],
+      purity: [, Validators.required],
+      ltvRange: [[]],
+      purityTest: [[], Validators.required],
+      ltvPercent: [, [Validators.required]],
+      ltvAmount: [],
+      currentLtvAmount: [this.goldRate]
     }))
     console.log(this.OrnamentsData.controls)
   }
 
   selectKarat(index) {
     const controls = this.OrnamentsData.at(index) as FormGroup;;
-    console.log(controls.controls.karat.value);
+    console.log(controls.controls.ltvPercent.patchValue(''));
     switch (controls.controls.karat.value) {
       case '18':
         this.ltvPercent = ['75', '76', '77', '78', '79'];
@@ -159,8 +195,8 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
         break;
       case 'purity':
         let temp = []
-        if(controls.controls.purityTest.value.length > 0)
-        temp = controls.controls.purityTest.value
+        if (controls.controls.purityTest.value.length > 0)
+          temp = controls.controls.purityTest.value
         temp.push(url)
         controls.controls.purityTest.patchValue(temp)
         break;
@@ -169,7 +205,8 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
         controls.controls.ornamentImage.patchValue(url)
         break;
     }
-    // this.images[index].push(url)
+    let data = { index: index, url: url }
+    this.images.push(data)
 
   }
 
@@ -199,14 +236,27 @@ export class OrnamentsComponent implements OnInit,AfterViewInit {
     this.images[index].splice(idx, 1)
   }
 
-  // preview(value, formIndex) {
-  //   var index = this.images[formIndex].indexOf(value)
-  //   this.dilaog.open(ImagePreviewDialogComponent, {
-  //     data: {
-  //       images: this.images[formIndex],
-  //       index: index
-  //     },
-  //     width: "auto"
-  //   })
-  // }
+  preview(value, formIndex) {
+    let filterImage = []
+    this.images.forEach(img => {
+      if (img.index === formIndex)
+        filterImage.push(img.url)
+    })
+    let img = Object.values(filterImage)
+    let index = img.indexOf(value)
+    this.dilaog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: img,
+        index: index
+      },
+      width: "auto"
+    })
+  }
+
+  calculateLtvAmount(index: number) {
+    const controls = this.OrnamentsData.at(index) as FormGroup;
+    let ltvPercent = controls.controls.ltvPercent.value
+    let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
+    controls.controls.ltvAmount.patchValue(ltv)
+  }
 }

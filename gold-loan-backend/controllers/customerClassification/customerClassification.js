@@ -8,6 +8,7 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 
 const check = require("../../lib/checkLib");
+var uniqid = require('uniqid');
 
 
 exports.addCceRating = async (req, res, next) => {
@@ -85,7 +86,7 @@ exports.updateRating = async (req, res, next) => {
                     { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true },
                     { where: { customerId: customerId }, transaction: t })
 
-                await models.customerKycClassification.update({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId }, { where: { customerId }, transaction: t })
+                await models.customerKycClassification.update({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
             });
             return res.status(200).json({ message: 'success' })
         }
@@ -110,7 +111,7 @@ exports.updateRating = async (req, res, next) => {
             }
             await sequelize.transaction(async (t) => {
                 await models.customerKyc.update(
-                    { branchManagerVerifiedBy: bmId },
+                    { branchManagerVerifiedBy: bmId, kycStatus: kycStatusFromBm },
                     { where: { customerId: customerId }, transaction: t })
 
                 await models.customerKycClassification.update({ customerId, customerKycId, behaviourRatingVerifiedByBm, idProofRatingVerifiedByBm, addressProofRatingVerifiedBm, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
@@ -119,7 +120,7 @@ exports.updateRating = async (req, res, next) => {
         } else {
             if (behaviourRatingVerifiedByBm == true & idProofRatingVerifiedByBm == true & addressProofRatingVerifiedBm == true) {
                 reasonFromBm = ""
-                let customerUniqueId = `LOAN${customerId}`
+                let customerUniqueId = uniqid.time().toUpperCase();
                 await sequelize.transaction(async (t) => {
                     await models.customer.update({ customerUniqueId }, { where: { id: customerId }, transaction: t })
                     await models.customerKyc.update(
@@ -131,12 +132,22 @@ exports.updateRating = async (req, res, next) => {
 
                 let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
                 let cusMobile = getMobileNumber.mobileNumber
+                //message for customer
                 request(
-                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message=For Your customer unoque Id is= ${customerUniqueId} `
+                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
+                );
+                let getBm = await models.user.findOne({ id: bmId});
+                let bmMobile = getBm.mobileNumber
+                 //message for BranchManager
+                 request(
+                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
                 );
                 return res.status(200).json({ message: 'success' })
+
+               
+
             }
-            return res.status(200).json({ message: `One of field is not verified` })
+            return res.status(400).json({ message: `One of field is not verified` })
         }
     }
 

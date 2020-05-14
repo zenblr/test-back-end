@@ -122,4 +122,8 @@ router.use('/logistic-partner',logisticPartner)
 const karatDetails=require('./karatDetails'); // karat details module
 router.use('/karat-details',karatDetails)
 
+const assignAppraiser = require('./customerAssignAppraiser');
+router.use('/assign-appraiser',assignAppraiser)
+
+
 module.exports = router;

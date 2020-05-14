@@ -12,14 +12,16 @@
                         <label for="">Loan Application Form</label>
                     </div>
                     <div class="col-4 border text-center">
-                        <img src="../../../../../../../assets/media/icons/correct.svg" *ngIf="controls.applicationFormForAppraiser.value"
+                        <img src="../../../../../../../assets/media/icons/correct.svg" *ngIf="controls.applicationFormForAppraiser.value" 
                         (click)="approvalOfAppraiser(false,'form')">
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" *ngIf="!controls.applicationFormForAppraiser.value"
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" *ngIf="!controls.applicationFormForAppraiser.value" 
                         (click)="approvalOfAppraiser(true,'form')">
                     </div>
                     <div class="col-4 text-center">
-                        <!-- <img src="../../../../../../../assets/media/icons/correct.svg" alt=""> -->
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" alt="">
+                        <img src="../../../../../../../assets/media/icons/correct.svg" *ngIf="controls.applicationFormForBM.value" 
+                        (click)="approvalOfBM(false,'form')">
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" *ngIf="!controls.applicationFormForBM.value" 
+                        (click)="approvalOfBM(true,'form')">
                     </div>
                 </div>
                 <div class="row body border-top-bottom">
@@ -34,8 +36,10 @@
 
                     </div>
                     <div class="col-4 text-center">
-                        <!-- <img src="../../../../../../../assets/media/icons/correct.svg" alt=""> -->
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" alt="">
+                        <img src="../../../../../../../assets/media/icons/correct.svg" *ngIf="controls.goldValuationForBM.value" 
+                        (click)="approvalOfBM(false,'gold')" disabled>
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" *ngIf="!controls.goldValuationForBM.value" 
+                        (click)="approvalOfBM(true,'gold')" disabled>
 
                     </div>
                 </div>
@@ -44,18 +48,36 @@
                         <label for="">Final Status</label>
                     </div>
                     <div class="col-4 border text-center select">
-                        <select class="form-control " formControlName="loanStatusForAppraiser">
+                        <select class="form-control " formControlName="loanStatusForAppraiser" (change)="statusAppraiser()"
+                        [class.isError]="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                             <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
                             <option [value]="status.value" *ngFor="let status of appraiser">{{status.name | titlecase}}</option>
                         </select>
+                        <mat-error *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">Field Required</mat-error>
                     </div>
                     <div class="col-4 text-center select">
-                        <select class="form-control ">
+                        <select class="form-control" formControlName="loanStatusForBM" (change)="statusBM()"
+                        [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                             <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
-                            <option [value]="status.value" *ngFor="let status of branchManager">{{status.name | titlecase}}</option>
+                            <option [value]="status.value" *ngFor="let status of branchManager" [disabled]="true">{{status.name | titlecase}}</option>
                         </select>
+                        <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">Field Required</mat-error>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row justify-content-center " *ngIf="controls.loanStatusForAppraiser.value == 'pending'">
+            <div class="col-4">
+                <textarea cols="4" rows="4" formControlName="commentByAppraiser" class="form-control"
+                [class.isError]="controls.commentByAppraiser.invalid && controls.commentByAppraiser.touched"></textarea>
+                <mat-error *ngIf="controls.commentByAppraiser.invalid && controls.commentByAppraiser.touched">Field Required</mat-error>
+            </div>
+        </div>
+        <div class="row justify-content-center " *ngIf="controls.loanStatusForBM.value == 'rejected'">
+            <div class="col-4">
+                <textarea cols="4" rows="4" formControlName="commentByBM" class="form-control"
+                [class.isError]="controls.commentByBM.invalid && controls.commentByBM.touched"></textarea>
+                <mat-error *ngIf="controls.commentByBM.invalid && controls.commentByBM.touched">Field Required</mat-error>
             </div>
         </div>
     </form>

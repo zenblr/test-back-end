@@ -52,7 +52,7 @@
                         <span class="text-warning" *ngIf="role.status.id == '2'">
                             {{role.status.statusName | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="role.status.id == '3'">
+                        <span class="text-danger" *ngIf="role.status.id == '5'">
                             {{role.status.statusName | titlecase}}
                         </span>
                     </mat-cell>
@@ -63,7 +63,8 @@
                     <mat-cell *matCellDef="let role">
                         <ng-container *ngIf="role.status.id == '1'">
                             <div [ngStyle]="{'display': 'inherit'}">
-                                <div class="kt-pointer" (click)="goToKyc()" class="kt-pointer">Apply KYC</div>
+                                <div class="kt-pointer text-primary" (click)="goToKyc(role.mobileNumber)">Apply
+                                    for KYC</div>
                             </div>
                         </ng-container>
                     </mat-cell>
@@ -72,8 +73,11 @@
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <div [ngStyle]="{'display': 'inherit'}">
+                        <div *ngIf="role.status.id !== 1" [ngStyle]="{'display': 'inherit'}">
                             <div class="kt-pointer" (click)="editLead(role)" class="kt-pointer">Edit</div>
+                        </div>
+                        <div *ngIf="role.status.id == 1" [ngStyle]="{'display': 'inherit'}">
+                            <div>-</div>
                         </div>
                     </mat-cell>
                 </ng-container>

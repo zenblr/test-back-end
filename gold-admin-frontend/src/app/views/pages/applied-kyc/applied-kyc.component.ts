@@ -3,8 +3,10 @@ import { AppliedKycDatasource } from '../../../core/applied-kyc/datasources/appl
 import { AppliedKycService } from '../../../core/applied-kyc/services/applied-kyc.service';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subject, Subscription, merge } from 'rxjs';
-import { tap, takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
+import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators';
 import { DataTableService } from '../../../core/shared/services/data-table.service';
+import { Router } from '@angular/router';
+import { SharedService } from '../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-applied-kyc',
@@ -22,12 +24,20 @@ export class AppliedKycComponent implements OnInit {
   private subscriptions: Subscription[] = [];
 
   private unsubscribeSearch$ = new Subject();
+  roles = '';
+  private destroy$ = new Subject();
 
   constructor(
     private appliedKycService: AppliedKycService,
     public dialog: MatDialog,
-    private dataTableService: DataTableService
-  ) { }
+    private dataTableService: DataTableService,
+    private router: Router,
+    private sharedService: SharedService
+  ) {
+    this.sharedService.getRole().subscribe(res => {
+      this.roles = res;
+    });
+  }
 
   ngOnInit() {
     // const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
@@ -78,9 +88,19 @@ export class AppliedKycComponent implements OnInit {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   editKyc(data) {
-    console.log(data)
+    // console.log(data.customerId, data.id);
+    const params = { customerId: data.customerId, customerKycId: data.id };
+    this.appliedKycService.editKycDetails(params).pipe(
+      map(res => {
+        console.log(res);
+        this.appliedKycService.editKyc.next({ editable: true });
+        this.router.navigate(['/kyc-setting']);
+      })
+    ).subscribe();
   }
 }

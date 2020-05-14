@@ -21,7 +21,7 @@
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
 
                         <!-- Name -->
-                        <div class="row kt-padding-t-15">
+                        <div class="row">
                             <div class="col-4 form-label">
                                 <mat-label class="mandatory">Full Name</mat-label>
                             </div>
@@ -172,7 +172,7 @@
                             <div class="col-8">
                                 <select class="form-control" formControlName="internalBranchId"
                                     [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
-                                    <option [disabled]="true" [selected]="true" value=""> Select Internal Branch
+                                    <option value="" [disabled]="true" [selected]="true" > Select Internal Branch
                                     </option>
                                     <option *ngFor="let branch of branches" [value]="branch.id">
                                         {{branch.name | titlecase}}
@@ -237,14 +237,17 @@
                         <!-- Date & Time -->
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <mat-label>Pin Code</mat-label>
+                                <mat-label class="mandatory">Pin Code</mat-label>
                             </div>
 
                             <div class="col-8">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                 <input class="form-control" formControlName="pinCode" numbersOnly maxlength="6"
                                     placeholder="000 000">
-                                <mat-error *ngIf="controls.dateTime.errors?.required ">Required field</mat-error>
+                                <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
+                                    Required field</mat-error>
+                                <mat-error *ngIf="controls.pinCode.errors?.pattern && controls.pinCode.touched">
+                                    Invalid Input</mat-error>
                                 <!-- </mat-form-field> -->
                             </div>
                         </div>

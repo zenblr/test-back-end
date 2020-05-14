@@ -43,18 +43,18 @@ exports.addUser = async (req, res, next) => {
         }
         // console.log(req.body.internalBranchId);
         // console.log(internalBranchId.length)
-        if(check.isEmpty(internalBranchId)){
-            let data =await models.userInternalBranch.create({
-               userId:user.id,
-               internalBranchId:internalBranchId
-            },{transaction:t})
+        if (check.isEmpty(internalBranchId)) {
+            let data = await models.userInternalBranch.create({
+                userId: user.id,
+                internalBranchId: internalBranchId
+            }, { transaction: t })
         }
         await models.userRole.create({ userId: user.id, roleId: roleId }, { transaction: t })
 
 
-    return res.status(200).json({ message: 'User Created.' });
+        return res.status(200).json({ message: 'User Created.' });
 
-})
+    })
 }
 
 exports.registerSendOtp = async (req, res, next) => {
@@ -145,7 +145,7 @@ exports.sendOtp = async (req, res, next) => {
             await models.userOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
         })
 
-        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`);
+        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
 
         return res.status(200).json({ message: 'Otp send to your Mobile number.', referenceCode: referenceCode });
 
@@ -222,29 +222,29 @@ exports.getUser = async (req, res, next) => {
     let user = await models.user.findAll({
         include: [{
             model: models.role,
-            where:{
-                isActive:true
+            where: {
+                isActive: true
             }
-        },{
+        }, {
             model: models.internalBranch,
-            where:{
-                isActive:true
+            where: {
+                isActive: true
             }
-            
+
         }]
     });
     return res.json(user)
 }
 
-exports.getInternalBranchUser=async(req,res,next)=>{
-    let internalBranchUser=await models.internalBranch.findAll({
-        include:[
-        {
-            model: models.user,
-            where:{
-                isActive:true
-            }
-        }]
+exports.getInternalBranchUser = async (req, res, next) => {
+    let internalBranchUser = await models.internalBranch.findAll({
+        include: [
+            {
+                model: models.user,
+                where: {
+                    isActive: true
+                }
+            }]
     });
     return res.json(internalBranchUser);
 }
@@ -289,14 +289,14 @@ exports.addAdmin = async (req, res, next) => {
 
 //Add internal user
 exports.addInternalUser = async (req, res, next) => {
-    let { firstName, lastName, mobileNumber, email,internalBranchId,roleId,userUniqueId } = req.body;
+    let { firstName, lastName, mobileNumber, email, internalBranchId, roleId, userUniqueId } = req.body;
     let createdBy = req.userData.id
     let modifiedBy = req.userData.id
     let password = firstName.slice(0, 3) + '@' + mobileNumber.slice(mobileNumber.length - 5, 9);
     await sequelize.transaction(async t => {
-        const user = await models.user.create({ userUniqueId,firstName, lastName, password, mobileNumber, email, userTypeId : 4, createdBy, modifiedBy }, { transaction: t })
+        const user = await models.user.create({ userUniqueId, firstName, lastName, password, mobileNumber, email, userTypeId: 4, createdBy, modifiedBy }, { transaction: t })
         await models.userRole.create({ userId: user.id, roleId }, { transaction: t })
-        if(internalBranchId != null && internalBranchId != undefined){
+        if (internalBranchId != null && internalBranchId != undefined) {
             await models.userInternalBranch.create({ userId: user.id, internalBranchId }, { transaction: t })
         }
     })
@@ -308,14 +308,14 @@ exports.addInternalUser = async (req, res, next) => {
 
 exports.updateInternalUser = async (req, res, next) => {
     const id = req.params.id;
-    let { firstName, lastName, mobileNumber, email,internalBranchId,roleId } = req.body;
+    let { firstName, lastName, mobileNumber, email, internalBranchId, roleId } = req.body;
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
-        const user = await models.user.update({ firstName, lastName, mobileNumber, email, modifiedBy }, {where : {id : id}})
-        await models.userRole.update({isActive : false},{where:{ userId: user.id} });
+        const user = await models.user.update({ firstName, lastName, mobileNumber, email, modifiedBy }, { where: { id: id } })
+        await models.userRole.update({ isActive: false }, { where: { userId: user.id } });
         await models.userRole.create({ userId: user.id, roleId }, { transaction: t });
-        if(internalBranchId != null && internalBranchId != undefined){
-            await models.userInternalBranch.update({isActive : false}, {where:{ userId: user.id} })
+        if (internalBranchId != null && internalBranchId != undefined) {
+            await models.userInternalBranch.update({ isActive: false }, { where: { userId: user.id } })
             await models.userInternalBranch.create({ userId: user.id, internalBranchId }, { transaction: t })
         }
     })
@@ -326,59 +326,78 @@ exports.deleteInternalUser = async (req, res, next) => {
     const id = req.params.id;
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
-        const user = await models.user.update({ isActive:false, modifiedBy }, {where : {id : id}})
-        await models.userRole.update({isActive : false},{where:{ userId: user.id} });
+        const user = await models.user.update({ isActive: false, modifiedBy }, { where: { id: id } })
+        await models.userRole.update({ isActive: false }, { where: { userId: user.id } });
     })
     return res.status(200).json({ message: 'User deleted.' });
 }
 
 exports.GetInternalUser = async (req, res) => {
-        const { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(
-            req.query.search,
-            req.query.from,
-            req.query.to
-          );
-          let includeArray = [
-              {
-                model: models.role,
-                where: { isActive: true },
-                subQuery: false
-              },
-              {
-                  model: models.internalBranch,
-                  subQuery: false
-                }
-            ]
-          let searchQuery = {
-              [Sequelize.Op.or]: {
-                  firstName: { [Sequelize.Op.iLike]: search + "%" },
-                  lastName: { [Sequelize.Op.iLike]: search + "%" },
-                  mobileNumber: { [Sequelize.Op.iLike]: search + "%" },
-                  email: { [Sequelize.Op.iLike]: search + "%" },
-                //   "$internalBranch.internal_branch_id$": {
-                //       [Op.iLike]: search + "%",
-                //     },
-                  "$roles.role_name$": {
-                      [Op.iLike]: search + "%",
-                    }
-              },
-              isActive: true,
-              userTypeId : 4
-            }
-          let CategoryData = await models.user.findAll({
-            where: searchQuery,
-            offset: offset,
-            limit: pageSize,
-            include: includeArray,
+    const { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+    let includeArray = [
+        {
+            model: models.role,
+            where: { isActive: true },
             subQuery: false
-          });
-          let count = await models.user.findAll({
-            where: searchQuery,
-              include: includeArray,
-              subQuery: false
-          });
-          res.status(200).json({
-            data: CategoryData,
-            count: count.length
-          });
-  }
+        },
+        {
+            model: models.internalBranch,
+            subQuery: false
+        }
+    ]
+    let searchQuery = {
+        [Sequelize.Op.or]: {
+            firstName: { [Sequelize.Op.iLike]: search + "%" },
+            lastName: { [Sequelize.Op.iLike]: search + "%" },
+            mobileNumber: { [Sequelize.Op.iLike]: search + "%" },
+            email: { [Sequelize.Op.iLike]: search + "%" },
+            //   "$internalBranch.internal_branch_id$": {
+            //       [Op.iLike]: search + "%",
+            //     },
+            "$roles.role_name$": {
+                [Op.iLike]: search + "%",
+            }
+        },
+        isActive: true,
+        userTypeId: 4
+    }
+    let CategoryData = await models.user.findAll({
+        where: searchQuery,
+        offset: offset,
+        limit: pageSize,
+        include: includeArray,
+        subQuery: false
+    });
+    let count = await models.user.findAll({
+        where: searchQuery,
+        include: includeArray,
+        subQuery: false
+    });
+    res.status(200).json({
+        data: CategoryData,
+        count: count.length
+    });
+}
+
+
+//getAppraiser
+
+exports.getAppraiser = async (req, res, next) => {
+
+    let getAppraiserList = await models.user.findAll({
+        where: { isActive: true },
+        attributes:['id','firstName','lastName'],
+        include: [{
+            model: models.role,
+            where: { roleName: 'Appraiser' },
+            attributes:[]
+        }]
+    })
+
+    return res.status(200).json({ message: 'success', data: getAppraiserList })
+
+}

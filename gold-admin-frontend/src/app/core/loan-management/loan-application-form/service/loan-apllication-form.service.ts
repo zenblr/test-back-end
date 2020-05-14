@@ -16,4 +16,11 @@ export class LoanApplicationFormService {
     )
   }
 
+  applyForLoan(data):Observable<any>{
+    return this.http.post(`/api//loan-process/apply-for-loan` ,data).pipe(
+      map(res => res)
+    )
+  }
+  
+
 }
