@@ -7,10 +7,10 @@ import { finalize, takeUntil, tap, catchError } from 'rxjs/operators';
 // Translate
 import { TranslateService } from '@ngx-translate/core';
 // NGRX
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../../core/reducers';
+
+
 // Auth
-import { AuthNoticeService, AuthService, Register, User } from '../../../../core/auth';
+import { AuthNoticeService, AuthService, User } from '../../../../core/auth';
 import { Subject } from 'rxjs';
 import { ConfirmPasswordValidator } from './confirm-password.validator';
 import { ToastrComponent } from '../../../../views/partials/components';
@@ -36,7 +36,7 @@ export class ChangePassword implements OnInit, OnDestroy {
 	 * @param translate: TranslateService
 	 * @param router: Router
 	 * @param auth: AuthService
-	 * @param store: Store<AppState>
+	 * 
 	 * @param fb: FormBuilder
 	 * @param cdr
 	 */
@@ -45,7 +45,7 @@ export class ChangePassword implements OnInit, OnDestroy {
 		private translate: TranslateService,
 		private router: Router,
 		private auth: AuthService,
-		private store: Store<AppState>,
+		
 		private fb: FormBuilder,
 		private cdr: ChangeDetectorRef
 	) {

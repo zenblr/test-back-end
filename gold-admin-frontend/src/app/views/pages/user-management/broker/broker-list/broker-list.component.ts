@@ -43,7 +43,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
   /**
    * Component constructor
    *
-   * @param store: Store<AppState>
+   * 
    * @param dialog: MatDialog
    * @param snackBar: MatSnackBar
    * @param layoutUtilsService: LayoutUtilsService
