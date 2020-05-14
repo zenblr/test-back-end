@@ -215,7 +215,8 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   next(event){
-    this.selected = 4;
+    this.selected = 5;
+    window.scrollTo(0, 0)
     this.disabled[5] = false;
   }
 

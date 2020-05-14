@@ -108,6 +108,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     const deductionWeight = group.controls.grossWeight.value - group.controls.netWeight.value;
     group.controls.deductionWeight.patchValue(deductionWeight);
     console.log(deductionWeight)
+    this.currentNetWeight(index)
     }
   }
 
@@ -116,6 +117,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     if(group.controls.purity.valid && group.controls.netWeight.valid){
       const netWeight = group.controls.netWeight.value - (group.controls.purity.value/100)
       group.controls.currentNetWeight.patchValue(netWeight)
+      this.calculateLtvAmount(index)
     }
   }
 

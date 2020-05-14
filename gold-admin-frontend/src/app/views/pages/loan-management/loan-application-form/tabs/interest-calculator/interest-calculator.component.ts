@@ -132,16 +132,16 @@ export class InterestCalculatorComponent implements OnInit {
     if (this.controls.finalLoanAmount.valid) {
       switch (this.controls.paymentFrequency.value) {
         case "30":
-          this.controls.interestRate.patchValue(this.selectedScheme.interestRateThirtyDaysMonthly)
+          this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateThirtyDaysMonthly)
            this.colJoin = null
           break;
         case "90":
-          this.controls.interestRate.patchValue(this.selectedScheme.interestRateNinetyDaysMonthly)
+          this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateNinetyDaysMonthly)
            this.colJoin = 3
 
           break;
         case "180":
-          this.controls.interestRate.patchValue(this.selectedScheme.interestRateOneHundredEightyDaysMonthly)
+          this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateOneHundredEightyDaysMonthly)
           this.colJoin = 6
 
           break;
