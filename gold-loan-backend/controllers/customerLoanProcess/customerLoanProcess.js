@@ -316,6 +316,16 @@ exports.appliedLoanDetails = async (req, res, next) => {
 exports.customerDetails = async (req, res, next) => {
 
     let customerUniqueId = req.params.customerUniqueId;
+    let reqId = req.userData.id;
+    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } })
+
+    if(check.isEmpty(getAppraiserId)){
+        return res.status(400).json({message: 'This customer Did not assign in to anyone'})
+    }
+    if(reqId != getAppraiserId.appraiserId){
+        return res.status(400).json({message: `This customer is not assign to you`})
+    }
+
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber'],
