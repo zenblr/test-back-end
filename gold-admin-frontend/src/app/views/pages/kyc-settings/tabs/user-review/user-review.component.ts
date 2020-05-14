@@ -1,9 +1,10 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { UserAddressService, UserBankService, UserPersonalService, UserDetailsService } from '../../../../../core/kyc-settings';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, filter, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { AppliedKycService } from '../../../../../core/applied-kyc/services/applied-kyc.service';
 
 @Component({
   selector: 'kt-user-review',
@@ -24,6 +25,13 @@ export class UserReviewComponent implements OnInit {
   states = [];
   cities0 = [];
   cities1 = [];
+  maxDate = new Date();
+  @ViewChild("identity", { static: false }) identity;
+  @ViewChild("permanent", { static: false }) permanent;
+  @ViewChild("residential", { static: false }) residential;
+  @ViewChild("pass", { static: false }) pass;
+
+
   // data = {
   //   "customerKycReview": {
   //     "id": 1,
@@ -145,16 +153,31 @@ export class UserReviewComponent implements OnInit {
     private userBankService: UserBankService,
     private userDetailsService: UserDetailsService,
     private toastr: ToastrService,
-    private userPersonalService: UserPersonalService) { }
+    private userPersonalService: UserPersonalService,
+    private appliedKycService: AppliedKycService) {
+
+  }
 
   ngOnInit() {
     console.log(this.data)
-    if (!this.userBankService.kycDetails) {
-      this.data = this.userDetailsService.userData;
-    } else {
+    if (this.userBankService.kycDetails) {
       this.data = this.userBankService.kycDetails;
-    }
+    } else
+      if (this.userDetailsService.userData) {
+        this.data = this.userDetailsService.userData;
+      }
+    // else if (this.appliedKycService.userData) {
+    //   this.data = this.appliedKycService.userData;
+    // }
+
+    this.appliedKycService.userData$.subscribe(res => {
+      if (res) {
+        this.data = res;
+      }
+    })
+
     this.initForm();
+
     this.getStates();
     this.getIdentityType();
     this.getAddressProofType();
@@ -182,7 +205,7 @@ export class UserReviewComponent implements OnInit {
       address: [this.data.customerKycReview.customerKycAddress[0].address, [Validators.required]],
       stateId: [this.data.customerKycReview.customerKycAddress[0].state.id, [Validators.required]],
       cityId: [this.data.customerKycReview.customerKycAddress[0].city.id, [Validators.required]],
-      pinCode: [this.data.customerKycReview.customerKycAddress[0].pinCode, [Validators.required]],
+      pinCode: [this.data.customerKycReview.customerKycAddress[0].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       addressProof: [this.data.customerKycReview.customerKycAddress[0].addressProof, [Validators.required]],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[0].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[0].addressProofNumber, [Validators.required]],
@@ -196,7 +219,7 @@ export class UserReviewComponent implements OnInit {
       address: [this.data.customerKycReview.customerKycAddress[1].address, [Validators.required]],
       stateId: [this.data.customerKycReview.customerKycAddress[1].state.id, [Validators.required]],
       cityId: [this.data.customerKycReview.customerKycAddress[1].city.id, [Validators.required]],
-      pinCode: [this.data.customerKycReview.customerKycAddress[1].pinCode, [Validators.required]],
+      pinCode: [this.data.customerKycReview.customerKycAddress[1].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       addressProof: [this.data.customerKycReview.customerKycAddress[1].addressProof, [Validators.required]],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
@@ -396,7 +419,14 @@ export class UserReviewComponent implements OnInit {
       }), catchError(err => {
         this.toastr.error(err.error.message);
         throw err
-      })).subscribe()
+      }),
+      finalize(() => {
+        this.identity.nativeElement.value = '';
+        this.permanent.nativeElement.value = '';
+        this.residential.nativeElement.value = '';
+        this.pass.nativeElement.value = '';
+      })
+    ).subscribe()
 
   }
 

@@ -121,7 +121,8 @@ export class LeadManagementComponent implements OnInit {
     });
   }
 
-  goToKyc() {
-    this.router.navigate(['/kyc-setting']);
+  goToKyc(data) {
+    // console.log(data)
+    this.router.navigate(['/kyc-setting'], { queryParams: { mob: data } });
   }
 }

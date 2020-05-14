@@ -1,6 +1,6 @@
 <div class="container minHeight">
     <form [formGroup]="finalInterestForm">
-        <div class="row kt-margin-b-20 kt-margin-t-30">
+        <div class="row kt-margin-b-20">
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
@@ -25,11 +25,11 @@
                         <label class="mandatory">Scheme Name</label>
                     </div>
                     <div class="col-7">
-                        <select formControlName="schemeId" class="form-control"
+                        <select formControlName="schemeId" class="form-control" (change)="scheme()"
                             [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
                             <option [value]="schemes.id" *ngFor="let schemes of schemesList">
-                                {{schemes.schemeName}}</option>
+                                {{schemes.schemeName}} {{schemes.schemeAmountStart}} - {{schemes.schemeAmountEnd}}</option>
                         </select>
                         <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Filed is required
                         </mat-error>
@@ -45,10 +45,10 @@
                         <label class="mandatory">Start Date</label>
                     </div>
                     <div class="col-7">
-                        <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                        <input type="text" class="form-control" [matDatepicker]="picker" 
                             formControlName="loanStartDate"
                             [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
-                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()">
+                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()" readonly>
                         <mat-datepicker #picker></mat-datepicker>
                         <mat-error *ngIf="controls.loanStartDate.errors?.required && controls.loanStartDate.touched">
                             Required field
@@ -111,7 +111,9 @@
                         <mat-error *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
                             Invalid
                         </mat-error>
-                        <mat-error *ngIf="controls.finalLoanAmount.errors?.invalidAmt">Enter Valid Amount</mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">Enter Loan Amount as Per Scheme</mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.eligibleAmt">Amount should be less then Eligible Amount</mat-error>
+
                     </div>
                 </div>
             </div>
@@ -160,29 +162,6 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class ="mandatory">Gold Net Weight</label>
-                    </div>
-                    <div class="col-7">
-                        <input class="form-control" formControlName="goldNetWeight" placeholder="0.00 gram" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class ="mandatory">Final Net weight</label>
-                    </div>
-                    <div class="col-7">
-                        <input class="form-control" formControlName="finalNetWeight" placeholder="0.00 gram" />
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
-        <div class="row kt-margin-b-20">
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
                         <label>Processing Charges(fixed)</label>
                     </div>
                     <div class="col-7">
@@ -212,19 +191,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="row">
-            <!-- <div class="col-6"> -->
-            <!-- <div class="row">
-                    <div class="col-4 form-label">
-                        <label class ="mandatory">Current LTV Amount</label>
-                    </div>
-                    <div class="col-7">
-                        <input class="form-control" formControlName="currentLtvAmount" placeholder="0,00,000" />
-                    </div>
-                </div> -->
-            <!-- </div> -->
-
             <div class="col-6 kt-margin-t-30 kt-margin-b-30">
 
                 <div class="offset-4 col">
@@ -260,7 +228,7 @@
                     </div>
 
                     <div class="kt-margin-t-20 kt-margin-b-30">
-                        <kt-button [value]="'Print Now'" [type]="'button'" (click)="printNow()"></kt-button>
+                        <kt-button [value]="'Next'" [type]="'button'" (click)="next()"></kt-button>
                     </div>
                 </div>
             </div>

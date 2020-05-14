@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core'
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from "../../../../core/loan-management";
 import { map, catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-loan-application-form',
@@ -19,11 +20,11 @@ export class LoanApplicationFormComponent implements OnInit {
     ornaments: false,
     intreset: false,
   }
+  disabledForm: boolean
   totalAmount: number = 0;
   basic: any;
   bank: any;
   bankDetails: any;
-  disable: boolean = false;
   kyc: any;
   nominee: any;
   selected: number;
@@ -31,34 +32,42 @@ export class LoanApplicationFormComponent implements OnInit {
   approval: any;
   Ornaments: any;
   customerDetail: any;
+  disabled = [false, true, true, true, true, true];
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
-    public loanApplicationForm:LoanApplicationFormService
+    public loanApplicationFormService: LoanApplicationFormService,
+    public toast:ToastrService,
   ) {
-    
+
   }
 
   ngOnInit() {
     setTimeout(() => {
       if (this.router.url == "/loan-management/package-image-upload") {
-        this.disable = false;
+        this.disabledForm = true;
         const test = document.getElementById('packets');
         test.scrollIntoView({ behavior: "smooth" });
       } else {
-        this.disable = true;
+        this.disabledForm = false;
       }
     }, 500)
   }
 
-  customerDetails(){
-    this.loanApplicationForm.customerDetails(this.basic.controls.customerUniqueId.value).pipe(
+  customerDetails(event) {
+    this.loanApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
       map(res => {
-        this.customerDetail = res.customerData
-        this.bankDetails = res.customerData.customerKycBank[0]
-        this.selected = 3;
+    this.customerDetail = res.customerData
+    this.bankDetails = this.customerDetail.customerKycBank[0]
+    for (let index = 0; index < this.disabled.length; index++) {
+      if (index <= 3) {
+        this.disabled[index] = false;
+      }
+    }
+    this.selected = 3;
       }),
-      catchError(err=>{
+      catchError(err => {
+        this.toast.error(err.error.message)
         throw err;
       })
     ).subscribe()
@@ -66,35 +75,66 @@ export class LoanApplicationFormComponent implements OnInit {
 
   basicForm(event) {
     this.basic = event
-    // this.basic.controls.customerUniqueId.valueChanges.subscribe(()=>{
-      if(this.basic.controls.customerUniqueId.valid){
-        this.customerDetails()
-      }
-    // })
+    this.invalid.basic = false
   }
 
   kycEmit(event) {
     this.kyc = event
+    this.invalid.kyc = false
+
   }
 
   nomineeEmit(event) {
-    this.nominee = event
+    this.nominee = event.nominee
+    this.invalid.nominee = false
+
+    if (event.scroll) {
+      const test = document.getElementById('ornaments');
+      test.scrollIntoView({ behavior: "smooth" });
+    }
   }
 
   bankFormEmit(event) {
     this.bank = event
+    this.invalid.bank = false
   }
 
   interestFormEmit(event) {
     this.intreset = event
+    this.invalid.intreset = false
+    if (this.intreset.valid) {
+      this.disabled[5] = false
+    } else {
+      this.disabled[5] = true;
+    }
   }
 
   approvalFormEmit(event) {
     this.approval = event
+    this.invalid.approval = false
+
   }
 
-  OrnamentsDataEmit(event){
+  OrnamentsDataEmit(event) {
     this.Ornaments = event
+    this.invalid.ornaments = false
+    if (this.Ornaments.valid) {
+      this.disabled[4] = false
+    this.calculateTotalEligibleAmount()
+
+    } else {
+      this.disabled[4] = true;
+    }
+
+  }
+
+  calculateTotalEligibleAmount() {
+    this.totalAmount = 0;
+    this.Ornaments.value.forEach(element => {
+      this.totalAmount += element.loanAmount
+    });
+  
+    console.log(this.Ornaments.value)
   }
 
   cancel() {
@@ -105,43 +145,79 @@ export class LoanApplicationFormComponent implements OnInit {
     if (this.basic.invalid) {
       this.selected = 0;
       this.invalid.basic = true;
-      return
+      window.scrollTo(0, 0)
+      return true
     }
 
     if (this.nominee.invalid) {
       this.selected = 3;
       this.invalid.nominee = true;
-      return
+      window.scrollTo(0, 0)
+      return true
+    }
+    if (this.Ornaments.invalid) {
+      this.invalid.ornaments = true;
+      const test = document.getElementById('ornaments');
+      test.scrollIntoView({ behavior: "smooth" });
+      return true
     }
     if (this.intreset.invalid) {
       this.selected = 4;
       this.invalid.intreset = true;
-      return
+      window.scrollTo(0, 0)
+      return true
     }
+
     if (this.approval.invalid) {
       this.selected = 5;
       this.invalid.approval = true;
-      return
+      window.scrollTo(0, 0)
+      return true
     }
 
-    
 
+
+
+
+  }
+  createData() {
+    let Obj = {
+      loanOrnmanets: this.Ornaments.value,
+      loanApproval: this.approval.value,
+      loanFinalCalculator: this.intreset.value,
+      loanPersonal: this.basic.value,
+      loanBank: this.bank.value,
+      loanKyc: this.kyc.value,
+      loanNominee: this.nominee.value,
+      customerId: this.basic.controls.customerId.value,
+      totalEligibleAmt: this.totalAmount,
+      totalFinalInterestAmt: (this.intreset.controls.intresetAmt.value)
+    }
+    return Obj
   }
 
   apply() {
-    // this.checkForFormValidation();
-    const arrObj = [];
-    let Obj
-  //  arrObj.push(this.Ornaments.value)
-   arrObj.push(this.approval.value)
-   arrObj.push(this.intreset.value)
-   arrObj.push(this.basic.value)
-   arrObj.push(this.bank.value)
-   arrObj.push(this.kyc.value)
-   Obj = arrObj.reduce(((r, c) => Object.assign(r, c)), {});
-   Obj.nomineeData = [this.nominee.value]
-   Obj.ornamentData = this.Ornaments.value;
-   console.log(JSON.stringify(Obj))
-
+   let valid =  this.checkForFormValidation();
+   if(valid){
+     return 
+   }
+   let data = this.createData()
+   this.loanApplicationFormService.applyForLoan(data).pipe(
+     map(res =>{
+       this.toast.success(res.message)
+       this.router.navigate(['/loan-management/applied-loan'])
+     }),
+     catchError(err =>{
+      this.toast.error(err.error.message)
+       throw err
+     })
+   ).subscribe()
   }
+
+  next(event){
+    this.selected = 5;
+    window.scrollTo(0, 0)
+    this.disabled[5] = false;
+  }
+
 }

@@ -87,14 +87,14 @@ export class AddLeadComponent implements OnInit {
     this.leadForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      internalBranchId: [1],
+      internalBranchId: ['', Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],
       panCardNumber: ['', [Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
-      pinCode: ['', [Validators.required]],
+      pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
       address: this.fb.array([])
@@ -186,9 +186,9 @@ export class AddLeadComponent implements OnInit {
     //     this.isPanVerified = true;
     //   }
     // });
-    setTimeout(() => {
-      this.isPanVerified = true;
-    }, 1000);
+    // setTimeout(() => {
+    this.isPanVerified = true;
+    // }, 1000);
   }
 
   resendOTP() {

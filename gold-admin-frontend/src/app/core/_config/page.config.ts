@@ -25,7 +25,7 @@ export class PageConfig {
 				page: { title: 'Packets', desc: '' }
 			},
 			'karat-details': {
-				page: { title: 'karat-details', desc: '' }
+				page: { title: 'Karat', desc: '' }
 			}
 		},
 		'upload-data': {
@@ -96,6 +96,9 @@ export class PageConfig {
 			'bulk-upload-report': {
 				page: { title: 'Bulk Upload Report', desc: '' }
 			},
+			'logistic-partner': {
+				page: { title: 'Logistic Partner', desc: '' }
+			},
 			'wallet-price': {
 				page: { title: 'Wallet Price', desc: '' }
 			},
@@ -106,9 +109,7 @@ export class PageConfig {
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }
 		},
-		'logistic-partner': {
-			page: { title: 'Logistic Partner', desc: '' }
-		},
+		
 		'loan-management': {
 			'loan-calculator': {
 				page: { title: 'Loan Calculator', desc: '' }

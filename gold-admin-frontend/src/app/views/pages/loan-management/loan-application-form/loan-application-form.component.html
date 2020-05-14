@@ -3,35 +3,36 @@
         <div class="row">
             <div class="col-12">
                 <mat-tab-group [(selectedIndex)]="selected">
-                    <mat-tab label="Basic Details">
-                        <kt-basic-details (basicFormEmit)="basicForm($event)" [details]="customerDetail">
+                    <mat-tab label="Basic Details" [disabled]="disabled[0]">
+                        <kt-basic-details (basicFormEmit)="basicForm($event)" [details]="customerDetail" [disable]="disabledForm" [invalid]="invalid.basic" 
+                        (apiHit)="customerDetails($event)">
                         </kt-basic-details>
                     </mat-tab>
-                    <mat-tab label="KYC Details">
-                        <kt-kyc-details (kycEmit)="kycEmit($event)" [details]="customerDetail"></kt-kyc-details>
+                    <mat-tab label="KYC Details" [disabled]="disabled[1]">
+                        <kt-kyc-details (kycEmit)="kycEmit($event)" [details]="customerDetail"  [disable]="disabledForm"></kt-kyc-details>
                     </mat-tab>
-                    <mat-tab label="Bank Details">
-                        <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [details]="bankDetails">
+                    <mat-tab label="Bank Details" [disabled]="disabled[2]">
+                        <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [details]="bankDetails"  [disable]="disabledForm">
                         </kt-bank-details>
                     </mat-tab>
-                    <mat-tab label="Nominee Details">
-                        <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [invalid]="invalid.nominee">
+                    <mat-tab label="Nominee Details" [disabled]="disabled[3]">
+                        <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [invalid]="invalid.nominee"  [disable]="disabledForm">
                         </kt-nominee-details>
                     </mat-tab>
-                    <mat-tab label="Final Interest Calculator">
-                        <kt-final-interest-amount (interestFormEmit)="interestFormEmit($event)"
-                            [invalid]="invalid.intreset"></kt-final-interest-amount>
+                    <mat-tab label="Final Interest Calculator" [disabled]="disabled[4]">
+                        <kt-interest-calculator (interestFormEmit)="interestFormEmit($event)" (nextEmit)="next($event)"
+                            [invalid]="invalid.intreset"  [disable]="disabledForm" [totalAmt]="totalAmount"></kt-interest-calculator>
                     </mat-tab>
-                    <mat-tab label="Approval">
-                        <kt-approval (approvalFormEmit)="approvalFormEmit($event)" [invalid]="invalid.approval">
+                    <mat-tab label="Approval" [disabled]="disabled[5]">
+                        <kt-approval (approvalFormEmit)="approvalFormEmit($event)" [invalid]="invalid.approval"  [disable]="disabledForm">
                         </kt-approval>
                     </mat-tab>
                 </mat-tab-group>
             </div>
         </div>
-        <div class="row">
+        <div class="row" id="ornaments">
             <div class="col">
-                <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [invalid]="invalid.ornaments">
+                <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [invalid]="invalid.ornaments"  [disable]="disabledForm">
                 </kt-ornaments>
             </div>
 
@@ -51,14 +52,14 @@
                 <mat-divider></mat-divider>
             </div>
         </div>
-        <div class="row py-3" *ngIf="disable">
+        <div class="row py-3" *ngIf="!disabledForm">
             <div class="col-12">
                 <kt-button [value]="'Apply'" [type]="'button'" (click)="apply()"></kt-button>
                 <span class="kt-padding-10"></span>
                 <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>
             </div>
         </div>
-        <div class="row" id="packets" *ngIf="!disable">
+        <div class="row" id="packets" *ngIf="disabledForm">
             <div class="col">
                 <kt-upload-packets></kt-upload-packets>
             </div>

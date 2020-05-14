@@ -133,7 +133,7 @@ export class InternalUserListComponent implements OnInit {
     });
   }
 
-  
+
   addUser(action) {
     const dialogRef = this.dialog.open(AddInternalUserComponent, {
       data: { action: action },
@@ -141,10 +141,10 @@ export class InternalUserListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
+        this.internalUserService.openModal.next(false);
         this.loadRolesList();
       }
     })
-    this.internalUserService.openModal.next(false);
   }
 
   editUser(user, action) {

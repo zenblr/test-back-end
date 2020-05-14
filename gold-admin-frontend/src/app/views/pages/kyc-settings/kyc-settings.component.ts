@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NgbNavChangeEvent, NgbNav } from '@ng-bootstrap/ng-bootstrap';
+import { AppliedKycService } from '../../../core/applied-kyc/services/applied-kyc.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kt-kyc-settings',
@@ -13,10 +15,29 @@ export class KycSettingsComponent implements OnInit {
   // disabled: boolean[] = [false, false, false, false, false, false]; // delete this line
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;
 
-  constructor(private ref: ChangeDetectorRef) { }
+  constructor(
+    private ref: ChangeDetectorRef,
+    private appliedKycService: AppliedKycService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     // this.next();
+    // console.log(this.appliedKycService.editKyc.getValue());
+    // this.active = 1;
+    console.log(this.route);
+    if (this.route.snapshot.queryParams.mob) {
+      this.active = 1;
+    } else {
+      const EDIT_KYC = this.appliedKycService.editKyc.getValue();
+      if (EDIT_KYC.editable) {
+        this.active = 5;
+        for (let index = 0; index < this.disabled.length; index++) {
+          this.disabled[index] = true;
+        }
+        this.disabled[4] = false;
+      }
+
+    }
   }
 
   onNavChange(changeEvent: NgbNavChangeEvent) {
@@ -35,6 +56,7 @@ export class KycSettingsComponent implements OnInit {
         this.disabled[i] = true;
         this.active = +(event);
       }
+      this.disabled[+(event) - 1] = false
     } else {
       if (this.active < this.disabled.length) {
         for (let i = 0; i < this.disabled.length; i++) {
@@ -55,6 +77,10 @@ export class KycSettingsComponent implements OnInit {
       this.ref.detectChanges();
     }
 
+  }
+
+  ngOnDestroy(): void {
+    this.appliedKycService.editKyc.next({ editable: false });
   }
 
 

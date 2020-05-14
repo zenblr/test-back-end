@@ -4,12 +4,14 @@ import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
 import { AppliedLoanDatasource,AppliedLoanService } from '../../../../core/loan-management'
+import { Router } from '@angular/router';
 @Component({
   selector: 'kt-applied-loan',
   templateUrl: './applied-loan.component.html',
   styleUrls: ['./applied-loan.component.scss']
 })
 export class AppliedLoanComponent implements OnInit {
+  
 
   dataSource: AppliedLoanDatasource;
   displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions'];
@@ -28,7 +30,8 @@ export class AppliedLoanComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private AppliedLoanService: AppliedLoanService,
-    private dataTableService: DataTableService
+    private dataTableService: DataTableService,
+    private router:Router
   ) {
   }
 
@@ -99,16 +102,7 @@ export class AppliedLoanComponent implements OnInit {
   //   });
   // }
 
-  // editLead(role) {
-  //   const dialogRef = this.dialog.open(AddLeadComponent,
-  //     {
-  //       data: { id: role.id, action: 'edit' },
-  //       width: '500px'
-  //     });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.loadLeadsPage();
-  //     }
-  //   });
-  // }
+  editLoan(loan) {
+    this.router.navigate(['/loan-management/loan-application-form',loan.finalLoan.id])
+  }
 }
