@@ -5,6 +5,7 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
+import { AppraiserService } from '../../../../../core/user-management/appraiser';
 
 @Component({
   selector: 'kt-add-appraiser',
@@ -13,10 +14,11 @@ import { PartnerService } from '../../../../../core/user-management/partner/serv
 })
 export class AddAppraiserComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  branchForm: FormGroup;
+  appraiserForm: FormGroup;
   states: any;
   cities: any;
-  partners = [];
+  appraisers = [];
+  customers = [];
   editData = false;
   viewOnly = false;
   viewLoading: boolean = false;
@@ -28,79 +30,56 @@ export class AddAppraiserComponent implements OnInit {
     private sharedService: SharedService,
     private fb: FormBuilder,
     private branchService: BranchService,
-    private partnerService: PartnerService
+    private appraiserService: AppraiserService
   ) { }
 
   ngOnInit() {
-
+    this.getCustomer()
+    this.getAllAppraiser();
     this.formInitialize();
     this.setForm()
-    this.getAllPartners();
-    this.getStates();
 
   }
 
   setForm() {
     if (this.data.action == 'add') {
       this.title = 'Add Appraiser'
-
     } else if (this.data.action == 'edit') {
       this.title = 'Edit Appraiser'
-      this.getPartnerById(this.data.partnerId);
+      this.appraiserForm.patchValue(this.data.appraiser)
     } else {
       this.title = 'View Appraiser'
-      this.branchForm.disable();
-      this.getPartnerById(this.data.partnerId);
+      this.appraiserForm.patchValue(this.data.appraiser)
+      this.appraiserForm.disable();
     }
   }
 
   formInitialize() {
-    this.branchForm = this.fb.group({
-      id: [''],
-      name: ['', [Validators.required]],
-      partnerId: ['', [Validators.required]],
+    this.appraiserForm = this.fb.group({
+      id:[null],
+      customerUniqueId: [''],
+      customerId: ['', [Validators.required]],
+      appraiserId: ['', [Validators.required]],
     });
   }
 
-  getAllPartners() {
-    this.partnerService.getAllPartnerWithoutPagination().subscribe(res => {
-      this.partners = res.data;
+  getAllAppraiser() {
+    this.appraiserService.getAllAppraiser().subscribe(res => {
+      this.appraisers = res.data;
     })
   }
 
-  getStates() {
-    this.sharedService.getStates().subscribe(res => {
-      this.states = res.message;
-    },
-      error => {
-      });
+  getCustomer(){
+    this.appraiserService.getCustomer().subscribe(res => {
+      this.customers = res.data;
+    })
   }
 
-  getCities() {
-    const stateId = this.controls.stateId.value;
-    this.sharedService.getCities(stateId).subscribe(res => {
-      this.cities = res.message;
-    },
-      error => {
-      });
-  }
-
-  getPartnerById(id) {
-    this.viewLoading = true
-    this.branchService.getBranchById(id).subscribe(res => {
-      console.log(res);
-      this.branchForm.patchValue(res);
-      this.getCities()
-    },
-      error => {
-        console.log(error.error.message);
-      });
-  }
 
   // getter for controls
 
   get controls() {
-    return this.branchForm.controls;
+    return this.appraiserForm.controls;
   }
 
   action(event: Event) {
@@ -112,19 +91,22 @@ export class AddAppraiserComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.branchForm.invalid) {
-      this.branchForm.markAllAsTouched()
+    if (this.appraiserForm.invalid) {
+      this.appraiserForm.markAllAsTouched()
       return
     }
-    // console.log(this.branchForm.value);
-    const partnerData = this.branchForm.value;
-    const id = this.controls.id.value;
-
+    // console.log(this.appraiserForm.value);
+    const appraiserData = this.appraiserForm.value;
+    this.customers.filter(cust =>{
+      if(appraiserData.customerId == cust.id){
+        appraiserData.customerUniqueId = cust.customerUniqueId
+      }
+    })
     if (this.data.action == 'edit') {
-      this.branchService.updateBranch(id, partnerData).subscribe(res => {
+      this.appraiserService.updateAppraiser(appraiserData.id, appraiserData).subscribe(res => {
         // console.log(res);
         if (res) {
-          const msg = 'Branch Updated Sucessfully';
+          const msg = 'Appraiser Updated Sucessfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
         }
@@ -136,10 +118,10 @@ export class AddAppraiserComponent implements OnInit {
         });
 
     } else {
-      this.branchService.addBranch(partnerData).subscribe(res => {
+      this.appraiserService.assignAppraiser(appraiserData).subscribe(res => {
         // console.log(res);
         if (res) {
-          const msg = 'Partner Added Successfully';
+          const msg = 'Appraiser Assigned Successfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
         }
@@ -153,8 +135,6 @@ export class AddAppraiserComponent implements OnInit {
 
   }
 
-  onAlertClose($event) {
-    // this.hasFormErrors = false;
-  }
+
 
 }

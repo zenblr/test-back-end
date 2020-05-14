@@ -19,8 +19,8 @@ export class ChangePasswordComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private toast: ToastrService,
-    public router:Router
-    ) {
+    public router: Router
+  ) {
     this.startForm();
   }
 
@@ -66,23 +66,28 @@ export class ChangePasswordComponent implements OnInit {
     }
     this.authService.changePassword(this.passwordForm.value).pipe(
       map((res) => {
-          this.toast.success("Password Changed Successfully");
-          this.logout()
-          this.form.resetForm()
-      }),catchError(err =>{
-          this.toast.error(err.error.message)
+        this.toast.success("Password Changed Successfully");
+        this.logout()
+        this.form.resetForm()
+      }), catchError(err => {
+        this.toast.error(err.error.message)
         throw err
       })
     ).subscribe()
 
   }
-  logout(){
+  logout() {
     this.authService.logout().pipe(
-      map(res =>{
+      map(res => {
         localStorage.clear()
         this.router.navigate(['/auth/login'])
-    }),catchError(err =>{
-      throw err
-    })).subscribe()
+      }), catchError(err => {
+        throw err
+      })).subscribe()
+  }
+
+  get controls() {
+    if (this.passwordForm)
+      return this.passwordForm.controls;
   }
 }

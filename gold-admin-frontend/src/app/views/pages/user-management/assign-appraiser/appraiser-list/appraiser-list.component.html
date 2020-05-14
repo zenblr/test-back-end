@@ -5,21 +5,20 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" >
 
                 <ng-container matColumnDef="customerId">
-                    <mat-header-cell *matHeaderCellDef >Customer Id</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.customerId}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef >Appraiser Name</mat-header-cell>
+                    <mat-cell *matCellDef="let appraiser">{{appraiser.appraiser.firstName | titlecase}}&nbsp;{{appraiser.appraiser.lastName  | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerName">
-                    <mat-header-cell *matHeaderCellDef >Customer Name</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.customerName | titlecase}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef >Customer Id</mat-header-cell>
+                    <mat-cell *matCellDef="let appraiser">{{appraiser.customerUniqueId}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-                    <mat-cell *matCellDef="let role">
+                    <mat-cell *matCellDef="let appraiser">
                         <div [ngStyle]="{'display': 'inherit'}">
-                                <div (click)="viewRole(role)" class="kt-pointer"> View | &nbsp;</div>
-                                <div (click)="editRole(role)" class="kt-pointer"> Edit | &nbsp;</div>
-                            <div class="kt-pointer text-danger" (click)="deleteRole(role)">Delete</div>
+                                <!-- <div (click)="editappraiser(appraiser,'view')" class="kt-pointer"> View | &nbsp;</div> -->
+                                <div (click)="editappraiser(appraiser,'edit')" class="kt-pointer"> Edit  &nbsp;</div>
                         </div>
                     </mat-cell>
                 </ng-container>

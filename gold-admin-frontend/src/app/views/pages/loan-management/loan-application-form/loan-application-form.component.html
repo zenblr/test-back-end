@@ -20,8 +20,8 @@
                         </kt-nominee-details>
                     </mat-tab>
                     <mat-tab label="Final Interest Calculator" [disabled]="disabled[4]">
-                        <kt-final-interest-amount (interestFormEmit)="interestFormEmit($event)"
-                            [invalid]="invalid.intreset"  [disable]="disabledForm"></kt-final-interest-amount>
+                        <kt-interest-calculator (interestFormEmit)="interestFormEmit($event)" (nextEmit)="next($event)"
+                            [invalid]="invalid.intreset"  [disable]="disabledForm" [totalAmt]="totalAmount"></kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Approval" [disabled]="disabled[5]">
                         <kt-approval (approvalFormEmit)="approvalFormEmit($event)" [invalid]="invalid.approval"  [disable]="disabledForm">

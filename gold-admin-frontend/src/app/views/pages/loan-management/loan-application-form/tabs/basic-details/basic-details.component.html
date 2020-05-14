@@ -6,12 +6,19 @@
                     <label class="text-color kt-padding-l-10">Customer ID</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control" placeholder="10234501203203" formControlName="customerUniqueId"
-                         [class.isError]="controls.customerUniqueId.touched && controls.customerUniqueId.invalid"
+                    <input type="text" class="form-control" placeholder="10234501203203"
+                        formControlName="customerUniqueId"
+                        [class.isError]="controls.customerUniqueId.touched && controls.customerUniqueId.invalid"
                         (keyup.enter)="getCustomerDetails()">
-                    <mat-error *ngIf="controls.customerUniqueId.touched && controls.customerUniqueId.invalid">
-                        Field is Required
-                    </mat-error>
+                    <div *ngIf="controls.customerUniqueId.touched && controls.customerUniqueId.invalid">
+                        <mat-error *ngIf="controls.customerUniqueId.errors?.required">
+                            Field is Required
+                        </mat-error>
+                        <mat-error
+                            *ngIf="controls.customerUniqueId.errors?.minlength">
+                            Length Should be 8
+                        </mat-error>
+                    </div>
                 </div>
             </div>
             <div class="row kt-margin-t-15">
@@ -20,7 +27,7 @@
                 </div>
                 <div class="col-6">
                     <input type="text" class="form-control" placeholder="9845678991" formControlName="mobileNumber"
-                        numbersOnly maxlength="10" readonly >
+                        numbersOnly maxlength="10" readonly>
                 </div>
             </div>
             <div class="row kt-margin-t-15">
@@ -28,7 +35,8 @@
                     <label class="text-color kt-padding-l-10">PAN Number</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control" placeholder="qwert1234q" formControlName="panCardNumber" readonly>
+                    <input type="text" class="form-control" placeholder="qwert1234q" formControlName="panCardNumber"
+                        readonly>
                 </div>
             </div>
             <div class="row kt-margin-t-15">
@@ -36,8 +44,8 @@
                     <label class="text-color kt-padding-l-10">Start Date</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control"  formControlName="startDate" value="{{currentDate |  date:'mediumDate'}}"
-                        placeholder="4/5/2020" readonly>
+                    <input type="text" class="form-control" formControlName="startDate"
+                        value="{{currentDate |  date:'mediumDate'}}" placeholder="4/5/2020" readonly>
                 </div>
             </div>
         </div>

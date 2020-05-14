@@ -3,29 +3,7 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-	MatAutocompleteModule,
-	MatButtonModule,
-	MatCardModule,
-	MatCheckboxModule,
-	MatDatepickerModule,
-	MatDialogModule,
-	MatIconModule,
-	MatInputModule,
-	MatMenuModule,
-	MatNativeDateModule,
-	MatPaginatorModule,
-	MatProgressBarModule,
-	MatProgressSpinnerModule,
-	MatRadioModule,
-	MatSelectModule,
-	MatSnackBarModule,
-	MatSortModule,
-	MatTableModule,
-	MatTabsModule,
-	MatTooltipModule,
-	MatDividerModule,
-} from '@angular/material';
+import { AngularMaterialModule } from '../pages/angular-material/angular-material.module'
 // NgBootstrap
 import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // Perfect Scrollbar
@@ -87,6 +65,7 @@ import { UplodDataImageComponent } from './components/uplod-data-image/uplod-dat
 import { ImagePreviewDialogComponent } from './components/image-preview-dialog/image-preview-dialog.component';
 import { UserClassificationComponent } from './components/user-classification/user-classification.component';
 import { UplodPreviewImageComponent } from './components/uplod-preview-image/uplod-preview-image.component';
+import { SelectWithSearchComponent } from './components/select-with-search/select-with-search.component';
 
 @NgModule({
 	declarations: [
@@ -145,6 +124,8 @@ import { UplodPreviewImageComponent } from './components/uplod-preview-image/upl
 		UserClassificationComponent,
 
 		UplodPreviewImageComponent,
+
+		SelectWithSearchComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -195,6 +176,7 @@ import { UplodPreviewImageComponent } from './components/uplod-preview-image/upl
 		LoanSchemeComponent,
 		UserClassificationComponent,
 		UplodPreviewImageComponent,
+		SelectWithSearchComponent,
 		// spinner
 
 	],
@@ -210,29 +192,7 @@ import { UplodPreviewImageComponent } from './components/uplod-preview-image/upl
 		PortletModule,
 		WidgetModule,
 
-		// angular material modules
-		MatButtonModule,
-		MatMenuModule,
-		MatSelectModule,
-		MatInputModule,
-		MatTableModule,
-		MatAutocompleteModule,
-		MatRadioModule,
-		MatIconModule,
-		MatNativeDateModule,
-		MatProgressBarModule,
-		MatDatepickerModule,
-		MatCardModule,
-		MatPaginatorModule,
-		MatSortModule,
-		MatCheckboxModule,
-		MatProgressSpinnerModule,
-		MatSnackBarModule,
-		MatTabsModule,
-		MatTooltipModule,
-		MatDialogModule,
-		MatDividerModule,
-
+		AngularMaterialModule,
 		// ng-bootstrap modules
 		NgbDropdownModule,
 		NgbTabsetModule,
