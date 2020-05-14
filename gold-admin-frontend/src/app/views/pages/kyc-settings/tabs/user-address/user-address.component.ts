@@ -5,6 +5,7 @@ import { ToastrComponent } from '../../../../partials/components';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { MatCheckbox } from '@angular/material';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-user-address',
@@ -20,7 +21,7 @@ export class UserAddressComponent implements OnInit {
   @ViewChild("permanent", { static: false }) permanent;
   @ViewChild("residential", { static: false }) residential;
 
-  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
+  // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
   states = [];
   cities0 = [];
   cities1 = [];
@@ -35,7 +36,8 @@ export class UserAddressComponent implements OnInit {
     private userAddressService: UserAddressService,
     private userDetailsService: UserDetailsService,
     private sharedService: SharedService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -101,30 +103,36 @@ export class UserAddressComponent implements OnInit {
     this.files = event.target.files[0];
     // console.log(type);
     // console.log(this.addressControls)
-    this.sharedService.uploadFile(this.files).pipe(
-      map(res => {
-        if (type == "identityProof") {
-          this.images.identityProof.push(res.uploadFile.URL)
-          this.identityForm.get('identityProof').patchValue(event.target.files[0].name);
-        } if (type == 0) {
-          this.images.residential.push(res.uploadFile.URL)
-          this.addressControls.at(0)['controls'].addressProof.patchValue(event.target.files[0].name)
-        } if (type == 1) {
-          this.images.permanent.push(res.uploadFile.URL)
-          this.addressControls.at(1)['controls'].addressProof.patchValue(event.target.files[0].name)
-        }
-        this.ref.detectChanges();
-        // console.log(this.addressControls)
-      }), catchError(err => {
-        this.toastr.errorToastr(err.error.message);
-        throw err
-      }),
-      finalize(() => {
-        this.identity.nativeElement.value = '';
-        this.permanent.nativeElement.value = '';
-        this.residential.nativeElement.value = '';
-      })
-    ).subscribe()
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      this.sharedService.uploadFile(this.files).pipe(
+        map(res => {
+          if (type == "identityProof") {
+            this.images.identityProof.push(res.uploadFile.URL)
+            this.identityForm.get('identityProof').patchValue(event.target.files[0].name);
+          } if (type == 0) {
+            this.images.residential.push(res.uploadFile.URL)
+            this.addressControls.at(0)['controls'].addressProof.patchValue(event.target.files[0].name)
+          } if (type == 1) {
+            this.images.permanent.push(res.uploadFile.URL)
+            this.addressControls.at(1)['controls'].addressProof.patchValue(event.target.files[0].name)
+          }
+          this.ref.detectChanges();
+          // console.log(this.addressControls)
+        }), catchError(err => {
+          this.toastr.error(err.error.message);
+          throw err
+        }),
+        finalize(() => {
+          this.identity.nativeElement.value = '';
+          this.permanent.nativeElement.value = '';
+          this.residential.nativeElement.value = '';
+        })
+      ).subscribe()
+    } else {
+      this.toastr.error('Upload Valid File Format');
+    }
 
   }
 
@@ -213,10 +221,10 @@ export class UserAddressComponent implements OnInit {
       this.identityForm.get('identityProof').patchValue('');
     } else if (type == 'residential') {
       this.images.residential.splice(index, 1);
-      // this.addressControls.at(0)['controls'].addressProof.patchValue('')
+      this.addressControls.at(0)['controls'].addressProof.patchValue('')
     } else if (type == 'permanent') {
       this.images.permanent.splice(index, 1);
-      // this.addressControls.at(1)['controls'].addressProof.patchValue('')
+      this.addressControls.at(1)['controls'].addressProof.patchValue('')
     }
   }
 
