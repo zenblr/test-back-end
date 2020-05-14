@@ -36,9 +36,9 @@ export class AddKaratDetailsComponent implements OnInit {
   formInitialize() {
     this.karatDetailsForm = this.fb.group({
       id: [''],
-      karat: ['', [Validators.required]],
-      fromPercentage: ['', [Validators.required]],
-      toPercentage:['', [Validators.required]],
+      karat: ['', [Validators.required],[]],
+      fromPercentage: ['', [Validators.required,Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      toPercentage:['', [Validators.required,Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       range:[]
     });
   }

@@ -25,6 +25,7 @@ module.exports = (req, res, next) => {
         "/api/customer/my-loan",
         "/api/customer/scheme-based-price",
         "/api/customer/loan-detail",
+        "/api/customer/customer-feedback",
 
 
 
