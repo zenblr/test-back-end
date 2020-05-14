@@ -78,6 +78,7 @@
                       <div *ngFor="let sub of category.subCategory;last as las; first as fir;index as subIndex">
                         <div *ngIf="sub.isSelected">
                           <ul  class="tree" >
+<<<<<<< HEAD
                           <li class="text-color font-weight-500 kt-margin-l-15" [class.last]="las">
                             <span class="position-relative ">
                               <label class="custom-checkbox">
@@ -88,6 +89,9 @@
                                 <span class="checkmark top-0" #pro></span>
                               </label>
                             </span>
+=======
+                          <li class="text-color font-weight-500 kt-margin-l-15" [class.last]="las|| (las==fir)">{{sub.subCategoryName | titlecase}}
+>>>>>>> parent of 7a322de... permission changes
                         <div class="row justify-content-start kt-margin-l-40">
                           <div *ngFor="let product of sub.products;index as idx" class="col-4">
                                 <span class="position-relative ">

@@ -144,6 +144,7 @@ export class PermissionComponent implements OnInit, AfterViewInit {
     this.checkedCategory = this.permissions.filter(cat => {
       return cat.isSelected
     })
+<<<<<<< HEAD
     this.checkedProduct = []
     this.permissions.forEach(cat => {
       cat.subCategory.forEach(sub => {
@@ -151,6 +152,8 @@ export class PermissionComponent implements OnInit, AfterViewInit {
           Array.prototype.push.apply(this.checkedProduct, sub.products)
       })
     })
+=======
+>>>>>>> parent of 7a322de... permission changes
     this.calculateLength()
     this.checked('cat')
   }
