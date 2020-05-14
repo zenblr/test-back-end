@@ -10,7 +10,9 @@ const checkAuth = require('../middleware/checkAuth');
 
 const customerCheckAuth = require('../middleware/customerCheckAuth')
 
-const { readBanner, readOffer, readLenderBanner,readGoldRate,readPersonalDetailsOfCustomer,readBankDetailsOfCustomer,readNomineeDetailsOfCustomer,readAddressDetailsOfCustomer,readPanCardImageOfCustomer,readAddressImageOfCustomer } = require('../controllers/customer/customerApp')
+const { readBanner, readOffer, readLenderBanner,readGoldRate,readPersonalDetailsOfCustomer,readBankDetailsOfCustomer,readNomineeDetailsOfCustomer,readAddressDetailsOfCustomer,
+    readPanCardImageOfCustomer,readAddressImageOfCustomer,readPartnerBranch,readAllScheme,readMyLoan
+     ,schemeBasedOnPriceRange ,readLoanDetails      } = require('../controllers/customer/customerApp')
 
 //customer
 router.post('/', customerValidation, validationError, checkAuth, wrapper(addCustomer));
@@ -45,6 +47,11 @@ router.get('/nominee-detail',customerCheckAuth,wrapper(readNomineeDetailsOfCusto
 router.get('/address-detail',customerCheckAuth,wrapper(readAddressDetailsOfCustomer));
 router.get('/address-proof-image-detail',customerCheckAuth,wrapper(readAddressImageOfCustomer));
 router.get('/pan-card-image-detail',customerCheckAuth,wrapper(readPanCardImageOfCustomer));
+router.get('/partner-branch/:id',customerCheckAuth,wrapper(readPartnerBranch));
+router.get('/get-all-scheme',customerCheckAuth,wrapper(readAllScheme));
+router.get('/my-loan',customerCheckAuth,wrapper(readMyLoan));
+router.get('/scheme-based-on-price',customerCheckAuth,wrapper(schemeBasedOnPriceRange));
+router.get('/loan-detail',customerCheckAuth,wrapper(readLoanDetails))
 
 router.get('/:customerId', checkAuth, wrapper(getSingleCustomer));
 

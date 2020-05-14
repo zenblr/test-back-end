@@ -20,6 +20,12 @@ module.exports = (req, res, next) => {
         "/api/customer/address-detail",
         "/api/customer/address-proof-image-detail",
         "/api/customer/pan-card-image-detail",
+        "/api/customer/partner-branch",
+        "/api/customer/get-all-scheme",
+        "/api/customer/my-loan",
+        "/api/customer/scheme-based-price",
+        "/api/customer/loan-detail",
+
 
 
         

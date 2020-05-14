@@ -31,85 +31,155 @@ exports.readLenderBanner = async (req, res, next) => {
     }
 };
 
-exports.readGoldRate=async (req,res,next)=>{
-    let readGoldRate=await models.goldRate.findAll({attributes:['goldRate']})
-    if(!readGoldRate[0])
-    {
-        res.status(404).json({message:'Data not found'});
+exports.readGoldRate = async (req, res, next) => {
+    let readGoldRate = await models.goldRate.findAll({ attributes: ['goldRate'] })
+    if (!readGoldRate[0]) {
+        res.status(404).json({ message: 'Data not found' });
     }
-    else{
+    else {
         res.status(200).json(readGoldRate);
     }
 }
 
-exports.readPersonalDetailsOfCustomer=async (req,res,next)=>{
-    let customerId=req.userData.id;
-    let readPersonalDetailsOfCustomer=await models.customer.findOne({attributes:['firstName','lastName','email','panCardNumber','mobileNumber']},{where:{id:customerId}});
-    if(!readPersonalDetailsOfCustomer)
-    {
-        res.status(404).json({message:'Data not found'})
+exports.readPersonalDetailsOfCustomer = async (req, res, next) => {
+    let customerId = req.userData.id;
+    let readPersonalDetailsOfCustomer = await models.customer.findOne({ attributes: ['firstName', 'lastName', 'email', 'panCardNumber', 'mobileNumber'] }, { where: { customerId: customerId } });
+    if (!readPersonalDetailsOfCustomer) {
+        res.status(404).json({ message: 'Data not found' })
     }
-    else{
+    else {
         res.status(200).json(readPersonalDetailsOfCustomer);
     }
 
 }
 
-exports.readBankDetailsOfCustomer= async(req,res,next)=>{
-    let customerId=req.userData.id;
-    let readBankDetailsOfCustomer=await models.customerKycBankDetail.findOne({attributes:['bankName','bankBranchName','accountHolderName','accountNumber','ifscCode']},{where:{id:customerId}});
-    if(!readBankDetailsOfCustomer)
-    {
-        res.status(404).json({message:'Data not found'})
+exports.readBankDetailsOfCustomer = async (req, res, next) => {
+    let customerId = req.userData.id;
+    let readBankDetailsOfCustomer = await models.customerKycBankDetail.findOne({ attributes: ['bankName', 'bankBranchName', 'accountHolderName', 'accountNumber', 'ifscCode'] }, { where: { customerId: customerId } });
+    if (!readBankDetailsOfCustomer) {
+        res.status(404).json({ message: 'Data not found' })
     }
-    else{
+    else {
         res.status(200).json(readBankDetailsOfCustomer);
     }
 
 }
 
-exports.readNomineeDetailsOfCustomer=async (req,res,next)=>{
-    let customerId=req.userData.id;
-    let readNomineeDetailsOfCustomer=await models.customerLoanNomineeDetail.findOne({attributes:['nomineeName','nomineeAge','relationShip']},{where:{id:customerId}});
-    if(!readNomineeDetailsOfCustomer)
-    {
-        res.status(404).json({message:'Data not found'})
+exports.readNomineeDetailsOfCustomer = async (req, res, next) => {
+    let customerId = req.userData.id;
+    let readNomineeDetailsOfCustomer = await models.customerLoanNomineeDetail.findOne({ attributes: ['nomineeName', 'nomineeAge', 'relationShip'] }, { where: { customerId: customerId } });
+    if (!readNomineeDetailsOfCustomer) {
+        res.status(404).json({ message: 'Data not found' })
     }
-    else{
+    else {
         res.status(200).json(readNomineeDetailsOfCustomer);
     }
 }
-exports.readAddressDetailsOfCustomer=async(req,res,next)=>{
-    let customerId=req.userData.id;
-    let readAddressDetailsOfCustomer=await models.customerKycAddressDetail.findOne({attributes:['address']},{where:{id:customerId}});
-    if(!readAddressDetailsOfCustomer)
-    {
-        res.status(404).json({message:'Data not found'})
+exports.readAddressDetailsOfCustomer = async (req, res, next) => {
+    let customerId = req.userData.id;
+    let readAddressDetailsOfCustomer = await models.customerKycAddressDetail.findOne({ attributes: ['address'] }, { where: { customerId: customerId } });
+    if (!readAddressDetailsOfCustomer) {
+        res.status(404).json({ message: 'Data not found' })
     }
-    else{
+    else {
         res.status(200).json(readAddressDetailsOfCustomer);
     }
 }
 
-exports.readPanCardImageOfCustomer=async(req,res,next)=>{
-    let customerId=req.userData.id;
-    let readPanCardImageOfCustomer=await models.customerKycPersonalDetail.findOne({attributes:['identityProof']},{where:{id:customerId}});
-    if(!readPanCardImageOfCustomer){
-        res.status(404).json({message:'Data not found'});
+exports.readPanCardImageOfCustomer = async (req, res, next) => {
+    let customerId = req.userData.id;
+    let readPanCardImageOfCustomer = await models.customerKycPersonalDetail.findOne({ attributes: ['identityProof'] }, { where: { customerId: customerId } });
+    if (!readPanCardImageOfCustomer) {
+        res.status(404).json({ message: 'Data not found' });
     }
-    else{
-res.status(200).json(readPanCardImageOfCustomer);
+    else {
+        res.status(200).json(readPanCardImageOfCustomer);
     }
 }
 
-exports.readAddressImageOfCustomer=async(req,res,next)=>{
-    let customerId=req.userData.id;
-    let readAddressImageOfCustomer=await models.customerKycAddressDetail.findOne({attributes:['addressProof']},{where:{id:customerId}});
-    if(!readAddressImageOfCustomer){
-        res.status(404).json({message:'Data not found'});
+exports.readAddressImageOfCustomer = async (req, res, next) => {
+    let customerId = req.userData.id;
+    let readAddressImageOfCustomer = await models.customerKycAddressDetail.findOne({ attributes: ['addressProof'] }, { where: { customerId: customerId } });
+    if (!readAddressImageOfCustomer) {
+        res.status(404).json({ message: 'Data not found' });
     }
-    else{
+    else {
         res.status(200).json(readAddressImageOfCustomer);
     }
 }
 
+exports.readPartnerBranch = async (req, res, next) => {
+    let id = req.params.id;
+    console.log(id)
+    let readPartner = await models.partnerBranch.findAll(
+        {
+            where: { cityId: id },
+            attributes: ['id', 'name', 'address', 'cityId'],
+            include: [{
+                model: models.city,
+                as: 'city'
+            },
+
+            {
+                model: models.partner,
+                as: "partner"
+            }]
+
+        });
+    if (!readPartner[0]) {
+        res.status(404).json({ message: 'Data not found' })
+    }
+    else {
+        res.status(200).json(readPartner);
+    }
+}
+exports.readMyLoan = async (req, res, next) => {
+    let customerId = req.userData.id;
+    let readMyLoan = await models.customerFinalLoan.findOne({ attributes: ['loanId','interestRate','tenure','loanStart','loanEnd','finalLoanAmount'] }, { where: { customerId: customerId } });
+    if (!readMyLoan) {
+        res.status(404).json({ message: 'Data not found' })
+    }
+    else {
+        res.status(200).json(readMyLoan);
+    }
+}
+
+exports.readAllScheme = async (req, res, next) => {
+    let getAllScheme = await models.scheme.findAll({ where: { isActive: true } });
+    if (!getAllScheme[0]) {
+        res.status(404).json({ message: 'Data not found' })
+    }
+    else {
+        res.status(200).json(getAllScheme)
+    }
+}
+
+exports.readLoanDetails = async (req, res, next) => {
+    let customerId = req.userData.id;
+    let loanDetails = await models.customerFinalLoan.findOne({attributes:['loanId','finalLoanAmount','interestRate','tenure','loanStartDate','loanEndDate']},{ where: { isActive: true, customerId: customerId } });
+    if (!loanDetails) {
+        res.status(404).json({message:'Data not found'})
+    }
+    else{
+        res.status(200).json(loanDetails)
+    }
+}
+
+exports.schemeBasedOnPriceRange=async(req,res,next)=>{
+    const{schemeAmountStart,schemeAmountEnd}=req.query;
+    const query={};
+    
+    if(schemeAmountEnd && schemeAmountEnd){
+        query.schemeAmountStart=schemeAmountStart;
+        query.schemeAmountEnd=schemeAmountEnd
+    }
+    let schemeBasedOnPriceRange=await models.scheme.findAll({
+        where: query,
+        isActive: true});
+    if (!schemeBasedOnPriceRange[0]) {
+      return  res.status(404).json({message:'Data not found'})
+    }
+    else{
+     return   res.status(200).json(schemeBasedOnPriceRange);
+    }
+}
