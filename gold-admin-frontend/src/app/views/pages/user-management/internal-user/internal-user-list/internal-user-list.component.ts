@@ -8,11 +8,11 @@ import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material
 import { distinctUntilChanged, tap, skip, take, delay, takeUntil, catchError, map } from 'rxjs/operators';
 import { merge, of, Subscription, Subject } from 'rxjs';
 // NGRX
-import { Store } from '@ngrx/store';
+
 // Services
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
-import { AppState } from '../../../../../core/reducers';
+
 import { InternalUserDatasource, InternalUserService } from '../../../../../core/user-management/internal-user';
 
 import { AddInternalUserComponent } from '../add-internal-user/add-internal-user.component'
@@ -39,13 +39,13 @@ export class InternalUserListComponent implements OnInit {
   /**
    * Component constructor
    *
-   * @param store: Store<AppState>
+   * 
    * @param dialog: MatDialog
    * @param snackBar: MatSnackBar
    * @param layoutUtilsService: LayoutUtilsService
    */
   constructor(
-    private store: Store<AppState>,
+    
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,

@@ -1,20 +1,16 @@
 // Angular
 import { Component, OnInit, ElementRef, ViewChild, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-// Material
-import { SelectionModel } from '@angular/cdk/collections';
+
 import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material';
 // RXJS
 import { debounceTime, distinctUntilChanged, tap, skip, take, delay, takeUntil, map } from 'rxjs/operators';
 import { fromEvent, merge, Observable, of, Subscription, Subject } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
 // NGRX
-import { Store } from '@ngrx/store';
+
 // Services
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
-import { Role, RolesDataSource, RoleDeleted, RolesPageRequested } from '../../../../../core/auth';
-import { AppState } from '../../../../../core/reducers';
-import { QueryParamsModel } from '../../../../../core/_base/crud';
+
 import { PartnerAddComponent } from '../partner-add/partner-add.component';
 import { PartnerDatasource } from '../../../../../core/user-management/partner/datasources/partner.datasource';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
@@ -41,9 +37,7 @@ export class PartnerListComponent implements OnInit {
  
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  // Selection
-  selection = new SelectionModel<Role>(true, []);
-  // rolesResult: Role[] = [];
+  
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
@@ -55,13 +49,11 @@ export class PartnerListComponent implements OnInit {
 	/**
 	 * Component constructor
 	 *
-	 * @param store: Store<AppState>
-	 * @param dialog: MatDialog
-	 * @param snackBar: MatSnackBar
-	 * @param layoutUtilsService: LayoutUtilsService
+	 * 
+	 * 
 	 */
   constructor(
-    private store: Store<AppState>,
+    
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
@@ -146,7 +138,7 @@ export class PartnerListComponent implements OnInit {
 	 *
 	 * @param _item: Role
 	 */
-  deleteRole(_item: Role) {
+  deleteRole(_item) {
     const role = _item;
     const _title = 'Delete Partner';
     const _description = 'Are you sure to permanently delete this partner?';
@@ -168,21 +160,6 @@ export class PartnerListComponent implements OnInit {
     });
   }
 
-  /** Fetch */
-	/**
-	 * Fetch selected rows
-	 */
-  fetchRoles() {
-    const messages = [];
-    this.selection.selected.forEach(elem => {
-      messages.push({
-        text: `${elem.title}`,
-        id: elem.id.toString(),
-        // status: elem.username
-      });
-    });
-    this.layoutUtilsService.fetchElements(messages);
-  }
 
 	/**
 	 * Add role
@@ -202,7 +179,7 @@ export class PartnerListComponent implements OnInit {
 	 *
 	 * @param role: Role
 	 */
-  editRole(role: Role) {
+  editRole(role) {
     const _saveMessage = `Role successfully has been saved.`;
     const _messageType = role.id ? MessageType.Update : MessageType.Create;
     const dialogRef = this.dialog.open(PartnerAddComponent, {

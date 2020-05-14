@@ -1,69 +1,12 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
-    <!-- PORTLET LOADING | Binded to TABLE Datasource -->
-    <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
-    <!-- <kt-portlet-header [title]="'Partners List'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$"> -->
 
-    <!-- <ng-container ktPortletTools> -->
-
-    <!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
-    <!-- mat-raised-button | Rectangular contained button w/ elevation  -->
-    <!-- </ng-container> -->
-    <!-- </kt-portlet-header> -->
-    <!-- end::Header -->
 
     <kt-portlet-body>
-        <!-- start::FILTERS & GROUP ACTIONS -->
-        <div class="kt-form kt-margin-b-10">
-
-            <!-- start::GROUP ACTIONS -->
-            <!-- Group actions list: 'Delete selected' | 'Fetch selected' | 'Update status for selected' -->
-            <!-- Group actions are shared for all LISTS -->
-            <div class="row align-items-center collapse kt-form__group-actions kt-margin-top-20 kt-margin-bottom-20"
-                [ngClass]="{'show' : selection.selected.length > 0}">
-                <!-- We show 'Group Actions' div if smth are selected -->
-                <div class="col-xl-12">
-                    <div class="kt-form__group kt-form__group--inline">
-                        <div class="kt-form__label kt-form__label-no-wrap">
-                            <label class="kt--font-bold kt-font-danger-">
-                                <span translate="ECOMMERCE.COMMON.SELECTED_RECORDS_COUNT"></span>
-                                {{ selection.selected.length }}
-                            </label>
-                            <!-- selectedCountsTitle => function from codeBehind (roles-list.component.ts file) -->
-                            <!-- selectedCountsTitle => just returns title of selected items count -->
-                            <!-- for example: Selected records count: 4 -->
-                        </div>
-                        <div class="kt-form__control kt-form__group--inline">
-                            <button (click)="fetchRoles()" mat-raised-button matTooltip="Fetch selected roles"
-                                class="mat-button-mt-4">
-                                <mat-icon>clear_all</mat-icon>
-                                Fetch Selected
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end::GROUP ACTIONS -->
-        </div>
-        <!-- end::FILTERS & GROUP ACTIONS -->
-
-        <!-- MATERIAL TABLE | Binded to datasources -->
-        <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
+       
         <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" >
-                               <!-- <ng-container matColumnDef="select">
-                    <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
-                        <mat-checkbox (change)="$event ? masterToggle() : null"
-                            [checked]="selection.hasValue() && isAllSelected()"
-                            [indeterminate]="selection.hasValue() && !isAllSelected()">
-                        </mat-checkbox>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let row" class="mat-column-checkbox">
-                        <mat-checkbox (click)="$event.stopPropagation()"
-                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
-                        </mat-checkbox>
-                    </mat-cell>
-                </ng-container> -->
+
 
                 <ng-container matColumnDef="partnerId">
                     <mat-header-cell *matHeaderCellDef>Partner ID</mat-header-cell>

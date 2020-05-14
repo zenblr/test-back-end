@@ -9,8 +9,8 @@ import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule 
 // Translate
 import { TranslateModule } from '@ngx-translate/core';
 // NGRX
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
+
+
 // CRUD
 import { InterceptService } from '../../../core/_base/crud/';
 // Module components
@@ -22,7 +22,7 @@ import { AuthNoticeComponent } from './auth-notice/auth-notice.component';
 import { CoreModule } from '../../../core/core.module';
 
 // Auth
-import { AuthEffects, AuthGuard, authReducer, AuthService } from '../../../core/auth';
+import { AuthGuard, AuthService } from '../../../core/auth';
 import { PartialsModule } from '../../partials/partials.module';
 import { SignInWithOtpComponent } from './sign-in-with-otp/sign-in-with-otp.component';
 
@@ -75,8 +75,6 @@ const routes: Routes = [
 		MatCheckboxModule,
 		MatProgressSpinnerModule,
 		TranslateModule.forChild(),
-		StoreModule.forFeature('auth', authReducer),
-		EffectsModule.forFeature([AuthEffects]),
 		PartialsModule,
 		CoreModule
 	],
