@@ -160,14 +160,11 @@ export class TopbarComponent implements OnInit {
 			this.value1 = 'Add Partner';
 		}
 		if (this.path == 'logistic-partner') {
-			this.showfilter = true;
 			this.showInput = true;
 			this.value1 = 'Add Logistic Partner';
 			this.type1 = 'button';
 		}
 		if (this.path == 'karat-details') {
-			this.showfilter = true;
-			// this.showInput = true;
 			this.value1 = 'Add Karat Details';
 			this.type1 = 'button';
 		}
@@ -204,7 +201,6 @@ export class TopbarComponent implements OnInit {
 			this.value2 = 'Edit Wallet Price';
 		}
 		if (this.path == 'bulk-upload-report') {
-			this.showfilter = true;
 			this.showInput = true;
 		}
 		if (this.path == 'products') {
@@ -215,14 +211,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'category') {
 			this.rightButton = true
-			this.showfilter = true;
 			this.showInput = true;
 			this.value2 = 'Add Category';
 			this.type2 = 'button';
 		}
 		if (this.path == 'sub-category') {
 			this.rightButton = true
-			this.showfilter = true;
 			this.showInput = true;
 			this.value2 = 'Add Sub Category';
 			this.type2 = 'button';
@@ -249,7 +243,6 @@ export class TopbarComponent implements OnInit {
 			this.value2 = 'Show Report';
 		}
 		if (this.path == 'admin-log') {
-			this.showfilter = true;
 			this.showInput = true;
 		}
 	}

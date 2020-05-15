@@ -6,7 +6,7 @@
     <img src="assets/media/icons/svg/General/filter.svg" height="20" width="20"></button>
 
   <div ngbDropdownMenu class="p-0" aria-labelledby="filterDropdown">
-    <div class="kt-filter-dropdown" [ngClass]="{'dynamic-width': filterName =='form' || filterName =='LRM'}">
+    <div class="kt-filter-dropdown">
       <div class="kt-portlet m-0">
 
         <div class="kt-pointer d-none" (click)="filterDropdown.close()">
@@ -23,7 +23,7 @@
                     <div class="col-6">
                       <label>By Category</label>
                       <select class="form-control" name="categoryId" formControlName="categoryId">
-                        <option value="" [selected]="true" [disabled]="true">Select Category</option>
+                        <option value="" [selected]="true">Select Category</option>
                         <option *ngFor="let item of categoryList" [value]="item?.id">
                           {{item?.categoryName}}
                         </option>
@@ -32,7 +32,7 @@
                     <div class="col-6">
                       <label>By Sub-Category</label>
                       <select class="form-control" name="subCategoryId" formControlName="subCategoryId">
-                        <option value="" [selected]="true" [disabled]="true">Select Sub-Category</option>
+                        <option value="" [selected]="true">Select Sub-Category</option>
                         <option *ngFor="let item of subCategoryList" [value]="item?.id">
                           {{item?.subCategoryName}}
                         </option>

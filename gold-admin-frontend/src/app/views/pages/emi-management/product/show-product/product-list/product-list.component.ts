@@ -37,9 +37,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     priceTo: 0,
   }
 
-  filterStatus: string = "";
-  filterType: string = "";
-
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
@@ -171,13 +168,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
     this.productData.from = from;
     this.productData.to = to;
-    this.productData.search = this.searchInput.nativeElement.value;
+    this.productData.search = this.searchValue;
     this.dataSource.loadProducts(this.productData);
-  }
-
-  /*** On Destroy ***/
-  ngOnDestroy() {
-    this.subscriptions.forEach(el => el.unsubscribe());
   }
 
   viewProduct(product) {
@@ -201,5 +193,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productData.priceFrom = data.filterData.priceFrom;
     this.productData.priceTo = data.filterData.priceTo;
     this.dataSource.loadProducts(this.productData);
+  }
+
+  /*** On Destroy ***/
+  ngOnDestroy() {
+    this.subscriptions.forEach(el => el.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 }

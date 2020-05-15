@@ -303,85 +303,8 @@ export class FilterComponent implements OnInit, OnChanges {
       this.filterData.priceFrom = controls['priceFrom'].value;
     }
     if (controls['priceTo'].value) {
-      this.filterData.categoryId = controls['priceTo'].value;
+      this.filterData.priceTo = controls['priceTo'].value;
     }
-
-    // if (controls['CountryId'].value) {
-    //   this.filterData.CountryId = controls['CountryId'].value.CountryId;
-    // }
-    // if (controls['StateId'].value) {
-    //   this.filterData.StateId = controls['StateId'].value.StateId;
-    // }
-    // if (controls['CityId'].value) {
-    //   this.filterData.CityId = controls['CityId'].value.CityId;
-    // }
-    // if (controls['LocalityId'].value) {
-    //   this.filterData.LocalityId = controls['LocalityId'].value.LocalityId;
-    // }
-    // if (controls['StatusIds'].value) {
-    //   if (this.filterName == 'order' || this.filterName == 'expense' || this.filterName == 'opportunities') {
-    //     this.filterData.StatusIds = controls['StatusIds'].value.map(e => e.Id).join(', ');
-    //   } else if (this.filterName == 'mytask' || this.filterName == 'users') {
-    //     this.filterData.StatusIds = controls['StatusIds'].value['Id'];
-    //   }
-    //   else {
-    //     this.filterData.StatusIds = controls['StatusIds'].value.map(e => e.StatusId).join(', ');
-    //   }
-    // }
-    // if (controls['Category'].value) {
-    //   if (this.filterName == 'mytask') {
-    //     this.filterData.Category = controls['Category'].value['Id'];
-    //   } else {
-    //     this.filterData.Category = controls['Category'].value.map(e => e.Id).join(', ');
-    //   }
-    // }
-    // if (controls['leaveStatusIds'].value) {
-    //   this.filterData.leaveStatusIds = controls['leaveStatusIds'].value;
-    // }
-    // if (controls['StageIds'].value) {
-    //   this.filterData.StageIds = controls['StageIds'].value.map(e => e.Id).join(', ');
-    // }
-    // if (controls['SourceIds'].value) {
-    //   this.filterData.SourceIds = controls['SourceIds'].value.map(e => e.Id).join(', ');
-    // }
-    // if (controls['TypeIds'].value) {
-    //   this.filterData.TypeIds = controls['TypeIds'].value.map(e => e.Id).join(', ');
-    // }
-    // if (controls['TerritoryIds'].value) {
-    //   this.filterData.TerritoryIds = controls['TerritoryIds'].value.map(e => e.TerritoryId).join(', ');
-    // }
-    // if (controls['TagIds'].value) {
-    //   if (controls['TagIds'].value.Tags) {
-    //     this.filterData.TagIds = controls['TagIds'].value.Tags.map(e => e.Id).join(', ');
-    //   }
-    //   // else {
-    //   // 	this.filterData.TagIds = controls['TagIds'].value.map(e => e.Id).join(', ');
-    //   // }
-    // }
-    // if (controls['UserIds'].value) {
-    //   if (controls['UserIds'].value.searchMultipleCheckValue) {
-    //     this.filterData.UserIds = controls['UserIds'].value.searchMultipleCheckValue.map(e => e.UserId).join(', ');
-    //   } else if (this.filterName == 'users') {
-    //     this.filterData.UserIds = controls['UserIds'].value.UserId;
-    //   } else {
-    //     this.filterData.UserIds = controls['UserIds'].value.map(e => e.UserId).join(', ');
-    //   }
-    // }
-    // if (controls['FromDate'].value) {
-    //   this.filterData.FromDate = controls['FromDate'].value;
-    // }
-    // if (controls['ToDate'].value) {
-    //   this.filterData.ToDate = controls['ToDate'].value;
-    // }
-    // if (controls['MinValue'].value) {
-    //   this.filterData.MinValue = controls['MinValue'].value;
-    // }
-    // if (controls['MaxValue'].value) {
-    //   this.filterData.MaxValue = controls['MaxValue'].value;
-    // }
-    // if (controls['Sort'].value) {
-    //   this.filterData.Sort = controls['Sort'].value['Id'];
-    // }
     return this.filterData;
   }
 
@@ -636,12 +559,10 @@ export class FilterComponent implements OnInit, OnChanges {
   }
 
   getCategory() {
-    console.log('in category');
     this.sharedService.getAllCategory().subscribe(res => this.categoryList = res);
   }
 
   getSubCategory() {
-    console.log('in sub-category');
     this.sharedService.getAllSubCategory().subscribe(res => this.subCategoryList = res.data);
   }
 
