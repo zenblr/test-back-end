@@ -58,9 +58,9 @@ export class AddSchemeComponent implements OnInit {
       interestRateThirtyDaysMonthly: ['', Validators.required],
       interestRateNinetyDaysMonthly: ['', Validators.required],
       interestRateOneHundredEightyDaysMonthly: ['', Validators.required],
-      interestRateThirtyDaysAnnually: ['', Validators.required],
-      interestRateNinetyDaysAnnually: ['', Validators.required],
-      interestRateOneHundredEightyDaysAnnually: ['', Validators.required],
+      interestRateThirtyDaysAnnually: [''],
+      interestRateNinetyDaysAnnually: [''],
+      interestRateOneHundredEightyDaysAnnually: [''],
       partnerId: ['', Validators.required]
     })
 

@@ -6,9 +6,9 @@ const models = require('../../models'); // importing models.
 exports.addUpdateLenderBanner = async (req, res, next) => {
     const { images } = req.body;
     let userId = req.userData.id
-    let lenderBanner = await models.lenderBanner.findAll()
+    let lenderBanner = await models.lenderBanner.readLenderBanner()
     if (lenderBanner.length == 0) {
-        let createdLenderBanner = await models.lenderBanner.create({ images, userId });
+        let createdLenderBanner = await models.lenderBanner.addLenderBanner(images, userId);
         if (!createdLenderBanner) {
             res.status(422).json({ message: 'Lender Banner not added' });
         } else {
@@ -16,7 +16,7 @@ exports.addUpdateLenderBanner = async (req, res, next) => {
         }
     } else {
         let id = lenderBanner[0].id;
-        let UpdateData = await models.lenderBanner.update({ images, userId }, { where: { id } })
+        let UpdateData = await models.lenderBanner.updateLenderBanner(id, images, userId)
         if (UpdateData[0] === 0) {
             return res.status(404).json({ message: 'Data not updated' });
         }
@@ -28,7 +28,7 @@ exports.addUpdateLenderBanner = async (req, res, next) => {
 // Read Offer.
 
 exports.readLenderBanner = async (req, res, next) => {
-    let lenderBanner = await models.lenderBanner.findAll()
+    let lenderBanner = await models.lenderBanner.readLenderBanner()
     if (!lenderBanner[0]) {
         res.status(404).json({ message: 'Data not found' });
     } else {

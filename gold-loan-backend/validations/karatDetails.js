@@ -12,19 +12,22 @@ exports.karatDetailsValidation = [
         .custom(async (value, { req }) => {
             return await models.karatDetails.findOne({
                 where: {
-                    karat:req.body.karat,
-                        isActive: true
-                    }
+                    karat: req.body.karat,
+                    isActive: true
                 }
+            }
             ).then(karatDetails => {
                 if (karatDetails) {
                     return Promise.reject("karat is already exit !");
                 }
             })
         }),
-    body('percentage')
+    body('fromPercentage')
         .exists()
-        .withMessage('percentage is required')
+        .withMessage('from Percentage is required'),
+    body('toPercentage')
+        .exists()
+        .withMessage('to Percentage is required')
 
 ]
 
@@ -37,7 +40,7 @@ exports.karatDedtailsUpdateValidation = [
         .custom(async (value, { req }) => {
             return await models.karatDetails.findOne({
                 where: {
-                    karat:req.body.karat,
+                    karat: req.body.karat,
                     id: { [op.not]: req.params.id },
                     isActive: true
                 }
@@ -47,7 +50,10 @@ exports.karatDedtailsUpdateValidation = [
                 }
             })
         }),
-    body('percentage')
+    body('fromPercentage')
         .exists()
-        .withMessage('percentage is required')
+        .withMessage('from percentage is required'),
+    body('toPercentage')
+        .exists()
+        .withMessage('to percentage is required')
 ]

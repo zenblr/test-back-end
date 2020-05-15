@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { ToastrComponent } from '../../../../../../../views/partials/components/toastr/toastr.component';
 import { map, catchError } from 'rxjs/operators';
 import { MerchantService } from '../../../../../../../core/user-management/merchant';
@@ -12,12 +12,15 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './permission.component.html',
   styleUrls: ['./permission.component.scss']
 })
-export class PermissionComponent implements OnInit {
+export class PermissionComponent implements OnInit, AfterViewInit {
 
   @ViewChild('checkboxThree', { static: false }) checkboxThree: ElementRef
   @ViewChild('checkboxTwo', { static: false }) checkboxTwo: ElementRef
   @ViewChild('checkboxOne', { static: false }) checkboxOne: ElementRef
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  @ViewChildren('sub') subProduct: QueryList<any>;
+  @ViewChildren('pro') product: QueryList<any>;
+
   permissions: any[] = []
   checkedCategory: any[] = []
   checkedSubCategory: any[] = [];
@@ -47,6 +50,9 @@ export class PermissionComponent implements OnInit {
     this.getData()
   }
 
+  ngAfterViewInit() {
+
+  }
 
 
   getData() {
@@ -72,7 +78,7 @@ export class PermissionComponent implements OnInit {
         sub.products.forEach(pro => {
           this.lengthOf.product += 1
           if (pro.isSelected)
-            this.checkedProduct.push(pro)
+            this.checkedProduct.push(pro.id)
         })
       })
     })
@@ -139,10 +145,17 @@ export class PermissionComponent implements OnInit {
       return cat.isSelected
     })
     this.checkedProduct = []
+    this.checkedSubCategory = []
     this.permissions.forEach(cat => {
       cat.subCategory.forEach(sub => {
-        if (sub.isSelected)
-        Array.prototype.push.apply(this.checkedProduct,sub.products)
+        if (sub.isSelected){
+          this.checkedSubCategory.push(sub)
+          sub.products.forEach(pro=>{
+            pro.isSelected = true
+            this.checkedProduct.push(pro.id)
+          })
+        }
+          
       })
     })
     this.calculateLength()
@@ -157,11 +170,18 @@ export class PermissionComponent implements OnInit {
     } else if (!checked) {
       this.permissions[catIndex].subCategory[subIndex].isSelected = false
     }
+    this.checkedProduct = []
     this.checkedSubCategory = []
     this.permissions.forEach(cat => {
       cat.subCategory.forEach(sub => {
-        if (sub.isSelected)
+        if (sub.isSelected){
           this.checkedSubCategory.push(sub)
+          sub.products.forEach(pro=>{
+            pro.isSelected = true
+            this.checkedProduct.push(pro.id)
+          })
+        }
+          
       })
     })
     this.calculateLength()
@@ -262,7 +282,77 @@ export class PermissionComponent implements OnInit {
     this.checked('pro')
   }
 
+  selectParticularCat(checked, catIndex) {
+    for (let index = 0; index < this.permissions[catIndex].subCategory.length; index++) {
+      this.subCategoryCheckBox(checked, catIndex, index)
+    }
+    console.log();
+  }
+
+  subLength(catIndex) {
+    let index = 0;
+    this.permissions[catIndex].subCategory.forEach(sub => {
+      if (sub.isSelected)
+        index++;
+    });
+    let sub = this.subProduct.toArray()
+
+    if (index == this.permissions[catIndex].subCategory.length) {
+      if (sub[catIndex]) {
+        console.log()
+        sub[catIndex].nativeElement.classList.remove('checkmark2')
+        sub[catIndex].nativeElement.classList.add('checkmark')
+      }
+      return true
+    } else if (index > 0) {
+      if (sub[catIndex]) {
+        console.log()
+        sub[catIndex].nativeElement.classList.add('checkmark2')
+        sub[catIndex].nativeElement.classList.remove('checkmark')
+      }
+      return true
+    }
+    else if (index == 0) {
+      return false
+    }
+  }
+
+  selectParicularSubCatPro(checked, catIndex, subIndex) {
+    for (let index = 0; index < this.permissions[catIndex].subCategory[subIndex].products.length; index++) {
+      this.generateProduct(checked, catIndex, subIndex, index)
+    }
+  }
+
+  productLength(catIndex, subIndex) {
+    let index = 0;
+    this.permissions[catIndex].subCategory[subIndex].products.forEach(sub => {
+      if (sub.isSelected)
+        index++;
+    });
+    let pro = this.product.toArray()
+    if (index == this.permissions[catIndex].subCategory[subIndex].products.length) {
+
+      if (pro[subIndex]) {
+        console.log()
+        pro[subIndex].nativeElement.classList.remove('checkmark2')
+        pro[subIndex].nativeElement.classList.add('checkmark')
+      }
+      return true
+    } else if (index > 0) {
+      if (pro[subIndex]) {
+        console.log()
+        pro[subIndex].nativeElement.classList.add('checkmark2')
+        pro[subIndex].nativeElement.classList.remove('checkmark')
+      }
+      return true
+    }
+    else if (index == 0) {
+      return false
+    }
+  }
+
   checked(type) {
+
     if (type == 'cat' || type == 'all') {
 
       if (this.lengthOf.category == this.checkedCategory.length) {

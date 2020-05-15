@@ -190,7 +190,7 @@ export class LoanApplicationFormComponent implements OnInit {
       loanKyc: this.kyc.value,
       loanNominee: this.nominee.value,
       customerId: this.basic.controls.customerId.value,
-      totalEligibleAmt: this.totalAmount,
+      totalEligibleAmt: Math.ceil(this.totalAmount),
       totalFinalInterestAmt: (this.intreset.controls.intresetAmt.value)
     }
     return Obj

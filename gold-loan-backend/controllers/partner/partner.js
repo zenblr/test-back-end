@@ -19,18 +19,20 @@ exports.addPartner = async (req, res, next) => {
   if (!check.isEmpty(partnerExist)) {
     return res.status(404).json({ message: "This Partner is already Exist" });
   }
+  let modifiedTime = Date.now();
   await sequelize.transaction(async (t) => {
     let partnerData = await models.partner.create(
       { name, commission, createdBy, modifiedBy },
       { transaction: t }
     );
     let id = partnerData.dataValues.id;
-    let partnerId =
-      partnerData.dataValues.name.slice(0, 3).toUpperCase() + "-" + id;
+    let partnerId = partnerData.dataValues.name.slice(0, 3).toUpperCase() + "-" + id;
     await models.partner.update(
       { partnerId: partnerId },
       { where: { id: id }, transaction: t }
     );
+
+    await models.partnerCommissionHistory.create({ partnerId: id, commission, modifiedBy: createdBy, modifiedTime }, { transaction: t })
     return partnerData;
   });
   return res.status(201).json({ messgae: "partner created" });
@@ -41,17 +43,23 @@ exports.updatePartner = async (req, res, next) => {
   const partnerId = req.params.id;
   const { name, commission } = req.body;
   let modifiedBy = req.userData.id;
-
+  let modifiedTime = Date.now();
 
   // let pId = name.slice(0, 3).toUpperCase() + "-" + partnerId;
-  let updatePartnerData = await models.partner.update(
-    { name, commission, modifiedBy },
-    { where: { id: partnerId, isActive: true } }
-  );
 
-  if (updatePartnerData[0] === 0) {
-    return res.status(404).json({ message: "Data not updated" });
-  }
+  await sequelize.transaction(async (t) => {
+
+    let updatePartnerData = await models.partner.update(
+      { name, commission, modifiedBy },
+      { where: { id: partnerId, isActive: true }, transaction: t }
+    );
+
+    let partnerInfo = await models.partner.findOne({ id: partnerId });
+
+    if (commission != partnerInfo.commission) {
+      await models.partnerCommissionHistory.create({ partnerId, commission, modifiedBy, modifiedTime }, { transaction: t })
+    }
+  })
 
   return res.status(200).json({ message: "Success" });
 };

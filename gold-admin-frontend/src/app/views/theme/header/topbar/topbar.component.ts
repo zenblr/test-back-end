@@ -165,8 +165,9 @@ export class TopbarComponent implements OnInit {
 			this.type1 = 'button';
 		}
 		if (this.path == 'karat-details') {
-			this.value1 = 'Add Karat Details';
-			this.type1 = 'button';
+			this.rightButton = true;
+			this.value2 = 'Add Karat Details';
+			this.type2 = 'button';
 		}
 		if (this.path == 'customer-list') {
 			this.showfilter = true;
@@ -179,7 +180,7 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'assign-appraiser') {
 			this.dataSourceHeader()
-			this.value1 = 'Add Appraiser';
+			this.value1 = 'Assign Appraiser';
 		}
 		if (this.path == 'roles') {
 			this.showInput = true;

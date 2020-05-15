@@ -92,7 +92,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngAfterViewInit() {
     this.uploadOfferService.goldRate$.subscribe(res => {
-      this.goldRate = res
+      this.goldRate = res * (75 / 100)
       const group = this.OrnamentsData.at(0) as FormGroup
       group.controls.currentLtvAmount.patchValue(this.goldRate)
     })
@@ -104,18 +104,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   calcGoldDeductionWeight(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
-    if(group.controls.grossWeight.valid && group.controls.netWeight.valid){
-    const deductionWeight = group.controls.grossWeight.value - group.controls.netWeight.value;
-    group.controls.deductionWeight.patchValue(deductionWeight);
-    console.log(deductionWeight)
-    this.currentNetWeight(index)
+    if (group.controls.grossWeight.valid && group.controls.netWeight.valid) {
+      const deductionWeight = group.controls.grossWeight.value - group.controls.netWeight.value;
+      group.controls.deductionWeight.patchValue(deductionWeight);
+      console.log(deductionWeight)
+      this.currentNetWeight(index)
     }
   }
 
-  currentNetWeight(index){
+  currentNetWeight(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
-    if(group.controls.purity.valid && group.controls.netWeight.valid){
-      const netWeight = group.controls.netWeight.value - (group.controls.purity.value/100)
+    if (group.controls.purity.valid && group.controls.netWeight.valid) {
+      const netWeight = group.controls.netWeight.value - (group.controls.purity.value / 100)
       group.controls.currentNetWeight.patchValue(netWeight)
       this.calculateLtvAmount(index)
     }
@@ -147,11 +147,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       karat: [, Validators.required],
       purity: [, [Validators.required]],
       ltvRange: [[]],
-      currentNetWeight:[],
+      currentNetWeight: [],
       purityTest: [[], Validators.required],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
-      loanAmount:[],
+      loanAmount: [],
       currentLtvAmount: [this.goldRate]
     }))
     console.log(this.OrnamentsData.controls)
@@ -201,14 +201,20 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   uploadFile(index, event, string, ) {
-    this.sharedService.uploadFile(event.target.files[0]).pipe(
-      map(res => {
-        this.patchUrlIntoForm(string, res.uploadFile.URL, index)
-      }),
-      catchError(err => {
-        this.toast.error(err.error)
-        throw err
-      })).subscribe();
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      this.sharedService.uploadFile(event.target.files[0]).pipe(
+        map(res => {
+          this.patchUrlIntoForm(string, res.uploadFile.URL, index)
+        }),
+        catchError(err => {
+          this.toast.error(err.error)
+          throw err
+        })).subscribe();
+    } else {
+      this.toast.error('Upload Valid File Format')
+    }
   }
 
   patchUrlIntoForm(key, url, index) {
@@ -288,13 +294,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   calculateLtvAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
-    if(controls.controls.currentNetWeight.valid && controls.controls.purity.valid
-      && controls.controls.ltvPercent.valid ){
-    let ltvPercent = controls.controls.ltvPercent.value
-    let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
-    controls.controls.ltvAmount.patchValue(ltv)
-    controls.controls.loanAmount.patchValue(ltv*controls.controls.currentNetWeight.value)
-    console.log(ltv*controls.controls.netWeight.value)
+    if (controls.controls.currentNetWeight.valid && controls.controls.purity.valid
+      && controls.controls.ltvPercent.valid) {
+      let ltvPercent = controls.controls.ltvPercent.value
+      let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
+      controls.controls.ltvAmount.patchValue(ltv)
+      controls.controls.loanAmount.patchValue(ltv * controls.controls.currentNetWeight.value)
+      console.log(ltv * controls.controls.netWeight.value)
     }
   }
 }

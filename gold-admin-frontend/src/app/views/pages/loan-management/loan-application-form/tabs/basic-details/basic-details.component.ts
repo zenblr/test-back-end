@@ -62,7 +62,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
 
   initForm() {
     this.basicForm = this.fb.group({
-      customerUniqueId: [, [Validators.required, Validators.minLength(4)]],
+      customerUniqueId: [, [Validators.required, Validators.minLength(8)]],
       mobileNumber: [''],
       panCardNumber: [''],
       startDate: [this.currentDate],
@@ -79,7 +79,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
     // console.log(this.datePipe.transform(this.controls.startDate.value, 'MMM d, y'))
     // this.controls.startDate.patchValue(this.datePipe.transform(this.controls.startDate.value, 'MMM d, y'))
     // console.log(this.controls.startDate.value)
-
   }
 
 }

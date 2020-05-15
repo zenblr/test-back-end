@@ -20,7 +20,7 @@ export class KaratDetailsService {
       .pipe(
         map(
           res => res
-        ), catchError(error => {
+          ), catchError(error => {
           this.toast.error(error.error.message);
           throw (error);
         })
@@ -30,7 +30,12 @@ export class KaratDetailsService {
   getAllKaratDetails(): Observable<any> {
     return this.http.get<any>(`/api/karat-details`).pipe(map(
       res => res
-    ));
+      
+    ),
+    catchError(error => {
+      this.toast.error(error.error.message);
+      throw (error);
+    }));
   }
 
   // getAllLogisticPartnerWithoutPagination(search?, from?, to?): Observable<any> {
@@ -38,7 +43,10 @@ export class KaratDetailsService {
   // }
 
   getKaratDetailsById(id): Observable<any> {
-    return this.http.get<any>(`/api/karat-details/${id}`).pipe(map(res=>res));
+    return this.http.get<any>(`/api/karat-details/${id}`).pipe(map(res=>res),catchError(error => {
+      this.toast.error(error.error.message);
+      throw (error);
+    }));
   }
 
   updateKaratDetails(id, data): Observable<any> {
