@@ -39,6 +39,7 @@ import { AdminLogListComponent } from './config-details/admin-log/admin-log-list
 import { AddLogisticPartnerComponent } from './logisticPartner/add-logistic-partner/add-logistic-partner.component';
 import { ListLogisticPartnerComponent } from './logisticPartner/list-logistic-partner/list-logistic-partner.component';
 import { OrderDetailsListComponent } from './order-management/order-details/order-details-list/order-details-list.component';
+import { OrderDetailsViewComponent } from './order-management/order-details/order-details-view/order-details-view.component';
 
 const routes: Routes = [
 	{
@@ -141,6 +142,7 @@ const routes: Routes = [
 		ProductEditComponent,
 		SubCategoryAddComponent,
 		AddLogisticPartnerComponent,
+		OrderDetailsViewComponent,
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -160,7 +162,7 @@ const routes: Routes = [
 		AddLogisticPartnerComponent,
 		ListLogisticPartnerComponent,
 		OrderDetailsListComponent,
-
+		OrderDetailsViewComponent,
 	]
 })
 export class EMIManagementModule { }

@@ -6,6 +6,7 @@ import { Subscription, merge, fromEvent, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
+import { OrderDetailsViewComponent } from '../order-details-view/order-details-view.component';
 
 @Component({
   selector: 'kt-order-details-list',
@@ -117,11 +118,18 @@ export class OrderDetailsListComponent implements OnInit {
     return filter;
   }
 
-  viewOrder() {
-
+  viewOrder(order) {
+    const dialogRef = this.dialog.open(OrderDetailsViewComponent,
+      {
+        data: { orderId: order.id, action: 'view' },
+        width: '70vw'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+      }
+    });
   }
 
-  editOrder() {
-
-  }
+  editOrder() { }
 }
