@@ -202,27 +202,27 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 
 //  FUNCTION TO UPDATE CUSTOMER ORNAMENTS DETAILS
 exports.updateCustomerLoanDetail = async (req, res, next) => {
-    let { loanId, totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanOrnmanets, loanFinalCalculator, loanNominee } = req.body;
-    // let loanId = req.params.loanId;
-    let modifiedBy = req.userData.id;
+    // let { loanId, totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanOrnmanets, loanFinalCalculator, loanNominee } = req.body;
+    // // let loanId = req.params.loanId;
+    // let modifiedBy = req.userData.id;
 
-     //customerFinalLoan
-     let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
+    //  //customerFinalLoan
+    //  let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
 
-      //customerLoanNominee
-    let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
+    //   //customerLoanNominee
+    // let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
 
-    //customerLoan
-    let { applicationFormForAppraiser,
-        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
+    // //customerLoan
+    // let { applicationFormForAppraiser,
+    //     goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
 
 
-    let customerOrnamentsDetailsUpdated = await models.customerLoanOrnamentsDetail.bulkCreate(ornamentData, {
-        updateOnDuplicate: ["ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest",
-            "karat", "purity", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount"]
-    })
+    // let customerOrnamentsDetailsUpdated = await models.customerLoanOrnamentsDetail.bulkCreate(ornamentData, {
+    //     updateOnDuplicate: ["ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest",
+    //         "karat", "purity", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount"]
+    // })
 
-    return res.status(201).json({ message: 'success' });
+    // return res.status(201).json({ message: 'success' });
 
 
 }
