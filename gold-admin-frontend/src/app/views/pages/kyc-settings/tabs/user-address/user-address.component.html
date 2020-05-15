@@ -486,7 +486,7 @@
 
                                             <div *ngIf="i==0 && images.residential.length > 0">
                                                 <div class="row">
-                                                    <div class="col-6"
+                                                    <div class="col-6" [class.offset-4]="images.residential.length == 1"
                                                         *ngFor="let img of images.residential, index as idx">
                                                         <div class="img-container">
                                                             <img class="fetched-image" [src]="img" alt="">
@@ -500,7 +500,7 @@
 
                                             <div *ngIf="i==1 && images.permanent.length > 0">
                                                 <div class="row">
-                                                    <div class="col-6"
+                                                    <div class="col-6" [class.offset-4]="images.permanent.length == 1"
                                                         *ngFor="let img of images.permanent, index as idx">
                                                         <div class="img-container">
                                                             <img class="fetched-image" [src]="img" alt="">

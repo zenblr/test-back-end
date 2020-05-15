@@ -11,8 +11,8 @@ import { PartnerService } from '../../../../../../core/user-management/partner/s
 export class FinalInterestAmountComponent implements OnInit {
 
   currentDate = new Date()
-  colJoin:any;
-  intrestAmount:any = 0;
+  colJoin: any;
+  intrestAmount: any = 0;
   dateOfPayment: any[] = []
   partnerList: any[] = [];
   schemesList: any = [];
@@ -22,12 +22,12 @@ export class FinalInterestAmountComponent implements OnInit {
   { name: "half Yearly", value: 180 }]
   selectedScheme: any = []
   finalInterestForm: FormGroup;
-  @ViewChild('print',{static:false}) print :ElementRef
+  @ViewChild('print', { static: false }) print: ElementRef
 
   constructor(
     private fb: FormBuilder,
     private partnerService: PartnerService,
-    public eleRef:ElementRef
+    public eleRef: ElementRef
   ) { }
 
   ngOnInit() {
@@ -35,26 +35,26 @@ export class FinalInterestAmountComponent implements OnInit {
   }
 
 
- 
+
 
   initForm() {
     this.finalInterestForm = this.fb.group({
-      finalLoanAmount: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      finalLoanAmount: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       tenure: [, [Validators.required]],
       loanStartDate: [, [Validators.required]],
       loanEndDate: [, [Validators.required]],
-      goldGrossWeight: [ [Validators.required]],
+      goldGrossWeight: [[Validators.required]],
       paymentFrequency: [, [Validators.required]],
-      goldNetWeight: [ [Validators.required]],
+      goldNetWeight: [[Validators.required]],
       finalNetWeight: [],
-      intresetAmt:[],
-      interestRate: [, [Validators.required,Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]],
+      intresetAmt: [],
+      interestRate: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       currentLtvAmount: [],
-      processingCharge:[],
-      processingChargeFixed:[,[Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      processingChargePercent:[,[Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)')]]
+      processingCharge: [],
+      processingChargeFixed: [, [Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      processingChargePercent: [, [Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]]
     })
-   
+
   }
 
 
@@ -62,7 +62,7 @@ export class FinalInterestAmountComponent implements OnInit {
     this.dateOfPayment = []
     if (this.controls.loanStartDate.valid && this.controls.tenure.valid) {
       let startDate = this.controls.loanStartDate.value;
-      let date =  new Date(startDate.toLocaleDateString())
+      let date = new Date(startDate.toLocaleDateString())
       this.controls.loanEndDate.patchValue(new Date(date.setMonth(date.getMonth() + Number(this.controls.tenure.value))))
     } else {
       this.controls.loanStartDate.markAsTouched()
@@ -71,7 +71,7 @@ export class FinalInterestAmountComponent implements OnInit {
 
 
 
- 
+
 
   calcInterestAmount() {
     if (this.finalInterestForm.invalid) {
@@ -79,7 +79,7 @@ export class FinalInterestAmountComponent implements OnInit {
       return;
     }
     let intrest = (this.controls.finalLoanAmount.value *
-      (this.controls.interestRate.value/100)) * this.controls.paymentFrequency.value
+      (this.controls.interestRate.value / 100)) * this.controls.paymentFrequency.value
       / 360
     this.intrestAmount = intrest.toFixed(2);
     this.controls.intresetAmt.patchValue(this.intrestAmount)
@@ -87,11 +87,11 @@ export class FinalInterestAmountComponent implements OnInit {
     this.generateTable()
   }
 
-  CheckProcessingCharge(){
-    let processingChargePercent= (this.controls.finalLoanAmount.value *this.controls.processingChargePercent.value) / 100
-    if(processingChargePercent > parseFloat(this.controls.processingChargeFixed.value)){
+  CheckProcessingCharge() {
+    let processingChargePercent = (this.controls.finalLoanAmount.value * this.controls.processingChargePercent.value) / 100
+    if (processingChargePercent > parseFloat(this.controls.processingChargeFixed.value)) {
       this.controls.processingCharge.patchValue(processingChargePercent)
-    }else{
+    } else {
       this.controls.processingCharge.patchValue(this.controls.processingChargeFixed.value)
 
     }
@@ -101,7 +101,7 @@ export class FinalInterestAmountComponent implements OnInit {
     let length = Number(this.controls.tenure.value)
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
-      let date =  new Date(startDate.toLocaleDateString())
+      let date = new Date(startDate.toLocaleDateString())
       this.dateOfPayment.push((new Date(date.setMonth(date.getMonth() + index))).toLocaleDateString())
     }
   }
@@ -111,7 +111,7 @@ export class FinalInterestAmountComponent implements OnInit {
   }
 
 
-  printNow(){
+  printNow() {
     // const printTable =document.getElementById("print").innerHTML;
     // // // window.print(printTable)
     // var a = window.open('', '', 'height=500, width=500'); 

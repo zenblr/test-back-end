@@ -46,45 +46,51 @@ export class UplodDataImageComponent implements OnInit {
 
   uploadImages(event) {
     var details = event.target.files
-    if (details.length == 0) {
-      this.index == null
-    } else {
-      var reader = new FileReader()
-      console.log(reader.readAsDataURL(details[0]))
-      console.log(details[0])
-      var reader = new FileReader();
-      const img = new Image();
-      img.src = window.URL.createObjectURL(details[0]);
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (_event) => {
-        setTimeout(() => {
-          const width = img.naturalWidth;
-          const height = img.naturalHeight;
-          window.URL.revokeObjectURL(img.src);
-          if (width !== 600 || height !== 300) {
-            this.toastrService.error('Please Upload Image of Valid Size');
-            console.log(width, height)
-          } else {
-            this.sharedService.uploadFile(details[0]).pipe(map(res => {
-              if (this.index != null) {
-                this.images.splice(this.index, 1, res.uploadFile.URL)
-                this.index = null;
-              } else {
-                this.images.push(res.uploadFile.URL)
-              }
-              this.ref.detectChanges();
-            }),
-              catchError(err => {
-                this.toastrService.error('Please try Again');
-                throw err
-              }), finalize(() => {
-                this.file.nativeElement.value = ''
-              })).subscribe()
-          }
-          this.ref.detectChanges();
-        }, 2000);
-      }
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      if (details.length == 0) {
+        this.index == null
+      } else {
+        var reader = new FileReader()
+        console.log(reader.readAsDataURL(details[0]))
+        console.log(details[0])
+        var reader = new FileReader();
+        const img = new Image();
+        img.src = window.URL.createObjectURL(details[0]);
+        reader.readAsDataURL(event.target.files[0]);
+        reader.onload = (_event) => {
+          setTimeout(() => {
+            const width = img.naturalWidth;
+            const height = img.naturalHeight;
+            window.URL.revokeObjectURL(img.src);
+            if (width !== 600 || height !== 300) {
+              this.toastrService.error('Please Upload Image of Valid Size');
+              console.log(width, height)
+            } else {
+              this.sharedService.uploadFile(details[0]).pipe(map(res => {
+                if (this.index != null) {
+                  this.images.splice(this.index, 1, res.uploadFile.URL)
+                  this.index = null;
+                } else {
+                  this.images.push(res.uploadFile.URL)
+                }
+                this.ref.detectChanges();
+              }),
+                catchError(err => {
+                  this.toastrService.error('Please try Again');
+                  throw err
+                }), finalize(() => {
+                  this.file.nativeElement.value = ''
+                })).subscribe()
+            }
+            this.ref.detectChanges();
+          }, 2000);
+        }
 
+      }
+    } else {
+      this.toastrService.error('Upload Valid File Format');
     }
   }
 
