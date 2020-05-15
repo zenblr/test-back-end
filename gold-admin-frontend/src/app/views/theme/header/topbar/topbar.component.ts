@@ -153,7 +153,6 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'lead-management') {
 			this.dataSourceHeader()
 			this.value1 = 'Add New Lead';
-
 		}
 		if (this.path == 'partner') {
 			this.dataSourceHeader()
@@ -245,6 +244,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'admin-log') {
 			this.showInput = true;
+		}
+		if (this.path == 'order-details') {
+			this.showInput = true;
+			this.value1 = 'Export';
+			this.type1 = 'button';
+			// this.showfilter = true;
 		}
 	}
 

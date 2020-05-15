@@ -16,7 +16,9 @@ export class OrderDetailsListComponent implements OnInit {
   // Table fields
   dataSource: OrderDetailsDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ['adminId', 'email', 'date', 'action'];
+  displayedColumns = ['storeId', 'centerCity', 'shippingAddress', 'memberId', 'mobileNumber', 'orderId',
+    'productName', 'weight', 'orderTotalAmount', 'orderInitialAmount', 'orderDate', 'emiTenure', 'orderQty',
+    'invoiceNo', 'orderStatus', 'orderFrom', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
@@ -113,5 +115,13 @@ export class OrderDetailsListComponent implements OnInit {
     const searchText: string = this.searchInput.nativeElement.value;
     filter.title = searchText;
     return filter;
+  }
+
+  viewOrder() {
+
+  }
+
+  editOrder() {
+
   }
 }
