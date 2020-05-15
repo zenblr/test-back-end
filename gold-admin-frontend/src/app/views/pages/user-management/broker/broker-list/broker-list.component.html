@@ -33,7 +33,7 @@
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
 
-                    <mat-header-cell *matHeaderCellDef >Mobile Number</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef >Mobile No</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
                         <div class="text-color">
                             {{broker.user.mobileNumber}}
@@ -111,9 +111,9 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '150%'}"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '120%'}"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'width': '150%'}"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'width': '120%'}"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
