@@ -7,12 +7,11 @@ import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material
 import { distinctUntilChanged, tap, skip, take, delay, takeUntil, catchError, map } from 'rxjs/operators';
 import { merge, of, Subscription, Subject } from 'rxjs';
 // NGRX
-import { Store } from '@ngrx/store';
+
 // Services
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
 import { StoreDatasource, StoreService } from '../../../../../core/user-management/store'
-import { AppState } from '../../../../../core/reducers';
 
 // Components
 import { CreateStoreComponent } from '../create-store/create-store.component';
@@ -20,21 +19,21 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'kt-store-list',
-  templateUrl: './store-list.component.html',
-  styleUrls: ['./store-list.component.scss']
+	selector: 'kt-store-list',
+	templateUrl: './store-list.component.html',
+	styleUrls: ['./store-list.component.scss']
 })
 export class StoreListComponent implements OnInit {
 	// Table fields
 	dataSource: StoreDatasource;
-	displayedColumns = ['storeId', 'merchantName','action'];
+	displayedColumns = ['storeId', 'merchantName', 'action'];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
 
 	// Subscriptions
 	private subscriptions: Subscription[] = [];
 	private destroy$: Subject<any> = new Subject()
-  storeResult: any;
+	storeResult: any;
 
 	/**
 	 * Component constructor
@@ -45,7 +44,6 @@ export class StoreListComponent implements OnInit {
 	 * @param layoutUtilsService: LayoutUtilsService
 	 */
 	constructor(
-		private store: Store<AppState>,
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
@@ -67,7 +65,7 @@ export class StoreListComponent implements OnInit {
 	 * On init
 	 */
 	ngOnInit() {
-	
+
 
 		// Init DataSource
 		this.dataSource = new StoreDatasource(this.storeService);

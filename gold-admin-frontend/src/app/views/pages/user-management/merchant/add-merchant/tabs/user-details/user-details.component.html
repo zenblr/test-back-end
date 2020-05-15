@@ -165,7 +165,7 @@
                             <select class="form-control" formControlName="approvalStatusId"
                             [class.isError]="controls.approvalStatusId.touched && controls.approvalStatusId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Status</option>
-                            <option [value]="status.id" *ngFor="let status of status">{{status.statusName}}</option>
+                            <option [value]="status.id" *ngFor="let status of status">{{status.statusName | titlecase}}</option>
                         </select>
                             <div *ngIf="controls.approvalStatusId.touched && controls.approvalStatusId.invalid">
                                 <mat-error

@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
                 max: 5
               }
         },
+        profileImage:{
+            type:DataTypes.STRING,
+            field:'profile_image'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -32,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         customerId:{
             type:DataTypes.INTEGER,
             field:'customer_id'
-        }
+        },
     }, {
         freezeTableName: true,
         allowNull: false,

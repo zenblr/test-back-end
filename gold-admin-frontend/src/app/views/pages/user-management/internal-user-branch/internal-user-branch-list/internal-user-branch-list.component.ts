@@ -8,11 +8,10 @@ import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material
 import { distinctUntilChanged, tap, skip, take, delay, takeUntil, catchError, map } from 'rxjs/operators';
 import { merge, of, Subscription, Subject } from 'rxjs';
 // NGRX
-import { Store } from '@ngrx/store';
+
 // Services
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
-import { AppState } from '../../../../../core/reducers';
 import { InternalUserBranchDatasource, InternalUserBranchService } from '../../../../../core/user-management/internal-user-branch';
 
 import { AddInternalUserBranchComponent } from '../add-internal-user-branch/add-internal-user-branch.component'
@@ -43,13 +42,13 @@ export class InternalUserBranchListComponent implements OnInit {
   /**
    * Component constructor
    *
-   * @param store: Store<AppState>
+   * 
    * @param dialog: MatDialog
    * @param snackBar: MatSnackBar
    * @param layoutUtilsService: LayoutUtilsService
    */
   constructor(
-    private store: Store<AppState>,
+    
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,

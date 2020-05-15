@@ -2,13 +2,15 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { applyForLoanApplication, updateCustomerLoanDetail, addPackageImagesForLoan, disbursementOfLoanAmount,getLoanDetails,
-     approvalFromBM, appliedLoanDetails, customerDetails, addPacket, assignPacket, viewPacket, changePacket, deletePacket, availablePacket } =
+const { applyForLoanApplication, updateCustomerLoanDetail, addPackageImagesForLoan, disbursementOfLoanAmount, getLoanDetails, getSingleLoanDetails,
+    approvalFromBM, appliedLoanDetails, customerDetails, addPacket, assignPacket, viewPacket, changePacket, deletePacket, availablePacket } =
     require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
 
 route.post('/apply-for-loan', checkAuth, wrapper(applyForLoanApplication)); // ADD CUSTOMER BANK DETAIL
+
+route.get('/single-loan', checkAuth, wrapper(getSingleLoanDetails)); // ADD CUSTOMER BANK DETAIL
 
 route.put('/change-loan-detail/:loanId', checkAuth, wrapper(updateCustomerLoanDetail)); // UPDATE CUSTOMER LOAN DETAIL
 
