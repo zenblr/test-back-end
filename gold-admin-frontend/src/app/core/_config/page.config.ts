@@ -105,6 +105,9 @@ export class PageConfig {
 			'admin-log': {
 				page: { title: 'Admin Log', desc: '' }
 			},
+			'order-details': {
+				page: { title: 'Order Details', desc: '' }
+			},
 		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }

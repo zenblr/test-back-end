@@ -368,6 +368,17 @@ export class MenuConfig {
 					]
 				},
 				{
+					title: 'Order Management',
+					root: true,
+					icon: 'flaticon2-shopping-cart',
+					submenu: [
+						{
+							title: 'Order Details',
+							page: '/emi-management/order-details',
+						}
+					]
+				},
+				{
 					title: 'Back',
 					icon: 'flaticon-logout',
 					root: true,

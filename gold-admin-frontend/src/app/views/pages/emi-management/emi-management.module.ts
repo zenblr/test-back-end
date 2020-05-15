@@ -36,9 +36,9 @@ import { CategoryAddComponent } from './product/category/category-add/category-a
 import { ProductListComponent } from './product/show-product/product-list/product-list.component';
 import { ProductEditComponent } from './product/show-product/product-edit/product-edit.component';
 import { AdminLogListComponent } from './config-details/admin-log/admin-log-list/admin-log-list.component';
-// import { LogisticPartnerComponent} from './logistic-partner/logistic-partner.component';
 import { AddLogisticPartnerComponent } from './logisticPartner/add-logistic-partner/add-logistic-partner.component';
 import { ListLogisticPartnerComponent } from './logisticPartner/list-logistic-partner/list-logistic-partner.component';
+import { OrderDetailsListComponent } from './order-management/order-details/order-details-list/order-details-list.component';
 
 const routes: Routes = [
 	{
@@ -87,6 +87,10 @@ const routes: Routes = [
 			{
 				path: 'logistic-partner',
 				component: ListLogisticPartnerComponent
+			},
+			{
+				path: 'order-details',
+				component: OrderDetailsListComponent
 			}
 		]
 	}
@@ -155,6 +159,7 @@ const routes: Routes = [
 		AdminLogListComponent,
 		AddLogisticPartnerComponent,
 		ListLogisticPartnerComponent,
+		OrderDetailsListComponent,
 
 	]
 })
