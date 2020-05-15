@@ -203,7 +203,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 //  FUNCTION TO UPDATE CUSTOMER ORNAMENTS DETAILS
 exports.updateCustomerLoanDetail = async (req, res, next) => {
     let { loanId, totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanOrnmanets, loanFinalCalculator, loanNominee } = req.body;
-    let loanId = req.params.loanId;
+    // let loanId = req.params.loanId;
     let modifiedBy = req.userData.id;
 
      //customerFinalLoan
