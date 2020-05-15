@@ -8,9 +8,8 @@ import { LoanStatusComponent } from './loan-status/loan-status.component';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../core/_base/crud';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ActionNotificationComponent } from '../../partials/content/crud';
-import { StoreModule } from '@ngrx/store';
-import { usersReducer, UserEffects } from '../../../core/auth';
-import { EffectsModule } from '@ngrx/effects';
+
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddSchemeComponent } from './add-scheme/add-scheme.component';
@@ -37,8 +36,7 @@ const routes: Routes = [
     HttpClientModule,
     PartialsModule,
     RouterModule.forChild(routes),
-    StoreModule.forFeature('users', usersReducer),
-    EffectsModule.forFeature([UserEffects]),
+   
     FormsModule,
     ReactiveFormsModule,
     TranslateModule.forChild(),

@@ -109,7 +109,7 @@ export class PageConfig {
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }
 		},
-		
+
 		'loan-management': {
 			'loan-calculator': {
 				page: { title: 'Loan Calculator', desc: '' }

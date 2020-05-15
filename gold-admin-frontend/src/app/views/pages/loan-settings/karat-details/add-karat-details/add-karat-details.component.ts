@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { KaratDetailsService } from '../../../../../core/loan-setting/karat-details/services/karat-details.service'
+import { PathLocationStrategy } from '@angular/common';
 @Component({
   selector: 'kt-add-karat-details',
   templateUrl: './add-karat-details.component.html',
@@ -35,14 +36,16 @@ export class AddKaratDetailsComponent implements OnInit {
   formInitialize() {
     this.karatDetailsForm = this.fb.group({
       id: [''],
-      karat: ['', [Validators.required]],
-      percentage: ['', [Validators.required,Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])|(100)'
-      )]]
+      karat: ['', [Validators.required],[]],
+      fromPercentage: ['', [Validators.required,Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      toPercentage:['', [Validators.required,Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      range:[]
     });
   }
   getKaratDetailsById(id) {
     this.karatDetailsService.getKaratDetailsById(id).subscribe(res => {
-      this.karatDetailsForm.patchValue(res);
+      this.karatDetailsForm.patchValue(res.data.readKaratDetailsById);
+      console.log(this.karatDetailsForm);
     },
       error => {
         console.log(error.error.message);
@@ -64,6 +67,17 @@ export class AddKaratDetailsComponent implements OnInit {
       this.karatDetailsForm.markAllAsTouched()
       return
     }
+
+    const from = Number(this.karatDetailsForm.controls.fromPercentage.value);
+    const to = Number(this.karatDetailsForm.controls.toPercentage.value);
+    var range = [];
+
+    for (let index = from; index <= to; index++) {
+      range.push(+(index));
+    }
+    this.karatDetailsForm.patchValue({range:range,fromPercentage:from,toPercentage:to});
+    console.log(this.karatDetailsForm.value)
+
     const karatData = this.karatDetailsForm.value;
     if (this.data.action == 'edit') {
       const id = this.controls.id.value;
