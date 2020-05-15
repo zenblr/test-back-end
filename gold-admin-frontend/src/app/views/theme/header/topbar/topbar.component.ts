@@ -137,7 +137,7 @@ export class TopbarComponent implements OnInit {
 	}
 
 	dataSourceHeader() {
-		this.showfilter = true;
+		// this.showfilter = true;
 		this.showInput = true;
 		this.type1 = 'button';
 	}

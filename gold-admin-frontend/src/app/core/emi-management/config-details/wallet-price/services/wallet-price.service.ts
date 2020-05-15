@@ -14,15 +14,15 @@ export class WalletPriceService {
 
   getWalletPrice(): Observable<any> {
     return this.http
-      .get<any>(`/api/wallet`, { observe: 'response' })
+      .get<any>(`http://173.249.49.7:9120/api/wallet`, { observe: 'response' })
       .pipe(map(response => response.body));
   }
 
   addWalletPrice(data): Observable<any> {
-    return this.http.post<any>(`/api/wallet`, data);
+    return this.http.post<any>(`http://173.249.49.7:9120/api/wallet`, data);
   }
 
   updateWalletPrice(id, data): Observable<any> {
-    return this.http.put<any>(`/api/wallet/${id}`, data);
+    return this.http.put<any>(`http://173.249.49.7:9120/api/wallet/${id}`, data);
   }
 }
