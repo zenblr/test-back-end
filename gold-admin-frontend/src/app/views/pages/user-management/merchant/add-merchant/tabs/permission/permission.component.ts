@@ -78,7 +78,7 @@ export class PermissionComponent implements OnInit, AfterViewInit {
         sub.products.forEach(pro => {
           this.lengthOf.product += 1
           if (pro.isSelected)
-            this.checkedProduct.push(pro)
+            this.checkedProduct.push(pro.id)
         })
       })
     })
@@ -144,16 +144,20 @@ export class PermissionComponent implements OnInit, AfterViewInit {
     this.checkedCategory = this.permissions.filter(cat => {
       return cat.isSelected
     })
-<<<<<<< HEAD
     this.checkedProduct = []
+    this.checkedSubCategory = []
     this.permissions.forEach(cat => {
       cat.subCategory.forEach(sub => {
-        if (sub.isSelected)
-          Array.prototype.push.apply(this.checkedProduct, sub.products)
+        if (sub.isSelected){
+          this.checkedSubCategory.push(sub)
+          sub.products.forEach(pro=>{
+            pro.isSelected = true
+            this.checkedProduct.push(pro.id)
+          })
+        }
+          
       })
     })
-=======
->>>>>>> parent of 7a322de... permission changes
     this.calculateLength()
     this.checked('cat')
   }
@@ -166,11 +170,18 @@ export class PermissionComponent implements OnInit, AfterViewInit {
     } else if (!checked) {
       this.permissions[catIndex].subCategory[subIndex].isSelected = false
     }
+    this.checkedProduct = []
     this.checkedSubCategory = []
     this.permissions.forEach(cat => {
       cat.subCategory.forEach(sub => {
-        if (sub.isSelected)
+        if (sub.isSelected){
           this.checkedSubCategory.push(sub)
+          sub.products.forEach(pro=>{
+            pro.isSelected = true
+            this.checkedProduct.push(pro.id)
+          })
+        }
+          
       })
     })
     this.calculateLength()
