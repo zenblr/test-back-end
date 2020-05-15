@@ -108,6 +108,9 @@ export class PageConfig {
 			'order-details': {
 				page: { title: 'Order Details', desc: '' }
 			},
+			'emi-details':{
+				page:{title:'Emi Details',desc:''}
+			}
 		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }

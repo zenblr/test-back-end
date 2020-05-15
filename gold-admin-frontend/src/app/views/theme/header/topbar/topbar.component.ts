@@ -164,6 +164,11 @@ export class TopbarComponent implements OnInit {
 			this.value1 = 'Add Logistic Partner';
 			this.type1 = 'button';
 		}
+		if (this.path == 'emi-details') {
+			this.showInput = true;
+			this.value1 = 'Add Emi Details';
+			this.type1 = 'button';
+		}
 		if (this.path == 'karat-details') {
 			this.rightButton = true;
 			this.value2 = 'Add Karat Details';

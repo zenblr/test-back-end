@@ -39,6 +39,7 @@ import { AdminLogListComponent } from './config-details/admin-log/admin-log-list
 import { AddLogisticPartnerComponent } from './logisticPartner/add-logistic-partner/add-logistic-partner.component';
 import { ListLogisticPartnerComponent } from './logisticPartner/list-logistic-partner/list-logistic-partner.component';
 import { OrderDetailsListComponent } from './order-management/order-details/order-details-list/order-details-list.component';
+import { EmiDetailsListComponent } from './order-management/emi-details/emi-details-list/emi-details-list.component';
 
 const routes: Routes = [
 	{
@@ -91,6 +92,10 @@ const routes: Routes = [
 			{
 				path: 'order-details',
 				component: OrderDetailsListComponent
+			},
+			{
+				path:'emi-details',
+				component:EmiDetailsListComponent
 			}
 		]
 	}
@@ -160,6 +165,7 @@ const routes: Routes = [
 		AddLogisticPartnerComponent,
 		ListLogisticPartnerComponent,
 		OrderDetailsListComponent,
+		EmiDetailsListComponent,
 
 	]
 })

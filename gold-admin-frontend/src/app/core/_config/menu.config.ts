@@ -375,6 +375,10 @@ export class MenuConfig {
 						{
 							title: 'Order Details',
 							page: '/emi-management/order-details',
+						},
+						{
+							title:'Emi Details',
+							page:'/emi-management/emi-details'
 						}
 					]
 				},
