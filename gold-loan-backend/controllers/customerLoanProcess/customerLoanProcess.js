@@ -202,9 +202,20 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 
 //  FUNCTION TO UPDATE CUSTOMER ORNAMENTS DETAILS
 exports.updateCustomerLoanDetail = async (req, res, next) => {
-    let { loanId, loanApproval, loanBank, loanOrnmanets, loanFinalCalculator, loanPersonal, loanKyc, loanNominee } = req.body;
+    let { loanId, totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanOrnmanets, loanFinalCalculator, loanNominee } = req.body;
     let loanId = req.params.loanId;
     let modifiedBy = req.userData.id;
+
+     //customerFinalLoan
+     let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
+
+      //customerLoanNominee
+    let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
+
+    //customerLoan
+    let { applicationFormForAppraiser,
+        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
+
 
     let customerOrnamentsDetailsUpdated = await models.customerLoanOrnamentsDetail.bulkCreate(ornamentData, {
         updateOnDuplicate: ["ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest",
