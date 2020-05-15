@@ -180,7 +180,44 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customerLoanKycDetail,
                 as: 'loanKycDetail',
                 where: { isActive: true },
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include: [
+                    {
+                        model: models.identityType,
+                        as: 'identityType',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: models.state,
+                        as: 'perState',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: models.city,
+                        as: 'perCity',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: models.addressProofType,
+                        as: 'perAddressProofType',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: models.state,
+                        as: 'resState',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: models.city,
+                        as: 'resCity',
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: models.addressProofType,
+                        as: 'resAddressProofType',
+                        attributes: ['id', 'name']
+                    },
+                ]
             },
             {
                 model: models.customerLoanNomineeDetail,
@@ -193,6 +230,12 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 as: 'loanOrnamentsDetail',
                 where: { isActive: true },
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+            },
+            {
+                model: models.customerFinalLoan,
+                as: 'finalLoan',
+                where: { isActive: true },
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
             }
         ]
     })
@@ -202,28 +245,50 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 
 //  FUNCTION TO UPDATE CUSTOMER ORNAMENTS DETAILS
 exports.updateCustomerLoanDetail = async (req, res, next) => {
-    // let { loanId, totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanOrnmanets, loanFinalCalculator, loanNominee } = req.body;
-    // // let loanId = req.params.loanId;
-    // let modifiedBy = req.userData.id;
+    let { totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanOrnmanets, loanFinalCalculator, loanNominee } = req.body;
+    let loanId = req.params.loanId;
+    let modifiedBy = req.userData.id;
 
-    //  //customerFinalLoan
-    //  let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
+    //customerFinalLoan
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
 
-    //   //customerLoanNominee
-    // let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
+    //customerLoanNominee
+    let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
 
-    // //customerLoan
-    // let { applicationFormForAppraiser,
-    //     goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
+    //customerLoan
+    let { applicationFormForAppraiser,
+        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
+
+    let updateLoanApplication = await sequelize.transaction(async t => {
+
+        // customerLoan
+        await models.customerLoan.create({
+            applicationFormForAppraiser,
+            goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, modifiedBy
+        }, { where: { id: loanId }, transaction: t })
+
+        //customerLoanNominee
+        await models.customerLoanNomineeDetail.update({
+            nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, modifiedBy
+        }, { where: { loanId }, transaction: t });
+
+        //customerFinalLoan
+        await models.customerFinalLoan.create({
+            partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate, modifiedBy
+        }, { where: { loanId }, transaction: t })
 
 
-    // let customerOrnamentsDetailsUpdated = await models.customerLoanOrnamentsDetail.bulkCreate(ornamentData, {
-    //     updateOnDuplicate: ["ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest",
-    //         "karat", "purity", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount"]
-    // })
+        let allOrnmanets = []
+        for (let i = 0; i < loanOrnmanets.length; i++) {
+            loanOrnmanets[i]['modifiedBy'] = modifiedBy
+            allOrnmanets.push(loanOrnmanets[i])
+        }
 
-    // return res.status(201).json({ message: 'success' });
-
+        await models.customerLoanOrnamentsDetail.bulkCreate(ornamentData, {
+            updateOnDuplicate: ["ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "currentLtvAmount"]
+        }, { transaction: t })
+    })
+    return res.status(200).json({ message: 'success' });
 
 }
 
@@ -436,6 +501,12 @@ exports.addPacket = async (req, res, next) => {
     let { packetId } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+
+    let packetExist = await models.packet.findOne({ where: { packetId } })
+
+    if (!check.isEmpty(packetExist)) {
+        return res.status(400).json({ message: `This packet Id is already exist` })
+    }
     let packetAdded = await models.packet.addPacket(
         packetId, createdBy, modifiedBy);
     res.status(201).json({ message: 'you adeed packet successfully' });
@@ -490,11 +561,9 @@ exports.viewPacket = async (req, res, next) => {
         where: searchQuery,
         include: associateModel,
     });
-    if (packetDetails.length === 0) {
-        res.status(404).json({ message: 'no packet details found' });
-    } else {
-        res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count.length });
-    }
+
+    return res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count.length });
+
 }
 
 
@@ -543,10 +612,10 @@ exports.changePacket = async (req, res, next) => {
 
 // FUNCTION TO REMOVE PACKET
 exports.deletePacket = async (req, res, next) => {
-    let id = req.params.id;
-    let modifiedBy = req.userData.id;
 
-    let packet = await models.packet.removePacket(id, modifiedBy);
+    const { id, isActive } = req.query;
+    let modifiedBy = req.userData.id;
+    const packet = await models.packet.update({ isActive: isActive, modifiedBy }, { where: { id: id } })
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "packet not delete" });

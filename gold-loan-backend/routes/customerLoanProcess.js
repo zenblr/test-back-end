@@ -36,6 +36,6 @@ route.put('/assign-packet/:id', checkAuth, wrapper(assignPacket)); // ASSIGN PAC
 
 route.put('/update-packet/:id', checkAuth, wrapper(changePacket)); // UPDATE PACKET
 
-route.delete('/remove-packet/:id', checkAuth, wrapper(deletePacket)); // DELETE PACKET
+route.delete('/remove-packet', checkAuth, wrapper(deletePacket)); // DELETE PACKET
 
 module.exports = route; // EXPORTING ALL ROUTES
