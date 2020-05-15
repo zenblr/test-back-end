@@ -1,14 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycAddressDetail = sequelize.define('customerKycAddressDetail', {
         // attributes
-        customerKycId: {
-            type: DataTypes.INTEGER,
-            field: 'customer_kyc_id',
-            allowNull: false
-        },
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id',
+            allowNull: false
+        },
+        customerKycId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_kyc_id',
             allowNull: false
         },
         addressType: {
@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'pin_code'
         },
+        addressProofTypeId:{
+            type: DataTypes.INTEGER,
+            field: 'address_proof_type_id'
+        },
         addressProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'address_proof'
@@ -53,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
     CustomerKycAddressDetail.associate = function (models) {
 
 
-        CustomerKycAddressDetail.belongsTo(models.customerKycPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
+        CustomerKycAddressDetail.belongsTo(models.customerKyc, { foreignKey: 'customerKycId', as: 'customerKyc' });
         CustomerKycAddressDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
 

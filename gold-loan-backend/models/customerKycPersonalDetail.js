@@ -6,6 +6,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false
         },
+        customerKycId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_kyc_id',
+            allowNull: false
+        },
         profileImage: {
             type: DataTypes.TEXT,
             field: 'profile_image'
@@ -101,11 +106,9 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerKycPersonalDetail.associate = function (models) {
 
-        CustomerKycPersonalDetail.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerKycId', as: 'customerKycAddress' });
-        CustomerKycPersonalDetail.hasMany(models.customerKycBankDetail, { foreignKey: 'customerKycId', as: 'customerKycBank' });
-        CustomerKycPersonalDetail.hasOne(models.customerKycClassification, { foreignKey: 'customerKycId', as: 'customerKycClassification' });
-
+        CustomerKycPersonalDetail.belongsTo(models.customerKyc, { foreignKey: 'customerKycId', as: 'customerKyc' });
         CustomerKycPersonalDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+
         CustomerKycPersonalDetail.belongsTo(models.occupation, { foreignKey: 'occupationId', as: 'occupation' });
         CustomerKycPersonalDetail.belongsTo(models.identityType, { foreignKey: 'identityTypeId', as: 'identityType' });
 

@@ -19,14 +19,14 @@ export class ListKaratDetailsComponent implements OnInit {
 
   destroy$ = new Subject();
   private subscriptions: Subscription[] = [];
-  private logisticPartner:any=[];
+  public logisticPartner:any=[];
   dataSource: KaratDetailsDataSource;
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
  /**
   * @param layoutUtilsService:LayoutUtilsService
   */
-  displayedColumns = ['karat','percentage','actions'];
+  displayedColumns = ['karat','fromPercentage','toPercentage','actions'];
   // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -78,6 +78,7 @@ export class ListKaratDetailsComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.logisticPartner = res;
+      console.log(this.logisticPartner);
     });
     this.subscriptions.push(entitiesSubscription);
     this.dataSource.loadKaratDetails();

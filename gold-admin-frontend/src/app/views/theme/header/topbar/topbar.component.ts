@@ -159,10 +159,10 @@ export class TopbarComponent implements OnInit {
 			this.type1 = 'button';
 		}
 		if (this.path == 'karat-details') {
-			this.showfilter = true;
+			this.rightButton = true;
 			// this.showInput = true;
-			this.value1 = 'Add Karat Details';
-			this.type1 = 'button';
+			this.value2 = 'Add Karat Details';
+			this.type2 = 'button';
 		}
 		if (this.path == 'customer-list') {
 			this.showfilter = true;
