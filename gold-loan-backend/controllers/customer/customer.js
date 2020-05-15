@@ -39,7 +39,7 @@ exports.addCustomer = async (req, res, next) => {
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
   let stageId = getStageId.id;
   let email = "nimap@infotech.com";
-  let password = firstName;
+  let password = `${firstName}@1234`;
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
@@ -92,7 +92,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   });
 
   request(
-    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`
+    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
   );
 
   return res
@@ -129,7 +129,7 @@ exports.sendOtp = async (req, res, next) => {
     referenceCode,
   });
   request(
-    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`
+    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
   );
 
   return res
@@ -173,7 +173,13 @@ exports.editCustomer = async (req, res, next) => {
   const { customerId } = req.params;
 
   let { cityId, stateId, pinCode, internalBranchId, statusId } = req.body;
+
+  let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
+
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
+  if (id == customerExist.statusId) {
+    return res.status(400).json({ message: `This customer status is confirm, You cannot change any information of that customer.` })
+  }
   if (check.isEmpty(customerExist)) {
     return res.status(404).json({ message: "Customer does not exist" });
   }
@@ -212,7 +218,7 @@ exports.getAllCustomers = async (req, res, next) => {
   );
   let stage = await models.stage.findOne({ where: { stageName } });
 
-  console.log(search, offset, pageSize, stage.id);
+  // console.log(search, offset, pageSize, stage.id);
 
   const searchQuery = {
     [Op.or]: {
@@ -220,6 +226,9 @@ exports.getAllCustomers = async (req, res, next) => {
       last_name: { [Op.iLike]: search + "%" },
       mobile_number: { [Op.iLike]: search + "%" },
       pan_card_number: { [Op.iLike]: search + "%" },
+      "$internalBranch.name$": {
+        [Op.iLike]: search + "%",
+      },
       "$status.status_name$": {
         [Op.iLike]: search + "%",
       },
@@ -251,8 +260,8 @@ exports.getAllCustomers = async (req, res, next) => {
       as: "status",
     },
     {
-      model:models.internalBranch,
-      as:"internalBranch"
+      model: models.internalBranch,
+      as: "internalBranch"
     }
   ]
 
@@ -330,3 +339,29 @@ exports.filterCustomer = async (req, res) => {
   }
   return res.status(200).json({ customerFilterData });
 };
+
+exports.getCustomerUniqueId = async (req, res) => {
+  let customer = await models.customer.findAll({
+    attributes: ['id', 'customerUniqueId'],
+    include: [{
+      model: models.customerKyc,
+      as: 'customerKyc',
+      where: { kycStatus: "approved" },
+      attributes: []
+    }]
+  })
+  let assignCustomer = await models.customerAssignAppraiser.findAll({
+    attributes: ['id', 'customerUniqueId']
+  })
+  let arrayDiff = function (a, b) {
+    return a.filter(function (i) { return !b.find((c) => { return c.customerUniqueId == i.customerUniqueId }) });
+  };
+  let getDiff = (a, b) => {
+    let c = arrayDiff(a, b);
+    let d = arrayDiff(b, a);
+    return [...c, ...d]
+  }
+  
+  let diff = getDiff(customer, assignCustomer)
+  return res.status(200).json({ data: diff })
+}

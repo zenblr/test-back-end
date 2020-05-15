@@ -8,10 +8,10 @@ import { finalize, takeUntil, tap, catchError } from 'rxjs/operators';
 // Translate
 import { TranslateService } from '@ngx-translate/core';
 // Store
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../../core/reducers';
+
+
 // Auth
-import { AuthNoticeService, Login, Logout } from '../../../../core/auth';
+import { AuthNoticeService,} from '../../../../core/auth';
 
 // services
 import { AuthService } from '../../../../core/auth/_services/auth.service';
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 	 * @param auth: AuthService
 	 * @param authNoticeService: AuthNoticeService
 	 * @param translate: TranslateService
-	 * @param store: Store<AppState>
+	 * 
 	 * @param fb: FormBuilder
 	 * @param cdr
 	 * @param route
@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 		private auth: AuthService,
 		private authNoticeService: AuthNoticeService,
 		private translate: TranslateService,
-		private store: Store<AppState>,
+		
 		private fb: FormBuilder,
 		private cdr: ChangeDetectorRef,
 		private route: ActivatedRoute,

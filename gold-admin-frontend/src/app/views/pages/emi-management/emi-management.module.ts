@@ -5,8 +5,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // NGRX
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
+
+
 // Translate
 import { TranslateModule } from '@ngx-translate/core';
 import { PartialsModule } from '../../partials/partials.module';
@@ -16,7 +16,6 @@ import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsServi
 import { ActionNotificationComponent } from '../../partials/content/crud';
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
-import { usersReducer, UserEffects } from '../../../core/auth';
 // Module
 import { CoreModule } from "../../../core/core.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -99,8 +98,6 @@ const routes: Routes = [
 		HttpClientModule,
 		PartialsModule,
 		RouterModule.forChild(routes),
-		StoreModule.forFeature('users', usersReducer),
-		EffectsModule.forFeature([UserEffects]),
 		FormsModule,
 		ReactiveFormsModule,
 		TranslateModule.forChild(),

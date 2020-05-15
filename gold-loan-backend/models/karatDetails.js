@@ -6,10 +6,19 @@ module.exports = (sequelize, DataTypes) => {
             field: 'karat',
             allowNull: false,
         },
-        percentage:{
+        fromPercentage:{
             type: DataTypes.FLOAT,
-            field:'percentage',
+            field:'from_percentage',
+            allowNull:false,
+        },
+        toPercentage:{
+            type: DataTypes.FLOAT,
+            field:'to_percentage',
             allowNull:false
+        },
+        range:{
+            type:DataTypes.ARRAY(DataTypes.INTEGER),
+            field:'range',
         },
         createdBy:{
             type:DataTypes.INTEGER,

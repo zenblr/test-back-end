@@ -36,6 +36,8 @@ exports.userLogin = async (req, res, next) => {
         include: [{ model: models.role }]
     })
     let roleId = await checkUser.roles.map((data) => data.id);
+    let roleName = await checkUser.roles.map((data) => data.roleName)
+
     if (!checkUser) {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }
@@ -47,6 +49,7 @@ exports.userLogin = async (req, res, next) => {
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
             roleId: roleId,
+            roleName:roleName
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -136,13 +139,15 @@ exports.verifyLoginOtp = async (req, res, next) => {
             transaction: t
         });
         let roleId = await checkUser.roles.map((data) => data.id);
+        let roleName = await checkUser.roles.map((data) => data.roleName)
 
         Token = jwt.sign({
             id: checkUser.dataValues.id,
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
-            roleId: roleId
+            roleId: roleId,
+            roleName: roleName
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME

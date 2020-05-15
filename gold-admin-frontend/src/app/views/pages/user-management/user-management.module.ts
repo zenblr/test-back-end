@@ -5,8 +5,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // NGRX
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
+
+
 // Translate
 import { TranslateModule } from '@ngx-translate/core';
 import { PartialsModule } from '../../partials/partials.module';
@@ -15,22 +15,12 @@ import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsServi
 // Shared
 import { ActionNotificationComponent } from '../../partials/content/crud';
 // Components
-import { UserManagementComponent } from './user-management.component';
-import { UsersListComponent } from './users/users-list/users-list.component';
-import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { RolesListComponent } from './roles/roles-list/roles-list.component';
 import { RoleAddDialogComponent } from './roles/role-add/role-add.dialog.component';
-import { UserRolesListComponent } from './users/_subs/user-roles/user-roles-list.component';
-import { ChangePasswordComponent } from './users/_subs/change-password/change-password.component';
-import { AddressComponent } from './users/_subs/address/address.component';
-import { SocialNetworksComponent } from './users/_subs/social-networks/social-networks.component';
 
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
-import {
-	usersReducer,
-	UserEffects
-} from '../../../core/auth';
+
 
 // Module
 import { CoreModule } from "../../../core/core.module";
@@ -57,8 +47,7 @@ import { ViewMerchantComponent } from './merchant/view-merchant/view-merchant.co
 import { ApiKeyComponent } from './merchant/api-key/api-key.component';
 import { InternalUserBranchListComponent } from './internal-user-branch/internal-user-branch-list/internal-user-branch-list.component';
 import { AddInternalUserBranchComponent } from './internal-user-branch/add-internal-user-branch/add-internal-user-branch.component';
-import { StoreListComponent } from './store/store-list/store-list.component';
-import { CreateStoreComponent } from './store/create-store/create-store.component';
+
 
 const routes: Routes = [
 	
@@ -115,10 +104,7 @@ const routes: Routes = [
 				path: 'edit-merchant/:id',
 				component: MerchantComponent
 			},
-			{
-				path: 'store',
-				component: StoreListComponent
-			},
+
 
 		]
 
@@ -128,8 +114,6 @@ const routes: Routes = [
 		HttpClientModule,
 		PartialsModule,
 		RouterModule.forChild(routes),
-		StoreModule.forFeature('users', usersReducer),
-		EffectsModule.forFeature([UserEffects]),
 		FormsModule,
 		ReactiveFormsModule,
 		TranslateModule.forChild(),
@@ -160,18 +144,10 @@ const routes: Routes = [
 		ViewMerchantComponent,
 		ApiKeyComponent,
 		AddInternalUserBranchComponent,
-		CreateStoreComponent
 	],
 	declarations: [
-		UserManagementComponent,
-		UsersListComponent,
-		UserEditComponent,
 		RolesListComponent,
 		RoleAddDialogComponent,
-		UserRolesListComponent,
-		ChangePasswordComponent,
-		AddressComponent,
-		SocialNetworksComponent,
 		PartnerListComponent,
 		BranchListComponent,
 		BranchAddComponent,
@@ -192,8 +168,6 @@ const routes: Routes = [
 		ApiKeyComponent,
 		InternalUserBranchListComponent,
 		AddInternalUserBranchComponent,
-		StoreListComponent,
-		CreateStoreComponent,
 
 	]
 })

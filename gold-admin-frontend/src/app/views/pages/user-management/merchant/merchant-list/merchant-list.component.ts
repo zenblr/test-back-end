@@ -8,11 +8,10 @@ import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material
 import { distinctUntilChanged, tap, skip, take, delay, takeUntil } from 'rxjs/operators';
 import { merge, of, Subscription, Subject } from 'rxjs';
 // NGRX
-import { Store } from '@ngrx/store';
+
 // Services
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
 // Models
-import { AppState } from '../../../../../core/reducers';
 import { MerchantDatasource, MerchantService } from '../../../../../core/user-management/merchant';
 import { ViewMerchantComponent } from '../view-merchant/view-merchant.component';
 import { ApiKeyComponent } from '../api-key/api-key.component';
@@ -55,13 +54,13 @@ export class MerchantListComponent implements OnInit {
   /**
    * Component constructor
    *
-   * @param store: Store<AppState>
+   * 
    * @param dialog: MatDialog
    * @param snackBar: MatSnackBar
    * @param layoutUtilsService: LayoutUtilsService
    */
   constructor(
-    private store: Store<AppState>,
+    
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,

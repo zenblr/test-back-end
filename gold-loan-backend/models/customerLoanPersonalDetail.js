@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'customer_unique_id'
         },
-        mobile: {
+        mobileNumber: {
             type: DataTypes.STRING,
-            field: 'mobile'
+            field: 'mobile_number'
         },
         panCardNumber: {
             type: DataTypes.STRING,
@@ -23,10 +23,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'start_date',
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
     }, {
         freezeTableName: true,
@@ -36,12 +44,14 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanPersonalDetail.associate = function (models) {
         customerLoanPersonalDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+        customerLoanPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        customerLoanPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // FUNCTION TO ADD CUSTOMER PERSONAL DETAIL
     customerLoanPersonalDetail.addCustomerPersonalDetail =
-        (loanId, customerUniqueId, mobile, panCardNumber, startDate, t) => customerLoanPersonalDetail.create({
-            loanId, customerUniqueId, mobile, panCardNumber, startDate, isActive: true
+        (loanId, customerUniqueId, mobile, panCardNumber, startDate, createdBy, modifiedBy, t) => customerLoanPersonalDetail.create({
+            loanId, customerUniqueId, mobile, panCardNumber, startDate, createdBy, modifiedBy, isActive: true
         }, { t });
 
 

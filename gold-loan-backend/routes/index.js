@@ -95,6 +95,9 @@ router.use('/customer-query',query)
 const customerLoanProcess = require('./customerLoanProcess'); // customer loan process module
 router.use('/loan-process', customerLoanProcess);
 
+const loanAccount = require('./loanAccount'); // customer loan account process module
+router.use('/loan-account', loanAccount);
+
 const feedBack=require('./feedBack'); // feed back module
 router.use('/customer-feedback',feedBack)
 
@@ -118,5 +121,9 @@ router.use('/logistic-partner',logisticPartner)
 
 const karatDetails=require('./karatDetails'); // karat details module
 router.use('/karat-details',karatDetails)
+
+const assignAppraiser = require('./customerAssignAppraiser');
+router.use('/assign-appraiser',assignAppraiser)
+
 
 module.exports = router;

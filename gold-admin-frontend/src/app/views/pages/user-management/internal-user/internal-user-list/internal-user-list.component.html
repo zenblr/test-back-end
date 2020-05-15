@@ -43,7 +43,12 @@
                     <mat-header-cell *matHeaderCellDef>Branch Name</mat-header-cell>
                     <mat-cell *matCellDef="let user">
                         <div class="text-color">
-                            {{user.internalBranches[0].name}}
+                            <span *ngIf="user.internalBranches.length == 0">
+                                -
+                            </span>
+                            <span *ngIf="user.internalBranches.length > 0">
+                                {{user.internalBranches[0].name | titlecase}}
+                            </span>
                         </div>
                     </mat-cell>
                 </ng-container>

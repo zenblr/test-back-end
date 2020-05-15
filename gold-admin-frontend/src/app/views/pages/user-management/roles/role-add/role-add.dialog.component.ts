@@ -4,10 +4,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 // RxJS
 import { Subscription } from 'rxjs';
 
-import { Store, } from '@ngrx/store';
-// State
-import { AppState } from '../../../../../core/reducers';
-// Services and Models
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RolesService } from '../../../../../core/user-management/roles';
 import { ToastrService } from 'ngx-toastr';
@@ -35,11 +31,11 @@ export class RoleAddDialogComponent implements OnInit, OnDestroy {
 	 *
 	 * @param dialogRef: MatDialogRef<RoleEditDialogComponent>
 	 * @param data: any
-	 * @param store: Store<AppState>
+	 * 
 	 */
 	constructor(public dialogRef: MatDialogRef<RoleAddDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
-		private store: Store<AppState>,
+		
 		private fb: FormBuilder,
 		private roleService: RolesService,
 		private toast: ToastrService,
