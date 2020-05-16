@@ -114,6 +114,9 @@ export class PageConfig {
 			'deposit-details': {
 				page: { title: 'Deposit Details', desc: '' }
 			},
+			'emi-details': {
+				page: { title: 'Emi Details', desc: '' }
+			}
 		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }

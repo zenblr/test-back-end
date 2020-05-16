@@ -383,6 +383,10 @@ export class MenuConfig {
 						{
 							title: 'Deposit Details',
 							page: '/emi-management/deposit-details',
+						},
+						{
+							title: 'Emi Details',
+							page: '/emi-management/emi-details'
 						}
 					]
 				},

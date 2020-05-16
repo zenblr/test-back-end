@@ -9,3 +9,7 @@ export { CancelOrderDetailsDatasource } from './cancel-order-details/datasources
 export { DepositDetailsService } from './deposit-details/services/deposit-details.service';
 export { DepositDetailsModel } from './deposit-details/models/deposit-details.model';
 export { DepositDetailsDatasource } from './deposit-details/datasources/deposit-details.datasource';
+
+export { EmiDetailsService } from './emi-details/services/emi-details.service';
+export { EmiDetailsModel } from './emi-details/models/emi-details.model';
+export { EmiDetailsDatasource } from './emi-details/datasources/emi-details.datasource';
