@@ -8,7 +8,8 @@
                 <ng-container matColumnDef="fullName">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.firstName | titlecase}}&nbsp;{{loan.customer.lastName | titlecase}}
+                    <mat-cell *matCellDef="let loan">
+                        {{loan.customer.firstName | titlecase}}&nbsp;{{loan.customer.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerID">
@@ -38,13 +39,19 @@
                 <ng-container matColumnDef="appraisalApproval">
                     <mat-header-cell *matHeaderCellDef>Appraisal Approval</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span [ngClass]="loan.approvalStatus.id == 'pending' ? 'text-warning' :merchant.approvalStatus.id == 'approved' ? 'text-success' : 'text-danger'"></span>{{loan.loanStatusForAppraiser | titlecase}}
+                        <span
+                            [ngClass]="loan.loanStatusForAppraiser == 'pending' ? 'text-warning' :loan.loanStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
+                            {{loan.loanStatusForAppraiser | titlecase}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bMApproval">
                     <mat-header-cell *matHeaderCellDef>Loan Application</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan.loanStatusForBM | titlecase}}
+                        <span
+                            [ngClass]="loan.loanStatusForBM == 'pending' ? 'text-warning' :loan.loanStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
+                            {{loan.loanStatusForBM | titlecase}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">

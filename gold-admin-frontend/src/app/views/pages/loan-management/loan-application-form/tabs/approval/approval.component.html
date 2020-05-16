@@ -12,15 +12,15 @@
                         <label for="">Loan Application Form</label>
                     </div>
                     <div class="col-4 border text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':role=='Branch Manager'}" *ngIf="controls.applicationFormForAppraiser.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser')}" *ngIf="controls.applicationFormForAppraiser.value" 
                         (click)="approvalOfAppraiser(false,'form')">
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg"  [ngClass]="{'cursor-not-allowed':role=='Branch Manager'}" *ngIf="!controls.applicationFormForAppraiser.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg"  [ngClass]="{'cursor-not-allowed':(role !='Appraiser')}" *ngIf="!controls.applicationFormForAppraiser.value" 
                         (click)="approvalOfAppraiser(true,'form')">
                     </div>
                     <div class="col-4 text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':role=='Appraiser'}" *ngIf="controls.applicationFormForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager')}" *ngIf="controls.applicationFormForBM.value" 
                         (click)="approvalOfBM(false,'form')">
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':role=='Appraiser'}" *ngIf="!controls.applicationFormForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager')}" *ngIf="!controls.applicationFormForBM.value" 
                         (click)="approvalOfBM(true,'form')">
                     </div>
                 </div>
@@ -29,16 +29,16 @@
                         <label>Gold Value</label>
                     </div>
                     <div class="col-4 border text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':role=='Branch Manager'}" *ngIf="controls.goldValuationForAppraiser.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser')}" *ngIf="controls.goldValuationForAppraiser.value" 
                         (click)="approvalOfAppraiser(false,'gold')" >
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':role=='Branch Manager'}" *ngIf="!controls.goldValuationForAppraiser.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser')}" *ngIf="!controls.goldValuationForAppraiser.value" 
                         (click)="approvalOfAppraiser(true,'gold')">
 
                     </div>
                     <div class="col-4 text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':role=='Appraiser'}" *ngIf="controls.goldValuationForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager')}" *ngIf="controls.goldValuationForBM.value" 
                         (click)="approvalOfBM(false,'gold')" disabled>
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':role=='Appraiser'}" *ngIf="!controls.goldValuationForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager')}" *ngIf="!controls.goldValuationForBM.value" 
                         (click)="approvalOfBM(true,'gold')" disabled>
 
                     </div>

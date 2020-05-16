@@ -40,7 +40,7 @@
                     </mat-error>
                 </div>
             </div>
-            <div *ngIf="showHide">
+            <div *ngIf="controls.nomineeType.value == 'minor'">
                 <div class="row kt-margin-t-15">
                     <div class="col-4 form-label">
                         <label class="text-color kt-padding-l-10">Guardian Name</label>
@@ -61,7 +61,7 @@
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" placeholder="25" numbersOnly
-                            formControlName="guardianAge" (blur)="checkForGuardianAge()"
+                            formControlName="guardianAge"
                             [class.isError]="controls.guardianAge.touched && controls.guardianAge.invalid">
                         <mat-error *ngIf="controls.guardianAge.touched && controls.guardianAge.invalid">
                             <span *ngIf="controls.guardianAge.errors?.required">Field is Required</span>

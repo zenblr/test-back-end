@@ -26,7 +26,7 @@
                             <div class="col-8">
                                 <select class="form-control" name="" id="" formControlName="customerId"
                                     [class.isError]="controls.customerId.touched && controls.customerId.invalid" *ngIf="data.action =='add'">
-                                    <option [selected]="true" [disabled]="true" value="">Select Appraiser</option>
+                                    <option [selected]="true" [disabled]="true" value="">Select Customer</option>
                                     <option *ngFor="let customer of customers" [value]="customer.id">{{customer .customerUniqueId}}</option>
                                 </select>
                                 <!-- <kt-select-with-search [options]="customer"></kt-select-with-search> -->
