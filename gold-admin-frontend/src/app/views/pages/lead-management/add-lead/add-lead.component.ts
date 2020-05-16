@@ -79,6 +79,7 @@ export class AddLeadComponent implements OnInit {
         this.isOpverified = false;
       } else {
         this.isOpverified = true;
+        this.isPanVerified = false;
       }
     });
   }
