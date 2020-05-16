@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'scheme_id'
         },
         finalLoanAmount: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.STRING,
             field: 'final_loan_amount',
         },
         loanStartDate: {

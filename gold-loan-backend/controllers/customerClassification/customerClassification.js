@@ -136,15 +136,15 @@ exports.updateRating = async (req, res, next) => {
                 request(
                     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
                 );
-                let getBm = await models.user.findOne({ id: bmId});
+                let getBm = await models.user.findOne({ where: { id: bmId } });
                 let bmMobile = getBm.mobileNumber
-                 //message for BranchManager
-                 request(
+                //message for BranchManager
+                request(
                     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
                 );
                 return res.status(200).json({ message: 'success' })
 
-               
+
 
             }
             return res.status(400).json({ message: `One of field is not verified` })

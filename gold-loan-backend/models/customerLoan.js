@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'comment_by_bm'
         },
         totalEligibleAmt: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.STRING,
             field: 'total_eligible_amt'
         },
         totalFinalInterestAmt: {
