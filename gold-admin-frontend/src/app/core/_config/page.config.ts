@@ -124,7 +124,7 @@ export class PageConfig {
 				page: { title: 'Loan Calculator', desc: '' }
 			},
 			'loan-application-form': {
-				page: { title: 'Add New Loan', desc: '' }
+				page: { title: 'Loan Application Form', desc: '' }
 			},
 			'packet': {
 				page: { title: 'Packets', desc: '' }

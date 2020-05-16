@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, EventEmitter, Output, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, EventEmitter, Output, Input, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -8,23 +8,31 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class NomineeDetailsComponent implements OnInit, AfterViewInit {
 
+  @Input() details;
   nominee: FormGroup;
-  showHide: boolean;
-  @Input() disable
+  @Input() disable;
   @Output() nomineeEmit: EventEmitter<any> = new EventEmitter()
   @Input() invalid;
-
-
+  @Input() action;
 
   constructor(
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    public ref: ChangeDetectorRef
+
   ) { }
 
   ngOnInit() {
     this.initForm()
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes:SimpleChanges) {
+    if(changes.details){
+    if(changes.action.currentValue == 'edit'){
+      this.nominee.patchValue(changes.details.currentValue.loanNomineeDetail[0])
+      this.ref.markForCheck()
+
+    }
+  }
     if (this.invalid) {
       this.nominee.markAllAsTouched()
       this.invalid = false
@@ -54,16 +62,13 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
   }
 
   checkForMinor() {
-    console.log(this.controls.nomineeAge.value);
     if (this.controls.nomineeAge.value == null || this.controls.nomineeAge.value >= 18) {
-      this.showHide = false
       this.controls.nomineeType.patchValue("major")
       this.controls.guardianAge.clearValidators();
       this.controls.guardianName.clearValidators();
       this.controls.guardianRelationship.clearValidators();
     }
     else if (this.controls.nomineeAge.value < 18) {
-      this.showHide = true
       this.controls.guardianAge.setValidators(Validators.required);
       this.controls.guardianName.setValidators(Validators.required);
       this.controls.guardianRelationship.setValidators(Validators.required);
