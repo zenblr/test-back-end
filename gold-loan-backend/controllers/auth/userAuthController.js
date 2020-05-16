@@ -35,12 +35,13 @@ exports.userLogin = async (req, res, next) => {
         },
         include: [{ model: models.role }]
     })
-    let roleId = await checkUser.roles.map((data) => data.id);
-    let roleName = await checkUser.roles.map((data) => data.roleName)
 
     if (!checkUser) {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }
+    let getRole = await models.userRole.getAllRole(checkUser.dataValues.id);
+    let roleId = await getRole.map((data) => data.roleId);
+
     let userDetails = await checkUser.comparePassword(password);
     if (userDetails === true) {
         const Token = jwt.sign({
@@ -48,8 +49,7 @@ exports.userLogin = async (req, res, next) => {
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
-            roleId: roleId,
-            roleName:roleName
+            roleId: roleId
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -70,35 +70,34 @@ exports.userLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
-        // let getRole = await models.userRole.getAllRole(decoded.id);
-        // let roleId = await getRole.map((data) => data.roleId);
-        // let modules = await models.roleModule.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},
-        //     attributes: [],
-        //     include: [
-        //         {
-        //           model: models.module,
-        //           as:'module',
-        //           attributes: ['id','moduleName'],
-        //           where: { isActive: true}
-        //         },
-        //       ]
-        // });
+        
+        let modules = await models.roleModule.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},
+            attributes: [],
+            include: [
+                {
+                  model: models.module,
+                  as:'module',
+                  attributes: ['id','moduleName'],
+                  where: { isActive: true}
+                },
+              ]
+        });
 
-        // let getPermissions = await models.rolePermission.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},attributes: ['permissionId']});
-        // let permissionId = await getPermissions.map((data) => data.permissionId);
-        // let permissions = await models.entity.findAll({
-        //     where : {isActive : true},
-        //     attributes: ['id','entityName'],
-        //     include: [
-        //         {
-        //           model: models.permission,
-        //           as:'permission',
-        //           attributes: ['id','actionName'],
-        //           where: { isActive: true, id: {[Op.in]: permissionId} }
-        //         },
-        //       ]
-        // })
-        return res.status(200).json({ message: 'login successful', Token });
+        let getPermissions = await models.rolePermission.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},attributes: ['permissionId']});
+        let permissionId = await getPermissions.map((data) => data.permissionId);
+        let permissions = await models.entity.findAll({
+            where : {isActive : true},
+            attributes: ['id','entityName'],
+            include: [
+                {
+                  model: models.permission,
+                  as:'permission',
+                  attributes: ['id','actionName'],
+                  where: { isActive: true, id: {[Op.in]: permissionId} }
+                },
+              ]
+        })
+        return res.status(200).json({ message: 'login successful', Token,modules,permissions });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
