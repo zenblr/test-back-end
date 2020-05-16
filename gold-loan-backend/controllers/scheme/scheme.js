@@ -5,31 +5,31 @@ const check = require('../../lib/checkLib');
 // add scheme
 exports.addScheme = async (req, res, next) => {
     const { schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-        interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually, partnerId } = req.body;
-        let schemeNameExist = await models.scheme.findOne({ where: { schemeName } })
+        interestRateOneHundredEightyDaysMonthly, partnerId } = req.body;
+    let schemeNameExist = await models.scheme.findOne({ where: { schemeName } })
 
-        if (!check.isEmpty(schemeNameExist)) {
-            return res.status(404).json({ message: 'This Scheme Name is already Exist' });
-        }
+    if (!check.isEmpty(schemeNameExist)) {
+        return res.status(404).json({ message: 'This Scheme Name is already Exist' });
+    }
     if (schemeAmountStart >= schemeAmountEnd) {
         return res.status(400).json({ message: `Your Scheme start amount is must be greater than your Scheme end amount` })
     }
 
     await sequelize.transaction(async t => {
-     
+
         const addSchemeData = await models.scheme.create({
             schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-            interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually
+            interestRateOneHundredEightyDaysMonthly
         });
 
         // for (let i = 0; i < partnerId.length; i++) {
-            // console.log(partnerId[i]);
+        // console.log(partnerId[i]);
 
-            let data = await models.partnerScheme.create({
-                schemeId: addSchemeData.id,
-                partnerId: partnerId
+        let data = await models.partnerScheme.create({
+            schemeId: addSchemeData.id,
+            partnerId: partnerId
 
-            }, { transaction: t })
+        }, { transaction: t })
     })
     return res.status(201).json({ message: "scheme created" })
 
@@ -90,7 +90,7 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
 // delete Scheme by id
 
 exports.deactiveScheme = async (req, res, next) => {
-    const {id,isActive}=req.query;
+    const { id, isActive } = req.query;
 
     const deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
 
@@ -99,26 +99,26 @@ exports.deactiveScheme = async (req, res, next) => {
     }
 
     return res.status(200).json({ message: 'Success' });
-} 
+}
 
 // filter scheme
 
-exports.filterScheme= async(req,res,next)=>{
-        var { isActive } = req.query;
-        const query = {};
-        if(isActive){
-        query.isActive=isActive;
+exports.filterScheme = async (req, res, next) => {
+    var { isActive } = req.query;
+    const query = {};
+    if (isActive) {
+        query.isActive = isActive;
+    }
+    let schemeFilterData = await models.scheme.findAll({
+        where: query,
+        include: {
+            model: models.partner
         }
-        let schemeFilterData = await models.scheme.findAll({
-          where: query,
-          include:{
-              model:models.partner
-          }
-        });
-        if (!schemeFilterData[0]) {
-          return res.status(404).json({ message: "data not found" });
-        }
-        return res.status(200).json({schemeFilterData });    
+    });
+    if (!schemeFilterData[0]) {
+        return res.status(404).json({ message: "data not found" });
+    }
+    return res.status(200).json({ schemeFilterData });
 }
 
 // update Scheme By id
