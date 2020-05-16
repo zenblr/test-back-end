@@ -311,15 +311,15 @@ exports.addInternalUser = async (req, res, next) => {
 }
 
 exports.updateInternalUser = async (req, res, next) => {
-    const id = req.params.id;
+        const id = req.params.id;
     let { firstName, lastName, mobileNumber, email, internalBranchId, roleId } = req.body;
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
         const user = await models.user.update({ firstName, lastName, mobileNumber, email, modifiedBy }, { where: { id: id } })
-        await models.userRole.update({ isActive: false }, { where: { userId: id } });
+        await models.userRole.destroy( { where: { userId: id } });
         await models.userRole.create({ userId: id, roleId }, { transaction: t });
         if (internalBranchId != null && internalBranchId != undefined) {
-            await models.userInternalBranch.update({ isActive: false }, { where: { userId: id } })
+            await models.userInternalBranch.destroy( { where: { userId: id } });
             await models.userInternalBranch.create({ userId: id, internalBranchId }, { transaction: t })
         }
     })
@@ -343,7 +343,7 @@ exports.GetInternalUser = async (req, res) => {
         req.query.to
     );
 
-    let userType = await models.userType.findOne({ where: { userType: "InternalUser" } })
+    let userType = await models.userType.findOne({ where: { userType: "internalUser" } })
     let userTypeId = userType.id
 
     let includeArray = [
