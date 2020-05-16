@@ -22,6 +22,7 @@ import { PacketsService } from '../../../../core/loan-management';
 import { StoreService } from '../../../../core/user-management/store/service/store.service';
 import { LogisticPartnerService } from '../../../../core/emi-management/logistic-partner/service/logistic-partner.service';
 import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
+import { CancelOrderDetailsService, OrderDetailsService, DepositDetailsService } from '../../../../core/emi-management/order-management';
 
 @Component({
 	selector: 'kt-topbar',
@@ -77,7 +78,10 @@ export class TopbarComponent implements OnInit {
 		private storeService: StoreService,
 		private logisticPartnerService: LogisticPartnerService,
 		private karatDetailsService: KaratDetailsService,
-		private productService: ProductService) {
+		private productService: ProductService,
+		private orderDetailsService: OrderDetailsService,
+		private cancelOrderDetailsService: CancelOrderDetailsService,
+		private depositDetailsService: DepositDetailsService, ) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -256,6 +260,18 @@ export class TopbarComponent implements OnInit {
 			this.type1 = 'button';
 			// this.showfilter = true;
 		}
+		if (this.path == 'cancel-order-details') {
+			this.showInput = true;
+			this.value1 = 'Export';
+			this.type1 = 'button';
+			// this.showfilter = true;
+		}
+		if (this.path == 'deposit-details') {
+			this.showInput = true;
+			this.value1 = 'Export';
+			this.type1 = 'button';
+			// this.showfilter = true;
+		}
 	}
 
 	action(event: Event) {
@@ -312,6 +328,15 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'karat-details') {
 			this.karatDetailsService.openModal.next(true)
+		}
+		if (this.path == 'order-details') {
+			this.orderDetailsService.exportExcel.next(true);
+		}
+		if (this.path == 'cancel-order-details') {
+			this.cancelOrderDetailsService.exportExcel.next(true);
+		}
+		if (this.path == 'deposit-details') {
+			this.depositDetailsService.exportExcel.next(true);
 		}
 	}
 

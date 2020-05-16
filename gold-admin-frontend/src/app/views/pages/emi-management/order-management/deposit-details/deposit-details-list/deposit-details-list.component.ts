@@ -37,7 +37,13 @@ export class DepositDetailsListComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private depositDetailsService: DepositDetailsService,
     private dataTableService: DataTableService
-  ) { }
+  ) {
+    this.depositDetailsService.exportExcel$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.downloadReport();
+      }
+    });
+  }
 
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
@@ -105,6 +111,11 @@ export class DepositDetailsListComponent implements OnInit {
     const searchText: string = this.searchInput.nativeElement.value;
     filter.title = searchText;
     return filter;
+  }
+
+  downloadReport() {
+    this.depositDetailsService.reportExport().subscribe();
+    this.depositDetailsService.exportExcel.next(false);
   }
 
 	/**

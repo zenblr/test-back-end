@@ -36,7 +36,13 @@ export class CancelOrderDetailsListComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private cancelOrderDetailsService: CancelOrderDetailsService,
     private dataTableService: DataTableService
-  ) { }
+  ) {
+    this.cancelOrderDetailsService.exportExcel$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.downloadReport();
+      }
+    });
+  }
 
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
@@ -107,6 +113,11 @@ export class CancelOrderDetailsListComponent implements OnInit {
   }
 
   printCancellationReceipt(order) { }
+
+  downloadReport() {
+    this.cancelOrderDetailsService.reportExport().subscribe();
+    this.cancelOrderDetailsService.exportExcel.next(false);
+  }
 
 	/**
 	 * On Destroy
