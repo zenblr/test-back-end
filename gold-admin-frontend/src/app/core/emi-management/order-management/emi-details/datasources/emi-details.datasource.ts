@@ -15,7 +15,7 @@ export class EmiDetailsDatasource extends BaseDataSource {
         super();
     }
 
-    loadOrderDetails(from, to, search) {
+    loadEmiDetails(from, to, search) {
         this.loadingSubject.next(true);
 
         this.emiDetailsService.getAllEmiDetails(from, to, search)

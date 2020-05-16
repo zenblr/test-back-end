@@ -3,8 +3,9 @@ import { MatPaginator, MatDialog, MatSnackBar, MatSort } from '@angular/material
 import { Subscription, Subject, merge } from 'rxjs';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
-import{EmiDetailsService,EmiDetailsDatasource, EmiDetailsModel}from '../../../../../../core/emi-management/order-management'
+import { EmiDetailsService, EmiDetailsDatasource, EmiDetailsModel } from '../../../../../../core/emi-management/order-management';
 import { skip, distinctUntilChanged, tap, takeUntil } from 'rxjs/operators';
+
 @Component({
   selector: 'kt-emi-details-list',
   templateUrl: './emi-details-list.component.html',
@@ -12,12 +13,13 @@ import { skip, distinctUntilChanged, tap, takeUntil } from 'rxjs/operators';
 })
 export class EmiDetailsListComponent implements OnInit {
   dataSource: EmiDetailsDatasource;
-  displayedColumns = ['storeId', 'userId', 'mobileNumber','orderId','emiDate','emiAmount','emiPaidDate','status','emiFrom', 'action'];
+  displayedColumns = ['storeId', 'userId', 'mobileNumber', 'orderId', 'emiDate', 'emiAmount',
+    'emiPaidDate', 'status', 'emiFrom', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-   bulkUploadReportResult: EmiDetailsModel[] = [];
+  bulkUploadReportResult: EmiDetailsModel[] = [];
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private destroy$ = new Subject();
@@ -28,9 +30,15 @@ export class EmiDetailsListComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private emiDetailsService:EmiDetailsService,
+    private emiDetailsService: EmiDetailsService,
     private dataTableService: DataTableService,
-  ) { }
+  ) {
+    this.emiDetailsService.exportExcel$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.downloadReport();
+      }
+    });
+  }
 
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
@@ -78,7 +86,35 @@ export class EmiDetailsListComponent implements OnInit {
       this.bulkUploadReportResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadOrderDetails(1, 25, this.searchValue);
+    this.dataSource.loadEmiDetails(1, 25, this.searchValue);
+  }
+
+  loadEmiDetailsPage() {
+    if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
+      return;
+    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+
+    this.dataSource.loadEmiDetails(from, to, this.searchValue);
+  }
+
+	/**
+	 * Returns object for filter
+	 */
+  filterConfiguration(): any {
+    const filter: any = {};
+    const searchText: string = this.searchInput.nativeElement.value;
+    filter.title = searchText;
+    return filter;
+  }
+
+  viewOrder(order) { }
+
+  printCancellationReceipt(order) { }
+
+  downloadReport() {
+    this.emiDetailsService.reportExport().subscribe();
+    this.emiDetailsService.exportExcel.next(false);
   }
 
 	/**
@@ -90,24 +126,5 @@ export class EmiDetailsListComponent implements OnInit {
     this.destroy$.complete();
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
-  }
-
-  loadEmiDetailsPage() {
-    if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
-      return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-
-    this.dataSource.loadOrderDetails(from, to, this.searchValue);
-  }
-
-	/**
-	 * Returns object for filter
-	 */
-  filterConfiguration(): any {
-    const filter: any = {};
-    const searchText: string = this.searchInput.nativeElement.value;
-    filter.title = searchText;
-    return filter;
   }
 }

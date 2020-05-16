@@ -385,7 +385,7 @@ export class MenuConfig {
 							page: '/emi-management/deposit-details',
 						},
 						{
-							title: 'Emi Details',
+							title: 'EMI Details',
 							page: '/emi-management/emi-details'
 						}
 					]

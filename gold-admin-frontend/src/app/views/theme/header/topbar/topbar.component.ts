@@ -22,7 +22,7 @@ import { PacketsService } from '../../../../core/loan-management';
 import { StoreService } from '../../../../core/user-management/store/service/store.service';
 import { LogisticPartnerService } from '../../../../core/emi-management/logistic-partner/service/logistic-partner.service';
 import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
-import { CancelOrderDetailsService, OrderDetailsService, DepositDetailsService } from '../../../../core/emi-management/order-management';
+import { CancelOrderDetailsService, OrderDetailsService, DepositDetailsService, EmiDetailsService } from '../../../../core/emi-management/order-management';
 
 @Component({
 	selector: 'kt-topbar',
@@ -81,7 +81,8 @@ export class TopbarComponent implements OnInit {
 		private productService: ProductService,
 		private orderDetailsService: OrderDetailsService,
 		private cancelOrderDetailsService: CancelOrderDetailsService,
-		private depositDetailsService: DepositDetailsService, ) {
+		private depositDetailsService: DepositDetailsService,
+		private emiDetailsService: EmiDetailsService, ) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -169,11 +170,6 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'logistic-partner') {
 			this.showInput = true;
 			this.value1 = 'Add Logistic Partner';
-			this.type1 = 'button';
-		}
-		if (this.path == 'emi-details') {
-			this.showInput = true;
-			this.value1 = 'Add Emi Details';
 			this.type1 = 'button';
 		}
 		if (this.path == 'karat-details') {
@@ -277,6 +273,12 @@ export class TopbarComponent implements OnInit {
 			this.type1 = 'button';
 			// this.showfilter = true;
 		}
+		if (this.path == 'emi-details') {
+			this.showInput = true;
+			this.value1 = 'Export';
+			this.type1 = 'button';
+			// this.showfilter = true;
+		}
 	}
 
 	action(event: Event) {
@@ -342,6 +344,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'deposit-details') {
 			this.depositDetailsService.exportExcel.next(true);
+		}
+		if (this.path == 'emi-details') {
+			this.emiDetailsService.exportExcel.next(true);
 		}
 	}
 
