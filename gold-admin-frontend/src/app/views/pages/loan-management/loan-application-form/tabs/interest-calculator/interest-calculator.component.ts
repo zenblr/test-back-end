@@ -1,14 +1,18 @@
-import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, OnChanges, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PartnerService } from '../../../../../../core/user-management/partner/services/partner.service';
 import { map } from 'rxjs/operators';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'kt-interest-calculator',
   templateUrl: './interest-calculator.component.html',
-  styleUrls: ['./interest-calculator.component.scss']
+  styleUrls: ['./interest-calculator.component.scss'],
+  providers: [DatePipe]
 })
 export class InterestCalculatorComponent implements OnInit {
+
+  @Input() details;
   @Input() disable
   currentDate = new Date()
   colJoin: any;
@@ -26,13 +30,16 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() totalAmt
   @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() nextEmit: EventEmitter<any> = new EventEmitter<any>();
+  @Input() action;
 
   @ViewChild('print', { static: false }) print: ElementRef
 
   constructor(
     private fb: FormBuilder,
     private partnerService: PartnerService,
-    public eleRef: ElementRef
+    public eleRef: ElementRef,
+    public datePipe: DatePipe,
+    public ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -40,7 +47,18 @@ export class InterestCalculatorComponent implements OnInit {
     this.partner()
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.details) {
+      if (changes.action.currentValue == 'edit') {
+        this.finalInterestForm.patchValue(changes.details.currentValue.finalLoan)
+        this.finalInterestForm.controls.loanStartDate.patchValue(new Date(changes.details.currentValue.finalLoan.loanStartDate))
+        this.getSchemes()
+        this.finalInterestForm.controls.partnerId.patchValue(changes.details.currentValue.finalLoan.partnerId)
+        this.scheme()
+        this.calcInterestAmount()
+        this.ref.markForCheck()
+      }
+    }
     if (this.disable) {
       this.finalInterestForm.disable()
     }
@@ -53,15 +71,15 @@ export class InterestCalculatorComponent implements OnInit {
     this.partnerService.getAllPartnerWithoutPagination().pipe(
       map(res => {
         this.partnerList = res.data;
-        console.log(this.partnerList)
       })).subscribe()
   }
 
   getSchemes() {
+    this.schemesList = []
+    this.controls.schemeId.patchValue('')
     this.partnerService.getSchemesByParnter(Number(this.controls.partnerId.value)).pipe(
       map(res => {
         this.schemesList = res.data.schemes;
-        console.log(this.schemesList)
       })).subscribe()
   }
 
@@ -92,7 +110,7 @@ export class InterestCalculatorComponent implements OnInit {
     this.dateOfPayment = []
     if (this.controls.loanStartDate.valid && this.controls.tenure.valid) {
       let startDate = this.controls.loanStartDate.value;
-      let date = new Date()
+      let date = new Date(startDate)
       this.controls.loanEndDate.patchValue(new Date(date.setMonth(startDate.getMonth() + Number(this.controls.tenure.value))))
     } else {
       this.controls.loanStartDate.markAsTouched()
@@ -105,6 +123,7 @@ export class InterestCalculatorComponent implements OnInit {
     })
   }
   amountValidation() {
+    this.scheme()
     this.dateOfPayment = []
     if (this.controls.partnerId.valid) {
       let amt = this.controls.finalLoanAmount.value;
@@ -177,8 +196,8 @@ export class InterestCalculatorComponent implements OnInit {
     let length = Number(this.controls.tenure.value)
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
-      let date = new Date(startDate.toLocaleDateString())
-      this.dateOfPayment.push((new Date(date.setMonth(date.getMonth() + index))).toLocaleDateString())
+      let date = new Date(startDate)
+      this.dateOfPayment.push((new Date(date.setMonth(date.getMonth() + index))))
     }
   }
 

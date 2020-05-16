@@ -67,6 +67,8 @@ import { UserClassificationComponent } from './components/user-classification/us
 import { UplodPreviewImageComponent } from './components/uplod-preview-image/uplod-preview-image.component';
 import { SelectWithSearchComponent } from './components/select-with-search/select-with-search.component';
 
+import { NgSelectModule } from '@ng-select/ng-select';
+
 @NgModule({
 	declarations: [
 		ScrollTopComponent,
@@ -198,6 +200,7 @@ import { SelectWithSearchComponent } from './components/select-with-search/selec
 		NgbTabsetModule,
 		NgbTooltipModule,
 		NgbModule,
+		NgSelectModule
 
 		// spinner
 	],

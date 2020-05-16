@@ -313,7 +313,7 @@ export class MenuConfig {
 				{
 					title: 'Product',
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
+					icon: 'flaticon2-open-box',
 					submenu: [
 						{
 							title: 'Show Product',
@@ -349,13 +349,13 @@ export class MenuConfig {
 				{
 					title: 'Bulk Upload Report',
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
+					icon: 'flaticon2-download-2',
 					page: '/emi-management/bulk-upload-report',
 				},
 				{
 					title: 'Config Details',
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
+					icon: 'flaticon2-console',
 					submenu: [
 						{
 							title: 'Wallet Price',

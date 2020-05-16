@@ -15,31 +15,31 @@ export class SubCategoryService {
 
 	getAllSubCategories(from?, to?, search?): Observable<any> {
 		return this.http
-			.get<any>(`/api/sub-category?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
+			.get<any>(`http://173.249.49.7:9120/api/sub-category?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
 			.pipe(map(response => response.body));
 	}
 
 	addSubCategory(data): Observable<any> {
-		return this.http.post<any>(`/api/sub-category`, data);
+		return this.http.post<any>(`http://173.249.49.7:9120/api/sub-category`, data);
 	}
 
 	editSubCategory(id, data): Observable<any> {
-		return this.http.put<any>(`/api/sub-category/` + id, data);
+		return this.http.put<any>(`http://173.249.49.7:9120/api/sub-category/` + id, data);
 	}
 
 	deleteSubCategory(id): Observable<any> {
-		return this.http.delete<any>(`/api/sub-category/` + id)
+		return this.http.delete<any>(`http://173.249.49.7:9120/api/sub-category/` + id)
 	}
 
 	getSingleSubCategory(id): Observable<any> {
-		return this.http.get<any>(`/api/sub-category/` + id);
+		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category/` + id);
 	}
 
 	getAllCategory(): Observable<any> {
-		return this.http.get<any>(`/api/category/all-category`);
+		return this.http.get<any>(`http://173.249.49.7:9120/api/category/all-category`);
 	}
 
 	getAllSubCategory(): Observable<any> {
-		return this.http.get<any>(`/api/sub-category`);
+		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category`);
 	}
 }

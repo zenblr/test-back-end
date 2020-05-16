@@ -59,6 +59,9 @@ export class AssignPacketsComponent implements OnInit {
       return
     }
     // console.log(this.packetForm.value);
+    const packetId = this.packetForm.get('packetId').value;
+    // console.log(packetId.toLowerCase());
+    this.packetForm.controls.packetId.patchValue(packetId.toLowerCase());
     const partnerData = this.packetForm.value;
     const id = this.controls.id.value;
 

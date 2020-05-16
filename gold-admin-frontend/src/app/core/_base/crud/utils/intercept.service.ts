@@ -48,7 +48,7 @@ export class InterceptService implements HttpInterceptor {
 						// console.log('all looks good');
 						// http response status code
 						// console.log(event.body.count);
-						if (event.body.count) {
+						if (event.body.count != undefined) {
 							this.sharedSerivce.totalCount.next(event.body.count)
 						} else {
 							this.sharedSerivce.totalCount.next(null)
@@ -70,8 +70,8 @@ export class InterceptService implements HttpInterceptor {
 				err => {
 					// console.log(err.status)
 					if (err.status == 401) {
-						// localStorage.clear();
-						// this.router.navigate(['/auth/login'])
+						localStorage.clear();
+						this.router.navigate(['/auth/login'])
 					}
 					throw err
 				}

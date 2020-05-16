@@ -21,6 +21,7 @@ import { RoleAddDialogComponent } from './roles/role-add/role-add.dialog.compone
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
 
+import { NgSelectModule } from '@ng-select/ng-select';
 
 // Module
 import { CoreModule } from "../../../core/core.module";
@@ -125,6 +126,7 @@ const routes: Routes = [
 		AngularMaterialModule,
 		CoreModule,
 		NgbModule,
+		NgSelectModule
 	],
 	providers: [
 		InterceptService,
