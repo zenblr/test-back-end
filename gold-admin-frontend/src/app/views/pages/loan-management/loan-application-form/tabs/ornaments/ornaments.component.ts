@@ -172,7 +172,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       stoneTouch: [, Validators.required],
       acidTest: [, Validators.required],
       karat: [, Validators.required],
-      purity: [, [Validators.required]],
+      purity: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ltvRange: [[]],
       currentNetWeight: [],
       purityTest: [[], Validators.required],

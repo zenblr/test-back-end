@@ -47,7 +47,8 @@
                     <div class="col-7">
                         <input type="text" class="form-control" formControlName="loanStartDate"
                             [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
-                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()" readonly value="{{controls.loanStartDate.value |  date:'mediumDate'}}">
+                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()" readonly 
+                            value="{{controls.loanStartDate.value |  date:'mediumDate'}}">
                     </div>
                 </div>
             </div>
