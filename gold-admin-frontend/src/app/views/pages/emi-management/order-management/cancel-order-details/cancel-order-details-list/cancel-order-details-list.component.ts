@@ -1,30 +1,29 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LayoutUtilsService, QueryParamsModel } from '../../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
-import { OrderDetailsDatasource, OrderDetailsService, OrderDetailsModel } from '../../../../../../core/emi-management/order-management';
+import { CancelOrderDetailsDatasource, CancelOrderDetailsService, CancelOrderDetailsModel } from '../../../../../../core/emi-management/order-management';
 import { Subscription, merge, fromEvent, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
-import { OrderDetailsViewComponent } from '../order-details-view/order-details-view.component';
 
 @Component({
-  selector: 'kt-order-details-list',
-  templateUrl: './order-details-list.component.html',
-  styleUrls: ['./order-details-list.component.scss']
+  selector: 'kt-cancel-order-details-list',
+  templateUrl: './cancel-order-details-list.component.html',
+  styleUrls: ['./cancel-order-details-list.component.scss']
 })
-export class OrderDetailsListComponent implements OnInit {
+export class CancelOrderDetailsListComponent implements OnInit {
   // Table fields
-  dataSource: OrderDetailsDatasource;
+  dataSource: CancelOrderDetailsDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ['storeId', 'centerCity', 'shippingAddress', 'memberId', 'mobileNumber', 'orderId',
-    'productName', 'weight', 'orderTotalAmount', 'orderInitialAmount', 'orderDate', 'emiTenure', 'orderQty',
-    'invoiceNo', 'orderStatus', 'orderFrom', 'action'];
+  displayedColumns = ['storeId', 'userId', 'mobileNumber', 'orderId', 'overdueDate', 'totalPrice',
+    'cancellationCharges', 'differenceAmount', 'emiAmount', 'tenure', 'lastEmiNumber', 'cancellationDate',
+    'cancelOrderFrom', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  bulkUploadReportResult: OrderDetailsModel[] = [];
+  bulkUploadReportResult: CancelOrderDetailsModel[] = [];
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private destroy$ = new Subject();
@@ -35,7 +34,7 @@ export class OrderDetailsListComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private orderDetailsService: OrderDetailsService,
+    private cancelOrderDetailsService: CancelOrderDetailsService,
     private dataTableService: DataTableService
   ) { }
 
@@ -50,7 +49,7 @@ export class OrderDetailsListComponent implements OnInit {
 		**/
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {
-        this.loadOrderDetailsPage();
+        this.loadCancelOrderDetailsPage();
       })
     )
       .subscribe();
@@ -63,7 +62,7 @@ export class OrderDetailsListComponent implements OnInit {
     //   distinctUntilChanged(), // This operator will eliminate duplicate values
     //   tap(() => {
     //     this.paginator.pageIndex = 0;
-    //     this.loadOrderDetailsPage();
+    //     this.loadCancelOrderDetailsPage();
     //   })
     // )
     //   .subscribe();
@@ -73,11 +72,11 @@ export class OrderDetailsListComponent implements OnInit {
       .subscribe(res => {
         this.searchValue = res;
         this.paginator.pageIndex = 0;
-        this.loadOrderDetailsPage();
+        this.loadCancelOrderDetailsPage();
       });
 
     // Init DataSource
-    this.dataSource = new OrderDetailsDatasource(this.orderDetailsService);
+    this.dataSource = new CancelOrderDetailsDatasource(this.cancelOrderDetailsService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -85,16 +84,16 @@ export class OrderDetailsListComponent implements OnInit {
       this.bulkUploadReportResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadOrderDetails(1, 25, this.searchValue);
+    this.dataSource.loadCancelOrderDetails(1, 25, this.searchValue);
   }
 
-  loadOrderDetailsPage() {
+  loadCancelOrderDetailsPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadOrderDetails(from, to, this.searchValue);
+    this.dataSource.loadCancelOrderDetails(from, to, this.searchValue);
   }
 
 	/**
@@ -107,24 +106,11 @@ export class OrderDetailsListComponent implements OnInit {
     return filter;
   }
 
-  viewOrder(order) {
-    const dialogRef = this.dialog.open(OrderDetailsViewComponent,
-      {
-        data: { orderId: order.id, action: 'view' },
-        width: '70vw'
-      });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        console.log(res);
-      }
-    });
-  }
+  printCancellationReceipt(order) { }
 
-  editOrder() { }
-
-  /**
- * On Destroy
- */
+	/**
+	 * On Destroy
+	 */
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.destroy$.next();

@@ -84,8 +84,8 @@ export class MenuConfig {
 
 								},
 								{
-									title:'Karat details',
-									page:'/loan-setting/karat-details'
+									title: 'Karat details',
+									page: '/loan-setting/karat-details'
 								}
 							]
 						},
@@ -342,9 +342,9 @@ export class MenuConfig {
 					]
 				},
 				{
-					title:'Logistic Partner',
+					title: 'Logistic Partner',
 					icon: 'flaticon2-architecture-and-city',
-					page:'/emi-management/logistic-partner',
+					page: '/emi-management/logistic-partner',
 				},
 				{
 					title: 'Bulk Upload Report',
@@ -375,6 +375,14 @@ export class MenuConfig {
 						{
 							title: 'Order Details',
 							page: '/emi-management/order-details',
+						},
+						{
+							title: 'Cancel Order Details',
+							page: '/emi-management/cancel-order-details',
+						},
+						{
+							title: 'Deposit Details',
+							page: '/emi-management/deposit-details',
 						}
 					]
 				},

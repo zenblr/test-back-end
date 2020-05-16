@@ -108,6 +108,12 @@ export class PageConfig {
 			'order-details': {
 				page: { title: 'Order Details', desc: '' }
 			},
+			'cancel-order-details': {
+				page: { title: 'Cancel Order Details', desc: '' }
+			},
+			'deposit-details': {
+				page: { title: 'Deposit Details', desc: '' }
+			},
 		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }

@@ -48,101 +48,78 @@
                 <ng-container matColumnDef="storeId">
                     <mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['orderBy.broker.store.storeUniqueId'] ? element['orderBy.broker.store.storeUniqueId'] : '-'}}
+                        {{element?.order?.orderBy?.broker?.store?.storeUniqueId ? element?.order?.orderBy?.broker?.store?.storeUniqueId : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="centerCity">
-                    <mat-header-cell *matHeaderCellDef>Center City</mat-header-cell>
+                <ng-container matColumnDef="userId">
+                    <mat-header-cell *matHeaderCellDef>User ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['customerDetails.customeraddress.city.name'] ? element['customerDetails.customeraddress.city.name'] : '-'}}
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="shippingAddress">
-                    <mat-header-cell *matHeaderCellDef>Shipping Address</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        {{element['customerDetails.customeraddress.address'] ? element['customerDetails.customeraddress.address'] : '-'}}
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="memberId">
-                    <mat-header-cell *matHeaderCellDef>Member ID</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        {{element['customerDetails.customerUniqueId'] ? element['customerDetails.customerUniqueId'] : '-'}}
-                    </mat-cell>
+                        {{element?.order?.customerDetails?.id ? element?.order?.customerDetails?.id : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['customerDetails.mobileNumber'] ? element['customerDetails.mobileNumber'] : '-'}}
+                        {{element?.order?.customerDetails?.mobileNumber ? element?.order?.customerDetails?.mobileNumber : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderId">
                     <mat-header-cell *matHeaderCellDef>Order ID</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['orderUniqueId'] ? element['orderUniqueId'] : '-'}}
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="productName">
-                    <mat-header-cell *matHeaderCellDef>Product Name</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['product.productName'] ? element['product.productName'] : '-'}}
-                    </mat-cell>
+                        {{element?.order?.orderUniqueId ? element?.order?.orderUniqueId : '-'}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="weight">
-                    <mat-header-cell *matHeaderCellDef>Weight</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['product.weight'] ? element['product.weight'] : '-'}}
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="orderTotalAmount">
-                    <mat-header-cell *matHeaderCellDef>Order Total Amount</mat-header-cell>
+                <ng-container matColumnDef="overdueDate">
+                    <mat-header-cell *matHeaderCellDef>Overdue Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['orderdetails.finalOrderPrice'] ? element['orderdetails.finalOrderPrice'] : '-'}}
-                    </mat-cell>
+                        {{element?.overDueDate ? (element?.overDueDate | date:'medium') : '-'}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="orderInitialAmount">
-                    <mat-header-cell *matHeaderCellDef>Order Initial Amount</mat-header-cell>
+                <ng-container matColumnDef="totalPrice">
+                    <mat-header-cell *matHeaderCellDef>Total Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.totalPrice ? element?.totalPrice : '-'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="cancellationCharges">
+                    <mat-header-cell *matHeaderCellDef>Cancellation Charges</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['orderdetails.initialPayment'] ? element['orderdetails.initialPayment'] : '-'}}
+                        {{element?.cancellationCharges ? element?.cancellationCharges : '-'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="differenceAmount">
+                    <mat-header-cell *matHeaderCellDef>Difference Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.diffrenceAmount ? element?.diffrenceAmount : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="orderDate">
-                    <mat-header-cell *matHeaderCellDef>Order Date</mat-header-cell>
+                <ng-container matColumnDef="emiAmount">
+                    <mat-header-cell *matHeaderCellDef>EMI Amount</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['createdAt'] ? (element['createdAt'] | date:'MMM d, y, h:mm:ss a') : '-'}}
+                        {{element?.order?.orderdetails[0]?.emiAmount ? element?.order?.orderdetails[0]?.emiAmount : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="emiTenure">
-                    <mat-header-cell *matHeaderCellDef>EMI Tenure</mat-header-cell>
+                <ng-container matColumnDef="tenure">
+                    <mat-header-cell *matHeaderCellDef>Tenure(months)</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['paymentType.paymentType'] ? element['paymentType.paymentType'] : '-'}}
+                        {{element?.order?.paymentType?.paymentType ? element?.order?.paymentType?.paymentType : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="orderQty">
-                    <mat-header-cell *matHeaderCellDef>Order Qty</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['quantity'] ? element['quantity'] : '-'}}
+                <ng-container matColumnDef="lastEmiNumber">
+                    <mat-header-cell *matHeaderCellDef>Last EMI No</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.lastEmiNumber ? element?.lastEmiNumber : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="invoiceNo">
-                    <mat-header-cell *matHeaderCellDef>Invoice No</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['invoiceNumber'] ? element['invoiceNumber'] : '-'}}
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="orderStatus">
-                    <mat-header-cell *matHeaderCellDef>Order Status</mat-header-cell>
+                <ng-container matColumnDef="cancellationDate">
+                    <mat-header-cell *matHeaderCellDef>Cancellation Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['orderCurrentStatus.statusName'] ? element['orderCurrentStatus.statusName'] : '-'}}
-                    </mat-cell>
+                        {{element?.cancelDate ? (element?.cancelDate | date:'medium') : '-'}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="orderFrom">
-                    <mat-header-cell *matHeaderCellDef>Order From</mat-header-cell>
+                <ng-container matColumnDef="cancelOrderFrom">
+                    <mat-header-cell *matHeaderCellDef>Cancel Order From</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['orderBy.broker.merchant.merchantName'] ? element['orderBy.broker.merchant.merchantName'] : '-'}}
+                        {{element?.order?.orderBy?.broker?.merchant?.merchantName ? element?.order?.orderBy?.broker?.merchant?.merchantName : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="viewOrder(element)" class="kt-pointer"> View | &nbsp;</div>
-                            <div (click)="editOrder(element)" class="kt-pointer"> Edit</div>
+                            <div (click)="printCancellationReceipt(element)" class="kt-pointer">Print Cancellation
+                                Receipt</div>
                         </div>
                     </mat-cell>
                 </ng-container>

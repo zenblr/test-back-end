@@ -40,6 +40,8 @@ import { AddLogisticPartnerComponent } from './logisticPartner/add-logistic-part
 import { ListLogisticPartnerComponent } from './logisticPartner/list-logistic-partner/list-logistic-partner.component';
 import { OrderDetailsListComponent } from './order-management/order-details/order-details-list/order-details-list.component';
 import { OrderDetailsViewComponent } from './order-management/order-details/order-details-view/order-details-view.component';
+import { CancelOrderDetailsListComponent } from './order-management/cancel-order-details/cancel-order-details-list/cancel-order-details-list.component';
+import { DepositDetailsListComponent } from './order-management/deposit-details/deposit-details-list/deposit-details-list.component';
 
 const routes: Routes = [
 	{
@@ -92,6 +94,14 @@ const routes: Routes = [
 			{
 				path: 'order-details',
 				component: OrderDetailsListComponent
+			},
+			{
+				path: 'cancel-order-details',
+				component: CancelOrderDetailsListComponent
+			},
+			{
+				path: 'deposit-details',
+				component: DepositDetailsListComponent
 			}
 		]
 	}
@@ -163,6 +173,8 @@ const routes: Routes = [
 		ListLogisticPartnerComponent,
 		OrderDetailsListComponent,
 		OrderDetailsViewComponent,
+		CancelOrderDetailsListComponent,
+		DepositDetailsListComponent
 	]
 })
 export class EMIManagementModule { }
