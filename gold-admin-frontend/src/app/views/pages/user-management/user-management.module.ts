@@ -13,7 +13,7 @@ import { PartialsModule } from '../../partials/partials.module';
 // Services
 import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsService } from '../../../core/_base/crud';
 // Shared
-import { ActionNotificationComponent } from '../../partials/content/crud';
+import { ActionNotificationComponent, DeleteEntityDialogComponent } from '../../partials/content/crud';
 // Components
 import { RolesListComponent } from './roles/roles-list/roles-list.component';
 import { RoleAddDialogComponent } from './roles/role-add/role-add.dialog.component';
@@ -151,7 +151,8 @@ const routes: Routes = [
 		ViewMerchantComponent,
 		ApiKeyComponent,
 		AddInternalUserBranchComponent,
-		CreateStoreComponent
+		CreateStoreComponent,
+		DeleteEntityDialogComponent
 	],
 	declarations: [
 		RolesListComponent,

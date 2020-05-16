@@ -12,14 +12,14 @@
 
         <mat-tab-group #tabGroup>
             <mat-tab label="By Filling From">
-                <form [formGroup]="billingForm">
+                <form [formGroup]="fillingForm">
                     <div class="row kt-margin-b-15">
                         <div class="col-3">
                             <p class="text-color font-weight-bold mandatory"> Scheme Name</p>
                         </div>
                         <div class="col-9">
                             <input type="test" class="form-control" formControlName="schemeName"
-                                [class.isError]="billingForm.get('schemeName').touched && billingForm.get('schemeName').invalid"
+                                [class.isError]="fillingForm.get('schemeName').touched && fillingForm.get('schemeName').invalid"
                                 placeholder="Express Gold Loan">
                         </div>
                     </div>
@@ -32,13 +32,16 @@
                             <div class="row">
                                 <div class="col-6 amount">
                                     <input type="number" class="form-control" formControlName="schemeAmountStart"
-                                        [class.isError]="billingForm.get('schemeAmountStart').touched && billingForm.get('schemeAmountStart').invalid"
-                                        placeholder="From e.g. 1 or 1.5">
+                                        [class.isError]="fillingForm.get('schemeAmountStart').touched && fillingForm.get('schemeAmountStart').invalid"
+                                        placeholder="From e.g. 1 or 1.5" (blur)="fromAndToValidation()">
+                                        <mat-error *ngIf="fillingForm.get('schemeAmountStart').errors?.amt">
+                                            <small>From Should be less than To Amt</small>
+                                        </mat-error>
                                 </div>
                                 <div class="col-6 amount">
                                     <input type="number" class="form-control" formControlName="schemeAmountEnd"
-                                        [class.isError]="billingForm.get('schemeAmountEnd').touched && billingForm.get('schemeAmountEnd').invalid"
-                                        placeholder="To e.g. 2">
+                                        [class.isError]="fillingForm.get('schemeAmountEnd').touched && fillingForm.get('schemeAmountEnd').invalid"
+                                        placeholder="To e.g. 2" (blur)="fromAndToValidation()">
                                 </div>
                             </div>
                         </div>
@@ -63,16 +66,16 @@
                         </div>
                         <div class="col-3">
                             <input type="number" class="form-control" formControlName="interestRateThirtyDaysMonthly"
-                                [class.isError]="billingForm.get('interestRateThirtyDaysMonthly').touched && billingForm.get('interestRateThirtyDaysMonthly').invalid">
+                                [class.isError]="fillingForm.get('interestRateThirtyDaysMonthly').touched && fillingForm.get('interestRateThirtyDaysMonthly').invalid">
                         </div>
                         <div class="col-3">
                             <input type="number" class="form-control" formControlName="interestRateNinetyDaysMonthly"
-                                [class.isError]="billingForm.get('interestRateNinetyDaysMonthly').touched && billingForm.get('interestRateNinetyDaysMonthly').invalid">
+                                [class.isError]="fillingForm.get('interestRateNinetyDaysMonthly').touched && fillingForm.get('interestRateNinetyDaysMonthly').invalid">
                         </div>
                         <div class="col-3">
                             <input type="number" class="form-control"
                                 formControlName="interestRateOneHundredEightyDaysMonthly"
-                                [class.isError]="billingForm.get('interestRateOneHundredEightyDaysMonthly').touched && billingForm.get('interestRateOneHundredEightyDaysMonthly').invalid">
+                                [class.isError]="fillingForm.get('interestRateOneHundredEightyDaysMonthly').touched && fillingForm.get('interestRateOneHundredEightyDaysMonthly').invalid">
                         </div>
                     </div>
                     <!-- <div class="row kt-padding-t-15">
@@ -95,16 +98,16 @@
                         </div>
                         <div class="col-3">
                             <input type="number" class="form-control" formControlName="interestRateThirtyDaysAnnually"
-                                [class.isError]="billingForm.get('interestRateThirtyDaysAnnually').touched && billingForm.get('interestRateThirtyDaysAnnually').invalid">
+                                [class.isError]="fillingForm.get('interestRateThirtyDaysAnnually').touched && fillingForm.get('interestRateThirtyDaysAnnually').invalid">
                         </div>
                         <div class="col-3">
                             <input type="number" class="form-control" formControlName="interestRateNinetyDaysAnnually"
-                                [class.isError]="billingForm.get('interestRateNinetyDaysAnnually').touched && billingForm.get('interestRateNinetyDaysAnnually').invalid">
+                                [class.isError]="fillingForm.get('interestRateNinetyDaysAnnually').touched && fillingForm.get('interestRateNinetyDaysAnnually').invalid">
                         </div>
                         <div class="col-3">
                             <input type="number" class="form-control"
                                 formControlName="interestRateOneHundredEightyDaysAnnually"
-                                [class.isError]="billingForm.get('interestRateOneHundredEightyDaysAnnually').touched && billingForm.get('interestRateOneHundredEightyDaysAnnually').invalid">
+                                [class.isError]="fillingForm.get('interestRateOneHundredEightyDaysAnnually').touched && fillingForm.get('interestRateOneHundredEightyDaysAnnually').invalid">
                         </div>
                     </div> -->
                     <div class="row kt-margin-t-20">
@@ -113,7 +116,7 @@
                         </div>
                         <div class="col-9">
                             <select name="" id="" class="form-control" formControlName="partnerId"
-                                [class.isError]="billingForm.get('partnerId').touched && billingForm.get('partnerId').invalid">
+                                [class.isError]="fillingForm.get('partnerId').touched && fillingForm.get('partnerId').invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select Partner</option>
                                 <option [value]="partner.id" *ngFor="let partner of partnerData">
                                     {{partner.name | titlecase}}

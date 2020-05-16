@@ -68,8 +68,11 @@
                                     *ngIf="controls.mobileNumber.errors?.pattern && controls.mobileNumber.touched">
                                     Invalid Input
                                 </mat-error>
-                                <mat-error *ngIf="mobileAlreadyExists && controls.mobileNumber.touched">
-                                    Mobile number already exists!
+                                <mat-error
+                                    *ngIf="mobileAlreadyExists && controls.mobileNumber.touched && !controls.mobileNumber.errors?.required">
+                                    <small>
+                                        Mobile number already exists!
+                                    </small>
                                 </mat-error>
                                 <!-- </mat-form-field> -->
                             </div>
@@ -82,7 +85,7 @@
                                 </div>
                                 <div *ngIf="otpSent && !isMobileVerified">
                                     <kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
-                                        [value]="'Sent'" (action)="verifyOTP()">
+                                        [value]="'Sent'">
                                     </kt-button>
                                 </div>
                                 <div *ngIf="isMobileVerified">
@@ -107,7 +110,7 @@
                                         Input
                                     </mat-error>
                                     <mat-error
-                                        *ngIf="!isMobileVerified && controls.otp.touched && controls.otp.invalid">
+                                        *ngIf="controls.otp.touched && controls.otp.errors?.verifyOTP">
                                         Mobile number not verfied
                                     </mat-error>
                                     <mat-hint class="kt-pointer" (click)="resendOTP()">Didn't get an OTP?
@@ -172,7 +175,7 @@
                             <div class="col-8">
                                 <select class="form-control" formControlName="internalBranchId"
                                     [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
-                                    <option value="" [disabled]="true" [selected]="true" > Select Internal Branch
+                                    <option value="" [disabled]="true" [selected]="true"> Select Internal Branch
                                     </option>
                                     <option *ngFor="let branch of branches" [value]="branch.id">
                                         {{branch.name | titlecase}}

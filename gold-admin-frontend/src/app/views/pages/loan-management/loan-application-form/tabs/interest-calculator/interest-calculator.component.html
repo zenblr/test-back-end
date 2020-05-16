@@ -103,8 +103,12 @@
                         <mat-error *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
                             Invalid
                         </mat-error>
-                        <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">Enter Loan Amount as Per Scheme</mat-error>
-                        <mat-error *ngIf="controls.finalLoanAmount.errors?.eligibleAmt">Amount should be less then Eligible Amount</mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">
+                            <small>Enter Loan Amount as Per Scheme</small>
+                        </mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.eligibleAmt">
+                            <small>Amount should be less then Eligible Amount</small>
+                        </mat-error>
 
                     </div>
                 </div>

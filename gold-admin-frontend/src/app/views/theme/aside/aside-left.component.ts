@@ -97,7 +97,6 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			});
 
 		const config = this.layoutConfigService.getConfig();
-		console.log(config)
 		if (objectPath.get(config, 'aside.menu.dropdown')) {
 			this.render.setAttribute(this.asideMenu.nativeElement, 'data-ktmenu-dropdown', '1');
 			// tslint:disable-next-line:max-line-length

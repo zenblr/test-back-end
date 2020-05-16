@@ -32,17 +32,23 @@
         flex: 0 0 10% !important;
     }
     .mat-column-status{
-        flex: 0 0 10% !important;
+        flex: 0 0 12% !important;
 
     }
     .border-apply{
         border: 1px solid !important;
     }
     .mat-column-kyc{
-        flex: 0 0 12% !important;
+        flex: 0 0 9% !important;
     }
     .mat-column-actions{
-        flex: 0 0 7% !important;
+        flex: 0 0 6% !important;
 
     }
+    .apply-kyc {
+		background: transparent;
+		border: thin solid #454D67;
+		border-radius: 5px;
+		padding: 5px;
+	}
 }

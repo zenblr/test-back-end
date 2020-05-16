@@ -175,8 +175,18 @@ export class AddLeadComponent implements OnInit {
     this.customerManagementService.verifyOtp(params).subscribe(res => {
       if (res) {
         this.isMobileVerified = true;
+        this.checkforVerfication()
+
       }
     });
+  }
+
+  checkforVerfication() {
+    if (this.isMobileVerified) {
+      this.controls.otp.setErrors(null)
+    } else if (!this.isMobileVerified) {
+      this.controls.otp.setErrors({ verifyOTP: true })
+    }
   }
 
   verifyPAN() {
@@ -214,6 +224,7 @@ export class AddLeadComponent implements OnInit {
   onSubmit() {
     if (this.data.action == 'add') {
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
+        this.checkforVerfication()
         this.leadForm.markAllAsTouched();
         console.log(this.leadForm.value)
         return

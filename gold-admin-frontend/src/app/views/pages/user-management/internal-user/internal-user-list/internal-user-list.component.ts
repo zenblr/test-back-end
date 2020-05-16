@@ -16,6 +16,7 @@ import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud'
 import { InternalUserDatasource, InternalUserService } from '../../../../../core/user-management/internal-user';
 
 import { AddInternalUserComponent } from '../add-internal-user/add-internal-user.component'
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-internal-user-list',
@@ -45,7 +46,7 @@ export class InternalUserListComponent implements OnInit {
    * @param layoutUtilsService: LayoutUtilsService
    */
   constructor(
-    
+    public toast:ToastrService,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
@@ -124,12 +125,14 @@ export class InternalUserListComponent implements OnInit {
 
       this.internalUserService.deleteUser(user.id).pipe(
         map(res => {
+          this.toast.success(_deleteMessage)
           this.loadRolesList();
 
         }), catchError(err => {
+          this.toast.error("Something Went Wrong")
           throw err
         })
-      )
+      ).subscribe()
     });
   }
 

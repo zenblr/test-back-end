@@ -68,13 +68,13 @@ export class AddInternalUserComponent implements OnInit {
 
   initForm() {
     this.addUserForm = this.fb.group({
-      internalBranchId: [, Validators.required],
+      internalBranchId: ['', Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       userUniqueId: ['', Validators.required],
       email: ['', [Validators.email,Validators.required]],
       mobileNumber: ['', [Validators.required,Validators.minLength(10)]],
-      roleId: [, Validators.required],
+      roleId: ['', Validators.required],
     })
   }
 
