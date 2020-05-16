@@ -24,13 +24,31 @@
                                 <label class="mandatory kt-padding-l-10">Customer Id</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" name="" id="" formControlName="customerId"
-                                    [class.isError]="controls.customerId.touched && controls.customerId.invalid" *ngIf="data.action =='add'">
-                                    <option [selected]="true" [disabled]="true" value="">Select Customer</option>
-                                    <option *ngFor="let customer of customers" [value]="customer.id">{{customer .customerUniqueId}}</option>
-                                </select>
+
+                                <!-- <select class="form-control" name="" id="" formControlName="customerId"
+                                    [class.isError]="controls.customerId.touched && controls.customerId.invalid"
+                                    *ngIf="data.action =='add'">
+                                    <option [selected]="true" [disabled]="true" value="">Select Appraiser</option>
+                                    <option *ngFor="let customer of customers" [value]="customer.id">
+                                        {{customer .customerUniqueId}}</option>
+                                </select> -->
                                 <!-- <kt-select-with-search [options]="customer"></kt-select-with-search> -->
-                                        <input class="form-control" formControlName="customerUniqueId" autocomplete="off" *ngIf="data.action !='add'" readonly>
+                                <!-- <input class="form-control" formControlName="customerUniqueId" autocomplete="off"
+                                    *ngIf="data.action !='add'" readonly> -->
+                                <ng-select formControlName="customerId" #select [items]="customers"
+                                    bindLabel="customerUniqueId" bindValue="id"
+                                    [class.isError]="controls.customerId.touched && controls.customerId.invalid">
+                                    <!-- <ng-template ng-multi-label-tmp>
+                                                <span style="display:block" class="ng-placeholder">Select items</span>
+                                            </ng-template> -->
+                                    <!-- <ng-template ng-header-tmp>
+                                                <input style="width: 100%; line-height: 24px" type="text"
+                                                    (input)="select.filter($event.target.value)" />
+                                            </ng-template> -->
+                                </ng-select>
+                                <mat-error *ngIf="controls.customerId.touched && controls.customerId.errors?.required">
+                                    Required field
+                                </mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
@@ -42,8 +60,11 @@
                                 <select class="form-control" name="" id="" formControlName="appraiserId"
                                     [class.isError]="controls.appraiserId.touched && controls.appraiserId.invalid">
                                     <option [selected]="true" [disabled]="true" value="">Select Appraiser</option>
-                                    <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">{{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}</option>
+                                    <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
+                                        {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
+                                    </option>
                                 </select>
+
                                 <mat-error
                                     *ngIf="controls.appraiserId.touched && controls.appraiserId.errors?.required">
                                     Required field

@@ -56,7 +56,7 @@ export class AddAppraiserComponent implements OnInit {
 
   formInitialize() {
     this.appraiserForm = this.fb.group({
-      id:[null],
+      id: [null],
       customerUniqueId: [''],
       customerId: ['', [Validators.required]],
       appraiserId: ['', [Validators.required]],
@@ -69,7 +69,7 @@ export class AddAppraiserComponent implements OnInit {
     })
   }
 
-  getCustomer(){
+  getCustomer() {
     this.appraiserService.getCustomer().subscribe(res => {
       this.customers = res.data;
     })
@@ -97,8 +97,8 @@ export class AddAppraiserComponent implements OnInit {
     }
     // console.log(this.appraiserForm.value);
     const appraiserData = this.appraiserForm.value;
-    this.customers.filter(cust =>{
-      if(appraiserData.customerId == cust.id){
+    this.customers.filter(cust => {
+      if (appraiserData.customerId == cust.id) {
         appraiserData.customerUniqueId = cust.customerUniqueId
       }
     })

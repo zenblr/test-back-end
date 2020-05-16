@@ -24,6 +24,7 @@ import { AppliedLoanComponent } from './applied-loan/applied-loan.component';
 import { PacketsListComponent } from './packets/packets-list/packets-list.component';
 import { AssignPacketsComponent } from './packets/assign-packets/assign-packets.component';
 import { InterestCalculatorComponent } from './loan-application-form/tabs/interest-calculator/interest-calculator.component';
+import { DeleteEntityDialogComponent } from '../../partials/content/crud';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -68,7 +69,7 @@ const rout: Routes = [
     AppliedLoanComponent,
     PacketsListComponent,
     AssignPacketsComponent,
-    InterestCalculatorComponent
+    InterestCalculatorComponent,
   ],
   imports: [
     CommonModule,
@@ -92,8 +93,9 @@ const rout: Routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
-  entryComponents:[
-    AssignPacketsComponent
+  entryComponents: [
+    AssignPacketsComponent,
+    DeleteEntityDialogComponent
   ]
 })
 export class LoanManagementModule { }

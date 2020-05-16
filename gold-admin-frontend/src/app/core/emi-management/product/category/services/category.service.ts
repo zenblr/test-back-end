@@ -15,27 +15,27 @@ export class CategoryService {
 
 	getAllCategories(from?, to?, search?): Observable<any> {
 		return this.http
-			.get<any>(`/api/category?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
+			.get<any>(`http://173.249.49.7:9120/api/category?search=${search}&from=${from}&to=${to}`, { observe: 'response' })
 			.pipe(map(response => response.body));
 	}
 
 	addCategory(data): Observable<any> {
-		return this.http.post<any>(`/api/category`, data);
+		return this.http.post<any>(`http://173.249.49.7:9120/api/category`, data);
 	}
 
 	editCategory(id, data): Observable<any> {
-		return this.http.patch<any>(`/api/category/` + id, data);
+		return this.http.patch<any>(`http://173.249.49.7:9120/api/category/` + id, data);
 	}
 
 	deleteCategory(id): Observable<any> {
-		return this.http.delete<any>(`/api/category/` + id);
+		return this.http.delete<any>(`http://173.249.49.7:9120/api/category/` + id);
 	}
 
 	getMetalType(): Observable<any> {
-		return this.http.get<any>(`/api/metal-type`);
+		return this.http.get<any>(`http://173.249.49.7:9120/api/metal-type`);
 	}
 
 	getSingleCategory(id): Observable<any> {
-		return this.http.get<any>(`/api/category/` + id);
+		return this.http.get<any>(`http://173.249.49.7:9120/api/category/` + id);
 	}
 }

@@ -55,7 +55,10 @@ import * as json from 'highlight.js/lib/languages/json';
 // Toastr Service
 import { ToastrModule } from 'ngx-toastr';
 
-import { NgHttpLoaderModule } from 'ng-http-loader'; 
+import { NgHttpLoaderModule } from 'ng-http-loader';
+
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // tslint:disable-next-line:class-name
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -102,7 +105,10 @@ export function hljsLanguages(): HighlightLanguage[] {
 		ToastrModule.forRoot({
 			timeOut: 3500,
 		}),
-		NgHttpLoaderModule.forRoot()
+		NgHttpLoaderModule.forRoot(),
+		NgSelectModule,
+		FormsModule,
+		ReactiveFormsModule
 	],
 	exports: [],
 	providers: [

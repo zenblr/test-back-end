@@ -43,7 +43,16 @@ export class SharedService {
     console.log(this.role);
     // }
   }
-  fileUpload(data) {
-    return this.http.post<any>(`/api/file-upload`, data);
+
+  fileUpload(data): Observable<any> {
+    return this.http.post<any>(`http://173.249.49.7:9120/api/file-upload`, data);
+  }
+
+  getAllCategory(): Observable<any> {
+    return this.http.get<any>(`http://173.249.49.7:9120/api/category/all-category`);
+  }
+
+  getAllSubCategory(): Observable<any> {
+    return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category`);
   }
 }

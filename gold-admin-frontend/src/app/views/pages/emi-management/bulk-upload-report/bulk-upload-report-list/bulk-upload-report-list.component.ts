@@ -115,9 +115,9 @@ export class BulkUploadReportListComponent implements OnInit {
     return filter;
   }
 
-  downloadFile(report) {
-    window.open(report.URL, '_blank');
-  }
+  // downloadFile(report) {
+  //   window.open(report.URL, '_blank');
+  // }
 
   downloadReport(report) {
     this.bulkUploadReportService.reportExport(report).subscribe();

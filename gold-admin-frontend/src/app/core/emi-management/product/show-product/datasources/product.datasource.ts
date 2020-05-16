@@ -18,10 +18,10 @@ export class ProductDatasource extends BaseDataSource {
         super();
     }
 
-    loadProducts(from, to, search, fromDate, toDate, userId) {
+    loadProducts(data) {
         this.loadingSubject.next(true);
 
-        this.productService.getAllProducts(from, to, search, fromDate, toDate, userId)
+        this.productService.getAllProducts(data)
             .pipe(
                 map(
                     data => {
