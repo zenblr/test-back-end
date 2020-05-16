@@ -262,18 +262,17 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
     let updateLoanApplication = await sequelize.transaction(async t => {
 
         // customerLoan
-        await models.customerLoan.create({
+        await models.customerLoan.update({
             applicationFormForAppraiser,
             goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, modifiedBy
         }, { where: { id: loanId }, transaction: t })
-
         //customerLoanNominee
         await models.customerLoanNomineeDetail.update({
             nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, modifiedBy
         }, { where: { loanId }, transaction: t });
 
         //customerFinalLoan
-        await models.customerFinalLoan.create({
+        await models.customerFinalLoan.update({
             partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate, modifiedBy
         }, { where: { loanId }, transaction: t })
 
@@ -281,12 +280,15 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
         let allOrnmanets = []
         for (let i = 0; i < loanOrnmanets.length; i++) {
             loanOrnmanets[i]['modifiedBy'] = modifiedBy
+            loanOrnmanets[i]['loanId']= loanId
             allOrnmanets.push(loanOrnmanets[i])
         }
+        console.log(allOrnmanets)
 
-        await models.customerLoanOrnamentsDetail.bulkCreate(ornamentData, {
-            updateOnDuplicate: ["ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "currentLtvAmount"]
+        let d = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, {
+            updateOnDuplicate: ["loanId", "ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "currentLtvAmount"]
         }, { transaction: t })
+
     })
     return res.status(200).json({ message: 'success' });
 
