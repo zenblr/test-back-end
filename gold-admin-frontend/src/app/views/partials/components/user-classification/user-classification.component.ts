@@ -67,7 +67,6 @@ export class UserClassificationComponent implements OnInit {
     var token = localStorage.getItem('accessToken');
     var decodedValue = JSON.parse(atob(token.split('.')[1]));
     this.role = decodedValue.roleName[0]
-    console.log(this.role);
   }
 
   ngOnInit() {
@@ -87,7 +86,6 @@ export class UserClassificationComponent implements OnInit {
     const editable = this.appliedKycService.editKyc.getValue()
     if (editable.editable) {
       this.editRating = true;
-      console.log(this.customerDetails.KycClassification)
       this.custClassificationForm.patchValue(this.customerDetails)
       // console.log(this.custClassificationForm.value)
       // this.custClassificationForm.patchValue({

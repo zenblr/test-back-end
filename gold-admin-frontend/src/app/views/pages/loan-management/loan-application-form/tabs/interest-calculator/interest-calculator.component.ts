@@ -33,6 +33,7 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() action;
 
   @ViewChild('print', { static: false }) print: ElementRef
+  editedDate: any;
 
   constructor(
     private fb: FormBuilder,
@@ -51,9 +52,12 @@ export class InterestCalculatorComponent implements OnInit {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.finalInterestForm.patchValue(changes.details.currentValue.finalLoan)
-        this.finalInterestForm.controls.loanStartDate.patchValue(new Date(changes.details.currentValue.finalLoan.loanStartDate))
+        // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(changes.details.currentValue.finalLoan.loanStartDate))
+        this.editedDate = changes.details.currentValue.finalLoan.loanStartDate;
+        this.currentDate = new Date(changes.details.currentValue.finalLoan.loanStartDate)
+        this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
         this.getSchemes()
-        this.finalInterestForm.controls.partnerId.patchValue(changes.details.currentValue.finalLoan.partnerId)
+        this.finalInterestForm.controls.schemeId.patchValue(changes.details.currentValue.finalLoan.schemeId)
         this.scheme()
         this.calcInterestAmount()
         this.ref.markForCheck()
