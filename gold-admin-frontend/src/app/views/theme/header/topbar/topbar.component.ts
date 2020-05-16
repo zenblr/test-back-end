@@ -54,6 +54,7 @@ export class TopbarComponent implements OnInit {
 	path: string;
 	filterName = '';
 	listType = '';
+	filterWidth = '';
 
 	constructor(
 		public sharedService: SharedService,
@@ -153,7 +154,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'lead-management') {
 			this.dataSourceHeader()
 			this.value1 = 'Add New Lead';
-
+			this.showfilter = false;
+			this.filterName = 'leads';
+			this.filterWidth = '900px';
 		}
 		if (this.path == 'partner') {
 			this.dataSourceHeader()
@@ -209,6 +212,7 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.filterName = 'product';
 			this.listType = 'category,sub-category';
+			this.filterWidth = '500px';
 		}
 		if (this.path == 'category') {
 			this.rightButton = true

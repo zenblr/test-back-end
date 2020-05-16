@@ -32,6 +32,8 @@ export class FilterComponent implements OnInit, OnChanges {
   @Input() tabIndex: number;
   @Input() SortList = [];
   @Input() clear: boolean;
+  @Input() filterWidth: string;
+
   dummyCustomerArray: any = [];
   teamFilter: any = [];
   // teamList = [];
@@ -87,6 +89,7 @@ export class FilterComponent implements OnInit, OnChanges {
 
   public customerMultiFilterCtrl: FormControl = new FormControl();
   public filteredCustomerMulti: ReplaySubject<[]> = new ReplaySubject<[]>(1);
+  states = [];
 
   constructor(
     private fb: FormBuilder,
@@ -124,6 +127,10 @@ export class FilterComponent implements OnInit, OnChanges {
       .subscribe(() => {
         this.filterCustomerMulti();
       });
+
+    if (this.filterName == 'leads') {
+      this.getStates();
+    }
   }
 
   ngOnChanges(change: SimpleChanges) {
@@ -565,6 +572,19 @@ export class FilterComponent implements OnInit, OnChanges {
   getSubCategory() {
     this.sharedService.getAllSubCategory().subscribe(res => this.subCategoryList = res.data);
   }
+
+  getStates() {
+    this.sharedService.getStates().subscribe(res => {
+      this.states = res.message;
+    });
+  }
+
+  // getCities() {
+  //   const stateId = this.controls.stateId.value;
+  //   this.sharedService.getCities(stateId).subscribe(res => {
+  //     this.cities = res.message;
+  //   });
+  // }
 
   ngOnDestroy() {
     this.subscriptions.forEach(s => s.unsubscribe());

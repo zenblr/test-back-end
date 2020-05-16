@@ -5,6 +5,8 @@ import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators'
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 import { PacketsDatasource, PacketsService } from '../../../../../core/loan-management'
 import { AssignPacketsComponent } from '../assign-packets/assign-packets.component';
+import { LayoutUtilsService } from '../../../../../core/_base/crud';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'kt-packets-list',
   templateUrl: './packets-list.component.html',
@@ -28,7 +30,9 @@ export class PacketsListComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private packetsService: PacketsService,
-    private dataTableService: DataTableService
+    private dataTableService: DataTableService,
+    private layoutUtilsService: LayoutUtilsService,
+    private toastr: ToastrService
   ) {
     this.packetsService.openModal$.pipe(
       map(res => {
@@ -106,7 +110,7 @@ export class PacketsListComponent implements OnInit {
     });
   }
 
-  editLead(role) {
+  editPacket(role) {
     console.log(role)
     const dialogRef = this.dialog.open(AssignPacketsComponent,
       {
@@ -117,6 +121,30 @@ export class PacketsListComponent implements OnInit {
       if (res) {
         this.loadPackets();
       }
+    });
+  }
+
+  deletePacket(_item) {
+    const role = _item;
+    const _title = 'Delete Packet';
+    const _description = 'Are you sure to permanently delete this packet?';
+    const _waitDesciption = 'Packet is deleting...';
+    const _deleteMessage = `Packet has been deleted`;
+    console.log(role.id)
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+        this.packetsService.deletePacket(role.id).subscribe(successDelete => {
+          this.toastr.success(_deleteMessage);
+          this.loadPackets();
+        },
+          errorDelete => {
+            this.toastr.error(errorDelete.error.message);
+          });
+      }
+      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
+      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
     });
   }
 

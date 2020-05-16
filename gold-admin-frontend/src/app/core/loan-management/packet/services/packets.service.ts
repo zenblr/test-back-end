@@ -45,7 +45,7 @@ export class PacketsService {
   }
 
   deletePacket(id): Observable<any> {
-    return this.http.delete<any>(`/api/partner-branch?id=${id}&isActive=${false}`).pipe(
+    return this.http.delete<any>(`/api/loan-process/remove-packet?id=${id}&isActive=${false}`).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);

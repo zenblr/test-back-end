@@ -1,11 +1,14 @@
 :host {
+    .kt-portlet__body {
+        padding: 20px !important;
+    }
     .filter {
         background-color: #454D67 !important;
         height: 35px !important;
         width: 35px !important;
     }
     .kt-filter-dropdown {
-        width: 500px;
+        width: 900px;
         // font-family: Poppins;
     }
     .btn-absolute-bottom-right {
