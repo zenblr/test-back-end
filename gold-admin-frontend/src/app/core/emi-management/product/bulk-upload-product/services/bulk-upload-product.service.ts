@@ -11,19 +11,19 @@ export class BulkUploadProductService {
   constructor(private http: HttpClient, private excelService: ExcelService) { }
 
   bulkUploadFile(data): Observable<any> {
-    return this.http.post<any>(`/api/bulk-upload-file`, data);
+    return this.http.post<any>(`http://173.249.49.7:9120/api/bulk-upload-file`, data);
   }
 
   addProductFromExcel(data): Observable<any> {
-    return this.http.post<any>(`/api/products/from-excel`, data);
+    return this.http.post<any>(`http://173.249.49.7:9120/api/products/from-excel`, data);
   }
 
   editProductFromExcel(data): Observable<any> {
-    return this.http.put<any>(`/api/products/from-excel`, data);
+    return this.http.put<any>(`http://173.249.49.7:9120/api/products/from-excel`, data);
   }
 
   getProductReport(): Observable<any> {
-    return this.http.get(`/api/products/get-product-report`, { responseType: 'arraybuffer' })
+    return this.http.get(`http://173.249.49.7:9120/api/products/get-product-report`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
           return res;

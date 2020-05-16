@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, AfterViewInit, OnChanges } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, AfterViewInit, OnChanges, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
@@ -12,16 +12,20 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() disable
   @Input() invalid;
+  @Input() details;
   @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
   appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }];
   branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
   role: any = ''
+  @Input() action;
+
   // kycStatus = [];
   approvalForm: FormGroup;
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
-    private sharedSerive: SharedService
+    private sharedSerive: SharedService,
+    private ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -31,11 +35,11 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   getRoles() {
     this.sharedSerive.getRole().subscribe(res => {
       this.role = res
-      if(this.role == 'Appraiser'){
+      if (this.role == 'Appraiser') {
         this.controls.loanStatusForBM.disable()
-      }else if(this.role == 'Branch Manager'){
+      } else if (this.role == 'Branch Manager') {
         this.controls.loanStatusForAppraiser.disable()
-      }else{
+      } else {
         this.approvalForm.disable()
       }
     })
@@ -59,7 +63,13 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     return this.approvalForm.controls
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.details) {
+      if (changes.action.currentValue == 'edit') {
+        this.approvalForm.patchValue(changes.details.currentValue)
+        this.ref.markForCheck()
+      }
+    }
     if (this.invalid) {
       this.approvalForm.markAllAsTouched()
     }

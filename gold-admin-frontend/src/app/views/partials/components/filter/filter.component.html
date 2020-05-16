@@ -1,3 +1,132 @@
-<button mat-raised-button class="filter">
-    <img src="../../../../../assets/media/icons/svg/General/filter.svg" alt="" height="20" width="20">
-  </button>
+<!-- Filtered Dialog  -->
+<div ngbDropdown class="dropdown dropdown-inline" #filterDropdown="ngbDropdown" aria-haspopup="true"
+  aria-expanded="false" (openChange)="toggleDropdown($event)">
+
+  <button ngbDropdownToggle id="filterDropdown" class="filter" mat-raised-button type="button">
+    <img src="assets/media/icons/svg/General/filter.svg" height="20" width="20"></button>
+
+  <div ngbDropdownMenu class="p-0" aria-labelledby="filterDropdown">
+    <div class="kt-filter-dropdown" [style.width]="filterWidth">
+      <div class="kt-portlet m-0">
+
+        <div class="kt-pointer d-none" (click)="filterDropdown.close()">
+          <i class="fa fa-times pull-right"></i>
+        </div>
+
+        <!-- Product -->
+        <div class="kt-portlet__body" *ngIf="filterName =='product'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm" *ngIf="filterName =='product'">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row pb-3">
+                    <div class="col-6">
+                      <label>By Category</label>
+                      <select class="form-control" name="categoryId" formControlName="categoryId">
+                        <option value="" [selected]="true">Select Category</option>
+                        <option *ngFor="let item of categoryList" [value]="item?.id">
+                          {{item?.categoryName}}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label>By Sub-Category</label>
+                      <select class="form-control" name="subCategoryId" formControlName="subCategoryId">
+                        <option value="" [selected]="true">Select Sub-Category</option>
+                        <option *ngFor="let item of subCategoryList" [value]="item?.id">
+                          {{item?.subCategoryName}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <label>Price From</label>
+                      <input class="form-control" formControlName="priceFrom" type="number" />
+                    </div>
+                    <div class="col-4">
+                      <label>Price To</label>
+                      <input class="form-control" formControlName="priceTo" type="number" />
+                    </div>
+                    <div class="col-4">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="kt-portlet__body" *ngIf="filterName == 'leads'">
+          <div class="kt-form">
+            <div class="row">
+              <div class="col">
+                <label>By Location</label>
+                <!-- <select class="form-control" name="categoryId">
+                  <option value="" [selected]="true">Select State</option>
+                  <option *ngFor="let item of states" [value]="item?.id">
+                    {{item?.name}}
+                  </option>
+                </select> -->
+                <ng-select #select [items]="states" [dropdownPosition]="'bottom'" [multiple]="true" bindLabel="name"
+                  bindValue="id" [closeOnSelect]="false" [searchable]="false">
+                  <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                      [ngModelOptions]="{ standalone : true }" /> {{item.gender | uppercase}}
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                      [ngModelOptions]="{ standalone : true }" /> {{item.name}}
+                  </ng-template>
+                  <ng-template ng-label-tmp>
+                    <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
+                  </ng-template>
+                  <ng-template ng-header-tmp>
+                    <input style="width: 100%; line-height: 24px" type="text"
+                      (input)="select.filter($event.target.value)" />
+                  </ng-template>
+                </ng-select>
+                <!-- <ng-select [items]="states" [multiple]="true" [dropdownPosition]="'bottom'" bindLabel="name" groupBy="gender" [selectableGroup]="true"
+                  [closeOnSelect]="false" bindValue="id">
+                  <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" /> {{item.gender | uppercase}}
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" /> {{item.name}}
+                  </ng-template>
+                </ng-select> -->
+
+              </div>
+              <div class="col">
+                <label style="visibility: hidden;">nostatus</label>
+                <select class="form-control" name="categoryId">
+                  <option value="" [selected]="true">Select City</option>
+                  <option *ngFor="let item of categoryList" [value]="item?.id">
+                    {{item?.categoryName}}
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <label>By Status</label>
+                <select class="form-control" name="categoryId">
+                  <option value="" [selected]="true">Select Category</option>
+                  <option *ngFor="let item of categoryList" [value]="item?.id">
+                    {{item?.categoryName}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'"></kt-button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

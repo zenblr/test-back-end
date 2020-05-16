@@ -18,7 +18,8 @@ export class ProductEditComponent implements OnInit {
   productData: any;
   viewLoading = false;
   title: string;
-  isMandatory = false
+  isMandatory = false;
+  removeImagesArr = [];
 
   constructor(
     public dialogRef: MatDialogRef<ProductEditComponent>,
@@ -103,6 +104,11 @@ export class ProductEditComponent implements OnInit {
         if (res) {
           const msg = 'Product Updated Sucessfully';
           this.toastr.successToastr(msg);
+          if (this.removeImagesArr.length) {
+            for (const img of this.removeImagesArr) {
+              this.productService.deleteProductImage(img.id).subscribe();
+            }
+          }
           this.dialogRef.close(true);
         }
       },
@@ -130,33 +136,28 @@ export class ProductEditComponent implements OnInit {
     )
   }
 
-  uploadImage(data, type) {
-    if (type == 'inList') {
-      if (this.productData.productImages.length) {
-        for (const product of this.productData.productImages) {
-          if (product.id === data.id) {
-            product.URL = data.URL;
-          }
+  uploadImage(data) {
+    if (data.listView) {
+      for (let i = 0; i < this.productData.productImages.length; i++) {
+        const product = this.productData.productImages[i];
+        if (i == data.index) {
+          product.url = data.uploadData.URL;
+          this.productForm.controls['productImages'].patchValue(this.productData.productImages);
         }
-        this.productForm.controls['productImages'].patchValue(this.productData.productImages);
       }
     } else {
       this.productForm.controls['productImage'].patchValue(data.URL);
     }
   }
 
-  uploadImages(data, type) {
-    if (type == 'inList') {
-      if (this.productData.productImages.length) {
-        for (const product of this.productData.productImages) {
-          if (product.id === data.id) {
-            product.URL = data.URL;
-          }
-        }
+  removeImage(index) {
+    for (let i = 0; i < this.productData.productImages.length; i++) {
+      const product = this.productData.productImages[i];
+      if (i == index) {
+        this.removeImagesArr.push(product);
+        this.productData.productImages.splice(index, 1);
         this.productForm.controls['productImages'].patchValue(this.productData.productImages);
       }
-    } else {
-      this.productForm.controls['productImage'].patchValue(data.URL);
     }
   }
 

@@ -1,5 +1,3 @@
-import { ToastrService } from "ngx-toastr";
-
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { LayoutUtilsService, QueryParamsModel } from '../../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
@@ -29,19 +27,30 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject();
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
-
-  filterStatus: string = "";
-  filterType: string = "";
+  productData = {
+    from: 0,
+    to: 0,
+    search: '',
+    categoryId: 0,
+    subCategoryId: 0,
+    priceFrom: 0,
+    priceTo: 0,
+  }
 
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private productService: ProductService,
-    private toast: ToastrService,
     private ref: ChangeDetectorRef,
     public layoutUtilsService: LayoutUtilsService,
     private dataTableService: DataTableService
-  ) { }
+  ) {
+    this.productService.applyFilter$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (Object.entries(res).length) {
+        this.applyFilter(res);
+      }
+    });
+  }
 
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
@@ -89,7 +98,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       this.productResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadProducts('', '', this.searchValue, '', '', '');
+    this.dataSource.loadProducts(this.productData);
   }
 
   editCategory(id) {
@@ -157,13 +166,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-
-    this.dataSource.loadProducts(from, to, this.searchValue, '', '', '');
-  }
-
-  /*** On Destroy ***/
-  ngOnDestroy() {
-    this.subscriptions.forEach(el => el.unsubscribe());
+    this.productData.from = from;
+    this.productData.to = to;
+    this.productData.search = this.searchValue;
+    this.dataSource.loadProducts(this.productData);
   }
 
   viewProduct(product) {
@@ -178,5 +184,23 @@ export class ProductListComponent implements OnInit, OnDestroy {
         console.log(res);
       }
     });
+  }
+
+  applyFilter(data) {
+    console.log(data);
+    this.productData.categoryId = data.filterData.categoryId;
+    this.productData.subCategoryId = data.filterData.subCategoryId;
+    this.productData.priceFrom = data.filterData.priceFrom;
+    this.productData.priceTo = data.filterData.priceTo;
+    this.dataSource.loadProducts(this.productData);
+  }
+
+  /*** On Destroy ***/
+  ngOnDestroy() {
+    this.subscriptions.forEach(el => el.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 }
