@@ -23,7 +23,7 @@ module.exports = (req, res, next) => {
        "/api/customer/partner-branch",
        "/api/customer/get-all-scheme",
        "/api/customer/my-loan",
-       "/api/customer/scheme-based-price",
+       "/api/customer/scheme-based-on-price",
        "/api/customer/customer-feedback"
 
 

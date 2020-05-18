@@ -97,7 +97,6 @@ export class TopbarComponent implements OnInit {
 			if (ct) {
 				Promise.resolve(null).then(() => {
 					this.totalRecords = ct;
-					console.log(this.totalRecords)
 				});
 			}
 		}));
@@ -164,8 +163,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'logistic-partner') {
 			this.showInput = true;
-			this.value1 = 'Add Logistic Partner';
-			this.type1 = 'button';
+			this.rightButton = true;
+			this.value2 = 'Add Logistic Partner';
+			this.type2 = 'button';
 		}
 		if (this.path == 'karat-details') {
 			this.rightButton = true;
@@ -311,11 +311,9 @@ export class TopbarComponent implements OnInit {
 
 	check(val) {
 		this.customerManagementServiceCustomer.toggle.next(val)
-		console.log('hi1');
 	}
 
 	applyFilter(data) {
-		console.log(data);
 		this.productService.applyFilter.next(data);
 	}
 }
