@@ -13,6 +13,7 @@ module.exports = async (req, res, next) => {
 
         // return res.json(requestInfo)
         next()
+        return
         let systemInfo;
 
         await redisClient.get(`${userId}permissions`, async (err, result) => {
