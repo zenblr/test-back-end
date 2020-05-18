@@ -66,7 +66,7 @@ export class AddLeadComponent implements OnInit {
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
-      if (this.controls.panCardNumber.valid) {
+      if (this.controls.panCardNumber.valid && this.controls.panCardNumber.value !== '') {
         this.panButton = false;
       } else {
         this.panButton = true;
