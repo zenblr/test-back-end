@@ -43,6 +43,7 @@ import { OrderDetailsViewComponent } from './order-management/order-details/orde
 import { CancelOrderDetailsListComponent } from './order-management/cancel-order-details/cancel-order-details-list/cancel-order-details-list.component';
 import { DepositDetailsListComponent } from './order-management/deposit-details/deposit-details-list/deposit-details-list.component';
 import { EmiDetailsListComponent } from './order-management/emi-details/emi-details-list/emi-details-list.component';
+import { EmiDetailsViewComponent } from './order-management/emi-details/emi-details-view/emi-details-view.component';
 
 const routes: Routes = [
 	{
@@ -158,6 +159,7 @@ const routes: Routes = [
 		SubCategoryAddComponent,
 		AddLogisticPartnerComponent,
 		OrderDetailsViewComponent,
+		EmiDetailsViewComponent,
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -181,6 +183,7 @@ const routes: Routes = [
 		CancelOrderDetailsListComponent,
 		DepositDetailsListComponent,
 		EmiDetailsListComponent,
+		EmiDetailsViewComponent,
 
 	]
 })

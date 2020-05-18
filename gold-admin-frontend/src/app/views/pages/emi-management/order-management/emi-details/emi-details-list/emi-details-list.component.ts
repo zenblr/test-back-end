@@ -5,7 +5,7 @@ import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { EmiDetailsService, EmiDetailsDatasource, EmiDetailsModel } from '../../../../../../core/emi-management/order-management';
 import { skip, distinctUntilChanged, tap, takeUntil } from 'rxjs/operators';
-
+import { EmiDetailsViewComponent } from '../emi-details-view/emi-details-view.component'
 @Component({
   selector: 'kt-emi-details-list',
   templateUrl: './emi-details-list.component.html',
@@ -108,7 +108,18 @@ export class EmiDetailsListComponent implements OnInit {
     return filter;
   }
 
-  viewOrder(order) { }
+  viewOrder(order) {
+    const dialogRef = this.dialog.open(EmiDetailsViewComponent,
+      {
+        data: { order:order, action: 'view' },
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+      }
+    });
+   }
 
   printCancellationReceipt(order) { }
 
