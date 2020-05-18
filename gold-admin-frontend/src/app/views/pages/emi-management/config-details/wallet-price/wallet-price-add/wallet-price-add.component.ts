@@ -84,6 +84,7 @@ export class WalletPriceAddComponent implements OnInit {
           const msg = 'Wallet Price Updated Sucessfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
+          this.walletPriceService.download.next(true);
         }
       },
         error => {
