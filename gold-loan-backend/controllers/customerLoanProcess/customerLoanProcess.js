@@ -257,15 +257,46 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
 
     //customerLoan
     let { applicationFormForAppraiser,
-        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
+        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM } = loanApproval
+    let cutomerLoanApproval = {}
+    if (req.userData.roleName[0] == "Appraiser") {
+        cutomerLoanApproval['applicationFormForAppraiser'] = applicationFormForAppraiser
+        cutomerLoanApproval['goldValuationForAppraiser'] = goldValuationForAppraiser
+        cutomerLoanApproval['loanStatusForAppraiser'] = loanStatusForAppraiser
+        cutomerLoanApproval['commentByAppraiser'] = commentByAppraiser
+        cutomerLoanApproval['totalEligibleAmt'] = totalEligibleAmt
+        cutomerLoanApproval['totalFinalInterestAmt'] = totalFinalInterestAmt
+        cutomerLoanApproval['modifiedBy'] = modifiedBy
+    }
+
+    if (req.userData.roleName[0] == "Branch Manager") {
+        var loanUniqueId = null;
+        if (loanStatusForBM === 'approved') {
+            if (applicationFormForBM == true && goldValuationForBM == true) {
+                loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+            } else {
+                return res.status(400).json({ message: `One of field is not verified` })
+            }
+        }
+        // if (applicationFormForBM === true && goldValuationForBM === true && loanStatusForBM === 'approved') {
+        //     loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+        // } else {
+        //     loanUniqueId = null;
+        // }
+        cutomerLoanApproval['applicationFormForBM'] = applicationFormForBM
+        cutomerLoanApproval['goldValuationForBM'] = goldValuationForBM
+        cutomerLoanApproval['loanStatusForBM'] = loanStatusForBM
+        cutomerLoanApproval['commentByBM'] = commentByBM
+        cutomerLoanApproval['totalEligibleAmt'] = totalEligibleAmt
+        cutomerLoanApproval['totalFinalInterestAmt'] = totalFinalInterestAmt
+        cutomerLoanApproval['modifiedBy'] = modifiedBy
+        cutomerLoanApproval['loanUniqueId'] = loanUniqueId
+    }
 
     let updateLoanApplication = await sequelize.transaction(async t => {
 
         // customerLoan
-        await models.customerLoan.update({
-            applicationFormForAppraiser,
-            goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, modifiedBy
-        }, { where: { id: loanId }, transaction: t })
+        await models.customerLoan.update(cutomerLoanApproval, { where: { id: loanId }, transaction: t })
         //customerLoanNominee
         await models.customerLoanNomineeDetail.update({
             nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, modifiedBy
@@ -280,10 +311,9 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
         let allOrnmanets = []
         for (let i = 0; i < loanOrnmanets.length; i++) {
             loanOrnmanets[i]['modifiedBy'] = modifiedBy
-            loanOrnmanets[i]['loanId']= loanId
+            loanOrnmanets[i]['loanId'] = loanId
             allOrnmanets.push(loanOrnmanets[i])
         }
-        console.log(allOrnmanets)
 
         let d = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, {
             updateOnDuplicate: ["loanId", "ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "currentLtvAmount"]

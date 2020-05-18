@@ -8,12 +8,12 @@ const redisClient = redis.createClient(redisConn.PORT, redisConn.HOST);
 module.exports = async (req, res, next) => {
     try {
         let userId = await req.userData.id;
-        let requestInfo = {
-            'method': req.method,
-            'baseUrl': req.baseUrl,
-            'path': req.route.path
-        }
+        let requestInfo = {'method': req.method,'baseUrl': req.baseUrl,'path': req.route.path}
         console.log(requestInfo);
+
+        // return res.json(requestInfo)
+        next()
+        return
         let systemInfo;
 
         await redisClient.get(`${userId}permissions`, async (err, result) => {

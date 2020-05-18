@@ -4,7 +4,7 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Parnter Name</label>
+                        <label class="mandatory">Partner Name</label>
                     </div>
                     <div class="col-7">
                         <select formControlName="partnerId" class="form-control" (change)="getSchemes()"
@@ -29,7 +29,8 @@
                             [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
                             <option [value]="schemes.id" *ngFor="let schemes of schemesList">
-                                {{schemes.schemeName}} {{schemes.schemeAmountStart}} - {{schemes.schemeAmountEnd}}</option>
+                                {{schemes.schemeName}} {{schemes.schemeAmountStart}} - {{schemes.schemeAmountEnd}}
+                            </option>
                         </select>
                         <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Filed is required
                         </mat-error>
@@ -45,9 +46,9 @@
                         <label class="mandatory">Start Date</label>
                     </div>
                     <div class="col-7">
-                        <input type="text" class="form-control" formControlName="loanStartDate"
+                        <input class="form-control" formControlName="loanStartDate"
                             [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
-                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()" readonly 
+                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()" readonly
                             value="{{controls.loanStartDate.value |  date:'mediumDate'}}">
                     </div>
                 </div>
@@ -81,7 +82,7 @@
                     </div>
                     <div class="col-7">
                         <input class="form-control" formControlName="loanEndDate" placeholder="02 May, 2020"
-                        value="{{controls.loanEndDate.value |  date:'mediumDate'}}"
+                            value="{{controls.loanEndDate.value |  date:'mediumDate'}}"
                             [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid" readonly />
                     </div>
                 </div>
@@ -103,8 +104,12 @@
                         <mat-error *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
                             Invalid
                         </mat-error>
-                        <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">Enter Loan Amount as Per Scheme</mat-error>
-                        <mat-error *ngIf="controls.finalLoanAmount.errors?.eligibleAmt">Amount should be less then Eligible Amount</mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">
+                            <small>Enter Loan Amount as Per Scheme</small>
+                        </mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.eligibleAmt">
+                            <small>Amount should be less then Eligible Amount</small>
+                        </mat-error>
 
                     </div>
                 </div>

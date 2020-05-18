@@ -75,9 +75,7 @@
                     <mat-cell *matCellDef="let lead">
                         <ng-container *ngIf="lead.status.id == '1'">
                             <div [ngStyle]="{'display': 'inherit'}">
-                                <div class="kt-pointer" (click)="goToKyc(lead.mobileNumber)">
-                                    <button mat-stroked-button class="border-apply">Apply KYC</button>
-                                </div>
+                                    <button (click)="goToKyc(lead.mobileNumber)" class="apply-kyc">Apply KYC</button>
                             </div>
                         </ng-container>
                     </mat-cell>
@@ -95,9 +93,9 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row  *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-                <mat-row  *matRowDef="let row; columns: displayedColumns"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

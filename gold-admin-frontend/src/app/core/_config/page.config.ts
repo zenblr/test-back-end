@@ -53,7 +53,7 @@ export class PageConfig {
 				page: { title: 'Internal User Branch', desc: '' }
 			},
 			'assign-appraiser': {
-				page: { title: 'Assign Appraiser', desc: '' }
+				page: { title: 'Assigned Appraiser', desc: '' }
 			},
 			'merchant': {
 				page: { title: 'All Merchants', desc: '' }

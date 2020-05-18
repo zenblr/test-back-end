@@ -44,8 +44,9 @@ export class BrandComponent implements OnInit, AfterViewInit {
 			tap(res => {
 				// console.log(res)
 				this.rate = res.goldRate;
-				this.ref.detectChanges();
 				this.uploadOfferService.goldRate.next(this.rate);
+				this.ref.detectChanges();
+
 			})
 		).subscribe(res => {
 
@@ -70,7 +71,7 @@ export class BrandComponent implements OnInit, AfterViewInit {
 		this.uploadOfferService.goldRate$.subscribe(res => {
 			// console.log(res);
 			this.goldRate = res
-			this.ref.detectChanges();
+			// this.ref.detectChanges();
 		});
 	}
 

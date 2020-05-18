@@ -17,7 +17,7 @@ export class AddSchemeComponent implements OnInit {
   @ViewChild('tabGroup', { static: false }) tabGroup;
 
   csvForm: FormGroup;
-  billingForm: FormGroup;
+  fillingForm: FormGroup;
   partnerData: [] = []
   file: any;
 
@@ -51,16 +51,16 @@ export class AddSchemeComponent implements OnInit {
 
 
   initForm() {
-    this.billingForm = this.fb.group({
+    this.fillingForm = this.fb.group({
       schemeName: ['', [Validators.required]],
       schemeAmountStart: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])')]],
       schemeAmountEnd: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])')]],
       interestRateThirtyDaysMonthly: ['', Validators.required],
       interestRateNinetyDaysMonthly: ['', Validators.required],
       interestRateOneHundredEightyDaysMonthly: ['', Validators.required],
-      interestRateThirtyDaysAnnually: [''],
-      interestRateNinetyDaysAnnually: [''],
-      interestRateOneHundredEightyDaysAnnually: [''],
+      // interestRateThirtyDaysAnnually: [''],
+      // interestRateNinetyDaysAnnually: [''],
+      // interestRateOneHundredEightyDaysAnnually: [''],
       partnerId: ['', Validators.required]
     })
 
@@ -70,6 +70,18 @@ export class AddSchemeComponent implements OnInit {
     })
     this.csvForm.controls.csv.disable()
     // this.csvForm.get('csv').re()
+  }
+
+  fromAndToValidation(){
+    const controls = this.fillingForm.controls
+    if(controls.schemeAmountEnd.valid && controls.schemeAmountStart.valid){
+      if(controls.schemeAmountStart.value > controls.schemeAmountEnd.value){
+        controls.schemeAmountStart.setErrors({amt:true})
+      }else{
+        controls.schemeAmountStart.setErrors(null)
+
+      }
+    }
   }
 
   action(event: Event) {
@@ -82,39 +94,38 @@ export class AddSchemeComponent implements OnInit {
 
   submit() {
     if (this.tabGroup.selectedIndex == 0) {
-      console.log(this.billingForm.value);
+      console.log(this.fillingForm.value);
 
-      if (this.billingForm.invalid) {
-        this.billingForm.markAllAsTouched()
+      if (this.fillingForm.invalid) {
+        this.fillingForm.markAllAsTouched()
         return
       }
 
-      let fromValue = this.billingForm.get('schemeAmountStart').value * 100000;
+      let fromValue = this.fillingForm.get('schemeAmountStart').value * 100000;
       fromValue = +(fromValue);
       Math.ceil(fromValue);
-      let toValue = this.billingForm.get('schemeAmountEnd').value * 100000;
+      let toValue = this.fillingForm.get('schemeAmountEnd').value * 100000;
       toValue = +(toValue);
       Math.ceil(toValue);
       console.log(fromValue, toValue)
-      this.billingForm.patchValue({ schemeAmountStart: fromValue, schemeAmountEnd: toValue });
+      this.fillingForm.patchValue({ schemeAmountStart: fromValue, schemeAmountEnd: toValue });
 
-      console.log(this.billingForm.value);
+      console.log(this.fillingForm.value);
 
       let partnerArray = [];
-      partnerArray.push(this.billingForm.get('partnerId').value);
-      this.billingForm.patchValue({ partnerId: partnerArray });
+      partnerArray.push(this.fillingForm.get('partnerId').value);
+      this.fillingForm.patchValue({ partnerId: partnerArray });
 
-      this.laonSettingService.saveScheme(this.billingForm.value).pipe(
+      this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
           this._toastr.success('Scheme Created Sucessfully');
           this.dialogRef.close(res);
         }), catchError(err => {
-          this._toastr.error('Some thing went wrong')
           this.ref.detectChanges();
           throw (err)
         }),
         finalize(() => {
-          this.billingForm.patchValue({ schemeAmountStart: (fromValue / 100000), schemeAmountEnd: (toValue / 100000) });
+          this.fillingForm.patchValue({ schemeAmountStart: (fromValue / 100000), schemeAmountEnd: (toValue / 100000) });
         })).subscribe()
     } else if (this.tabGroup.selectedIndex == 1) {
       if (this.csvForm.invalid) {
