@@ -43,6 +43,7 @@ import { OrderDetailsViewComponent } from './order-management/order-details/orde
 import { CancelOrderDetailsListComponent } from './order-management/cancel-order-details/cancel-order-details-list/cancel-order-details-list.component';
 import { DepositDetailsListComponent } from './order-management/deposit-details/deposit-details-list/deposit-details-list.component';
 import { EmiDetailsListComponent } from './order-management/emi-details/emi-details-list/emi-details-list.component';
+import { OrderDetailsEditComponent } from './order-management/order-details/order-details-edit/order-details-edit.component';
 
 const routes: Routes = [
 	{
@@ -95,6 +96,10 @@ const routes: Routes = [
 			{
 				path: 'order-details',
 				component: OrderDetailsListComponent
+			},
+			{
+				path: 'order-details/:id',
+				component: OrderDetailsEditComponent
 			},
 			{
 				path: 'cancel-order-details',
@@ -181,7 +186,7 @@ const routes: Routes = [
 		CancelOrderDetailsListComponent,
 		DepositDetailsListComponent,
 		EmiDetailsListComponent,
-
+		OrderDetailsEditComponent,
 	]
 })
 export class EMIManagementModule { }

@@ -377,16 +377,16 @@ export class MenuConfig {
 							page: '/emi-management/order-details',
 						},
 						{
+							title: 'EMI Details',
+							page: '/emi-management/emi-details'
+						},
+						{
 							title: 'Cancel Order Details',
 							page: '/emi-management/cancel-order-details',
 						},
 						{
 							title: 'Deposit Details',
 							page: '/emi-management/deposit-details',
-						},
-						{
-							title: 'EMI Details',
-							page: '/emi-management/emi-details'
 						}
 					]
 				},
