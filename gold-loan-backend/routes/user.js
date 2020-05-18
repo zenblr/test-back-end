@@ -9,6 +9,7 @@ const { userValidation, addInternalUserValidation, UpdateInternalUserValidation 
 const validationError = require('../middleware/validationError')
 
 const { addUser, registerSendOtp, addInternalUser, updateInternalUser, deleteInternalUser, GetInternalUser, verifyRegistrationOtp, sendOtp, changePassword, updatePassword, getUser, verifyOtp, addAdmin, getInternalBranchUser, getAppraiser } = require('../controllers/user/user')
+const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 //Register User
 
@@ -29,13 +30,13 @@ route.post('/change-password', checkAuth, wrapper(changePassword));
 
 route.get('/appraiser-list', checkAuth, wrapper(getAppraiser))
 
-route.post('/internal-user', checkAuth, addInternalUserValidation, validationError, wrapper(addInternalUser));
+route.post('/internal-user', checkAuth,checkRolePermission, addInternalUserValidation, validationError, wrapper(addInternalUser));
 
-route.put('/internal-user/:id', checkAuth, UpdateInternalUserValidation, validationError, wrapper(updateInternalUser));
+route.put('/internal-user/:id', checkAuth,checkRolePermission, UpdateInternalUserValidation, validationError, wrapper(updateInternalUser));
 
-route.delete('/internal-user/:id', checkAuth, wrapper(deleteInternalUser));
+route.delete('/internal-user/:id', checkAuth,checkRolePermission, wrapper(deleteInternalUser));
 
-route.get('/internal-user', checkAuth, wrapper(GetInternalUser));
+route.get('/internal-user', checkAuth, checkRolePermission,wrapper(GetInternalUser));
 
 route.get('/', getUser);
 
