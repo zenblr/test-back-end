@@ -56,11 +56,16 @@
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">
+                    <mat-cell *matCellDef="let loan"> 
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div class="kt-pointer" (click)="editLoan(loan)" class="kt-pointer">
-                                <img src="../../../../../assets/media/icons/action.svg" alt="">
+                            <div *ngIf="((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected') 
+                            && roles == 'Branch Manager') || (loan.loanStatusForBM == 'pending' 
+                            && roles == 'Appraiser')">
+                                <div class="kt-pointer" (click)="editLoan(loan)" class="kt-pointer" >
+                                    <img src="../../../../../assets/media/icons/action.svg" alt="">
+                                </div>
                             </div>
+                            
                         </div>
                     </mat-cell>
                 </ng-container>

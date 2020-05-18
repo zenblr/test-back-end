@@ -33,10 +33,10 @@
                                         {{customer .customerUniqueId}}</option>
                                 </select> -->
                                 <!-- <kt-select-with-search [options]="customer"></kt-select-with-search> -->
-                                <!-- <input class="form-control" formControlName="customerUniqueId" autocomplete="off"
-                                    *ngIf="data.action !='add'" readonly> -->
+                                <input class="form-control" formControlName="customerUniqueId" autocomplete="off"
+                                    *ngIf="data.action !='add'" readonly>
                                 <ng-select formControlName="customerId" #select [items]="customers"
-                                    bindLabel="customerUniqueId" bindValue="id"
+                                    bindLabel="customerUniqueId" bindValue="id" *ngIf="data.action =='add'"
                                     [class.isError]="controls.customerId.touched && controls.customerId.invalid">
                                     <!-- <ng-template ng-multi-label-tmp>
                                                 <span style="display:block" class="ng-placeholder">Select items</span>
