@@ -172,7 +172,7 @@ exports.schemeBasedOnPriceRange=async(req,res,next)=>{
 
     query.isActive=true;
     
-    if(schemeAmountEnd && schemeAmountEnd){
+    if(schemeAmountStart && schemeAmountEnd){
         query.schemeAmountStart=schemeAmountStart;
         query.schemeAmountEnd=schemeAmountEnd
     }
