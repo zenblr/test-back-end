@@ -257,15 +257,46 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
 
     //customerLoan
     let { applicationFormForAppraiser,
-        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
+        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM } = loanApproval
+    let cutomerLoanApproval = {}
+    if (req.userData.roleName[0] == "Appraiser") {
+        cutomerLoanApproval['applicationFormForAppraiser'] = applicationFormForAppraiser
+        cutomerLoanApproval['goldValuationForAppraiser'] = goldValuationForAppraiser
+        cutomerLoanApproval['loanStatusForAppraiser'] = loanStatusForAppraiser
+        cutomerLoanApproval['commentByAppraiser'] = commentByAppraiser
+        cutomerLoanApproval['totalEligibleAmt'] = totalEligibleAmt
+        cutomerLoanApproval['totalFinalInterestAmt'] = totalFinalInterestAmt
+        cutomerLoanApproval['modifiedBy'] = modifiedBy
+    }
+
+    if (req.userData.roleName[0] == "Branch Manager") {
+        var loanUniqueId = null;
+        if (loanStatusForBM === 'approved') {
+            if (applicationFormForBM == true && goldValuationForBM == true) {
+                loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+            } else {
+                return res.status(400).json({ message: `One of field is not verified` })
+            }
+        }
+        // if (applicationFormForBM === true && goldValuationForBM === true && loanStatusForBM === 'approved') {
+        //     loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+        // } else {
+        //     loanUniqueId = null;
+        // }
+        cutomerLoanApproval['applicationFormForBM'] = applicationFormForBM
+        cutomerLoanApproval['goldValuationForBM'] = goldValuationForBM
+        cutomerLoanApproval['loanStatusForBM'] = loanStatusForBM
+        cutomerLoanApproval['commentByBM'] = commentByBM
+        cutomerLoanApproval['totalEligibleAmt'] = totalEligibleAmt
+        cutomerLoanApproval['totalFinalInterestAmt'] = totalFinalInterestAmt
+        cutomerLoanApproval['modifiedBy'] = modifiedBy
+        cutomerLoanApproval['loanUniqueId'] = loanUniqueId
+    }
 
     let updateLoanApplication = await sequelize.transaction(async t => {
 
         // customerLoan
-        await models.customerLoan.update({
-            applicationFormForAppraiser,
-            goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, modifiedBy
-        }, { where: { id: loanId }, transaction: t })
+        await models.customerLoan.update(cutomerLoanApproval, { where: { id: loanId }, transaction: t })
         //customerLoanNominee
         await models.customerLoanNomineeDetail.update({
             nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, modifiedBy
@@ -280,13 +311,12 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
         let allOrnmanets = []
         for (let i = 0; i < loanOrnmanets.length; i++) {
             loanOrnmanets[i]['modifiedBy'] = modifiedBy
-            loanOrnmanets[i]['loanId']= loanId
+            loanOrnmanets[i]['loanId'] = loanId
             allOrnmanets.push(loanOrnmanets[i])
         }
-        console.log(allOrnmanets)
 
         let d = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, {
-            updateOnDuplicate: ["loanId", "ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "currentLtvAmount"]
+            updateOnDuplicate: ["loanId", "ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "loanAmount", "finalNetWeight", "currentLtvAmount"]
         }, { transaction: t })
 
     })
@@ -490,137 +520,3 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     }
 }
 
-
-
-
-
-
-
-
-//  FUNCTION FOR ADD PACKET
-exports.addPacket = async (req, res, next) => {
-
-    let { packetId } = req.body;
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-
-    let packetExist = await models.packet.findOne({ where: { packetId } })
-
-    if (!check.isEmpty(packetExist)) {
-        return res.status(400).json({ message: `This packet Id is already exist` })
-    }
-    let packetAdded = await models.packet.addPacket(
-        packetId, createdBy, modifiedBy);
-    res.status(201).json({ message: 'you adeed packet successfully' });
-}
-
-
-//  FUNCTION FOR VIEW PACKET
-exports.viewPacket = async (req, res, next) => {
-    let { search, offset, pageSize } =
-        paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
-
-    let query = {};
-    if (req.query.packetAssigned) {
-        query.packetAssigned = req.query.packetAssigned;
-    }
-    let searchQuery = {
-        [Op.and]: [query, {
-            [Op.or]: {
-                "$loan.loan_unique_id$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-                packetId: { [Op.iLike]: search + '%' },
-            },
-        }],
-        isActive: true,
-    };
-
-    let associateModel = [{
-        model: models.customer,
-        required: false,
-        as: 'customer',
-        where: { isActive: true },
-        attributes: { exclude: ['password'] }
-    },
-    {
-        model: models.customerLoan,
-        required: false,
-        as: 'loan',
-        where: { isActive: true }
-    }];
-
-    let packetDetails = await models.packet.findAll({
-        where: searchQuery,
-        include: associateModel,
-        order: [
-            ['id', 'DESC']
-        ],
-        offset: offset,
-        limit: pageSize,
-
-    });
-    let count = await models.packet.findAll({
-        where: searchQuery,
-        include: associateModel,
-    });
-
-    return res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count.length });
-
-}
-
-
-//  FUNCTION FOR GET AVAILABLE PACKET
-exports.availablePacket = async (req, res, next) => {
-    let availablePacketDetails = await models.packet.findAll({
-        where: { isActive: true, packetAssigned: false },
-    });
-    if (availablePacketDetails.length === 0) {
-        res.status(404).json({ message: 'no packet details found' });
-    } else {
-        res.status(200).json({ message: 'avalable packet details fetch successfully', availablePacketDetails });
-    }
-}
-
-
-// FUNCTION TO ASSIGN PACKET
-exports.assignPacket = async (req, res, next) => {
-    let id = req.params.id;
-    let { customerId, loanId } = req.body;
-    let modifiedBy = req.userData.id;
-
-    let packet = await models.packet.assignPacket(customerId, loanId, modifiedBy, id);
-
-    if (packet[0] == 0) {
-        return res.status(404).json({ message: "not assigned packet" });
-    }
-    return res.status(200).json({ message: "packet assigned successfully" });
-};
-
-
-// FUNCTION TO UPDATE PACKET
-exports.changePacket = async (req, res, next) => {
-    let id = req.params.id;
-    let { packetId } = req.body;
-    let modifiedBy = req.userData.id;
-
-    let packet = await models.packet.updatePacket(id, packetId, modifiedBy);
-
-    if (packet[0] == 0) {
-        return res.status(404).json({ message: "packet not update" });
-    }
-    return res.status(200).json({ message: "packet updated successfully" });
-};
-
-
-// FUNCTION TO REMOVE PACKET
-exports.deletePacket = async (req, res, next) => {
-
-    const { id, isActive } = req.query;
-    let modifiedBy = req.userData.id;
-    const packet = await models.packet.update({ isActive: isActive, modifiedBy }, { where: { id: id } })
-
-    if (packet[0] == 0) {
-        return res.status(404).json({ message: "packet not delete" });
-    }
-    return res.status(200).json({ message: "packet deleted successfully" });
-};

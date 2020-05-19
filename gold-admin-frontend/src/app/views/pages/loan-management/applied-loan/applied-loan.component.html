@@ -37,7 +37,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="appraisalApproval">
-                    <mat-header-cell *matHeaderCellDef>Appraisal Approval</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Appraiser Approval</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <span
                             [ngClass]="loan.loanStatusForAppraiser == 'pending' ? 'text-warning' :loan.loanStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
@@ -59,7 +59,7 @@
                     <mat-cell *matCellDef="let loan"> 
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div *ngIf="((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected') 
-                            && roles == 'Branch Manager') || (loan.loanStatusForBM == 'pending' 
+                            && roles == 'Branch Manager') || (loan.loanStatusForAppraiser == 'pending' 
                             && roles == 'Appraiser')">
                                 <div class="kt-pointer" (click)="editLoan(loan)" class="kt-pointer" >
                                     <img src="../../../../../assets/media/icons/action.svg" alt="">

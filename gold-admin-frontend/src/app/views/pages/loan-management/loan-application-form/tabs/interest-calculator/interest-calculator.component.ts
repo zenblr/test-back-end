@@ -178,7 +178,7 @@ export class InterestCalculatorComponent implements OnInit {
       return;
     }
     let intrest = (this.controls.finalLoanAmount.value *
-      (this.controls.interestRate.value / 100)) * this.controls.paymentFrequency.value
+      (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
       / 360
     this.intrestAmount = intrest.toFixed(2);
     this.controls.intresetAmt.patchValue(this.intrestAmount)
