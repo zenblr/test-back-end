@@ -236,7 +236,11 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 as: 'finalLoan',
                 where: { isActive: true },
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-            }
+            },
+            {
+                model: models.customerLoanPackageDetails,
+                as: 'loanPacketDetails',
+            },
         ]
     })
 
@@ -278,11 +282,6 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
                 return res.status(400).json({ message: `One of field is not verified` })
             }
         }
-        // if (applicationFormForBM === true && goldValuationForBM === true && loanStatusForBM === 'approved') {
-        //     loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-        // } else {
-        //     loanUniqueId = null;
-        // }
         cutomerLoanApproval['applicationFormForBM'] = applicationFormForBM
         cutomerLoanApproval['goldValuationForBM'] = goldValuationForBM
         cutomerLoanApproval['loanStatusForBM'] = loanStatusForBM
@@ -386,9 +385,79 @@ exports.appliedLoanDetails = async (req, res, next) => {
         include: associateModel,
     });
     if (appliedLoanDetails.length === 0) {
-        res.status(404).json({ message: 'no loan details found' });
+        return res.status(200).json([]);
     } else {
-        res.status(200).json({ message: 'applied loan details fetch successfully', appliedLoanDetails, count: count.length });
+       return res.status(200).json({ message: 'Applied loan details fetch successfully', appliedLoanDetails, count: count.length });
+    }
+}
+
+//  FUNCTION FOR ADD PACKAGE IMAGES
+exports.addPackageImagesForLoan = async (req, res, next) => {
+
+    let { loanId, packageImageData } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
+
+    let getPackets = await models.customerLoanPackageDetails.findAll({ where: { loanId: loanId } })
+    if(!check.isEmpty(getPackets)){
+        return res.status(400).json({message: `Packets has been already assign`})
+    }
+
+    if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'approved') {
+        //FOR PACKETS DETAILES 
+        let finalPackageData = await packageImageData.map(function (ele) {
+            let obj = Object.assign({}, ele);
+            obj.isActive = true;
+            obj.loanId = loanId;
+            obj.createdBy = createdBy;
+            obj.modifiedBy = modifiedBy;
+            return obj;
+        })
+
+        //FOR PACKET UPDATE
+        let packetArray = await packageImageData.map(ele => {
+            return ele.packetId
+        })
+        let packetUpdateArray = await packetArray.map(ele => {
+            let obj = {}
+            obj.id = ele;
+            obj.customerId = loanDetails.customerId;
+            obj.loanId = loanId;
+            obj.modifiedBy = modifiedBy
+            obj.isActive = true
+            return obj
+        })
+        await sequelize.transaction(async (t) => {
+            await models.customerLoanPackageDetails.bulkCreate(finalPackageData, { returning: true, transaction: t })
+
+            let d = await models.packet.bulkCreate(packetUpdateArray, {
+                updateOnDuplicate: ["customerId", "loanId", "modifiedBy","isActive"]
+            }, { transaction: t })
+        })
+
+        return res.status(200).json({ message: `Packets added successfully` })
+
+    } else {
+        res.status(404).json({ message: 'Given loan id is not proper' })
+    }
+}
+
+
+//  FUNCTION FOR DISBURSEMENT OF LOAN AMOUNT
+exports.disbursementOfLoanAmount = async (req, res, next) => {
+
+    let { loanId, transactionId, date } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
+
+    if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
+        let loanAmountDisbursed = await models.disbursementOfLoan.disbursementOfLoanAmount(
+            loanId, transactionId, date, createdBy, modifiedBy);
+        res.status(201).json({ message: 'you loan amount has been disbursed successfully' });
+    } else {
+        res.status(404).json({ message: 'given loan id is not proper' })
     }
 }
 
@@ -430,12 +499,12 @@ exports.getLoanDetails = async (req, res, next) => {
         where: { isActive: true }
     },
     {
-        model: models.packageImageUploadForLoan,
-        as: 'packetDetails',
+        model: models.customerLoanPackageDetails,
+        as: 'loanPacketDetails',
     },
     {
-        model: models.finalLoanCalculator,
-        as: 'finalCalculator',
+        model: models.customerFinalLoan,
+        as: 'finalLoan',
         where: { isActive: true }
     }]
 
@@ -456,67 +525,6 @@ exports.getLoanDetails = async (req, res, next) => {
         res.status(404).json({ message: 'no loan details found' });
     } else {
         res.status(200).json({ message: 'loan details fetch successfully', loanDetails, count: count.length });
-    }
-}
-
-
-//  FUNCTION TO GET APPROVAL FROM BM
-exports.approvalFromBM = async (req, res, next) => {
-    let { applicationFormForBM, goldValuationForBM, loanStatusForBM } = req.body;
-
-    let id = req.params.id;
-    let modifiedBy = req.userData.id;
-    let loanUniqueId;
-
-    if (applicationFormForBM === true && goldValuationForBM === true && loanStatusForBM === 'confirmed') {
-        loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-    } else {
-        loanUniqueId = null;
-    }
-    let approvedByBM = await models.customerLoan.approvalFromBM(
-        id, applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId, modifiedBy
-    );
-    if (approvedByBM[0] == 0) {
-        res.status(422).json({ message: 'BM approval not working properly' });
-    } else {
-        res.status(200).json({ message: 'BM gives approval to applied loan' });
-    }
-}
-
-
-
-//  FUNCTION FOR ADD PACKAGE IMAGES
-exports.addPackageImagesForLoan = async (req, res, next) => {
-
-    let { loanId, packageImageData } = req.body;
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-    let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
-
-    if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
-        let packageImageUploaded = await models.packageImageUploadForLoan.addPackageImages(
-            loanId, packageImageData, createdBy, modifiedBy);
-        res.status(201).json({ message: 'you have successfully uploaded package images' });
-    } else {
-        res.status(404).json({ message: 'given loan id is not proper' })
-    }
-}
-
-
-//  FUNCTION FOR DISBURSEMENT OF LOAN AMOUNT
-exports.disbursementOfLoanAmount = async (req, res, next) => {
-
-    let { loanId, transactionId, date } = req.body;
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-    let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
-
-    if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
-        let loanAmountDisbursed = await models.disbursementOfLoan.disbursementOfLoanAmount(
-            loanId, transactionId, date, createdBy, modifiedBy);
-        res.status(201).json({ message: 'you loan amount has been disbursed successfully' });
-    } else {
-        res.status(404).json({ message: 'given loan id is not proper' })
     }
 }
 
