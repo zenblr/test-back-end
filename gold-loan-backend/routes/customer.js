@@ -33,8 +33,10 @@ router.get('/', checkAuth, checkRolePermission, wrapper(getAllCustomers));
 
 router.get('/filter-customer', checkAuth, checkRolePermission, wrapper(filterCustomer));
 
+router.get('/customer-unique', checkAuth, wrapper(getCustomerUniqueId));
 
 //customer App
+
 router.get('/banner', customerCheckAuth, wrapper(readBanner)); // read banner
 
 router.get('/offer', customerCheckAuth, wrapper(readOffer)); // read order
@@ -69,9 +71,7 @@ router.get('/customer-feedback', customerCheckAuth, wrapper(readFeedBack)); // r
 
 router.post('/customer-feedback',customerCheckAuth,wrapper(addFeedBack)); // add customer feedback
 
-router.get('/customer-unique', checkAuth, wrapper(getCustomerUniqueId));
 //customer App
-
 
 router.get('/:customerId', checkAuth, checkRolePermission, wrapper(getSingleCustomer));
 
