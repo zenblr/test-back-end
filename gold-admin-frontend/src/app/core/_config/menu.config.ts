@@ -84,8 +84,8 @@ export class MenuConfig {
 
 								},
 								{
-									title:'Karat details',
-									page:'/loan-setting/karat-details'
+									title: 'Karat details',
+									page: '/loan-setting/karat-details'
 								}
 							]
 						},
@@ -180,13 +180,13 @@ export class MenuConfig {
 					src: 'assets/media/aside-icons/icons-09.svg',
 					submenu: [
 						{
-							title: 'Montly Payment',
-							path: '/montly-payment'
+							title: 'Monthly Payment',
+							page: '/repayment/monthly'
 						},
-						{
-							title: 'One Shot Payment',
-							path: '/one-shot-payment',
-						}
+						// {
+						// 	title: 'One Shot Payment',
+						// 	path: '/one-shot-payment',
+						// }
 					]
 				},
 				{
@@ -342,9 +342,9 @@ export class MenuConfig {
 					]
 				},
 				{
-					title:'Logistic Partner',
+					title: 'Logistic Partner',
 					icon: 'flaticon2-architecture-and-city',
-					page:'/emi-management/logistic-partner',
+					page: '/emi-management/logistic-partner',
 				},
 				{
 					title: 'Bulk Upload Report',
