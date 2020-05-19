@@ -368,6 +368,9 @@ mat-header-row {
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
 	background-color: transparent;
 }
+.ng-option{
+	line-height: 1 !important;
+}
 
 .border-rad-15 {
 	border-radius: 15px;

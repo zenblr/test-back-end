@@ -4,6 +4,8 @@ const checkAuth = require('../middleware/checkAuth')
 const { uploadScheme } = require('../controllers/scheme/uploadSchemes');
 const { wrapper } = require('../utils/errorWrap');
 const multer = require('multer');
+const checkRolePermission = require('../middleware/checkRolesPermissions');
+
 const storage = multer.diskStorage({
     destination: 'public/uploads/schemes',
     filename: (req, file, cb) => {
@@ -16,6 +18,6 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage
 });
-router.post('/', checkAuth, upload.single('schemecsv'), wrapper(uploadScheme));
+router.post('/', checkAuth, checkRolePermission, upload.single('schemecsv'), wrapper(uploadScheme));
 
 module.exports = router;

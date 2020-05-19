@@ -59,7 +59,7 @@
                         <select class="form-control" formControlName="loanStatusForBM" (change)="statusBM()"
                         [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                             <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
-                            <option [value]="status.value" *ngFor="let status of branchManager" [disabled]="true">{{status.name | titlecase}}</option>
+                            <option [value]="status.value" *ngFor="let status of branchManager">{{status.name | titlecase}}</option>
                         </select>
                         <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">Field Required</mat-error>
                     </div>

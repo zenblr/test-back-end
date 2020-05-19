@@ -25,18 +25,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'interest_rate_one_hundred_eighty_days_monthly'
         },
-        interestRateThirtyDaysAnnually: {
-            type: DataTypes.FLOAT,
-            field: 'interest_rate_thirty_days_annually'
-        },
-        interestRateNinetyDaysAnnually: {
-            type: DataTypes.FLOAT,
-            field: 'interest_rate_ninety_days_annually'
-        },
-        interestRateOneHundredEightyDaysAnnually: {
-            type: DataTypes.FLOAT,
-            field: 'interest_rate_one_hundred_eighty_days_annually'
-        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

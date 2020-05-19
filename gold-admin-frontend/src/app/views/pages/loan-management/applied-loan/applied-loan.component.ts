@@ -5,6 +5,7 @@ import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators'
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
 import { AppliedLoanDatasource,AppliedLoanService } from '../../../../core/loan-management'
 import { Router } from '@angular/router';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 @Component({
   selector: 'kt-applied-loan',
   templateUrl: './applied-loan.component.html',
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class AppliedLoanComponent implements OnInit {
   
-
+  roles:any
   dataSource: AppliedLoanDatasource;
   displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions'];
   leadsResult = []
@@ -31,12 +32,15 @@ export class AppliedLoanComponent implements OnInit {
     public dialog: MatDialog,
     private AppliedLoanService: AppliedLoanService,
     private dataTableService: DataTableService,
-    private router:Router
+    private router:Router,
+    private sharedService:SharedService
   ) {
   }
 
   ngOnInit() {
-    
+    this.sharedService.getRole().subscribe(res => 
+      {this.roles = res
+      })
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
@@ -79,6 +83,7 @@ export class AppliedLoanComponent implements OnInit {
   }
 
 
+  
   loadAppliedLoansPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;

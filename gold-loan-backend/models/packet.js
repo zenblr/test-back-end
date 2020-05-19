@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'customer_id'
         },
-        packetId: {
+        packetUniqueId: {
             type: DataTypes.STRING,
-            field: 'packet_id'
+            field: 'packet_unique_id'
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -38,14 +38,14 @@ module.exports = (sequelize, DataTypes) => {
 
     // PACKET ASSOCIATION WITH MODULES
     packet.associate = function (models) {
-        packet.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+        packet.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         packet.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
     }
 
     // FUNCTION TO ADD PACKET
     packet.addPacket =
-        (packetId, createdBy, modifiedBy) => packet.create({
-            packetId, createdBy, modifiedBy, packetAssigned: false, isActive: true
+        (packetUniqueId, createdBy, modifiedBy) => packet.create({
+            packetUniqueId, createdBy, modifiedBy, packetAssigned: false, isActive: true
         });
 
     // FUNCTION TO ASSIGN PACKET
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO UPDATE PACKET
     packet.updatePacket =
-        (id, packetId, modifiedBy) => packet.update({ packetId, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
+        (id, packetUniqueId, modifiedBy) => packet.update({ packetUniqueId, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
 
     // FUNCTION TO REMOVE PACKET
     packet.removePacket =

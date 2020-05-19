@@ -31,8 +31,8 @@ export class LoanApplicationFormComponent implements OnInit {
   intreset: any;
   approval: any;
   Ornaments: any;
-  action:any;
-  customerDetail:any;
+  action: any;
+  customerDetail: any;
   disabled = [false, true, true, true, true, true];
   constructor(
     public ref: ChangeDetectorRef,
@@ -46,12 +46,12 @@ export class LoanApplicationFormComponent implements OnInit {
       for (let index = 0; index < this.disabled.length; index++) {
         this.disabled[index] = false;
       }
-      this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res =>{
-       
+      this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
+
         this.action = 'edit'
         this.customerDetail = res.data
       })
-     
+
     }
   }
 
@@ -214,20 +214,8 @@ export class LoanApplicationFormComponent implements OnInit {
       return
     }
     let data = this.createData()
-    if(this.action == 'add'){
-    this.loanApplicationFormService.applyForLoan(data).pipe(
-      map(res => {
-        this.toast.success(res.message)
-        this.router.navigate(['/loan-management/applied-loan'])
-      }),
-      catchError(err => {
-        this.toast.error(err.error.message)
-        throw err
-      })
-    ).subscribe()
-    }
-    if(this.action == 'edit'){
-      this.loanApplicationFormService.updateLoan(this.customerDetail.id,data).pipe(
+    if (this.action == 'add') {
+      this.loanApplicationFormService.applyForLoan(data).pipe(
         map(res => {
           this.toast.success(res.message)
           this.router.navigate(['/loan-management/applied-loan'])
@@ -237,7 +225,21 @@ export class LoanApplicationFormComponent implements OnInit {
           throw err
         })
       ).subscribe()
-      }
+    }
+    if (this.action == 'edit') {
+      data.loanFinalCalculator.loanStartDate = new Date(data.loanFinalCalculator.loanStartDate).toISOString();
+
+      this.loanApplicationFormService.updateLoan(this.customerDetail.id, data).pipe(
+        map(res => {
+          this.toast.success(res.message)
+          this.router.navigate(['/loan-management/applied-loan'])
+        }),
+        catchError(err => {
+          this.toast.error(err.error.message)
+          throw err
+        })
+      ).subscribe()
+    }
   }
 
   next(event) {

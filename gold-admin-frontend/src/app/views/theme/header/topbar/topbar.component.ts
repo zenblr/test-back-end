@@ -100,7 +100,7 @@ export class TopbarComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.setTopbar(this.router.url)
+		this.setTopbar(this.router.url)		
 	}
 
 	ngAfterViewInit(): void {
@@ -111,7 +111,6 @@ export class TopbarComponent implements OnInit {
 			if (ct) {
 				Promise.resolve(null).then(() => {
 					this.totalRecords = ct;
-					console.log(this.totalRecords)
 				});
 			}
 		}));
@@ -179,8 +178,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'logistic-partner') {
 			this.showInput = true;
-			this.value1 = 'Add Logistic Partner';
-			this.type1 = 'button';
+			this.rightButton = true;
+			this.value2 = 'Add Logistic Partner';
+			this.type2 = 'button';
 		}
 		if (this.path == 'karat-details') {
 			this.rightButton = true;
@@ -295,6 +295,10 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = '500px';
 			// this.showfilter = true;
 		}
+		if(location.href.includes('edit-order-details')){
+			this.value1 = 'Print Performa';
+			this.type1 = 'button';
+		}		
 	}
 
 	action(event: Event) {
@@ -374,11 +378,9 @@ export class TopbarComponent implements OnInit {
 
 	check(val) {
 		this.customerManagementServiceCustomer.toggle.next(val)
-		console.log('hi1');
 	}
 
 	applyFilter(data) {
-		console.log(data);
 		this.productService.applyFilter.next(data);
 	}
 }
