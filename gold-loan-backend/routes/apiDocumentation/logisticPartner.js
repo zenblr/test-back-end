@@ -1,11 +1,11 @@
 /**
  * @swagger
- * /occupation:
+ * /logistic-partner:
  *   post:
  *     tags:
- *       - Occupation
- *     name: Occupation
- *     summary: To add occupation
+ *       - Logistic Partner
+ *     name: Logistic Partner
+ *     summary: To add logistic partner
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -22,16 +22,16 @@
  *           - name
  *     responses:
  *       201:
- *          description: Occupation Created
+ *          description: Logistic Partner Created
  *       400:
- *          description: This Occupation is already Exist
+ *          description: This Logistic Partner is already Exist
  *       422:
- *          description: Occupation is not created
+ *          description: Logistic Partner is not created
  *   get:
  *     tags:
- *       - Occupation
- *     name: read partner
- *     summary: To read occupation
+ *       - Logistic partner
+ *     name: read Logistic Partner
+ *     summary: To read Logistic Partner
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -48,14 +48,9 @@
  *     parameters:
  *     - name: "id"
  *       in: "query"
- *       description: "Id of occupations to delete"
+ *       description: "Id of Logistic Partner to delete"
  *       required: true
  *       type: "integer"
- *     - name: "isActive"
- *       in: "query"
- *       description: "value of isActive of occupation to delete"
- *       required: true
- *       type: "boolean"
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -64,12 +59,12 @@
  *       200:
  *         description: Updated.
  *       404:
- *         description: Occupation deleted failed.
- * /occupation/{id}:
+ *         description: Logistic Partner deleted failed.
+ * /logistic-partner/{id}:
  *   put:
  *     tags:
- *       - Occupation
- *     summary: To update occupation
+ *       - Logistic Partner
+ *     summary: To update logistic partner
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -77,7 +72,7 @@
  *     parameters:
  *       - name: "id"
  *         in: "path"
- *         description: "Id of occupation to update"
+ *         description: "Id of logistic partner to update"
  *         required: true
  *         type: "integer"
  *       - name: body
@@ -93,7 +88,7 @@
  *       200:
  *         description: Updated
  *       404:
- *         description: Occupation updated failed
+ *         description: logistic partner updated failed
  *       400:
- *         description: This Occupation is already Exist
+ *         description: This logistic partner is already Exist
  */
