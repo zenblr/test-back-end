@@ -106,10 +106,23 @@ exports.applyForLoanApplication = async (req, res, next) => {
 
     let appliedForLoanApplication = await sequelize.transaction(async t => {
         // customerLoan
-        let customerLoanCreated = await models.customerLoan.create({
-            customerId, applicationFormForAppraiser,
-            goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy
-        }, { transaction: t })
+        let customerLoanCreated;
+        if (loanStatusForAppraiser == "approved") {
+            let stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+
+            customerLoanCreated = await models.customerLoan.create({
+                customerId, applicationFormForAppraiser,
+                goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, loanStageId: stageId.id
+            }, { transaction: t })
+        } else {
+            let stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
+
+            customerLoanCreated = await models.customerLoan.create({
+                customerId, applicationFormForAppraiser,
+                goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, loanStageId: stageId.id
+            }, { transaction: t })
+        }
+
         let loanId = customerLoanCreated.id;
 
         // customerLoanBank
@@ -264,6 +277,14 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
         goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM } = loanApproval
     let cutomerLoanApproval = {}
     if (req.userData.roleName[0] == "Appraiser") {
+        let stageId;
+        if (loanStatusForAppraiser == 'approved') {
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+        } else {
+            stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
+        }
+
+        cutomerLoanApproval['loanStageId'] = stageId.id
         cutomerLoanApproval['applicationFormForAppraiser'] = applicationFormForAppraiser
         cutomerLoanApproval['goldValuationForAppraiser'] = goldValuationForAppraiser
         cutomerLoanApproval['loanStatusForAppraiser'] = loanStatusForAppraiser
@@ -282,6 +303,15 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
                 return res.status(400).json({ message: `One of field is not verified` })
             }
         }
+
+        let stageId;
+        if (loanStatusForBM == 'approved') {
+            stageId = await models.loanStage.findOne({ where: { name: 'packet assign' }, transaction: t })
+        } else {
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+        }
+
+        cutomerLoanApproval['loanStageId'] = stageId.id
         cutomerLoanApproval['applicationFormForBM'] = applicationFormForBM
         cutomerLoanApproval['goldValuationForBM'] = goldValuationForBM
         cutomerLoanApproval['loanStatusForBM'] = loanStatusForBM
@@ -387,7 +417,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     if (appliedLoanDetails.length === 0) {
         return res.status(200).json([]);
     } else {
-       return res.status(200).json({ message: 'Applied loan details fetch successfully', appliedLoanDetails, count: count.length });
+        return res.status(200).json({ message: 'Applied loan details fetch successfully', appliedLoanDetails, count: count.length });
     }
 }
 
@@ -400,8 +430,8 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
 
     let getPackets = await models.customerLoanPackageDetails.findAll({ where: { loanId: loanId } })
-    if(!check.isEmpty(getPackets)){
-        return res.status(400).json({message: `Packets has been already assign`})
+    if (!check.isEmpty(getPackets)) {
+        return res.status(400).json({ message: `Packets has been already assign` })
     }
 
     if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'approved') {
@@ -428,11 +458,15 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
             obj.isActive = true
             return obj
         })
+        let stageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' }, transaction: t })
+
         await sequelize.transaction(async (t) => {
+            await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
+
             await models.customerLoanPackageDetails.bulkCreate(finalPackageData, { returning: true, transaction: t })
 
             let d = await models.packet.bulkCreate(packetUpdateArray, {
-                updateOnDuplicate: ["customerId", "loanId", "modifiedBy","isActive"]
+                updateOnDuplicate: ["customerId", "loanId", "modifiedBy", "isActive"]
             }, { transaction: t })
         })
 
