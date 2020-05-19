@@ -1,6 +1,7 @@
 const models = require('../../models'); // importing models.
-
-
+const Sequelize = models.Sequelize;
+const sequelize=models.sequelize;
+const Op = Sequelize.Op;
 exports.readBanner = async (req, res, next) => {
     console.log("banner")
     let banner = await models.banner.readBanner()
@@ -67,7 +68,7 @@ exports.readBankDetailsOfCustomer = async (req, res, next) => {
 
 exports.readNomineeDetailsOfCustomer = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readNomineeDetailsOfCustomer = await models.customerLoanNomineeDetail.findAll({attributes:['nomineeName','nomineeAge','relationship']},{ where: customerId });
+    let readNomineeDetailsOfCustomer = await models.customerLoanNomineeDetail.findAll({ attributes: ['nomineeName', 'nomineeAge', 'relationship'] }, { where: customerId });
     if (!readNomineeDetailsOfCustomer) {
         res.status(404).json({ message: 'Data not found' })
     }
@@ -77,7 +78,7 @@ exports.readNomineeDetailsOfCustomer = async (req, res, next) => {
 }
 exports.readAddressDetailsOfCustomer = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readAddressDetailsOfCustomer = await models.customerKycAddressDetail.findAll({ attributes:['address','stateId','cityId','pinCode'] }, { where: { customerId: customerId } });
+    let readAddressDetailsOfCustomer = await models.customerKycAddressDetail.findAll({ attributes: ['address', 'stateId', 'cityId', 'pinCode'] }, { where: { customerId: customerId } });
     if (!readAddressDetailsOfCustomer) {
         res.status(404).json({ message: 'Data not found' })
     }
@@ -135,7 +136,7 @@ exports.readPartnerBranch = async (req, res, next) => {
 }
 exports.readMyLoan = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readMyLoan = await models.customerFinalLoan.findOne({ attributes: ['loanId','interestRate','tenure','loanStartDate','loanEndDate','finalLoanAmount'] }, { where: { customerId: customerId } });
+    let readMyLoan = await models.customerFinalLoan.findOne({ attributes: ['loanId', 'interestRate', 'tenure', 'loanStartDate', 'loanEndDate', 'finalLoanAmount'] }, { where: { customerId: customerId } });
     if (!readMyLoan) {
         res.status(404).json({ message: 'Data not found' })
     }
@@ -156,50 +157,65 @@ exports.readAllScheme = async (req, res, next) => {
 
 exports.readLoanDetails = async (req, res, next) => {
     let customerId = req.userData.id;
-    let loanDetails = await models.customerFinalLoan.findOne({attributes:['loanId','finalLoanAmount','interestRate',
-    'tenure','loanStartDate','loanEndDate']},{ where: { isActive: true, customerId: customerId } });
+    let loanDetails = await models.customerFinalLoan.findOne({
+        attributes: ['loanId', 'finalLoanAmount', 'interestRate',
+            'tenure', 'loanStartDate', 'loanEndDate']
+    }, { where: { isActive: true, customerId: customerId } });
     if (!loanDetails) {
-        res.status(404).json({message:'Data not found'})
+        res.status(404).json({ message: 'Data not found' })
     }
-    else{
+    else {
         res.status(200).json(loanDetails)
     }
 }
 
-exports.schemeBasedOnPriceRange=async(req,res,next)=>{
-    const{schemeAmountStart,schemeAmountEnd}=req.query;
-    const query={};
+exports.schemeBasedOnPriceRange = async (req, res, next) => {
+    const { schemeAmountStart, schemeAmountEnd } = req.query;
+    var query = {};
 
-    query.isActive=true;
-    
-    if(schemeAmountStart && schemeAmountEnd){
-        query.schemeAmountStart=schemeAmountStart;
-        query.schemeAmountEnd=schemeAmountEnd
+    query.isActive = true;
+    if (schemeAmountStart && schemeAmountEnd) {
+        // AmountStart = parseInt(schemeAmountStart);
+        // AmountEnd = parseInt(schemeAmountEnd);
+        query = {
+            [Op.and]: {
+                schemeAmountStart: { [Op.gte]: schemeAmountStart },
+                schemeAmountEnd: { [Op.lte]: schemeAmountEnd },
+            }
+        }
     }
-    let schemeBasedOnPriceRange=await models.scheme.findAll({
-        where: query});
+    let schemeBasedOnPriceRange = await models.scheme.findAll({
+        where: query
+    });
     if (!schemeBasedOnPriceRange[0]) {
-      return  res.status(404).json({message:'Data not found'})
+        return res.status(404).json({ message: 'Data not found' })
     }
-    else{
-     return   res.status(200).json(schemeBasedOnPriceRange);
+    else {
+        return res.status(200).json(schemeBasedOnPriceRange);
     }
 }
 
-exports.readFeedBack=async(req,res)=>{
-    let readCustomerFeedBack=await models.feedBack.findAll({attributes:['customerName','feedBack','rating','profileImage']},{where:{isActive:true}});
-        //     include: [
-        // {
-        //     model:models.customer,
-        //     as: "customer",
-        //     attributes:['firstName',"lastName"]
-        // }
-    // ], });
+exports.readFeedBack = async (req, res) => {
+    let readCustomerFeedBack = await models.feedBack.findAll({ attributes: ['customerName', 'feedBack', 'rating', 'profileImage'] }, { where: { isActive: true } });
 
-    if(!readCustomerFeedBack[0]){
-        return res.status(404).json({message:'data not found'});
-    
+    if (!readCustomerFeedBack[0]) {
+        return res.status(404).json({ message: 'data not found' });
     }
     return res.status(200).json(readCustomerFeedBack);
-        
-    }
+}
+
+exports.addFeedBack = async (req, res) => {
+    const { customerName, contactNumber, feedBack, rating } = req.body;
+    await sequelize.transaction(async t => {
+        let customerId = req.userData.id;
+        console.log(customerId)
+        let customerPersonalDetails = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
+        console.log(customerPersonalDetails)
+        let profileImage = customerPersonalDetails.dataValues.profileImage;
+        let addFeedBackData = await models.feedBack.create({ customerName, contactNumber, feedBack, rating, customerId, profileImage }, { transaction: t });
+        if (!addFeedBackData) {
+            return res.status(422).json({ message: 'feedback is not created' });
+        }
+        return res.status(201).json({ message: 'created' });
+    })
+}

@@ -14,7 +14,7 @@ const customerCheckAuth = require('../middleware/customerCheckAuth')
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer,
     readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan
     , schemeBasedOnPriceRange, readLoanDetails,
-    readFeedBack } = require('../controllers/customer/customerApp')
+    readFeedBack,addFeedBack } = require('../controllers/customer/customerApp')
 
 //customer
 router.post('/', customerValidation, validationError, checkAuth, checkRolePermission, wrapper(addCustomer));
@@ -66,6 +66,8 @@ router.get('/scheme-based-on-price', customerCheckAuth, wrapper(schemeBasedOnPri
 router.get('/loan-detail', customerCheckAuth, wrapper(readLoanDetails));// read loan details
 
 router.get('/customer-feedback', customerCheckAuth, wrapper(readFeedBack)); // read customer feed back
+
+router.post('/customer-feedback',customerCheckAuth,wrapper(addFeedBack)); // add customer feedback
 
 router.get('/customer-unique', checkAuth, wrapper(getCustomerUniqueId));
 //customer App
