@@ -81,6 +81,7 @@ export class InterestCalculatorComponent implements OnInit {
   getSchemes() {
     this.schemesList = []
     this.controls.schemeId.patchValue('')
+    this.controls.interestRate.patchValue('')
     this.partnerService.getSchemesByParnter(Number(this.controls.partnerId.value)).pipe(
       map(res => {
         this.schemesList = res.data.schemes;

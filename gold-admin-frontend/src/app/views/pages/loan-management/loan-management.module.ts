@@ -103,6 +103,7 @@ const rout: Routes = [
   ],
   entryComponents: [
     AssignPacketsComponent,
+    DisburseDialogComponent,
     DeleteEntityDialogComponent
   ]
 })

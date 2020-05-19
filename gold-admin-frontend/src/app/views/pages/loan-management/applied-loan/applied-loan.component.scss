@@ -12,9 +12,18 @@
         padding-left: 0 !important;
     }
     .mat-column-actions{
-        flex:1 !important;
+        flex:0 0 6% !important;
     }
     .mat-column-customerID{
-        flex: 0 0 10% !important;
+        flex: 0 0 9% !important;
     }
+    .mat-column-appraisalApproval{
+        flex-basis: 2% !important;
+    }
+    .apply-kyc {
+		background: transparent;
+		border: thin solid #454D67;
+		border-radius: 5px;
+		padding: 5px;
+	}
 }
