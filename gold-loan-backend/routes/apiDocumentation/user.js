@@ -368,7 +368,7 @@
  *     tags:
  *       - Internal User
  *     name: delete internal user
- *     summary: To add internal user  
+ *     summary: To delete internal user  
  *     consumes:
  *       - application/json
  *     security:
@@ -376,7 +376,7 @@
  *     parameters:
  *       - name: "id"
  *         in: "path"
- *         description: "id to edit internal user"
+ *         description: "id to delete internal user"
  *         required: true
  *         type: "integer"
  *     responses:
@@ -395,6 +395,5 @@
  *       - application/json
  *     responses:
  *       200:
- *         description: Success.   
- * 
+ *         description: Success.
  */

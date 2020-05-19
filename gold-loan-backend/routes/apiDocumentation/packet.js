@@ -1,11 +1,11 @@
 /**
  * @swagger
- * /logistic-partner:
+ * /packet:
  *   post:
  *     tags:
- *       - Logistic Partner
- *     name: Logistic Partner
- *     summary: To add logistic partner
+ *       - Packet
+ *     name: Packet
+ *     summary: To add packet
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -16,22 +16,20 @@
  *         schema:
  *           type: object
  *           properties:
- *             name:
+ *             packetUniqueId:
  *               type: string
  *         required:
- *           - name
+ *           - packetUniqueId
  *     responses:
  *       201:
- *          description: Logistic Partner Created
+ *          description: you adeed packet successfully
  *       400:
- *          description: This Logistic Partner is already Exist
- *       422:
- *          description: Logistic Partner is not created
+ *          description: This packet Id is already exist
  *   get:
  *     tags:
- *       - Logistic Partner
- *     name: read Logistic Partner
- *     summary: To read Logistic Partner
+ *       - Packet
+ *     name: read Packet
+ *     summary: To read Packet
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -51,19 +49,22 @@
  *       type: "string"
  *     responses:
  *       200:
- *          description: Success
- *       404:
- *          description: Data not found
+ *          description: packet details fetch successfully
  *   delete:
  *     tags:
- *       - Logistic Partner
+ *       - Packet
  *     summary: To delete by Id
  *     parameters:
  *     - name: "id"
  *       in: "query"
- *       description: "Id of Logistic Partner to delete"
+ *       description: "Id of Packet to delete"
  *       required: true
  *       type: "integer"
+ *     - name: "isActive"
+ *       in: "query"
+ *       description: "IsActive of Packect to delete"
+ *       required: true
+ *       type: "boolean"
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -72,12 +73,12 @@
  *       200:
  *         description: Updated.
  *       404:
- *         description: Logistic Partner deleted failed.
- * /logistic-partner/{id}:
+ *         description: Packet deleted failed.
+ * /packet/{id}:
  *   put:
  *     tags:
- *       - Logistic Partner
- *     summary: To update logistic partner
+ *       - Packet
+ *     summary: To update Packet
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -85,7 +86,7 @@
  *     parameters:
  *       - name: "id"
  *         in: "path"
- *         description: "Id of logistic partner to update"
+ *         description: "Id of packet to update"
  *         required: true
  *         type: "integer"
  *       - name: body
@@ -93,15 +94,27 @@
  *         schema:
  *           type: object
  *           properties:
- *             name:
+ *             packetUniqueId:
  *               type: string
  *         required:
- *           - name
+ *           - packetUniqueId
  *     responses:
  *       200:
- *         description: Updated
+ *         description: packet updated successfully
  *       404:
- *         description: logistic partner updated failed
- *       400:
- *         description: This logistic partner is already Exist
+ *         description: packet not update
+ * /packet/available-packet:
+ *   get:
+ *     tags:
+ *       - Packet
+ *     summary: To read the available Packet
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: avalable packet details fetch successfully
+ *       404:
+ *         description: no packet details found  
  */
