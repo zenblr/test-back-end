@@ -11,11 +11,16 @@ import { ToastrComponent } from '../../../../../../views/partials/components/toa
 })
 export class RefundManagementEditComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  constructor(  public dialogRef: MatDialogRef<RefundManagementEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,) { }
+  productData: any;
+  title: any;
 
-  ngOnInit() {
-  }
+  constructor(
+    public dialogRef: MatDialogRef<RefundManagementEditComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) { }
+
+  ngOnInit() { }
+
   action(event: Event) {
     if (event) {
       this.onSubmit()
@@ -24,7 +29,5 @@ export class RefundManagementEditComponent implements OnInit {
     }
   }
 
-  onSubmit(){
-    
-  }
+  onSubmit() { }
 }
