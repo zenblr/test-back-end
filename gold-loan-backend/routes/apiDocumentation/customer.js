@@ -108,6 +108,8 @@
  *             cityId:
  *               type: number
  *             stateId:
+ *               type: number
+ *             pinCode:
  *               type: number  
  *             address:
  *               type: array
@@ -122,7 +124,7 @@
  *                   type: number
  *                 cityId:
  *                   type: number
- *                 pinCode: 
+ *                 postalCode: 
  *                   type: number
  *             statusId:
  *               type: number  

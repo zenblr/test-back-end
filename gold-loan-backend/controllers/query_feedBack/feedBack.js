@@ -10,10 +10,10 @@ exports.addFeedBack = async (req, res) => {
     const { customerName, contactNumber, feedBack, rating } = req.body;
     await sequelize.transaction(async t => {
         let customerId = req.userData.id;
-        console.log(customerId)
+        
         let customerPersonalDetails = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
-        console.log(customerPersonalDetails)
-        let profileImage = customerPersonalDetails.dataValues.profileImage;
+        if(customerPersonalDetails){
+        var profileImage = customerPersonalDetails.dataValues.profileImage;}
         // console.log(profileImage);
         let addFeedBackData = await models.feedBack.create({ customerName, contactNumber, feedBack, rating, customerId, profileImage }, { transaction: t });
         if (!addFeedBackData) {

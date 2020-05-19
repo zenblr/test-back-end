@@ -8,6 +8,8 @@
  *     summary: To Register  
  *     consumes:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: body
  *         in: body
@@ -55,6 +57,7 @@
  *           - address
  *           - cityId
  *           - stateId
+ *           - landMark
  *           - roleId
  *           - userTypeId:
  *           - internalBranchId
@@ -381,6 +384,17 @@
  *          description: internal user deleted
  *       404:
  *          description: failed to delete internal user
- *    
+ * /user/appraiser-list:
+ *  get:
+ *     tags:
+ *       - User Registration
+ *     summary: To read user registration
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.   
  * 
  */

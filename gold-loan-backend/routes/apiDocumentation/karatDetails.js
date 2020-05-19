@@ -1,11 +1,11 @@
 /**
  * @swagger
- * /logistic-partner:
+ * /karat-details:
  *   post:
  *     tags:
- *       - Logistic Partner
- *     name: Logistic Partner
- *     summary: To add logistic partner
+ *       - Karat Details
+ *     name: add karat details
+ *     summary: To add karat details
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -16,22 +16,28 @@
  *         schema:
  *           type: object
  *           properties:
- *             name:
- *               type: string
+ *             karat:
+ *               type: number
+ *             fromPercentage:
+ *               type: number
+ *             toPercentage:
+ *               type: number
  *         required:
- *           - name
+ *           - karat
+ *           - fromPercentage
+ *           - toPercentage
  *     responses:
  *       201:
- *          description: Logistic Partner Created
+ *          description: karat details is created
  *       400:
- *          description: This Logistic Partner is already Exist
+ *          description: from percentage should less than to percentage/karat is already exist
  *       422:
- *          description: Logistic Partner is not created
+ *          description: karat details is not created
  *   get:
  *     tags:
- *       - Logistic Partner
- *     name: read Logistic Partner
- *     summary: To read Logistic Partner
+ *       - Karat Details
+ *     name: read karat details
+ *     summary: To read karat details
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -39,16 +45,14 @@
  *     responses:
  *       200:
  *          description: Success
- *       404:
- *          description: Data not found
  *   delete:
  *     tags:
- *       - Logistic Partner
+ *       - Karat Details
  *     summary: To delete by Id
  *     parameters:
  *     - name: "id"
  *       in: "query"
- *       description: "Id of Logistic Partner to delete"
+ *       description: "Id of karat details to delete"
  *       required: true
  *       type: "integer"
  *     security:
@@ -59,12 +63,12 @@
  *       200:
  *         description: Updated.
  *       404:
- *         description: Logistic Partner deleted failed.
- * /logistic-partner/{id}:
+ *         description: deleted failed
+ * /karat-details/{id}:
  *   put:
  *     tags:
- *       - Logistic Partner
- *     summary: To update logistic partner
+ *       - Karat Details
+ *     summary: To update karat details
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -72,7 +76,7 @@
  *     parameters:
  *       - name: "id"
  *         in: "path"
- *         description: "Id of logistic partner to update"
+ *         description: "Id of karat details to update"
  *         required: true
  *         type: "integer"
  *       - name: body
@@ -80,15 +84,22 @@
  *         schema:
  *           type: object
  *           properties:
- *             name:
- *               type: string
+ *             karat:
+ *               type: number
+ *             fromPercentage:
+ *               type: number
+ *             toPercentage:
+ *               type: number
  *         required:
- *           - name
+ *           - karat
+ *           - fromPercentage
+ *           - toPercentage
  *     responses:
  *       200:
  *         description: Updated
  *       404:
- *         description: logistic partner updated failed
+ *         description: karat details updated failed
  *       400:
- *         description: This logistic partner is already Exist
+ *         description: This karat is already Exist
+
  */
