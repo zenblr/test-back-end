@@ -7,6 +7,7 @@ import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/o
 import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { OrderDetailsViewComponent } from '../order-details-view/order-details-view.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-order-details-list',
@@ -36,7 +37,8 @@ export class OrderDetailsListComponent implements OnInit {
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
     private orderDetailsService: OrderDetailsService,
-    private dataTableService: DataTableService
+    private dataTableService: DataTableService,
+    private router: Router
   ) {
     this.orderDetailsService.exportExcel$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
@@ -126,7 +128,9 @@ export class OrderDetailsListComponent implements OnInit {
     });
   }
 
-  editOrder() { }
+  editOrder(order) {
+    this.router.navigate(['emi-management/order-details/', order.id]);
+  }
 
   downloadReport() {
     this.orderDetailsService.reportExport().subscribe();

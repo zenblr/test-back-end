@@ -1,6 +1,15 @@
-<label for="file-upload{{index}}" class="file-upload">
-    <img class="editImage border" [src]="image" />
-</label>
-<img *ngIf="action == 'remove'" id="remove{{index}}" class="removeImage" [src]="'assets/media/icons/cancel.png'"
-    (click)="removeFile($event)" />
-<input id="file-upload{{index}}" type="file" accept="image/*" (change)="uploadFile($event)" />
+<div *ngIf="type != 'formField'">
+    <label for="file-upload{{index}}" class="file-upload">
+        <img class="editImage border" [src]="image" />
+    </label>
+    <img *ngIf="action == 'remove'" id="remove{{index}}" class="removeImage" [src]="'assets/media/icons/cancel.png'"
+        (click)="removeFile($event)" />
+    <input id="file-upload{{index}}" type="file" accept="image/*" (change)="uploadFile($event)" />
+</div>
+
+<div *ngIf="type == 'formField'">
+    <label for="custom-file-upload" class="custom-file-upload font-weight-500">
+        Choose File
+    </label>
+    <input #file id="custom-file-upload" type="file" accept='image/*' (change)="uploadFile($event)" />
+</div>
