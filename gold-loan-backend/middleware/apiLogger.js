@@ -18,6 +18,7 @@ module.exports = (req, res, next) => {
         "/api/customer/personal-detail",
         "/api/customer/bank-detail",
         "/api/customer/address-detail",
+        "/api/customer/nominee-detail",
         "/api/customer/address-proof-image-detail",
         "/api/customer/pan-card-image-detail",
         "/api/customer/partner-branch",
