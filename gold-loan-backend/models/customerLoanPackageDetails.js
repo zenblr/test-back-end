@@ -1,9 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
-    const packageImageUploadForLoan = sequelize.define('packageImageUploadForLoan', {
+    const CustomerLoanPackageDetails = sequelize.define('customerLoanPackageDetails', {
         // attributes
         loanId: {
             type: DataTypes.INTEGER,
             field: 'loan_id',
+            allowNull: false
+        },
+        packetId: {
+            type: DataTypes.INTEGER,
+            field: 'packet_id',
             allowNull: false
         },
         emptyPacketWithNoOrnament: {
@@ -22,10 +27,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'packet_with_weight'
         },
-        packetUniqueId: {
-            type: DataTypes.STRING,
-            field: 'packet_unique_id'
-        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -37,15 +38,20 @@ module.exports = (sequelize, DataTypes) => {
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
     }, {
         freezeTableName: true,
-        tableName: 'package_image_upload_for_loan',
+        tableName: 'customer_loan_package_details',
     });
 
+    CustomerLoanPackageDetails.associate = function (models) {
+        CustomerLoanPackageDetails.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
+        CustomerLoanPackageDetails.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
+    }
+
     // FUNCTION TO ADD PACKAGE IMAGE UPLOAD
-    packageImageUploadForLoan.addPackageImages =
+    CustomerLoanPackageDetails.addPackageImages =
         (loanId, packageData, createdBy, modifiedBy, t) => {
             let finalPackageData = packageData.map(function (ele) {
                 let obj = Object.assign({}, ele);
@@ -55,8 +61,8 @@ module.exports = (sequelize, DataTypes) => {
                 obj.modifiedBy = modifiedBy;
                 return obj;
             })
-            return packageImageUploadForLoan.bulkCreate(finalPackageData);
+            return CustomerLoanPackageDetails.bulkCreate(finalPackageData);
         };
 
-    return packageImageUploadForLoan;
+    return CustomerLoanPackageDetails;
 }

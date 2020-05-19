@@ -129,7 +129,7 @@ export class OrderDetailsListComponent implements OnInit {
   }
 
   editOrder(order) {
-    this.router.navigate(['emi-management/order-details/', order.id]);
+    this.router.navigate(['emi-management/order-details/edit-order-details/', order.id]);
   }
 
   downloadReport() {

@@ -39,14 +39,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM,
             field: 'loan_status_for_bm',
             values: ['approved', 'pending', 'rejected'],
-            defaultValue:'pending'
+            defaultValue: 'pending'
         },
         commentByBM: {
             type: DataTypes.TEXT,
             field: 'comment_by_bm'
         },
         totalEligibleAmt: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.STRING,
             field: 'total_eligible_amt'
         },
         totalFinalInterestAmt: {
@@ -56,6 +56,10 @@ module.exports = (sequelize, DataTypes) => {
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
+        },
+        loanStageId: {
+            type: DataTypes.INTEGER,
+            field: 'loan_stage_id'
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
@@ -74,13 +78,17 @@ module.exports = (sequelize, DataTypes) => {
     // CUSTOMER LOAN ASSOCIATION WITH MODULES
     customerLoan.associate = function (models) {
         customerLoan.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+
         customerLoan.hasOne(models.customerLoanBankDetail, { foreignKey: 'loanId', as: 'loanBankDetail' });
         customerLoan.hasOne(models.customerLoanKycDetail, { foreignKey: 'loanId', as: 'loanKycDetail' });
         customerLoan.hasMany(models.customerLoanNomineeDetail, { foreignKey: 'loanId', as: 'loanNomineeDetail' });
         customerLoan.hasMany(models.customerLoanOrnamentsDetail, { foreignKey: 'loanId', as: 'loanOrnamentsDetail' });
         customerLoan.hasOne(models.customerLoanPersonalDetail, { foreignKey: 'loanId', as: 'loanPersonalDetail' });
-        customerLoan.hasMany(models.packageImageUploadForLoan, { foreignKey: 'loanId', as: 'packetDetails' });
         customerLoan.hasOne(models.customerFinalLoan, { foreignKey: 'loanId', as: 'finalLoan' });
+        customerLoan.hasMany(models.customerLoanPackageDetails, { foreignKey: 'loanId', as: 'loanPacketDetails' });
+        customerLoan.hasMany(models.packet, { foreignKey: 'loanId', as: 'packet' });
+
+        customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 
         customerLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });

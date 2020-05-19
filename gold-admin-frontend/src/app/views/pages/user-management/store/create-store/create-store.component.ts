@@ -12,38 +12,38 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./create-store.component.scss']
 })
 export class CreateStoreComponent implements OnInit {
-  
+
   merchant = []
-  merchantId = new FormControl('',Validators.required)
+  merchantId = new FormControl('', Validators.required)
   constructor(
     public dialogRef: MatDialogRef<CreateStoreComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: any,
-    private brokerService:BrokerService,
-    private storeService:StoreService,
-    private toastService:ToastrService
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private brokerService: BrokerService,
+    private storeService: StoreService,
+    private toastService: ToastrService
   ) { }
 
   ngOnInit() {
     this.getMerchant()
   }
 
-  getMerchant(){
+  getMerchant() {
     this.brokerService.getAllMerchant().pipe(
-      map(res=>{
+      map(res => {
         this.merchant = res
       })
     ).subscribe()
   }
-  action(event){
-    if(event){
+  action(event) {
+    if (event) {
       this.storeService.createStore(this.merchantId.value).pipe(
-        map(res=>{
+        map(res => {
           this.dialogRef.close(res)
-        }),catchError(err=>{
+        }), catchError(err => {
           this.toastService.error(err.error.message);
           throw err;
         })).subscribe()
-    }else{
+    } else {
       this.dialogRef.close()
     }
   }

@@ -83,14 +83,14 @@ router.use('/address-proof-type', addressProofType);
 const customerKyc = require('./customerKyc')
 router.use('/kyc', customerKyc)
 
-const emailAlert=require('./emailAlert'); // email alert
-router.use('/email-alert',emailAlert)
+const emailAlert = require('./emailAlert'); // email alert
+router.use('/email-alert', emailAlert)
 
-const smsAlert=require('./smsAlert');  // sms alert
-router.use('/sms-alert',smsAlert)
+const smsAlert = require('./smsAlert');  // sms alert
+router.use('/sms-alert', smsAlert)
 
-const query=require('./query'); // customer query
-router.use('/customer-query',query)
+const query = require('./query'); // customer query
+router.use('/customer-query', query)
 
 const customerLoanProcess = require('./customerLoanProcess'); // customer loan process module
 router.use('/loan-process', customerLoanProcess);
@@ -98,32 +98,35 @@ router.use('/loan-process', customerLoanProcess);
 const loanAccount = require('./loanAccount'); // customer loan account process module
 router.use('/loan-account', loanAccount);
 
-const feedBack=require('./feedBack'); // feed back module
-router.use('/customer-feedback',feedBack)
+const feedBack = require('./feedBack'); // feed back module
+router.use('/customer-feedback', feedBack)
 
 const customerClassification = require('./customerClassification')
 router.use('/classification', customerClassification)
 
 const rolePermission = require('./rolePermission');
-router.use('/role-permission',rolePermission);
+router.use('/role-permission', rolePermission);
 
 const modules = require('./module');
-router.use('/modules',modules);
+router.use('/modules', modules);
 
-const internalBranch=require('./internalBranch'); // internal branch module
-router.use('/internal-branch',internalBranch)
+const internalBranch = require('./internalBranch'); // internal branch module
+router.use('/internal-branch', internalBranch)
 
 const goldRate = require('./goldRate');
 router.use('/gold-rate', goldRate)
 
-const logisticPartner=require('./logisticPartner'); // logistic partner module
-router.use('/logistic-partner',logisticPartner)
+const logisticPartner = require('./logisticPartner'); // logistic partner module
+router.use('/logistic-partner', logisticPartner)
 
-const karatDetails=require('./karatDetails'); // karat details module
-router.use('/karat-details',karatDetails)
+const karatDetails = require('./karatDetails'); // karat details module
+router.use('/karat-details', karatDetails)
 
 const assignAppraiser = require('./customerAssignAppraiser');
-router.use('/assign-appraiser',assignAppraiser)
+router.use('/assign-appraiser', assignAppraiser);
+
+const packet = require('./packet');
+router.use('/packet', packet)
 
 
 module.exports = router;

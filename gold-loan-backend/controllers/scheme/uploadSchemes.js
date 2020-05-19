@@ -38,8 +38,7 @@ exports.uploadScheme = async (req, res, next) => {
             let addSchemeData = await models.scheme.create({
                 schemeName: jsonArray[i].schemeName,schemeAmountStart: jsonArray[i].AmountStart, schemeAmountEnd: jsonArray[i].AmountEnd,
                 interestRateThirtyDaysMonthly: jsonArray[i].InterestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly: jsonArray[i].InterestRateNinetyDaysMonthly,
-                interestRateOneHundredEightyDaysMonthly: jsonArray[i].InterestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually: jsonArray[i].InterestRateThirtyDaysAnnually,
-                interestRateNinetyDaysAnnually: jsonArray[i].InterestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually: jsonArray[i].InterestRateOneHundredEightyDaysAnnually
+                interestRateOneHundredEightyDaysMonthly: jsonArray[i].InterestRateOneHundredEightyDaysMonthly
             }, { transaction: t });
 
                 let  schemedata = await models.partnerScheme.create({
