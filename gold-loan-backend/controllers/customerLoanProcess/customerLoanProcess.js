@@ -279,9 +279,9 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
     if (req.userData.roleName[0] == "Appraiser") {
         let stageId;
         if (loanStatusForAppraiser == 'approved') {
-            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
         } else {
-            stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
+            stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' } })
         }
 
         cutomerLoanApproval['loanStageId'] = stageId.id
@@ -306,9 +306,9 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
 
         let stageId;
         if (loanStatusForBM == 'approved') {
-            stageId = await models.loanStage.findOne({ where: { name: 'packet assign' }, transaction: t })
+            stageId = await models.loanStage.findOne({ where: { name: 'assign packet' } })
         } else {
-            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
         }
 
         cutomerLoanApproval['loanStageId'] = stageId.id
@@ -382,6 +382,10 @@ exports.appliedLoanDetails = async (req, res, next) => {
     };
 
     let associateModel = [{
+        model: models.loanStage,
+        as: 'loanStage',
+        attributes: ['id', 'name']
+    }, {
         model: models.customer,
         as: 'customer',
         where: { isActive: true },
@@ -455,18 +459,19 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
             obj.customerId = loanDetails.customerId;
             obj.loanId = loanId;
             obj.modifiedBy = modifiedBy
-            obj.isActive = true
+            obj.packetAssigned = true;
             return obj
         })
-        let stageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' }, transaction: t })
 
         await sequelize.transaction(async (t) => {
+            let stageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' }, transaction: t })
+
             await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
 
             await models.customerLoanPackageDetails.bulkCreate(finalPackageData, { returning: true, transaction: t })
 
             let d = await models.packet.bulkCreate(packetUpdateArray, {
-                updateOnDuplicate: ["customerId", "loanId", "modifiedBy", "isActive"]
+                updateOnDuplicate: ["customerId", "loanId", "modifiedBy", "isActive", "packetAssigned"]
             }, { transaction: t })
         })
 
