@@ -108,13 +108,6 @@ export class FinalInterestAmountComponent implements OnInit {
     this.dateOfPayment = []
     let length = Number(this.controls.tenure.value)
     for (let index = 0; index < length; index++) {
-      // if (length % this.colJoin == 0) {
-      //   var colJoin = false;
-      // } else if (this.colJoin < index) {
-      //   colJoin = true;
-      // } else {
-      //   colJoin = false
-      // }
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
       var data = { key: new Date(date.setMonth(date.getMonth() + index)), colJoin: true }
