@@ -69,6 +69,8 @@ export class OrderDetailsEditComponent implements OnInit {
       logisticPartnerId: ['', Validators.required],
       trackingId: ['', Validators.required],
       statusId: ['', Validators.required],
+      uploadedAwbFile: [''],
+      uploadedAwbBox: [''],
     })
   }
 
@@ -108,6 +110,11 @@ export class OrderDetailsEditComponent implements OnInit {
         this.orderForm.controls['trackingId'].disable();
         this.orderForm.controls['logisticPartnerId'].disable();
         break;
+      case 12: this.hiddenFlag = false;
+        this.getOrderLogistic();
+        this.orderForm.controls['trackingId'].disable();
+        this.orderForm.controls['logisticPartnerId'].disable();
+        break;
       default: this.hiddenFlag = true;
         this.orderForm.disable();
         break;
@@ -122,6 +129,12 @@ export class OrderDetailsEditComponent implements OnInit {
       this.orderLogistic = res;
       this.ref.detectChanges();
     });
+  }
+
+  uploadImage(data) {
+    console.log(data);
+    this.orderForm.controls['uploadedAwbFile'].patchValue(data.URL);
+    console.log(this.orderForm.controls.value)
   }
 
   submit() {

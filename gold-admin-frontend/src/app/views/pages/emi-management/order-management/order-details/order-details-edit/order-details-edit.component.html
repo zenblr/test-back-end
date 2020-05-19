@@ -76,6 +76,26 @@
                             <input type="text" formControlName="emiEndDate" class="form-control" disabled>
                         </div>
                     </div>
+
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Upload Awb File</label>
+                        </div>
+                        <div class="col-8">
+                            <kt-uplod-preview-image [type]="'formField'" (upload)="uploadImage($event)">
+                            </kt-uplod-preview-image>
+                        </div>
+                    </div>
+
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Upload Awb Box</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="emiEndDate" class="form-control" disabled>
+                        </div>
+                    </div>
+
                     <div class="row kt-margin-t-15">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Logistic Name</label>
