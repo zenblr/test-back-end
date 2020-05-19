@@ -204,19 +204,19 @@
                                     <td>{{date.key | date :'mediumDate'}}</td>
 
                                     <td [attr.rowspan]="colJoin" *ngIf="(idx%colJoin == 0 || colJoin == null)">
-                                        {{intrestAmount | currency : 'INR'}}3</td>
+                                        {{intrestAmount | currency : 'INR'}}</td>
 
                                 </tr>
                             </tbody>
-                            <tbody *ngIf="dateOfPayment.length%colJoin != 0">
+                            <tbody *ngIf="dateOfPayment.length%colJoin != 0 && colJoin !== null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
                                     <td>{{date.key | date :'mediumDate'}}</td>
                                     <!-- <td>{{idx%colJoin == 0}}{{colJoin == null}}{{dateOfPayment.length%colJoin < dateOfPayment.length-idx}} {{dateOfPayment.length%colJoin}}{{dateOfPayment.length-idx}}</td> -->
                                     <td [attr.rowspan]="colJoin"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
-                                        {{intrestAmount | currency : 'INR'}}1</td>
+                                        {{intrestAmount | currency : 'INR'}}</td>
                                     <td *ngIf="(dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
-                                        {{intrestAmount | currency : 'INR'}}2</td>
+                                        {{intrestAmount / colJoin | currency : 'INR'}}</td>
 
                                 </tr>
                             </tbody>

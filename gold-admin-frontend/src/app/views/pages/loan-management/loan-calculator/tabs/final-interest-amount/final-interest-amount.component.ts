@@ -87,7 +87,13 @@ export class FinalInterestAmountComponent implements OnInit {
       (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
       / 360
     console.log(intrest)
-    this.intrestAmount = intrest.toFixed(2);
+    // var multiplier;
+    // if (this.colJoin == null) {
+    //   multiplier = 1
+    // } else {
+    //   multiplier = this.colJoin
+    // }
+    this.intrestAmount = (intrest).toFixed(2);
     this.controls.intresetAmt.patchValue(this.intrestAmount)
     // this.CheckProcessingCharge()
     this.generateTable()
@@ -118,7 +124,7 @@ export class FinalInterestAmountComponent implements OnInit {
 
   getIntrest() {
     if (this.controls.finalLoanAmount.valid) {
-
+      this.dateOfPayment = [];
       switch (this.controls.paymentFrequency.value) {
         case "30":
           // this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateThirtyDaysMonthly)
