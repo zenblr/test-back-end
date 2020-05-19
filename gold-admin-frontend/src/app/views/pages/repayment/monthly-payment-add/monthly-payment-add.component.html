@@ -1,0 +1,52 @@
+<div class="kt-portlet">
+    <kt-modal-header [title]="modalTitle" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-form">
+            <form [formGroup]="paymentForm">
+                <div class="kt-portlet__body">
+
+                    <div class="kt-portlet__body-progress">
+                        <mat-spinner [diameter]="20"></mat-spinner>
+                    </div>
+
+                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+
+                        <div class="row">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Full Name</mat-label>
+                            </div>
+
+                            <div class="col-4">
+                                <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
+                                    class="form-control" formControlName="firstName"
+                                    [class.isError]="controls.firstName.touched && controls.firstName.invalid">
+                                <mat-error *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                            <div class="col-4">
+
+                                <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
+                                    class="form-control" formControlName="lastName"
+                                    [class.isError]="controls.lastName.touched && controls.lastName.invalid">
+
+                                <mat-error *ngIf=" controls.lastName.errors?.required && controls.lastName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <kt-portlet-footer>
+                    <div class="p-3">
+                        <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="data.action">
+                        </kt-modal-footer>
+                        <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+                        </kt-modal-footer>
+
+                    </div>
+                </kt-portlet-footer>
+            </form>
+        </div>
+    </div>

@@ -22,6 +22,7 @@ import { PacketsService } from '../../../../core/loan-management';
 import { StoreService } from '../../../../core/user-management/store/service/store.service';
 import { LogisticPartnerService } from '../../../../core/emi-management/logistic-partner/service/logistic-partner.service';
 import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
+import { MonthlyService } from '../../../../core/repayment/services/monthly.service';
 
 @Component({
 	selector: 'kt-topbar',
@@ -77,7 +78,8 @@ export class TopbarComponent implements OnInit {
 		private storeService: StoreService,
 		private logisticPartnerService: LogisticPartnerService,
 		private karatDetailsService: KaratDetailsService,
-		private productService: ProductService) {
+		private productService: ProductService,
+		private monthlyService: MonthlyService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -177,6 +179,10 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.toogle = true;
 		}
+		if (this.path == 'monthly') {
+			this.dataSourceHeader();
+			this.value1 = 'Add Payment';
+		}
 		if (this.path == 'branch') {
 			this.dataSourceHeader()
 			this.value1 = 'Add New Branch';
@@ -261,6 +267,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'partner') {
 			this.partnerService.openModal.next(true)
+		}
+		if (this.path == 'monthly') {
+			this.monthlyService.openModal.next(true)
 		}
 		if (this.path == 'branch') {
 			this.branchService.openModal.next(true)

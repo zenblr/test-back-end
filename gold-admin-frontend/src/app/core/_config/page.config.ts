@@ -71,6 +71,11 @@ export class PageConfig {
 		'lead-management': {
 			page: { title: 'All Leads', desc: '' }
 		},
+		'repayment': {
+			'monthly': {
+				page: { title: 'Monthly Repayment', desc: '' }
+			}
+		},
 		'kyc-setting': {
 			page: { title: 'Customer KYC', desc: '' }
 		},
