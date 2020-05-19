@@ -8,17 +8,13 @@ const checkAuth = require('../middleware/checkAuth')
 const { userValidation, addInternalUserValidation, UpdateInternalUserValidation } = require('../validations/user');
 const validationError = require('../middleware/validationError')
 
-const { addUser, registerSendOtp, addInternalUser, updateInternalUser, deleteInternalUser, GetInternalUser, verifyRegistrationOtp, sendOtp, changePassword, updatePassword, getUser, verifyOtp, addAdmin, getInternalBranchUser, getAppraiser } = require('../controllers/user/user')
+const { addUser, addInternalUser, updateInternalUser, deleteInternalUser, GetInternalUser, sendOtp, changePassword, updatePassword, getUser, verifyOtp, addAdmin, getInternalBranchUser, getAppraiser } = require('../controllers/user/user')
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 //Register User
 
 // route.post('/register-otp',userValidation,validationError, wrapper(registerSendOtp));
 route.post('/', checkAuth, wrapper(addUser))
-
-route.post('/register-otp', wrapper(registerSendOtp));
-
-route.post('/verify-register-otp', wrapper(verifyRegistrationOtp));
 
 route.post('/send-otp', wrapper(sendOtp));
 

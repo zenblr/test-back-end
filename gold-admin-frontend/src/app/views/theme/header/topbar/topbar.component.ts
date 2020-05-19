@@ -97,7 +97,6 @@ export class TopbarComponent implements OnInit {
 			if (ct) {
 				Promise.resolve(null).then(() => {
 					this.totalRecords = ct;
-					console.log(this.totalRecords)
 				});
 			}
 		}));
@@ -312,11 +311,9 @@ export class TopbarComponent implements OnInit {
 
 	check(val) {
 		this.customerManagementServiceCustomer.toggle.next(val)
-		console.log('hi1');
 	}
 
 	applyFilter(data) {
-		console.log(data);
 		this.productService.applyFilter.next(data);
 	}
 }

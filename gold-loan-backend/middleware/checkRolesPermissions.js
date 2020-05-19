@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
         console.log(requestInfo);
 
         // return res.json(requestInfo)
-        next();
+        next()
         return
         let systemInfo;
 

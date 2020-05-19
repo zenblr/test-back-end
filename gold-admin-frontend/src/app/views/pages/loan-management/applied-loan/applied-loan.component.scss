@@ -1,9 +1,9 @@
 :host{
     .mat-column-pan{
-        flex: 0 0 8% !important;
+        flex: 0 0 9% !important;
     }
     .mat-column-date{
-        flex: 0 0 8% !important;
+        flex: 0 0 10% !important;
     }
     .mat-column-mobile{
         flex: 0 0 8% !important;
@@ -13,5 +13,8 @@
     }
     .mat-column-actions{
         flex:1 !important;
+    }
+    .mat-column-customerID{
+        flex: 0 0 10% !important;
     }
 }

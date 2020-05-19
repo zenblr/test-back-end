@@ -53,8 +53,6 @@ export class UplodDataImageComponent implements OnInit {
         this.index == null
       } else {
         var reader = new FileReader()
-        console.log(reader.readAsDataURL(details[0]))
-        console.log(details[0])
         var reader = new FileReader();
         const img = new Image();
         img.src = window.URL.createObjectURL(details[0]);
@@ -66,7 +64,6 @@ export class UplodDataImageComponent implements OnInit {
             window.URL.revokeObjectURL(img.src);
             if (width !== 600 || height !== 300) {
               this.toastrService.error('Please Upload Image of Valid Size');
-              console.log(width, height)
             } else {
               this.sharedService.uploadFile(details[0]).pipe(map(res => {
                 if (this.index != null) {
@@ -109,7 +106,6 @@ export class UplodDataImageComponent implements OnInit {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
         this.images.splice(index, 1);
         this.ref.detectChanges();
       }

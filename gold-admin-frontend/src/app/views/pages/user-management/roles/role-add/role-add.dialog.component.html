@@ -24,7 +24,7 @@
                         <!-- Partner Name -->
                         <div class="row">
                             <div class="col-4 form-label">
-                                <label for="" class="text-color font-weight-bold mandatory">Role Name</label>
+                                <label for="" class="text-color kt-padding-l-10 mandatory">Role Name</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="roleName" autocomplete="off"
@@ -38,18 +38,19 @@
 
                         <div class="row kt-padding-t-15" *ngIf="data.action != 'Update'">
                             <div class="col-4 form-label">
-                                <label for="" class="text-color font-weight-bold ">clone Role</label>
+                                <label for="" class="text-color kt-padding-l-10 ">Clone Role</label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="roleId" (change)="getModules()">
                                     <option [selected]="true" value="">Select Role</option>
-                                    <option *ngFor="let clone of cloneRoles" [value]="clone.id">{{clone.roleName}}</option>
+                                    <option *ngFor="let clone of cloneRoles" [value]="clone.id">{{clone.roleName}}
+                                    </option>
                                 </select>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" class="text-color font-weight-bold">Role Description</label>
+                                <label for="" class="text-color kt-padding-l-10">Role Description</label>
                             </div>
                             <div class="col-8">
                                 <textarea cols="10" rows="5" class="form-control" formControlName="description"
@@ -59,18 +60,19 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" class="text-color font-weight-bold mandatory">Modules</label>
+                                <label for="" class="text-color kt-padding-l-10 mandatory">Modules</label>
                             </div>
                             <div class="col-8">
                                 <mat-error *ngIf="controls.moduleId.touched && controls.moduleId.errors?.required">
                                     Required
                                     field</mat-error>
                                 <div class="row " *ngFor="let module of modules;index as i">
-                                    <div class="col-10 kt-margin-l-10" >
+                                    <div class="col-10 kt-margin-l-10">
                                         <label class="custom-checkbox poi">
                                             <span class="label-checkbox">{{module.moduleName | titlecase}}</span>
-                                            <input type="checkbox" (change)="onModuleSelect($event.target.checked,i)" name="module"  
-                                             [value]="module.id" [checked]="module.isSelected" [disabled]="isDisabled">
+                                            <input type="checkbox" (change)="onModuleSelect($event.target.checked,i)"
+                                                name="module" [value]="module.id" [checked]="module.isSelected"
+                                                [disabled]="isDisabled">
                                             <span class="checkmark" style="top:0;"></span>
                                         </label>
                                     </div>
