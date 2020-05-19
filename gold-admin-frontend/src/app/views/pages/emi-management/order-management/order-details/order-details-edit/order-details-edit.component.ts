@@ -105,7 +105,7 @@ export class OrderDetailsEditComponent implements OnInit {
     }
 
     switch (this.orderInfo.currentStatus.statusId) {
-      case 5: this.hiddenFlag = true;
+      case 5: case 7: this.hiddenFlag = true;
         this.getOrderLogistic();
         break;
       case 6: this.hiddenFlag = true;
@@ -127,8 +127,6 @@ export class OrderDetailsEditComponent implements OnInit {
         this.orderForm.disable();
         break;
     }
-
-    console.log(this.orderForm.value);
     this.ref.detectChanges();
   }
 
@@ -172,7 +170,6 @@ export class OrderDetailsEditComponent implements OnInit {
       console.log(orderData);
       this.orderDetailsService.editOrderStatus(orderData, this.orderId).pipe(
         map(res => {
-          console.log(res);
           this.toastr.successToastr('Order Status Updated Sucessfully');
           this.router.navigate(['/emi-management/order-details']);
         }),
