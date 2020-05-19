@@ -72,6 +72,8 @@ export class OrderDetailsEditComponent implements OnInit {
       uploadedAwbFile: [''],
       uploadedAwbBox: [''],
     })
+
+    this.orderForm.valueChanges.subscribe(val => console.log(val));
   }
 
   get controls() {
@@ -133,8 +135,21 @@ export class OrderDetailsEditComponent implements OnInit {
 
   uploadImage(data) {
     console.log(data);
-    this.orderForm.controls['uploadedAwbFile'].patchValue(data.URL);
-    console.log(this.orderForm.controls.value)
+    if (data.fieldName == 'uploadedAwbFile') {
+      this.orderForm.controls['uploadedAwbFile'].patchValue(data.uploadData.URL);
+    } else if (data.fieldName == 'uploadedAwbBox') {
+      this.orderForm.controls['uploadedAwbBox'].patchValue(data.uploadData.URL);
+    }
+  }
+
+  removeImage(data) {
+    console.log(data);
+    if (data.fieldName == 'uploadedAwbFile') {
+      this.orderForm.controls['uploadedAwbFile'].patchValue('');
+    } else if (data.fieldName == 'uploadedAwbBox') {
+      this.orderForm.controls['uploadedAwbBox'].patchValue('');
+    }
+    // this.orderForm.controls['uploadedAwbFile'].patchValue(data);
   }
 
   submit() {
