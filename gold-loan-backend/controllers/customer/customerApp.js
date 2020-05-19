@@ -68,7 +68,7 @@ exports.readBankDetailsOfCustomer = async (req, res, next) => {
 
 exports.readNomineeDetailsOfCustomer = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readNomineeDetailsOfCustomer = await models.customerLoanNomineeDetail.findAll({ attributes: ['nomineeName', 'nomineeAge', 'relationship'] }, { where: customerId });
+    let readNomineeDetailsOfCustomer = await models.customerLoanNomineeDetail.findAll({ where:{customerId:customerId} });
     if (!readNomineeDetailsOfCustomer) {
         res.status(404).json({ message: 'Data not found' })
     }
