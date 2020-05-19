@@ -29,6 +29,10 @@ export class OrderDetailsService {
     return this.http.get<any>(`http://173.249.49.7:9120/api/order/logistic`);
   }
 
+  editOrderStatus(data, id): Observable<any> {
+    return this.http.put<any>(`http://173.249.49.7:9120/api/order/order-status/${id}`, data);
+  }
+
   reportExport(): Observable<any> {
     return this.http.get(`http://173.249.49.7:9120/api/order/order-report`, { responseType: 'arraybuffer' })
       .pipe(

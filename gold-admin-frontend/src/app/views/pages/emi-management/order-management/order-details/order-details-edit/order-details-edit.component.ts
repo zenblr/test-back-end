@@ -1,13 +1,12 @@
 import { Component, OnInit, Inject, Output, EventEmitter, ChangeDetectorRef, ViewChild, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { ToastrComponent } from '../../../../../../views/partials/components';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { OrderDetailsService } from '../../../../../../core/emi-management/order-management/order-details/services/order-details.service';
-import { MerchantService } from '../../../../../../core/user-management/merchant';
 
 @Component({
   selector: 'kt-order-details-edit',
@@ -21,6 +20,8 @@ export class OrderDetailsEditComponent implements OnInit {
   orderInfo: any;
   orderLogistic = []
   hiddenFlag = false;
+  showUploadFile = false;
+  showUploadedFile = false;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
@@ -30,10 +31,10 @@ export class OrderDetailsEditComponent implements OnInit {
     private orderDetailsService: OrderDetailsService,
     private fb: FormBuilder,
     private sharedService: SharedService,
-    private merchantService: MerchantService,
     private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
     private toast: ToastrService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -104,20 +105,25 @@ export class OrderDetailsEditComponent implements OnInit {
     }
 
     switch (this.orderInfo.currentStatus.statusId) {
-      case 5: this.hiddenFlag = false;
+      case 5: this.hiddenFlag = true;
         this.getOrderLogistic();
         break;
-      case 6: this.hiddenFlag = false;
-        this.getOrderLogistic();
-        this.orderForm.controls['trackingId'].disable();
-        this.orderForm.controls['logisticPartnerId'].disable();
-        break;
-      case 12: this.hiddenFlag = false;
+      case 6: this.hiddenFlag = true;
+        this.showUploadFile = true;
         this.getOrderLogistic();
         this.orderForm.controls['trackingId'].disable();
         this.orderForm.controls['logisticPartnerId'].disable();
         break;
-      default: this.hiddenFlag = true;
+      case 8: this.showUploadedFile = true;
+        this.getOrderLogistic();
+        this.orderForm.disable();
+        break;
+      case 12: this.hiddenFlag = true;
+        this.getOrderLogistic();
+        this.orderForm.controls['trackingId'].disable();
+        this.orderForm.controls['logisticPartnerId'].disable();
+        break;
+      default: this.hiddenFlag = false;
         this.orderForm.disable();
         break;
     }
@@ -134,22 +140,19 @@ export class OrderDetailsEditComponent implements OnInit {
   }
 
   uploadImage(data) {
-    console.log(data);
     if (data.fieldName == 'uploadedAwbFile') {
-      this.orderForm.controls['uploadedAwbFile'].patchValue(data.uploadData.URL);
+      this.orderForm.controls['uploadedAwbFile'].patchValue(data.uploadData.id);
     } else if (data.fieldName == 'uploadedAwbBox') {
-      this.orderForm.controls['uploadedAwbBox'].patchValue(data.uploadData.URL);
+      this.orderForm.controls['uploadedAwbBox'].patchValue(data.uploadData.id);
     }
   }
 
   removeImage(data) {
-    console.log(data);
     if (data.fieldName == 'uploadedAwbFile') {
       this.orderForm.controls['uploadedAwbFile'].patchValue('');
     } else if (data.fieldName == 'uploadedAwbBox') {
       this.orderForm.controls['uploadedAwbBox'].patchValue('');
     }
-    // this.orderForm.controls['uploadedAwbFile'].patchValue(data);
   }
 
   submit() {
@@ -157,17 +160,26 @@ export class OrderDetailsEditComponent implements OnInit {
       this.orderForm.markAllAsTouched();
       return;
     }
-    console.log(this.orderForm.value)
+    console.log(this.orderForm.value);
     if (this.orderId) {
-      this.merchantService.editMerchant(this.orderForm.value, this.orderId).pipe(
+      const orderData = {
+        logisticPartnerId: this.controls.logisticPartnerId.value,
+        statusId: this.controls.statusId.value,
+        trackingId: this.controls.trackingId.value,
+        uploadedAwbBox: this.controls.uploadedAwbBox.value,
+        uploadedAwbFile: this.controls.uploadedAwbFile.value,
+      }
+      console.log(orderData);
+      this.orderDetailsService.editOrderStatus(orderData, this.orderId).pipe(
         map(res => {
           console.log(res);
-          this.next.emit(true);
+          this.toastr.successToastr('Order Status Updated Sucessfully');
+          this.router.navigate(['/emi-management/order-details']);
         }),
         catchError(err => {
           this.toastr.errorToastr(err.error.message)
           throw err;
-        })).subscribe()
+        })).subscribe();
     }
   }
 }

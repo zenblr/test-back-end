@@ -3,7 +3,7 @@
     <kt-portlet-body>
         <div class="row justify-content-center scroll kt-padding-t-10 kt-padding-b-10">
             <div class="col-6">
-                <form action="" [formGroup]="orderForm">
+                <form [formGroup]="orderForm">
                     <div class="row kt-margin-t-15">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Member Id</label>
@@ -76,8 +76,7 @@
                             <input type="text" formControlName="emiEndDate" class="form-control" disabled>
                         </div>
                     </div>
-
-                    <div class="row kt-margin-t-15">
+                    <div class="row kt-margin-t-15" *ngIf="showUploadFile">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Upload Awb File</label>
                         </div>
@@ -88,8 +87,7 @@
                             </kt-uplod-preview-image>
                         </div>
                     </div>
-
-                    <div class="row kt-margin-t-15">
+                    <div class="row kt-margin-t-15" *ngIf="showUploadFile">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Upload Awb Box</label>
                         </div>
@@ -100,7 +98,22 @@
                             </kt-uplod-preview-image>
                         </div>
                     </div>
-
+                    <div class="row kt-margin-t-15" *ngIf="showUploadedFile">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Upload Awb File</label>
+                        </div>
+                        <div class="col-8">
+                            <span>{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}</span>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="showUploadedFile">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Upload Awb Box</label>
+                        </div>
+                        <div class="col-8">
+                            <span>{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}</span>
+                        </div>
+                    </div>
                     <div class="row kt-margin-t-15">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Logistic Name</label>
@@ -133,7 +146,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15">
+                    <div class="row kt-margin-t-15" *ngIf="hiddenFlag">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">EMI Status</label>
                         </div>
@@ -151,7 +164,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15" *ngIf="!hiddenFlag">
+                    <div class="row kt-margin-t-15" *ngIf="hiddenFlag">
                         <div class="col-12 text-center">
                             <kt-button [value]="'Update'" [type]="'submit'" (click)="submit()"></kt-button>
                         </div>
