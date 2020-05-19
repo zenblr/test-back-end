@@ -73,6 +73,7 @@ export class OrderDetailsEditComponent implements OnInit {
       uploadedAwbFile: [''],
       uploadedAwbBox: [''],
     })
+    this.setAwbValidators();
 
     this.orderForm.valueChanges.subscribe(val => console.log(val));
   }
@@ -109,7 +110,6 @@ export class OrderDetailsEditComponent implements OnInit {
         this.getOrderLogistic();
         break;
       case 6: this.hiddenFlag = true;
-        this.showUploadFile = true;
         this.getOrderLogistic();
         this.orderForm.controls['trackingId'].disable();
         this.orderForm.controls['logisticPartnerId'].disable();
@@ -151,6 +151,25 @@ export class OrderDetailsEditComponent implements OnInit {
     } else if (data.fieldName == 'uploadedAwbBox') {
       this.orderForm.controls['uploadedAwbBox'].patchValue('');
     }
+  }
+
+  setAwbValidators() {
+    const uploadedAwbFileControl = this.orderForm.get('uploadedAwbFile');
+    const uploadedAwbBoxControl = this.orderForm.get('uploadedAwbBox');
+
+    this.orderForm.get('statusId').valueChanges
+      .subscribe(val => {
+        if (val == '8') {
+          this.showUploadFile = true;
+          uploadedAwbFileControl.setValidators([Validators.required]);
+          uploadedAwbBoxControl.setValidators([Validators.required]);
+        } else {
+          uploadedAwbFileControl.setValidators([]);
+          uploadedAwbBoxControl.setValidators([]);
+        }
+        uploadedAwbFileControl.updateValueAndValidity();
+        uploadedAwbBoxControl.updateValueAndValidity();
+      });
   }
 
   submit() {

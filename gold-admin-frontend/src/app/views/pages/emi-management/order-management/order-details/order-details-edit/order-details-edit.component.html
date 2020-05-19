@@ -85,6 +85,14 @@
                                 [fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
                                 (remove)="removeImage($event)">
                             </kt-uplod-preview-image>
+                            <input type="text" formControlName="uploadedAwbFile" class="form-control"
+                                [class.isError]="controls.uploadedAwbFile.touched && controls.uploadedAwbFile.invalid"
+                                hidden>
+                            <div *ngIf="controls.uploadedAwbFile.touched && controls.uploadedAwbFile.invalid">
+                                <mat-error
+                                    *ngIf="controls.uploadedAwbFile.touched && controls.uploadedAwbFile.errors?.required">
+                                    Awb File is required</mat-error>
+                            </div>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15" *ngIf="showUploadFile">
@@ -96,6 +104,14 @@
                                 [fileAcceptType]="'image/*, .pdf'" [action]="'remove'" (upload)="uploadImage($event)"
                                 (remove)="removeImage($event)">
                             </kt-uplod-preview-image>
+                            <input type="text" formControlName="uploadedAwbBox" class="form-control"
+                                [class.isError]="controls.uploadedAwbBox.touched && controls.uploadedAwbBox.invalid"
+                                hidden>
+                            <div *ngIf="controls.uploadedAwbBox.touched && controls.uploadedAwbBox.invalid">
+                                <mat-error
+                                    *ngIf="controls.uploadedAwbBox.touched && controls.uploadedAwbBox.errors?.required">
+                                    Awb Box is required</mat-error>
+                            </div>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15" *ngIf="showUploadedFile">
@@ -103,7 +119,12 @@
                             <label class="font-weight-500 text-color">Upload Awb File</label>
                         </div>
                         <div class="col-8">
-                            <span>{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}</span>
+                            <span class="kt-pointer">
+                                <span>{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}</span>
+                                <span class="pl-2">
+                                    <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
+                                </span>
+                            </span>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15" *ngIf="showUploadedFile">
@@ -111,7 +132,12 @@
                             <label class="font-weight-500 text-color">Upload Awb Box</label>
                         </div>
                         <div class="col-8">
-                            <span>{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}</span>
+                            <span class="kt-pointer">
+                                <span>{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}</span>
+                                <span class="pl-2">
+                                    <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
+                                </span>
+                            </span>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
