@@ -48,7 +48,7 @@ export class InterceptService implements HttpInterceptor {
 						// console.log('all looks good');
 						// http response status code
 						// console.log(event.body.count);
-						if (event.body.count) {
+						if (event.body.count != undefined) {
 							this.sharedSerivce.totalCount.next(event.body.count)
 						} else {
 							this.sharedSerivce.totalCount.next(null)

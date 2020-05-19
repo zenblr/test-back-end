@@ -4,27 +4,27 @@
             <div class="col-12">
                 <mat-tab-group [(selectedIndex)]="selected">
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
-                        <kt-basic-details (basicFormEmit)="basicForm($event)" [details]="customerDetail" [disable]="disabledForm" [invalid]="invalid.basic" 
+                        <kt-basic-details (basicFormEmit)="basicForm($event)" [action]="action" [details]="customerDetail" [disable]="disabledForm" [invalid]="invalid.basic" 
                         (apiHit)="customerDetails($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <mat-tab label="KYC Details" [disabled]="disabled[1]">
-                        <kt-kyc-details (kycEmit)="kycEmit($event)" [details]="customerDetail"  [disable]="disabledForm"></kt-kyc-details>
+                        <kt-kyc-details (kycEmit)="kycEmit($event)" [action]="action" [details]="customerDetail"  [disable]="disabledForm"></kt-kyc-details>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[2]">
-                        <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [details]="bankDetails"  [disable]="disabledForm">
+                        <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [action]="action" [details]="customerDetail"  [disable]="disabledForm">
                         </kt-bank-details>
                     </mat-tab>
                     <mat-tab label="Nominee Details" [disabled]="disabled[3]">
-                        <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [invalid]="invalid.nominee"  [disable]="disabledForm">
+                        <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [action]="action" [invalid]="invalid.nominee"  [disable]="disabledForm" [details]="customerDetail">
                         </kt-nominee-details>
                     </mat-tab>
                     <mat-tab label="Final Interest Calculator" [disabled]="disabled[4]">
                         <kt-interest-calculator (interestFormEmit)="interestFormEmit($event)" (nextEmit)="next($event)"
-                            [invalid]="invalid.intreset"  [disable]="disabledForm" [totalAmt]="totalAmount"></kt-interest-calculator>
+                            [invalid]="invalid.intreset"  [disable]="disabledForm" [action]="action" [totalAmt]="totalAmount" [details]="customerDetail"></kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Approval" [disabled]="disabled[5]">
-                        <kt-approval (approvalFormEmit)="approvalFormEmit($event)" [invalid]="invalid.approval"  [disable]="disabledForm">
+                        <kt-approval (approvalFormEmit)="approvalFormEmit($event)" [action]="action" [invalid]="invalid.approval"  [disable]="disabledForm" [details]="customerDetail">
                         </kt-approval>
                     </mat-tab>
                 </mat-tab-group>
@@ -32,7 +32,7 @@
         </div>
         <div class="row" id="ornaments">
             <div class="col">
-                <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [invalid]="invalid.ornaments"  [disable]="disabledForm">
+                <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [action]="action" [invalid]="invalid.ornaments"  [disable]="disabledForm" [details]="customerDetail">
                 </kt-ornaments>
             </div>
 

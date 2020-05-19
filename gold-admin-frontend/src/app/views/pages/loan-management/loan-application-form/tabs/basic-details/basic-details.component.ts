@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, OnChanges, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnChanges, Input, ChangeDetectionStrategy, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
@@ -16,8 +16,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
   @Input() disable
   @Input() details;
   @Input() invalid
+  @Input() action;
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
-  currentDate = new Date()
+  currentDate:any = new Date();
 
   constructor(
     private fb: FormBuilder,
@@ -37,12 +38,22 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
     })
   }
 
-  ngOnChanges() {
-    console.log(this.details)
-    if (this.details) {
+  ngOnChanges(changes:SimpleChanges) {
+    if (changes.details) {
+      if(changes.action.currentValue == 'add'){
       this.basicForm.controls.mobileNumber.patchValue(this.details.mobileNumber)
       this.basicForm.controls.panCardNumber.patchValue(this.details.panCardNumber) 
       this.basicForm.controls.customerId.patchValue(this.details.id)
+      }else if(changes.action.currentValue == 'edit'){
+        
+        this.controls.customerId.patchValue(changes.details.currentValue.customerId)
+        this.basicForm.patchValue(changes.details.currentValue.loanPersonalDetail)
+        this.currentDate = new Date(changes.details.currentValue.loanPersonalDetail.startDate)
+        this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate,'mediumDate'));
+        this.basicFormEmit.emit(this.basicForm)
+        this.basicForm.disable()
+        this.ref.detectChanges()
+      }
     }
     if (this.disable) {
       this.basicForm.disable()
@@ -74,11 +85,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
     return this.basicForm.controls
   }
 
-  transform() {
-    console.log(this.controls.startDate.value)
-    // console.log(this.datePipe.transform(this.controls.startDate.value, 'MMM d, y'))
-    // this.controls.startDate.patchValue(this.datePipe.transform(this.controls.startDate.value, 'MMM d, y'))
-    // console.log(this.controls.startDate.value)
-  }
+
 
 }

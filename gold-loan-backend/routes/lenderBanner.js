@@ -4,8 +4,10 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 
 const checkAuth = require('../middleware/checkAuth');
+const checkRolePermission = require('../middleware/checkRolesPermissions');
 
-route.post('/', checkAuth, wrapper(addUpdateLenderBanner));
-route.get('/', checkAuth, wrapper(readLenderBanner));
+
+route.post('/', checkAuth, checkRolePermission, wrapper(addUpdateLenderBanner));
+route.get('/', checkAuth, checkRolePermission, wrapper(readLenderBanner));
 
 module.exports = route;

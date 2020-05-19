@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LoanApplicationFormService } from "../../../../core/loan-management";
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
@@ -20,26 +20,39 @@ export class LoanApplicationFormComponent implements OnInit {
     ornaments: false,
     intreset: false,
   }
+  id: number;
   disabledForm: boolean
   totalAmount: number = 0;
   basic: any;
   bank: any;
-  bankDetails: any;
   kyc: any;
   nominee: any;
   selected: number;
   intreset: any;
   approval: any;
   Ornaments: any;
+  action: any;
   customerDetail: any;
   disabled = [false, true, true, true, true, true];
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
     public loanApplicationFormService: LoanApplicationFormService,
-    public toast:ToastrService,
+    public toast: ToastrService,
+    public rout: ActivatedRoute
   ) {
+    this.id = this.rout.snapshot.params.id
+    if (this.id) {
+      for (let index = 0; index < this.disabled.length; index++) {
+        this.disabled[index] = false;
+      }
+      this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
 
+        this.action = 'edit'
+        this.customerDetail = res.data
+      })
+
+    }
   }
 
   ngOnInit() {
@@ -57,14 +70,14 @@ export class LoanApplicationFormComponent implements OnInit {
   customerDetails(event) {
     this.loanApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
       map(res => {
-    this.customerDetail = res.customerData
-    this.bankDetails = this.customerDetail.customerKycBank[0]
-    for (let index = 0; index < this.disabled.length; index++) {
-      if (index <= 3) {
-        this.disabled[index] = false;
-      }
-    }
-    this.selected = 3;
+        this.action = 'add'
+        this.customerDetail = res.customerData
+        for (let index = 0; index < this.disabled.length; index++) {
+          if (index <= 3) {
+            this.disabled[index] = false;
+          }
+        }
+        this.selected = 3;
       }),
       catchError(err => {
         this.toast.error(err.error.message)
@@ -120,7 +133,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.invalid.ornaments = false
     if (this.Ornaments.valid) {
       this.disabled[4] = false
-    this.calculateTotalEligibleAmount()
+      this.calculateTotalEligibleAmount()
 
     } else {
       this.disabled[4] = true;
@@ -133,8 +146,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.Ornaments.value.forEach(element => {
       this.totalAmount += element.loanAmount
     });
-  
-    console.log(this.Ornaments.value)
+
   }
 
   cancel() {
@@ -190,31 +202,47 @@ export class LoanApplicationFormComponent implements OnInit {
       loanKyc: this.kyc.value,
       loanNominee: this.nominee.value,
       customerId: this.basic.controls.customerId.value,
-      totalEligibleAmt: Math.ceil(this.totalAmount),
+      totalEligibleAmt: this.totalAmount,
       totalFinalInterestAmt: (this.intreset.controls.intresetAmt.value)
     }
     return Obj
   }
 
   apply() {
-   let valid =  this.checkForFormValidation();
-   if(valid){
-     return 
-   }
-   let data = this.createData()
-   this.loanApplicationFormService.applyForLoan(data).pipe(
-     map(res =>{
-       this.toast.success(res.message)
-       this.router.navigate(['/loan-management/applied-loan'])
-     }),
-     catchError(err =>{
-      this.toast.error(err.error.message)
-       throw err
-     })
-   ).subscribe()
+    let valid = this.checkForFormValidation();
+    if (valid) {
+      return
+    }
+    let data = this.createData()
+    if (this.action == 'add') {
+      this.loanApplicationFormService.applyForLoan(data).pipe(
+        map(res => {
+          this.toast.success(res.message)
+          this.router.navigate(['/loan-management/applied-loan'])
+        }),
+        catchError(err => {
+          this.toast.error(err.error.message)
+          throw err
+        })
+      ).subscribe()
+    }
+    if (this.action == 'edit') {
+      data.loanFinalCalculator.loanStartDate = new Date(data.loanFinalCalculator.loanStartDate).toISOString();
+
+      this.loanApplicationFormService.updateLoan(this.customerDetail.id, data).pipe(
+        map(res => {
+          this.toast.success(res.message)
+          this.router.navigate(['/loan-management/applied-loan'])
+        }),
+        catchError(err => {
+          this.toast.error(err.error.message)
+          throw err
+        })
+      ).subscribe()
+    }
   }
 
-  next(event){
+  next(event) {
     this.selected = 5;
     window.scrollTo(0, 0)
     this.disabled[5] = false;

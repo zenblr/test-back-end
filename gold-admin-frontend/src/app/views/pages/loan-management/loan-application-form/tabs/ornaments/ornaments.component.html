@@ -116,14 +116,14 @@
                                 </mat-error>
                             </div>
                             <div class="col-4 text-right min-height-attach">
-                                <input type="file" #vm class="d-none" (change)="uploadFile(idx,$event,'vm')">
+                                <input type="file" #weightMachineZeroWeight class="d-none" (change)="uploadFile(idx,$event,'weightMachineZeroWeight')">
                                 <kt-button *ngIf="!ornament.controls.weightMachineZeroWeight.value" [type]="'button'"
-                                    [value]="'Attach'" (click)="vm.click()"></kt-button>
+                                    [value]="'Attach'" (click)="weightMachineZeroWeight.click()"></kt-button>
 
                                 <div class="form-label">
                                     <label *ngIf="ornament.controls.weightMachineZeroWeight.value"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
-                                        (click)="removeImage('vm',idx,ornament.controls.weightMachineZeroWeight.value)">Remove</label>
+                                        (click)="removeImage('weightMachineZeroWeight',idx,ornament.controls.weightMachineZeroWeight.value)">Remove</label>
                                 </div>
                             </div>
                         </div>
@@ -232,7 +232,7 @@
                                 </mat-error>
                             </div>
                             <div class="col-4 text-right min-height-attach">
-                                <input type="file" #purity class="d-none" (change)="uploadFile(idx,$event,'purity')">
+                                <input type="file" #purity class="d-none" (change)="uploadFile(idx,$event,'purityTest')">
                                 <kt-button *ngIf="ornament.controls.purityTest.value.length == 0" [type]="'button'"
                                     [value]="'Attach'" (click)="purity.click()"></kt-button>
                                 <div class="form-label">
@@ -254,8 +254,8 @@
                             <div class="col-8">
                                 <select class="form-control" formControlName="karat" (change)="selectKarat(idx)"
                                     [class.isError]="ornament.controls.karat.touched && ornament.controls.karat.invalid">
-                                    <option value="" [disabled]="true" [selected]="true">Select Karat</option>
-                                    <option [value]="karat.value" *ngFor="let karat of karatArr">{{karat.name}}
+                                    <option value=null [disabled]="true" [selected]="true">Select Karat</option>
+                                    <option [value]="karat.karat" *ngFor="let karat of karatArr">{{karat.karat}}
                                     </option>
                                 </select>
                                 <mat-error *ngIf="ornament.controls.karat.touched && ornament.controls.karat.invalid">
@@ -290,7 +290,7 @@
                             </div>
                             <div class="offset-6 col-2 form-label min-height-attach">
                                 <label class="text-color w-100 m-auto">{{ornament.controls.ltvRange.value[0]}} &nbsp;-
-                                    &nbsp;{{ornament.controls.ltvRange.value[ltvPercent.length-1]}}</label>
+                                    &nbsp;{{ornament.controls.ltvRange.value[ornament.controls.ltvRange.value.length-1]}}</label>
                             </div>
                         </div>
                     </div>
@@ -316,11 +316,10 @@
                                 <label class="my-auto text-color ">LTV %</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="ltvPercent"
-                                    (change)="calculateLtvAmount(idx)"
+                                <select class="form-control" formControlName="ltvPercent" (change)="calculateLtvAmount(idx)"
                                     [class.isError]="ornament.controls.ltvPercent.touched && ornament.controls.ltvPercent.invalid">
-                                    <option value="" [disabled]="true" [selected]="true">Select LTV %</option>
-                                    <option [value]="pure" *ngFor="let pure of ltvPercent;index as i">{{pure}} %
+                                    <option value=null disabled selected>Select LTV %</option>
+                                    <option [value]="pure" *ngFor="let pure of ornament.controls.ltvRange.value;index as i">{{pure}} %
                                     </option>
                                 </select>
                                 <mat-error

@@ -74,6 +74,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'current_ltv_amount'
         },
+        loanAmount: {
+            type: DataTypes.STRING,
+            field: 'loan_amount'
+        },
+        finalNetWeight: {
+            type: DataTypes.STRING,
+            field: 'final_net_weight'
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'

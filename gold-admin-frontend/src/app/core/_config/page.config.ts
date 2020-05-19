@@ -53,7 +53,7 @@ export class PageConfig {
 				page: { title: 'Internal User Branch', desc: '' }
 			},
 			'assign-appraiser': {
-				page: { title: 'Assign Appraiser', desc: '' }
+				page: { title: 'Assigned Appraiser', desc: '' }
 			},
 			'merchant': {
 				page: { title: 'All Merchants', desc: '' }
@@ -120,7 +120,7 @@ export class PageConfig {
 				page: { title: 'Loan Calculator', desc: '' }
 			},
 			'loan-application-form': {
-				page: { title: 'Add New Loan', desc: '' }
+				page: { title: 'Loan Application Form', desc: '' }
 			},
 			'packet': {
 				page: { title: 'Packets', desc: '' }

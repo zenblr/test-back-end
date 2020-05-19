@@ -79,6 +79,7 @@ export class UserDetailsComponent implements OnInit {
       stateId: merchantDetails.user.address[0].state.id,
       cityId: merchantDetails.user.address[0].city.id,
       pinCode:  merchantDetails.user.address[0].postalCode,
+      approvalStatusId: merchantDetails.approvalStatus.id
     }
     
     this.userDetails.patchValue(data)
