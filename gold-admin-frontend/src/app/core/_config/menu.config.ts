@@ -381,6 +381,10 @@ export class MenuConfig {
 							page: '/emi-management/emi-details'
 						},
 						{
+							title: 'Refund Management',
+							page: '/emi-management/refund-management'
+						},
+						{
 							title: 'Cancel Order Details',
 							page: '/emi-management/cancel-order-details',
 						},

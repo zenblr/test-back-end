@@ -1,0 +1,222 @@
+<!-- <kt-action-natification></kt-action-natification> -->
+
+<kt-toastr #toastr></kt-toastr>
+
+<div class="kt-portlet">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <!--<div class="kt-portlet__body" *ngIf="data.action != 'view'">
+        <div class="kt-form">
+            <form [formGroup]="productForm">
+
+                <div class="kt-portlet__body-progress" *ngIf="viewLoading">
+                    <mat-spinner [diameter]="20"></mat-spinner>
+                </div>
+
+                 <kt-alert type="warn" [duration]="30000" [showCloseButton]="true" (close)="onAlertClose($event)">
+                            Oh snap! Change a few things up and try submitting again.
+                        </kt-alert>
+
+                <div class="form-group kt-form__group row">
+                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+                        <div class="row"
+                            *ngIf="controls?.productImage?.value != '0' || controls?.productImages?.value.length">
+                            <div class="col-12"><label>Images</label></div>
+                            <div class="col-3 pb-3" *ngIf="controls?.productImage?.value != '0'">
+                                <kt-uplod-preview-image [image]="controls?.productImage?.value"
+                                    (upload)="uploadImage($event)">
+                                </kt-uplod-preview-image>
+                            </div>
+                            <div class="col-3 pb-3" *ngFor="let img of controls?.productImages?.value; let i = index;">
+                                <kt-uplod-preview-image [image]="img?.url" [action]="'remove'" [index]="i"
+                                    (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                                </kt-uplod-preview-image>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Select SubCategory</label>
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" name="subCategoryId" formControlName="subCategoryId"
+                                    [class.isError]="controls.subCategoryId.touched && controls.subCategoryId.invalid">
+                                    <option value="" [selected]="true" [disabled]="true">Select SubCategory</option>
+                                    <option *ngFor="let subcategory of subcategories" [value]="subcategory?.id">
+                                        {{subcategory?.subCategoryName}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.subCategoryId.touched && controls.subCategoryId.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label>SKU Code</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="sku" type="text" disabled>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Product Name</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="productName" type="text"
+                                    [class.isError]="controls.productName.touched && controls.productName.invalid">
+                                <mat-error
+                                    *ngIf="controls.productName.errors?.required && controls.productName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Weight</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="weight" type="number"
+                                    [class.isError]="controls.weight.touched && controls.weight.invalid">
+                                <mat-error *ngIf="controls.weight.errors?.required && controls.weight.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label>Price</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="price" type="number" disabled>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Manufacturing Charges</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="manufacturingCostPerGram" type="number"
+                                    [class.isError]="controls.manufacturingCostPerGram.touched && controls.manufacturingCostPerGram.invalid">
+                                <mat-error
+                                    *ngIf="controls.manufacturingCostPerGram.errors?.required && controls.manufacturingCostPerGram.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Hallmarking & Packaging Charges</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="hallmarkingPackaging" type="number"
+                                    [class.isError]="controls.hallmarkingPackaging.touched && controls.hallmarkingPackaging.invalid">
+                                <mat-error
+                                    *ngIf="controls.hallmarkingPackaging.errors?.required && controls.hallmarkingPackaging.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Shipping Charges</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="shipping" type="number"
+                                    [class.isError]="controls.shipping.touched && controls.shipping.invalid">
+                                <mat-error *ngIf="controls.shipping.errors?.required && controls.shipping.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div> -->
+    <div class="kt-portlet__body font-weight-500" *ngIf="data.action == 'view' && productData">
+        <div class="row py-2">
+            <div class="col-12">
+                <div class="text-center">
+                    <kt-image-preview-dialog [viewImages]="productData?.productImages" [type]="'view'">
+                    </kt-image-preview-dialog>
+                    <div class="py-5" *ngIf="!productData?.productImages?.length">
+                        <img [src]="'assets/media/icons/image-placeholder.png'" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">SKU Code:</div>
+                    <div class="col-6">{{productData?.sku}}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Product Name:</div>
+                    <div class="col-6">{{productData?.productName}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Category:</div>
+                    <div class="col-6">{{productData?.subCategory?.category?.categoryName | titlecase}}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Sub Category:</div>
+                    <div class="col-6">{{productData?.subCategory?.subCategoryName | titlecase}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Weight(gm):</div>
+                    <div class="col-6">{{productData?.weight}}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Price:</div>
+                    <div class="col-6">{{productData?.productPrice[0]?.finalProductPrice}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Manufacturing Charges:</div>
+                    <div class="col-6">{{productData?.manufacturingCostPerGram}}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Shipping Charges:</div>
+                    <div class="col-6">{{productData?.shipping}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6 text-muted">Hallmarking & Packaging Charges:</div>
+                    <div class="col-6">{{productData?.hallmarkingPackaging}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <kt-portlet-footer *ngIf="data.action != 'view'">
+        <div class="p-3">
+            <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="data.action">
+            </kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>

@@ -49,6 +49,7 @@ export class TopbarComponent implements OnInit {
 	value1: string;
 	type2: string;
 	value2: string;
+	value3: string;
 	showInput: boolean;
 	toogle: boolean;
 	toogler: string;
@@ -56,7 +57,7 @@ export class TopbarComponent implements OnInit {
 	filterName = '';
 	listType = '';
 	filterWidth = '';
-
+	downloadbtn: boolean = false;
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -88,6 +89,14 @@ export class TopbarComponent implements OnInit {
 			this.reset()
 			this.setTopbar(location.path())
 		})
+
+		this.walletPriceService.download$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+			if (res) {
+				this.downloadbtn = true;
+			} else {
+				this.downloadbtn = false;
+			}
+		});
 	}
 
 	ngOnInit() {
@@ -137,6 +146,7 @@ export class TopbarComponent implements OnInit {
 		this.value1 = '';
 		this.type2 = '';
 		this.value2 = '';
+		this.value3 = '';
 		this.showfilter = false;
 		this.showInput = false;
 		this.toogle = false;
@@ -159,7 +169,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'lead-management') {
 			this.dataSourceHeader()
 			this.value1 = 'Add New Lead';
-			this.showfilter = false;
+			this.showfilter = true;
 			this.filterName = 'leads';
 			this.filterWidth = '900px';
 		}
@@ -208,6 +218,7 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.type2 = 'button';
 			this.value2 = 'Edit Wallet Price';
+			this.value3 = 'Download Wallet Price Report'
 		}
 		if (this.path == 'bulk-upload-report') {
 			this.showInput = true;
@@ -259,7 +270,9 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.value1 = 'Export';
 			this.type1 = 'button';
-			// this.showfilter = true;
+			this.filterName = 'orderDetails';
+			this.filterWidth = '550px';
+			this.showfilter = true;
 		}
 		if (this.path == 'cancel-order-details') {
 			this.showInput = true;
@@ -274,9 +287,12 @@ export class TopbarComponent implements OnInit {
 			// this.showfilter = true;
 		}
 		if (this.path == 'emi-details') {
+			this.showfilter = true;
 			this.showInput = true;
 			this.value1 = 'Export';
 			this.type1 = 'button';
+			this.filterName = 'emiDetails';
+			this.filterWidth = '500px';
 			// this.showfilter = true;
 		}
 	}
@@ -347,6 +363,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'emi-details') {
 			this.emiDetailsService.exportExcel.next(true);
+		}
+	}
+
+	download() {
+		if (this.path == 'wallet-price') {
+			this.walletPriceService.downloadReport.next(true)
 		}
 	}
 

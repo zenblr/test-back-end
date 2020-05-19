@@ -55,7 +55,7 @@
                 </ng-container>
                 <ng-container matColumnDef="metalType">
                     <mat-header-cell *matHeaderCellDef>Metal Type</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.metalType?.metalType}}</mat-cell>
+                    <mat-cell *matCellDef="let element">{{element?.metalType?.metalType | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>

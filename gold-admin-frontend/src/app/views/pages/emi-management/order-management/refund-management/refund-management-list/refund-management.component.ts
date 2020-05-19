@@ -5,22 +5,20 @@ import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { EmiDetailsService, EmiDetailsDatasource, EmiDetailsModel } from '../../../../../../core/emi-management/order-management';
 import { skip, distinctUntilChanged, tap, takeUntil } from 'rxjs/operators';
-import { EmiDetailsViewComponent } from '../emi-details-view/emi-details-view.component'
+import { RefundManagementEditComponent } from '../refund-management-edit/refund-management-edit.component'
 @Component({
-  selector: 'kt-emi-details-list',
-  templateUrl: './emi-details-list.component.html',
-  styleUrls: ['./emi-details-list.component.scss']
+  selector: 'kt-refund-management',
+  templateUrl: './refund-management.component.html',
+  styleUrls: ['./refund-management.component.scss']
 })
-export class EmiDetailsListComponent implements OnInit {
+export class RefundManagementComponent implements OnInit {
   dataSource: EmiDetailsDatasource;
   displayedColumns = ['storeId', 'userId', 'mobileNumber', 'orderId', 'emiDate', 'emiAmount',
     'emiPaidDate', 'status', 'emiFrom', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
-  // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   bulkUploadReportResult: EmiDetailsModel[] = [];
-  // Subscriptions
   private subscriptions: Subscription[] = [];
   private destroy$ = new Subject();
   private unsubscribeSearch$ = new Subject();
@@ -39,16 +37,10 @@ export class EmiDetailsListComponent implements OnInit {
       }
     });
   }
-
   ngOnInit() {
-    // If the user changes the sort order, reset back to the first page.
     const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     this.subscriptions.push(sortSubscription);
 
-		/* Data load will be triggered in two cases:
-		- when a pagination event occurs => this.paginator.page
-		- when a sort event occurs => this.sort.sortChange
-		**/
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {
         this.loadEmiDetailsPage();
@@ -57,19 +49,6 @@ export class EmiDetailsListComponent implements OnInit {
       .subscribe();
     this.subscriptions.push(paginatorSubscriptions);
 
-    // Filtration, bind to searchInput
-    // const searchSubscription = fromEvent(this.searchInput.nativeElement, 'keyup').pipe(
-    //   // tslint:disable-next-line:max-line-length
-    //   debounceTime(150), // The user can type quite quickly in the input box, and that could trigger a lot of server requests. With this operator, we are limiting the amount of server requests emitted to a maximum of one every 150ms
-    //   distinctUntilChanged(), // This operator will eliminate duplicate values
-    //   tap(() => {
-    //     this.paginator.pageIndex = 0;
-    //     this.loadOrderDetailsPage();
-    //   })
-    // )
-    //   .subscribe();
-    // this.subscriptions.push(searchSubscription);
-
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
@@ -77,7 +56,6 @@ export class EmiDetailsListComponent implements OnInit {
         this.loadEmiDetailsPage();
       });
 
-    // Init DataSource
     this.dataSource = new EmiDetailsDatasource(this.emiDetailsService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
@@ -98,9 +76,7 @@ export class EmiDetailsListComponent implements OnInit {
     this.dataSource.loadEmiDetails(from, to, this.searchValue);
   }
 
-	/**
-	 * Returns object for filter
-	 */
+
   filterConfiguration(): any {
     const filter: any = {};
     const searchText: string = this.searchInput.nativeElement.value;
@@ -108,18 +84,33 @@ export class EmiDetailsListComponent implements OnInit {
     return filter;
   }
 
-  viewOrder(order) {
-    const dialogRef = this.dialog.open(EmiDetailsViewComponent,
+  viewProduct(product) {
+    console.log(product);
+    const dialogRef = this.dialog.open(RefundManagementEditComponent,
       {
-        data: { order:order, action: 'view' },
-        width: '500px'
+        data: { productId: product.id, action: 'view' },
+        width: '550px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         console.log(res);
       }
     });
-   }
+  }
+
+  editProduct(product) {
+    console.log(product);
+    const dialogRef = this.dialog.open(RefundManagementEditComponent,
+      {
+        data: { productId: product.id, action: 'edit' },
+        width: '550px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadEmiDetailsPage();
+      }
+    });
+  }
 
   printCancellationReceipt(order) { }
 

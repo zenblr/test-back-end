@@ -20,7 +20,7 @@
               <div class="form-group kt-form__group row">
                 <div class="col-12 kt-margin-bottom-20-mobile">
                   <div class="row pb-3">
-                    <div class="col-6">
+                    <!-- <div class="col-6">
                       <label>By Category</label>
                       <select class="form-control" name="categoryId" formControlName="categoryId">
                         <option value="" [selected]="true">Select Category</option>
@@ -37,6 +37,43 @@
                           {{item?.subCategoryName}}
                         </option>
                       </select>
+                    </div> -->
+
+                    <div class="col-6">
+                      <label>By Category</label>
+                      <ng-select [items]="categoryList" [multiple]="true" bindLabel="categoryName"
+                        [selectableGroup]="true" [closeOnSelect]="false" bindValue="id" formControlName="categoryId">
+                        <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" />
+                          <!-- {{item.gender | uppercase}} -->
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" /> {{item.categoryName}}
+                        </ng-template>
+                        <ng-template ng-label-tmp>
+                          <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
+                        </ng-template>
+                      </ng-select>
+                    </div>
+                    <div class="col-6">
+                      <label>By Sub-Category</label>
+                      <ng-select [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
+                        [selectableGroup]="true" [closeOnSelect]="false" bindValue="id" formControlName="subCategoryId">
+                        <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" />
+                          <!-- {{item.gender | uppercase}} -->
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" /> {{item.subCategoryName}}
+                        </ng-template>
+                        <ng-template ng-label-tmp>
+                          <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
+                        </ng-template>
+                      </ng-select>
                     </div>
                   </div>
                   <div class="row">
@@ -126,6 +163,63 @@
           </div>
         </div>
 
+        <!-- EMI Details -->
+        <div class="kt-portlet__body" *ngIf="filterName =='emiDetails'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row">
+                    <div class="col-3">
+                      <label>By Amount</label>
+                      <input class="form-control" placeholder="eg-100" formControlName="priceFrom" type="number" />
+                    </div>
+                    <div class="col-6">
+                      <label>By Status</label>
+                      <input class="form-control" formControlName="priceTo" type="text" />
+                    </div>
+                    <div class="col-3">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="kt-portlet__body" *ngIf="filterName =='orderDetails'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row">
+                    <div class="col-3">
+                      <label>By Weight(gm)</label>
+                      <input class="form-control" placeholder="eg-100" formControlName="priceFrom" type="number" />
+                    </div>
+                    <div class="col-3">
+                      <label>By tenure(m)</label>
+                      <input class="form-control" formControlName="priceTo" type="text" />
+                    </div>
+                    <div class="col-4">
+                      <label>By Status</label>
+                      <input class="form-control" formControlName="priceTo" type="text" />
+                    </div>
+                    <div class="col-2">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>

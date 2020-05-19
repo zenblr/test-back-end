@@ -117,6 +117,9 @@ export class PageConfig {
 			'deposit-details': {
 				page: { title: 'Deposit Details', desc: '' }
 			},
+			'refund-management': {
+				page: { title: 'Refund Management', desc: '' }
+			},
 		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }

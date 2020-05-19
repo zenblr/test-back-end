@@ -1,0 +1,55 @@
+<kt-toastr #toastr></kt-toastr>
+
+<div class="kt-portlet">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body font-weight-500" *ngIf="data.action == 'view'">
+        <div class="row py-2">
+            <div class="col-md-5 text-muted">
+                User ID
+            </div>
+            <div class="col-md-7">
+                {{orderData.order.customerDetails.customerUniqueId}}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-md-5 text-muted">
+                Order ID
+            </div>
+            <div class="col-md-7">
+                {{orderData.order.orderUniqueId}}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-md-5 text-muted">
+                Order Total Amount
+            </div>
+            <div class="col-md-7">
+                {{orderData.emiAmount}}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-md-5 text-muted">
+                Order Initial Amount
+            </div>
+            <div class="col-md-7">
+                {{orderData.emiAmount}}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-md-5 text-muted">
+                EMI Start Date
+            </div>
+            <div class="col-md-7">
+                {{orderData.dueDate | date:'medium'}}
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-md-5 text-muted">
+                EMI End Date
+            </div>
+            <div class="col-md-7">
+                {{orderData.paymentRecievedDate | date:'medium'}}
+            </div>
+        </div>
+    </div>
+</div>
