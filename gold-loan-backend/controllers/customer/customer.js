@@ -316,7 +316,7 @@ exports.getSingleCustomer = async (req, res, next) => {
 exports.filterCustomer = async (req, res) => {
   var { cityId, stateId, statusId } = req.query;
   const query = {};
-
+  query.isActive=true;
   if (cityId) {
     cityId = req.query.cityId.split(",");
     query.cityId = cityId;
@@ -331,8 +331,7 @@ exports.filterCustomer = async (req, res) => {
   }
 
   let customerFilterData = await models.customer.findAll({
-    where: query,
-    isActive: true,
+    where: query
   });
   if (!customerFilterData[0]) {
     return res.status(404).json({ message: "data not found" });
