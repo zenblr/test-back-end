@@ -85,8 +85,10 @@
                 </ng-container>
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-                    <mat-cell *matCellDef="let element" [ngClass]="(element?.orderemistatus?.id == 1)?'pending':'green'">
-                        {{element?.orderemistatus?.statusName ? element?.orderemistatus?.statusName : '-'}}</mat-cell>
+                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element?.orderemistatus?.id == 1,
+                    'text-green' : element?.orderemistatus?.id == 4}">
+                        {{element?.orderemistatus?.statusName ? (element?.orderemistatus?.statusName | titlecase) : '-'}}
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiFrom">
                     <mat-header-cell *matHeaderCellDef>Emi From</mat-header-cell>

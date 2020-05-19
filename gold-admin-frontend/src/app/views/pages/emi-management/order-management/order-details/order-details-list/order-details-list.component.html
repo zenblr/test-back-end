@@ -127,8 +127,10 @@
                 </ng-container>
                 <ng-container matColumnDef="orderStatus">
                     <mat-header-cell *matHeaderCellDef>Order Status</mat-header-cell>
-                    <mat-cell *matCellDef="let element" [ngClass]="(element['orderCurrentStatus.id'] == 13)?'red':'green'">
-                        {{element['orderCurrentStatus.statusName'] ? element['orderCurrentStatus.statusName'] : '-'}}
+                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element['orderCurrentStatus.id'] == 5,
+                    'text-red' : element['orderCurrentStatus.id'] == 13,
+                    'text-green' : element['orderCurrentStatus.id'] != 5 || element['orderCurrentStatus.id'] != 13}">
+                        {{element['orderCurrentStatus.statusName'] ? (element['orderCurrentStatus.statusName'] | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderFrom">
