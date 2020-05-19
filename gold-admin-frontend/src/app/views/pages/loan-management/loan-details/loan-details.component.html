@@ -5,52 +5,47 @@
         <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
-                <ng-container matColumnDef="fullName">
+                <ng-container matColumnDef="customerID">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
-                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         {{loan.customer.firstName | titlecase}}&nbsp;{{loan.customer.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="customerID">
-                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                <ng-container matColumnDef="loanId">
+                    <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.customer.customerUniqueId}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="mobile">
-                    <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
+                <ng-container matColumnDef="schemeName">
+                    <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.customer.mobileNumber}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="amount">
+                    <mat-header-cell *matHeaderCellDef>Loan Amount.</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.customer.mobileNumber}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="pan">
-                    <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
+                <ng-container matColumnDef="interestRate">
+                    <mat-header-cell *matHeaderCellDef>Intrest Rate</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.customer.panCardNumber | uppercase}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="date">
-                    <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                <ng-container matColumnDef="tenure">
+                    <mat-header-cell *matHeaderCellDef>Loan Tenure</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="schemeName">
-                    <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
+                <ng-container matColumnDef="startDate">
+                    <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName | titlecase}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="appraisalApproval">
-                    <mat-header-cell *matHeaderCellDef>Appraiser Approval</mat-header-cell>
+                <ng-container matColumnDef="endDate">
+                    <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <span
                             [ngClass]="loan.loanStatusForAppraiser == 'pending' ? 'text-warning' :loan.loanStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
                             {{loan.loanStatusForAppraiser | titlecase}}
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="bMApproval">
-                    <mat-header-cell *matHeaderCellDef>Loan Application</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">
-                        <span
-                            [ngClass]="loan.loanStatusForBM == 'pending' ? 'text-warning' :loan.loanStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
-                            {{loan.loanStatusForBM | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>

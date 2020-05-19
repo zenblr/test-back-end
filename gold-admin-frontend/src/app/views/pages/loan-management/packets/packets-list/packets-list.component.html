@@ -4,18 +4,26 @@
 
         <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
-                <ng-container matColumnDef="packetId">
+                <ng-container matColumnDef="packetUniqueId">
                     <mat-header-cell *matHeaderCellDef>Packet ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.packetId | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.packetUniqueId | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerID">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.customerId}}</mat-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.customer">
+                            {{role.customer.customerUniqueId}}
+                        </span>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.loanId}}</mat-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.customerLoan">
+                            {{role.customerLoan.loanUniqueId}}
+                        </span>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">

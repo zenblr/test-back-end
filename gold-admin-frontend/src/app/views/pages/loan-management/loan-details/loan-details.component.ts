@@ -3,19 +3,19 @@ import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
-import { AppliedLoanDatasource,AppliedLoanService } from '../../../../core/loan-management'
+import { LoanDetailsDatasource,LoanDetailsService } from '../../../../core/loan-management'
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 @Component({
-  selector: 'kt-applied-loan',
-  templateUrl: './applied-loan.component.html',
-  styleUrls: ['./applied-loan.component.scss']
+  selector: 'kt-loan-details',
+  templateUrl: './loan-details.component.html',
+  styleUrls: ['./loan-details.component.scss']
 })
-export class AppliedLoanComponent implements OnInit {
-  
+export class LoanDetailsComponent implements OnInit {
+
   roles:any
-  dataSource: AppliedLoanDatasource;
-  displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions'];
+  dataSource: LoanDetailsDatasource;
+  displayedColumns = ['customerID', 'loanId', 'amount', 'interestRate', 'tenure', 'startDate','endDate','actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -30,7 +30,7 @@ export class AppliedLoanComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private AppliedLoanService: AppliedLoanService,
+    private loanDetailsService: LoanDetailsService,
     private dataTableService: DataTableService,
     private router:Router,
     private sharedService:SharedService
@@ -58,7 +58,7 @@ export class AppliedLoanComponent implements OnInit {
       });
 
     // Init DataSource
-    this.dataSource = new AppliedLoanDatasource(this.AppliedLoanService);
+    this.dataSource = new LoanDetailsDatasource(this.loanDetailsService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -70,7 +70,7 @@ export class AppliedLoanComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadAppliedLoans(this.searchValue,1, 25);
+    // this.dataSource.loadDetailsLoans(this.searchValue,1, 25);
 
   }
 
@@ -90,24 +90,10 @@ export class AppliedLoanComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadAppliedLoans(this.searchValue,from, to);
+    // this.dataSource.loadDetailsLoans(this.searchValue,from, to);
   }
 
-  // addLead() {
-  //   // console.log(event);
-  //   const dialogRef = this.dialog.open(AddLeadComponent, {
-  //     data: { action: 'add' },
-  //     width: '500px'
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.loadLeadsPage();
-  //     }
-  //     this.loanManagementService.openModal.next(false);
-  //   });
-  // }
-
-  editLoan(loan) {
+  viewLoan(loan) {
     this.router.navigate(['/loan-management/loan-application-form',loan.id])
   }
 

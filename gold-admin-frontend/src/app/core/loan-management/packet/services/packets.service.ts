@@ -14,8 +14,20 @@ export class PacketsService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
+  uploadPackets(packageImageData,loanId):Observable<any>{
+    return this.http.post(`/api/loan-process/add-packet-images/`,{packageImageData,loanId}).pipe(
+      map(res=>res)
+    )
+  }
+
+  getPacketsAvailable():Observable<any>{
+    return this.http.get(`/api/packet/available-packet`).pipe(
+      map(res=>res)
+    )
+  }
+
   getpackets(search, from, to): Observable<any> {
-    return this.http.get(`/api/loan-process/view-packet?search=${search}&from=${from}&to=${to}`).pipe(
+    return this.http.get(`/api/packet?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);
@@ -25,7 +37,7 @@ export class PacketsService {
   }
 
   addPacket(data): Observable<any> {
-    return this.http.post<any>(`/api/loan-process/add-packet`, data).pipe(
+    return this.http.post<any>(`/api/packet`, data).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);
@@ -35,7 +47,7 @@ export class PacketsService {
   }
 
   updatePacket(id, data): Observable<any> {
-    return this.http.put<any>(`/api/loan-process/update-packet/${id}`, data).pipe(
+    return this.http.put<any>(`/api/packet/${id}`, data).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);
@@ -45,7 +57,7 @@ export class PacketsService {
   }
 
   deletePacket(id): Observable<any> {
-    return this.http.delete<any>(`/api/loan-process/remove-packet?id=${id}&isActive=${false}`).pipe(
+    return this.http.delete<any>(`/api/packet?id=${id}&isActive=${false}`).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);
