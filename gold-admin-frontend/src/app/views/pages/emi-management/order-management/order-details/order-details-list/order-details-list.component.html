@@ -127,7 +127,7 @@
                 </ng-container>
                 <ng-container matColumnDef="orderStatus">
                     <mat-header-cell *matHeaderCellDef>Order Status</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-cell *matCellDef="let element" [ngClass]="(element['orderCurrentStatus.id'] == 13)?'red':'green'">
                         {{element['orderCurrentStatus.statusName'] ? element['orderCurrentStatus.statusName'] : '-'}}
                     </mat-cell>
                 </ng-container>

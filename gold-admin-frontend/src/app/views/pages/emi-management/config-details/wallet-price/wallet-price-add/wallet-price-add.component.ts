@@ -28,6 +28,8 @@ export class WalletPriceAddComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.setForm();
+    console.log(this.data.data);
+    
   }
 
   initForm() {
@@ -41,6 +43,8 @@ export class WalletPriceAddComponent implements OnInit {
       gst: ['', Validators.required],
       excixeDuty: [''],
       cancelValue: ['', Validators.required],
+      kycLimit: ['', Validators.required],
+
     })
   }
 

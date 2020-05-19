@@ -1,6 +1,1 @@
-category,subCategory,sku,productName,weight,manufacturingCostPerGram,hallmarkingPackaging,shipping
-ring,gold ring,skucode111,prod5,2,40,0,100
-coin,gold coin,skucode112,prod6,3,40,0,100
-ring,gold ring,skucode113,prod7,4,40,0,100
-ring,gold ring,skucode114,prod8,5,40,0,100
-ring,gold ring,skucode115,prod9,6,40,0,100
+category,subCategory,sku,productName,weight,manufacturingCostPerGram,hallmarkingPackaging,shipping,isEmiAvailable
