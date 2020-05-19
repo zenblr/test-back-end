@@ -59,12 +59,12 @@ export class LoanApplicationFormComponent implements OnInit {
     setTimeout(() => {
       if (this.router.url == "/loan-management/package-image-upload") {
         this.disabledForm = true;
-        const test = document.getElementById('packets');
-        test.scrollIntoView({ behavior: "smooth" });
+        const pack = document.getElementById('packets');
+        pack.scrollIntoView({ behavior: "smooth" });
       } else {
         this.disabledForm = false;
       }
-    }, 500)
+    }, 1000)
   }
 
   customerDetails(event) {

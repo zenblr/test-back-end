@@ -59,8 +59,8 @@
                 <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>
             </div>
         </div>
-        <div class="row" id="packets" *ngIf="disabledForm">
-            <div class="col">
+        <div class="row" id="packets" >
+            <div class="col" *ngIf="disabledForm">
                 <kt-upload-packets></kt-upload-packets>
             </div>
         </div>

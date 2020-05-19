@@ -116,7 +116,8 @@
                                 </mat-error>
                             </div>
                             <div class="col-4 text-right min-height-attach">
-                                <input type="file" #weightMachineZeroWeight class="d-none" (change)="uploadFile(idx,$event,'weightMachineZeroWeight')">
+                                <input type="file" #weightMachineZeroWeight class="d-none"
+                                    (change)="uploadFile(idx,$event,'weightMachineZeroWeight')">
                                 <kt-button *ngIf="!ornament.controls.weightMachineZeroWeight.value" [type]="'button'"
                                     [value]="'Attach'" (click)="weightMachineZeroWeight.click()"></kt-button>
 
@@ -232,7 +233,8 @@
                                 </mat-error>
                             </div>
                             <div class="col-4 text-right min-height-attach">
-                                <input type="file" #purity class="d-none" (change)="uploadFile(idx,$event,'purityTest')">
+                                <input type="file" #purity class="d-none"
+                                    (change)="uploadFile(idx,$event,'purityTest')">
                                 <kt-button *ngIf="ornament.controls.purityTest.value.length == 0" [type]="'button'"
                                     [value]="'Attach'" (click)="purity.click()"></kt-button>
                                 <div class="form-label">
@@ -267,7 +269,7 @@
                     <div class="col-6 ">
                         <div class="row kt-margin-t-15 kt-padding-l-10">
                             <div class="col-4 form-label">
-                                <label for="" class="text-color">Purity</label>
+                                <label for="" class="text-color">Purity %</label>
                             </div>
                             <div class="col-8">
                                 <input type="number" class="form-control" formControlName="purity" placeholder="00%"
@@ -288,9 +290,12 @@
                             <div class="col-4 form-label">
                                 <label class="my-auto text-color ">LTV Range</label>
                             </div>
-                            <div class="offset-6 col-2 form-label min-height-attach">
-                                <label class="text-color w-100 m-auto">{{ornament.controls.ltvRange.value[0]}} &nbsp;-
-                                    &nbsp;{{ornament.controls.ltvRange.value[ornament.controls.ltvRange.value.length-1]}}</label>
+                            <div class="col-8">
+                                <input type="text" readonly value="{{ornament.controls.ltvRange.value[0]}} &nbsp;-
+                                &nbsp;{{ornament.controls.ltvRange.value[ornament.controls.ltvRange.value.length-1]}}" 
+                                class="form-control">
+                                <!-- <label class="text-color w-100 m-auto">{{ornament.controls.ltvRange.value[0]}} &nbsp;-
+                                    &nbsp;{{ornament.controls.ltvRange.value[ornament.controls.ltvRange.value.length-1]}}</label> -->
                             </div>
                         </div>
                     </div>
@@ -316,10 +321,12 @@
                                 <label class="my-auto text-color ">LTV %</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="ltvPercent" (change)="calculateLtvAmount(idx)"
+                                <select class="form-control" formControlName="ltvPercent"
+                                    (change)="calculateLtvAmount(idx)"
                                     [class.isError]="ornament.controls.ltvPercent.touched && ornament.controls.ltvPercent.invalid">
                                     <option value=null disabled selected>Select LTV %</option>
-                                    <option [value]="pure" *ngFor="let pure of ornament.controls.ltvRange.value;index as i">{{pure}} %
+                                    <option [value]="pure"
+                                        *ngFor="let pure of ornament.controls.ltvRange.value;index as i">{{pure}} %
                                     </option>
                                 </select>
                                 <mat-error
@@ -349,6 +356,31 @@
                     </div>
 
                 </div>
+                <div class="row">
+
+                    <div class="col-6">
+                        <div class="row kt-margin-t-15">
+                            <div class="col-4 form-label">
+                                <label class="my-auto text-color ">Final Net Weight</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" formControlName="finalNetWeight" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row kt-margin-t-15 kt-padding-l-10">
+                            <div class="col-4 form-label">
+                                <label class="text-color ">Final LTV Amount</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" placeholder="100.00"
+                                    formControlName="loanAmount" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <div class="col-3 ">
                 <input type="file" #ornamentImage class="d-none" (change)="uploadFile(idx,$event,'ornamentImage')">
@@ -365,14 +397,13 @@
                         Image</label>
                     <label *ngIf="ornament.controls.ornamentImage.value" class="my-auto text-danger m-auto kt-pointer"
                         (click)="removeImage('ornamentImage',idx)">Remove</label>
-                    <div>
-                        <mat-error
-                            *ngIf="ornament.controls.ornamentImage.touched && ornament.controls.ornamentImage.invalid">
-                            <span *ngIf="ornament.controls.ornamentImage.errors?.required">Upload Image</span>
-                        </mat-error>
-                    </div>
                 </div>
-
+                <div>
+                    <mat-error
+                        *ngIf="ornament.controls.ornamentImage.touched && ornament.controls.ornamentImage.invalid">
+                        <span *ngIf="ornament.controls.ornamentImage.errors?.required">Upload Image</span>
+                    </mat-error>
+                </div>
             </div>
         </div>
     </mat-tab>
