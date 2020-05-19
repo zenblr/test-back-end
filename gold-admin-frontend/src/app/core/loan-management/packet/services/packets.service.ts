@@ -14,6 +14,18 @@ export class PacketsService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
+  uploadPackets(packageImageData,loanId):Observable<any>{
+    return this.http.post(`/api/loan-process/add-packet-images/`,{packageImageData,loanId}).pipe(
+      map(res=>res)
+    )
+  }
+
+  getPacketsAvailable():Observable<any>{
+    return this.http.get(`/api/packet/available-packet`).pipe(
+      map(res=>res)
+    )
+  }
+
   getpackets(search, from, to): Observable<any> {
     return this.http.get(`/api/packet?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),

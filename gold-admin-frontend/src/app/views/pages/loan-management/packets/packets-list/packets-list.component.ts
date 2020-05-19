@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class PacketsListComponent implements OnInit {
   dataSource: PacketsDatasource;
-  displayedColumns = ['packetId', 'customerID', 'loanId', 'actions'];
+  displayedColumns = ['packetUniqueId', 'customerID', 'loanId', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields

@@ -120,8 +120,8 @@ export class PageConfig {
 			'packet': {
 				page: { title: 'Packets', desc: '' }
 			},
-			'package-image-upload': {
-				page: { title: 'Upload Packets', desc: '' }
+			'all-loan': {
+				page: { title: 'All Loans', desc: '' }
 			},
 			'applied-loan': {
 				page: { title: 'Applied Loan', desc: '' }

@@ -162,8 +162,8 @@ export class MenuConfig {
 							page: '/loan-management/applied-loan'
 						},
 						{
-							title: 'Packet Image Upload',
-							page: '/loan-management/package-image-upload'
+							title: 'Loan Details',
+							page: '/loan-management/all-loan'
 						},
 
 					]

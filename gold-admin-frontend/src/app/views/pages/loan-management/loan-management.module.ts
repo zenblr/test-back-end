@@ -25,6 +25,8 @@ import { PacketsListComponent } from './packets/packets-list/packets-list.compon
 import { AssignPacketsComponent } from './packets/assign-packets/assign-packets.component';
 import { InterestCalculatorComponent } from './loan-application-form/tabs/interest-calculator/interest-calculator.component';
 import { DeleteEntityDialogComponent } from '../../partials/content/crud';
+import { LoanDetailsComponent } from './loan-details/loan-details.component';
+import { DisburseDialogComponent } from './disburse-dialog/disburse-dialog.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -47,7 +49,11 @@ const rout: Routes = [
     component: AppliedLoanComponent
   },
   {
-    path: 'package-image-upload',
+    path: 'all-loan',
+    component: LoanDetailsComponent
+  },
+  {
+    path: 'package-image-upload/:id',
     component: LoanApplicationFormComponent
   }
 ]
@@ -70,6 +76,8 @@ const rout: Routes = [
     PacketsListComponent,
     AssignPacketsComponent,
     InterestCalculatorComponent,
+    LoanDetailsComponent,
+    DisburseDialogComponent,
   ],
   imports: [
     CommonModule,

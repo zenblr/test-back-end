@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
 import { UploadOfferService } from '../../../../../../core/upload-data';
 import { KaratDetailsService } from '../../../../../../core/loan-setting/karat-details/services/karat-details.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -41,7 +42,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   karatArr:any
   purityBasedDeduction: number;
   ltvPercent = [];
-
+  url:string
   constructor(
     public fb: FormBuilder,
     public sharedService: SharedService,
@@ -50,12 +51,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public dilaog: MatDialog,
     public ref: ChangeDetectorRef,
     public uploadOfferService: UploadOfferService,
-    public karatService: KaratDetailsService
+    public karatService: KaratDetailsService,
+    public router:Router
   ) {
 
   }
 
   ngOnInit() {
+    this.url = this.router.url.split('/')[2]
     this.getKarat()
     this.initForm()
     this.ornamentsForm.valueChanges.subscribe(() => {
@@ -296,7 +299,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         }else{
           this.images[index].purity = url
         }
-        controls.controls.purityTest.patchValue(temp)
+        controls.controls.purityTest.patchValue([this.images[index].purity])
         this.purity.nativeElement.value =''
         
 

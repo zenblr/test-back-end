@@ -52,15 +52,15 @@
                 <mat-divider></mat-divider>
             </div>
         </div>
-        <div class="row py-3" *ngIf="!disabledForm">
+        <div class="row py-3" *ngIf="url != 'package-image-upload'">
             <div class="col-12">
                 <kt-button [value]="'Apply'" [type]="'button'" (click)="apply()"></kt-button>
                 <span class="kt-padding-10"></span>
                 <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>
             </div>
         </div>
-        <div class="row" id="packets" >
-            <div class="col" *ngIf="disabledForm">
+        <div class="row " id="packets" >
+            <div class="col packets-height" *ngIf="url == 'package-image-upload'">
                 <kt-upload-packets></kt-upload-packets>
             </div>
         </div>
