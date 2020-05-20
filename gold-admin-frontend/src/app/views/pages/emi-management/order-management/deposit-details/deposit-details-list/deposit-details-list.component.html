@@ -70,7 +70,13 @@
                 <ng-container matColumnDef="transactionDate">
                     <mat-header-cell *matHeaderCellDef>Transaction Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.paymentRecievedDate ? (element?.paymentRecievedDate | date:'medium') : '-'}}
+                        <div class="d-block">
+                            <div>
+                                {{element?.paymentRecievedDate ? (element?.paymentRecievedDate | date:'MMM d, y') : '-'}}
+                            </div>
+                            <div>{{element?.paymentRecievedDate ? (element?.paymentRecievedDate | date:'h:mm a') : ''}}
+                            </div>
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="productName">

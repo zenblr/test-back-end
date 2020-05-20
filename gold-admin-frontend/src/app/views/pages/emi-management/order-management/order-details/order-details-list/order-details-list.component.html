@@ -106,7 +106,10 @@
                 <ng-container matColumnDef="orderDate">
                     <mat-header-cell *matHeaderCellDef>Order Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['createdAt'] ? (element['createdAt'] | date:'MMM d, y, h:mm:ss a') : '-'}}
+                        <div class="d-block">
+                            <div>{{element['createdAt'] ? (element['createdAt'] | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element['createdAt'] ? (element['createdAt'] | date:'h:mm a') : ''}}</div>
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiTenure">
@@ -133,8 +136,8 @@
                         {{element['orderCurrentStatus.statusName'] ? (element['orderCurrentStatus.statusName'] | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="orderFrom">
-                    <mat-header-cell *matHeaderCellDef>Order From</mat-header-cell>
+                <ng-container matColumnDef="merchant">
+                    <mat-header-cell *matHeaderCellDef>Merchant</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element['orderBy.broker.merchant.merchantName'] ? element['orderBy.broker.merchant.merchantName'] : '-'}}
                     </mat-cell>

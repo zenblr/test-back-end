@@ -20,7 +20,7 @@ export class OrderDetailsListComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   displayedColumns = ['storeId', 'centerCity', 'shippingAddress', 'memberId', 'mobileNumber', 'orderId',
     'productName', 'weight', 'orderTotalAmount', 'orderInitialAmount', 'orderDate', 'emiTenure', 'orderQty',
-    'invoiceNo', 'orderStatus', 'orderFrom', 'action'];
+    'invoiceNo', 'orderStatus', 'merchant', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields

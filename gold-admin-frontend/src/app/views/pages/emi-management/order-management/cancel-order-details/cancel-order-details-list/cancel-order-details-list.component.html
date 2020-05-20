@@ -70,7 +70,11 @@
                 <ng-container matColumnDef="overdueDate">
                     <mat-header-cell *matHeaderCellDef>Overdue Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.overDueDate ? (element?.overDueDate | date:'medium') : '-'}}</mat-cell>
+                        <div class="d-block">
+                            <div>{{element?.overDueDate ? (element?.overDueDate | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element?.overDueDate ? (element?.overDueDate | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="totalPrice">
                     <mat-header-cell *matHeaderCellDef>Total Price</mat-header-cell>
@@ -106,7 +110,11 @@
                 <ng-container matColumnDef="cancellationDate">
                     <mat-header-cell *matHeaderCellDef>Cancellation Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.cancelDate ? (element?.cancelDate | date:'medium') : '-'}}</mat-cell>
+                        <div class="d-block">
+                            <div>{{element?.cancelDate ? (element?.cancelDate | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element?.cancelDate ? (element?.cancelDate | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="cancelOrderFrom">
                     <mat-header-cell *matHeaderCellDef>Cancel Order From</mat-header-cell>

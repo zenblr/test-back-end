@@ -17,7 +17,7 @@ export class WalletPriceService {
   downloadReport = new BehaviorSubject<any>(false);
   downloadReport$ = this.downloadReport.asObservable();
 
-  constructor(private http: HttpClient,private excelService: ExcelService) { }
+  constructor(private http: HttpClient, private excelService: ExcelService) { }
 
   getWalletPrice(): Observable<any> {
     return this.http
@@ -42,7 +42,7 @@ export class WalletPriceService {
         }),
         tap(
           data => {
-            this.excelService.saveAsExcelFile(data, 'EMIReport')
+            this.excelService.saveAsExcelFile(data, 'WalletPriceReport')
           },
           error => console.log(error),
         ),

@@ -119,12 +119,13 @@
                             <label class="font-weight-500 text-color">Upload Awb File</label>
                         </div>
                         <div class="col-8">
-                            <span class="kt-pointer">
+                            <a class="text-body" [href]="orderInfo?.trackingDetails?.uploadedAwbFile?.url"
+                                download="{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}">
                                 <span>{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}</span>
                                 <span class="pl-2">
                                     <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
                                 </span>
-                            </span>
+                            </a>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15" *ngIf="showUploadedFile">
@@ -132,12 +133,13 @@
                             <label class="font-weight-500 text-color">Upload Awb Box</label>
                         </div>
                         <div class="col-8">
-                            <span class="kt-pointer">
+                            <a class="text-body" [href]="orderInfo?.trackingDetails?.uploadedAwbBox?.url"
+                                download="{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}">
                                 <span>{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}</span>
                                 <span class="pl-2">
                                     <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
                                 </span>
-                            </span>
+                            </a>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">

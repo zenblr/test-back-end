@@ -100,7 +100,7 @@ export class TopbarComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.setTopbar(this.router.url)		
+		this.setTopbar(this.router.url)
 	}
 
 	ngAfterViewInit(): void {
@@ -295,10 +295,13 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = '500px';
 			// this.showfilter = true;
 		}
-		if(location.href.includes('edit-order-details')){
+		if (location.href.includes('edit-order-details')) {
 			this.value1 = 'Print Performa';
 			this.type1 = 'button';
-		}		
+			this.value2 = 'Contract';
+			this.type2 = 'button';
+			this.rightButton = true;
+		}
 	}
 
 	action(event: Event) {

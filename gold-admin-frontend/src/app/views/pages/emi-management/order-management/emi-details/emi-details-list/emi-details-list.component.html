@@ -71,7 +71,11 @@
                 <ng-container matColumnDef="emiDate">
                     <mat-header-cell *matHeaderCellDef>EMI Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.dueDate ? (element?.dueDate | date : 'medium') : '-'}}</mat-cell>
+                        <div class="d-block">
+                            <div>{{element?.dueDate ? (element?.dueDate | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element?.dueDate ? (element?.dueDate | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiAmount">
                     <mat-header-cell *matHeaderCellDef>EMI Amount</mat-header-cell>
@@ -80,7 +84,13 @@
                 <ng-container matColumnDef="emiPaidDate">
                     <mat-header-cell *matHeaderCellDef>EMI Paid Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.paymentRecievedDate ? (element?.paymentRecievedDate | date : 'medium') : '-'}}
+                        <div class="d-block">
+                            <div>
+                                {{element?.paymentRecievedDate ? (element?.paymentRecievedDate | date:'MMM d, y') : '-'}}
+                            </div>
+                            <div>{{element?.paymentRecievedDate ? (element?.paymentRecievedDate | date:'h:mm a') : ''}}
+                            </div>
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">
