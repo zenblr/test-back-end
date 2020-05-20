@@ -102,10 +102,6 @@ exports.submitCustomerKycpersonalDetailValidation = [
     body("martialStatus")
         .exists()
         .withMessage("martial status is required"),
-
-    body("occupationId")
-        .exists()
-        .withMessage("Occupation id is required"),
     body("spouseName")
         .exists()
         .withMessage("spouse name is required"),
