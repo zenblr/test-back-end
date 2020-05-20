@@ -53,11 +53,10 @@
                         <label class="mandatory">Start Date</label>
                     </div>
                     <div class="col-7">
-                        <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                            formControlName="loanStartDate" [min]="currentDate"
+                        <input type="text" class="form-control" formControlName="loanStartDate"
                             [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
-                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()">
-                        <mat-datepicker #picker></mat-datepicker>
+                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()"
+                            value="{{controls.loanStartDate.value |  date:'mediumDate'}}">
                         <mat-error *ngIf="controls.loanStartDate.errors?.required && controls.loanStartDate.touched">
                             Required field
                         </mat-error>
@@ -72,9 +71,8 @@
                     </div>
                     <div class="col-7">
                         <input class="form-control" formControlName="loanEndDate" placeholder="02 May, 2020"
-                            [matDatepicker]="picker1"
-                            [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid" readonly />
-                        <mat-datepicker #picker1></mat-datepicker>
+                            [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid" readonly
+                            value="{{controls.loanEndDate.value |  date:'mediumDate'}}" />
                         <mat-error *ngIf="controls.loanEndDate.errors?.required && controls.loanEndDate.touched">
                             Required field
                         </mat-error>
@@ -104,14 +102,11 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row kt-margin-b-20">
 
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Interest Rate</label>
+                        <label class="mandatory">Interest Rate% (p.m.)</label>
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="interestRate" placeholder="00%"
@@ -204,19 +199,19 @@
                                     <td>{{date.key | date :'mediumDate'}}</td>
 
                                     <td [attr.rowspan]="colJoin" *ngIf="(idx%colJoin == 0 || colJoin == null)">
-                                        {{intrestAmount | currency : 'INR'}}3</td>
+                                        {{intrestAmount | currency : 'INR'}}</td>
 
                                 </tr>
                             </tbody>
-                            <tbody *ngIf="dateOfPayment.length%colJoin != 0">
+                            <tbody *ngIf="dateOfPayment.length%colJoin != 0 && colJoin !== null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
                                     <td>{{date.key | date :'mediumDate'}}</td>
                                     <!-- <td>{{idx%colJoin == 0}}{{colJoin == null}}{{dateOfPayment.length%colJoin < dateOfPayment.length-idx}} {{dateOfPayment.length%colJoin}}{{dateOfPayment.length-idx}}</td> -->
                                     <td [attr.rowspan]="colJoin"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
-                                        {{intrestAmount | currency : 'INR'}}1</td>
+                                        {{intrestAmount | currency : 'INR'}}</td>
                                     <td *ngIf="(dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
-                                        {{intrestAmount | currency : 'INR'}}2</td>
+                                        {{intrestAmount / colJoin | currency : 'INR'}}</td>
 
                                 </tr>
                             </tbody>

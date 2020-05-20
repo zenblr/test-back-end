@@ -154,6 +154,7 @@ export class InterestCalculatorComponent implements OnInit {
 
   getIntrest() {
     if (this.controls.finalLoanAmount.valid) {
+      this.dateOfPayment = [];
       switch (this.controls.paymentFrequency.value) {
         case "30":
           this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateThirtyDaysMonthly)
@@ -202,7 +203,8 @@ export class InterestCalculatorComponent implements OnInit {
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      this.dateOfPayment.push((new Date(date.setMonth(date.getMonth() + index))))
+      var data = { key: new Date(date.setMonth(date.getMonth() + index)), colJoin: true }
+      this.dateOfPayment.push((data))
     }
   }
 
