@@ -248,11 +248,21 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customerFinalLoan,
                 as: 'finalLoan',
                 where: { isActive: true },
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include: [{
+                    model: models.scheme,
+                    as: 'scheme'
+                }]
             },
             {
                 model: models.customerLoanPackageDetails,
                 as: 'loanPacketDetails',
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include: [{
+                    model: models.packet,
+                    as: 'packet',
+                    attributes: ['id', 'packetUniqueId'],
+                }]
             },
         ]
     })
@@ -490,13 +500,18 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
+    let matchStageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
 
-    if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
-        let loanAmountDisbursed = await models.disbursementOfLoan.disbursementOfLoanAmount(
-            loanId, transactionId, date, createdBy, modifiedBy);
-        res.status(201).json({ message: 'you loan amount has been disbursed successfully' });
+    if (loanDetails.loanStageId == matchStageId.id) {
+        let stageId = await models.loanStage.findOne({ where: { name: 'disbursement complete' } })
+
+        await sequelize.transaction(async (t) => {
+            await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
+            await models.customerLoanDisbursement.create({ loanId, transactionId, date, createdBy, modifiedBy }, { transaction: t })
+        })
+        return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });
     } else {
-        res.status(404).json({ message: 'given loan id is not proper' })
+        return res.status(404).json({ message: 'Given loan id is not proper' })
     }
 }
 
@@ -506,50 +521,30 @@ exports.getLoanDetails = async (req, res, next) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
+    let stageId = await models.loanStage.findOne({ where: { name: 'disbursement complete' } })
+
     let associateModel = [{
         model: models.customer,
         as: 'customer',
         where: { isActive: true },
-        attributes: { exclude: ['password'] }
-    },
-    {
-        model: models.customerLoanBankDetail,
-        as: 'loanBankDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanKycDetail,
-        as: 'loanKycDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanNomineeDetail,
-        as: 'loanNomineeDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanOrnamentsDetail,
-        as: 'loanOrnamentsDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanPersonalDetail,
-        as: 'loanPersonalDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanPackageDetails,
-        as: 'loanPacketDetails',
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
     },
     {
         model: models.customerFinalLoan,
         as: 'finalLoan',
-        where: { isActive: true }
+        where: { isActive: true },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        include: [{
+            model: models.scheme,
+            as: 'scheme',
+            attributes: ['id', 'schemeName']
+        }]
     }]
 
     let loanDetails = await models.customerLoan.findAll({
-        where: { isActive: true },
+        where: { isActive: true, loanStageId: stageId.id },
         include: associateModel,
+        attributes: ['id', 'loanUniqueId'],
         order: [
             ['id', 'DESC']
         ],
@@ -557,13 +552,13 @@ exports.getLoanDetails = async (req, res, next) => {
         limit: pageSize
     });
     let count = await models.customerLoan.findAll({
-        where: { isActive: true },
+        where: { isActive: true, loanStageId: stageId.id },
         include: associateModel,
     });
     if (loanDetails.length === 0) {
-        res.status(404).json({ message: 'no loan details found' });
+       return res.status(200).json([]);
     } else {
-        res.status(200).json({ message: 'loan details fetch successfully', loanDetails, count: count.length });
+        return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
     }
 }
 
