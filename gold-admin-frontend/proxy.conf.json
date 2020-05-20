@@ -1,6 +1,10 @@
 {
     "/api/*": {
+<<<<<<< HEAD
         "target": "http://173.249.49.7:8200/",
+=======
+        "target": "http://173.249.49.7:8300/",
+>>>>>>> 481d83b8bcb5e6ac9a370ce939900e3b14a5e472
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
