@@ -134,7 +134,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
   save(){
     if(this.packetsForm.invalid){
       this.packetsForm.markAllAsTouched()
-      
+      return
     }
     this.packetService.uploadPackets(this.packets.value,this.loanId).pipe(
       map(res => {
