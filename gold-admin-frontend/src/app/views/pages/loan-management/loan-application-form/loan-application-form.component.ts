@@ -42,6 +42,7 @@ export class LoanApplicationFormComponent implements OnInit {
     public toast: ToastrService,
     public rout: ActivatedRoute
   ) {
+    this.url = this.router.url.split('/')[2]
     this.id = this.rout.snapshot.params.id
     if (this.id) {
       for (let index = 0; index < this.disabled.length; index++) {
@@ -51,6 +52,7 @@ export class LoanApplicationFormComponent implements OnInit {
 
         this.action = 'edit'
         this.customerDetail = res.data
+        this.selected = 5;
       })
 
     }
@@ -58,7 +60,7 @@ export class LoanApplicationFormComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      this.url = this.router.url.split('/')[2]
+      
       if (this.url == "package-image-upload") {
         this.disabledForm = true;
         const pack = document.getElementById('packets');

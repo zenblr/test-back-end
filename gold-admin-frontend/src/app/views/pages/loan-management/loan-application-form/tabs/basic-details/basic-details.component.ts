@@ -1,6 +1,7 @@
-import { Component, OnInit, EventEmitter, Output, OnChanges, Input, ChangeDetectionStrategy, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnChanges, Input, ChangeDetectionStrategy, ChangeDetectorRef, SimpleChanges, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kt-basic-details',
@@ -9,7 +10,7 @@ import { DatePipe } from '@angular/common';
   providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BasicDetailsComponent implements OnInit, OnChanges {
+export class BasicDetailsComponent implements OnInit, OnChanges,AfterViewInit {
 
   basicForm: FormGroup;
   @Output() basicFormEmit: EventEmitter<any> = new EventEmitter();
@@ -23,11 +24,23 @@ export class BasicDetailsComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private datePipe: DatePipe,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private rout:ActivatedRoute
   ) {
     this.initForm()
+    
   }
 
+ngAfterViewInit(){
+  this.rout.queryParams.subscribe(res=>{
+    console.log(res)
+    if(res.customerID){
+    this.controls.customerUniqueId.patchValue(res.customerID)
+    this.apiHit.emit(this.basicForm)
+    }
+  })
+
+}
 
   ngOnInit() {
     this.basicFormEmit.emit(this.basicForm)
