@@ -27,7 +27,7 @@
                                     [class.isError]="controls.categoryId.touched && controls.categoryId.invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select Category</option>
                                     <option *ngFor="let item of category" [value]="item?.id">
-                                        {{item?.categoryName}}
+                                        {{item?.categoryName | titlecase}}
                                     </option>
                                 </select>
                                 <mat-error *ngIf="controls.categoryId.touched && controls.categoryId.errors?.required">

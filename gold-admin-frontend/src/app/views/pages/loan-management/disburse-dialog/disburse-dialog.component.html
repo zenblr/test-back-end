@@ -9,10 +9,10 @@
                             <label class="kt-padding-l-10 mandatory">Transaction  Id</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control" formControlName="packetUniqueId"
-                                [class.isError]="controls.packetUniqueId.invalid &&  controls.packetUniqueId.touched">
+                            <input type="text" class="form-control" formControlName="transactionId"
+                                [class.isError]="controls.transactionId.invalid &&  controls.transactionId.touched">
                         </div>
-                        <mat-error *ngIf="controls.packetUniqueId.touched && controls.packetUniqueId.errors?.required">
+                        <mat-error *ngIf="controls.transactionId.touched && controls.transactionId.errors?.required">
                             Required field
                         </mat-error>
                     </div>
@@ -21,12 +21,9 @@
                             <label class="kt-padding-l-10 mandatory">Date & Time</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control" formControlName="dateTime"
-                                [class.isError]="controls.dateTime.invalid &&  controls.dateTime.touched">
+                            <input type="text" class="form-control" formControlName="date"
+                            value="{{currentDate| date:'medium'}}" readonly>
                         </div>
-                        <mat-error *ngIf="controls.dateTime.touched && controls.dateTime.errors?.required">
-                            Required field
-                        </mat-error>
                     </div>
                 </div>
             </div>

@@ -30,6 +30,12 @@ export class WalletPriceListComponent implements OnInit, OnDestroy {
         }
       }
     })
+
+    this.walletPriceService.downloadReport$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.downloadReport();
+      }
+    });
   }
 
   ngOnInit() {
@@ -75,11 +81,18 @@ export class WalletPriceListComponent implements OnInit, OnDestroy {
     });
     this.walletPriceService.openModal.next(false);
   }
+  
+  downloadReport() {
+    this.walletPriceService.report().subscribe();
+    this.walletPriceService.downloadReport.next(false);
+  }
+
 
   /**
 	 * On Destroy
 	 */
   ngOnDestroy() {
+    this.walletPriceService.download.next(false);
     this.destroy$.next();
     this.destroy$.complete();
   }

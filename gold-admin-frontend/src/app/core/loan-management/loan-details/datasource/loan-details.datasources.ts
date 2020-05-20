@@ -18,23 +18,23 @@ export class LoanDetailsDatasource extends BaseDataSource {
         super();
     }
 
-    loadDetailsLoans(from, to, search) {
-    //     this.loadingSubject.next(true);
-    //     this.loanDetailsService.getAplliedLoans(from, to, search)
-    //         .pipe(
-    //             map(
-    //                 loan => {
-    //                     this.paginatorTotalSubject.next(loan.count);
-    //                     this.entitySubject.next(loan.appliedLoanDetails);
-    //                 }
-    //             ),
-    //             catchError(() => of([])),
-    //             finalize(() => {
-    //                 this.loadingSubject.next(false);
-    //                 this.isPreloadTextViewedSubject.next(false);
-    //             })
-    //         )
-    //         .subscribe();
+    loadDetailsLoans(search,from, to) {
+        this.loadingSubject.next(true);
+        this.loanDetailsService.getAllLoans(from, to, search)
+            .pipe(
+                map(
+                    loan => {
+                        this.paginatorTotalSubject.next(loan.count);
+                        this.entitySubject.next(loan.data);
+                    }
+                ),
+                catchError(() => of([])),
+                finalize(() => {
+                    this.loadingSubject.next(false);
+                    this.isPreloadTextViewedSubject.next(false);
+                })
+            )
+            .subscribe();
     }
 
 }

@@ -9,44 +9,41 @@
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan.customer.firstName | titlecase}}&nbsp;{{loan.customer.lastName | titlecase}}
+                        {{loan.customer.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.customerUniqueId}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.loanUniqueId | uppercase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="schemeName">
                     <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount.</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="interestRate">
                     <mat-header-cell *matHeaderCellDef>Intrest Rate</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.interestRate}} % P.M</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="tenure">
                     <mat-header-cell *matHeaderCellDef>Loan Tenure</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date: 'mediumDate'}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.tenure}} Months</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="startDate">
                     <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date : 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="endDate">
                     <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span
-                            [ngClass]="loan.loanStatusForAppraiser == 'pending' ? 'text-warning' :loan.loanStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
-                            {{loan.loanStatusForAppraiser | titlecase}}
-                        </span>
+                            {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">

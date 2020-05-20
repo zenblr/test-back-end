@@ -368,6 +368,33 @@ export class MenuConfig {
 					]
 				},
 				{
+					title: 'Order Management',
+					root: true,
+					icon: 'flaticon2-shopping-cart',
+					submenu: [
+						{
+							title: 'Order Details',
+							page: '/emi-management/order-details',
+						},
+						{
+							title: 'EMI Details',
+							page: '/emi-management/emi-details'
+						},
+						// {
+						// 	title: 'Refund Management',
+						// 	page: '/emi-management/refund-management'
+						// },
+						{
+							title: 'Cancel Order Details',
+							page: '/emi-management/cancel-order-details',
+						},
+						{
+							title: 'Deposit Details',
+							page: '/emi-management/deposit-details',
+						}
+					]
+				},
+				{
 					title: 'Back',
 					icon: 'flaticon-logout',
 					root: true,

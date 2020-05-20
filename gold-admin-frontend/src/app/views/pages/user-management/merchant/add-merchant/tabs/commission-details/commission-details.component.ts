@@ -67,7 +67,7 @@ export class CommissionDetailsComponent implements OnInit {
         this.fb.group({
           category:[com['category'],Validators.required],
           categoryId:[com['categoryId'],Validators.required],
-          commission:[com['commission'],Validators.required],
+          commission:[com['commission'],[Validators.required,Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
         })
       )
     })
