@@ -14,7 +14,7 @@ const customerCheckAuth = require('../middleware/customerCheckAuth')
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer,
     readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan
     , schemeBasedOnPriceRange, readLoanDetails,
-    readFeedBack } = require('../controllers/customer/customerApp')
+    readFeedBack,addFeedBack } = require('../controllers/customer/customerApp')
 
 //customer
 router.post('/', customerValidation, validationError, checkAuth, checkRolePermission, wrapper(addCustomer));
@@ -37,7 +37,10 @@ router.get('/customer-management', checkAuth, checkRolePermission, wrapper(getAl
 
 router.get('/customer-management/:customerId', checkAuth, checkRolePermission, wrapper(getsingleCustomerManagement));
 
+router.get('/customer-unique', checkAuth, wrapper(getCustomerUniqueId));
+
 //customer App
+
 router.get('/banner', customerCheckAuth, wrapper(readBanner)); // read banner
 
 router.get('/offer', customerCheckAuth, wrapper(readOffer)); // read order
@@ -70,9 +73,9 @@ router.get('/loan-detail', customerCheckAuth, wrapper(readLoanDetails));// read 
 
 router.get('/customer-feedback', customerCheckAuth, wrapper(readFeedBack)); // read customer feed back
 
-router.get('/customer-unique', checkAuth, wrapper(getCustomerUniqueId));
-//customer App
+router.post('/customer-feedback',customerCheckAuth,wrapper(addFeedBack)); // add customer feedback
 
+//customer App
 
 router.get('/:customerId', checkAuth, checkRolePermission, wrapper(getSingleCustomer));
 

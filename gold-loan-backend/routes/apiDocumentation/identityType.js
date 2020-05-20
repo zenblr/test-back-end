@@ -69,7 +69,7 @@
  *   put:
  *     tags:
  *       - Identity Type
- *     summary: To update occupation
+ *     summary: To update identity type
  *     security:
  *       - bearerAuth: []
  *     consumes:

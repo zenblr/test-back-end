@@ -8,6 +8,8 @@
  *     summary: To Register  
  *     consumes:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: body
  *         in: body
@@ -55,6 +57,7 @@
  *           - address
  *           - cityId
  *           - stateId
+ *           - landMark
  *           - roleId
  *           - userTypeId:
  *           - internalBranchId
@@ -365,7 +368,7 @@
  *     tags:
  *       - Internal User
  *     name: delete internal user
- *     summary: To add internal user  
+ *     summary: To delete internal user  
  *     consumes:
  *       - application/json
  *     security:
@@ -373,7 +376,7 @@
  *     parameters:
  *       - name: "id"
  *         in: "path"
- *         description: "id to edit internal user"
+ *         description: "id to delete internal user"
  *         required: true
  *         type: "integer"
  *     responses:
@@ -381,6 +384,16 @@
  *          description: internal user deleted
  *       404:
  *          description: failed to delete internal user
- *    
- * 
+ * /user/appraiser-list:
+ *  get:
+ *     tags:
+ *       - User Registration
+ *     summary: To read user registration
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
  */

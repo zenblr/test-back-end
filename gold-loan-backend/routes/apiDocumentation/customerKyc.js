@@ -94,7 +94,9 @@
  *                  addressProof:
  *                    type: array
  *                    items: 
- *                     type: string
+ *                     type: object
+ *                     items:
+ *                      type: string
  *                  addressType:
  *                    type: string
  *                    enum: 
