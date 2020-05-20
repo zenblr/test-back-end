@@ -215,6 +215,13 @@
 
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>Total Amount</td>
+                                    <td *ngIf="colJoin != null">{{(intrestAmount/colJoin) * dateOfPayment.length | currency : 'INR'}}</td>
+                                    <td *ngIf="colJoin == null">{{(intrestAmount) * dateOfPayment.length | currency : 'INR'}}</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
 
