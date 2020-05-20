@@ -97,12 +97,12 @@ export class AppliedLoanComponent implements OnInit {
   disburse(loan) {
     // console.log(event);
     const dialogRef = this.dialog.open(DisburseDialogComponent, {
-      data: { action: loan },
+      data: loan ,
       width: '500px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        // this.loadLeadsPage();
+        this.loadAppliedLoansPage();
       }
     });
   }

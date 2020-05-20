@@ -1,15 +1,20 @@
 <kt-portlet>
     <kt-portlet-body>
         <div class="mat-table__wrapper">
-
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
-
                 <ng-container matColumnDef="merchantName">
-
                     <mat-header-cell *matHeaderCellDef>Merchant Name</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div class="text-color">
                             {{merchant.merchantName | titlecase}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="initial">
+                    <mat-header-cell *matHeaderCellDef>Initial</mat-header-cell>
+                    <mat-cell *matCellDef="let merchant">
+                        <div class="text-color">
+                            {{merchant.initial | uppercase}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -66,10 +71,9 @@
                 <ng-container matColumnDef="approvalStatus">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
-                        <div
-                            [ngClass]="merchant.approvalStatus.id == 1 ? 'text-warning' :merchant.approvalStatus.id == 2 ? 'text-success' : 'text-danger'">
-                            <span>{{merchant.approvalStatus.statusName | uppercase }}</span>
-                        </div>
+                        <mat-slide-toggle [color]="'accent'" [checked]="merchant.status"
+                            (change)="toogle(merchant,$event.checked)">
+                        </mat-slide-toggle>
                     </mat-cell>
                 </ng-container>
 

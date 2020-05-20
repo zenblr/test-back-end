@@ -48,7 +48,7 @@ export class UserDetailsComponent implements OnInit {
          this.userInfo = res;
          this.editRole()
         }),catchError(err =>{
-          this.toast.error(err.error.error)
+          // this.toast.error(err.error.message)
           throw err
         })).subscribe()
     }
@@ -61,10 +61,10 @@ export class UserDetailsComponent implements OnInit {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       mobileNumber: ['', [Validators.required,Validators.minLength(10)]],
-      stateId: [Validators.required],
-      cityId: [Validators.required],
+      stateId: ['',Validators.required],
+      cityId: ['',Validators.required],
       pinCode: ['', [Validators.required,Validators.minLength(6)]],
-      approvalStatusId:['',Validators.required]
+      initial:['',[Validators.required,Validators.minLength(2)]]
     })
   }
  
@@ -79,7 +79,7 @@ export class UserDetailsComponent implements OnInit {
       stateId: merchantDetails.user.address[0].state.id,
       cityId: merchantDetails.user.address[0].city.id,
       pinCode:  merchantDetails.user.address[0].postalCode,
-      approvalStatusId: merchantDetails.approvalStatus.id
+      initial: merchantDetails.user.initial
     }
     
     this.userDetails.patchValue(data)

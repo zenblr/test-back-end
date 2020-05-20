@@ -1,10 +1,10 @@
 <div class="">
-    <label class="text-color font-weight-bold h-v-text-center min-vh-100" *ngIf="noResults.length==0">No Schemes
+    <label class="text-color font-weight-bold h-v-text-center min-vh-100" *ngIf="schemes.length==0">No Schemes
         Available</label>
 </div>
 
 
-<kt-portlet *ngIf="noResults.length>0">
+<kt-portlet *ngIf="schemes.length>0">
     <kt-portlet-body class="min-vh-60">
         <mat-tab-group #matTab>
             <mat-tab label='{{scheme.name | titlecase}}' *ngFor="let scheme of schemes">
