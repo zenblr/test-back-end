@@ -406,6 +406,12 @@ export class MenuConfig {
 					]
 				},
 				{
+					title: 'Reports',
+					root: true,
+					icon: 'flaticon2-download-2',
+					page: '/emi-management/reports',
+				},
+				{
 					title: 'Back',
 					icon: 'flaticon-logout',
 					root: true,

@@ -128,6 +128,9 @@ export class PageConfig {
 			'users': {
 				page: { title: 'Users', desc: '' }
 			},
+			'reports': {
+				page: { title: 'Reports', desc: '' }
+			},
 		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }
