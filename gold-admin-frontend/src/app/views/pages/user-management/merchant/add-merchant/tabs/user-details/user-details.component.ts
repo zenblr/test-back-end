@@ -4,7 +4,7 @@ import { SharedService } from '../../../../../../../core/shared/services/shared.
 import { map, catchError } from 'rxjs/operators';
 import { MerchantService } from '../../../../../../../core/user-management/merchant';
 import { ToastrComponent } from '../../../../../../../views/partials/components';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BrokerService } from '../../../../../../../core/user-management/broker';
 
@@ -21,6 +21,7 @@ export class UserDetailsComponent implements OnInit {
   userId: number
   userInfo:any[]=[]
   status:any []=[]
+  url:any;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
  
@@ -33,7 +34,9 @@ export class UserDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private toast:ToastrService,
     private brokerService:BrokerService,
+    public router:Router
   ) {
+    this.url = this.router.url.split('/')[2]
     this.merchantService.userId$.subscribe();
   }
 
@@ -66,6 +69,11 @@ export class UserDetailsComponent implements OnInit {
       pinCode: ['', [Validators.required,Validators.minLength(6)]],
       initial:['',[Validators.required,Validators.minLength(2)]]
     })
+    
+    if(this.url == 'edit-merchant'){
+      this.userDetails.controls.initial.clearValidators();
+      this.userDetails.controls.initial.updateValueAndValidity();
+    }
   }
  
   editRole(){
@@ -79,7 +87,7 @@ export class UserDetailsComponent implements OnInit {
       stateId: merchantDetails.user.address[0].state.id,
       cityId: merchantDetails.user.address[0].city.id,
       pinCode:  merchantDetails.user.address[0].postalCode,
-      initial: merchantDetails.user.initial
+      initial: merchantDetails.initial
     }
     
     this.userDetails.patchValue(data)
