@@ -5,7 +5,7 @@ const { wrapper } = require('../utils/errorWrap')
 const validationError = require('../middleware/validationError');
 const { customerValidation, customerUpdateValidation } = require('../validations/customer');
 
-const { addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, filterCustomer, getCustomerUniqueId, getAllCustomerForCustomerManagement,getsingleCustomerManagement } = require('../controllers/customer/customer')
+const { addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, filterCustomer, getCustomerUniqueId, getAllCustomerForCustomerManagement, getsingleCustomerManagement } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -14,7 +14,7 @@ const customerCheckAuth = require('../middleware/customerCheckAuth')
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer,
     readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan
     , schemeBasedOnPriceRange, readLoanDetails,
-    readFeedBack,addFeedBack } = require('../controllers/customer/customerApp')
+    readFeedBack, addFeedBack } = require('../controllers/customer/customerApp')
 
 //customer
 router.post('/', customerValidation, validationError, checkAuth, checkRolePermission, wrapper(addCustomer));
@@ -73,7 +73,7 @@ router.get('/loan-detail', customerCheckAuth, wrapper(readLoanDetails));// read 
 
 router.get('/customer-feedback', customerCheckAuth, wrapper(readFeedBack)); // read customer feed back
 
-router.post('/customer-feedback',customerCheckAuth,wrapper(addFeedBack)); // add customer feedback
+router.post('/customer-feedback', customerCheckAuth, wrapper(addFeedBack)); // add customer feedback
 
 //customer App
 

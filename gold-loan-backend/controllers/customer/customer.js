@@ -316,7 +316,7 @@ exports.getSingleCustomer = async (req, res, next) => {
 exports.filterCustomer = async (req, res) => {
   var { cityId, stateId, statusId } = req.query;
   const query = {};
-  query.isActive=true;
+  query.isActive = true;
   if (cityId) {
     cityId = req.query.cityId.split(",");
     query.cityId = cityId;
