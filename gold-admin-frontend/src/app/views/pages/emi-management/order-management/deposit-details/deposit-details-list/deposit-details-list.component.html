@@ -158,8 +158,8 @@
                 </ng-container>
                 <ng-container matColumnDef="orderStatus">
                     <mat-header-cell *matHeaderCellDef>Order Status</mat-header-cell>
-                    <mat-cell *matCellDef="let element"
-                        [ngClass]="{'text-green' : element?.order?.orderCurrentStatus?.id == 3}">
+                    <mat-cell *matCellDef="let element" [ngClass]="{'text-green' : element?.order?.orderCurrentStatus?.id == 3 || 
+                        element?.order?.orderCurrentStatus?.id == 8 || element?.order?.orderCurrentStatus?.id == 12}">
                         {{element?.order?.orderCurrentStatus?.statusName ? (element?.order?.orderCurrentStatus?.statusName | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
