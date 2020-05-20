@@ -1,63 +1,54 @@
 <mat-tab-group [formGroup]="packetsForm">
-    <mat-tab formArrayName="packetsArray" label="{{packet.controls.packetsName.value | uppercase}}"
-        *ngFor="let packet of packets.controls;index as idx">
+    <mat-tab  formArrayName="packetsArray"  label="{{packet.controls.packetsName.value | uppercase}}" *ngFor="let packet of packets.controls;index as idx">
         <div class="row" [formGroupName]="idx">
             <div class="col-3">
-                <div class="img-container packets" *ngIf="!packet.controls.emptyPacketWithNoOrnament.value"
-                    (click)="emptyPacketWithNoOrnament.click()">
+                <div class="img-container packets" *ngIf="!packet.controls.emptyPacketWithNoOrnament.value" (click)="emptyPacketWithNoOrnament.click()">
                     <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                 </div>
-                <span class="pos-action">
-                    <img class="packets" [src]="packet.controls.emptyPacketWithNoOrnament.value"
-                        *ngIf="packet.controls.emptyPacketWithNoOrnament.value">
-                </span>
+                <img class="packets" [src]="packet.controls.emptyPacketWithNoOrnament.value" *ngIf="packet.controls.emptyPacketWithNoOrnament.value">
                 <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with No
                     Ornaments</label>
-                <input type="file" class="d-none" #emptyPacketWithNoOrnament
-                    (change)="uploadFile(idx,'emptyPacketWithNoOrnament',$event)">
+                    <div>
+                        <mat-error *ngIf="packet.controls.emptyPacketWithNoOrnament.touched && packet.controls.emptyPacketWithNoOrnament.invalid">Field Required</mat-error>
+                    </div>
+                <input type="file" class="d-none" #emptyPacketWithNoOrnament (change)="uploadFile(idx,'emptyPacketWithNoOrnament',$event)">
             </div>
             <div class="col-3">
-                <div class="img-container packets" *ngIf="!packet.controls.packetWithAllOrnaments.value"
-                    (click)="packetWithAllOrnaments.click()">
+                <div class="img-container packets" *ngIf="!packet.controls.packetWithAllOrnaments.value" (click)="packetWithAllOrnaments.click()">
                     <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                 </div>
-                <span class="pos-action">
-                    <img class="packets" [src]="packet.controls.packetWithAllOrnaments.value"
-                        *ngIf="packet.controls.packetWithAllOrnaments.value">
-                </span>
+                <img class="packets" [src]="packet.controls.packetWithAllOrnaments.value" *ngIf="packet.controls.packetWithAllOrnaments.value">
                 <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with All
                     Ornaments</label>
-                <input type="file" class="d-none" #packetWithAllOrnaments
-                    (change)="uploadFile(idx,'packetWithAllOrnaments',$event)">
+                    <div>
+                        <mat-error *ngIf="packet.controls.packetWithAllOrnaments.touched && packet.controls.packetWithAllOrnaments.invalid">Field Required</mat-error>
+                    </div>
+                <input type="file" class="d-none" #packetWithAllOrnaments (change)="uploadFile(idx,'packetWithAllOrnaments',$event)">
             </div>
             <div class="col-3">
-                <div class="img-container packets" *ngIf="!packet.controls.packetWithSealing.value"
-                    (click)="packetWithSealing.click()">
+                <div class="img-container packets" *ngIf="!packet.controls.packetWithSealing.value" (click)="packetWithSealing.click()">
                     <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                 </div>
-                <span class="pos-action">
-                    <img class="packets" [src]="packet.controls.packetWithSealing.value"
-                        *ngIf="packet.controls.packetWithSealing.value" (click)="emptyPacketWithNoOrnament.click()">
-                </span>
+                <img class="packets" [src]="packet.controls.packetWithSealing.value" *ngIf="packet.controls.packetWithSealing.value" (click)="emptyPacketWithNoOrnament.click()">
                 <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
                     packetWithSealing</label>
-                <input type="file" class="d-none" #packetWithSealing
-                    (change)="uploadFile(idx,'packetWithSealing',$event)">
+                    <div>
+                        <mat-error *ngIf="packet.controls.packetWithSealing.touched && packet.controls.packetWithSealing.invalid">Field Required</mat-error>
+                    </div>
+                <input type="file" class="d-none" #packetWithSealing (change)="uploadFile(idx,'packetWithSealing',$event)">
 
             </div>
             <div class="col-3">
-                <div class="img-container packets" *ngIf="!packet.controls.packetWithWeight.value"
-                    (click)="packetWithWeight.click()">
+                <div class="img-container packets" *ngIf="!packet.controls.packetWithWeight.value" (click)="packetWithWeight.click()">
                     <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                 </div>
-                <span class="pos-action">
-                    <img class="packets" [src]="packet.controls.packetWithWeight.value"
-                        *ngIf="packet.controls.packetWithWeight.value">
-                </span>
+                <img class="packets" [src]="packet.controls.packetWithWeight.value" *ngIf="packet.controls.packetWithWeight.value">
                 <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
                     Weight</label>
-                <input type="file" class="d-none" #packetWithWeight
-                    (change)="uploadFile(idx,'packetWithWeight',$event)">
+                    <div>
+                        <mat-error *ngIf="packet.controls.packetWithWeight.touched && packet.controls.packetWithWeight.invalid">Field Required</mat-error>
+                    </div>
+                <input type="file" class="d-none" #packetWithWeight (change)="uploadFile(idx,'packetWithWeight',$event)">
 
             </div>
         </div>
@@ -67,10 +58,9 @@
     <div class="row">
         <div class="col-8">
             <select class="packet-dropdown" class="form-control packet-dropdown" [formControl]="packetId"
-                [class.isError]="packetId.invalid && packetId.touched" (change)="removePackets()">
-                <option value="" [selected]="true" [disabled]="true">Select Packet</option>
-                <option [value]="packet.id" *ngFor="let packet of packetsDetais; index as idx">{{packet.packetUniqueId}}
-                </option>
+            [class.isError]="packetId.invalid && packetId.touched">
+                <option value="" [selected]="true" [disabled]="true" >Select Packet</option>
+                <option [value]="packet.id" *ngFor="let packet of packetsDetais; index as idx">{{packet.packetUniqueId | uppercase}}</option>
             </select>
             <mat-error *ngIf="packetId.invalid && packetId.touched">
                 <small>

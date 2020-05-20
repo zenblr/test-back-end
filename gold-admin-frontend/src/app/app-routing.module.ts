@@ -68,6 +68,10 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/emi-management/emi-management.module').then(m => m.EMIManagementModule)
 			},
 			{
+				path: 'repayment',
+				loadChildren: () => import('../app/views/pages/repayment/repayment.module').then(m => m.RepaymentModule)
+			},
+			{
 				path: 'wizard',
 				loadChildren: () => import('../app/views/pages/wizard/wizard.module').then(m => m.WizardModule)
 			},

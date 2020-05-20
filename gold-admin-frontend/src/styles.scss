@@ -518,6 +518,19 @@ mat-header-row {
 	min-width: 0;
 }
 
+// status text
+.text-green {
+	color: #8ddb5d !important;
+}
+
+.text-red {
+	color: #ff7272 !important;
+}
+
+.text-orange {
+	color: #f8b150 !important;
+}
+
 // image-action
 .pos-action {
 	position: absolute;

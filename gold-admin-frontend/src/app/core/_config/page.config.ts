@@ -71,6 +71,11 @@ export class PageConfig {
 		'lead-management': {
 			page: { title: 'All Leads', desc: '' }
 		},
+		'repayment': {
+			'monthly': {
+				page: { title: 'Monthly Repayment', desc: '' }
+			}
+		},
 		'kyc-setting': {
 			page: { title: 'Customer KYC', desc: '' }
 		},
@@ -104,6 +109,21 @@ export class PageConfig {
 			},
 			'admin-log': {
 				page: { title: 'Admin Log', desc: '' }
+			},
+			'order-details': {
+				page: { title: 'Order Details', desc: '' }
+			},
+			'emi-details': {
+				page: { title: 'EMI Details', desc: '' }
+			},
+			'cancel-order-details': {
+				page: { title: 'Cancel Order Details', desc: '' }
+			},
+			'deposit-details': {
+				page: { title: 'Deposit Details', desc: '' }
+			},
+			'refund-management': {
+				page: { title: 'Refund Management', desc: '' }
 			},
 		},
 		'applied-kyc': {

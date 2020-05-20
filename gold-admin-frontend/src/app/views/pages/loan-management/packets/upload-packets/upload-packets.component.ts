@@ -3,7 +3,8 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { map, catchError, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { PacketsService } from '../../../../../core/loan-management';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-upload-packets',
@@ -22,12 +23,15 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
   packetsDetais: any[] = []
   packetId = new FormControl('',Validators.required);
   loanId:number=0;
+  packetsName: any;
   constructor(
     private sharedService: SharedService,
     private ele: ElementRef,
     public fb: FormBuilder,
     private packetService:PacketsService,
-    private route:ActivatedRoute
+    private route:ActivatedRoute,
+    private router:Router,
+    private toast:ToastrService
   ) { }
 
   ngOnInit() {
@@ -80,15 +84,17 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
       width.style.maxWidth = '720px'
 
     }
+    this.removePackets()
     this.packets.push(this.fb.group({
       emptyPacketWithNoOrnament: ['', Validators.required],
       packetWithAllOrnaments: ['', Validators.required],
       packetWithSealing: ['', Validators.required],
       packetWithWeight: ['', Validators.required],
       packetId:[this.packetId.value],
-      packetsName:['']
+      packetsName:[this.packetsName]
     }))
-    this.packetId.patchValue('')
+    this.packetId.reset()
+
 
   }
 
@@ -119,15 +125,22 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
     let index = this.packetsDetais.findIndex(ele =>{
       return ele.id == this.packetId.value;
     })
-    controls.controls.packetsName.patchValue(this.packetsDetais[index].packetUniqueId)
+    this.packetsName = this.packetsDetais[index].packetUniqueId
     console.log(this.packetId.value)
     
     this.packetsDetais.splice(index,1)
   }
 
   save(){
+    if(this.packetsForm.invalid){
+      this.packetsForm.markAllAsTouched()
+      
+    }
     this.packetService.uploadPackets(this.packets.value,this.loanId).pipe(
-      map(res => res)
+      map(res => {
+        this.toast.success(res.message)
+        this.router.navigate(['/loan-management/applied-loan'])
+      })
     ).subscribe()
   }
 }

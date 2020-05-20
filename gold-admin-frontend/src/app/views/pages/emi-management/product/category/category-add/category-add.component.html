@@ -41,7 +41,7 @@
                                     [class.isError]="controls.metalTypeId.touched && controls.metalTypeId.invalid">
                                     <option value="" [selected]="true" [disabled]="true">Metal Type</option>
                                     <option *ngFor="let item of metalType" [value]="item?.id">
-                                        {{item?.metalType}}
+                                        {{item?.metalType | titlecase}}
                                     </option>
                                 </select>
                                 <mat-error
