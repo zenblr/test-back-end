@@ -162,8 +162,8 @@ export class MenuConfig {
 							page: '/loan-management/applied-loan'
 						},
 						{
-							title: 'Package Image Upload',
-							page: '/loan-management/package-image-upload'
+							title: 'Loan Details',
+							page: '/loan-management/all-loan'
 						},
 
 					]
@@ -180,13 +180,13 @@ export class MenuConfig {
 					src: 'assets/media/aside-icons/icons-09.svg',
 					submenu: [
 						{
-							title: 'Montly Payment',
-							path: '/montly-payment'
+							title: 'Monthly Payment',
+							page: '/repayment/monthly'
 						},
-						{
-							title: 'One Shot Payment',
-							path: '/one-shot-payment',
-						}
+						// {
+						// 	title: 'One Shot Payment',
+						// 	path: '/one-shot-payment',
+						// }
 					]
 				},
 				{

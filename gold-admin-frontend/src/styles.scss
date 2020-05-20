@@ -518,6 +518,7 @@ mat-header-row {
 	min-width: 0;
 }
 
+// status text
 .text-green {
 	color: #8ddb5d !important;
 }
@@ -528,4 +529,11 @@ mat-header-row {
 
 .text-orange {
 	color: #f8b150 !important;
+}
+
+// image-action
+.pos-action {
+	position: absolute;
+	top     : 5px;
+	right   : 10px;
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { UploadOfferService } from '../../../../../../core/upload-data';
+import { KaratDetailsService } from '../../../../../../core/loan-setting/karat-details/services/karat-details.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-final-loan-amount',
@@ -10,16 +12,20 @@ import { UploadOfferService } from '../../../../../../core/upload-data';
 export class FinalLoanAmountComponent implements OnInit {
 
   loanAmount: number = 0;
-  karatArr = [{ value: 18, name: '18 K' }, { value: 19, name: '19 K' }, { value: 20, name: '20 K' }, { value: 21, name: '21 K' }, { value: 22, name: '22 K' }]
+  // karatArr = [{ value: 18, name: '18 K' }, { value: 19, name: '19 K' }, { value: 20, name: '20 K' }, { value: 21, name: '21 K' }, { value: 22, name: '22 K' }]
   purity = [];
   purityBasedDeduction: number;
   currentLtvAmount: any;
 
   finalLoanForm: FormGroup;
+  karatArr: any;
 
-  constructor(private fb: FormBuilder, private uploadOfferService: UploadOfferService) { }
+  constructor(private fb: FormBuilder, private uploadOfferService: UploadOfferService,
+    public karatService: KaratDetailsService,
+  ) { }
 
   ngOnInit() {
+    this.getKarat()
     this.initForm();
     this.controls.goldNetWeight.valueChanges.subscribe(res => {
       // if (this.controls.goldNetWeight.touched) {
@@ -58,35 +64,41 @@ export class FinalLoanAmountComponent implements OnInit {
   selectKarat() {
     const karat = this.controls.karat.value;
     console.log(typeof (karat));
-    switch (karat) {
-      case '18':
-        this.purity = [75, 76, 77, 78, 79];
-        this.purityBasedDeduction = 7.5;
-        this.controls.purity.patchValue(this.purityBasedDeduction);
-        break;
-      case '19':
-        this.purity = [80, 81, 82, 83, 84];
-        this.purityBasedDeduction = 5;
-        this.controls.purity.patchValue(this.purityBasedDeduction);
-        break;
-      case '20':
-        this.purity = [85, 86, 87, 88, 89];
-        this.purityBasedDeduction = 2;
-        this.controls.purity.patchValue(this.purityBasedDeduction);
-        break;
-      case '21':
-        this.purity = [90, 91, 92, 93, 94];
-        this.purityBasedDeduction = 1.5;
-        this.controls.purity.patchValue(this.purityBasedDeduction);
-        break;
-      case '22':
-        this.purity = [95, 96, 97, 98, 99, 100];
-        this.purityBasedDeduction = 1;
-        this.controls.purity.patchValue(this.purityBasedDeduction);
-        break;
-      default:
-        break;
-    }
+    let filteredKarat = this.karatArr.filter(kart => {
+      return kart.karat == karat;
+    })
+    console.log(filteredKarat)
+    this.purity = filteredKarat[0].range;
+    // this.controls.ltvPercent.patchValue(filteredKarat[0].range);
+    // switch (karat) {
+    //   case '18':
+    //     this.purity = [75, 76, 77, 78, 79];
+    //     // this.purityBasedDeduction = 7.5;
+    //     // this.controls.purity.patchValue(this.purityBasedDeduction);
+    //     break;
+    //   case '19':
+    //     this.purity = [80, 81, 82, 83, 84];
+    //     this.purityBasedDeduction = 5;
+    //     this.controls.purity.patchValue(this.purityBasedDeduction);
+    //     break;
+    //   case '20':
+    //     this.purity = [85, 86, 87, 88, 89];
+    //     this.purityBasedDeduction = 2;
+    //     this.controls.purity.patchValue(this.purityBasedDeduction);
+    //     break;
+    //   case '21':
+    //     this.purity = [90, 91, 92, 93, 94];
+    //     this.purityBasedDeduction = 1.5;
+    //     this.controls.purity.patchValue(this.purityBasedDeduction);
+    //     break;
+    //   case '22':
+    //     this.purity = [95, 96, 97, 98, 99, 100];
+    //     this.purityBasedDeduction = 1;
+    //     this.controls.purity.patchValue(this.purityBasedDeduction);
+    //     break;
+    //   default:
+    //     break;
+    // }
 
   }
 
@@ -107,7 +119,7 @@ export class FinalLoanAmountComponent implements OnInit {
     // current weight
     let goldNetWeight = +(this.controls.goldNetWeight.value);
 
-    const currentNetWeight = goldNetWeight - (this.purityBasedDeduction / 100);
+    const currentNetWeight = goldNetWeight - Number(this.controls.purity.value / 100);
     // console.log(currentNetWeight);
 
     // final weight
@@ -149,6 +161,15 @@ export class FinalLoanAmountComponent implements OnInit {
 
     this.controls.ltvAmount.patchValue(ltvAmount);
 
+  }
+
+  getKarat() {
+    this.karatService.getAllKaratDetails().pipe(
+      map(res => {
+        this.karatArr = res;
+        console.log(res)
+      })
+    ).subscribe()
   }
 
 }

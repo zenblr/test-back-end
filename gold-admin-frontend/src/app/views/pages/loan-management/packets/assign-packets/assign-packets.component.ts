@@ -41,7 +41,7 @@ export class AssignPacketsComponent implements OnInit {
   initForm() {
     this.packetForm = this.fb.group({
       id: [],
-      packetId: ['', [Validators.required]]
+      packetUniqueId: ['', [Validators.required]]
     })
   }
 
@@ -59,9 +59,9 @@ export class AssignPacketsComponent implements OnInit {
       return
     }
     // console.log(this.packetForm.value);
-    const packetId = this.packetForm.get('packetId').value;
-    // console.log(packetId.toLowerCase());
-    this.packetForm.controls.packetId.patchValue(packetId.toLowerCase());
+    const packetUniqueId = this.packetForm.get('packetUniqueId').value;
+    // console.log(packetUniqueId.toLowerCase());
+    this.packetForm.controls.packetUniqueId.patchValue(packetUniqueId.toLowerCase());
     const partnerData = this.packetForm.value;
     const id = this.controls.id.value;
 

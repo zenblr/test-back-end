@@ -1,0 +1,40 @@
+<kt-portlet>
+    <kt-modal-header [title]="'Disburse Amount'" (action)="action($event)"></kt-modal-header>
+    <kt-portlet-body>
+        <form [formGroup]="disburseForm">
+            <div class="row ">
+                <div class="col-12">
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Transaction  Id</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="packetUniqueId"
+                                [class.isError]="controls.packetUniqueId.invalid &&  controls.packetUniqueId.touched">
+                        </div>
+                        <mat-error *ngIf="controls.packetUniqueId.touched && controls.packetUniqueId.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Date & Time</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="dateTime"
+                                [class.isError]="controls.dateTime.invalid &&  controls.dateTime.touched">
+                        </div>
+                        <mat-error *ngIf="controls.dateTime.touched && controls.dateTime.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </kt-portlet-body>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="'Done'"></kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>
