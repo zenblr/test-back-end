@@ -125,6 +125,9 @@ export class PageConfig {
 			'refund-management': {
 				page: { title: 'Refund Management', desc: '' }
 			},
+			'users': {
+				page: { title: 'Users', desc: '' }
+			},
 		},
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }

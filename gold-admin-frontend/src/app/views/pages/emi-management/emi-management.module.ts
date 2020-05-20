@@ -47,6 +47,7 @@ import { EmiDetailsViewComponent } from './order-management/emi-details/emi-deta
 import { OrderDetailsEditComponent } from './order-management/order-details/order-details-edit/order-details-edit.component';
 import { RefundManagementComponent } from './order-management/refund-management/refund-management-list/refund-management.component';
 import { RefundManagementEditComponent } from './order-management/refund-management/refund-management-edit/refund-management-edit.component';
+import { UserDetailsListComponent } from './user-management/user-details/user-details-list/user-details-list.component';
 
 const routes: Routes = [ 
 	{
@@ -119,7 +120,11 @@ const routes: Routes = [
 			{
 				path: 'refund-management',
 				component: RefundManagementComponent
-			}
+			},
+			{
+				path: 'users',
+				component: UserDetailsListComponent
+			},
 		]
 	}
 ];
@@ -200,6 +205,7 @@ const routes: Routes = [
 		OrderDetailsEditComponent,
 		RefundManagementComponent,
 		RefundManagementEditComponent,
+		UserDetailsListComponent,
 	]
 })
 export class EMIManagementModule { }
