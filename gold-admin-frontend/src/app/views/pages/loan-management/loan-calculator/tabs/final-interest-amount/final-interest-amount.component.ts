@@ -48,7 +48,7 @@ export class FinalInterestAmountComponent implements OnInit {
     this.finalInterestForm = this.fb.group({
       finalLoanAmount: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       tenure: [, [Validators.required]],
-      loanStartDate: [, [Validators.required]],
+      loanStartDate: [this.currentDate, [Validators.required]],
       loanEndDate: [, [Validators.required]],
       paymentFrequency: [, [Validators.required]],
       intresetAmt: [],

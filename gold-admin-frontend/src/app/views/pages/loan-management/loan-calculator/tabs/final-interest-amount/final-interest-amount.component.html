@@ -54,9 +54,10 @@
                     </div>
                     <div class="col-7">
                         <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                            formControlName="loanStartDate" [min]="currentDate"
+                            formControlName="loanStartDate"
                             [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
-                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()">
+                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()"
+                            value="{{controls.loanStartDate.value |  date:'mediumDate'}}">
                         <mat-datepicker #picker></mat-datepicker>
                         <mat-error *ngIf="controls.loanStartDate.errors?.required && controls.loanStartDate.touched">
                             Required field
@@ -104,14 +105,11 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row kt-margin-b-20">
 
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Interest Rate</label>
+                        <label class="mandatory">Interest Rate% (p.m.)</label>
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="interestRate" placeholder="00%"

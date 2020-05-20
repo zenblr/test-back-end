@@ -122,7 +122,8 @@
                                     [value]="'Attach'" (click)="weightMachineZeroWeight.click()"></kt-button>
 
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.weightMachineZeroWeight.value && url != 'package-image-upload'"
+                                    <label
+                                        *ngIf="ornament.controls.weightMachineZeroWeight.value && url != 'package-image-upload'"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('weightMachineZeroWeight',idx,ornament.controls.weightMachineZeroWeight.value)">Remove</label>
                                 </div>
@@ -154,7 +155,8 @@
                                 <kt-button *ngIf="!ornament.controls.withOrnamentWeight.value" [type]="'button'"
                                     [value]="'Attach'" (click)="withOrnamentWeight.click()"></kt-button>
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.withOrnamentWeight.value && url != 'package-image-upload'"
+                                    <label
+                                        *ngIf="ornament.controls.withOrnamentWeight.value && url != 'package-image-upload'"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('withOrnamentWeight',idx,ornament.controls.withOrnamentWeight.value)">Remove</label>
                                 </div>
@@ -238,7 +240,8 @@
                                 <kt-button *ngIf="ornament.controls.purityTest.value.length == 0" [type]="'button'"
                                     [value]="'Attach'" (click)="purity.click()"></kt-button>
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.purityTest.value.length > 0 && url != 'package-image-upload'"
+                                    <label
+                                        *ngIf="ornament.controls.purityTest.value.length > 0 && url != 'package-image-upload'"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('purity',idx,ornament.controls.purityTest.value)">Remove</label>
                                 </div>
@@ -291,8 +294,9 @@
                                 <label class="my-auto text-color ">LTV Range</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" readonly value="{{ornament.controls.ltvRange.value[0]}} - {{ornament.controls.ltvRange.value[ornament.controls.ltvRange.value.length-1]}}" 
-                                class="form-control">
+                                <input type="text" readonly
+                                    value="{{ornament.controls.ltvRange.value[0]}} - {{ornament.controls.ltvRange.value[ornament.controls.ltvRange.value.length-1]}}"
+                                    class="form-control">
                             </div>
                         </div>
                     </div>
@@ -305,7 +309,7 @@
                             <div class="col-8">
                                 <input type="text" class="form-control" placeholder="100.00"
                                     formControlName="currentLtvAmount" readonly>
-                                <mat-hint> 75% of current gold rate</mat-hint>
+                                <mat-hint> <small> 75% of current gold rate</small></mat-hint>
                             </div>
                         </div>
                     </div>
@@ -392,7 +396,8 @@
                 <div class="form-label">
                     <label *ngIf="!ornament.controls.ornamentImage.value" class="my-auto m-auto pt-2">Upload Ornaments
                         Image</label>
-                    <label *ngIf="ornament.controls.ornamentImage.value && url != 'package-image-upload'" class="my-auto text-danger m-auto kt-pointer"
+                    <label *ngIf="ornament.controls.ornamentImage.value && url != 'package-image-upload'"
+                        class="my-auto text-danger m-auto kt-pointer"
                         (click)="removeImage('ornamentImage',idx)">Remove</label>
                 </div>
                 <div>
