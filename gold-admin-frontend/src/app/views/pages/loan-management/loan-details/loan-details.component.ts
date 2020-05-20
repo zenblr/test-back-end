@@ -94,9 +94,12 @@ export class LoanDetailsComponent implements OnInit {
   }
 
   viewLoan(loan) {
-    this.router.navigate(['/loan-management/loan-application-form',loan.id])
+    this.router.navigate(['/customer-management/loan-details',loan.id])
   }
 
+  new(loan){
+    this.router.navigate(['/loan-management/loan-application-form/'],{queryParams:{customerID:loan.customer.customerUniqueId}})
+  }
   packageImageUpload(loan){
     this.router.navigate(['/loan-management/package-image-upload',loan.id])
   }

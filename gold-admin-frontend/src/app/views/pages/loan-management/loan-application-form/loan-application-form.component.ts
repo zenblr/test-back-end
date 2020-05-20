@@ -52,6 +52,7 @@ export class LoanApplicationFormComponent implements OnInit {
 
         this.action = 'edit'
         this.customerDetail = res.data
+        this.selected = 5;
       })
 
     }
