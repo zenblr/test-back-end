@@ -53,12 +53,10 @@
                         <label class="mandatory">Start Date</label>
                     </div>
                     <div class="col-7">
-                        <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                            formControlName="loanStartDate"
+                        <input type="text" class="form-control" formControlName="loanStartDate"
                             [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
                             placeholder="4/5/2020" readonly (dateChange)="setEndDate()"
                             value="{{controls.loanStartDate.value |  date:'mediumDate'}}">
-                        <mat-datepicker #picker></mat-datepicker>
                         <mat-error *ngIf="controls.loanStartDate.errors?.required && controls.loanStartDate.touched">
                             Required field
                         </mat-error>
@@ -73,9 +71,8 @@
                     </div>
                     <div class="col-7">
                         <input class="form-control" formControlName="loanEndDate" placeholder="02 May, 2020"
-                            [matDatepicker]="picker1"
-                            [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid" readonly />
-                        <mat-datepicker #picker1></mat-datepicker>
+                            [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid" readonly
+                            value="{{controls.loanEndDate.value |  date:'mediumDate'}}" />
                         <mat-error *ngIf="controls.loanEndDate.errors?.required && controls.loanEndDate.touched">
                             Required field
                         </mat-error>
