@@ -275,4 +275,52 @@
  *          description: success
  *       404:
  *          description: data not found
+ * /customer/customer-management:
+ *  get:
+ *     tags:
+ *       - Customer Management
+ *     name: read customer for customer management
+ *     summary: To read customer for customer management
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: Success
+ * /customer/customer-management/{customerId}:
+ *   get:
+ *     tags:
+ *       - Customer Management
+ *     summary: To read by Id
+ *     parameters:
+ *     - name: "customerId"
+ *       in: "path"
+ *       description: "Id of customer to read"
+ *       required: true
+ *       type: integer
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
+ *       404:
+ *         description: Customer not found
+ * 
+ *  
  */
