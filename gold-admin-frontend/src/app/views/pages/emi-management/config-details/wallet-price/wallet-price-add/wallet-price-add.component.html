@@ -123,6 +123,20 @@
                                 </mat-error>
                             </div>
                         </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">KYC Limit</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="kycLimit" type="number"
+                                    placeholder="eg - 2" min="0" max="100"
+                                    [class.isError]="controls.kycLimit.touched && controls.kycLimit.invalid">
+                                <mat-error
+                                    *ngIf="controls.kycLimit.errors?.required && controls.kycLimit.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>

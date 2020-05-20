@@ -4,7 +4,7 @@
             <div class="col-12 text-center">
                 <h5 class="text-dark">To upload on worksheet here click on attach Excel File.</h5>
                 <p class="pt-3"><span class="font-weight-bold kt-pointer" (click)="getProductReport()">Click Here</span>
-                    To Download All Excel File</p>
+                    To Download All Products</p>
 
                 <a *ngIf="!editUpload" href="assets/media/files/products.csv" download="products.csv">Click to download
                     sample file</a>
@@ -21,7 +21,7 @@
                         (change)="getFileDetails($event)" />
                 </p>
                 <div *ngIf="!files.length">
-                    <p>No files are choosen</p>
+                    <p>No files are chosen</p>
                 </div>
                 <div class="pb-3" *ngIf="files.length">
                     <div class="font-weight-normal" *ngFor="let file of files">

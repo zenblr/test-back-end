@@ -1,0 +1,34 @@
+<div class="kt-portlet" *ngIf="orderTrackingLogs$ | async as orderTrackingLogs">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-portlet__body-progress" *ngIf="viewLoading">
+            <mat-spinner [diameter]="20"></mat-spinner>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Logistic Name</th>
+                            <th scope="col">Tracking No</th>
+                            <th scope="col">Created At</th>
+                            <th scope="col">Updated By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let logs of orderTrackingLogs">
+                            <td>{{logs?.ordertracking?.orderUniqueId ? logs?.ordertracking?.orderUniqueId : '-'}}</td>
+                            <td>{{logs?.ordertrackingstatus?.statusName ? logs?.ordertrackingstatus?.statusName : '-'}}</td>
+                            <td>{{logs?.logistic?.name ? logs?.logistic?.name : '-'}}</td>
+                            <td>{{logs?.trackingId ? logs?.trackingId : '-'}}</td>
+                            <td>{{logs?.createdAt ? (logs?.createdAt | date:'medium') : '-'}}</td>
+                            <td>{{logs?.stausChangedBy?.firstName}} {{logs?.stausChangedBy?.lastName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

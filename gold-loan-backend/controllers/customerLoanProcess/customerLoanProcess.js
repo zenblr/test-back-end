@@ -106,10 +106,23 @@ exports.applyForLoanApplication = async (req, res, next) => {
 
     let appliedForLoanApplication = await sequelize.transaction(async t => {
         // customerLoan
-        let customerLoanCreated = await models.customerLoan.create({
-            customerId, applicationFormForAppraiser,
-            goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy
-        }, { transaction: t })
+        let customerLoanCreated;
+        if (loanStatusForAppraiser == "approved") {
+            let stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+
+            customerLoanCreated = await models.customerLoan.create({
+                customerId, applicationFormForAppraiser,
+                goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, loanStageId: stageId.id
+            }, { transaction: t })
+        } else {
+            let stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
+
+            customerLoanCreated = await models.customerLoan.create({
+                customerId, applicationFormForAppraiser,
+                goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, loanStageId: stageId.id
+            }, { transaction: t })
+        }
+
         let loanId = customerLoanCreated.id;
 
         // customerLoanBank
@@ -235,8 +248,22 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customerFinalLoan,
                 as: 'finalLoan',
                 where: { isActive: true },
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-            }
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include: [{
+                    model: models.scheme,
+                    as: 'scheme'
+                }]
+            },
+            {
+                model: models.customerLoanPackageDetails,
+                as: 'loanPacketDetails',
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include: [{
+                    model: models.packet,
+                    as: 'packet',
+                    attributes: ['id', 'packetUniqueId'],
+                }]
+            },
         ]
     })
 
@@ -260,6 +287,14 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
         goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM } = loanApproval
     let cutomerLoanApproval = {}
     if (req.userData.roleName[0] == "Appraiser") {
+        let stageId;
+        if (loanStatusForAppraiser == 'approved') {
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
+        } else {
+            stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' } })
+        }
+
+        cutomerLoanApproval['loanStageId'] = stageId.id
         cutomerLoanApproval['applicationFormForAppraiser'] = applicationFormForAppraiser
         cutomerLoanApproval['goldValuationForAppraiser'] = goldValuationForAppraiser
         cutomerLoanApproval['loanStatusForAppraiser'] = loanStatusForAppraiser
@@ -278,11 +313,15 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
                 return res.status(400).json({ message: `One of field is not verified` })
             }
         }
-        // if (applicationFormForBM === true && goldValuationForBM === true && loanStatusForBM === 'approved') {
-        //     loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-        // } else {
-        //     loanUniqueId = null;
-        // }
+
+        let stageId;
+        if (loanStatusForBM == 'approved') {
+            stageId = await models.loanStage.findOne({ where: { name: 'assign packet' } })
+        } else {
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
+        }
+
+        cutomerLoanApproval['loanStageId'] = stageId.id
         cutomerLoanApproval['applicationFormForBM'] = applicationFormForBM
         cutomerLoanApproval['goldValuationForBM'] = goldValuationForBM
         cutomerLoanApproval['loanStatusForBM'] = loanStatusForBM
@@ -316,7 +355,7 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
         }
 
         let d = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, {
-            updateOnDuplicate: ["loanId", "ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "currentLtvAmount"]
+            updateOnDuplicate: ["loanId", "ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "loanAmount", "finalNetWeight", "currentLtvAmount"]
         }, { transaction: t })
 
     })
@@ -353,6 +392,10 @@ exports.appliedLoanDetails = async (req, res, next) => {
     };
 
     let associateModel = [{
+        model: models.loanStage,
+        as: 'loanStage',
+        attributes: ['id', 'name']
+    }, {
         model: models.customer,
         as: 'customer',
         where: { isActive: true },
@@ -386,104 +429,11 @@ exports.appliedLoanDetails = async (req, res, next) => {
         include: associateModel,
     });
     if (appliedLoanDetails.length === 0) {
-        res.status(404).json({ message: 'no loan details found' });
+        return res.status(200).json([]);
     } else {
-        res.status(200).json({ message: 'applied loan details fetch successfully', appliedLoanDetails, count: count.length });
+        return res.status(200).json({ message: 'Applied loan details fetch successfully', appliedLoanDetails, count: count.length });
     }
 }
-
-
-//  FUNCTION FOR GET LOAN DETAILS
-exports.getLoanDetails = async (req, res, next) => {
-    let { search, offset, pageSize } =
-        paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
-
-    let associateModel = [{
-        model: models.customer,
-        as: 'customer',
-        where: { isActive: true },
-        attributes: { exclude: ['password'] }
-    },
-    {
-        model: models.customerLoanBankDetail,
-        as: 'loanBankDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanKycDetail,
-        as: 'loanKycDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanNomineeDetail,
-        as: 'loanNomineeDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanOrnamentsDetail,
-        as: 'loanOrnamentsDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanPersonalDetail,
-        as: 'loanPersonalDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.packageImageUploadForLoan,
-        as: 'packetDetails',
-    },
-    {
-        model: models.finalLoanCalculator,
-        as: 'finalCalculator',
-        where: { isActive: true }
-    }]
-
-    let loanDetails = await models.customerLoan.findAll({
-        where: { isActive: true },
-        include: associateModel,
-        order: [
-            ['id', 'DESC']
-        ],
-        offset: offset,
-        limit: pageSize
-    });
-    let count = await models.customerLoan.findAll({
-        where: { isActive: true },
-        include: associateModel,
-    });
-    if (loanDetails.length === 0) {
-        res.status(404).json({ message: 'no loan details found' });
-    } else {
-        res.status(200).json({ message: 'loan details fetch successfully', loanDetails, count: count.length });
-    }
-}
-
-
-//  FUNCTION TO GET APPROVAL FROM BM
-exports.approvalFromBM = async (req, res, next) => {
-    let { applicationFormForBM, goldValuationForBM, loanStatusForBM } = req.body;
-
-    let id = req.params.id;
-    let modifiedBy = req.userData.id;
-    let loanUniqueId;
-
-    if (applicationFormForBM === true && goldValuationForBM === true && loanStatusForBM === 'confirmed') {
-        loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-    } else {
-        loanUniqueId = null;
-    }
-    let approvedByBM = await models.customerLoan.approvalFromBM(
-        id, applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId, modifiedBy
-    );
-    if (approvedByBM[0] == 0) {
-        res.status(422).json({ message: 'BM approval not working properly' });
-    } else {
-        res.status(200).json({ message: 'BM gives approval to applied loan' });
-    }
-}
-
-
 
 //  FUNCTION FOR ADD PACKAGE IMAGES
 exports.addPackageImagesForLoan = async (req, res, next) => {
@@ -493,12 +443,52 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
 
-    if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
-        let packageImageUploaded = await models.packageImageUploadForLoan.addPackageImages(
-            loanId, packageImageData, createdBy, modifiedBy);
-        res.status(201).json({ message: 'you have successfully uploaded package images' });
+    let getPackets = await models.customerLoanPackageDetails.findAll({ where: { loanId: loanId } })
+    if (!check.isEmpty(getPackets)) {
+        return res.status(400).json({ message: `Packets has been already assign` })
+    }
+
+    if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'approved') {
+        //FOR PACKETS DETAILES 
+        let finalPackageData = await packageImageData.map(function (ele) {
+            let obj = Object.assign({}, ele);
+            obj.isActive = true;
+            obj.loanId = loanId;
+            obj.createdBy = createdBy;
+            obj.modifiedBy = modifiedBy;
+            return obj;
+        })
+
+        //FOR PACKET UPDATE
+        let packetArray = await packageImageData.map(ele => {
+            return ele.packetId
+        })
+        let packetUpdateArray = await packetArray.map(ele => {
+            let obj = {}
+            obj.id = ele;
+            obj.customerId = loanDetails.customerId;
+            obj.loanId = loanId;
+            obj.modifiedBy = modifiedBy
+            obj.packetAssigned = true;
+            return obj
+        })
+
+        await sequelize.transaction(async (t) => {
+            let stageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' }, transaction: t })
+
+            await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
+
+            await models.customerLoanPackageDetails.bulkCreate(finalPackageData, { returning: true, transaction: t })
+
+            let d = await models.packet.bulkCreate(packetUpdateArray, {
+                updateOnDuplicate: ["customerId", "loanId", "modifiedBy", "isActive", "packetAssigned"]
+            }, { transaction: t })
+        })
+
+        return res.status(200).json({ message: `Packets added successfully` })
+
     } else {
-        res.status(404).json({ message: 'given loan id is not proper' })
+        res.status(404).json({ message: 'Given loan id is not proper' })
     }
 }
 
@@ -510,147 +500,65 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
+    let matchStageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
 
-    if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
-        let loanAmountDisbursed = await models.disbursementOfLoan.disbursementOfLoanAmount(
-            loanId, transactionId, date, createdBy, modifiedBy);
-        res.status(201).json({ message: 'you loan amount has been disbursed successfully' });
+    if (loanDetails.loanStageId == matchStageId.id) {
+        let stageId = await models.loanStage.findOne({ where: { name: 'disbursement complete' } })
+
+        await sequelize.transaction(async (t) => {
+            await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
+            await models.customerLoanDisbursement.create({ loanId, transactionId, date, createdBy, modifiedBy }, { transaction: t })
+        })
+        return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });
     } else {
-        res.status(404).json({ message: 'given loan id is not proper' })
+        return res.status(404).json({ message: 'Given loan id is not proper' })
     }
 }
 
 
-
-
-
-
-
-
-//  FUNCTION FOR ADD PACKET
-exports.addPacket = async (req, res, next) => {
-
-    let { packetId } = req.body;
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-
-    let packetExist = await models.packet.findOne({ where: { packetId } })
-
-    if (!check.isEmpty(packetExist)) {
-        return res.status(400).json({ message: `This packet Id is already exist` })
-    }
-    let packetAdded = await models.packet.addPacket(
-        packetId, createdBy, modifiedBy);
-    res.status(201).json({ message: 'you adeed packet successfully' });
-}
-
-
-//  FUNCTION FOR VIEW PACKET
-exports.viewPacket = async (req, res, next) => {
+//  FUNCTION FOR GET LOAN DETAILS
+exports.getLoanDetails = async (req, res, next) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
-    let query = {};
-    if (req.query.packetAssigned) {
-        query.packetAssigned = req.query.packetAssigned;
-    }
-    let searchQuery = {
-        [Op.and]: [query, {
-            [Op.or]: {
-                "$loan.loan_unique_id$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-                packetId: { [Op.iLike]: search + '%' },
-            },
-        }],
-        isActive: true,
-    };
+    let stageId = await models.loanStage.findOne({ where: { name: 'disbursement complete' } })
 
     let associateModel = [{
         model: models.customer,
-        required: false,
         as: 'customer',
         where: { isActive: true },
-        attributes: { exclude: ['password'] }
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
     },
     {
-        model: models.customerLoan,
-        required: false,
-        as: 'loan',
-        where: { isActive: true }
-    }];
+        model: models.customerFinalLoan,
+        as: 'finalLoan',
+        where: { isActive: true },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        include: [{
+            model: models.scheme,
+            as: 'scheme',
+            attributes: ['id', 'schemeName']
+        }]
+    }]
 
-    let packetDetails = await models.packet.findAll({
-        where: searchQuery,
+    let loanDetails = await models.customerLoan.findAll({
+        where: { isActive: true, loanStageId: stageId.id },
         include: associateModel,
+        attributes: ['id', 'loanUniqueId'],
         order: [
             ['id', 'DESC']
         ],
         offset: offset,
-        limit: pageSize,
-
+        limit: pageSize
     });
-    let count = await models.packet.findAll({
-        where: searchQuery,
+    let count = await models.customerLoan.findAll({
+        where: { isActive: true, loanStageId: stageId.id },
         include: associateModel,
     });
-
-    return res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count.length });
-
-}
-
-
-//  FUNCTION FOR GET AVAILABLE PACKET
-exports.availablePacket = async (req, res, next) => {
-    let availablePacketDetails = await models.packet.findAll({
-        where: { isActive: true, packetAssigned: false },
-    });
-    if (availablePacketDetails.length === 0) {
-        res.status(404).json({ message: 'no packet details found' });
+    if (loanDetails.length === 0) {
+       return res.status(200).json([]);
     } else {
-        res.status(200).json({ message: 'avalable packet details fetch successfully', availablePacketDetails });
+        return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
     }
 }
 
-
-// FUNCTION TO ASSIGN PACKET
-exports.assignPacket = async (req, res, next) => {
-    let id = req.params.id;
-    let { customerId, loanId } = req.body;
-    let modifiedBy = req.userData.id;
-
-    let packet = await models.packet.assignPacket(customerId, loanId, modifiedBy, id);
-
-    if (packet[0] == 0) {
-        return res.status(404).json({ message: "not assigned packet" });
-    }
-    return res.status(200).json({ message: "packet assigned successfully" });
-};
-
-
-// FUNCTION TO UPDATE PACKET
-exports.changePacket = async (req, res, next) => {
-    let id = req.params.id;
-    let { packetId } = req.body;
-    let modifiedBy = req.userData.id;
-
-    let packet = await models.packet.updatePacket(id, packetId, modifiedBy);
-
-    if (packet[0] == 0) {
-        return res.status(404).json({ message: "packet not update" });
-    }
-    return res.status(200).json({ message: "packet updated successfully" });
-};
-
-
-// FUNCTION TO REMOVE PACKET
-exports.deletePacket = async (req, res, next) => {
-
-    const { id, isActive } = req.query;
-    let modifiedBy = req.userData.id;
-    const packet = await models.packet.update({ isActive: isActive, modifiedBy }, { where: { id: id } })
-
-    if (packet[0] == 0) {
-        return res.status(404).json({ message: "packet not delete" });
-    }
-    return res.status(200).json({ message: "packet deleted successfully" });
-};

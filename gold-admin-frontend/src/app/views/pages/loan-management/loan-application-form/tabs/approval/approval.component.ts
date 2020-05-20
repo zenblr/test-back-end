@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input, AfterViewInit, OnChange
 import { FormGroup, FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-approval',
@@ -21,14 +22,17 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
   // kycStatus = [];
   approvalForm: FormGroup;
+  url: string;
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
     private sharedSerive: SharedService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    public router:Router
   ) { }
 
   ngOnInit() {
+    this.url = this.router.url.split('/')[2]
     this.initForm();
     this.getRoles()
   }
@@ -85,7 +89,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   approvalOfAppraiser(value: boolean, type: string) {
-    if (this.role == 'Appraiser') {
+    if (this.role == 'Appraiser' && this.url != 'package-image-upload') {
       if (type == 'gold') {
         this.controls.goldValuationForAppraiser.patchValue(value)
       } else {
@@ -94,7 +98,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   approvalOfBM(value: boolean, type: string) {
-    if (this.role == 'Branch Manager') {
+    if (this.role == 'Branch Manager' && this.url != 'package-image-upload') {
       if (type == 'gold') {
         this.controls.goldValuationForBM.patchValue(value)
       } else {

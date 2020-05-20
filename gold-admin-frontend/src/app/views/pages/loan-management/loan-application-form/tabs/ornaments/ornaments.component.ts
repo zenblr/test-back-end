@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
 import { UploadOfferService } from '../../../../../../core/upload-data';
 import { KaratDetailsService } from '../../../../../../core/loan-setting/karat-details/services/karat-details.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -41,7 +42,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   karatArr:any
   purityBasedDeduction: number;
   ltvPercent = [];
-
+  url:string
   constructor(
     public fb: FormBuilder,
     public sharedService: SharedService,
@@ -50,12 +51,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public dilaog: MatDialog,
     public ref: ChangeDetectorRef,
     public uploadOfferService: UploadOfferService,
-    public karatService: KaratDetailsService
+    public karatService: KaratDetailsService,
+    public router:Router
   ) {
 
   }
 
   ngOnInit() {
+    this.url = this.router.url.split('/')[2]
     this.getKarat()
     this.initForm()
     this.ornamentsForm.valueChanges.subscribe(() => {
@@ -135,15 +138,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     if (group.controls.grossWeight.valid && group.controls.netWeight.valid) {
       const deductionWeight = group.controls.grossWeight.value - group.controls.netWeight.value;
       group.controls.deductionWeight.patchValue(deductionWeight);
-      this.currentNetWeight(index)
+      this.finalNetWeight(index)
     }
   }
 
-  currentNetWeight(index) {
+  finalNetWeight(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
     if (group.controls.purity.valid && group.controls.netWeight.valid) {
       const netWeight = group.controls.netWeight.value - (group.controls.purity.value / 100)
-      group.controls.currentNetWeight.patchValue(netWeight)
+      group.controls.finalNetWeight.patchValue(netWeight)
       this.calculateLtvAmount(index)
     }
   }
@@ -174,11 +177,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       karat: [, Validators.required],
       purity: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ltvRange: [[]],
-      currentNetWeight: [],
+      finalNetWeight: [''],
       purityTest: [[], Validators.required],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
-      loanAmount: [],
+      loanAmount: [''],
       id: [],
       currentLtvAmount: [this.goldRate]
     }))
@@ -240,7 +243,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     //     break;
     // }
     this.ref.detectChanges()
-    this.currentNetWeight(index)
+    this.finalNetWeight(index)
   }
 
   uploadFile(index, event, string, ) {
@@ -296,7 +299,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         }else{
           this.images[index].purity = url
         }
-        controls.controls.purityTest.patchValue(temp)
+        controls.controls.purityTest.patchValue([this.images[index].purity])
         this.purity.nativeElement.value =''
         
 
@@ -368,12 +371,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   calculateLtvAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
-    if (controls.controls.currentNetWeight.valid && controls.controls.purity.valid
+    if (controls.controls.finalNetWeight.valid && controls.controls.purity.valid
       && controls.controls.ltvPercent.valid) {
       let ltvPercent = controls.controls.ltvPercent.value
       let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
       controls.controls.ltvAmount.patchValue(ltv)
-      controls.controls.loanAmount.patchValue(ltv * controls.controls.currentNetWeight.value)
+      controls.controls.loanAmount.patchValue(ltv * controls.controls.finalNetWeight.value)
     }
   }
 }

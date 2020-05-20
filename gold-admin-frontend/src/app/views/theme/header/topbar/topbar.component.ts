@@ -22,6 +22,8 @@ import { PacketsService } from '../../../../core/loan-management';
 import { StoreService } from '../../../../core/user-management/store/service/store.service';
 import { LogisticPartnerService } from '../../../../core/emi-management/logistic-partner/service/logistic-partner.service';
 import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
+import { CancelOrderDetailsService, OrderDetailsService, DepositDetailsService, EmiDetailsService } from '../../../../core/emi-management/order-management';
+import { MonthlyService } from '../../../../core/repayment/services/monthly.service';
 
 @Component({
 	selector: 'kt-topbar',
@@ -48,6 +50,7 @@ export class TopbarComponent implements OnInit {
 	value1: string;
 	type2: string;
 	value2: string;
+	value3: string;
 	showInput: boolean;
 	toogle: boolean;
 	toogler: string;
@@ -55,7 +58,7 @@ export class TopbarComponent implements OnInit {
 	filterName = '';
 	listType = '';
 	filterWidth = '';
-
+	downloadbtn: boolean = false;
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -77,12 +80,25 @@ export class TopbarComponent implements OnInit {
 		private storeService: StoreService,
 		private logisticPartnerService: LogisticPartnerService,
 		private karatDetailsService: KaratDetailsService,
-		private productService: ProductService) {
+		private productService: ProductService,
+		private orderDetailsService: OrderDetailsService,
+		private cancelOrderDetailsService: CancelOrderDetailsService,
+		private depositDetailsService: DepositDetailsService,
+		private emiDetailsService: EmiDetailsService,
+		private monthlyService: MonthlyService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
 			this.setTopbar(location.path())
 		})
+
+		this.walletPriceService.download$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+			if (res) {
+				this.downloadbtn = true;
+			} else {
+				this.downloadbtn = false;
+			}
+		});
 	}
 
 	ngOnInit() {
@@ -131,6 +147,7 @@ export class TopbarComponent implements OnInit {
 		this.value1 = '';
 		this.type2 = '';
 		this.value2 = '';
+		this.value3 = '';
 		this.showfilter = false;
 		this.showInput = false;
 		this.toogle = false;
@@ -153,7 +170,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'lead-management') {
 			this.dataSourceHeader()
 			this.value1 = 'Add New Lead';
-			this.showfilter = false;
+			this.showfilter = true;
 			this.filterName = 'leads';
 			this.filterWidth = '900px';
 		}
@@ -176,6 +193,10 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = true;
 			this.showInput = true;
 			this.toogle = true;
+		}
+		if (this.path == 'monthly') {
+			this.dataSourceHeader();
+			this.value1 = 'Add Payment';
 		}
 		if (this.path == 'branch') {
 			this.dataSourceHeader()
@@ -203,6 +224,7 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.type2 = 'button';
 			this.value2 = 'Edit Wallet Price';
+			this.value3 = 'Download Wallet Price Report'
 		}
 		if (this.path == 'bulk-upload-report') {
 			this.showInput = true;
@@ -250,6 +272,42 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'admin-log') {
 			this.showInput = true;
 		}
+		if (this.path == 'order-details') {
+			this.showInput = true;
+			this.value1 = 'Export';
+			this.type1 = 'button';
+			this.filterName = 'orderDetails';
+			this.filterWidth = '550px';
+			this.showfilter = true;
+		}
+		if (this.path == 'cancel-order-details') {
+			this.showInput = true;
+			this.value1 = 'Export';
+			this.type1 = 'button';
+			// this.showfilter = true;
+		}
+		if (this.path == 'deposit-details') {
+			this.showInput = true;
+			this.value1 = 'Export';
+			this.type1 = 'button';
+			// this.showfilter = true;
+		}
+		if (this.path == 'emi-details') {
+			this.showfilter = true;
+			this.showInput = true;
+			this.value1 = 'Export';
+			this.type1 = 'button';
+			this.filterName = 'emiDetails';
+			this.filterWidth = '500px';
+			// this.showfilter = true;
+		}
+		if (location.href.includes('edit-order-details')) {
+			this.value1 = 'Print Performa';
+			this.type1 = 'button';
+			this.value2 = 'Contract';
+			this.type2 = 'button';
+			this.rightButton = true;
+		}
 	}
 
 	action(event: Event) {
@@ -261,6 +319,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'partner') {
 			this.partnerService.openModal.next(true)
+		}
+		if (this.path == 'monthly') {
+			this.monthlyService.openModal.next(true)
 		}
 		if (this.path == 'branch') {
 			this.branchService.openModal.next(true)
@@ -306,6 +367,24 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'karat-details') {
 			this.karatDetailsService.openModal.next(true)
+		}
+		if (this.path == 'order-details') {
+			this.orderDetailsService.exportExcel.next(true);
+		}
+		if (this.path == 'cancel-order-details') {
+			this.cancelOrderDetailsService.exportExcel.next(true);
+		}
+		if (this.path == 'deposit-details') {
+			this.depositDetailsService.exportExcel.next(true);
+		}
+		if (this.path == 'emi-details') {
+			this.emiDetailsService.exportExcel.next(true);
+		}
+	}
+
+	download() {
+		if (this.path == 'wallet-price') {
+			this.walletPriceService.downloadReport.next(true)
 		}
 	}
 

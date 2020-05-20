@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatSort, MatSnackBar, MatDialog } from '@angular/material';
 // RXJS
-import { distinctUntilChanged, tap, skip, take, delay, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, tap, skip, take, delay, takeUntil, map, catchError } from 'rxjs/operators';
 import { merge, of, Subscription, Subject } from 'rxjs';
 // NGRX
 
@@ -16,6 +16,7 @@ import { MerchantDatasource, MerchantService } from '../../../../../core/user-ma
 import { ViewMerchantComponent } from '../view-merchant/view-merchant.component';
 import { ApiKeyComponent } from '../api-key/api-key.component';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -26,25 +27,12 @@ import { DataTableService } from '../../../../../core/shared/services/data-table
 export class MerchantListComponent implements OnInit {
 
   dataSource: MerchantDatasource;
-  displayedColumns = ['merchantName', 'fullName', 'mobileNumber', 'email', 'state', 'city', 'pincode', 'approvalStatus', 'action', 'apiKey'];
+  displayedColumns = ['merchantName','initial','fullName', 'mobileNumber', 'email', 'state', 'city', 'pincode', 'approvalStatus', 'action', 'apiKey'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   searchValue = ''
   unsubscribeSearch$ = new Subject()
   brokerResult: any[] = [];
-  approvalStatus: any[] = [
-    {
-      "id": 1,
-      "statusName": "pending"
-    },
-    {
-      "id": 2,
-      "statusName": "approved"
-    },
-    {
-      "id": 3,
-      "statusName": "rejected"
-    }
-  ]
+
 
 
   // Subscriptions
@@ -66,7 +54,8 @@ export class MerchantListComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private merchantService: MerchantService,
     private dataTableService: DataTableService,
-    private router: Router) {
+    private router: Router,
+    private toast:ToastrService) {
   }
 
 
@@ -138,5 +127,15 @@ export class MerchantListComponent implements OnInit {
       data: { userId: merchant.userId },
       width:'350px'
     })
+  }
+
+  toogle(merchant,event){
+    this.merchantService.changeStatus(merchant.userId,event).pipe(
+      map(res=>{
+        this.toast.success(res.message)
+      }),catchError(err =>{
+        this.toast.error(err.error.message)
+        throw err;      
+      })).subscribe()
   }
 }

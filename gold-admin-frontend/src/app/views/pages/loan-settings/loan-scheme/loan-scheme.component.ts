@@ -14,7 +14,7 @@ import { PartnerService } from '../../../../core/user-management/partner/service
 })
 export class LoanSchemeComponent implements OnInit {
 
-  schemes: any[] = []
+  schemes:any[] =[];
   loader: boolean = true;
   viewLoading: boolean = false;
   destroy$ = new Subject();
@@ -50,12 +50,14 @@ export class LoanSchemeComponent implements OnInit {
     this.parnterServices.getSchemesByParnter(id).pipe(
       map(
         res => {
-          this.schemes.push(res.data)
-          this.noResults = res.data.schemes;
-          console.log(this.noResults.length)
+          if(Object.keys(res.data).length > 0){
+            this.schemes.push(res.data)
+          
+          console.log(this.schemes)
           this.ref.detectChanges();
           this.eleref.nativeElement.querySelector('.mat-tab-labels').style.display = 'none';
           this.eleref.nativeElement.querySelector('.mat-tab-header').style.display = 'none';
+          }
         }),
       catchError(err => {
         this.viewLoading = false;
@@ -69,12 +71,10 @@ export class LoanSchemeComponent implements OnInit {
     this.loanSettingService.getScheme().pipe(
       map(res => {
         this.schemes = res.data;
-        this.noResults = res.data;
-        this.viewLoading = false;
         this.ref.detectChanges();
       }),
       catchError(err => {
-        this.viewLoading = false;
+        
         this.ref.detectChanges();
         throw (err)
       })).subscribe()

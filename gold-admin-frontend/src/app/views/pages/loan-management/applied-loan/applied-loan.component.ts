@@ -6,6 +6,7 @@ import { DataTableService } from '../../../../core/shared/services/data-table.se
 import { AppliedLoanDatasource,AppliedLoanService } from '../../../../core/loan-management'
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../core/shared/services/shared.service';
+import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.component';
 @Component({
   selector: 'kt-applied-loan',
   templateUrl: './applied-loan.component.html',
@@ -15,7 +16,7 @@ export class AppliedLoanComponent implements OnInit {
   
   roles:any
   dataSource: AppliedLoanDatasource;
-  displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions'];
+  displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval','loanStage', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -93,21 +94,25 @@ export class AppliedLoanComponent implements OnInit {
     this.dataSource.loadAppliedLoans(this.searchValue,from, to);
   }
 
-  // addLead() {
-  //   // console.log(event);
-  //   const dialogRef = this.dialog.open(AddLeadComponent, {
-  //     data: { action: 'add' },
-  //     width: '500px'
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.loadLeadsPage();
-  //     }
-  //     this.loanManagementService.openModal.next(false);
-  //   });
-  // }
+  disburse(loan) {
+    // console.log(event);
+    const dialogRef = this.dialog.open(DisburseDialogComponent, {
+      data: loan ,
+      width: '500px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadAppliedLoansPage();
+      }
+    });
+  }
 
   editLoan(loan) {
     this.router.navigate(['/loan-management/loan-application-form',loan.id])
   }
+
+  packageImageUpload(loan){
+    this.router.navigate(['/loan-management/package-image-upload',loan.id])
+  }
+
 }

@@ -13,7 +13,7 @@ import { PartialsModule } from '../../partials/partials.module';
 // Services
 import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsService } from '../../../core/_base/crud';
 // Shared
-import { ActionNotificationComponent } from '../../partials/content/crud';
+import { ActionNotificationComponent, DeleteEntityDialogComponent } from '../../partials/content/crud';
 // Material
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
 // Module
@@ -36,11 +36,19 @@ import { CategoryAddComponent } from './product/category/category-add/category-a
 import { ProductListComponent } from './product/show-product/product-list/product-list.component';
 import { ProductEditComponent } from './product/show-product/product-edit/product-edit.component';
 import { AdminLogListComponent } from './config-details/admin-log/admin-log-list/admin-log-list.component';
-// import { LogisticPartnerComponent} from './logistic-partner/logistic-partner.component';
 import { AddLogisticPartnerComponent } from './logisticPartner/add-logistic-partner/add-logistic-partner.component';
 import { ListLogisticPartnerComponent } from './logisticPartner/list-logistic-partner/list-logistic-partner.component';
+import { OrderDetailsListComponent } from './order-management/order-details/order-details-list/order-details-list.component';
+import { OrderDetailsViewComponent } from './order-management/order-details/order-details-view/order-details-view.component';
+import { CancelOrderDetailsListComponent } from './order-management/cancel-order-details/cancel-order-details-list/cancel-order-details-list.component';
+import { DepositDetailsListComponent } from './order-management/deposit-details/deposit-details-list/deposit-details-list.component';
+import { EmiDetailsListComponent } from './order-management/emi-details/emi-details-list/emi-details-list.component';
+import { EmiDetailsViewComponent } from './order-management/emi-details/emi-details-view/emi-details-view.component';
+import { OrderDetailsEditComponent } from './order-management/order-details/order-details-edit/order-details-edit.component';
+import { RefundManagementComponent } from './order-management/refund-management/refund-management-list/refund-management.component';
+import { RefundManagementEditComponent } from './order-management/refund-management/refund-management-edit/refund-management-edit.component';
 
-const routes: Routes = [
+const routes: Routes = [ 
 	{
 		path: '',
 
@@ -87,6 +95,30 @@ const routes: Routes = [
 			{
 				path: 'logistic-partner',
 				component: ListLogisticPartnerComponent
+			},
+			{
+				path: 'order-details',
+				component: OrderDetailsListComponent
+			},
+			{
+				path: 'order-details/edit-order-details/:id',
+				component: OrderDetailsEditComponent
+			},
+			{
+				path: 'cancel-order-details',
+				component: CancelOrderDetailsListComponent
+			},
+			{
+				path: 'deposit-details',
+				component: DepositDetailsListComponent
+			},
+			{
+				path: 'emi-details',
+				component: EmiDetailsListComponent
+			},
+			{
+				path: 'refund-management',
+				component: RefundManagementComponent
 			}
 		]
 	}
@@ -132,11 +164,15 @@ const routes: Routes = [
 	],
 	entryComponents: [
 		ActionNotificationComponent,
+		DeleteEntityDialogComponent,
 		WalletPriceAddComponent,
 		CategoryAddComponent,
 		ProductEditComponent,
 		SubCategoryAddComponent,
 		AddLogisticPartnerComponent,
+		OrderDetailsViewComponent,
+		EmiDetailsViewComponent,
+		RefundManagementEditComponent
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -155,7 +191,15 @@ const routes: Routes = [
 		AdminLogListComponent,
 		AddLogisticPartnerComponent,
 		ListLogisticPartnerComponent,
-
+		OrderDetailsListComponent,
+		OrderDetailsViewComponent,
+		CancelOrderDetailsListComponent,
+		DepositDetailsListComponent,
+		EmiDetailsListComponent,
+		EmiDetailsViewComponent,
+		OrderDetailsEditComponent,
+		RefundManagementComponent,
+		RefundManagementEditComponent,
 	]
 })
 export class EMIManagementModule { }

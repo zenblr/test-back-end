@@ -24,6 +24,6 @@
 *     responses:
 *       201:
 *         description: Schemes Created
-*       500:
-*         description: Internal Server Error
+*       400:
+*         description: Your Scheme start amount is must be greater than your Scheme end amount/Your file is empty.this scheme is already exist/In your csv file there scheme name is dublicate
 */

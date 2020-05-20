@@ -3,7 +3,7 @@
  * /partner-branch:
  *   post:
  *     tags:
- *       - Branch
+ *       - Partner Branch
  *     name: branch
  *     summary: To add branch
  *     security:
@@ -42,7 +42,7 @@
  *          description: Invalid pincode
  *   get:
  *     tags:
- *       - Branch
+ *       - Partner Branch
  *     name: read branch
  *     summary: To read branch with pagination
  *     security:
@@ -69,7 +69,7 @@
  *          description: data not found
  *   delete:
  *     tags:
- *       - Branch
+ *       - Partner Branch
  *     summary: To delete by Id
  *     parameters:
  *     - name: "id"
@@ -92,10 +92,10 @@
  *       404:
  *         description: branch deleted failed.
  *
- * /branch/{id}:
+ * /partner-branch/{id}:
  *   get:
  *     tags:
- *       - Branch
+ *       - Partner Branch
  *     name: read branch
  *     summary: To read branch by Id
  *     parameters:
@@ -116,7 +116,7 @@
  *
  *   put:
  *     tags:
- *       - Branch
+ *       - Partner Branch
  *     summary: To update branch
  *     security:
  *       - bearerAuth: []
