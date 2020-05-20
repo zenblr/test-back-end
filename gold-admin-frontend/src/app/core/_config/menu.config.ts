@@ -84,8 +84,8 @@ export class MenuConfig {
 
 								},
 								{
-									title:'Karat details',
-									page:'/loan-setting/karat-details'
+									title: 'Karat details',
+									page: '/loan-setting/karat-details'
 								}
 							]
 						},
@@ -162,8 +162,8 @@ export class MenuConfig {
 							page: '/loan-management/applied-loan'
 						},
 						{
-							title: 'Package Image Upload',
-							page: '/loan-management/package-image-upload'
+							title: 'Loan Details',
+							page: '/loan-management/all-loan'
 						},
 
 					]
@@ -180,13 +180,13 @@ export class MenuConfig {
 					src: 'assets/media/aside-icons/icons-09.svg',
 					submenu: [
 						{
-							title: 'Montly Payment',
-							path: '/montly-payment'
+							title: 'Monthly Payment',
+							page: '/repayment/monthly'
 						},
-						{
-							title: 'One Shot Payment',
-							path: '/one-shot-payment',
-						}
+						// {
+						// 	title: 'One Shot Payment',
+						// 	path: '/one-shot-payment',
+						// }
 					]
 				},
 				{
@@ -342,9 +342,9 @@ export class MenuConfig {
 					]
 				},
 				{
-					title:'Logistic Partner',
+					title: 'Logistic Partner',
 					icon: 'flaticon2-architecture-and-city',
-					page:'/emi-management/logistic-partner',
+					page: '/emi-management/logistic-partner',
 				},
 				{
 					title: 'Bulk Upload Report',
@@ -365,6 +365,33 @@ export class MenuConfig {
 							title: 'Admin Log',
 							page: '/emi-management/admin-log',
 						},
+					]
+				},
+				{
+					title: 'Order Management',
+					root: true,
+					icon: 'flaticon2-shopping-cart',
+					submenu: [
+						{
+							title: 'Order Details',
+							page: '/emi-management/order-details',
+						},
+						{
+							title: 'EMI Details',
+							page: '/emi-management/emi-details'
+						},
+						// {
+						// 	title: 'Refund Management',
+						// 	page: '/emi-management/refund-management'
+						// },
+						{
+							title: 'Cancel Order Details',
+							page: '/emi-management/cancel-order-details',
+						},
+						{
+							title: 'Deposit Details',
+							page: '/emi-management/deposit-details',
+						}
 					]
 				},
 				{

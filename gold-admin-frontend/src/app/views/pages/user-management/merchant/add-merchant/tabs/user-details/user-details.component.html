@@ -53,23 +53,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- <input type="text" class="form-control" formControlName="firstName"
-                                placeholder="e.g John Smith"
-                                [class.isError]="controls.fullName.touched && controls.fullName.invalid">
-                            <div *ngIf="controls.fullName.touched && controls.fullName.invalid">
-                                <mat-error *ngIf="controls.fullName.touched && controls.fullName.errors?.required">Field
-                                    is required</mat-error>
-                                <mat-error *ngIf="controls.fullName.touched && controls.fullName.errors?.pattern">Enter
-                                    Valid Name</mat-error>
-                            </div> -->
-                            <!-- <div class="row kt-margin-t-15">
-                                <div class="col-6">
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="col-6">
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div> -->
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -157,19 +140,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15">
+                    <div class="row kt-margin-t-15" *ngIf="url == 'add-merchant'">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color">Status</label>
+                            <label class="font-weight-500 text-color">Merchant Initial</label>
                         </div>
                         <div class="col-8">
-                            <select class="form-control" formControlName="approvalStatusId"
-                            [class.isError]="controls.approvalStatusId.touched && controls.approvalStatusId.invalid">
-                            <option value="" [selected]="true" [disabled]="true">Select Status</option>
-                            <option [value]="status.id" *ngFor="let status of status">{{status.statusName | titlecase}}</option>
-                        </select>
-                            <div *ngIf="controls.approvalStatusId.touched && controls.approvalStatusId.invalid">
+                            <input type="text" placeholder="e.g AU" class="form-control" formControlName="initial" maxlength="2" ktAlphabets
+                            [class.isError]="controls.initial.touched && controls.initial.invalid">
+                            <div *ngIf="controls.initial.touched && controls.initial.invalid">
                                 <mat-error
-                                    *ngIf="controls.approvalStatusId.touched && controls.approvalStatusId.errors?.required">
+                                    *ngIf="controls.initial.touched && controls.initial.errors?.required">
+                                    Field
+                                    is required</mat-error>
+                                    <mat-error
+                                    *ngIf="controls.initial.touched && controls.initial.errors?.minlength">
                                     Field
                                     is required</mat-error>
                             </div>

@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const disbursementOfLoan = sequelize.define('disbursementOfLoan', {
+    const CustomerLoanDisbursement = sequelize.define('customerLoanDisbursement', {
         // attributes
         loanId: {
             type: DataTypes.INTEGER,
@@ -25,18 +25,22 @@ module.exports = (sequelize, DataTypes) => {
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
     }, {
         freezeTableName: true,
-        tableName: 'disbursement_of_loan',
+        tableName: 'customer_loan_disbursement',
     });
 
+    CustomerLoanDisbursement.associate = function (models) {
+        CustomerLoanDisbursement.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
+    }
+
     // FUNCTION TO DISBURSEMENT OF LOAN AMOUNT
-    disbursementOfLoan.disbursementOfLoanAmount =
-        (loanId, transactionId, date, createdBy, modifiedBy) => disbursementOfLoan.create({
+    CustomerLoanDisbursement.disbursementOfLoanAmount =
+        (loanId, transactionId, date, createdBy, modifiedBy) => CustomerLoanDisbursement.create({
             loanId, transactionId, date, createdBy, modifiedBy, isActive: true
         });
 
-    return disbursementOfLoan;
+    return CustomerLoanDisbursement;
 }

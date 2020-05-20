@@ -10,9 +10,12 @@
         </div>
         <div class="col-6">
             <kt-search *ngIf="showInput"></kt-search>
-            <kt-button [value]='value1' [type]='type1' (click)="action($event)" class="kt-margin-r-10 kt-margin-l-10">
+            <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)"
+                class="kt-margin-r-10 kt-margin-l-10">
             </kt-button>
-
+            <div *ngIf="downloadbtn">
+                <p class="text-right mb-0 kt-pointer" (click)="download()">{{value3}}</p>
+            </div>
             <!-- Toggle Button -->
             <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style"
                 #group="matButtonToggleGroup" value="list" *ngIf="toogle">

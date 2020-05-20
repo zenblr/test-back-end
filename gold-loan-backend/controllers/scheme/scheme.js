@@ -81,7 +81,7 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
         }],
     })
     if (!readSchemeByPartner) {
-        return res.status(200).json({ data: [] });
+        return res.status(200).json({ data: {} });
     }
     return res.status(200).json({ data: readSchemeByPartner });
 }

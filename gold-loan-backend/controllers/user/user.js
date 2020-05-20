@@ -258,7 +258,7 @@ exports.deleteInternalUser = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
         const user = await models.user.update({ isActive: false, modifiedBy }, { where: { id: id } })
-        await models.userRole.update({ isActive: false }, { where: { userId: user.id } });
+        await models.userRole.destroy({ where: { userId: id } });
     })
     return res.status(200).json({ message: 'User deleted.' });
 }

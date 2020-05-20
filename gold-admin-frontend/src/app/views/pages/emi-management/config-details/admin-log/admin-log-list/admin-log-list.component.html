@@ -55,8 +55,7 @@
                 </ng-container>
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.createdAt | date:'yy-MM-dd'}} |
-                        {{element?.createdAt | date:'hh:mm:ss'}}</mat-cell>
+                    <mat-cell *matCellDef="let element">{{element?.createdAt |  date:'medium'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>

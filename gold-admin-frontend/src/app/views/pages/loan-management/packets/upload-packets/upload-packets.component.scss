@@ -1,21 +1,34 @@
 :host{
+  
     ::ng-deep.mat-tab-header {
-		max-width: 90%;
-	}
-	.addMore {
-		position: absolute;
-		top: 15px;
-		left: 15%;
-		z-index: 99999 !important;
+		position: relative !important;
+    }
+    // select{
+    //     -webkit-appearance: none !important;
+    //     -moz-appearance: none !important;
+    //   }
+    
+    .addMore{
+        width: 30%;
+        position: absolute;
+		top: 10px;
+    }
+	.addMore button {
 		background: transparent;
 		border: thin solid #454D67;
 		border-radius: 5px;
-		padding: 5px;
+        padding: 0.65rem !important;
     }
     .packets {
         height: 195px;
         width: 100%;
         border-radius: 15px;
+    }
+    .addMore .packet-dropdown{
+        background: transparent !important;
+		border: thin solid #454D67 !important;
+        border-radius: 5px !important;
+        font-weight: bold !important;
     }
     .pacekts-label {
         font-size: 12px;

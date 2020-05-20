@@ -36,8 +36,8 @@
                     </div>
                     <div class="col-6">
                         <select class="form-control" formControlName="karat" (change)="selectKarat()">
-                            <option value="" [disabled]="true" [selected]="true">Select Karat</option>
-                            <option [value]="karat.value" *ngFor="let karat of karatArr">{{karat.name}}</option>
+                            <option value=null [disabled]="true" [selected]="true">Select Karat</option>
+                            <option [value]="karat.karat" *ngFor="let karat of karatArr">{{karat.karat}} K</option>
                         </select>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                     </div>
                     <div class="col-6">
                         <select class="form-control" formControlName="ltvPercent" (change)="chnageLtvPercent()">
-                            <option value="" [disabled]="true" [selected]="true">Select Purity</option>
+                            <option value=null [disabled]="true" [selected]="true">Select Purity</option>
                             <option [value]="purity" *ngFor="let purity of purity">{{purity}} %</option>
                         </select>
                     </div>
@@ -90,7 +90,7 @@
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="currentLtvAmount"
                             placeholder="4,800">
-                        <mat-hint>This amount is 75% of the gold rate</mat-hint>
+                        <mat-hint><small> 75% of current gold rate</small></mat-hint>
                     </div>
                 </div>
                 <div class="row kt-margin-t-30">
@@ -98,15 +98,17 @@
                         <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcLoanAmount()"></kt-button>
                     </div>
                 </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="offset-4 col-6">
+                        <p class="text-gray font-weight-500 m-0">Total Amount</p>
+                        <h3 class="text-color">{{loanAmount | currency :'INR'}}</h3>
+                    </div>
+                </div>
             </form>
 
         </div>
     </div>
 
-    <div class="row kt-margin-t-20">
-        <div class="offset-4 col-6">
-            <p class="text-gray font-weight-500 m-0">Total Amount</p>
-            <h3 class="text-color">{{loanAmount | currency :'INR'}}</h3>
-        </div>
-    </div>
+
 </div>

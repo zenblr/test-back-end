@@ -67,7 +67,7 @@
                             <div class="col-8">
                                 <input type="text" class="form-control" placeholder="10.20" formControlName="netWeight"
                                     [class.isError]="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid"
-                                    (blur)="calcGoldDeductionWeight(idx);currentNetWeight(idx)">
+                                    (blur)="calcGoldDeductionWeight(idx);finalNetWeight(idx)">
                                 <mat-error
                                     *ngIf="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid">
                                     <span *ngIf="ornament.controls.netWeight.errors?.pattern">Enter a valid
@@ -116,12 +116,14 @@
                                 </mat-error>
                             </div>
                             <div class="col-4 text-right min-height-attach">
-                                <input type="file" #weightMachineZeroWeight class="d-none" (change)="uploadFile(idx,$event,'weightMachineZeroWeight')">
+                                <input type="file" #weightMachineZeroWeight class="d-none"
+                                    (change)="uploadFile(idx,$event,'weightMachineZeroWeight')">
                                 <kt-button *ngIf="!ornament.controls.weightMachineZeroWeight.value" [type]="'button'"
                                     [value]="'Attach'" (click)="weightMachineZeroWeight.click()"></kt-button>
 
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.weightMachineZeroWeight.value"
+                                    <label
+                                        *ngIf="ornament.controls.weightMachineZeroWeight.value && url != 'package-image-upload'"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('weightMachineZeroWeight',idx,ornament.controls.weightMachineZeroWeight.value)">Remove</label>
                                 </div>
@@ -153,7 +155,8 @@
                                 <kt-button *ngIf="!ornament.controls.withOrnamentWeight.value" [type]="'button'"
                                     [value]="'Attach'" (click)="withOrnamentWeight.click()"></kt-button>
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.withOrnamentWeight.value"
+                                    <label
+                                        *ngIf="ornament.controls.withOrnamentWeight.value && url != 'package-image-upload'"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('withOrnamentWeight',idx,ornament.controls.withOrnamentWeight.value)">Remove</label>
                                 </div>
@@ -180,7 +183,7 @@
                                 <kt-button *ngIf="!ornament.controls.stoneTouch.value" [type]="'button'"
                                     [value]="'Attach'" (click)="stoneTouch.click()"></kt-button>
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.stoneTouch.value"
+                                    <label *ngIf="ornament.controls.stoneTouch.value && url != 'package-image-upload'"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('stoneTouch',idx,ornament.controls.stoneTouch.value)">Remove</label>
                                 </div>
@@ -210,7 +213,7 @@
                                 <kt-button *ngIf="!ornament.controls.acidTest.value" [type]="'button'"
                                     [value]="'Attach'" (click)="acidTest.click()"></kt-button>
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.acidTest.value"
+                                    <label *ngIf="ornament.controls.acidTest.value && url != 'package-image-upload'"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('acidTest',idx,ornament.controls.acidTest.value)">Remove</label>
                                 </div>
@@ -232,11 +235,13 @@
                                 </mat-error>
                             </div>
                             <div class="col-4 text-right min-height-attach">
-                                <input type="file" #purity class="d-none" (change)="uploadFile(idx,$event,'purityTest')">
+                                <input type="file" #purity class="d-none"
+                                    (change)="uploadFile(idx,$event,'purityTest')">
                                 <kt-button *ngIf="ornament.controls.purityTest.value.length == 0" [type]="'button'"
                                     [value]="'Attach'" (click)="purity.click()"></kt-button>
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.purityTest.value.length > 0"
+                                    <label
+                                        *ngIf="ornament.controls.purityTest.value.length > 0 && url != 'package-image-upload'"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('purity',idx,ornament.controls.purityTest.value)">Remove</label>
                                 </div>
@@ -267,11 +272,11 @@
                     <div class="col-6 ">
                         <div class="row kt-margin-t-15 kt-padding-l-10">
                             <div class="col-4 form-label">
-                                <label for="" class="text-color">Purity</label>
+                                <label for="" class="text-color">Purity %</label>
                             </div>
                             <div class="col-8">
                                 <input type="number" class="form-control" formControlName="purity" placeholder="00%"
-                                    (input)="currentNetWeight(idx);calculateLtvAmount(idx)"
+                                    (input)="finalNetWeight(idx);calculateLtvAmount(idx)"
                                     [class.isError]="ornament.controls.purity.touched && ornament.controls.purity.invalid">
                                 <mat-error *ngIf="ornament.controls.purity.touched && ornament.controls.purity.invalid">
                                     <span *ngIf="ornament.controls.purity.errors?.pattern">Enter a valid
@@ -288,9 +293,10 @@
                             <div class="col-4 form-label">
                                 <label class="my-auto text-color ">LTV Range</label>
                             </div>
-                            <div class="offset-6 col-2 form-label min-height-attach">
-                                <label class="text-color w-100 m-auto">{{ornament.controls.ltvRange.value[0]}} &nbsp;-
-                                    &nbsp;{{ornament.controls.ltvRange.value[ornament.controls.ltvRange.value.length-1]}}</label>
+                            <div class="col-8">
+                                <input type="text" readonly
+                                    value="{{ornament.controls.ltvRange.value[0]}} - {{ornament.controls.ltvRange.value[ornament.controls.ltvRange.value.length-1]}}"
+                                    class="form-control">
                             </div>
                         </div>
                     </div>
@@ -303,7 +309,7 @@
                             <div class="col-8">
                                 <input type="text" class="form-control" placeholder="100.00"
                                     formControlName="currentLtvAmount" readonly>
-                                <mat-hint> 75% of current gold rate</mat-hint>
+                                <mat-hint> <small> 75% of current gold rate</small></mat-hint>
                             </div>
                         </div>
                     </div>
@@ -316,10 +322,12 @@
                                 <label class="my-auto text-color ">LTV %</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="ltvPercent" (change)="calculateLtvAmount(idx)"
+                                <select class="form-control" formControlName="ltvPercent"
+                                    (change)="calculateLtvAmount(idx)"
                                     [class.isError]="ornament.controls.ltvPercent.touched && ornament.controls.ltvPercent.invalid">
                                     <option value=null disabled selected>Select LTV %</option>
-                                    <option [value]="pure" *ngFor="let pure of ornament.controls.ltvRange.value;index as i">{{pure}} %
+                                    <option [value]="pure"
+                                        *ngFor="let pure of ornament.controls.ltvRange.value;index as i">{{pure}} %
                                     </option>
                                 </select>
                                 <mat-error
@@ -349,6 +357,31 @@
                     </div>
 
                 </div>
+                <div class="row">
+
+                    <div class="col-6">
+                        <div class="row kt-margin-t-15">
+                            <div class="col-4 form-label">
+                                <label class="my-auto text-color ">Final Net Weight</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" formControlName="finalNetWeight" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row kt-margin-t-15 kt-padding-l-10">
+                            <div class="col-4 form-label">
+                                <label class="text-color ">Final LTV Amount</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" placeholder="100.00"
+                                    formControlName="loanAmount" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <div class="col-3 ">
                 <input type="file" #ornamentImage class="d-none" (change)="uploadFile(idx,$event,'ornamentImage')">
@@ -363,16 +396,16 @@
                 <div class="form-label">
                     <label *ngIf="!ornament.controls.ornamentImage.value" class="my-auto m-auto pt-2">Upload Ornaments
                         Image</label>
-                    <label *ngIf="ornament.controls.ornamentImage.value" class="my-auto text-danger m-auto kt-pointer"
+                    <label *ngIf="ornament.controls.ornamentImage.value && url != 'package-image-upload'"
+                        class="my-auto text-danger m-auto kt-pointer"
                         (click)="removeImage('ornamentImage',idx)">Remove</label>
-                    <div>
-                        <mat-error
-                            *ngIf="ornament.controls.ornamentImage.touched && ornament.controls.ornamentImage.invalid">
-                            <span *ngIf="ornament.controls.ornamentImage.errors?.required">Upload Image</span>
-                        </mat-error>
-                    </div>
                 </div>
-
+                <div>
+                    <mat-error
+                        *ngIf="ornament.controls.ornamentImage.touched && ornament.controls.ornamentImage.invalid">
+                        <span *ngIf="ornament.controls.ornamentImage.errors?.required">Upload Image</span>
+                    </mat-error>
+                </div>
             </div>
         </div>
     </mat-tab>

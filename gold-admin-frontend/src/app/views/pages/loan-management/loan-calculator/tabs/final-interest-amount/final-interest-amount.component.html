@@ -1,24 +1,31 @@
 <div class="container minHeight">
     <form [formGroup]="finalInterestForm">
 
+
+
         <div class="row kt-margin-b-20">
             <div class="col-6">
+
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Start Date</label>
+                        <label class="mandatory">Loan Amount</label>
                     </div>
                     <div class="col-7">
-                        <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                            formControlName="loanStartDate" [min]="currentDate"
-                            [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
-                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()">
-                        <mat-datepicker #picker></mat-datepicker>
-                        <mat-error *ngIf="controls.loanStartDate.errors?.required && controls.loanStartDate.touched">
+                        <input type="number" class="form-control" formControlName="finalLoanAmount"
+                            placeholder="0,00,000"
+                            [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
+                        <mat-error
+                            *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
                             Required field
                         </mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
+                            Invalid
+                        </mat-error>
+                        <mat-error *ngIf="controls.finalLoanAmount.errors?.invalidAmt">Enter Valid Amount</mat-error>
                     </div>
                 </div>
             </div>
+
             <div class="col-6">
 
                 <div class="row">
@@ -41,17 +48,16 @@
 
         <div class="row kt-margin-b-20">
             <div class="col-6">
-
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Loan End Date</label>
+                        <label class="mandatory">Start Date</label>
                     </div>
                     <div class="col-7">
-                        <input class="form-control" formControlName="loanEndDate" placeholder="02 May, 2020"
-                            [matDatepicker]="picker1"
-                            [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid" readonly />
-                        <mat-datepicker #picker1></mat-datepicker>
-                        <mat-error *ngIf="controls.loanEndDate.errors?.required && controls.loanEndDate.touched">
+                        <input type="text" class="form-control" formControlName="loanStartDate"
+                            [class.isError]="controls.loanStartDate.touched && controls.loanStartDate.invalid"
+                            placeholder="4/5/2020" readonly (dateChange)="setEndDate()"
+                            value="{{controls.loanStartDate.value |  date:'mediumDate'}}">
+                        <mat-error *ngIf="controls.loanStartDate.errors?.required && controls.loanStartDate.touched">
                             Required field
                         </mat-error>
                     </div>
@@ -61,20 +67,15 @@
 
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Loan Amount</label>
+                        <label class="mandatory">Loan End Date</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000"
-                            [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
-                        <mat-error
-                            *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
+                        <input class="form-control" formControlName="loanEndDate" placeholder="02 May, 2020"
+                            [class.isError]="controls.loanEndDate.touched && controls.loanEndDate.invalid" readonly
+                            value="{{controls.loanEndDate.value |  date:'mediumDate'}}" />
+                        <mat-error *ngIf="controls.loanEndDate.errors?.required && controls.loanEndDate.touched">
                             Required field
                         </mat-error>
-                        <mat-error *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
-                            Invalid
-                        </mat-error>
-                        <mat-error *ngIf="controls.finalLoanAmount.errors?.invalidAmt">Enter Valid Amount</mat-error>
                     </div>
                 </div>
             </div>
@@ -88,10 +89,11 @@
                         <label class="mandatory">Interest Rest Days</label>
                     </div>
                     <div class="col-7">
-                        <select class="form-control" formControlName="paymentFrequency"
+                        <select formControlName="paymentFrequency" class="form-control" (change)="getIntrest()"
                             [class.isError]="controls.paymentFrequency.touched && controls.paymentFrequency.invalid">
-                            <option value="" [selected]="true" [disabled]="true">Select Repay Period</option>
-                            <option [value]="pay.value" *ngFor="let pay of repayType">{{pay.name | titlecase}}</option>
+                            <option value="" [selected]="true" [disabled]="true">Select Payment Frequency</option>
+                            <option [value]="repay.value" *ngFor="let repay of repayType">{{repay.name | titlecase}}
+                            </option>
                         </select>
                         <mat-error
                             *ngIf="controls.paymentFrequency.errors?.required && controls.paymentFrequency.touched">
@@ -100,10 +102,11 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Interest Rate</label>
+                        <label class="mandatory">Interest Rate% (p.m.)</label>
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="interestRate" placeholder="00%"
@@ -119,26 +122,10 @@
             </div>
         </div>
 
-        <div class="row kt-margin-b-20">
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class ="mandatory">Gold Net Weight</label>
-                    </div>
-                    <div class="col-7">
-                        <input class="form-control" formControlName="goldNetWeight" placeholder="0.00 gram" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class ="mandatory">Final Net weight</label>
-                    </div>
-                    <div class="col-7">
-                        <input class="form-control" formControlName="finalNetWeight" placeholder="0.00 gram" />
-                    </div>
-                </div>
+        <div class="col-6 kt-margin-t-30 kt-margin-b-30">
+
+            <div class="offset-4 col">
+                <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcInterestAmount()"></kt-button>
             </div>
         </div>
 
@@ -176,11 +163,11 @@
                 </div>
             </div>
         </div> -->
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-6">
-            <div class="row">
+                <div class="row">
                     <div class="col-4 form-label">
-                        <label class ="mandatory">Current LTV Amount</label>
+                        <label class="mandatory">Current LTV Amount</label>
                     </div>
                     <div class="col-7">
                         <input class="form-control" formControlName="currentLtvAmount" placeholder="0,00,000" />
@@ -188,13 +175,8 @@
                 </div>
             </div>
 
-            <div class="col-6 kt-margin-t-30 kt-margin-b-30">
 
-                <div class="offset-4 col">
-                    <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcInterestAmount()"></kt-button>
-                </div>
-            </div>
-        </div>
+        </div> -->
     </form>
     <div class="row justify-content-center kt-margin-b-20" *ngIf="dateOfPayment.length > 0">
         <div class="col-6">
@@ -212,11 +194,25 @@
                                     <th scope="col" style="width: 50%" class="rating-cce">Interest Amount</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr *ngFor="let date of dateOfPayment;index as idx">
-                                    <td>{{date | date :'mediumDate'}}</td>
-                                    <td [attr.rowspan]="colJoin" *ngIf="idx%colJoin == 0 || colJoin == null">
+                            <tbody *ngIf="dateOfPayment.length%colJoin == 0 || colJoin == null">
+                                <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
+                                    <td>{{date.key | date :'mediumDate'}}</td>
+
+                                    <td [attr.rowspan]="colJoin" *ngIf="(idx%colJoin == 0 || colJoin == null)">
                                         {{intrestAmount | currency : 'INR'}}</td>
+
+                                </tr>
+                            </tbody>
+                            <tbody *ngIf="dateOfPayment.length%colJoin != 0 && colJoin !== null">
+                                <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
+                                    <td>{{date.key | date :'mediumDate'}}</td>
+                                    <!-- <td>{{idx%colJoin == 0}}{{colJoin == null}}{{dateOfPayment.length%colJoin < dateOfPayment.length-idx}} {{dateOfPayment.length%colJoin}}{{dateOfPayment.length-idx}}</td> -->
+                                    <td [attr.rowspan]="colJoin"
+                                        *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
+                                        {{intrestAmount | currency : 'INR'}}</td>
+                                    <td *ngIf="(dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
+                                        {{intrestAmount / colJoin | currency : 'INR'}}</td>
+
                                 </tr>
                             </tbody>
                         </table>

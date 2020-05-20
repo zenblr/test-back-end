@@ -20,8 +20,9 @@ export class LoanApplicationFormComponent implements OnInit {
     ornaments: false,
     intreset: false,
   }
+  url:string
   id: number;
-  disabledForm: boolean
+  disabledForm: boolean ;
   totalAmount: number = 0;
   basic: any;
   bank: any;
@@ -57,14 +58,16 @@ export class LoanApplicationFormComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      if (this.router.url == "/loan-management/package-image-upload") {
+      this.url = this.router.url.split('/')[2]
+      if (this.url == "package-image-upload") {
         this.disabledForm = true;
-        const test = document.getElementById('packets');
-        test.scrollIntoView({ behavior: "smooth" });
+        const pack = document.getElementById('packets');
+        pack.scrollIntoView({ behavior: "smooth" });
+        this.ref.detectChanges()
       } else {
         this.disabledForm = false;
       }
-    }, 500)
+    }, 1000)
   }
 
   customerDetails(event) {
@@ -115,14 +118,14 @@ export class LoanApplicationFormComponent implements OnInit {
   interestFormEmit(event) {
     this.intreset = event
     this.invalid.intreset = false
-    if (this.intreset.valid) {
+    if (this.intreset.valid || this.intreset.status == "DISABLED") {
       this.disabled[5] = false
     } else {
       this.disabled[5] = true;
     }
   }
 
-  approvalFormEmit(event) {
+  approvalFormEmit(event ) {
     this.approval = event
     this.invalid.approval = false
 
@@ -131,7 +134,7 @@ export class LoanApplicationFormComponent implements OnInit {
   OrnamentsDataEmit(event) {
     this.Ornaments = event
     this.invalid.ornaments = false
-    if (this.Ornaments.valid) {
+    if (this.Ornaments.valid || this.Ornaments.status == "DISABLED") {
       this.disabled[4] = false
       this.calculateTotalEligibleAmount()
 

@@ -52,8 +52,8 @@ export class MerchantService {
       (map(res => res))
   }
 
-  addProduct(products, allowProductAccess, userId): Observable<any> {
-    return this.http.post(`${this.baseUrl}/api/merchant-product`, { products, allowProductAccess, userId }).pipe
+  addProduct(products, allProductAccess, userId): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/merchant-product`, { products, allProductAccess, userId }).pipe
       (map(res => res))
   }
 
@@ -82,6 +82,11 @@ export class MerchantService {
 
   status(value,userId):Observable<any> {
     return this.http.put(`${this.baseUrl}/api/merchant/api-key/status`,{value,userId}).pipe(
+      map(res => res))
+  }
+
+  changeStatus(userId,value):Observable<any> {
+    return this.http.put(`${this.baseUrl}/api/merchant/approval-status`,{value,userId}).pipe(
       map(res => res))
   }
 }

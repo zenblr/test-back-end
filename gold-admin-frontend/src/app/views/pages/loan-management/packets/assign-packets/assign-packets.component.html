@@ -9,10 +9,10 @@
                             <label class="kt-padding-l-10 mandatory">Packet Id</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control" formControlName="packetId"
-                                [class.isError]="packetForm.controls.packetId.invalid &&  packetForm.controls.packetId.touched">
+                            <input type="text" class="form-control" formControlName="packetUniqueId"
+                                [class.isError]="packetForm.controls.packetUniqueId.invalid &&  packetForm.controls.packetUniqueId.touched">
                         </div>
-                        <mat-error *ngIf="controls.packetId.touched && controls.packetId.errors?.required">
+                        <mat-error *ngIf="controls.packetUniqueId.touched && controls.packetUniqueId.errors?.required">
                             Required field
                         </mat-error>
                     </div>
