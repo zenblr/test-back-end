@@ -90,21 +90,6 @@
  *         description: Success.
  *       404:
  *         description: Data not found.
- * /customer/nominee-detail:
- *   get:
- *     tags:
- *       - Customer App
- *     name: read nominee details
- *     summary: To read nominee details
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Success.
- *       404:
- *         description: Data not found. 
  * /customer/address-detail:
  *   get:
  *     tags:
@@ -201,9 +186,9 @@
  *       in: "query"
  *       description: "enter schemeAmountStart"
  *       type: "number"
- *     - name: "schemeAmountStart"
+ *     - name: "schemeAmountEnd"
  *       in: "query"
- *       description: "enter schemeAmountStart"
+ *       description: "enter schemeAmountEnd"
  *       type: "number"
  *     responses:
  *       200:
