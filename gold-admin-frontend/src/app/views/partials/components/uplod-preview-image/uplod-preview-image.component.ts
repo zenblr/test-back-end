@@ -11,13 +11,17 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./uplod-preview-image.component.scss']
 })
 export class UplodPreviewImageComponent implements OnInit {
+  @ViewChild("file", { static: false }) file;
   @Input() image: any;
   @Input() action: any;
   @Input() type: any;
   @Input() index: any;
+  @Input() formFieldName: any;
+  @Input() fileAcceptType: any;
   @Output() upload = new EventEmitter();
   @Output() remove = new EventEmitter();
   formData: any;
+  selectedFile: any;
 
   @ViewChild(ToastrComponent, { static: false }) toastr: ToastrComponent;
 
@@ -44,12 +48,23 @@ export class UplodPreviewImageComponent implements OnInit {
             listView: true
           }
           this.upload.emit(data);
-        } else {
+        }
+        else if (this.type == 'formField') {
+          this.selectedFile = res.uploadFile;
+          const data = {
+            uploadData: res.uploadFile,
+            fieldName: this.formFieldName
+          }
+          this.upload.emit(data);
+        }
+        else {
           this.upload.emit(res.uploadFile);
         }
+        this.file.nativeElement.value = '';
         this.ref.detectChanges();
       },
       err => {
+        this.file.nativeElement.value = '';
         this.toast.error(err['error']['message']);
         this.ref.detectChanges();
       }
@@ -57,6 +72,15 @@ export class UplodPreviewImageComponent implements OnInit {
   }
 
   removeFile(event) {
-    this.remove.emit(this.index);
+    if (this.type == 'formField') {
+      const data = {
+        fieldName: this.formFieldName
+      }
+      this.remove.emit(data);
+    } else {
+      this.remove.emit(this.index);
+    }
+    this.selectedFile = null;
+    this.file.nativeElement.value = '';
   }
 }

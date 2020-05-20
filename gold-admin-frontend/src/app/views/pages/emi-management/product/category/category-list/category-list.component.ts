@@ -130,7 +130,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   deleteCategory(category) {
     const _title = 'Delete Category';
-    const _description = 'Are you sure to permanently delete this category?';
+    const _description = 'Are you sure you want to delete this Category? it will also delete the product and subcategory related to it';
     const _waitDesciption = 'Category is deleting...';
     const _deleteMessage = `Category has been deleted`;
 

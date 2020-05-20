@@ -58,6 +58,14 @@
                         </kt-portlet-body>
                     </kt-portlet>
                 </div>
+                <div class="col-3">
+                    <kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand h-auto'">
+                        <kt-portlet-body [class]="'kt-portlet__body--fluid'">
+                            <custom-kt-widget26 [value]="walletPrice?.kycLimit"
+                                [desc]="'KYC Limit'"></custom-kt-widget26>
+                        </kt-portlet-body>
+                    </kt-portlet>
+                </div>
             </div>
         </ng-template>
         <ng-template #dataNotFound>
