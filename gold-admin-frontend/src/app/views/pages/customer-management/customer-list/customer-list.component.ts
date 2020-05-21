@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
 import { CustomerManagementDatasource } from '../../../../core/customer-management/datasources/customer-management.datasource';
@@ -13,14 +13,19 @@ import { Router } from '@angular/router';
   templateUrl: './customer-list.component.html',
   styleUrls: ['./customer-list.component.scss']
 })
-export class CustomerListComponent implements OnInit {
+export class CustomerListComponent implements OnInit, OnChanges {
 
   toogler: string;
+  @Input() data;
+  @Input() hasItems
+  @Input() isPreloadTextViewed
+  @Output () pagination = new EventEmitter
+  @Input() paginatorTotal;
   dataSource: CustomerManagementDatasource;
   displayedColumns = ['fullName', 'customerId', 'mobile', 'pan', 'state', 'city', 'actions'];
-  leadsResult = [];
+  customerResult = [];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
- 
+
   // Filter fields
   // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -35,22 +40,38 @@ export class CustomerListComponent implements OnInit {
     window.scrollTo(0, 0);
   }
 
-  ngOnInit() {
-       // Init DataSource
-    this.dataSource = new CustomerManagementDatasource(this.customerManagementService);
-    const entitiesSubscription = this.dataSource.entitySubject.pipe(
-      skip(1),
-      distinctUntilChanged()
-    ).subscribe(res => {
-      this.leadsResult = res;
-    });
-    this.subscriptions.push(entitiesSubscription);
-
-    // First load
-    this.loadLeadsPage();
-
-    this.dataSource.loadLeads(1, 10, '', '');
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes)
+    if (changes.data)
+      this.customerResult = changes.data.currentValue
+    // this.dataSource.isPreloadTextViewedSubject.
   }
+
+  ngOnInit() {
+
+    const paginatorSubscriptions = merge(this.paginator.page).pipe(
+      tap(() => this.loadLeadsPage())
+    ).subscribe()
+    this.subscriptions.push(paginatorSubscriptions);
+
+    // Init DataSource
+    this.dataSource = new CustomerManagementDatasource(this.customerManagementService);
+    // const entitiesSubscription = this.dataSource.entitySubject.pipe(
+    //   skip(1),
+    //   distinctUntilChanged()
+    // ).subscribe(res => {
+    //   this.customerResult = res;
+    //   console.log(this.customerResult)
+    // });
+    // this.subscriptions.push(entitiesSubscription);
+
+    // // First load
+    // this.loadLeadsPage();
+
+    // this.dataSource.getCustomers(1, 25, '');
+  }
+
+
 
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
@@ -62,8 +83,8 @@ export class CustomerListComponent implements OnInit {
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-
-    this.dataSource.loadLeads(from, to, '', '');
+    this.pagination.emit({from:from,to:to})
+    // this.dataSource.getCustomers(from, to, '');
   }
 
   editCustomer(role) {
@@ -93,8 +114,12 @@ export class CustomerListComponent implements OnInit {
     });
   }
 
-  viewLoan(id: number) {
-    this.router.navigate(['/customer-setting/customer-list/' + id])
+  viewDetails(id: number) {
+    this.router.navigate(['/customer-management/customer-list/' + id])
+  }
+
+  newLoan(customer){
+    this.router.navigate(['/loan-management/loan-application-form/'],{queryParams:{customerID:customer.customerUniqueId}})
   }
 
 }

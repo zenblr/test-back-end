@@ -15,7 +15,7 @@ export class LoanDetailsComponent implements OnInit {
 
   roles:any
   dataSource: LoanDetailsDatasource;
-  displayedColumns = ['customerID', 'loanId','schemeName','amount', 'interestRate', 'tenure', 'startDate','endDate','actions'];
+  displayedColumns = ['customerID', 'loanId','schemeName','amount', 'interestRate', 'tenure', 'interestRestDays','startDate','endDate','actions','new'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields

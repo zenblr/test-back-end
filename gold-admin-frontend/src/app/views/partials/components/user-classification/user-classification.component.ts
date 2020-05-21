@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UserBankService } from '../../../../core/kyc-settings/services/user-bank.service';
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { Router } from '@angular/router';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-user-classification',
@@ -62,11 +63,12 @@ export class UserClassificationComponent implements OnInit {
     private toastr: ToastrService,
     private userBankService: UserBankService,
     private appliedKycService: AppliedKycService,
-    private route: Router
+    private route: Router,
+    private sharedService:SharedService,
   ) {
-    var token = localStorage.getItem('accessToken');
-    var decodedValue = JSON.parse(atob(token.split('.')[1]));
-    this.role = decodedValue.roleName[0]
+   this.sharedService.getRole().subscribe(res=>{
+     this.role = res
+   })
   }
 
   ngOnInit() {
