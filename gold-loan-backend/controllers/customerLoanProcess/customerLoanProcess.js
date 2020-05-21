@@ -369,28 +369,51 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS
 exports.appliedLoanDetails = async (req, res, next) => {
+    let { schemeId, appraiserApproval, bmApproval,loanStageId } = req.query
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+        
+    let query = {};
+    if (schemeId) {
+        schemeId = req.query.schemeId.split(",");
+        query["$finalLoan.scheme_id$"] = schemeId;
+    }
+    if (appraiserApproval) {
+        appraiserApproval = req.query.appraiserApproval.split(",");
+        query.loanStatusForAppraiser = appraiserApproval
+    }
+    if (bmApproval) {
+        appraiserApproval = req.query.bmApproval.split(",");
+        query.loanStatusForBM = bmApproval
+    }
+    if (loanStageId) {
+        loanStageId = req.query.loanStageId.split(",");
+        query.loanStageId = loanStageId;
+    }
+
 
     let searchQuery = {
-        [Op.or]: {
-            "$customer.first_name$": { [Op.iLike]: search + '%' },
-            "$customer.mobile_number$": { [Op.iLike]: search + '%' },
-            "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
-            "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            appraiser_status: sequelize.where(
-                sequelize.cast(sequelize.col("customerLoan.loan_status_for_appraiser"), "varchar"),
-                {
-                    [Op.iLike]: search + "%",
-                }
-            ),
-            bm_status: sequelize.where(
-                sequelize.cast(sequelize.col("customerLoan.loan_status_for_bm"), "varchar"),
-                {
-                    [Op.iLike]: search + "%",
-                }
-            )
-        },
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$customer.first_name$": { [Op.iLike]: search + '%' },
+                "$customer.mobile_number$": { [Op.iLike]: search + '%' },
+                "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                appraiser_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customerLoan.loan_status_for_appraiser"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                bm_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customerLoan.loan_status_for_bm"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                )
+            },
+        }],
+
         isActive: true
     };
 
@@ -408,7 +431,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
         model: models.customerFinalLoan,
         as: 'finalLoan',
         where: { isActive: true },
-        attributes: ['loanStartDate','finalLoanAmount'],
+        attributes: ['loanStartDate', 'finalLoanAmount', 'schemeId'],
         include: [{
             model: models.scheme,
             as: 'scheme',
@@ -419,7 +442,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     let appliedLoanDetails = await models.customerLoan.findAll({
         where: searchQuery,
         include: associateModel,
-        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM'],
+        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM','loanStageId'],
         order: [
             ['id', 'DESC']
         ],
