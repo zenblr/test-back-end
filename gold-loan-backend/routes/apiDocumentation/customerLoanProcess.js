@@ -1,16 +1,16 @@
 /**
  * @swagger
- * /loan-process/customer-details/:customerId:
+ * /loan-process/customer-loan-details/{customerUniqueId}:
  *   get:
  *     tags:
  *       - Customer Loan Process
- *     summary: To read by Id
+ *     summary: To read customer loan details by customer unique Id
  *     parameters:
- *     - name: "customerId"
+ *     - name: "customerUniqueId"
  *       in: "path"
  *       description: "Id of customer Unique Id to read"
  *       required: true
- *       type: integer
+ *       type: string
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -58,12 +58,26 @@
  *                type: object
  *                properties:
  *                   applicationFormForAppraiser:
- *                     type: string
+ *                     type: boolean
  *                   goldValuationForAppraiser:
- *                     type: string
+ *                     type: boolean
  *                   loanStatusForAppraiser:
  *                     type: string
+ *                     enum:
+ *                      - pending
+ *                      - approved
  *                   commentByAppraiser:
+ *                     type: string
+ *                   applicationFormForBM:
+ *                     type: boolean
+ *                   goldValutionForBM:
+ *                     type: boolean
+ *                   loanStatusForBM:
+ *                     type: string
+ *                     enum:
+ *                      - pending
+ *                      - approved
+ *                   commentByBM:
  *                     type: string
  *             loanFinalCalculator:
  *                type: object
@@ -107,6 +121,8 @@
  *                 type: integer
  *                permanentAddPin:
  *                 type: number
+ *                permanentAddProofId:
+ *                 type: integer
  *                permanentAddProof:
  *                 type: array
  *                 items:
@@ -140,6 +156,9 @@
  *                  type: string
  *                 nomineeType:
  *                  type: string
+ *                  enum:
+ *                   - minor
+ *                   - major
  *                 guardianName:
  *                   type: string
  *                 guardianAge:
@@ -200,15 +219,28 @@
  *                 type: string
  *                startDate:
  *                 type: string
+ *     required:
+ *       - customerId
+ *       - totalEligibleAmt
+ *       - totalFinalInterestAmt
+ *       - loanApproval
+ *       - loanBank
+ *       - loanOrnmanets
+ *       - loanFinalCalculator
+ *       - loanPersonal
+ *       - loanKyc
+ *       - loanNominee
  *     responses:
- *       200:
- *         description: success.
- * /loan-process/add-package-images:
+ *       201:
+ *         description: you have successfully applied for the loan.
+ *       400:
+ *         description: customer Kyc status is not approved
+ * /loan-process/add-packet-images:
  *   post:
  *     tags:
  *       -  Customer Loan Process
  *     name: add package images for loan
- *     summary: To add package imaged for loan
+ *     summary: To add package image for loan
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -234,14 +266,18 @@
  *                   type: string
  *                 packetWithWeight:
  *                   type: string
- *                 packetUniqueId:
- *                   type: string
+ *                 packetId:
+ *                   type: integer
  *         required:
  *           - loanId
  *           - packageImageData
  *     responses:
- *       201:
- *         description: you have successfully uploaded package images
+ *       200:
+ *         description: Packets added successfully
+ *       400:
+ *         description: Packets has been already assign
+ *       404:
+ *         description: iven loan id is not proper.
  * /loan-process/disbursement-of-loan:
  *   post:
  *     tags:
@@ -259,9 +295,9 @@
  *           type: object
  *           properties:
  *             loanId:
- *               type: number
+ *               type: integer
  *             transcationId:
- *               type: number
+ *               type: integer
  *             date:
  *               type: string
  *         required:
@@ -269,8 +305,10 @@
  *           - transcationId
  *           - date
  *     responses:
- *       201:
+ *       200:
  *         description: you loan amount has been disbursed successfully
+ *       404:
+ *         description: Given loan id is not proper.
  * /loan-process/loan-details:
  *   get:
  *     tags:
@@ -281,12 +319,72 @@
  *       - bearerAuth: []
  *     consumes:
  *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
  *     responses:
  *       200:
- *          description: loan details fetch successfully
+ *          description: Loan details fetch successfully
  *       404:
  *          description: no loan details found
- * /loan-process/change-loan-ornaments-detail/{id}:
+ * /loan-process/applied-loan-details:
+ *   get:
+ *     tags:
+ *       -  Customer Loan Process
+ *     name: read loan details
+ *     summary: To read loan details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: Loan details fetch successfully
+ *       404:
+ *          description: no loan details found
+ * /loan-process/single-loan:
+ *   get:
+ *     tags: 
+ *       -  Customer Loan Process
+ *     name: read loan details
+ *     summary: To read loan details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "customerLoanId"
+ *       in: "query"
+ *       description: "Id of customer loan Id"
+ *       type: "string"
+ *       required: true
+ *     responses:
+ *       200:
+ *          description: success.
+ * /loan-process/change-loan-detail/{loanId}:
  *   put:
  *     tags:
  *       - Customer Loan Process
@@ -297,7 +395,7 @@
  *     consumes:
  *       - application/json
  *     parameters:
- *       - name: "id"
+ *       - name: "loanId"
  *         in: "path"
  *         description: "Id of loan process to update"
  *         required: true
@@ -307,53 +405,129 @@
  *         schema:
  *           type: object
  *           properties:
- *             ornamentType:
- *               type: string
- *             quantity:
- *               type: string
- *             grossWeight:
- *               type: string
- *             netWeight:
- *               type: string
- *             dedcuctionWeight:
- *               type: string
- *             weightMachineZeroWeight:
- *               type: string 
- *             withOranmentWeight:
- *               type: string
- *             stoneTouch:
- *               type: string 
- *             acidTest:
- *               type: string
- *             purityTest:
- *               type: array
- *               items: 
+ *             totalEligibleAmt:
+ *               type: number
+ *             totalFinalInterestAmt:
+ *               type: number
+ *             loanFinalCalculator:
+ *               type: object
+ *               properties:
+ *                partnerId:
+ *                  type: integer
+ *                schemeId:
+ *                  type: integer
+ *                finalLoanAmount:
+ *                  type: number
+ *                loanStartDate:
+ *                  type: string
+ *                tenure:
+ *                  type: integer
+ *                loanEnDate:
+ *                  type: string
+ *                paymentFrequency:
+ *                  type: string
+ *                processingCharge:
+ *                  type: string
+ *                interestRate:
+ *                  type: string
+ *             loanNominee:
+ *               type: object
+ *               properties:
+ *                nomineeName:
+ *                  type: string
+ *                nomineeAge:
+ *                  type: integer
+ *                relationship:
+ *                  type: string
+ *                nomineeType:
+ *                  type: string
+ *                  enum:
+ *                   - minor
+ *                   - major
+ *                guardianName:
+ *                  type: string
+ *                guardianAge:
+ *                  type: integer
+ *                guardianRelationship:
+ *                  type: string
+ *             loanApproval:
+ *               type: object
+ *               properties:
+ *                applicationFormForAppraiser:
+ *                 type: boolean
+ *                goldValuationForAppraiser:
+ *                 type: boolean    
+ *                loanStatusForAppraiser:
+ *                 type: string
+ *                 enum:
+ *                  - pending
+ *                  - approved
+ *                commentByAppraiser: 
+ *                 type: string   
+ *                applicationFormForBM:
+ *                 type: boolean
+ *                goldValuationForBM:
+ *                 type: boolean
+ *                loanStatusForBM:
+ *                 type: string
+ *                 enum:
+ *                  - pending
+ *                  - approved
+ *                commentByBM:
+ *                 type: string
+ *             loanOrnmanets:
+ *              type: object
+ *              properties:
+ *               ornamentType:
  *                type: string
- *             ornamentImage:
- *               type: string
- *             ltvPercent:
- *               type: string
- *             ltvAmount:
- *               type: string
- *             currentLtvAmount:
- *               type: string
- *         required:
- *           - ornamentType
- *           - quantity
- *           - grossWeight
- *           - netWeight
- *           - deductionWeight
- *           - weightMachineZeroWeight
- *           - stoneTouch
- *           - acidtest
- *           - purityTest
- *           - ornamentImage
- *           - ltvPercent
- *           - ltvAmount
- *           - currentLtvAmount
+ *               quantity:
+ *                type: string
+ *               grossWeight:
+ *                type: string
+ *               netWeight:
+ *                type: string
+ *               dedcuctionWeight:
+ *                type: string
+ *               ornamentImage:
+ *                type: string
+ *               weightMachineZeroWeight:
+ *                type: string 
+ *               withOranmentWeight:
+ *                type: string
+ *               stoneTouch:
+ *                type: string 
+ *               acidTest:
+ *                type: string
+ *               karat:
+ *                type: string
+ *               purity:
+ *                type: string
+ *               ltvRange:
+ *                type: array
+ *                items:
+ *                 type: string
+ *               purityTest:
+ *                type: array
+ *                items: 
+ *                 type: string
+ *               ltvPercent:
+ *                type: string
+ *               ltvAmount:
+ *                type: number
+ *               loanAmount:
+ *                type: string
+ *               finalNetWeight:
+ *                type: string
+ *               currentLtvAmount:
+ *                type: number
+ *     required:
+ *      - totalEligibleAmt
+ *      - totalFinalInterestAmt
+ *      - loanApproval
+ *      - loanOrnmanets
+ *      - loanFinalCalculator
+ *      - loanNominee
  *     responses:
  *       200:
- *          description: customer ornaments details changed successfully
- *       422:
- *          description: customer ornaments details not updated    
+ *          description: success
  */

@@ -144,6 +144,18 @@
  *       in: "query"
  *       type: "string"
  *       required: true
+ *     - name: "cityId"
+ *       in: "query"
+ *       description: "enter city Id"
+ *       type: "integer"
+ *     - name: "stateId"
+ *       in: "query"
+ *       description: "enter state Id"
+ *       type: "integer"
+ *     - name: "statusId"
+ *       in: "query"
+ *       description: "enter status Id"
+ *       type: "integer"
  *     responses:
  *       200:
  *          description: Success
@@ -247,34 +259,6 @@
  *     responses:
  *       200:
  *          description: success
- * /customer/filter-customer:
- *  get:
- *     tags:
- *       - Customer Registration
- *     name: read customer by filter
- *     summary: To read customer with filter
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     parameters:
- *     - name: "cityId"
- *       in: "query"
- *       description: "enter city Id"
- *       type: "integer"
- *     - name: "stateId"
- *       in: "query"
- *       description: "enter state Id"
- *       type: "integer"
- *     - name: "statusId"
- *       in: "query"
- *       description: "enter status Id"
- *       type: "integer"
- *     responses:
- *       200:
- *          description: success
- *       404:
- *          description: data not found
  * /customer/customer-management:
  *  get:
  *     tags:
