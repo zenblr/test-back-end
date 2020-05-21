@@ -172,7 +172,8 @@
                             <div class="col-7">
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Select File"
-                                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+                                        formControlName="identityProofFileName" />
                                     <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                             (click)="identity.click()"
@@ -352,7 +353,8 @@
                             <div class="col-7">
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Select File"
-                                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                                        formControlName="addressProofFileName" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" readonly />
                                     <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                             (click)="permanent.click()"
@@ -551,7 +553,8 @@
                             <div class="col-7">
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Select File"
-                                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                                        formControlName="addressProofFileName" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" readonly />
                                     <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                             (click)="residential.click()"
@@ -736,7 +739,7 @@
                                 <select name="" id="" formControlName="occupationId" class="form-control"
                                     placeholder="Select Occupation"
                                     [class.isError]="customerKycPersonal.controls.occupationId.touched && customerKycPersonal.controls.occupationId.invalid">
-                                    <option value="" [selected]="true" [disabled]="true">Select Occupation
+                                    <option value=null [selected]="true">Select Occupation
                                     </option>
                                     <option [value]="occ.id" *ngFor="let occ of occupations;"> {{occ.name}}
                                     </option>
@@ -782,7 +785,8 @@
                             <div class="col-7">
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Select File"
-                                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                                        formControlName="signatureProofFileName" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" readonly />
                                     <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                             (click)="signature.click()"
@@ -964,7 +968,8 @@
                             <div class="col-7">
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Select File"
-                                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly />
+                                        formControlName="passbookProofFileName" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" readonly />
                                     <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                             (click)="pass.click()"

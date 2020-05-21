@@ -68,7 +68,7 @@ export class UserReviewComponent implements OnInit {
   //       "panCardNumber": "asass1234a",
   //       "gender": "f",
   //       "martialStatus": "married",
-  //       "occupation": { id: 1, name: 'B.E' }, // occupation.name
+  //       "occupation": { id: 1, name: 'Business' }, // occupation.name
   //       "identityType": { id: 1, name: "passport" },  //identityType.name
   //       "identityProof": [
   //         "http://173.249.49.7:8000/uploads/images/1588052018310.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
@@ -159,7 +159,6 @@ export class UserReviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.data)
     if (this.userBankService.kycDetails) {
       this.data = this.userBankService.kycDetails;
     } else
@@ -192,6 +191,7 @@ export class UserReviewComponent implements OnInit {
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
       identityProof: [this.data.customerKycReview.customerKycPersonal.identityProof, [Validators.required]],
+      identityProofFileName: [, [Validators.required]],
       identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
     })
     this.customerKycAddressOne = this.fb.group({
@@ -204,6 +204,7 @@ export class UserReviewComponent implements OnInit {
       cityId: [this.data.customerKycReview.customerKycAddress[0].city.id, [Validators.required]],
       pinCode: [this.data.customerKycReview.customerKycAddress[0].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       addressProof: [this.data.customerKycReview.customerKycAddress[0].addressProof, [Validators.required]],
+      addressProofFileName: [, Validators.required],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[0].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[0].addressProofNumber, [Validators.required]],
 
@@ -218,6 +219,7 @@ export class UserReviewComponent implements OnInit {
       cityId: [this.data.customerKycReview.customerKycAddress[1].city.id, [Validators.required]],
       pinCode: [this.data.customerKycReview.customerKycAddress[1].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       addressProof: [this.data.customerKycReview.customerKycAddress[1].addressProof, [Validators.required]],
+      addressProofFileName: [, Validators.required],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
     }),
@@ -228,7 +230,8 @@ export class UserReviewComponent implements OnInit {
         spouseName: [this.data.customerKycReview.customerKycPersonal.spouseName, [Validators.required]],
         martialStatus: [this.data.customerKycReview.customerKycPersonal.martialStatus, [Validators.required]],
         signatureProof: [this.data.customerKycReview.customerKycPersonal.signatureProof, [Validators.required]],
-        occupationId: [this.data.customerKycReview.customerKycPersonal.occupation.id, [Validators.required]],
+        signatureProofFileName: [, Validators.required],
+        occupationId: [],
         dateOfBirth: [this.data.customerKycReview.customerKycPersonal.dateOfBirth, [Validators.required]],
         identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
         identityProof: [this.data.customerKycReview.customerKycPersonal.identityProof, [Validators.required]],
@@ -245,27 +248,18 @@ export class UserReviewComponent implements OnInit {
         accountHolderName: [this.data.customerKycReview.customerKycBank[0].accountHolderName, [Validators.required]],
         accountNumber: [this.data.customerKycReview.customerKycBank[0].accountNumber, [Validators.required]],
         ifscCode: [this.data.customerKycReview.customerKycBank[0].ifscCode, [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
-        passbookProof: [this.data.customerKycReview.customerKycBank[0].passbookProof, [Validators.required]]
+        passbookProof: [this.data.customerKycReview.customerKycBank[0].passbookProof, [Validators.required]],
+        passbookProofFileName: [, Validators.required]
       })
 
-
-
-    // this.reviewForm.disable();
-    // this.customerKycAddressOne.disable();
-    // this.customerKycAddressTwo.disable();
-    // this.customerKycBank.disable();
-    // this.customerKycPersonal.disable();
-
-    // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressOne.controls.stateId.value, cityId: this.customerKycAddressOne.controls.cityId.value });
-    // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressTwo.controls.stateId.value, cityId: this.customerKycAddressTwo.controls.cityId.value });
+    if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
+      this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
+    }
 
     this.ref.detectChanges()
   }
 
   submit() {
-    // console.log(this.customerKycPersonal.value, this.customerKycBank.value, this.customerKycAddressOne.value, this.customerKycAddressTwo.value)
-
-    // FINAL OBJ {customerKycPersonal: {}, customerKycBank: [], customerKycAddress: []}
 
     this.customerKycPersonal.patchValue({
       identityTypeId: this.reviewForm.get('identityTypeId').value,
@@ -331,14 +325,12 @@ export class UserReviewComponent implements OnInit {
   }
 
   getCities(type?) {
-    console.log(type)
     let stateId = null;
     if (type == 'permanent') {
       stateId = this.customerKycAddressOne.controls.stateId.value;
     } else if (type == 'residential') {
       stateId = this.customerKycAddressTwo.controls.stateId.value;
     }
-    console.log(stateId)
     this.sharedService.getCities(stateId).subscribe(res => {
       if (type == 'permanent') {
         this.cities0 = res.message;
@@ -367,12 +359,16 @@ export class UserReviewComponent implements OnInit {
     // console.log(index, type)
     if (type == 'identityProof') {
       this.data.customerKycReview.customerKycPersonal.identityProof.splice(index, 1)
+      this.reviewForm.patchValue({ identityProofFileName: '' });
     } else if (type == 'residential') {
       this.data.customerKycReview.customerKycAddress[1].addressProof.splice(index, 1)
+      this.customerKycAddressTwo.patchValue({ addressProofFileName: '' });
     } else if (type == 'permanent') {
       this.data.customerKycReview.customerKycAddress[0].addressProof.splice(index, 1)
+      this.customerKycAddressOne.patchValue({ addressProofFileName: '' });
     } else if (type == 'passbook') {
       this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
+      this.customerKycBank.patchValue({ passbookProofFileName: '' });
     }
   }
 
@@ -381,6 +377,7 @@ export class UserReviewComponent implements OnInit {
     // console.log(type);
     // console.log(this.addressControls)
     var name = event.target.files[0].name
+    console.log(name)
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       this.sharedService.uploadFile(this.file).pipe(
@@ -393,26 +390,28 @@ export class UserReviewComponent implements OnInit {
           if (type == "identityProof") {
             this.data.customerKycReview.customerKycPersonal.identityProof.push(res.uploadFile.URL)
             this.customerKycPersonal.patchValue({ identityProof: this.data.customerKycReview.customerKycPersonal.identityProof })
-
+            this.reviewForm.patchValue({ identityProofFileName: event.target.files[0].name });
           }
           if (type == 'permanent') {
             this.data.customerKycReview.customerKycAddress[0].addressProof.push(res.uploadFile.URL)
             this.customerKycAddressOne.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[0].addressProof })
+            this.customerKycAddressOne.patchValue({ addressProofFileName: event.target.files[0].name });
           }
           if (type == 'residential') {
             this.data.customerKycReview.customerKycAddress[1].addressProof.push(res.uploadFile.URL)
             this.customerKycAddressTwo.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[1].addressProof })
-            console.log(this.customerKycPersonal.value)
+            this.customerKycAddressTwo.patchValue({ addressProofFileName: event.target.files[0].name });
           }
           if (type == "signature") {
             this.data.customerKycReview.customerKycPersonal.signatureProof = res.uploadFile.URL;
             this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.URL })
-            console.log(this.customerKycPersonal.value)
+            this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
             this.ref.markForCheck();
           }
           if (type == 'passbook') {
             this.data.customerKycReview.customerKycBank[0].passbookProof.push(res.uploadFile.URL)
             this.customerKycBank.patchValue({ passbookProof: this.data.customerKycReview.customerKycBank[0].passbookProof })
+            this.customerKycBank.patchValue({ passbookProofFileName: event.target.files[0].name });
           }
           this.ref.detectChanges();
           // console.log(this.addressControls)
