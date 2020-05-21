@@ -1,25 +1,37 @@
 // Angular
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterModule, Routes } from "@angular/router";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 // NGRX
 
-
 // Translate
-import { TranslateModule } from '@ngx-translate/core';
-import { PartialsModule } from '../../partials/partials.module';
+import { TranslateModule } from "@ngx-translate/core";
+import { PartialsModule } from "../../partials/partials.module";
 // Services
-import { HttpUtilsService, TypesUtilsService, InterceptService, LayoutUtilsService } from '../../../core/_base/crud';
+import {
+	HttpUtilsService,
+	TypesUtilsService,
+	InterceptService,
+	LayoutUtilsService,
+} from "../../../core/_base/crud";
 // Shared
-import { ActionNotificationComponent, DeleteEntityDialogComponent } from '../../partials/content/crud';
+import {
+	ActionNotificationComponent,
+	DeleteEntityDialogComponent,
+} from "../../partials/content/crud";
 // Material
-import { AngularMaterialModule } from '../angular-material/angular-material.module';
+import { AngularMaterialModule } from "../angular-material/angular-material.module";
 // Module
 import { CoreModule } from "../../../core/core.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MAT_DIALOG_DEFAULT_OPTIONS,
+	MAT_DIALOG_DATA,
+	MatDialogRef,
+} from "@angular/material/dialog";
 
 // Components
 import { EMIManagementComponent } from './emi-management.component';
@@ -49,74 +61,79 @@ import { RefundManagementComponent } from './order-management/refund-management/
 import { RefundManagementEditComponent } from './order-management/refund-management/refund-management-edit/refund-management-edit.component';
 import { UserDetailsListComponent } from './user-details/user-details-list/user-details-list.component';
 import { ReportsComponent } from './reports/reports.component';
+import { RefundManagementViewComponent } from "./order-management/refund-management/refund-management-view/refund-management-view.component";
 
 const routes: Routes = [
 	{
-		path: '',
+		path: "",
 
 		component: EMIManagementComponent,
 
 		children: [
-			{ path: '', redirectTo: 'products', pathMatch: 'full' },
+			{ path: "", redirectTo: "products", pathMatch: "full" },
 			{
-				path: 'products',
-				component: ProductListComponent
+				path: "products",
+				component: ProductListComponent,
 			},
 			{
-				path: 'category',
-				component: CategoryListComponent
+				path: "category",
+				component: CategoryListComponent,
 			},
 			{
-				path: 'sub-category',
-				component: SubCategoryListComponent
+				path: "sub-category",
+				component: SubCategoryListComponent,
 			},
 			{
-				path: 'bulk-upload-product',
-				component: BulkUploadProductComponent
+				path: "bulk-upload-product",
+				component: BulkUploadProductComponent,
 			},
 			{
-				path: 'bulk-edit-product',
-				component: BulkUploadProductComponent
+				path: "bulk-edit-product",
+				component: BulkUploadProductComponent,
 			},
 			{
-				path: 'upload-design',
-				component: UploadDesignComponent
+				path: "upload-design",
+				component: UploadDesignComponent,
 			},
 			{
-				path: 'bulk-upload-report',
-				component: BulkUploadReportListComponent
+				path: "bulk-upload-report",
+				component: BulkUploadReportListComponent,
 			},
 			{
-				path: 'wallet-price',
-				component: WalletPriceListComponent
+				path: "wallet-price",
+				component: WalletPriceListComponent,
 			},
 			{
-				path: 'admin-log',
-				component: AdminLogListComponent
+				path: "admin-log",
+				component: AdminLogListComponent,
 			},
 			{
-				path: 'logistic-partner',
-				component: ListLogisticPartnerComponent
+				path: "logistic-partner",
+				component: ListLogisticPartnerComponent,
 			},
 			{
-				path: 'order-details',
-				component: OrderDetailsListComponent
+				path: "order-details",
+				component: OrderDetailsListComponent,
 			},
 			{
-				path: 'order-details/edit-order-details/:id',
-				component: OrderDetailsEditComponent
+				path: "order-details/edit-order-details/:id",
+				component: OrderDetailsEditComponent,
 			},
 			{
-				path: 'cancel-order-details',
-				component: CancelOrderDetailsListComponent
+				path: "cancel-order-details",
+				component: CancelOrderDetailsListComponent,
 			},
 			{
-				path: 'deposit-details',
-				component: DepositDetailsListComponent
+				path: "deposit-details",
+				component: DepositDetailsListComponent,
 			},
 			{
-				path: 'emi-details',
-				component: EmiDetailsListComponent
+				path: "emi-details",
+				component: EmiDetailsListComponent,
+			},
+			{
+				path: "refund-management",
+				component: RefundManagementComponent,
 			},
 			{
 				path: 'refund-management',
@@ -130,8 +147,12 @@ const routes: Routes = [
 				path: 'reports',
 				component: ReportsComponent
 			},
-		]
-	}
+			{
+				path: "refund-management/edit-refund/:id",
+				component: RefundManagementEditComponent,
+			},
+		],
+	},
 ];
 
 @NgModule({
@@ -146,31 +167,30 @@ const routes: Routes = [
 		AngularMaterialModule,
 		CoreModule,
 		NgbModule,
-		MatDialogModule
-
+		MatDialogModule,
 	],
 	providers: [
 		InterceptService,
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: InterceptService,
-			multi: true
+			multi: true,
 		},
 		{
 			provide: MAT_DIALOG_DEFAULT_OPTIONS,
 			useValue: {
 				hasBackdrop: true,
-				panelClass: 'kt-mat-dialog-container__wrapper',
-				height: 'auto',
-				width: '600px'
-			}
+				panelClass: "kt-mat-dialog-container__wrapper",
+				height: "auto",
+				width: "600px",
+			},
 		},
 		{ provide: MAT_DIALOG_DATA, useValue: {} },
 		{ provide: MatDialogRef, useValue: {} },
 
 		HttpUtilsService,
 		TypesUtilsService,
-		LayoutUtilsService
+		LayoutUtilsService,
 	],
 	entryComponents: [
 		ActionNotificationComponent,
@@ -182,7 +202,7 @@ const routes: Routes = [
 		AddLogisticPartnerComponent,
 		OrderDetailsViewComponent,
 		EmiDetailsViewComponent,
-		RefundManagementEditComponent
+		RefundManagementViewComponent,
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -211,7 +231,8 @@ const routes: Routes = [
 		RefundManagementComponent,
 		RefundManagementEditComponent,
 		UserDetailsListComponent,
-		ReportsComponent
-	]
+		ReportsComponent,
+		RefundManagementViewComponent,
+	],
 })
 export class EMIManagementModule { }

@@ -90,7 +90,7 @@ export class FilterComponent implements OnInit, OnChanges {
 		MaxValueFilter: "",
 		SortFilter: [],
 	};
-	filterData: any;
+	filterData: any = {};
 	// filterData = {
 	//   categoryId: '',
 	//   subCategoryId: '',
@@ -622,31 +622,15 @@ export class FilterComponent implements OnInit, OnChanges {
 
 	closeDropdown() {
 		this.clearData = true;
-		this.filterForm.controls["ToDate"].clearValidators();
-		this.filterForm.controls["ToDate"].updateValueAndValidity();
 		this.filterForm.reset();
 		this.showError = false;
 		this.viewLoading = false;
 		this.dropdown.close();
 		this.filterData = {
-			CountryId: "",
-			StateId: "",
-			CityId: "",
-			LocalityId: "",
-			StatusIds: "",
-			leaveStatusIds: "",
-			SourceIds: "",
-			StageIds: "",
-			TypeIds: "",
-			TerritoryIds: "",
-			TagIds: "",
-			UserIds: "",
-			Category: "",
-			FromDate: "",
-			ToDate: "",
-			MaxValue: "",
-			MinValue: "",
-			Sort: "",
+			categoryId: "",
+			subCategoryId: "",
+			priceFrom: "",
+			priceTo: "",
 		};
 		this.stateList = [];
 		this.cityList = [];
