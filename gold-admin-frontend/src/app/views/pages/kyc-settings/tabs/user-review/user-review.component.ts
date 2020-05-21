@@ -1,10 +1,11 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, Inject, ElementRef } from '@angular/core';
 import { UserAddressService, UserBankService, UserPersonalService, UserDetailsService } from '../../../../../core/kyc-settings';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, filter, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { AppliedKycService } from '../../../../../core/applied-kyc/services/applied-kyc.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'kt-user-review',
@@ -145,6 +146,8 @@ export class UserReviewComponent implements OnInit {
   occupations = [];
 
   data: any = {};
+  viewOnly = true;
+
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -154,8 +157,15 @@ export class UserReviewComponent implements OnInit {
     private userDetailsService: UserDetailsService,
     private toastr: ToastrService,
     private userPersonalService: UserPersonalService,
-    private appliedKycService: AppliedKycService, ) {
-
+    private appliedKycService: AppliedKycService,
+    public dialogRef: MatDialogRef<UserReviewComponent>,
+    @Inject(MAT_DIALOG_DATA) public modalData: any,
+    private ele: ElementRef
+  ) {
+    if (this.modalData) {
+      console.log(this.data)
+      this.viewOnly = false;
+    }
   }
 
   ngOnInit() {
@@ -173,7 +183,14 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.initForm();
+    if (!this.viewOnly) {
+      this.reviewForm.disable();
+      this.customerKycPersonal.disable();
+      this.customerKycAddressOne.disable();
+      this.customerKycAddressTwo.disable();
+      this.customerKycBank.disable();
 
+    }
     this.getStates();
     this.getIdentityType();
     this.getAddressProofType();
@@ -434,6 +451,10 @@ export class UserReviewComponent implements OnInit {
 
   get controls() {
     return this.reviewForm.controls;
+  }
+
+  action() {
+    this.dialogRef.close();
   }
 
 }

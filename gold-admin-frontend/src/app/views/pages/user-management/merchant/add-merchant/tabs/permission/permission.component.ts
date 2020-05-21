@@ -29,6 +29,7 @@ export class PermissionComponent implements OnInit, AfterViewInit {
   userId: number = null;
   isEdit: boolean = true;
   lengthOf = { category: 0, subCategory: 0, product: 0 }
+  editMerchant = false;
 
   constructor(
     private merchantService: MerchantService,
@@ -46,6 +47,7 @@ export class PermissionComponent implements OnInit, AfterViewInit {
     var id = this.rout.snapshot.params.id;
     if (id) {
       this.userId = id;
+      this.editMerchant = true;
     }
     this.getData()
   }

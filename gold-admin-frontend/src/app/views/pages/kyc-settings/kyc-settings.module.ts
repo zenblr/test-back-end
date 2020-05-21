@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router'
-import { ReactiveFormsModule,FormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 
 // component
 import { KycSettingsComponent } from './kyc-settings.component'
@@ -36,7 +36,6 @@ const rout: Routes = [
     UserAddressComponent,
     UserPersonalComponent,
     UserBanksComponent,
-    UserReviewComponent,
   ],
   imports: [
     CommonModule,

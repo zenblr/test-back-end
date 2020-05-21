@@ -17,6 +17,7 @@ import { StoreDatasource, StoreService } from '../../../../../core/user-manageme
 import { CreateStoreComponent } from '../create-store/create-store.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 
 @Component({
 	selector: 'kt-store-list',
@@ -26,7 +27,7 @@ import { ToastrService } from 'ngx-toastr';
 export class StoreListComponent implements OnInit {
 	// Table fields
 	dataSource: StoreDatasource;
-	displayedColumns = ['storeId', 'merchantName', 'action'];
+	displayedColumns = ['storeId', 'merchantName'];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
 
@@ -34,6 +35,8 @@ export class StoreListComponent implements OnInit {
 	private subscriptions: Subscription[] = [];
 	private destroy$: Subject<any> = new Subject()
 	storeResult: any;
+	searchValue: any;
+	unsubscribeSearch$: Subject<any> = new Subject()
 
 	/**
 	 * Component constructor
@@ -49,7 +52,8 @@ export class StoreListComponent implements OnInit {
 		private layoutUtilsService: LayoutUtilsService,
 		private storeService: StoreService,
 		private router: Router,
-		private toast: ToastrService) {
+		private toast: ToastrService,
+		private dataTableService: DataTableService) {
 		this.storeService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
 			if (res) {
 				this.createStore('add')
@@ -66,6 +70,12 @@ export class StoreListComponent implements OnInit {
 	 */
 	ngOnInit() {
 
+		const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadStoreListStore();
+      });
 
 		// Init DataSource
 		this.dataSource = new StoreDatasource(this.storeService);
@@ -79,9 +89,9 @@ export class StoreListComponent implements OnInit {
 		this.subscriptions.push(entitiesSubscription);
 
 		// First load
-		of(undefined).pipe(take(1), delay(1000)).subscribe(() => { // Remove this line, just loading imitation
-			this.loadStoreListStore();
-		});
+			// this.loadStoreListStore();
+		this.dataSource.loadRoles('', 1, 25);
+
 	}
 
 	/**
@@ -102,7 +112,7 @@ export class StoreListComponent implements OnInit {
 		let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
 		let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-		this.dataSource.loadRoles('', from, to);
+		this.dataSource.loadRoles(this.searchValue, from, to);
 	}
 
 
