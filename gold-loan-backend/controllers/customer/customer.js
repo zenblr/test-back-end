@@ -231,7 +231,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     stateId = req.query.stateId.split(",");
     query.stateId = stateId;
   }
-  
+
   const searchQuery = {
     [Op.and]: [query, {
       [Op.or]: {
@@ -398,7 +398,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
     stateId = req.query.stateId.split(",");
     query.stateId = stateId;
   }
-  
+
   const searchQuery = {
     [Op.and]: [query, {
       [Op.or]: {
@@ -466,7 +466,14 @@ exports.getsingleCustomerManagement = async (req, res) => {
       },
       {
         model: models.customerKycAddressDetail,
-        as: 'customerKycAddress'
+        as: 'customerKycAddress',
+        include: [{
+          model: models.state,
+          as: "state"
+        }, {
+          model: models.city,
+          as: "city"
+        }]
       },
       {
         model: models.customerKycBankDetail,
@@ -479,6 +486,9 @@ exports.getsingleCustomerManagement = async (req, res) => {
         include: [{
           model: models.customerFinalLoan,
           as: 'finalLoan'
+        }, {
+          model: models.customerLoanNomineeDetail,
+          as: 'loanNomineeDetail'
         }]
       }
     ]
