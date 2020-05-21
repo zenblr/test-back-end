@@ -35,7 +35,7 @@ export class StoreListComponent implements OnInit {
 	private subscriptions: Subscription[] = [];
 	private destroy$: Subject<any> = new Subject()
 	storeResult: any;
-	searchValue: any;
+	searchValue = '';
 	unsubscribeSearch$: Subject<any> = new Subject()
 
 	/**
@@ -70,12 +70,17 @@ export class StoreListComponent implements OnInit {
 	 */
 	ngOnInit() {
 
+		const paginatorSubscriptions = merge(this.paginator.page).pipe(
+			tap(() => this.loadStoreListStore())
+		).subscribe();
+		this.subscriptions.push(paginatorSubscriptions);
+
 		const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
-      .subscribe(res => {
-        this.searchValue = res;
-        this.paginator.pageIndex = 0;
-        this.loadStoreListStore();
-      });
+			.subscribe(res => {
+				this.searchValue = res;
+				this.paginator.pageIndex = 0;
+				this.loadStoreListStore();
+			});
 
 		// Init DataSource
 		this.dataSource = new StoreDatasource(this.storeService);
@@ -89,7 +94,7 @@ export class StoreListComponent implements OnInit {
 		this.subscriptions.push(entitiesSubscription);
 
 		// First load
-			// this.loadStoreListStore();
+		// this.loadStoreListStore();
 		this.dataSource.loadRoles('', 1, 25);
 
 	}

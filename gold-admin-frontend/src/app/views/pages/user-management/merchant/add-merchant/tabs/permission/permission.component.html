@@ -116,7 +116,7 @@
     </div>
     <div class="row">
       <div class="col-12 p-2">
-        <kt-modal-footer [value]="'create'" (action)="submit($event)"></kt-modal-footer>
+        <kt-modal-footer [value]="editMerchant ? 'edit' : 'create'" (action)="submit($event)"></kt-modal-footer>
       </div>
     </div>
   </kt-portlet-body>

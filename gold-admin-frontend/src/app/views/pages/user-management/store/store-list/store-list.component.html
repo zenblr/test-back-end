@@ -3,7 +3,7 @@
 	<kt-portlet-body>
 		<!-- MATERIAL TABLE | Binded to datasources -->
 		<!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
-		<div class="mat-table__wrapper">
+		<div class="mat-table__wrapper" [ngStyle]="{ 'overflow-x': 'hidden' }">
 			<mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
 
