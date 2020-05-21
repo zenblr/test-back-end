@@ -408,7 +408,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
         model: models.customerFinalLoan,
         as: 'finalLoan',
         where: { isActive: true },
-        attributes: ['loanStartDate'],
+        attributes: ['loanStartDate','finalLoanAmount'],
         include: [{
             model: models.scheme,
             as: 'scheme',
