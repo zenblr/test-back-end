@@ -231,7 +231,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     stateId = req.query.stateId.split(",");
     query.stateId = stateId;
   }
-
+  
   const searchQuery = {
     [Op.and]: [query, {
       [Op.or]: {
