@@ -46,7 +46,8 @@ export class UserPersonalComponent implements OnInit {
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
       signatureProof: ['', [Validators.required]],
-      occupationId: [''],
+      signatureProofFileName: ['', [Validators.required]],
+      occupationId: [null],
       dateOfBirth: ['', [Validators.required]],
     })
   }
@@ -69,12 +70,16 @@ export class UserPersonalComponent implements OnInit {
         map(res => {
           if (type == "profile") {
             this.profile = res.uploadFile.URL;
-            this.personalForm.get('profileImage').patchValue(event.target.files[0].name);
+            // this.personalForm.get('profileImage').patchValue(event.target.files[0].name);
+            this.personalForm.get('profileImage').patchValue(this.profile);
+
           } else if (type == "signature") {
             this.signatureJSON = { url: null, isImage: false };
             this.signatureJSON.url = res.uploadFile.URL;
             this.signatureJSON.isImage = true;
-            this.personalForm.get('signatureProof').patchValue(event.target.files[0].name);
+            this.personalForm.get('signatureProofFileName').patchValue(event.target.files[0].name);
+            this.personalForm.get('signatureProof').patchValue(this.signatureJSON.url);
+
             this.ref.detectChanges();
           }
 
@@ -104,24 +109,19 @@ export class UserPersonalComponent implements OnInit {
       return
     }
 
-    this.personalForm.get('profileImage').patchValue(this.profile);
-    this.personalForm.get('signatureProof').patchValue(this.signatureJSON.url);
-
-    // this.personalForm.enable()
     const basicForm = this.personalForm.value;
     this.userPersonalService.personalDetails(basicForm).pipe(
       map(res => {
-        console.log(res);
+        // console.log(res);
         if (res) {
           this.next.emit(true);
         }
       }),
       finalize(() => {
-        this.personalForm.get('signatureProof').patchValue(this.file.name);
+        // this.personalForm.get('signatureProof').patchValue(this.file.name);
       })
     ).subscribe();
 
-    // this.next.emit(true);
   }
 
   get controls() {

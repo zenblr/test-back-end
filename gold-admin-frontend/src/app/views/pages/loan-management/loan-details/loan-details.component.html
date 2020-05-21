@@ -2,7 +2,7 @@
 
     <kt-portlet-body>
 
-        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
+        <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="customerID">
@@ -21,7 +21,7 @@
                     <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amount">
-                    <mat-header-cell *matHeaderCellDef>Loan Amount.</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
                 </ng-container>
 
@@ -34,7 +34,7 @@
                     <mat-header-cell *matHeaderCellDef>Loan Tenure</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.finalLoan.tenure}} Months</mat-cell>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="interestRestDays">
                     <mat-header-cell *matHeaderCellDef>Interest Rest Days</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
@@ -51,22 +51,22 @@
                 <ng-container matColumnDef="endDate">
                     <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                            {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
+                        {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let loan"> 
+                    <mat-cell *matCellDef="let loan">
                         <!-- <div style="display: contents" class="kt-pointer" > -->
-                            <span (click)="viewLoan(loan)" class=" font-weight-bold">View Loan </span> 
+                        <span (click)="viewLoan(loan)" class=" font-weight-bold">View Loan </span>
                         <!-- </div> -->
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="new">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let loan"> 
+                    <mat-cell *matCellDef="let loan">
                         <!-- <div style="display: contents" class="kt-pointer" > -->
-                            <button (click)="new(loan)" class="addmore">Add New Loan</button>                                                        
+                        <button (click)="new(loan)" class="addmore">Add New Loan</button>
                         <!-- </div> -->
                     </mat-cell>
                 </ng-container>
