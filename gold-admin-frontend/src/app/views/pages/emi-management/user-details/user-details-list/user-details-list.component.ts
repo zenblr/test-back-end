@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { LayoutUtilsService, QueryParamsModel } from '../../../../../../core/_base/crud';
+import { LayoutUtilsService, QueryParamsModel } from '../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
-import { UserDetailsDatasource, UserDetailsService, UserDetailsModel } from '../../../../../../core/emi-management/user-management';
+import { UserDetailsDatasource, UserDetailsService, UserDetailsModel } from '../../../../../core/emi-management/user-details';
 import { Subscription, merge, fromEvent, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
-import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
-import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
+import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 
 @Component({
   selector: 'kt-user-details-list',
@@ -16,7 +16,8 @@ export class UserDetailsListComponent implements OnInit {
   // Table fields
   dataSource: UserDetailsDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ['fileName', 'userName', 'time', 'status', 'action'];
+  displayedColumns = ['storeId', 'vkMobileNumber', 'centerState', 'centerCity', 'userId', 'userEmail',
+    'fullName', 'mobileNumber', 'state', 'city', 'pincode', 'panCardNumber', 'userFrom', 'createdDate'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
@@ -32,9 +33,15 @@ export class UserDetailsListComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private bulkUploadReportService: UserDetailsService,
+    private userDetailsService: UserDetailsService,
     private dataTableService: DataTableService
-  ) { }
+  ) {
+    this.userDetailsService.exportExcel$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res) {
+        this.downloadReport();
+      }
+    });
+  }
 
   ngOnInit() {
     // If the user changes the sort order, reset back to the first page.
@@ -74,7 +81,7 @@ export class UserDetailsListComponent implements OnInit {
       });
 
     // Init DataSource
-    this.dataSource = new UserDetailsDatasource(this.bulkUploadReportService);
+    this.dataSource = new UserDetailsDatasource(this.userDetailsService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -83,17 +90,6 @@ export class UserDetailsListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
     this.dataSource.loadUserDetails(1, 25, this.searchValue);
-  }
-
-	/**
-	 * On Destroy
-	 */
-  ngOnDestroy() {
-    this.subscriptions.forEach(el => el.unsubscribe());
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.unsubscribeSearch$.next();
-    this.unsubscribeSearch$.complete();
   }
 
   loadUserDetailsPage() {
@@ -113,5 +109,21 @@ export class UserDetailsListComponent implements OnInit {
     const searchText: string = this.searchInput.nativeElement.value;
     filter.title = searchText;
     return filter;
+  }
+
+  downloadReport() {
+    this.userDetailsService.reportExport().subscribe();
+    this.userDetailsService.exportExcel.next(false);
+  }
+
+  /**
+ * On Destroy
+ */
+  ngOnDestroy() {
+    this.subscriptions.forEach(el => el.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 }

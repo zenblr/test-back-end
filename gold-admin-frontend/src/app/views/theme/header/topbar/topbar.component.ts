@@ -24,6 +24,7 @@ import { LogisticPartnerService } from '../../../../core/emi-management/logistic
 import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
 import { CancelOrderDetailsService, OrderDetailsService, DepositDetailsService, EmiDetailsService } from '../../../../core/emi-management/order-management';
 import { MonthlyService } from '../../../../core/repayment/services/monthly.service';
+import { UserDetailsService } from '../../../../core/emi-management/user-details';
 
 @Component({
 	selector: 'kt-topbar',
@@ -85,7 +86,8 @@ export class TopbarComponent implements OnInit {
 		private cancelOrderDetailsService: CancelOrderDetailsService,
 		private depositDetailsService: DepositDetailsService,
 		private emiDetailsService: EmiDetailsService,
-		private monthlyService: MonthlyService) {
+		private monthlyService: MonthlyService,
+		private userDetailsService: UserDetailsService,) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -301,6 +303,11 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = '500px';
 			// this.showfilter = true;
 		}
+		if (this.path == 'users') {
+			this.showInput = true;
+			this.value1 = 'Export';
+			this.type1 = 'button';
+		}
 		if (location.href.includes('edit-order-details')) {
 			this.value1 = 'Print Performa';
 			this.type1 = 'button';
@@ -379,6 +386,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'emi-details') {
 			this.emiDetailsService.exportExcel.next(true);
+		}
+		if (this.path == 'users') {
+			this.userDetailsService.exportExcel.next(true);
 		}
 	}
 

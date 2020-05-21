@@ -47,7 +47,7 @@ import { EmiDetailsViewComponent } from './order-management/emi-details/emi-deta
 import { OrderDetailsEditComponent } from './order-management/order-details/order-details-edit/order-details-edit.component';
 import { RefundManagementComponent } from './order-management/refund-management/refund-management-list/refund-management.component';
 import { RefundManagementEditComponent } from './order-management/refund-management/refund-management-edit/refund-management-edit.component';
-import { UserDetailsListComponent } from './user-management/user-details/user-details-list/user-details-list.component';
+import { UserDetailsListComponent } from './user-details/user-details-list/user-details-list.component';
 import { ReportsComponent } from './reports/reports.component';
 
 const routes: Routes = [

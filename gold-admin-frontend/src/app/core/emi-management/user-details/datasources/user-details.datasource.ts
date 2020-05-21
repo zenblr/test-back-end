@@ -1,7 +1,7 @@
 import { catchError, finalize } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
-import { BaseDataSource } from '../../../../_base/crud';
+import { BaseDataSource } from '../../../_base/crud';
 import { UserDetailsService } from '../../user-details/services/user-details.service';
 
 export class UserDetailsDatasource extends BaseDataSource {
