@@ -67,6 +67,11 @@ export class StoreListComponent implements OnInit {
 	ngOnInit() {
 
 
+		const paginatorSubscriptions = merge(this.paginator.page).pipe(
+			tap(() => this.loadStoreListStore())
+		).subscribe();
+		this.subscriptions.push(paginatorSubscriptions);
+
 		// Init DataSource
 		this.dataSource = new StoreDatasource(this.storeService);
 		const entitiesSubscription = this.dataSource.entitySubject.pipe(
@@ -102,7 +107,7 @@ export class StoreListComponent implements OnInit {
 		let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
 		let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-		this.dataSource.loadRoles('', from, to);
+		this.dataSource.loadStores('', from, to);
 	}
 
 
