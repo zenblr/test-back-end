@@ -373,7 +373,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
     req.query.from,
     req.query.to
   );
-  let stageId = await models.loanStage.findOne({ where: { name: 'disbursement complete' } })
+  let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
 
   const searchQuery = {
     [Op.or]: {
@@ -430,7 +430,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
 
 exports.getsingleCustomerManagement = async (req, res) => {
   const { customerId } = req.params;
-  let stageId = await models.loanStage.findOne({ where: { name: 'disbursement complete' } })
+  let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
   let singleCustomer = await models.customer.findOne({
     where: { id: customerId },
     include: [

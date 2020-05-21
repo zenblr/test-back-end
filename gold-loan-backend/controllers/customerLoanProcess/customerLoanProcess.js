@@ -506,7 +506,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     let matchStageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
 
     if (loanDetails.loanStageId == matchStageId.id) {
-        let stageId = await models.loanStage.findOne({ where: { name: 'disbursement complete' } })
+        let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
 
         await sequelize.transaction(async (t) => {
             await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
@@ -524,7 +524,7 @@ exports.getLoanDetails = async (req, res, next) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
-    let stageId = await models.loanStage.findOne({ where: { name: 'disbursement complete' } })
+    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
 
     let associateModel = [{
         model: models.customer,
