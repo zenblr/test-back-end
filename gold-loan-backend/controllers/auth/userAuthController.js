@@ -33,13 +33,17 @@ exports.userLogin = async (req, res, next) => {
                 }
             ]
         },
-        include: [{ model: models.role }]
+        include: [{
+            model: models.role
+        }, {
+            model: models.internalBranch
+        }]
     })
 
     if (!checkUser) {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }
-   
+
 
     let userRoleId = await checkUser.roles.map((data) => data.id);
     let roleName = await checkUser.roles.map((data) => data.roleName)
@@ -52,7 +56,7 @@ exports.userLogin = async (req, res, next) => {
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
             roleId: userRoleId,
-            roleName:roleName
+            roleName: roleName
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -102,7 +106,7 @@ exports.userLogin = async (req, res, next) => {
                 },
             ]
         })
-        return res.status(200).json({ message: 'login successful', Token, modules, permissions });
+        return res.status(200).json({ message: 'login successful', Token, modules, permissions, userDetails: checkUser.internalBranches[0] });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
@@ -139,7 +143,11 @@ exports.verifyLoginOtp = async (req, res, next) => {
         let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
         let checkUser = await models.user.findOne({
             where: { id: user.id, isActive: true },
-            include: [{ model: models.role }],
+            include: [{
+                model: models.role
+            }, {
+                model: models.internalBranch
+            }],
             transaction: t
         });
         let roleId = await checkUser.roles.map((data) => data.id);
@@ -173,6 +181,6 @@ exports.verifyLoginOtp = async (req, res, next) => {
         return Token
 
     })
-    return res.status(200).json({ message: 'login successful', token });
+    return res.status(200).json({ message: 'login successful', token, userDetails: checkUser.internalBranches[0] });
 
 }

@@ -34,4 +34,14 @@
         font-size: 12px;
         margin   : 15px auto;
     }
+
+    .position-relative {
+        position: relative;
+
+    }
+    .edit-icon {
+        position: absolute;
+        top: 5px;
+        right: 15px;
+    }
 }

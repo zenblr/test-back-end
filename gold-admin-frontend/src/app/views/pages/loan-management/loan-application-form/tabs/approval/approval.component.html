@@ -18,15 +18,15 @@
                         (click)="approvalOfAppraiser(true,'form')">
                     </div>
                     <div class="col-4 text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' && this.url == 'package-image-upload')}" *ngIf="controls.applicationFormForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' && this.url != 'package-image-upload')}" *ngIf="controls.applicationFormForBM.value" 
                         (click)="approvalOfBM(false,'form')">
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' && this.url == 'package-image-upload')}" *ngIf="!controls.applicationFormForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' && this.url != 'package-image-upload')}" *ngIf="!controls.applicationFormForBM.value" 
                         (click)="approvalOfBM(true,'form')">
                     </div>
                 </div>
                 <div class="row body border-top-bottom">
                     <div class="col-4 form-label">
-                        <label>Gold Value</label>
+                        <label>Gold Valuation</label>
                     </div>
                     <div class="col-4 border text-center" >
                         <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser' && this.url == 'package-image-upload')}" *ngIf="controls.goldValuationForAppraiser.value" 
@@ -36,9 +36,9 @@
 
                     </div>
                     <div class="col-4 text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' && this.url == 'package-image-upload')}" *ngIf="controls.goldValuationForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.url != 'package-image-upload')}" *ngIf="controls.goldValuationForBM.value" 
                         (click)="approvalOfBM(false,'gold')" disabled>
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' && this.url == 'package-image-upload')}" *ngIf="!controls.goldValuationForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.url != 'package-image-upload')}" *ngIf="!controls.goldValuationForBM.value" 
                         (click)="approvalOfBM(true,'gold')" disabled>
 
                     </div>

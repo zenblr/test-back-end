@@ -4,8 +4,9 @@ import { UserAddressService, UserDetailsService } from '../../../../../core/kyc-
 import { ToastrComponent } from '../../../../partials/components';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
-import { MatCheckbox } from '@angular/material';
+import { MatCheckbox, MatDialog } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
+import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 
 @Component({
   selector: 'kt-user-address',
@@ -37,7 +38,8 @@ export class UserAddressComponent implements OnInit {
     private userDetailsService: UserDetailsService,
     private sharedService: SharedService,
     private ref: ChangeDetectorRef,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    public dilaog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -227,5 +229,41 @@ export class UserAddressComponent implements OnInit {
       this.addressControls.at(1)['controls'].addressProof.patchValue('')
     }
   }
+
+  preview(value, formIndex) {
+    let filterImage = []
+    // filterImage = Object.values(this.images)
+    Object.keys(this.images).forEach(res => {
+
+      Array.prototype.push.apply(filterImage, this.images[res]);
+    })
+    console.log(filterImage)
+    var temp = []
+    temp = filterImage.filter(el => {
+      return el != ''
+    })
+    let index = temp.indexOf(value)
+    this.dilaog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: temp,
+        index: index
+      },
+      width: "auto"
+    })
+  }
+
+  // editImages(index, type) {
+
+  //   if (type == 'identityProof') {
+  //     this.images.identityProof.splice(index, 1, );
+  //     this.identityForm.get('identityProof').patchValue('');
+  //   } else if (type == 'residential') {
+  //     this.images.residential.splice(index, 1);
+  //     this.addressControls.at(0)['controls'].addressProof.patchValue('')
+  //   } else if (type == 'permanent') {
+  //     this.images.permanent.splice(index, 1);
+  //     this.addressControls.at(1)['controls'].addressProof.patchValue('')
+  //   }
+  // }
 
 }

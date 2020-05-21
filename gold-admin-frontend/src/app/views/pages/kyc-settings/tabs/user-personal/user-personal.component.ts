@@ -46,7 +46,7 @@ export class UserPersonalComponent implements OnInit {
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
       signatureProof: ['', [Validators.required]],
-      occupationId: ['', [Validators.required]],
+      occupationId:  ['', [Validators.required]],
       dateOfBirth: ['', [Validators.required]],
     })
   }

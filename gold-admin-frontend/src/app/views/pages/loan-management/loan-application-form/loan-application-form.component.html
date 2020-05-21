@@ -59,8 +59,8 @@
                 <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>
             </div>
         </div>
-        <div class="row " id="packets" >
-            <div class="col packets-height" *ngIf="url == 'package-image-upload'">
+        <div class="row " id="packets" *ngIf="url == 'package-image-upload'">
+            <div class="col packets-height" >
                 <kt-upload-packets></kt-upload-packets>
             </div>
         </div>
