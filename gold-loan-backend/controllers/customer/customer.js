@@ -231,7 +231,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     stateId = req.query.stateId.split(",");
     query.stateId = stateId;
   }
-  
+
   const searchQuery = {
     [Op.and]: [query, {
       [Op.or]: {
@@ -380,6 +380,7 @@ exports.getCustomerUniqueId = async (req, res) => {
 
 
 exports.getAllCustomerForCustomerManagement = async (req, res) => {
+  let { cityId, stateId } = req.query;
 
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
@@ -388,19 +389,31 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
   );
   let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
 
+  let query = {};
+  if (cityId) {
+    cityId = req.query.cityId.split(",");
+    query.cityId = cityId;
+  }
+  if (stateId) {
+    stateId = req.query.stateId.split(",");
+    query.stateId = stateId;
+  }
+  
   const searchQuery = {
-    [Op.or]: {
-      first_name: { [Op.iLike]: search + "%" },
-      last_name: { [Op.iLike]: search + "%" },
-      mobile_number: { [Op.iLike]: search + "%" },
-      pan_card_number: { [Op.iLike]: search + "%" },
-      "$city.name$": {
-        [Op.iLike]: search + "%",
+    [Op.and]: [query, {
+      [Op.or]: {
+        first_name: { [Op.iLike]: search + "%" },
+        last_name: { [Op.iLike]: search + "%" },
+        mobile_number: { [Op.iLike]: search + "%" },
+        pan_card_number: { [Op.iLike]: search + "%" },
+        "$city.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$state.name$": {
+          [Op.iLike]: search + "%",
+        }
       },
-      "$state.name$": {
-        [Op.iLike]: search + "%",
-      }
-    },
+    }],
     isActive: true,
   };
   let includeArray = [{
