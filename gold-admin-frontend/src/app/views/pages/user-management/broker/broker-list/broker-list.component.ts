@@ -74,7 +74,11 @@ export class BrokerListComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.getStatus()
-   
+    const paginatorSubscriptions = merge(this.paginator.page).pipe(
+			tap(() => this.loadBrokerList())
+		)
+			.subscribe();
+		this.subscriptions.push(paginatorSubscriptions);
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(
       takeUntil(this.unsubscribeSearch$))
@@ -111,6 +115,8 @@ export class BrokerListComponent implements OnInit, OnDestroy {
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
   }
+
+  
 
   /**
    * Load Roles List

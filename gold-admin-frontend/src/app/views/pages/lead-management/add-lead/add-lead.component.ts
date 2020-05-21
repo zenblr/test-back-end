@@ -5,10 +5,10 @@ import { DialogData } from '../../material/popups-and-modals/dialog/dialog.compo
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 // services
 import { SharedService } from '../../../../core/shared/services/shared.service';
-import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
 // components
 import { ToastrComponent } from '../../../../views/partials/components/toastr/toastr.component';
 import { map } from 'rxjs/operators';
+import { LeadService } from '../../../../core/lead-management/services/lead.service';
 
 @Component({
   selector: 'kt-add-lead',
@@ -37,14 +37,17 @@ export class AddLeadComponent implements OnInit {
   mobileAlreadyExists = false;
   title: string;
   branches = []
+  details: any;
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private sharedService: SharedService,
     private fb: FormBuilder,
-    private customerManagementService: CustomerManagementService
+    private leadService: LeadService
   ) {
+    this.details = this.sharedService.getDataFromStorage()
+    console.log(this.details)
   }
 
   ngOnInit() {
@@ -88,18 +91,19 @@ export class AddLeadComponent implements OnInit {
     this.leadForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      internalBranchId: ['', Validators.required],
+      internalBranchId: [this.details.userDetails.userInternalBranch.internalBranchId, Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],
       panCardNumber: ['', [Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
-      stateId: ['', [Validators.required]],
-      cityId: ['', [Validators.required]],
+      stateId: [this.details.userDetails.stateId, [Validators.required]],
+      cityId: [this.details.userDetails.cityId, [Validators.required]],
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
       address: this.fb.array([])
     });
+    this.getCities()
   }
 
   setForm() {
@@ -113,7 +117,7 @@ export class AddLeadComponent implements OnInit {
   }
 
   getInternalBranhces() {
-    this.customerManagementService.getInternalBranhces().subscribe(res => {
+    this.leadService.getInternalBranhces().subscribe(res => {
       this.branches = res.data;
     });
   }
@@ -132,7 +136,7 @@ export class AddLeadComponent implements OnInit {
   }
 
   getStatus() {
-    this.customerManagementService.getStatus().pipe(
+    this.leadService.getStatus().pipe(
       map(res => {
         this.status = res;
       })
@@ -140,7 +144,7 @@ export class AddLeadComponent implements OnInit {
   }
 
   getLeadById(id) {
-    this.customerManagementService.getLeadById(id).subscribe(res => {
+    this.leadService.getLeadById(id).subscribe(res => {
       // console.log(res);
       this.leadForm.patchValue(res.singleCustomer);
       this.getCities();
@@ -152,7 +156,7 @@ export class AddLeadComponent implements OnInit {
 
   sendOTP() {
     const mobileNumber = this.controls.mobileNumber.value;
-    this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
+    this.leadService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
         this.mobileAlreadyExists = true;
@@ -173,7 +177,7 @@ export class AddLeadComponent implements OnInit {
       otp: this.controls.otp.value,
       referenceCode: this.controls.referenceCode.value,
     };
-    this.customerManagementService.verifyOtp(params).subscribe(res => {
+    this.leadService.verifyOtp(params).subscribe(res => {
       if (res) {
         this.isMobileVerified = true;
         this.checkforVerfication()
@@ -192,7 +196,7 @@ export class AddLeadComponent implements OnInit {
 
   verifyPAN() {
     const panCardNumber = this.controls.panCardNumber.value;
-    // this.customerManagementService.verifyPAN({ panCardNumber }).subscribe(res => {
+    // this.leadService.verifyPAN({ panCardNumber }).subscribe(res => {
     //   if (res) {
     //     this.isPanVerified = true;
     //   }
@@ -205,7 +209,7 @@ export class AddLeadComponent implements OnInit {
   resendOTP() {
     const mobileNumber = this.controls.mobileNumber.value;
     // use send function OTP for resend OTP
-    this.customerManagementService.sendOtp({ mobileNumber }).subscribe(res => {
+    this.leadService.sendOtp({ mobileNumber }).subscribe(res => {
       if (res) {
         this.otpSent = true;
         this.refCode = res.referenceCode;
@@ -240,7 +244,7 @@ export class AddLeadComponent implements OnInit {
       }
       const leadData = this.leadForm.value;
 
-      this.customerManagementService.addLead(leadData).subscribe(res => {
+      this.leadService.addLead(leadData).subscribe(res => {
         // console.log(res);
         if (res) {
           const msg = 'Lead Added Successfully';
@@ -256,7 +260,7 @@ export class AddLeadComponent implements OnInit {
     } else if (this.data.action == 'edit') {
       const leadData = this.leadForm.value;
       console.log('edit')
-      this.customerManagementService.editLead(this.data.id, leadData).subscribe(res => {
+      this.leadService.editLead(this.data.id, leadData).subscribe(res => {
         // console.log(res);
         if (res) {
           const msg = 'Lead Edited Successfully';

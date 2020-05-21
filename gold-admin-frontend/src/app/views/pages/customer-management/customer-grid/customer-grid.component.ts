@@ -1,41 +1,69 @@
-import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, HostListener, ChangeDetectorRef, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { CustomerManagementService } from '../../../../core/customer-management';
 
 @Component({
   selector: 'kt-customer-grid',
   templateUrl: './customer-grid.component.html',
-  styleUrls: ['./customer-grid.component.scss']
+  styleUrls: ['./customer-grid.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CustomerGridComponent implements OnInit {
+export class CustomerGridComponent implements OnInit, OnChanges {
+
+  @Input() page;
+  @Input() data;
+  @Output() pagination = new EventEmitter
 
   customers: number[] = []
   viewLoading: boolean = false
-  constructor(private ref: ChangeDetectorRef,
+  count: any;
+  constructor(
+    private customerService: CustomerManagementService,
+    private ref: ChangeDetectorRef,
     private router: Router) {
     window.scrollTo(0, 0)
   }
 
   @HostListener('window:scroll', [])
   onWindowScoll() {
+    console.log(Math.floor(this.getScrollXY()[1] + window.innerHeight))
+    if (this.getDocHeight() === Math.floor(this.getScrollXY()[1] + window.innerHeight)) {
+      if(this.count < this.page.to){
+      let data = {
+        from: this.page.from + 20,
+        to: this.page.to + 20
+      }
+      this.pagination.emit(data)
+      }
+    }
+  }
 
-    if (this.getDocHeight() === this.getScrollXY()[1] + window.innerHeight) {
-      this.viewLoading = true
-      setTimeout(() => {
-        let array = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        Array.prototype.push.apply(this.customers, array)
-        console.log(this.customers)
-        this.ref.detectChanges()
-        this.viewLoading = false;
-      }, 5000);
-
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.page) {
+      console.log(this.page)
+    }
+    if (changes.data) {
+      Array.prototype.push.apply(this.customers,changes.data.currentValue)
+      // this.customers.push()
     }
   }
   ngOnInit() {
-    this.customers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    this.customerService.customer$.subscribe(res => {
+      if (res)
+        this.count = res.count
+    })
+    // this.customers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    // console.log(this.customerData)
   }
+
 
   getDocHeight() {
     const D = document;
+    console.log(Math.max(
+      D.body.scrollHeight, D.documentElement.scrollHeight,
+      D.body.offsetHeight, D.documentElement.offsetHeight,
+      D.body.clientHeight, D.documentElement.clientHeight
+    ))
     return Math.max(
       D.body.scrollHeight, D.documentElement.scrollHeight,
       D.body.offsetHeight, D.documentElement.offsetHeight,
@@ -55,6 +83,7 @@ export class CustomerGridComponent implements OnInit {
       scrOfY = document.documentElement.scrollTop;
       scrOfX = document.documentElement.scrollLeft;
     }
+    console.log(scrOfY)
     return [scrOfX, scrOfY];
   }
 

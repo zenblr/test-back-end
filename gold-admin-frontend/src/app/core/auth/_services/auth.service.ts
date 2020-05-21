@@ -52,17 +52,21 @@ export class AuthService {
         return this.http.post<any>(`/api/user/update-password`, { newPassword, referenceCode });
     }
 
-    logout():Observable<any>{
-        return this.http.post<any>(`/api/auth/logout`,{})
+    logout(): Observable<any> {
+        return this.http.post<any>(`/api/auth/logout`, {})
     }
     // checking authentication state
     isLoggedIn() {
-        return !!localStorage.getItem('accessToken');
+        return !!localStorage.getItem('UserDetails');
     }
 
     getToken() {
-        return localStorage.getItem('accessToken');
+        let token = JSON.parse(localStorage.getItem('UserDetails'));
+        if (token)
+            return token.Token
     }
+
+    
 
     getUserByToken(): Observable<User> {
         const userToken = localStorage.getItem(environment.authTokenKey);

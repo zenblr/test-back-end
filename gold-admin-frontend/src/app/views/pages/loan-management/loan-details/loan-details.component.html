@@ -34,7 +34,15 @@
                     <mat-header-cell *matHeaderCellDef>Loan Tenure</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.finalLoan.tenure}} Months</mat-cell>
                 </ng-container>
-
+                
+                <ng-container matColumnDef="interestRestDays">
+                    <mat-header-cell *matHeaderCellDef>Interest Rest Days</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <span *ngIf="loan.finalLoan.paymentFrequency == '30'">Monthly</span>
+                        <span *ngIf="loan.finalLoan.paymentFrequency == '90'">Quarterly</span>
+                        <span *ngIf="loan.finalLoan.paymentFrequency == '180'">Half Yearly</span>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="startDate">
                     <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date : 'mediumDate'}}</mat-cell>
