@@ -96,7 +96,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
     let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
 
     //customerFinalLoan
-    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate } = loanFinalCalculator
 
     //customerPersonal
     let { customerUniqueId, mobileNumber, panCardNumber, startDate } = loanPersonal
@@ -149,7 +149,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
 
         //customerFinalLoan
         await models.customerFinalLoan.create({
-            loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate, createdBy, modifiedBy
+            loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, createdBy, modifiedBy
         }, { transaction: t })
 
         let allOrnmanets = []
@@ -266,8 +266,11 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 as: 'packet',
                 attributes: ['id', 'packetUniqueId'],
             }]
-        },
-        ]
+        }, {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'firstName', 'lastName']
+        }]
     })
 
     return res.status(200).json({ message: 'success', data: customerLoan })
@@ -280,7 +283,7 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
     let modifiedBy = req.userData.id;
 
     //customerFinalLoan
-    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate } = loanFinalCalculator
 
     //customerLoanNominee
     let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
@@ -349,7 +352,7 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
 
         //customerFinalLoan
         await models.customerFinalLoan.update({
-            partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate, modifiedBy
+            partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, modifiedBy
         }, { where: { loanId }, transaction: t })
 
 
