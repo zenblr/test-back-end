@@ -82,6 +82,7 @@ export class StoreListComponent implements OnInit {
 				this.loadStoreListStore();
 			});
 
+
 		// Init DataSource
 		this.dataSource = new StoreDatasource(this.storeService);
 		const entitiesSubscription = this.dataSource.entitySubject.pipe(
@@ -95,7 +96,7 @@ export class StoreListComponent implements OnInit {
 
 		// First load
 		// this.loadStoreListStore();
-		this.dataSource.loadRoles('', 1, 25);
+		this.dataSource.loadStores('', 1, 25);
 
 	}
 
@@ -117,7 +118,7 @@ export class StoreListComponent implements OnInit {
 		let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
 		let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-		this.dataSource.loadRoles(this.searchValue, from, to);
+		this.dataSource.loadStores(this.searchValue, from, to);
 	}
 
 

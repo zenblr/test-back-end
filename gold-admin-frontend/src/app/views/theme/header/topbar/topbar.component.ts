@@ -172,7 +172,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'lead-management') {
 			this.dataSourceHeader()
 			this.value1 = 'Add New Lead';
-			this.showfilter = true;
+			this.showfilter = false;
 			this.filterName = 'leads';
 			this.filterWidth = '900px';
 		}

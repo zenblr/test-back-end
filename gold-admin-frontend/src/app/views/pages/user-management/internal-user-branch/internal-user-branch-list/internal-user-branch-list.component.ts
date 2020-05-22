@@ -71,6 +71,12 @@ export class InternalUserBranchListComponent implements OnInit {
    * On init
    */
   ngOnInit() {
+
+    const paginatorSubscriptions = merge(this.paginator.page).pipe(
+			tap(() => this.loadInternalBranchList())
+		)
+			.subscribe();
+		this.subscriptions.push(paginatorSubscriptions);
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;

@@ -1,32 +1,36 @@
-
 <div class="kt-margin-l-5 kt-margin-r-5 pb-3" *ngIf="cutomerDetails">
     <div class="row">
         <div class="col-12 card">
             <div class="row kt-margin-b-20">
-                <div class="col-6">
+                <div class="col">
                     <div class="row">
-                        <div class="col-2">
-                            <img class="kt-margin-t-15 kt-margin-l-15 profile"
+                        <div class="col">
+                            <img class="kt-margin-t-15 kt-margin-l-50 profile"
                                 [src]="cutomerDetails.customerKycPersonal.profileImage">
                             <!-- <img [src]="customer.image" *ngIf="customer.image != '' || customer.image != null"> -->
                         </div>
-                        <div class="col-3 kt-padding-l-20">
+                        <div class="col kt-padding-l-20">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">Customer ID</div>
                             <div class="text-color font-weight-500">{{cutomerDetails.customerUniqueId}}</div>
                         </div>
-                        <div class="col-4">
+                        <div class="col">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">Customer Name</div>
-                            <div class="text-color font-weight-500">{{cutomerDetails.firstName | titlecase}} {{cutomerDetails.lastName | titlecase}}</div>
+                            <div class="text-color font-weight-500">{{cutomerDetails.firstName | titlecase}}
+                                {{cutomerDetails.lastName | titlecase}}</div>
                         </div>
-                        <div class="col-3">
+                        <div class="col">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">Mobile No.</div>
                             <div class="text-color font-weight-500">{{cutomerDetails.mobileNumber}}</div>
                         </div>
+                        <div class="col">
+                            <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">Pan</div>
+                            <div class="text-color font-weight-500">{{cutomerDetails.panCardNumber}}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <!-- <div class="col-6">
                     <div class="row">
-    
+
                         <div class="col-3">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">Pan</div>
                             <div class="text-color font-weight-500">{{cutomerDetails.panCardNumber}}</div>
@@ -44,24 +48,26 @@
                             <div class="text-color font-weight-500">Brother</div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
             <mat-divider></mat-divider>
             <div class="row kt-margin-t-20 justify-content-around">
                 <div class="col-3 kt-padding-l-60">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Permanent Address</div>
-                    <div class="text-color font-weight-500 kt-margin-b-5" [ngStyle]="{'width':'80%','line-height':'1.5'}">
+                    <div class="text-color font-weight-500 kt-margin-b-5"
+                        [ngStyle]="{'width':'80%','line-height':'1.5'}">
                         {{cutomerDetails.customerKycAddress[0].address | titlecase}}
                         {{cutomerDetails.customerKycAddress[0].city.name}}
                         {{cutomerDetails.customerKycAddress[0].state.name}}
                         {{cutomerDetails.customerKycAddress[0].pinCode}}
                     </div>
-    
+
                 </div>
                 <div class="col-3">
                     <div class="text-gray font-weight-500 kt-margin-b-5">
                         Office Address</div>
-                    <div class="text-color font-weight-500 kt-margin-b-5" [ngStyle]="{'width':'65%','line-height':'1.5'}">
+                    <div class="text-color font-weight-500 kt-margin-b-5"
+                        [ngStyle]="{'width':'65%','line-height':'1.5'}">
                         {{cutomerDetails.customerKycAddress[1].address | titlecase}}
                         {{cutomerDetails.customerKycAddress[1].city.name}}
                         {{cutomerDetails.customerKycAddress[1].state.name}}
@@ -81,7 +87,6 @@
                     <div class="document">
                         <img src="../../../../../assets/media/icons/image-placeholder.png" class=" kt-pointer">
                     </div>
-                    <div class="text-color font-weight-500">123456789</div>
                 </div>
                 <div class="col-2 kt-padding-t-25">
                     <span class="document kt-margin-r-10">
@@ -90,7 +95,6 @@
                     <span class="document ">
                         <img src="../../../../../assets/media/icons/image-placeholder.png" class=" kt-pointer">
                     </span>
-                    <div class="text-color font-weight-500">123456789</div>
                 </div>
             </div>
             <div class="row kt-margin-t-10 kt-padding-b-25 justify-content-around">
@@ -131,14 +135,17 @@
                 <div class="row kt-margin-b-20">
                     <div class="col-6">
                         <div class="text-gray font-weight-500">Start Date</div>
-                        <div class="text-color font-weight-500">{{loan.finalLoan.loanStartDate | date: 'mediumDate'}}</div>
+                        <div class="text-color font-weight-500">{{loan.finalLoan.loanStartDate | date: 'mediumDate'}}
+                        </div>
                     </div>
                     <div class="col-6">
                         <div class="text-gray font-weight-500">End Date</div>
-                        <div class="text-color font-weight-500">{{loan.finalLoan.loanEndDate | date: 'mediumDate'}}</div>
+                        <div class="text-color font-weight-500">{{loan.finalLoan.loanEndDate | date: 'mediumDate'}}
+                        </div>
                     </div>
                 </div>
-                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)">View Details</div>
+                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)">View
+                    Details</div>
             </div>
         </div>
     </div>

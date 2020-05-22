@@ -162,7 +162,7 @@ export class UserReviewComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public modalData: any,
     private ele: ElementRef
   ) {
-    if (this.modalData) {
+    if (this.modalData.action) {
       console.log(this.data)
       this.viewOnly = false;
     }
@@ -457,4 +457,7 @@ export class UserReviewComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  ngOnDestroy(): void {
+    this.appliedKycService.userData.next(undefined)
+  }
 }

@@ -61,6 +61,10 @@ export class MerchantListComponent implements OnInit {
 
   ngOnInit() {
 
+    const paginatorSubscriptions = merge(this.paginator.page).pipe(
+			tap(() => this.loadMerchantList())
+		).subscribe();
+    this.subscriptions.push(paginatorSubscriptions);
     const searchSubscription = this.dataTableService.searchInput$.pipe(
       takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
