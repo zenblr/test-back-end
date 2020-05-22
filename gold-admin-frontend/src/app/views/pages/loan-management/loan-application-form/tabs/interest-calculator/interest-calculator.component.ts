@@ -215,9 +215,10 @@ export class InterestCalculatorComponent implements OnInit {
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      var data = { key: new Date(date.setMonth(date.getMonth() + index)), colJoin: true }
-      this.dateOfPayment.push((data))
+      var data = { key: new Date(date.setMonth(date.getMonth() + index)) }
+      this.dateOfPayment.push(data)
     }
+    console.log(this.dateOfPayment)
   }
 
   get controls() {
