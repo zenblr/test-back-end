@@ -44,7 +44,7 @@
  *             firstName:
  *               type: string
  *             lastName:
- *               tyoe: string
+ *               type: string
  *             mobileNumber:
  *               type: string
  *             panCardNumber:
@@ -94,16 +94,16 @@
  *                  addressProof:
  *                    type: array
  *                    items: 
- *                     type: object
- *                     items:
- *                      type: string
+ *                     type: string
  *                  addressType:
  *                    type: string
  *                    enum: 
  *                     - permanent
  *                     - residential
  *                  addressProofTypeId:
- *                    type: integer                     
+ *                    type: integer    
+ *                  addressProofNumber:
+ *                    type: string                 
  *                  cityId:
  *                    type: integer
  *                  pinCode:
@@ -141,7 +141,7 @@
  *               type: integer
  *             profileImage:
  *               type: string
- *             dateoOfBirth:
+ *             dateOfBirth:
  *               type: string
  *             alternateMobileNumber:
  *               type: string
@@ -157,8 +157,6 @@
  *                 - single
  *                 - married
  *                 - divorced
- *             identityType:
- *               type: integer
  *             occupationId:
  *               type: integer 
  *             spouseName:
@@ -173,7 +171,6 @@
  *           - alternateMobileNumber
  *           - gender
  *           - martialStatus
- *           - occupationId
  *           - spouseName
  *           - sinagtureProof
  *     responses:
@@ -185,14 +182,14 @@
  *   post:
  *     tags:
  *       - Customer Kyc
- *     name: submit customer kyc detail
- *     summary: To submit customer kyc detail
+ *     name: submit customer kyc  bank detail
+ *     summary: To submit customer kyc bank detail
  *     security:
  *       - bearerAuth: []
  *     consumes:
  *       - application/json
  *     parameters:
-  *       - name: body
+ *       - name: body
  *         in: body
  *         schema:
  *           type: object
@@ -216,7 +213,7 @@
  *               type: string
  *             ifscCode:
  *               type: string
- *             passbookProof:
+ *             passBookProof:
  *               type: array
  *               items:
  *                type: string 
@@ -249,6 +246,100 @@
  *         schema:
  *           type: object
  *           properties:
+ *             customerKyc:
+ *              type: object
+ *              properties:
+ *               profileImage:
+ *                type: string
+ *               dateOfBirth:
+ *                type: string
+ *               alernateMobileNumber:
+ *                type: string
+ *               gender:
+ *                type: string
+ *                enum:
+ *                 - m
+ *                 - f
+ *               matrialStatus: 
+ *                type: string
+ *                enum:
+ *                 - single
+ *                 - married
+ *                 - divorced
+ *               occupationId:
+ *                type: integer
+ *               identityTypeId:
+ *                type: integer
+ *               identityProof:
+ *                type: array
+ *                items:
+ *                 type: string
+ *               identityProofNumber:
+ *                type: string
+ *               spouseName:
+ *                type: string
+ *               signatureProof:
+ *                type: string  
+ *             customerKycBank:
+ *                type: object
+ *                properties:
+ *                 id:
+ *                  type: integer
+ *                 customerId:
+ *                  type: integer
+ *                 customerKycId:
+ *                  type: integer
+ *                 bankName:
+ *                  type: string
+ *                 bankBranchName:
+ *                  type: string
+ *                 accountType:
+ *                  type: string
+ *                  enum:
+ *                  - saving
+ *                  - current
+ *                 accountNumber:
+ *                  type: string
+ *                 accountHolderName:
+ *                  type: string
+ *                 ifscCode:
+ *                  type: string
+ *                 passbookProof:
+ *                  type: array
+ *                  items:
+ *                   type: string
+ *             customerKycAddress:
+ *               type: array
+ *               items:
+ *                type: object
+ *                properties:
+ *                   id:
+ *                    type: integer
+ *                   customerId:
+ *                    type: integer
+ *                   customerKycId:
+ *                    type: integer
+ *                   address:
+ *                    type: string
+ *                   addressProof:
+ *                    type: array
+ *                    items:
+ *                      type: string
+ *                   addressType:
+ *                    type: string
+ *                    enum: 
+ *                     - permanent
+ *                     - residential
+ *                   addressProofTypeId:
+ *                    type: integer 
+ *                   addressProofNumber:
+ *                    type: string                    
+ *                   cityId:
+ *                    type: integer
+ *                   pinCode:
+ *                    type: integer
+ *                   stateId:
+ *                    type: integer
  *             customerId:
  *               type: integer
  *             customerKycId:
@@ -260,5 +351,5 @@
  *       200:
  *          description: successful
  *       404:
- *          description: This customer kyc detailes is not filled. 
+ *          description: This customer kyc details is not filled. 
  */

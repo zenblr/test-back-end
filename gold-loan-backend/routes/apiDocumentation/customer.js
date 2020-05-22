@@ -144,6 +144,18 @@
  *       in: "query"
  *       type: "string"
  *       required: true
+ *     - name: "cityId"
+ *       in: "query"
+ *       description: "enter city Id"
+ *       type: "integer"
+ *     - name: "stateId"
+ *       in: "query"
+ *       description: "enter state Id"
+ *       type: "integer"
+ *     - name: "statusId"
+ *       in: "query"
+ *       description: "enter status Id"
+ *       type: "integer"
  *     responses:
  *       200:
  *          description: Success
@@ -247,32 +259,52 @@
  *     responses:
  *       200:
  *          description: success
- * /customer/filter-customer:
+ * /customer/customer-management:
  *  get:
  *     tags:
- *       - Customer Registration
- *     name: read customer by filter
- *     summary: To read customer with filter
+ *       - Customer Management
+ *     name: read customer for customer management
+ *     summary: To read customer for customer management
  *     security:
  *       - bearerAuth: []
  *     consumes:
  *       - application/json
  *     parameters:
- *     - name: "cityId"
+ *     - name: "search"
  *       in: "query"
- *       description: "enter city Id"
- *       type: "integer"
- *     - name: "stateId"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
  *       in: "query"
- *       description: "enter state Id"
- *       type: "integer"
- *     - name: "statusId"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
  *       in: "query"
- *       description: "enter status Id"
- *       type: "integer"
+ *       description: "Pagination ending point"
+ *       type: "string"
  *     responses:
  *       200:
- *          description: success
+ *          description: Success
+ * /customer/customer-management/{customerId}:
+ *   get:
+ *     tags:
+ *       - Customer Management
+ *     summary: To read by Id
+ *     parameters:
+ *     - name: "customerId"
+ *       in: "path"
+ *       description: "Id of customer to read"
+ *       required: true
+ *       type: integer
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
  *       404:
- *          description: data not found
+ *         description: Customer not found
+ * 
+ *  
  */
