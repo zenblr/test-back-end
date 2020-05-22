@@ -46,7 +46,7 @@ export class RolesListComponent implements OnInit, OnDestroy {
 	 * @param layoutUtilsService: LayoutUtilsService
 	 */
 	constructor(
-		
+
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
@@ -68,7 +68,11 @@ export class RolesListComponent implements OnInit, OnDestroy {
 	 * On init
 	 */
 	ngOnInit() {
-	
+
+		const paginatorSubscriptions = merge(this.paginator.page).pipe(
+			tap(() => this.loadRolesList())
+		).subscribe();
+		this.subscriptions.push(paginatorSubscriptions);
 
 		// Init DataSource
 		this.dataSource = new RolesDatasource(this.rolesService);
@@ -130,7 +134,7 @@ export class RolesListComponent implements OnInit, OnDestroy {
 					this.toast.error(err.error.message)
 					throw err
 				})).subscribe()
-			});
+		});
 	}
 
 

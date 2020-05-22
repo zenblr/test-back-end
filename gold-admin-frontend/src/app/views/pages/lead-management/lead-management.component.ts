@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ToastrComponent } from '../../partials/components/toastr/toastr.component';
-import { CustomerManagementDatasource } from '../../../core/customer-management/datasources/customer-management.datasource';
 import { Subscription, merge, Subject } from 'rxjs';
-import { CustomerManagementService } from '../../../core/customer-management/services/customer-management.service';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { AddLeadComponent } from './add-lead/add-lead.component';
 import { DataTableService } from '../../../core/shared/services/data-table.service';
 import { Router } from '@angular/router';
+import { LeadManagementDatasource } from '../../../core/lead-management/datasources/lead.datasources';
+import { LeadService } from '../../../core/lead-management/services/lead.service';
 
 @Component({
   selector: 'kt-lead-management',
@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 })
 export class LeadManagementComponent implements OnInit {
 
-  dataSource: CustomerManagementDatasource;
+  dataSource: LeadManagementDatasource;
   displayedColumns = ['fullName', 'mobile', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kyc', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -35,11 +35,11 @@ export class LeadManagementComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private customerManagementService: CustomerManagementService,
+    private leadService: LeadService,
     private dataTableService: DataTableService,
     private router: Router
   ) {
-    this.customerManagementService.openModal$.pipe(
+    this.leadService.openModal$.pipe(
       map(res => {
         if (res) {
           this.addLead();
@@ -61,7 +61,7 @@ export class LeadManagementComponent implements OnInit {
       });
 
     // Init DataSource
-    this.dataSource = new CustomerManagementDatasource(this.customerManagementService);
+    this.dataSource = new LeadManagementDatasource(this.leadService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -104,7 +104,7 @@ export class LeadManagementComponent implements OnInit {
       if (res) {
         this.loadLeadsPage();
       }
-      this.customerManagementService.openModal.next(false);
+      this.leadService.openModal.next(false);
     });
   }
 

@@ -77,6 +77,10 @@ export class PartnerListComponent implements OnInit {
 	 */
   ngOnInit() {
 
+    const paginatorSubscriptions = merge(this.paginator.page).pipe(
+			tap(() => this.loadPartnersPage())
+		).subscribe();
+    this.subscriptions.push(paginatorSubscriptions);
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {

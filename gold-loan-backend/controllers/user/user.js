@@ -323,6 +323,13 @@ exports.GetInternalUser = async (req, res) => {
 
 exports.getAppraiser = async (req, res, next) => {
 
+    let id = req.userData.id
+    let logedInUser = await models.user.findOne({
+        where: { id },
+        include: [models.internalBranch]
+    })
+    let branchId = logedInUser.internalBranches[0].id
+
     let getAppraiserList = await models.user.findAll({
         where: { isActive: true },
         attributes: ['id', 'firstName', 'lastName'],
@@ -330,6 +337,9 @@ exports.getAppraiser = async (req, res, next) => {
             model: models.role,
             where: { roleName: 'Appraiser' },
             attributes: []
+        }, {
+            model: models.internalBranch,
+            where: { id: branchId }
         }]
     })
 

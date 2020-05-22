@@ -81,7 +81,7 @@ export class AddBrokerComponent implements OnInit {
       userId: [],
     })
 
-    this.controls.imgName.disable()
+    // this.controls.imgName.disable()
   }
 
   get controls() {

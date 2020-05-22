@@ -56,6 +56,7 @@ export class UserAddressComponent implements OnInit {
       customerKycId: [this.customerDetails.customerKycId],
       identityTypeId: ['', [Validators.required]],
       identityProof: ['', [Validators.required]],
+      identityProofFileName: ['', [Validators.required]],
       identityProofNumber: [''],
       address: this.fb.array([
         this.fb.group({
@@ -66,7 +67,8 @@ export class UserAddressComponent implements OnInit {
           stateId: [this.customerDetails.stateId, [Validators.required]],
           cityId: [this.customerDetails.cityId, [Validators.required]],
           pinCode: [this.customerDetails.pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-          addressProof: ['', [Validators.required]]
+          addressProof: ['', [Validators.required]],
+          addressProofFileName: ['', [Validators.required]]
         }),
         this.fb.group({
           addressType: ['residential'],
@@ -76,7 +78,8 @@ export class UserAddressComponent implements OnInit {
           stateId: ['', [Validators.required]],
           cityId: ['', [Validators.required]],
           pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-          addressProof: ['', [Validators.required]]
+          addressProof: ['', [Validators.required]],
+          addressProofFileName: ['', [Validators.required]]
         })
       ])
     });
@@ -110,15 +113,20 @@ export class UserAddressComponent implements OnInit {
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       this.sharedService.uploadFile(this.files).pipe(
         map(res => {
+
+
           if (type == "identityProof") {
             this.images.identityProof.push(res.uploadFile.URL)
-            this.identityForm.get('identityProof').patchValue(event.target.files[0].name);
+            this.identityForm.patchValue({ identityProof: this.images.identityProof });
+            this.identityForm.get('identityProofFileName').patchValue(event.target.files[0].name);
           } if (type == 0) {
             this.images.residential.push(res.uploadFile.URL)
-            this.addressControls.at(0)['controls'].addressProof.patchValue(event.target.files[0].name)
+            this.addressControls.controls[0].patchValue({ addressProof: this.images.residential });
+            this.addressControls.at(0)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
           } if (type == 1) {
             this.images.permanent.push(res.uploadFile.URL)
-            this.addressControls.at(1)['controls'].addressProof.patchValue(event.target.files[0].name)
+            this.addressControls.controls[1].patchValue({ addressProof: this.images.permanent });
+            this.addressControls.at(1)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
           }
           this.ref.detectChanges();
           // console.log(this.addressControls)
@@ -158,18 +166,14 @@ export class UserAddressComponent implements OnInit {
   }
 
   submit() {
-
+    console.log(this.identityForm)
     if (this.identityForm.invalid) {
       this.identityForm.markAllAsTouched()
       return
     }
     this.addressControls.at(1).enable();
 
-    this.identityForm.patchValue({ identityProof: this.images.identityProof });
 
-    this.addressControls.controls[0].patchValue({ addressProof: this.images.residential });
-
-    this.addressControls.controls[1].patchValue({ addressProof: this.images.permanent });
 
     const data = this.identityForm.value;
     console.log(data)
@@ -220,36 +224,36 @@ export class UserAddressComponent implements OnInit {
     // console.log(index, type)
     if (type == 'identityProof') {
       this.images.identityProof.splice(index, 1);
-      this.identityForm.get('identityProof').patchValue('');
+      this.identityForm.get('identityProofFileName').patchValue('');
     } else if (type == 'residential') {
       this.images.residential.splice(index, 1);
-      this.addressControls.at(0)['controls'].addressProof.patchValue('')
+      this.addressControls.at(0)['controls'].addressProofFileName.patchValue('')
     } else if (type == 'permanent') {
       this.images.permanent.splice(index, 1);
-      this.addressControls.at(1)['controls'].addressProof.patchValue('')
+      this.addressControls.at(1)['controls'].addressProofFileName.patchValue('')
     }
   }
 
   preview(value, formIndex) {
-    let filterImage = []
-    // filterImage = Object.values(this.images)
-    Object.keys(this.images).forEach(res => {
+    // let filterImage = []
+    // // filterImage = Object.values(this.images)
+    // Object.keys(this.images).forEach(res => {
 
-      Array.prototype.push.apply(filterImage, this.images[res]);
-    })
-    console.log(filterImage)
-    var temp = []
-    temp = filterImage.filter(el => {
-      return el != ''
-    })
-    let index = temp.indexOf(value)
-    this.dilaog.open(ImagePreviewDialogComponent, {
-      data: {
-        images: temp,
-        index: index
-      },
-      width: "auto"
-    })
+    //   Array.prototype.push.apply(filterImage, this.images[res]);
+    // })
+    // console.log(filterImage)
+    // var temp = []
+    // temp = filterImage.filter(el => {
+    //   return el != ''
+    // })
+    // let index = temp.indexOf(value)
+    // this.dilaog.open(ImagePreviewDialogComponent, {
+    //   data: {
+    //     images: temp,
+    //     index: index
+    //   },
+    //   width: "auto"
+    // })
   }
 
   // editImages(index, type) {

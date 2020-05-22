@@ -1,7 +1,6 @@
-<nav ngbNav #nav="ngbNav" [(activeId)]="active"  class="nav-tabs m-0"
-[ngStyle]="{'border':'0'}">
-<ng-container [ngbNavItem]="1" [disabled] ="disabled[0]">
-    <a ngbNavLink class="tab-link">
+<nav ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs m-0" [ngStyle]="{'border':'0'}">
+    <ng-container [ngbNavItem]="1" [disabled]="disabled[0]">
+        <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
                     1
@@ -16,7 +15,7 @@
         </ng-template>
     </ng-container>
 
-    <ng-container [ngbNavItem]="2" [disabled] ="disabled[1]">
+    <ng-container [ngbNavItem]="2" [disabled]="disabled[1]">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
@@ -32,19 +31,19 @@
         </ng-template>
     </ng-container>
 
-    <ng-container [ngbNavItem]="3" [disabled] ="disabled[2]">
+    <ng-container [ngbNavItem]="3" [disabled]="disabled[2]">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
                     3
                 </div>
-                <p class="step-name">Asign Permission</p>
+                <p class="step-name">Assign Permission</p>
                 <p class="step-details"> Catalog Permission</p>
             </div>
         </a>
 
         <ng-template ngbNavContent>
-           <kt-permission (next)=next($event)></kt-permission>
+            <kt-permission (next)=next($event)></kt-permission>
         </ng-template>
     </ng-container>
 </nav>
