@@ -58,7 +58,7 @@ exports.viewPacket = async (req, res, next) => {
         required: false,
         as: 'customerLoan',
         where: { isActive: true },
-        attributes:['id','loanUniqueId']
+        attributes: ['id', 'loanUniqueId']
     }];
 
     let packetDetails = await models.packet.findAll({
@@ -87,7 +87,7 @@ exports.availablePacket = async (req, res, next) => {
         where: { isActive: true, packetAssigned: false },
     });
     if (availablePacketDetails.length === 0) {
-        res.status(404).json({ message: 'no packet details found' });
+        res.status(200).json({ message: 'no packet details found', data: [] });
     } else {
         res.status(200).json({ message: 'avalable packet details fetch successfully', data: availablePacketDetails });
     }
