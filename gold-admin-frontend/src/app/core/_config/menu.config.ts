@@ -377,25 +377,25 @@ export class MenuConfig {
 					],
 				},
 				{
-					title: 'User Management',
+					title: "User Management",
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
+					icon: "flaticon2-architecture-and-city",
 					submenu: [
 						{
-							title: 'User Details',
-							page: '/emi-management/users',
+							title: "User Details",
+							page: "/emi-management/users",
 						},
-					]
+					],
 				},
 				{
-					title: 'Reports',
+					title: "Reports",
 					root: true,
-					icon: 'flaticon2-download-2',
-					page: '/emi-management/reports',
+					icon: "flaticon2-download-2",
+					page: "/emi-management/reports",
 				},
 				{
-					title: 'Back',
-					icon: 'flaticon-logout',
+					title: "Back",
+					icon: "flaticon-logout",
 					root: true,
 					page: "/dashboard",
 				},

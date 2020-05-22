@@ -20,29 +20,10 @@
               <div class="form-group kt-form__group row">
                 <div class="col-12 kt-margin-bottom-20-mobile">
                   <div class="row pb-3">
-                    <!-- <div class="col-6">
-                      <label>By Category</label>
-                      <select class="form-control" name="categoryId" formControlName="categoryId">
-                        <option value="" [selected]="true">Select Category</option>
-                        <option *ngFor="let item of categoryList" [value]="item?.id">
-                          {{item?.categoryName}}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="col-6">
-                      <label>By Sub-Category</label>
-                      <select class="form-control" name="subCategoryId" formControlName="subCategoryId">
-                        <option value="" [selected]="true">Select Sub-Category</option>
-                        <option *ngFor="let item of subCategoryList" [value]="item?.id">
-                          {{item?.subCategoryName}}
-                        </option>
-                      </select>
-                    </div> -->
-
                     <div class="col-6">
                       <label>By Category</label>
                       <ng-select [items]="categoryList" [multiple]="true" bindLabel="categoryName"
-                        [selectableGroup]="true" [closeOnSelect]="false" bindValue="id" formControlName="categoryId">
+                        [selectableGroup]="true" [closeOnSelect]="false" bindValue="id" formControlName="multiSelect1">
                         <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
                             [ngModelOptions]="{ standalone : true }" />
@@ -60,7 +41,7 @@
                     <div class="col-6">
                       <label>By Sub-Category</label>
                       <ng-select [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
-                        [selectableGroup]="true" [closeOnSelect]="false" bindValue="id" formControlName="subCategoryId">
+                        [selectableGroup]="true" [closeOnSelect]="false" bindValue="id" formControlName="multiSelect2">
                         <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
                             [ngModelOptions]="{ standalone : true }" />
@@ -102,7 +83,7 @@
             <div class="row">
               <div class="col">
                 <label>By Location</label>
-                <!-- <select class="form-control" name="categoryId">
+                <!-- <select class="form-control" name="multiSelect1">
                   <option value="" [selected]="true">Select State</option>
                   <option *ngFor="let item of states" [value]="item?.id">
                     {{item?.name}}
@@ -139,7 +120,7 @@
               </div>
               <div class="col">
                 <label style="visibility: hidden;">nostatus</label>
-                <select class="form-control" name="categoryId">
+                <select class="form-control" name="multiSelect1">
                   <option value="" [selected]="true">Select City</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
                     {{item?.categoryName}}
@@ -148,7 +129,7 @@
               </div>
               <div class="col">
                 <label>By Status</label>
-                <select class="form-control" name="categoryId">
+                <select class="form-control" name="multiSelect1">
                   <option value="" [selected]="true">Select Category</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
                     {{item?.categoryName}}
@@ -170,15 +151,25 @@
               <div class="form-group kt-form__group row">
                 <div class="col-12 kt-margin-bottom-20-mobile">
                   <div class="row">
-                    <div class="col-3">
-                      <label>By Amount</label>
-                      <input class="form-control" placeholder="eg-100" formControlName="priceFrom" type="number" />
-                    </div>
-                    <div class="col-6">
+                    <div class="col-8">
                       <label>By Status</label>
-                      <input class="form-control" formControlName="priceTo" type="text" />
+                      <ng-select [items]="status" [multiple]="true" bindLabel="statusName" [selectableGroup]="true"
+                        [closeOnSelect]="false" bindValue="statusId" formControlName="multiSelect1">
+                        <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" />
+                          <!-- {{item.gender | uppercase}} -->
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName}}
+                        </ng-template>
+                        <ng-template ng-label-tmp>
+                          <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
+                        </ng-template>
+                      </ng-select>
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
                         (click)="applyFilter()">
                       </kt-button>
@@ -203,11 +194,39 @@
                     </div>
                     <div class="col-3">
                       <label>By tenure(m)</label>
-                      <input class="form-control" formControlName="priceTo" type="text" />
+                      <ng-select [items]="tenure" [multiple]="true" bindLabel="paymentType" [selectableGroup]="true"
+                        [closeOnSelect]="false" bindValue="paymentTypeId" formControlName="multiSelect1">
+                        <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" />
+                          <!-- {{item.gender | uppercase}} -->
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" /> {{item.paymentType}}
+                        </ng-template>
+                        <ng-template ng-label-tmp>
+                          <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
+                        </ng-template>
+                      </ng-select>
                     </div>
                     <div class="col-4">
                       <label>By Status</label>
-                      <input class="form-control" formControlName="priceTo" type="text" />
+                      <ng-select [items]="status" [multiple]="true" bindLabel="statusName" [selectableGroup]="true"
+                        [closeOnSelect]="false" bindValue="statusId" formControlName="multiSelect2">
+                        <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" />
+                          <!-- {{item.gender | uppercase}} -->
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName}}
+                        </ng-template>
+                        <ng-template ng-label-tmp>
+                          <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
+                        </ng-template>
+                      </ng-select>
                     </div>
                     <div class="col-2">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"

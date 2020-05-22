@@ -34,33 +34,33 @@ import {
 } from "@angular/material/dialog";
 
 // Components
-import { EMIManagementComponent } from './emi-management.component';
-import { SubCategoryListComponent } from './product/sub-category/sub-category-list/sub-category-list.component';
-import { SubCategoryAddComponent } from './product/sub-category/sub-category-add/sub-category-add.component';
-import { CategoryListComponent } from './product/category/category-list/category-list.component';
-import { BulkUploadProductComponent } from './product/bulk-upload-product/bulk-upload-product.component';
-import { UploadDesignComponent } from './product/upload-design/upload-design.component';
-import { BulkUploadReportListComponent } from './bulk-upload-report/bulk-upload-report-list/bulk-upload-report-list.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { WalletPriceListComponent } from './config-details/wallet-price/wallet-price-list/wallet-price-list.component';
-import { WalletPriceAddComponent } from './config-details/wallet-price/wallet-price-add/wallet-price-add.component';
-import { CategoryAddComponent } from './product/category/category-add/category-add.component';
-import { ProductListComponent } from './product/show-product/product-list/product-list.component';
-import { ProductEditComponent } from './product/show-product/product-edit/product-edit.component';
-import { AdminLogListComponent } from './config-details/admin-log/admin-log-list/admin-log-list.component';
-import { AddLogisticPartnerComponent } from './logisticPartner/add-logistic-partner/add-logistic-partner.component';
-import { ListLogisticPartnerComponent } from './logisticPartner/list-logistic-partner/list-logistic-partner.component';
-import { OrderDetailsListComponent } from './order-management/order-details/order-details-list/order-details-list.component';
-import { OrderDetailsViewComponent } from './order-management/order-details/order-details-view/order-details-view.component';
-import { CancelOrderDetailsListComponent } from './order-management/cancel-order-details/cancel-order-details-list/cancel-order-details-list.component';
-import { DepositDetailsListComponent } from './order-management/deposit-details/deposit-details-list/deposit-details-list.component';
-import { EmiDetailsListComponent } from './order-management/emi-details/emi-details-list/emi-details-list.component';
-import { EmiDetailsViewComponent } from './order-management/emi-details/emi-details-view/emi-details-view.component';
-import { OrderDetailsEditComponent } from './order-management/order-details/order-details-edit/order-details-edit.component';
-import { RefundManagementComponent } from './order-management/refund-management/refund-management-list/refund-management.component';
-import { RefundManagementEditComponent } from './order-management/refund-management/refund-management-edit/refund-management-edit.component';
-import { UserDetailsListComponent } from './user-details/user-details-list/user-details-list.component';
-import { ReportsComponent } from './reports/reports.component';
+import { EMIManagementComponent } from "./emi-management.component";
+import { SubCategoryListComponent } from "./product/sub-category/sub-category-list/sub-category-list.component";
+import { SubCategoryAddComponent } from "./product/sub-category/sub-category-add/sub-category-add.component";
+import { CategoryListComponent } from "./product/category/category-list/category-list.component";
+import { BulkUploadProductComponent } from "./product/bulk-upload-product/bulk-upload-product.component";
+import { UploadDesignComponent } from "./product/upload-design/upload-design.component";
+import { BulkUploadReportListComponent } from "./bulk-upload-report/bulk-upload-report-list/bulk-upload-report-list.component";
+import { DashboardComponent } from "./dashboard/dashboard.component";
+import { WalletPriceListComponent } from "./config-details/wallet-price/wallet-price-list/wallet-price-list.component";
+import { WalletPriceAddComponent } from "./config-details/wallet-price/wallet-price-add/wallet-price-add.component";
+import { CategoryAddComponent } from "./product/category/category-add/category-add.component";
+import { ProductListComponent } from "./product/show-product/product-list/product-list.component";
+import { ProductEditComponent } from "./product/show-product/product-edit/product-edit.component";
+import { AdminLogListComponent } from "./config-details/admin-log/admin-log-list/admin-log-list.component";
+import { AddLogisticPartnerComponent } from "./logisticPartner/add-logistic-partner/add-logistic-partner.component";
+import { ListLogisticPartnerComponent } from "./logisticPartner/list-logistic-partner/list-logistic-partner.component";
+import { OrderDetailsListComponent } from "./order-management/order-details/order-details-list/order-details-list.component";
+import { OrderDetailsViewComponent } from "./order-management/order-details/order-details-view/order-details-view.component";
+import { CancelOrderDetailsListComponent } from "./order-management/cancel-order-details/cancel-order-details-list/cancel-order-details-list.component";
+import { DepositDetailsListComponent } from "./order-management/deposit-details/deposit-details-list/deposit-details-list.component";
+import { EmiDetailsListComponent } from "./order-management/emi-details/emi-details-list/emi-details-list.component";
+import { EmiDetailsViewComponent } from "./order-management/emi-details/emi-details-view/emi-details-view.component";
+import { OrderDetailsEditComponent } from "./order-management/order-details/order-details-edit/order-details-edit.component";
+import { RefundManagementComponent } from "./order-management/refund-management/refund-management-list/refund-management.component";
+import { RefundManagementEditComponent } from "./order-management/refund-management/refund-management-edit/refund-management-edit.component";
+import { UserDetailsListComponent } from "./user-details/user-details-list/user-details-list.component";
+import { ReportsComponent } from "./reports/reports.component";
 import { RefundManagementViewComponent } from "./order-management/refund-management/refund-management-view/refund-management-view.component";
 
 const routes: Routes = [
@@ -136,16 +136,12 @@ const routes: Routes = [
 				component: RefundManagementComponent,
 			},
 			{
-				path: 'refund-management',
-				component: RefundManagementComponent
+				path: "users",
+				component: UserDetailsListComponent,
 			},
 			{
-				path: 'users',
-				component: UserDetailsListComponent
-			},
-			{
-				path: 'reports',
-				component: ReportsComponent
+				path: "reports",
+				component: ReportsComponent,
 			},
 			{
 				path: "refund-management/edit-refund/:id",
@@ -235,4 +231,4 @@ const routes: Routes = [
 		RefundManagementViewComponent,
 	],
 })
-export class EMIManagementModule { }
+export class EMIManagementModule {}
