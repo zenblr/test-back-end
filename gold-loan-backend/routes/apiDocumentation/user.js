@@ -276,6 +276,8 @@
  *               type: string
  *             email:
  *               type: string
+ *             userTypeId:
+ *               type: number
  *             roleId:
  *               type: number   
  *             internalBranchId:
@@ -352,6 +354,8 @@
  *             email:
  *               type: string
  *             roleId:
+ *               type: number
+ *             userTypeId:
  *               type: number   
  *             internalBranchId:
  *               type: number      
