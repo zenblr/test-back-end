@@ -119,7 +119,7 @@ export class UserClassificationComponent implements OnInit {
       behaviourRatingVerifiedByBm: [false, [Validators.required]],
       idProofRatingVerifiedByBm: [false, [Validators.required]],
       addressProofRatingVerifiedBm: [false, [Validators.required]],
-      kycStatusFromBm: ['', [Validators.required]],
+      kycStatusFromBm: ['pending', [Validators.required]],
       reasonFromBm: []
     })
 

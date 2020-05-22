@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { MatPaginator, MatDialog } from '@angular/material';
-import { Subscription, Subject } from 'rxjs';
+import { MatPaginator, MatDialog, MatSort } from '@angular/material';
+import { Subscription, Subject, merge } from 'rxjs';
 import { MonthlyRepaymentDatasource } from '../../../../core/repayment/datasources/monthly-repayment.datasource';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
 import { Router } from '@angular/router';
 import { MonthlyService } from '../../../../core/repayment/services/monthly.service';
-import { takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntil, skip, distinctUntilChanged, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { MonthlyPaymentAddComponent } from '../monthly-payment-add/monthly-payment-add.component';
 
@@ -21,7 +21,7 @@ export class MonthlyPaymentComponent implements OnInit {
   dataSource: MonthlyRepaymentDatasource;
   displayedColumns = ['loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'status', 'actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
+  @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   private subscriptions: Subscription[] = [];
@@ -47,6 +47,15 @@ export class MonthlyPaymentComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
+      tap(() => {
+        this.loadPage();
+      })
+    )
+      .subscribe();
+    this.subscriptions.push(paginatorSubscriptions);
+
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;

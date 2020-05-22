@@ -83,11 +83,11 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   getSchemes() {
-    this.dateOfPayment = []
+    // this.dateOfPayment = []
     this.schemesList = []
     this.controls.schemeId.patchValue('')
     this.controls.interestRate.patchValue('')
-    this.controls.intresetAmt.patchValue(null)
+    // this.controls.intresetAmt.patchValue(null)
     // this.controls.paymentFrequency.patchValue('')
     this.partnerService.getSchemesByParnter(Number(this.controls.partnerId.value)).pipe(
       map(res => {
@@ -165,7 +165,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   getIntrest() {
-    if (this.controls.finalLoanAmount.valid) {
+    if (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == "DISABLED") {
       this.dateOfPayment = [];
       switch (this.controls.paymentFrequency.value) {
         case "30":
@@ -215,9 +215,10 @@ export class InterestCalculatorComponent implements OnInit {
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      var data = { key: new Date(date.setMonth(date.getMonth() + index)), colJoin: true }
-      this.dateOfPayment.push((data))
+      var data = { key: new Date(date.setMonth(date.getMonth() + index)) }
+      this.dateOfPayment.push(data)
     }
+    console.log(this.dateOfPayment)
   }
 
   get controls() {
