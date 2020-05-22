@@ -11,6 +11,8 @@ export class SharedService {
   totalCount$ = this.totalCount.asObservable()
   role = new BehaviorSubject(null)
   role$ = this.role.asObservable();
+  permission = new BehaviorSubject([]);
+  permission$ = this.permission.asObservable();
 
   constructor(private http: HttpClient) {
     var token = JSON.parse(localStorage.getItem('UserDetails'));
@@ -57,5 +59,13 @@ export class SharedService {
 
   getDataFromStorage() {
     return JSON.parse(localStorage.getItem('UserDetails'));
+  }
+
+  getPermission(): Observable<any> {
+    const token = JSON.parse(localStorage.getItem('UserDetails'));
+    if (token && token.permissions.length) {
+      // console.log(token.permissions);
+      return of(token.permissions);
+    }
   }
 }

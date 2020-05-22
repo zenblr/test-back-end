@@ -10,7 +10,7 @@ import { HtmlClassService } from '../html-class.service';
 import { LayoutConfig } from '../../../core/_config/layout.config';
 import { MenuConfig } from '../../../core/_config/menu.config';
 import { PageConfig } from '../../../core/_config/page.config';
-
+import { SharedService } from '../../../core/shared/services/shared.service';
 
 @Component({
 	selector: 'kt-base',
@@ -31,7 +31,6 @@ export class BaseComponent implements OnInit, OnDestroy {
 	// Private properties
 	private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
-
 	/**
 	 * Component constructor
 	 *
@@ -47,13 +46,13 @@ export class BaseComponent implements OnInit, OnDestroy {
 		private menuConfigService: MenuConfigService,
 		private pageConfigService: PageConfigService,
 		private htmlClassService: HtmlClassService,
-		
-		) {
-	
+		private sharedService: SharedService,
+	) {
+
 
 		// register configs by demos
 		this.layoutConfigService.loadConfigs(new LayoutConfig().configs);
-		this.menuConfigService.loadConfigs(new MenuConfig().configs);
+		this.menuConfigService.loadConfigs(new MenuConfig(this.sharedService).configs);
 		this.pageConfigService.loadConfigs(new PageConfig().configs);
 
 		// setup element classes
@@ -98,7 +97,4 @@ export class BaseComponent implements OnInit, OnDestroy {
 	ngOnDestroy(): void {
 		this.unsubscribe.forEach(sb => sb.unsubscribe());
 	}
-
-
-
 }
