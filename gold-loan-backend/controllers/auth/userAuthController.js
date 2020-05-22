@@ -94,18 +94,12 @@ exports.userLogin = async (req, res, next) => {
 
         let getPermissions = await models.rolePermission.findAll({ where: { roleId: { [Op.in]: roleId }, isActive: true }, attributes: ['permissionId'] });
         let permissionId = await getPermissions.map((data) => data.permissionId);
-        let permissions = await models.entity.findAll({
-            where: { isActive: true },
-            attributes: ['id', 'entityName'],
-            include: [
-                {
-                    model: models.permission,
-                    as: 'permission',
-                    attributes: ['id', 'actionName'],
+        let permissions = await models.permission.findAll({
+                    attributes: ['id', 'actionName','description'],
+                    raw:true,
                     where: { isActive: true, id: { [Op.in]: permissionId } }
                 },
-            ]
-        })
+        )
         return res.status(200).json({ message: 'login successful', Token, modules, permissions, userDetails: checkUser.internalBranches[0] });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
