@@ -11,7 +11,7 @@ import { AngularMaterialModule } from '../angular-material/angular-material.modu
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../core/_base/crud';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-
+import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 
 const rout: Routes = [
   {
@@ -52,6 +52,7 @@ const rout: Routes = [
     HttpUtilsService,
     TypesUtilsService,
     LayoutUtilsService
-  ]
+  ],
+  entryComponents: [UserReviewComponent]
 })
 export class AppliedKycModule { }

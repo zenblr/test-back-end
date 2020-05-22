@@ -17,4 +17,10 @@ export class AppliedLoanService {
       map(res =>res)
     )
   }
+  
+  disburse(details):Observable<any>{
+    return this.http.post(`/api/loan-process/disbursement-of-loan`,details).pipe(
+      map(res => res)
+    )
+  }
 }

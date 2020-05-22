@@ -25,6 +25,7 @@ import { KaratDetailsService } from '../../../../core/loan-setting/karat-details
 import { CancelOrderDetailsService, OrderDetailsService, DepositDetailsService, EmiDetailsService } from '../../../../core/emi-management/order-management';
 import { MonthlyService } from '../../../../core/repayment/services/monthly.service';
 import { UserDetailsService } from '../../../../core/emi-management/user-details';
+import { LeadService } from '../../../../core/lead-management/services/lead.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -85,22 +86,21 @@ export class TopbarComponent implements OnInit {
 		private depositDetailsService: DepositDetailsService,
 		private emiDetailsService: EmiDetailsService,
 		private monthlyService: MonthlyService,
-		private userDetailsService: UserDetailsService
+		private userDetailsService: UserDetailsService,
+		private leadService: LeadService
 	) {
 		this.router.events.subscribe((val) => {
 			this.reset();
 			this.setTopbar(location.path());
 		});
 
-		this.walletPriceService.download$
-			.pipe(takeUntil(this.destroy$))
-			.subscribe((res) => {
-				if (res) {
-					this.downloadbtn = true;
-				} else {
-					this.downloadbtn = false;
-				}
-			});
+		this.walletPriceService.download$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+			if (res) {
+				this.downloadbtn = true;
+			} else {
+				this.downloadbtn = false;
+			}
+		});
 	}
 
 	ngOnInit() {
@@ -323,8 +323,8 @@ export class TopbarComponent implements OnInit {
 	}
 
 	action(event: Event) {
-		if (this.path == "lead-management") {
-			this.customerManagementServiceCustomer.openModal.next(true);
+		if (this.path == 'lead-management') {
+			this.leadService.openModal.next(true);
 		}
 		if (this.path == "scheme") {
 			this.loanSettingService.openModal.next(true);

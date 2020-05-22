@@ -135,6 +135,12 @@ export class PageConfig {
 		'applied-kyc': {
 			page: { title: 'Applied KYC', desc: '' }
 		},
+		'customer-management': {
+			'customer-list': {
+				page: { title: 'My Customer', desc: '' }
+
+			}
+		},
 
 		'loan-management': {
 			'loan-calculator': {

@@ -58,7 +58,7 @@ export class AddAppraiserComponent implements OnInit {
     this.appraiserForm = this.fb.group({
       id: [null],
       customerUniqueId: [''],
-      customerId: ['', [Validators.required]],
+      customerId: [, [Validators.required]],
       appraiserId: ['', [Validators.required]],
     });
   }

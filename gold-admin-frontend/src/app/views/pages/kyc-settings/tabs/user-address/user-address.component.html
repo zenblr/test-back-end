@@ -61,10 +61,10 @@
                             </div>
                             <div class="col-7">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" formControlName="identityProof"
+                                    <input type="text" class="form-control" formControlName="identityProofFileName"
                                         placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2"
                                         readonly
-                                        [class.isError]="controls.identityProof.invalid && controls.identityProof.touched">
+                                        [class.isError]="controls.identityProofFileName.invalid && controls.identityProofFileName.touched">
                                     <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                             (click)="identity.click()"
@@ -93,7 +93,11 @@
                             <div class="row ">
                                 <div class="kt-margin-r-15" *ngFor="let img of images.identityProof, index as idx">
                                     <div class="img-container">
-                                        <img class="border-rad-15 fetched-image" [src]="img" alt="">
+                                        <img class="border-rad-15 fetched-image" [src]="img" alt=""
+                                            (click)="preview(img, idx)">
+                                        <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                            class="kt-pointer edit-icon"
+                                            (click)="editImages(idx, 'identityProof');"> -->
                                         <img src="../../../../../assets/media/icons/cancel.svg" alt=""
                                             class="kt-pointer remove-icon"
                                             (click)="removeImages(idx, 'identityProof');">
@@ -407,7 +411,7 @@
                                                     <input type="text" class="form-control" placeholder="Select"
                                                         aria-label="Recipient's username"
                                                         aria-describedby="basic-addon2" readonly
-                                                        formControlName="addressProof">
+                                                        formControlName="addressProofFileName">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text bg kt-pointer font-weight"
                                                             id="basic-addon2" (click)="permanent.click()"
@@ -427,7 +431,7 @@
                                                     <input type="text" class="form-control" placeholder="Select"
                                                         aria-label="Recipient's username"
                                                         aria-describedby="basic-addon2" readonly
-                                                        formControlName="addressProof">
+                                                        formControlName="addressProofFileName">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text bg kt-pointer font-weight"
                                                             id="basic-addon2" (click)="residential.click()"
@@ -489,7 +493,11 @@
                                                     <div class="col-6" [class.offset-4]="images.residential.length == 1"
                                                         *ngFor="let img of images.residential, index as idx">
                                                         <div class="img-container">
-                                                            <img class="fetched-image" [src]="img" alt="">
+                                                            <img class="fetched-image" [src]="img" alt=""
+                                                                (click)="preview(img, idx)">
+                                                            <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                                                class="kt-pointer edit-icon"
+                                                                (click)="editImages(idx, 'residential');"> -->
                                                             <img src="../../../../../assets/media/icons/cancel.svg"
                                                                 alt="" class="kt-pointer remove-icon"
                                                                 (click)="removeImages(idx, 'residential');">
@@ -503,7 +511,11 @@
                                                     <div class="col-6" [class.offset-4]="images.permanent.length == 1"
                                                         *ngFor="let img of images.permanent, index as idx">
                                                         <div class="img-container">
-                                                            <img class="fetched-image" [src]="img" alt="">
+                                                            <img class="fetched-image" [src]="img" alt=""
+                                                                (click)="preview(img, idx)">
+                                                            <!-- <img src="../../../../../assets/media/icons/dit.svg" alt=""
+                                                                class="kt-pointer edit-icon"
+                                                            (click)="editImages(idx, 'permanent');"> -->
                                                             <img src="../../../../../assets/media/icons/cancel.svg"
                                                                 alt="" class="kt-pointer remove-icon"
                                                                 (click)="removeImages(idx, 'permanent');">

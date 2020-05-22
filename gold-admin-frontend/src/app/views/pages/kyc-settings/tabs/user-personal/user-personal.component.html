@@ -124,7 +124,7 @@
                                         <select name="" id="" formControlName="occupationId" class="form-control"
                                             placeholder="Select Occupation"
                                             [class.isError]="controls.occupationId.touched && controls.occupationId.invalid">
-                                            <option value="" [selected]="true" [disabled]="true">Select Occupation
+                                            <option value=null [selected]="true">Select Occupation
                                             </option>
                                             <option [value]="occ.id" *ngFor="let occ of occupations;"> {{occ.name}}
                                             </option>
@@ -163,8 +163,8 @@
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Select File"
                                                 aria-label="Recipient's username" aria-describedby="basic-addon2"
-                                                readonly formControlName="signatureProof"
-                                                [class.isError]="controls.signatureProof.touched && controls.signatureProof.invalid" />
+                                                readonly formControlName="signatureProofFileName"
+                                                [class.isError]="controls.signatureProofFileName.touched && controls.signatureProofFileName.invalid" />
                                             <div class="input-group-append">
                                                 <span class="input-group-text bg kt-pointer font-weight"
                                                     id="basic-addon2" (click)="signature.click()"

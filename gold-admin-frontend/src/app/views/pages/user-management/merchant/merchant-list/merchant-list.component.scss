@@ -1,8 +1,8 @@
 :host{
-    .mat-table__wrapper {
-        width: 100%;
-        overflow-x: hidden;
-    }
+    // .mat-table__wrapper {
+    //     width: 100%;
+    //     overflow-x: hidden;
+    // }
     .mat-column-merchantName{
         flex: 0 0 13% !important;
         padding-left: 10px !important;
@@ -14,7 +14,7 @@
         flex: 0 0 8% !important;
     }
     .mat-column-email{
-        flex: 0 0 17% !important;
+        flex: 0 0 18% !important;
         word-break: break-all !important;
     }
     .mat-column-state{
@@ -27,10 +27,10 @@
         flex: 0 0 6% !important;
     }
     .mat-column-approvalStatus{
-        flex: 0 0 8% !important;
+        flex: 0 0 6% !important;
     }
     .mat-column-apiKey{
-        flex: 0 0 5% !important;
+        flex: 0 0 6% !important;
     }
     .mat-column-action{
         flex: 0 0 8% !important;
