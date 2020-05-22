@@ -213,7 +213,7 @@
  *               type: string
  *             ifscCode:
  *               type: string
- *             passbookProof:
+ *             passBookProof:
  *               type: array
  *               items:
  *                type: string 
@@ -262,7 +262,7 @@
  *                 - f
  *               matrialStatus: 
  *                type: string
- *               enum:
+ *                enum:
  *                 - single
  *                 - married
  *                 - divorced
@@ -314,18 +314,13 @@
  *                type: object
  *                properties:
  *                   id:
- *                   type: integer
+ *                    type: integer
  *                   customerId:
  *                    type: integer
  *                   customerKycId:
  *                    type: integer
  *                   address:
- *                    type: array
- *                    items:
- *                     type: object
- *                     properties:
- *                      address: 
- *                       type: string
+ *                    type: string
  *                   addressProof:
  *                    type: array
  *                    items:
