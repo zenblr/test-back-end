@@ -12,6 +12,12 @@ export class InternalUserBranchService {
   openModal$ = this.openModal.asObservable();
   constructor(private http: HttpClient) { }
 
+getUserType():Observable<any>{
+  return this.http.get(`/api/user/user-type-internal`).pipe(
+    map(res => res)
+  )
+}
+
   addInternalBranch(value): Observable<any> {
     return this.http.post(`/api/internal-branch`, value).pipe(
       map(res => res)

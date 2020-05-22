@@ -57,7 +57,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       commentByAppraiser: [''],
       applicationFormForBM: [false],
       goldValuationForBM: [false],
-      loanStatusForBM: [''],
+      loanStatusForBM: ['pending'],
       commentByBM: [''],
     })
     this.approvalFormEmit.emit(this.approvalForm)
