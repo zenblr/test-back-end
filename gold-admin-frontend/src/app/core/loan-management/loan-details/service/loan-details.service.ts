@@ -8,9 +8,9 @@ import { map } from 'rxjs/operators';
 })
 export class LoanDetailsService {
 
-  constructor(public http:HttpClient) { }
+  constructor(public http: HttpClient) { }
 
-  getAllLoans(from,to,search):Observable<any>{
+  getAllLoans(from, to, search): Observable<any> {
     return this.http.get(`/api/loan-process/loan-details?search=${search}&from=${from}&to${to}`).pipe(
       map(res => res)
     )

@@ -44,20 +44,20 @@ export class AppliedKycComponent implements OnInit {
     // const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     // this.subscriptions.push(sortSubscription);
 
-    // const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-    //   tap(() => {
-    //     this.loadPage();
-    //   })
-    // )
-    //   .subscribe();
-    // this.subscriptions.push(paginatorSubscriptions);
+    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
+      tap(() => {
+        this.loadPage();
+      })
+    )
+      .subscribe();
+    this.subscriptions.push(paginatorSubscriptions);
 
-    // const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
-    //   .subscribe(res => {
-    //     this.searchValue = res;
-    //     this.paginator.pageIndex = 0;
-    //     this.loadPage();
-    //   });
+    const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadPage();
+      });
 
     // Init DataSource
     this.dataSource = new AppliedKycDatasource(this.appliedKycService);

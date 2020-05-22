@@ -162,7 +162,7 @@ export class UserReviewComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public modalData: any,
     private ele: ElementRef
   ) {
-    if (this.modalData) {
+    if (this.modalData.action) {
       console.log(this.data)
       this.viewOnly = false;
     }
@@ -208,7 +208,7 @@ export class UserReviewComponent implements OnInit {
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
       identityProof: [this.data.customerKycReview.customerKycPersonal.identityProof, [Validators.required]],
-      identityProofFileName: [, [Validators.required]],
+      identityProofFileName: [],
       identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
     })
     this.customerKycAddressOne = this.fb.group({
@@ -221,7 +221,7 @@ export class UserReviewComponent implements OnInit {
       cityId: [this.data.customerKycReview.customerKycAddress[0].city.id, [Validators.required]],
       pinCode: [this.data.customerKycReview.customerKycAddress[0].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       addressProof: [this.data.customerKycReview.customerKycAddress[0].addressProof, [Validators.required]],
-      addressProofFileName: [, Validators.required],
+      addressProofFileName: [],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[0].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[0].addressProofNumber, [Validators.required]],
 
@@ -236,7 +236,7 @@ export class UserReviewComponent implements OnInit {
       cityId: [this.data.customerKycReview.customerKycAddress[1].city.id, [Validators.required]],
       pinCode: [this.data.customerKycReview.customerKycAddress[1].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       addressProof: [this.data.customerKycReview.customerKycAddress[1].addressProof, [Validators.required]],
-      addressProofFileName: [, Validators.required],
+      addressProofFileName: [],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
     }),
@@ -247,7 +247,7 @@ export class UserReviewComponent implements OnInit {
         spouseName: [this.data.customerKycReview.customerKycPersonal.spouseName, [Validators.required]],
         martialStatus: [this.data.customerKycReview.customerKycPersonal.martialStatus, [Validators.required]],
         signatureProof: [this.data.customerKycReview.customerKycPersonal.signatureProof, [Validators.required]],
-        signatureProofFileName: [, Validators.required],
+        signatureProofFileName: [],
         occupationId: [],
         dateOfBirth: [this.data.customerKycReview.customerKycPersonal.dateOfBirth, [Validators.required]],
         identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
@@ -266,7 +266,7 @@ export class UserReviewComponent implements OnInit {
         accountNumber: [this.data.customerKycReview.customerKycBank[0].accountNumber, [Validators.required]],
         ifscCode: [this.data.customerKycReview.customerKycBank[0].ifscCode, [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
         passbookProof: [this.data.customerKycReview.customerKycBank[0].passbookProof, [Validators.required]],
-        passbookProofFileName: [, Validators.required]
+        passbookProofFileName: []
       })
 
     if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
@@ -457,4 +457,7 @@ export class UserReviewComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  ngOnDestroy(): void {
+    this.appliedKycService.userData.next(undefined)
+  }
 }

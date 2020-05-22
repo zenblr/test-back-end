@@ -87,7 +87,7 @@ export class TopbarComponent implements OnInit {
 		private depositDetailsService: DepositDetailsService,
 		private emiDetailsService: EmiDetailsService,
 		private monthlyService: MonthlyService,
-		private leadService:LeadService) {
+		private leadService: LeadService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -172,7 +172,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'lead-management') {
 			this.dataSourceHeader()
 			this.value1 = 'Add New Lead';
-			this.showfilter = true;
+			this.showfilter = false;
 			this.filterName = 'leads';
 			this.filterWidth = '900px';
 		}
@@ -195,6 +195,17 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = true;
 			this.showInput = true;
 			this.toogle = true;
+		}
+		if (this.path == 'applied-loan') {
+			this.showfilter = false;
+			this.showInput = true;
+		}
+		if (this.path == 'all-loan') {
+			this.showfilter = false;
+			this.showInput = true;
+		}
+		if (this.path == 'applied-kyc') {
+			this.showInput = true;
 		}
 		if (this.path == 'monthly') {
 			this.dataSourceHeader();
