@@ -266,8 +266,11 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 as: 'packet',
                 attributes: ['id', 'packetUniqueId'],
             }]
-        },
-        ]
+        }, {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'firstName', 'lastName']
+        }]
     })
 
     return res.status(200).json({ message: 'success', data: customerLoan })
