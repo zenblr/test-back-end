@@ -37,7 +37,7 @@ module.exports = (req, res, next) => {
 
             client.get(token, (err, result) => {
                 if (err) {
-                    res.status(400).json({
+                    res.status(401).json({
                         message: err
                     })
                 } else if (result) {
