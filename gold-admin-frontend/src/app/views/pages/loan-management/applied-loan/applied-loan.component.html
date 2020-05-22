@@ -6,7 +6,6 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="fullName">
-                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         {{loan.customer.firstName | titlecase}}&nbsp;{{loan.customer.lastName | titlecase}}
@@ -93,6 +92,12 @@
 
                                 </div>
                             </div>
+                            <div *ngIf="loan.loanStage.id == 5">
+                                <div class="kt-pointer" class="kt-pointer">
+                                    <button class="warning-button">Disbursed</button>
+
+                                </div>
+                            </div>
 
                         </div>
                     </mat-cell>
@@ -100,14 +105,14 @@
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span (click)="viewLoan(loan)">
+                        <span (click)="viewLoan(loan)" class="kt-pointer">
                             View
                         </span>
                     </mat-cell>
                 </ng-container>
-                <mat-header-row [ngStyle]="{'width': '110%'}" *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '110%'}"></mat-header-row>
 
-                <mat-row [ngStyle]="{'width': '110%'}" *matRowDef="let row; columns: displayedColumns"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'width': '110%'}"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

@@ -43,17 +43,20 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
     this.packetsForm = this.fb.group({
       packetsArray: this.fb.array([])
     })
-    const array = this.viewpacketsDetails
-    for (let index = 0; index < array.length; index++) {
-      this.packetId.patchValue(array[index].packetId)
-      this.addmore()
-      const pack = this.packets.at(index) as FormGroup;
-      pack.patchValue(array[index])
-      pack.patchValue({packetsName:array[index].packet.packetUniqueId})
-      console.log(pack)
-      // pack.at(inde).patchValue(array[index])
+    if (this.viewpacketsDetails) {
+      const array = this.viewpacketsDetails.loanPacketDetails
+      for (let index = 0; index < array.length; index++) {
+        this.packetId.patchValue(array[index].packetId)
+        this.addmore()
+        const pack = this.packets.at(index) as FormGroup;
+        pack.patchValue(array[index])
+        pack.patchValue({ packetsName: array[index].packet.packetUniqueId })
+        console.log(pack)
+        // pack.at(inde).patchValue(array[index])
+      }
+
+      console.log(this.viewpacketsDetails.loanPacketDetails)
     }
-    console.log(this.viewpacketsDetails)
   }
   get packets() {
     if (this.packetsForm) {

@@ -2,45 +2,46 @@
     // ::ng-deep.mat-row, ::ng-deep.mat-header-row  {
     //     width: 110% !important;
     // }
-    // .mat-column-pan{
-    //     flex: 0 0 9% !important;
-    // }
-    // .mat-column-date{
-    //     flex: 0 0 10% !important;
-    // }
-    // .mat-column-mobile{
-    //     flex: 0 0 8% !important;
-    // }
-    // .mat-column-fullName{
-    //     padding-left: 0 !important;
-    //     word-break: break-all !important;
-    //     flex: 0 0 11% !important;
-    //     word-break: break-all;
-    // }
-    // .mat-column-loanAmount{
-    //     flex: 0 0 10% !important;
-    // }
-    // .mat-column-schemeName{
-    //     flex: 0 0 11% !important;
-    // }
-    // .mat-column-actions{
-    //     flex:0 0 14% !important;
-    // }
-    // .mat-column-customerID{
-    //     flex: 0 0 9% !important;
-    // }
-    // .mat-column-appraisalApproval{ 
-    //     flex: 0 0 13% !important;        
-    // }
-    // .mat-column-bMApproval{ 
-    //     flex: 0 0 11% !important;        
-    // }
-    // .mat-column-view{ 
-    //     flex: 0 0 11% !important;        
-    // }
-    // button {
-    //     width: 120px;
-    // }
+    .mat-column-pan{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-date{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-mobile{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-fullName{
+        padding-left: 0 !important;
+        word-break: break-all !important;
+        flex: 0 0 11% !important;
+        word-break: break-all;
+    }
+    .mat-column-loanAmount{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-schemeName{
+        flex: 0 0 9% !important;
+    }
+    .mat-column-actions{
+        flex:0 0 14% !important;
+    }
+  
+    .mat-column-customerID{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-appraisalApproval{ 
+        flex: 0 0 11% !important;        
+    }
+    .mat-column-bMApproval{ 
+        flex: 0 0 8% !important;        
+    }
+    .mat-column-view{ 
+        flex: 0 0 5% !important;        
+    }
+    button {
+        width: 120px;
+    }
     .apply-kyc {
 		background: transparent;
 		border: thin solid #454D67;

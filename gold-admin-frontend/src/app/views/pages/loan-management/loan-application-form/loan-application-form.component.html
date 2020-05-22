@@ -61,7 +61,7 @@
         </div>
         <div class="row " id="packets" *ngIf="url == 'package-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)">
             <div class="col packets-height" >
-                <kt-upload-packets [viewpacketsDetails]="customerDetail.loanPacketDetails"></kt-upload-packets>
+                <kt-upload-packets [viewpacketsDetails]="customerDetail"></kt-upload-packets>
             </div>
         </div>
     </kt-portlet-body>
