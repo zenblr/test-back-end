@@ -155,7 +155,7 @@
             </div>
         </div>
 
-        <div class="row kt-margin-b-20">
+        <!-- <div class="row kt-margin-b-20">
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
@@ -188,7 +188,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="row" *ngIf="!disable">
             <div class="col-6 kt-margin-t-30 kt-margin-b-30">
 
@@ -202,10 +202,10 @@
         <div class="col-6">
             <div class="row justify-content-center">
                 <div class="col-7">
-                    <div>
+                    <!-- <div>
                         <label for="" class="text-color font-weight-500">Processing Charges :-
                             {{controls.processingCharge.value}}</label>
-                    </div>
+                    </div> -->
                     <div class="table-div" id="print">
                         <table class="table table-bordered">
                             <thead>
@@ -230,6 +230,7 @@
 
                                 </tr>
                             </tbody>
+                            
                             <tbody *ngIf="dateOfPayment.length%colJoin != 0 && colJoin !== null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
                                     <td>{{date.key | date :'mediumDate'}}</td>

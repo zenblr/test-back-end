@@ -165,7 +165,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   getIntrest() {
-    if (this.controls.finalLoanAmount.valid) {
+    if (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == "DISABLED") {
       this.dateOfPayment = [];
       switch (this.controls.paymentFrequency.value) {
         case "30":

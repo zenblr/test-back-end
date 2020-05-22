@@ -151,7 +151,7 @@
                                 </td>
                                 <td class="rating-bm">
                                     <select class="form-control" formControlName="kycStatusFromBm">
-                                        <option value="" disabled selected> Select Status
+                                        <option value="pending" disabled selected> Select Status
                                         </option>
                                         <option *ngFor="let status of bmKycStatus" [value]="status.value">
                                             {{status.name | titlecase}}
