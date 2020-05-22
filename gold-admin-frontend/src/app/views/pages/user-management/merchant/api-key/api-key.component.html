@@ -24,7 +24,7 @@
     </kt-portlet-body>
     <kt-portlet-footer>
         <div class="text-right p-3">
-            <kt-button [value]="'Generate'" [type]="'button'" class="kt-padding-r-10" (click)="generateApi()"></kt-button>
+            <kt-button [value]="'Generate'" [type]="'button'" class="kt-padding-r-10" (click)="generateApi()" *ngIf="!apiDetails.apiKey"></kt-button>
             <kt-button [value]="'Re-Generate'" [type]="'reset'" style="background-color:#C5C6C6 !important" *ngIf="apiDetails.apiKey" (click)="reGenerateApi()"></kt-button>
         </div>
     </kt-portlet-footer>

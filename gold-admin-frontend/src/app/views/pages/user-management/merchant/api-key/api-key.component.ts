@@ -26,7 +26,7 @@ export class ApiKeyComponent implements OnInit {
         this.apiDetails = res
         this.ref.detectChanges()
       }),catchError(err =>{
-        this.toast.error(err.errror.error)
+        this.toast.error(err.error.message)
         throw err
       })).subscribe()
   }
@@ -37,7 +37,7 @@ export class ApiKeyComponent implements OnInit {
         this.apiDetails = res;
         this.ref.detectChanges()
       }),catchError(err =>{
-        this.toast.error(err.errror.error)
+        this.toast.error(err.error.message)
         throw err
       })).subscribe()
   }
@@ -48,7 +48,7 @@ export class ApiKeyComponent implements OnInit {
         this.apiDetails = res;
         this.ref.detectChanges()
       }),catchError(err =>{
-        this.toast.error(err.errror.error)
+        this.toast.error(err.error.message)
         throw err
       })).subscribe()
   }
@@ -58,7 +58,7 @@ export class ApiKeyComponent implements OnInit {
       map(res =>{
         this.toast.success(res.message)
       }),catchError(err =>{
-        this.toast.error(err.errror.error)
+        this.toast.error(err.error.message)
         throw err
       })).subscribe()
   }

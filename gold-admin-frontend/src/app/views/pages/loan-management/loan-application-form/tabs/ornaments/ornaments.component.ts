@@ -376,7 +376,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       let ltvPercent = controls.controls.ltvPercent.value
       let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
       controls.controls.ltvAmount.patchValue(ltv)
-      controls.controls.loanAmount.patchValue(ltv * controls.controls.finalNetWeight.value)
+      controls.controls.loanAmount.patchValue((ltv * controls.controls.finalNetWeight.value).toFixed(2))
     }
   }
 }

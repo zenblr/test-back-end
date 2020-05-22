@@ -111,8 +111,8 @@ export class InterestCalculatorComponent implements OnInit {
       paymentFrequency: [, [Validators.required]],
       intresetAmt: [],
       interestRate: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]], processingCharge: [],
-      processingChargeFixed: [, [Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      processingChargePercent: [, [Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]]
+      processingChargeFixed: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      processingChargePercent: [, [Validators.required,Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]]
     })
     this.interestFormEmit.emit(this.finalInterestForm)
   }
@@ -165,7 +165,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   getIntrest() {
-    if (this.controls.finalLoanAmount.valid) {
+    if (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == "DISABLED") {
       this.dateOfPayment = [];
       switch (this.controls.paymentFrequency.value) {
         case "30":
@@ -215,9 +215,10 @@ export class InterestCalculatorComponent implements OnInit {
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      var data = { key: new Date(date.setMonth(date.getMonth() + index)), colJoin: true }
-      this.dateOfPayment.push((data))
+      var data = { key: new Date(date.setMonth(date.getMonth() + index)) }
+      this.dateOfPayment.push(data)
     }
+    console.log(this.dateOfPayment)
   }
 
   get controls() {

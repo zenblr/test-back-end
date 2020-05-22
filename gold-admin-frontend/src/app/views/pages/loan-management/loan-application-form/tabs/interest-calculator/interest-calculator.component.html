@@ -159,7 +159,7 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label>Processing Charges(fixed)</label>
+                        <label class="mandatory">Processing Charges(fixed)</label>
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="processingChargeFixed"
@@ -169,13 +169,17 @@
                             *ngIf="controls.processingChargeFixed.errors?.pattern && controls.processingChargeFixed.touched">
                             Invalid Input
                         </mat-error>
+                        <mat-error
+                            *ngIf="controls.processingChargeFixed.errors?.required && controls.processingChargeFixed.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label>Processing Charges(%)</label>
+                        <label class="mandatory">Processing Charges(%)</label>
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="processingChargePercent"
@@ -185,11 +189,15 @@
                             *ngIf="controls.processingChargePercent.errors?.pattern && controls.processingChargePercent.touched">
                             Invalid Input
                         </mat-error>
+                        <mat-error
+                            *ngIf="controls.processingChargePercent.errors?.required && controls.processingChargePercent.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="!disable">
             <div class="col-6 kt-margin-t-30 kt-margin-b-30">
 
                 <div class="offset-4 col">
@@ -230,6 +238,7 @@
 
                                 </tr>
                             </tbody>
+                            
                             <tbody *ngIf="dateOfPayment.length%colJoin != 0 && colJoin !== null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
                                     <td>{{date.key | date :'mediumDate'}}</td>

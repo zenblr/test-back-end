@@ -73,7 +73,7 @@
                 <ng-container matColumnDef="kyc">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let lead">
-                        <ng-container *ngIf="lead.status.id == '1'">
+                        <ng-container *ngIf="lead.status.id == '1' && !lead.customerKyc.isKycSubmitted ">
                             <div [ngStyle]="{'display': 'inherit'}">
                                     <button (click)="goToKyc(lead.mobileNumber)" class="apply-kyc">Apply KYC</button>
                             </div>

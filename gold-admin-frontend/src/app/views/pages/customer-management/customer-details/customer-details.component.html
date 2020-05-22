@@ -98,16 +98,20 @@
             </div>
             <div class="row kt-margin-t-10 kt-padding-b-25 justify-content-around">
                 <div class="col offset-1 kt-padding-l-25">
-                    <div class="text-primary font-weight-500 kt-pointer">View Proof</div>
+                    <div class="text-primary font-weight-500 kt-pointer" 
+                    (click)="preview(cutomerDetails.customerKycAddress[0].addressProof[0])">View Proof</div>
                 </div>
                 <div class="col">
-                    <div class="text-primary font-weight-500 kt-pointer">View Proof</div>
+                    <div class="text-primary font-weight-500 kt-pointer"
+                    (click)="preview(cutomerDetails.customerKycAddress[1].addressProof[0])">View Proof</div>
                 </div>
                 <div class="col">
-                    <div class="text-primary font-weight-500 kt-pointer">View Proof</div>
+                    <div class="text-primary font-weight-500 kt-pointer"
+                    (click)="preview(cutomerDetails.customerKycBank[1].passbookProof[0])">View Proof</div>
                 </div>
                 <div class="col">
-                    <div class="text-primary font-weight-500 kt-pointer">View PAN</div>
+                    <div class="text-primary font-weight-500 kt-pointer"
+                    (click)="preview(cutomerDetails.customerKycPersonal.identityProof[0])">View {{cutomerDetails.customerKycPersonal.identityType.name}}</div>
                 </div>
                 <!-- <div class="col-2">
                     <div class="text-primary font-weight-500 kt-pointer">View AADHAAR</div>
