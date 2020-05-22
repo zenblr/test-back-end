@@ -97,6 +97,7 @@
                         <input type="number" class="form-control" formControlName="finalLoanAmount"
                             placeholder="0,00,000" (blur)="amountValidation()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
+                        <mat-hint><small>Eligible Amount: {{totalAmt | currency: 'INR'}}</small></mat-hint>
                         <mat-error
                             *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
                             Required field
@@ -238,7 +239,7 @@
 
                                 </tr>
                             </tbody>
-                            
+
                             <tbody *ngIf="dateOfPayment.length%colJoin != 0 && colJoin !== null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
                                     <td>{{date.key | date :'mediumDate'}}</td>
