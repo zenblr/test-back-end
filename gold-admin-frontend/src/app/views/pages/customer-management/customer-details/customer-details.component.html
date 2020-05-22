@@ -4,12 +4,11 @@
             <div class="row kt-margin-b-20">
                 <div class="col">
                     <div class="row">
-                        <div class="col">
-                            <img class="kt-margin-t-15 kt-margin-l-50 profile"
-                                [src]="cutomerDetails.customerKycPersonal.profileImage">
+                        <div class="col-1">
+                            <img class="kt-margin-t-15 profile" [src]="cutomerDetails.customerKycPersonal.profileImage">
                             <!-- <img [src]="customer.image" *ngIf="customer.image != '' || customer.image != null"> -->
                         </div>
-                        <div class="col kt-padding-l-20">
+                        <div class="col kt-padding-l-25">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">Customer ID</div>
                             <div class="text-color font-weight-500">{{cutomerDetails.customerUniqueId}}</div>
                         </div>
@@ -52,7 +51,7 @@
             </div>
             <mat-divider></mat-divider>
             <div class="row kt-margin-t-20 justify-content-around">
-                <div class="col-3 kt-padding-l-60">
+                <div class="col offset-1 kt-padding-l-25">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Permanent Address</div>
                     <div class="text-color font-weight-500 kt-margin-b-5"
                         [ngStyle]="{'width':'80%','line-height':'1.5'}">
@@ -63,9 +62,9 @@
                     </div>
 
                 </div>
-                <div class="col-3">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">
-                        Office Address</div>
+                        Residential Address</div>
                     <div class="text-color font-weight-500 kt-margin-b-5"
                         [ngStyle]="{'width':'65%','line-height':'1.5'}">
                         {{cutomerDetails.customerKycAddress[1].address | titlecase}}
@@ -74,7 +73,7 @@
                         {{cutomerDetails.customerKycAddress[1].pinCode}}
                     </div>
                 </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Bank Details</div>
                     <div class="text-color font-weight-500">
                         <div>{{cutomerDetails.customerKycBank[0].accountHolderName | titlecase}}</div>
@@ -82,37 +81,37 @@
                         <div>{{cutomerDetails.customerKycBank[0].ifscCode | uppercase}}</div>
                     </div>
                 </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">KYC Document</div>
                     <div class="document">
                         <img src="../../../../../assets/media/icons/image-placeholder.png" class=" kt-pointer">
                     </div>
                 </div>
-                <div class="col-2 kt-padding-t-25">
+                <!-- <div class="col-2 kt-padding-t-25">
                     <span class="document kt-margin-r-10">
                         <img src="../../../../../assets/media/icons/image-placeholder.png" class=" kt-pointer">
                     </span>
                     <span class="document ">
                         <img src="../../../../../assets/media/icons/image-placeholder.png" class=" kt-pointer">
                     </span>
-                </div>
+                </div> -->
             </div>
             <div class="row kt-margin-t-10 kt-padding-b-25 justify-content-around">
-                <div class="col-3 kt-padding-l-60">
+                <div class="col offset-1 kt-padding-l-25">
                     <div class="text-primary font-weight-500 kt-pointer">View Proof</div>
                 </div>
-                <div class="col-3">
+                <div class="col">
                     <div class="text-primary font-weight-500 kt-pointer">View Proof</div>
                 </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="text-primary font-weight-500 kt-pointer">View Proof</div>
                 </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="text-primary font-weight-500 kt-pointer">View PAN</div>
                 </div>
-                <div class="col-2">
+                <!-- <div class="col-2">
                     <div class="text-primary font-weight-500 kt-pointer">View AADHAAR</div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
