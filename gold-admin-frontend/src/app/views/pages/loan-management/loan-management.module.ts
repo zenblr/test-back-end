@@ -55,6 +55,10 @@ const rout: Routes = [
   {
     path: 'package-image-upload/:id',
     component: LoanApplicationFormComponent
+  },
+  {
+    path: 'view-loan/:id',
+    component: LoanApplicationFormComponent
   }
 ]
 

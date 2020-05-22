@@ -12,15 +12,15 @@
                         <label for="">Loan Application Form</label>
                     </div>
                     <div class="col-4 border text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser' && this.url == 'package-image-upload')}" *ngIf="controls.applicationFormForAppraiser.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser' )}" *ngIf="controls.applicationFormForAppraiser.value" 
                         (click)="approvalOfAppraiser(false,'form')">
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg"  [ngClass]="{'cursor-not-allowed':(role !='Appraiser' && this.url == 'package-image-upload')}" *ngIf="!controls.applicationFormForAppraiser.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg"  [ngClass]="{'cursor-not-allowed':(role !='Appraiser' )}" *ngIf="!controls.applicationFormForAppraiser.value" 
                         (click)="approvalOfAppraiser(true,'form')">
                     </div>
                     <div class="col-4 text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' && this.url != 'package-image-upload')}" *ngIf="controls.applicationFormForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager')}" *ngIf="controls.applicationFormForBM.value" 
                         (click)="approvalOfBM(false,'form')">
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' && this.url != 'package-image-upload')}" *ngIf="!controls.applicationFormForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager')}" *ngIf="!controls.applicationFormForBM.value" 
                         (click)="approvalOfBM(true,'form')">
                     </div>
                 </div>
@@ -29,16 +29,16 @@
                         <label>Gold Valuation</label>
                     </div>
                     <div class="col-4 border text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser' && this.url == 'package-image-upload')}" *ngIf="controls.goldValuationForAppraiser.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser' )}" *ngIf="controls.goldValuationForAppraiser.value" 
                         (click)="approvalOfAppraiser(false,'gold')" >
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser' && this.url == 'package-image-upload')}" *ngIf="!controls.goldValuationForAppraiser.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Appraiser' )}" *ngIf="!controls.goldValuationForAppraiser.value" 
                         (click)="approvalOfAppraiser(true,'gold')">
 
                     </div>
                     <div class="col-4 text-center" >
-                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.url != 'package-image-upload')}" *ngIf="controls.goldValuationForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/correct.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' )}" *ngIf="controls.goldValuationForBM.value" 
                         (click)="approvalOfBM(false,'gold')" disabled>
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.url != 'package-image-upload')}" *ngIf="!controls.goldValuationForBM.value" 
+                        <img src="../../../../../../../assets/media/icons/incorrect.svg" [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' )}" *ngIf="!controls.goldValuationForBM.value" 
                         (click)="approvalOfBM(true,'gold')" disabled>
 
                     </div>
@@ -58,7 +58,7 @@
                     <div class="col-4 text-center select">
                         <select class="form-control" formControlName="loanStatusForBM" (change)="statusBM()"
                         [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
-                            <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
+                            <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
                             <option [value]="status.value" *ngFor="let status of branchManager">{{status.name | titlecase}}</option>
                         </select>
                         <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">Field Required</mat-error>

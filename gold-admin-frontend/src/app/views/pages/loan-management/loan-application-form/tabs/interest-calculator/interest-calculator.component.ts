@@ -45,10 +45,14 @@ export class InterestCalculatorComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.partner()
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if(changes.totalAmt){
+      if(changes.totalAmt.currentValue != changes.totalAmt.previousValue && changes.totalAmt.currentValue != 0){
+        this.partner()
+      }
+    }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.finalInterestForm.patchValue(changes.details.currentValue.finalLoan)
@@ -72,16 +76,19 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   partner() {
-    this.partnerService.getAllPartnerWithoutPagination().pipe(
+    this.partnerService.getPartnerBySchemeAmount(Math.floor(this.totalAmt)).pipe(
       map(res => {
         this.partnerList = res.data;
       })).subscribe()
   }
 
   getSchemes() {
+    this.dateOfPayment = []
     this.schemesList = []
     this.controls.schemeId.patchValue('')
     this.controls.interestRate.patchValue('')
+    this.controls.intresetAmt.patchValue(null)
+    // this.controls.paymentFrequency.patchValue('')
     this.partnerService.getSchemesByParnter(Number(this.controls.partnerId.value)).pipe(
       map(res => {
         this.schemesList = res.data.schemes;

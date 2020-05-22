@@ -16,7 +16,7 @@ export class AppliedLoanComponent implements OnInit {
   
   roles:any
   dataSource: AppliedLoanDatasource;
-  displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval','loanStage', 'actions'];
+  displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval','loanStage', 'actions','view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -113,6 +113,10 @@ export class AppliedLoanComponent implements OnInit {
 
   packageImageUpload(loan){
     this.router.navigate(['/loan-management/package-image-upload',loan.id])
+  }
+
+  viewLoan(loan){
+    this.router.navigate(['/loan-management/view-loan',loan.id])
   }
 
 }
