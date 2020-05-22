@@ -88,7 +88,14 @@
                         </div>
                     </mat-cell>
                 </ng-container>
-
+                <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef>Loan Stage</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <span (click)="viewLoan(loan)">
+                            View
+                        </span>
+                    </mat-cell>
+                </ng-container>
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>

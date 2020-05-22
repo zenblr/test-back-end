@@ -139,5 +139,23 @@
  *     responses:
  *       200:
  *         description: Success.
+ * /scheme/partner-scheme-amount/{amount}:
+ *  get:
+ *     tags:
+ *       - Scheme
+ *     summary: To read by amount
+ *     parameters:
+ *     - name: "amount"
+ *       in: "path"
+ *       description: "Amount wise read scheme"
+ *       required: true
+ *       type: number
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
  * 
  */

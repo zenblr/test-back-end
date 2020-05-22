@@ -41,6 +41,8 @@
  *                    type: number
  *                   cityId:
  *                    type: number
+ *                   postalCode:
+ *                    type: number
  *             roleId:
  *               type: number 
  *             userTypeId:
@@ -191,7 +193,7 @@
  *       401:
  *          description: wrong credentials   
  * /user/addAdmin:
- * post:
+ *  post:
  *    tags:
  *      - User Registration
  *    name: add admin
@@ -228,6 +230,8 @@
  *                   stateId:
  *                    type: number
  *                   cityId:
+ *                    type: number
+ *                   postalCode:
  *                    type: number
  *             roleId:
  *               type: number 
@@ -272,6 +276,8 @@
  *               type: string
  *             email:
  *               type: string
+ *             userTypeId:
+ *               type: number
  *             roleId:
  *               type: number   
  *             internalBranchId:
@@ -348,6 +354,8 @@
  *             email:
  *               type: string
  *             roleId:
+ *               type: number
+ *             userTypeId:
  *               type: number   
  *             internalBranchId:
  *               type: number      

@@ -1,5 +1,5 @@
 <kt-portlet>
-    <kt-modal-header [title]='"KYC Details"' (action)="action()"></kt-modal-header>
+    <kt-modal-header *ngIf="!viewOnly" [title]='"KYC Details"' (action)="action()"></kt-modal-header>
     <kt-portlet-body>
         <div *ngIf="data">
             <form [formGroup]=reviewForm>

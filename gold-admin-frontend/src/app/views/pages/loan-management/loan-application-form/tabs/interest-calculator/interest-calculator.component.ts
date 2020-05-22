@@ -45,10 +45,14 @@ export class InterestCalculatorComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.partner()
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if(changes.totalAmt){
+      if(changes.totalAmt.currentValue != changes.totalAmt.previousValue && changes.totalAmt.currentValue != 0){
+        this.partner()
+      }
+    }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.finalInterestForm.patchValue(changes.details.currentValue.finalLoan)
@@ -72,16 +76,19 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   partner() {
-    this.partnerService.getAllPartnerWithoutPagination().pipe(
+    this.partnerService.getPartnerBySchemeAmount(Math.floor(this.totalAmt)).pipe(
       map(res => {
         this.partnerList = res.data;
       })).subscribe()
   }
 
   getSchemes() {
+    // this.dateOfPayment = []
     this.schemesList = []
     this.controls.schemeId.patchValue('')
     this.controls.interestRate.patchValue('')
+    // this.controls.intresetAmt.patchValue(null)
+    // this.controls.paymentFrequency.patchValue('')
     this.partnerService.getSchemesByParnter(Number(this.controls.partnerId.value)).pipe(
       map(res => {
         this.schemesList = res.data.schemes;
@@ -158,7 +165,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   getIntrest() {
-    if (this.controls.finalLoanAmount.valid) {
+    if (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == "DISABLED") {
       this.dateOfPayment = [];
       switch (this.controls.paymentFrequency.value) {
         case "30":
@@ -208,9 +215,10 @@ export class InterestCalculatorComponent implements OnInit {
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      var data = { key: new Date(date.setMonth(date.getMonth() + index)), colJoin: true }
-      this.dateOfPayment.push((data))
+      var data = { key: new Date(date.setMonth(date.getMonth() + index)) }
+      this.dateOfPayment.push(data)
     }
+    console.log(this.dateOfPayment)
   }
 
   get controls() {

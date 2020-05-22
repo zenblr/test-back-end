@@ -53,7 +53,7 @@
  *       type: "integer"
  *     - name: "isActive"
  *       in: "query"
- *       description: " value of isAcive of identity type to delete"
+ *       description: " value of isActive of identity type to delete"
  *       required: true
  *       type: "boolean"
  *     security:

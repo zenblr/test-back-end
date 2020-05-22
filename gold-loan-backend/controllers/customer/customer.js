@@ -255,28 +255,31 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     }],
     isActive: true,
   };
-  let includeArray = [
-    {
-      model: models.state,
-      as: "state",
-    },
-    {
-      model: models.city,
-      as: "city",
-    },
-    {
-      model: models.stage,
-      as: "stage",
-      where: { id: stage.id },
-    },
-    {
-      model: models.status,
-      as: "status",
-    },
-    {
-      model: models.internalBranch,
-      as: "internalBranch"
-    }
+  let includeArray = [{
+    model: models.customerKyc,
+    as: "customerKyc",
+    attributes: ['isKycSubmitted']
+  }, {
+    model: models.state,
+    as: "state",
+  },
+  {
+    model: models.city,
+    as: "city",
+  },
+  {
+    model: models.stage,
+    as: "stage",
+    where: { id: stage.id },
+  },
+  {
+    model: models.status,
+    as: "status",
+  },
+  {
+    model: models.internalBranch,
+    as: "internalBranch"
+  }
   ]
 
   let allCustomers = await models.customer.findAll({
@@ -462,7 +465,12 @@ exports.getsingleCustomerManagement = async (req, res) => {
     include: [
       {
         model: models.customerKycPersonalDetail,
-        as: 'customerKycPersonal'
+        as: 'customerKycPersonal',
+        include:[{
+          model: models.identityType,
+          as:'identityType',
+          attributes:['id','name']
+        }]
       },
       {
         model: models.customerKycAddressDetail,

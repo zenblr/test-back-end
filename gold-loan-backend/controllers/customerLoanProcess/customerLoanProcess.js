@@ -289,7 +289,10 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
     let { applicationFormForAppraiser,
         goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM } = loanApproval
     let cutomerLoanApproval = {}
-    if (req.userData.roleName[0] == "Appraiser") {
+
+    let user = await models.user.findOne({ where: { id: req.userData.id } });
+
+    if (user.userTypeId == 7) {
         let stageId;
         if (loanStatusForAppraiser == 'approved') {
             stageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
@@ -307,7 +310,7 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
         cutomerLoanApproval['modifiedBy'] = modifiedBy
     }
 
-    if (req.userData.roleName[0] == "Branch Manager") {
+    if (user.userTypeId == 5) {
         var loanUniqueId = null;
         if (loanStatusForBM === 'approved') {
             if (applicationFormForBM == true && goldValuationForBM == true) {

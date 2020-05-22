@@ -189,7 +189,7 @@
                 </div>
             </div>
         </div> -->
-        <div class="row">
+        <div class="row" *ngIf="!disable">
             <div class="col-6 kt-margin-t-30 kt-margin-b-30">
 
                 <div class="offset-4 col">
@@ -230,10 +230,10 @@
 
                                 </tr>
                             </tbody>
+                            
                             <tbody *ngIf="dateOfPayment.length%colJoin != 0 && colJoin !== null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
                                     <td>{{date.key | date :'mediumDate'}}</td>
-                                    <!-- <td>{{idx%colJoin == 0}}{{colJoin == null}}{{dateOfPayment.length%colJoin < dateOfPayment.length-idx}} {{dateOfPayment.length%colJoin}}{{dateOfPayment.length-idx}}</td> -->
                                     <td [attr.rowspan]="colJoin"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
                                         {{intrestAmount | currency : 'INR'}}</td>
@@ -242,6 +242,17 @@
 
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td><strong>Total Amount</strong></td>
+                                    <td *ngIf="colJoin != null">
+                                        <strong>{{(intrestAmount/colJoin) * dateOfPayment.length | currency : 'INR'}}</strong>
+                                    </td>
+                                    <td *ngIf="colJoin == null">
+                                        <strong>{{(intrestAmount) * dateOfPayment.length | currency : 'INR'}}</strong>
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
 

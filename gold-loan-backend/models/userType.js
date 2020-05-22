@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'user_type',
             allowNull: false,
         },
+        isInternal:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_internal',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
