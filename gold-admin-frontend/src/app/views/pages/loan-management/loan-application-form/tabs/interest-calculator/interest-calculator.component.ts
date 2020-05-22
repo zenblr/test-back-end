@@ -83,11 +83,11 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   getSchemes() {
-    this.dateOfPayment = []
+    // this.dateOfPayment = []
     this.schemesList = []
     this.controls.schemeId.patchValue('')
     this.controls.interestRate.patchValue('')
-    this.controls.intresetAmt.patchValue(null)
+    // this.controls.intresetAmt.patchValue(null)
     // this.controls.paymentFrequency.patchValue('')
     this.partnerService.getSchemesByParnter(Number(this.controls.partnerId.value)).pipe(
       map(res => {

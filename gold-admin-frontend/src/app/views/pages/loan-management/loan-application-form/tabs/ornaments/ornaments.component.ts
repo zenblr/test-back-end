@@ -158,8 +158,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.left = this.left + 130
       const left = (this.left).toString() + 'px'
       const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
       width.style.maxWidth = left
+      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
       addmore.style.left = left
 
     }

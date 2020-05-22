@@ -89,7 +89,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   approvalOfAppraiser(value: boolean, type: string) {
-    if (this.role == 'Appraiser' && this.url != 'package-image-upload') {
+    if (this.role == 'Appraiser' && !this.disable) {
       if (type == 'gold') {
         this.controls.goldValuationForAppraiser.patchValue(value)
       } else {
