@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input } from '@angular/core';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class UploadPacketsComponent implements OnInit, AfterViewInit {
 
+  @Input() viewpacketsDetails;
   @ViewChild('emptyPacketWithNoOrnament', { static: false }) emptyPacketWithNoOrnament: ElementRef
   @ViewChild('packetWithAllOrnaments', { static: false }) packetWithAllOrnaments: ElementRef
   @ViewChild('packetWithSealing', { static: false }) packetWithSealing: ElementRef
@@ -21,25 +22,38 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
   left: number = 0
   width: number = 0
   packetsDetais: any[] = []
-  packetId = new FormControl('',Validators.required);
-  loanId:number=0;
+  packetId = new FormControl('', Validators.required);
+  loanId: number = 0;
   packetsName: any;
+  url: string;
   constructor(
     private sharedService: SharedService,
     private ele: ElementRef,
     public fb: FormBuilder,
-    private packetService:PacketsService,
-    private route:ActivatedRoute,
-    private router:Router,
-    private toast:ToastrService
+    private packetService: PacketsService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private toast: ToastrService
   ) { }
 
   ngOnInit() {
-    this.loanId= this.route.snapshot.params.id
+    this.url = this.router.url.split('/')[2]
+    this.loanId = this.route.snapshot.params.id
     this.getPacketsDetails()
     this.packetsForm = this.fb.group({
       packetsArray: this.fb.array([])
     })
+    const array = this.viewpacketsDetails
+    for (let index = 0; index < array.length; index++) {
+      this.packetId.patchValue(array[index].packetId)
+      this.addmore()
+      const pack = this.packets.at(index) as FormGroup;
+      pack.patchValue(array[index])
+      pack.patchValue({packetsName:array[index].packet.packetUniqueId})
+      console.log(pack)
+      // pack.at(inde).patchValue(array[index])
+    }
+    console.log(this.viewpacketsDetails)
   }
   get packets() {
     if (this.packetsForm) {
@@ -47,9 +61,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getPacketsDetails(){
+  getPacketsDetails() {
     this.packetService.getPacketsAvailable().pipe(
-      map(res=>{
+      map(res => {
         this.packetsDetais = res.data
       })
     ).subscribe()
@@ -59,7 +73,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
   }
 
   addmore() {
-    if(this.packetId.invalid){
+    if (this.packetId.invalid) {
       this.packetId.markAsTouched();
       return;
     }
@@ -84,14 +98,16 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
       width.style.maxWidth = '720px'
 
     }
-    this.removePackets()
+    if (this.url != 'view-loan')
+      this.removePackets()
+
     this.packets.push(this.fb.group({
       emptyPacketWithNoOrnament: ['', Validators.required],
       packetWithAllOrnaments: ['', Validators.required],
       packetWithSealing: ['', Validators.required],
       packetWithWeight: ['', Validators.required],
-      packetId:[this.packetId.value],
-      packetsName:[this.packetsName]
+      packetId: [this.packetId.value],
+      packetsName: [this.packetsName]
     }))
     this.packetId.reset()
 
@@ -119,24 +135,24 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
       })).subscribe()
   }
 
-  removePackets(){
+  removePackets() {
     let arrayIndex = this.packets.length
     const controls = this.packets.at(arrayIndex) as FormGroup;
-    let index = this.packetsDetais.findIndex(ele =>{
+    let index = this.packetsDetais.findIndex(ele => {
       return ele.id == this.packetId.value;
     })
     this.packetsName = this.packetsDetais[index].packetUniqueId
     console.log(this.packetId.value)
-    
-    this.packetsDetais.splice(index,1)
+
+    this.packetsDetais.splice(index, 1)
   }
 
-  save(){
-    if(this.packetsForm.invalid){
+  save() {
+    if (this.packetsForm.invalid) {
       this.packetsForm.markAllAsTouched()
       return
     }
-    this.packetService.uploadPackets(this.packets.value,this.loanId).pipe(
+    this.packetService.uploadPackets(this.packets.value, this.loanId).pipe(
       map(res => {
         this.toast.success(res.message)
         this.router.navigate(['/loan-management/applied-loan'])

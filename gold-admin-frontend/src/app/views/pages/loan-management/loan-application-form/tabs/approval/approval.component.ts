@@ -57,7 +57,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       commentByAppraiser: [''],
       applicationFormForBM: [false],
       goldValuationForBM: [false],
-      loanStatusForBM: [''],
+      loanStatusForBM: ['pending'],
       commentByBM: [''],
     })
     this.approvalFormEmit.emit(this.approvalForm)
@@ -89,7 +89,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   approvalOfAppraiser(value: boolean, type: string) {
-    if (this.role == 'Appraiser' && this.url != 'package-image-upload') {
+    if (this.role == 'Appraiser' && !this.disable) {
       if (type == 'gold') {
         this.controls.goldValuationForAppraiser.patchValue(value)
       } else {
@@ -98,7 +98,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   approvalOfBM(value: boolean, type: string) {
-    if (this.role == 'Branch Manager' && this.url != 'package-image-upload') {
+    if (this.role == 'Branch Manager' && !this.disable) {
       if (type == 'gold') {
         this.controls.goldValuationForBM.patchValue(value)
       } else {

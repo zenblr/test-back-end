@@ -123,7 +123,7 @@
 
                                 <div class="form-label">
                                     <label
-                                        *ngIf="ornament.controls.weightMachineZeroWeight.value && url != 'package-image-upload'"
+                                        *ngIf="ornament.controls.weightMachineZeroWeight.value && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('weightMachineZeroWeight',idx,ornament.controls.weightMachineZeroWeight.value)">Remove</label>
                                 </div>
@@ -156,7 +156,7 @@
                                     [value]="'Attach'" (click)="withOrnamentWeight.click()"></kt-button>
                                 <div class="form-label">
                                     <label
-                                        *ngIf="ornament.controls.withOrnamentWeight.value && url != 'package-image-upload'"
+                                        *ngIf="ornament.controls.withOrnamentWeight.value && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('withOrnamentWeight',idx,ornament.controls.withOrnamentWeight.value)">Remove</label>
                                 </div>
@@ -183,7 +183,7 @@
                                 <kt-button *ngIf="!ornament.controls.stoneTouch.value" [type]="'button'"
                                     [value]="'Attach'" (click)="stoneTouch.click()"></kt-button>
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.stoneTouch.value && url != 'package-image-upload'"
+                                    <label *ngIf="ornament.controls.stoneTouch.value && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('stoneTouch',idx,ornament.controls.stoneTouch.value)">Remove</label>
                                 </div>
@@ -213,7 +213,7 @@
                                 <kt-button *ngIf="!ornament.controls.acidTest.value" [type]="'button'"
                                     [value]="'Attach'" (click)="acidTest.click()"></kt-button>
                                 <div class="form-label">
-                                    <label *ngIf="ornament.controls.acidTest.value && url != 'package-image-upload'"
+                                    <label *ngIf="ornament.controls.acidTest.value && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('acidTest',idx,ornament.controls.acidTest.value)">Remove</label>
                                 </div>
@@ -241,7 +241,7 @@
                                     [value]="'Attach'" (click)="purity.click()"></kt-button>
                                 <div class="form-label">
                                     <label
-                                        *ngIf="ornament.controls.purityTest.value.length > 0 && url != 'package-image-upload'"
+                                        *ngIf="ornament.controls.purityTest.value.length > 0 && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('purity',idx,ornament.controls.purityTest.value)">Remove</label>
                                 </div>
@@ -396,7 +396,7 @@
                 <div class="form-label">
                     <label *ngIf="!ornament.controls.ornamentImage.value" class="my-auto m-auto pt-2">Upload Ornaments
                         Image</label>
-                    <label *ngIf="ornament.controls.ornamentImage.value && url != 'package-image-upload'"
+                    <label *ngIf="ornament.controls.ornamentImage.value && !disable"
                         class="my-auto text-danger m-auto kt-pointer"
                         (click)="removeImage('ornamentImage',idx)">Remove</label>
                 </div>
@@ -410,4 +410,4 @@
         </div>
     </mat-tab>
 </mat-tab-group>
-<button (click)="addmore()" class="addmore">+ Add More</button>
+<button (click)="addmore()" class="addmore" [disabled]="disable">+ Add More</button>

@@ -93,7 +93,7 @@ export class UserBanksComponent implements OnInit {
         }
       }),
       finalize(() => {
-        this.bankForm.get('passbookProof').patchValue(this.file.name);
+        // this.bankForm.get('passbookProof').patchValue(this.file.name);
         console.log(this.bankForm.value)
       })
     ).subscribe();
@@ -102,7 +102,9 @@ export class UserBanksComponent implements OnInit {
 
   removeImages(index) {
     this.passBookImage.splice(index, 1);
+    console.log(this.passBookImage)
     this.bankForm.get('passbookProof').patchValue('');
+    this.bankForm.get('passbookProofImage').patchValue('');
   }
 
   get controls() {

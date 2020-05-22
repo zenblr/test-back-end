@@ -61,7 +61,7 @@
                                     Required field</mat-error>
                             </div>
                         </div>
-                        <div class="row kt-padding-t-15">
+                        <div class="row kt-padding-t-15" *ngIf="data.action != 'edit'">
                             <div class="col-4 form-label">
                                 <label for="" class="kt-padding-l-10 text-color mandatory">User ID</label>
                             </div>
@@ -110,6 +110,20 @@
                                 <label for="" class="kt-padding-l-10 text-color mandatory">User Type</label>
                             </div>
                             <div class="col-8">
+                                <select class="form-control" formControlName="userTypeId" autocomplete="off"
+                                    [class.isError]="controls.userTypeId.touched && controls.userTypeId.invalid">
+                                    <option value="" selected disabled>Select</option>
+                                    <option [value]="type.id" *ngFor="let type of userType">{{type.userType}}</option>
+                                </select>
+                                <mat-error *ngIf="controls.userTypeId.touched && controls.userTypeId.errors?.required">
+                                    Required field</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" class="kt-padding-l-10 text-color mandatory">Role</label>
+                            </div>
+                            <div class="col-8">
                                 <select class="form-control" formControlName="roleId" autocomplete="off"
                                     [class.isError]="controls.roleId.touched && controls.roleId.invalid">
                                     <option value="" selected disabled>Select</option>
@@ -119,7 +133,6 @@
                                     Required field</mat-error>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </form>
