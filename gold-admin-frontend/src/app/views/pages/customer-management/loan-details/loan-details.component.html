@@ -60,15 +60,15 @@
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Nominee</div>
-                    <div class="text-color font-weight-500">Bhushan Madaye</div>
+                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].nomineeName | titlecase}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Age</div>
-                    <div class="text-color font-weight-500">40</div>
+                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].nomineeAge}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Relation</div>
-                    <div class="text-color font-weight-500">Brother</div>
+                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].relationship | titlecase}}</div>
                 </div>
             </div>
         </div>
@@ -89,7 +89,7 @@
                             <div class="row kt-margin-t-15">
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Ornament Type</div>
-                                    <div class="text-color font-weight-500">{{ornaments.ornamentType}}</div>
+                                    <div class="text-color font-weight-500">{{ornaments.ornamentType | titlecase}}</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Quantity</div>
@@ -155,7 +155,7 @@
     <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
-                {{loanDetails.loanOrnamentsDetail.length}} Packets</label>
+                {{loanDetails.loanPacketDetails.length}} Packets</label>
             <mat-tab-group style="min-height: 300px;">
                 <mat-tab label="{{packets.packet.packetUniqueId | uppercase}}"
                     *ngFor="let packets of loanDetails.loanPacketDetails;index as idx">

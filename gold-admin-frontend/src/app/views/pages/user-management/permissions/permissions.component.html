@@ -18,7 +18,7 @@
                                     <div class="col-1">
                                         <mat-slide-toggle [checked]="entity.isSelected" (change)="toogleChange($event.checked,moduleIndex,entityIndex)"></mat-slide-toggle>
                                     </div>
-                                    <div class="col-2" *ngFor="let action of entity.permission;index as permissionIndex">
+                                    <div class="col-2" *ngFor="let action of entity.permission;index as permissionIndex" [class.offset-3]="(permissionIndex+1)%5 == 0">
                                         <label class="custom-checkbox">
                                             <span class="label-checkbox">{{action.actionName |titlecase}}</span>
                                             <input type="checkbox" [checked]="action.isSelected" (change)="actionChange($event.target.checked,moduleIndex,entityIndex,permissionIndex)">
