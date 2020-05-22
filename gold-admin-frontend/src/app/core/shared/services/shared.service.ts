@@ -13,9 +13,9 @@ export class SharedService {
   role$ = this.role.asObservable();
 
   constructor(private http: HttpClient) {
-    var token = localStorage.getItem('accessToken');
+    var token = JSON.parse(localStorage.getItem('UserDetails'));
     if (token) {
-      var decodedValue = JSON.parse(atob(token.split('.')[1]));
+      var decodedValue = JSON.parse(atob(token.Token.split('.')[1]));
       this.role.next(decodedValue.roleName[0]);
       console.log(this.role);
     }
@@ -36,12 +36,11 @@ export class SharedService {
   }
 
   getRole(): Observable<any> {
-    var token = localStorage.getItem('accessToken');
-    // if (token) {
-    var decodedValue = JSON.parse(atob(token.split('.')[1]));
-    return of(decodedValue.roleName[0]);
-    console.log(this.role);
-    // }
+    var token = JSON.parse(localStorage.getItem('UserDetails'));
+    if (token) {
+      var decodedValue = JSON.parse(atob(token.Token.split('.')[1]));
+      return of(decodedValue.roleName[0]);
+    }
   }
 
   fileUpload(data): Observable<any> {
@@ -54,5 +53,9 @@ export class SharedService {
 
   getAllSubCategory(): Observable<any> {
     return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category`);
+  }
+
+  getDataFromStorage() {
+    return JSON.parse(localStorage.getItem('UserDetails'));
   }
 }

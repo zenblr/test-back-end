@@ -24,6 +24,7 @@ import { LogisticPartnerService } from '../../../../core/emi-management/logistic
 import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
 import { CancelOrderDetailsService, OrderDetailsService, DepositDetailsService, EmiDetailsService } from '../../../../core/emi-management/order-management';
 import { MonthlyService } from '../../../../core/repayment/services/monthly.service';
+import { LeadService } from '../../../../core/lead-management/services/lead.service';
 
 @Component({
 	selector: 'kt-topbar',
@@ -85,7 +86,8 @@ export class TopbarComponent implements OnInit {
 		private cancelOrderDetailsService: CancelOrderDetailsService,
 		private depositDetailsService: DepositDetailsService,
 		private emiDetailsService: EmiDetailsService,
-		private monthlyService: MonthlyService) {
+		private monthlyService: MonthlyService,
+		private leadService:LeadService) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -312,7 +314,7 @@ export class TopbarComponent implements OnInit {
 
 	action(event: Event) {
 		if (this.path == 'lead-management') {
-			this.customerManagementServiceCustomer.openModal.next(true);
+			this.leadService.openModal.next(true);
 		}
 		if (this.path == 'scheme') {
 			this.loanSettingService.openModal.next(true)

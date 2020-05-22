@@ -155,7 +155,7 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   cancel() {
-    this.ngOnInit()
+    // this.router.navigate(['/'])
   }
 
   checkForFormValidation() {

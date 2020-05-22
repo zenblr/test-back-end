@@ -10,7 +10,7 @@
                 <label class="custom-checkbox">
                   <span class="label-checkbox text-color font-weight-500">Select All</span>
                   <input type="checkbox" class="" id="view" [checked]="selectAll.cat"
-                    (change)="selectAllCat($event.target.checked,'category')" >
+                    (change)="selectAllCat($event.target.checked,'category')">
                   <span class="checkmark top-0" #checkboxOne></span>
                 </label>
                 <div class="row kt-margin-t-15">
@@ -42,20 +42,20 @@
                       <label class="custom-checkbox">
                         <span
                           class="label-checkbox text-color font-weight-500">{{category.categoryName | titlecase}}</span>
-                        <input type="checkbox" class="" id="view" (change)="selectParticularCat($event.target.checked,Catidx)"
-                        [checked]="subLength(Catidx)">
-                        <span class="checkmark top-0"  #sub></span>
+                        <input type="checkbox" class="" id="view"
+                          (change)="selectParticularCat($event.target.checked,Catidx)" [checked]="subLength(Catidx)">
+                        <span class="checkmark top-0" #sub></span>
                       </label>
-                    <div *ngFor="let sub of category.subCategory;index as Subidx"
-                      class="position-relative kt-margin-l-35">
-                      <label class="custom-checkbox">
-                        <span
-                          class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{sub.subCategoryName | titlecase}}</span>
-                        <input type="checkbox" class="" id="view" [checked]="sub.isSelected"
-                          (change)=subCategoryCheckBox($event.target.checked,Catidx,Subidx)>
-                        <span class="checkmark top-0"></span>
-                      </label>
-                    </div>
+                      <div *ngFor="let sub of category.subCategory;index as Subidx"
+                        class="position-relative kt-margin-l-35">
+                        <label class="custom-checkbox">
+                          <span
+                            class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{sub.subCategoryName | titlecase}}</span>
+                          <input type="checkbox" class="" id="view" [checked]="sub.isSelected"
+                            (change)=subCategoryCheckBox($event.target.checked,Catidx,Subidx)>
+                          <span class="checkmark top-0"></span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -77,32 +77,32 @@
                       <p class="tree text-color font-weight-500">{{category.categoryName | titlecase}}</p>
                       <div *ngFor="let sub of category.subCategory;last as las; first as fir;index as subIndex">
                         <div *ngIf="sub.isSelected">
-                          <ul  class="tree" >
-                          <li class="text-color font-weight-500 kt-margin-l-15" [class.last]="las">
-                            <span class="position-relative ">
-                              <label class="custom-checkbox">
-                                <span
-                                  class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{sub.subCategoryName | titlecase}}</span>
-                                <input type="checkbox" [checked]="productLength(catIndex,subIndex)"
-                                  (change)="selectParicularSubCatPro($event.target.checked,catIndex,subIndex)">
-                                <span class="checkmark top-0" #pro></span>
-                              </label>
-                            </span>
-                        <div class="row justify-content-start kt-margin-l-40">
-                          <div *ngFor="let product of sub.products;index as idx" class="col-4">
-                                <span class="position-relative ">
-                                  <label class="custom-checkbox">
-                                    <span
-                                      class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{product.productName | titlecase}}</span>
-                                    <input type="checkbox" [checked]="product.isSelected"
-                                      (change)="generateProduct($event.target.checked,catIndex,subIndex,idx)">
-                                    <span class="checkmark top-0"></span>
-                                  </label>
-                                </span>
-                          </div>
-                        </div>
-                        </li>
-                        </ul>
+                          <ul class="tree">
+                            <li class="text-color font-weight-500 kt-margin-l-15" [class.last]="las">
+                              <span class="position-relative ">
+                                <label class="custom-checkbox">
+                                  <span
+                                    class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{sub.subCategoryName | titlecase}}</span>
+                                  <input type="checkbox" [checked]="productLength(catIndex,subIndex)"
+                                    (change)="selectParicularSubCatPro($event.target.checked,catIndex,subIndex)">
+                                  <span class="checkmark top-0" #pro></span>
+                                </label>
+                              </span>
+                              <div class="row justify-content-start kt-margin-l-40">
+                                <div *ngFor="let product of sub.products;index as idx" class="col-4">
+                                  <span class="position-relative ">
+                                    <label class="custom-checkbox">
+                                      <span
+                                        class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{product.productName | titlecase}}</span>
+                                      <input type="checkbox" [checked]="product.isSelected"
+                                        (change)="generateProduct($event.target.checked,catIndex,subIndex,idx)">
+                                      <span class="checkmark top-0"></span>
+                                    </label>
+                                  </span>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
                         </div>
                       </div>
                     </div>
@@ -116,7 +116,7 @@
     </div>
     <div class="row">
       <div class="col-12 p-2">
-        <kt-modal-footer [value]="'create'" (action)="submit($event)"></kt-modal-footer>
+        <kt-modal-footer [value]="editMerchant ? 'edit' : 'create'" (action)="submit($event)"></kt-modal-footer>
       </div>
     </div>
   </kt-portlet-body>

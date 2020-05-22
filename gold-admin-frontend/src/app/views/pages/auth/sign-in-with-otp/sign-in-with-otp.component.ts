@@ -146,7 +146,7 @@ export class SignInWithOtpComponent implements OnInit {
             // this.store.dispatch(new Login({ authToken: user.accessToken }));
             localStorage.removeItem('mobile')
             localStorage.removeItem('reference')
-            localStorage.setItem('accessToken', user.token);
+            localStorage.setItem('UserDetails', JSON.stringify(user));
             // debugger
             if (this.returnUrl === '/') {
               this.router.navigate(['/dashboard']);
