@@ -508,7 +508,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
             await models.customerLoanPackageDetails.bulkCreate(finalPackageData, { returning: true, transaction: t })
 
             let d = await models.packet.bulkCreate(packetUpdateArray, {
-                updateOnDuplicate: ["customerId", "loanId", "modifiedBy", "isActive", "packetAssigned"]
+                updateOnDuplicate: ["customerId", "loanId", "modifiedBy", "packetAssigned"]
             }, { transaction: t })
         })
 
