@@ -241,6 +241,7 @@ export class FilterComponent implements OnInit, OnChanges {
 			multiSelect2: [""],
 			priceFrom: [""],
 			priceTo: [""],
+			startDate: [""],
 		});
 	}
 
@@ -325,6 +326,7 @@ export class FilterComponent implements OnInit, OnChanges {
 			multiSelect2: "",
 			priceFrom: "",
 			priceTo: "",
+			startDate: "",
 		};
 		const controls = this.filterForm.controls;
 		if (controls["multiSelect1"].value) {
@@ -342,6 +344,9 @@ export class FilterComponent implements OnInit, OnChanges {
 		}
 		if (controls["priceTo"].value) {
 			this.filterData.priceTo = controls["priceTo"].value;
+		}
+		if (controls["startDate"].value) {
+			this.filterData.startDate = controls["startDate"].value;
 		}
 		return this.filterData;
 	}
@@ -629,6 +634,7 @@ export class FilterComponent implements OnInit, OnChanges {
 			multiSelect2: "",
 			priceFrom: "",
 			priceTo: "",
+			startDate: "",
 		};
 		this.stateList = [];
 		this.cityList = [];

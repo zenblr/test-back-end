@@ -309,7 +309,10 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.value1 = "Export";
 			this.type1 = "button";
-			// this.showfilter = true;
+			this.showfilter = true;
+			this.filterName = "depositDetails";
+			this.filterWidth = "550px";
+			this.listType = "tenure,orderStatus";
 		}
 		if (this.path == "emi-details") {
 			this.showfilter = true;
@@ -428,6 +431,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "emi-details") {
 			this.emiDetailsService.applyFilter.next(data);
+		}
+		if (this.path == "deposit-details") {
+			this.depositDetailsService.applyFilter.next(data);
 		}
 	}
 }
