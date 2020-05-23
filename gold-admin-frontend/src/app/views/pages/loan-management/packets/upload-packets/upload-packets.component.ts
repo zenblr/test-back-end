@@ -112,6 +112,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
       packetId: [this.packetId.value],
       packetsName: [this.packetsName]
     }))
+    this.packetId.patchValue('')
     this.packetId.reset()
 
 

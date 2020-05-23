@@ -17,7 +17,7 @@ import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-revie
 export class AppliedKycComponent implements OnInit {
 
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'actions', 'view'];
+  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'actions', 'view','appraiser'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -103,6 +103,10 @@ export class AppliedKycComponent implements OnInit {
         this.router.navigate(['/kyc-setting/edit-kyc']);
       })
     ).subscribe();
+  }
+
+  assign(){
+    this.router.navigate(['/user-management/assign-appraiser'])
   }
 
   viewKYC(data) {

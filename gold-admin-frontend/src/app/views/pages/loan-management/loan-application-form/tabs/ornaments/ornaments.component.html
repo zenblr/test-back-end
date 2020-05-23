@@ -264,8 +264,8 @@
                             <div class="col-8">
                                 <select class="form-control" formControlName="karat" (change)="selectKarat(idx)"
                                     [class.isError]="ornament.controls.karat.touched && ornament.controls.karat.invalid">
-                                    <option value=null [disabled]="true" [selected]="true">Select Karat</option>
-                                    <option [value]="karat.karat" *ngFor="let karat of karatArr">{{karat.karat}}
+                                    <option value="" [disabled]="true" [selected]="true">Select Karat</option>
+                                    <option [value]="karat.karat" *ngFor="let karat of karatArr" [selected]="ornament.controls.karat.value == karat.karat">{{karat.karat}}
                                     </option>
                                 </select>
                                 <mat-error *ngIf="ornament.controls.karat.touched && ornament.controls.karat.invalid">
@@ -296,6 +296,16 @@
                     <div class="col-6">
                         <div class="row kt-margin-t-15">
                             <div class="col-4 form-label">
+                                <label class="my-auto text-color ">Final Net Weight</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" formControlName="finalNetWeight" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row kt-margin-t-15">
+                            <div class="col-4 form-label">
                                 <label class="my-auto text-color ">LTV Range</label>
                             </div>
                             <div class="col-8">
@@ -305,6 +315,9 @@
                             </div>
                         </div>
                     </div>
+                    
+                </div>
+                <div class="row">
                     <div class="col-6">
                         <div class="row kt-margin-t-15 kt-padding-l-10">
                             <div class="col-4 form-label">
@@ -318,9 +331,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-
                     <div class="col-6">
                         <div class="row kt-margin-t-15">
                             <div class="col-4 form-label">
@@ -343,6 +353,10 @@
                             </div>
                         </div>
                     </div>
+                    
+
+                </div>
+                <div class="row">
                     <div class="col-6">
                         <div class="row kt-margin-t-15 kt-padding-l-10">
                             <div class="col-4 form-label">
@@ -360,20 +374,7 @@
                             </div>
                         </div>
                     </div>
-
-                </div>
-                <div class="row">
-
-                    <div class="col-6">
-                        <div class="row kt-margin-t-15">
-                            <div class="col-4 form-label">
-                                <label class="my-auto text-color ">Final Net Weight</label>
-                            </div>
-                            <div class="col-8">
-                                <input type="text" class="form-control" formControlName="finalNetWeight" readonly>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div class="col-6">
                         <div class="row kt-margin-t-15 kt-padding-l-10">
                             <div class="col-4 form-label">

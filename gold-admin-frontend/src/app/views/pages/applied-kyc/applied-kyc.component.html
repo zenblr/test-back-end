@@ -81,6 +81,12 @@
                         View
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="appraiser">
+                    <mat-header-cell *matHeaderCellDef>KYC Details</mat-header-cell>
+                    <mat-cell *matCellDef="let role" (click)="assign()" class="kt-pointer">
+                        Assign Appraiser
+                    </mat-cell>
+                </ng-container>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 

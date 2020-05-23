@@ -111,7 +111,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           Object.keys(group.value).forEach(key => {
             this.patchUrlIntoForm(key, group.value[key], index)
           })
-          this.ref.markForCheck()
+          this.ref.detectChanges()
         }
       }
 
@@ -187,7 +187,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       withOrnamentWeight: [, Validators.required],
       stoneTouch: [, Validators.required],
       acidTest: [, Validators.required],
-      karat: [, Validators.required],
+      karat: ['', Validators.required],
       purity: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ltvRange: [[]],
       finalNetWeight: [''],
