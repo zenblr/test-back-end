@@ -125,10 +125,10 @@ export class PageConfig {
 			"refund-management": {
 				page: { title: "Refund Management", desc: "" },
 			},
-			users: {
+			'users': {
 				page: { title: "Users", desc: "" },
 			},
-			reports: {
+			'reports': {
 				page: { title: "Reports", desc: "" },
 			},
 		},
