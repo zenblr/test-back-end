@@ -71,10 +71,6 @@ export class MenuConfig {
 									page: "/loan-setting/scheme",
 								},
 								{
-									title: "Packet",
-									page: "/loan-setting/packet",
-								},
-								{
 									title: "Karat details",
 									page: "/loan-setting/karat-details",
 								},
@@ -120,7 +116,7 @@ export class MenuConfig {
 							page: "/kyc-setting",
 						},
 						{
-							title: "Applied Kyc",
+							title: "Applied KYC",
 							page: "/applied-kyc",
 						},
 					],
