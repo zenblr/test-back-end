@@ -13,10 +13,6 @@ export class ProductService {
 	constructor(private http: HttpClient) { }
 
 	getAllProducts(event?: any): Observable<any> {
-		// return this.http
-		// 	.get<any>(`/api/products?search=${prodData.search}&from=${prodData.from}&to=${prodData.to}`, { observe: 'response' })
-		// 	.pipe(map(response => response.body));
-
 		const reqParams: any = {};
 		if (event && event.search) {
 			reqParams.search = event.search;
@@ -36,8 +32,7 @@ export class ProductService {
 		if (event && event.priceTo) {
 			reqParams.priceTo = event.priceTo;
 		}
-		return this.http.get<any[]>(`http://173.249.49.7:9120/api/products`, { params: reqParams, observe: 'response' })
-			.pipe(map(response => response.body));
+		return this.http.get<any[]>(`http://173.249.49.7:9120/api/products`, { params: reqParams });
 	}
 
 	editProduct(id, data): Observable<any> {

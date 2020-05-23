@@ -95,8 +95,10 @@
                 </ng-container>
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element?.orderemistatus?.id == 1,
-                    'text-green' : element?.orderemistatus?.id == 4}">
+                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element?.orderemistatus?.id == 1 || element?.orderemistatus?.id == 5,
+                    'text-red' : element?.orderemistatus?.id == 9 || element?.orderemistatus?.id == 13,
+                    'text-green' : element?.orderemistatus?.id != 1 || element?.orderemistatus?.id != 5 ||
+                    element?.orderemistatus?.id != 9 || element?.orderemistatus?.id != 13}">
                         {{element?.orderemistatus?.statusName ? (element?.orderemistatus?.statusName | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
