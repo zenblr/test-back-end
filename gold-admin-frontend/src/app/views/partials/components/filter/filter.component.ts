@@ -91,15 +91,10 @@ export class FilterComponent implements OnInit, OnChanges {
 		SortFilter: [],
 	};
 	filterData: any = {};
-	// filterData = {
-	//   categoryId: '',
-	//   subCategoryId: '',
-	//   priceFrom: '',
-	//   priceTo: '',
-	// };
-
 	categoryList = [];
 	subCategoryList = [];
+	tenure = [];
+	status = [];
 
 	public memberMultiFilterCtrl: FormControl = new FormControl();
 	public filteredMemberMulti: ReplaySubject<[]> = new ReplaySubject<[]>(1);
@@ -223,6 +218,15 @@ export class FilterComponent implements OnInit, OnChanges {
 						case "sub-category":
 							this.getSubCategory();
 							break;
+						case "tenure":
+							this.getTenure();
+							break;
+						case "orderStatus":
+							this.getStatus();
+							break;
+						case "emiStatus":
+							this.getEmiStatus();
+							break;
 					}
 				}
 			}
@@ -233,17 +237,12 @@ export class FilterComponent implements OnInit, OnChanges {
 
 	initFilterForm() {
 		this.filterForm = this.fb.group({
-			categoryId: [""],
-			subCategoryId: [""],
+			multiSelect1: [""],
+			multiSelect2: [""],
 			priceFrom: [""],
 			priceTo: [""],
+			startDate: [""],
 		});
-
-		if (this.filterName == "leave" || this.filterName == "teamClaims") {
-			let statusIds = ["1"];
-			this.filterForm.controls.leaveStatusIds.setValue(statusIds);
-			this.applyFilter();
-		}
 	}
 
 	get form() {
@@ -323,20 +322,21 @@ export class FilterComponent implements OnInit, OnChanges {
 
 	prepareFilter() {
 		this.filterData = {
-			categoryId: "",
-			subCategoryId: "",
+			multiSelect1: "",
+			multiSelect2: "",
 			priceFrom: "",
 			priceTo: "",
+			startDate: "",
 		};
 		const controls = this.filterForm.controls;
-		if (controls["categoryId"].value) {
-			this.filterData.categoryId = controls[
-				"categoryId"
+		if (controls["multiSelect1"].value) {
+			this.filterData.multiSelect1 = controls[
+				"multiSelect1"
 			].value.toString();
 		}
-		if (controls["subCategoryId"].value) {
-			this.filterData.subCategoryId = controls[
-				"subCategoryId"
+		if (controls["multiSelect2"].value) {
+			this.filterData.multiSelect2 = controls[
+				"multiSelect2"
 			].value.toString();
 		}
 		if (controls["priceFrom"].value) {
@@ -344,6 +344,9 @@ export class FilterComponent implements OnInit, OnChanges {
 		}
 		if (controls["priceTo"].value) {
 			this.filterData.priceTo = controls["priceTo"].value;
+		}
+		if (controls["startDate"].value) {
+			this.filterData.startDate = controls["startDate"].value;
 		}
 		return this.filterData;
 	}
@@ -627,10 +630,11 @@ export class FilterComponent implements OnInit, OnChanges {
 		this.viewLoading = false;
 		this.dropdown.close();
 		this.filterData = {
-			categoryId: "",
-			subCategoryId: "",
+			multiSelect1: "",
+			multiSelect2: "",
 			priceFrom: "",
 			priceTo: "",
+			startDate: "",
 		};
 		this.stateList = [];
 		this.cityList = [];
@@ -655,6 +659,24 @@ export class FilterComponent implements OnInit, OnChanges {
 	getStates() {
 		this.sharedService.getStates().subscribe((res) => {
 			this.states = res.message;
+		});
+	}
+
+	getTenure() {
+		this.sharedService.getTenure().subscribe((res) => {
+			this.tenure = res;
+		});
+	}
+
+	getStatus() {
+		this.sharedService.getStatus().subscribe((res) => {
+			this.status = res;
+		});
+	}
+
+	getEmiStatus() {
+		this.sharedService.getEmiStatus().subscribe((res) => {
+			this.status = res;
 		});
 	}
 

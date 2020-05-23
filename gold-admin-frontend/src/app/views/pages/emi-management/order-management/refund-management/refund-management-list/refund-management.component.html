@@ -132,12 +132,14 @@
                 <ng-container matColumnDef="cancelDate">
                     <mat-header-cell *matHeaderCellDef>Cancel Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{
-							element?.cancelOrder?.cancelDate
-								? (element?.cancelOrder?.cancelDate
-								  | date: "MMM d, y")
-								: "-"
-						}}
+                        <div class="d-block">
+                            <div>
+                                {{element?.cancelOrder?.cancelDate ? (element?.cancelOrder?.cancelDate | date:'MMM d, y') : '-'}}
+                            </div>
+                            <div>
+                                {{element?.cancelOrder?.cancelDate ? (element?.cancelOrder?.cancelDate | date:'h:mm a') : ''}}
+                            </div>
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bankName">

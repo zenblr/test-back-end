@@ -10,11 +10,14 @@
 		top: 10px;
 		left: 150px;
 		background: transparent;
-		border: thin solid #454D67;
+		border: thin solid #454d67;
 		border-radius: 5px;
 		padding: 5px;
 	}
-	.min-height-attach{
+	.addmore:disabled {
+		cursor: not-allowed;
+	}
+	.min-height-attach {
 		min-height: 36px;
 		display: flex;
 		align-items: center;

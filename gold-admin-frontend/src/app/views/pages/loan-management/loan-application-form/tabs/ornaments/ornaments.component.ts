@@ -158,8 +158,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.left = this.left + 130
       const left = (this.left).toString() + 'px'
       const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
       width.style.maxWidth = left
+      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
       addmore.style.left = left
 
     }
@@ -376,7 +376,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       let ltvPercent = controls.controls.ltvPercent.value
       let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
       controls.controls.ltvAmount.patchValue(ltv)
-      controls.controls.loanAmount.patchValue(ltv * controls.controls.finalNetWeight.value)
+      controls.controls.loanAmount.patchValue((ltv * controls.controls.finalNetWeight.value).toFixed(2))
     }
   }
 }

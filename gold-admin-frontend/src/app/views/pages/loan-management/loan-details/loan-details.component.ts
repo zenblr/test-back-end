@@ -3,7 +3,7 @@ import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
-import { LoanDetailsDatasource,LoanDetailsService } from '../../../../core/loan-management'
+import { LoanDetailsDatasource, LoanDetailsService } from '../../../../core/loan-management'
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 @Component({
@@ -13,9 +13,9 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 })
 export class LoanDetailsComponent implements OnInit {
 
-  roles:any
+  roles: any
   dataSource: LoanDetailsDatasource;
-  displayedColumns = ['customerID', 'loanId','schemeName','amount', 'interestRate', 'tenure', 'interestRestDays','startDate','endDate','actions','new'];
+  displayedColumns = ['customerID', 'loanId', 'schemeName', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'startDate', 'endDate', 'actions', 'new'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -32,15 +32,15 @@ export class LoanDetailsComponent implements OnInit {
     public dialog: MatDialog,
     private loanDetailsService: LoanDetailsService,
     private dataTableService: DataTableService,
-    private router:Router,
-    private sharedService:SharedService
+    private router: Router,
+    private sharedService: SharedService
   ) {
   }
 
   ngOnInit() {
-    this.sharedService.getRole().subscribe(res => 
-      {this.roles = res
-      })
+    this.sharedService.getRole().subscribe(res => {
+    this.roles = res
+    })
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
@@ -70,7 +70,7 @@ export class LoanDetailsComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadDetailsLoans(1, 25,this.searchValue,);
+    this.dataSource.loadDetailsLoans(1, 25, this.searchValue);
 
   }
 
@@ -83,25 +83,25 @@ export class LoanDetailsComponent implements OnInit {
   }
 
 
-  
+
   loadAppliedLoansPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadDetailsLoans(from, to,this.searchValue);
+    this.dataSource.loadDetailsLoans(from, to, this.searchValue);
   }
 
   viewLoan(loan) {
-    this.router.navigate(['/customer-management/loan-details',loan.id])
+    this.router.navigate(['/customer-management/loan-details', loan.id])
   }
 
-  new(loan){
-    this.router.navigate(['/loan-management/loan-application-form/'],{queryParams:{customerID:loan.customer.customerUniqueId}})
+  new(loan) {
+    this.router.navigate(['/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
   }
-  packageImageUpload(loan){
-    this.router.navigate(['/loan-management/package-image-upload',loan.id])
+  packageImageUpload(loan) {
+    this.router.navigate(['/loan-management/package-image-upload', loan.id])
   }
 
 }

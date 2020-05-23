@@ -15,7 +15,6 @@ export class MenuConfig {
 				for (const item of res.permissions) {
 					this.permissionsArr.push(item.description);
 				}
-				this.sharedService.permission.next(this.permissionsArr);
 				this.permissionsService.loadPermissions(this.permissionsArr);
 				console.log(this.permissionsArr);
 			}

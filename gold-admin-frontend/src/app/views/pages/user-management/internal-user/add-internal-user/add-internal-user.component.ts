@@ -18,6 +18,7 @@ export class AddInternalUserComponent implements OnInit {
   addUserForm: FormGroup
   branch: unknown;
   roles: any;
+  userType:any;
   constructor(
     public dialogRef: MatDialogRef<AddInternalUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -29,6 +30,7 @@ export class AddInternalUserComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.getUserType()
     this.getBranch()
     this.getRoles()
     this.initForm()
@@ -48,6 +50,12 @@ export class AddInternalUserComponent implements OnInit {
       this.title = 'View Internal User'
       this.addUserForm.disable();
     }
+  }
+
+  getUserType(){
+    this.internalUserBranchService.getUserType().subscribe(res=>{
+      this.userType = res.data
+    })
   }
 
   getBranch() {
@@ -75,6 +83,7 @@ export class AddInternalUserComponent implements OnInit {
       email: ['', [Validators.email,Validators.required]],
       mobileNumber: ['', [Validators.required,Validators.minLength(10)]],
       roleId: ['', Validators.required],
+      userTypeId:['',Validators.required]
     })
   }
 

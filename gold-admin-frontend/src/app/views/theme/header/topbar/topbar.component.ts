@@ -2,30 +2,39 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
-import { LoanSettingsService } from '../.././../../core/loan-setting'
-import { PartnerService } from '../.././../../core/user-management/partner/services/partner.service';
-import { BranchService } from '../.././../../core/user-management/branch/services/branch.service';
-import { WalletPriceService } from '../.././../../core/emi-management/config-details/wallet-price/services/wallet-price.service';
-import { RolesService } from '../.././../../core/user-management/roles';
-import { BrokerService } from '../../../../core/user-management/broker';
-import { CategoryService, SubCategoryService, ProductService } from '../../../../core/emi-management/product';
-import { InternalUserService } from '../.././../../core/user-management/internal-user';
-import { AppraiserService } from '../../../../core/user-management/appraiser';
-import { InternalUserBranchService } from '../../../../core/user-management/internal-user-branch'
-import { Breadcrumb } from '../../../../core/_base/layout/services/subheader.service';
-import { Subject, Subscription, from } from 'rxjs';
-import { SharedService } from '../../../../core/shared/services/shared.service';
-import { SubheaderService } from '../../../../core/_base/layout';
-import { takeUntil } from 'rxjs/operators';
-import { PacketsService } from '../../../../core/loan-management';
-import { StoreService } from '../../../../core/user-management/store/service/store.service';
-import { LogisticPartnerService } from '../../../../core/emi-management/logistic-partner/service/logistic-partner.service';
-import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
-import { CancelOrderDetailsService, OrderDetailsService, DepositDetailsService, EmiDetailsService } from '../../../../core/emi-management/order-management';
-import { MonthlyService } from '../../../../core/repayment/services/monthly.service';
-import { UserDetailsService } from '../../../../core/emi-management/user-details';
-import { LeadService } from '../../../../core/lead-management/services/lead.service';
+import { CustomerManagementService } from "../../../../core/customer-management/services/customer-management.service";
+import { LoanSettingsService } from "../.././../../core/loan-setting";
+import { PartnerService } from "../.././../../core/user-management/partner/services/partner.service";
+import { BranchService } from "../.././../../core/user-management/branch/services/branch.service";
+import { WalletPriceService } from "../.././../../core/emi-management/config-details/wallet-price/services/wallet-price.service";
+import { RolesService } from "../.././../../core/user-management/roles";
+import { BrokerService } from "../../../../core/user-management/broker";
+import {
+	CategoryService,
+	SubCategoryService,
+	ProductService,
+} from "../../../../core/emi-management/product";
+import { InternalUserService } from "../.././../../core/user-management/internal-user";
+import { AppraiserService } from "../../../../core/user-management/appraiser";
+import { InternalUserBranchService } from "../../../../core/user-management/internal-user-branch";
+import { Breadcrumb } from "../../../../core/_base/layout/services/subheader.service";
+import { Subject, Subscription, from } from "rxjs";
+import { SharedService } from "../../../../core/shared/services/shared.service";
+import { SubheaderService } from "../../../../core/_base/layout";
+import { takeUntil } from "rxjs/operators";
+import { PacketsService } from "../../../../core/loan-management";
+import { StoreService } from "../../../../core/user-management/store/service/store.service";
+import { LogisticPartnerService } from "../../../../core/emi-management/logistic-partner/service/logistic-partner.service";
+import { KaratDetailsService } from "../../../../core/loan-setting/karat-details/services/karat-details.service";
+import {
+	CancelOrderDetailsService,
+	OrderDetailsService,
+	DepositDetailsService,
+	EmiDetailsService,
+} from "../../../../core/emi-management/order-management";
+import { MonthlyService } from "../../../../core/repayment/services/monthly.service";
+import { UserDetailsService } from "../../../../core/emi-management/user-details";
+import { LeadService } from "../../../../core/lead-management/services/lead.service";
 
 @Component({
 	selector: "kt-topbar",
@@ -59,6 +68,7 @@ export class TopbarComponent implements OnInit {
 	listType = "";
 	filterWidth = "";
 	downloadbtn: boolean = false;
+	showBackButton = false;
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -87,20 +97,30 @@ export class TopbarComponent implements OnInit {
 		private emiDetailsService: EmiDetailsService,
 		private monthlyService: MonthlyService,
 		private userDetailsService: UserDetailsService,
-		private leadService: LeadService
-	) {
-		this.router.events.subscribe((val) => {
-			this.reset();
-			this.setTopbar(location.path());
-		});
+		private leadService: LeadService) {
 
-		this.walletPriceService.download$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+		this.router.events.subscribe(val => {
+			this.reset()
+			this.setTopbar(location.path())
+		})
+
+		this.walletPriceService.download$.pipe(takeUntil(this.destroy$)).subscribe(res => {
 			if (res) {
 				this.downloadbtn = true;
 			} else {
 				this.downloadbtn = false;
 			}
 		});
+
+		this.walletPriceService.download$
+			.pipe(takeUntil(this.destroy$))
+			.subscribe((res) => {
+				if (res) {
+					this.downloadbtn = true;
+				} else {
+					this.downloadbtn = false;
+				}
+			});
 	}
 
 	ngOnInit() {
@@ -158,6 +178,7 @@ export class TopbarComponent implements OnInit {
 		this.showfilter = false;
 		this.showInput = false;
 		this.toogle = false;
+		this.showBackButton = false;
 	}
 
 	dataSourceHeader() {
@@ -174,12 +195,12 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add New Scheme";
 			this.type2 = "button";
 		}
-		if (this.path == "lead-management") {
-			this.dataSourceHeader();
-			this.value1 = "Add New Lead";
-			this.showfilter = true;
-			this.filterName = "leads";
-			this.filterWidth = "900px";
+		if (this.path == 'lead-management') {
+			this.dataSourceHeader()
+			this.value1 = 'Add New Lead';
+			this.showfilter = false;
+			this.filterName = 'leads';
+			this.filterWidth = '900px';
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
@@ -201,7 +222,18 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.toogle = true;
 		}
-		if (this.path == "monthly") {
+		if (this.path == 'applied-loan') {
+			this.showfilter = false;
+			this.showInput = true;
+		}
+		if (this.path == 'all-loan') {
+			this.showfilter = false;
+			this.showInput = true;
+		}
+		if (this.path == 'applied-kyc') {
+			this.showInput = true;
+		}
+		if (this.path == 'monthly') {
 			this.dataSourceHeader();
 			this.value1 = "Add Payment";
 		}
@@ -285,6 +317,7 @@ export class TopbarComponent implements OnInit {
 			this.type1 = "button";
 			this.filterName = "orderDetails";
 			this.filterWidth = "550px";
+			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
 		}
 		if (this.path == "cancel-order-details") {
@@ -297,7 +330,10 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.value1 = "Export";
 			this.type1 = "button";
-			// this.showfilter = true;
+			this.showfilter = true;
+			this.filterName = "depositDetails";
+			this.filterWidth = "550px";
+			this.listType = "tenure,orderStatus";
 		}
 		if (this.path == "emi-details") {
 			this.showfilter = true;
@@ -305,13 +341,13 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 			this.filterName = "emiDetails";
-			this.filterWidth = "500px";
-			// this.showfilter = true;
+			this.filterWidth = "400px";
+			this.listType = "emiStatus";
 		}
-		if (this.path == 'users') {
+		if (this.path == "users") {
 			this.showInput = true;
-			this.value1 = 'Export';
-			this.type1 = 'button';
+			this.value1 = "Export";
+			this.type1 = "button";
 		}
 		if (location.href.includes("edit-order-details")) {
 			this.value1 = "Print Performa";
@@ -320,10 +356,13 @@ export class TopbarComponent implements OnInit {
 			this.type2 = "button";
 			this.rightButton = true;
 		}
+		if (location.href.includes('view-loan')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
-		if (this.path == 'lead-management') {
+		if (this.path == "lead-management") {
 			this.leadService.openModal.next(true);
 		}
 		if (this.path == "scheme") {
@@ -392,7 +431,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "emi-details") {
 			this.emiDetailsService.exportExcel.next(true);
 		}
-		if (this.path == 'users') {
+		if (this.path == "users") {
 			this.userDetailsService.exportExcel.next(true);
 		}
 	}
@@ -408,6 +447,21 @@ export class TopbarComponent implements OnInit {
 	}
 
 	applyFilter(data) {
-		this.productService.applyFilter.next(data);
+		if (this.path == "products") {
+			this.productService.applyFilter.next(data);
+		}
+		if (this.path == "order-details") {
+			this.orderDetailsService.applyFilter.next(data);
+		}
+		if (this.path == "emi-details") {
+			this.emiDetailsService.applyFilter.next(data);
+		}
+		if (this.path == "deposit-details") {
+			this.depositDetailsService.applyFilter.next(data);
+		}
+	}
+
+	goBack() {
+		this.location.back();
 	}
 }

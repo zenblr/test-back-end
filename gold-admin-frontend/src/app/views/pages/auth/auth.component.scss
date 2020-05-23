@@ -89,6 +89,11 @@ kt-auth,
 	transition      : border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+.otp-input {
+	width           : 4.5rem;
+	height          : 4rem;
+}
+
 ::-webkit-input-placeholder {
 	/* Edge */
 	font-weight: 400 !important;
