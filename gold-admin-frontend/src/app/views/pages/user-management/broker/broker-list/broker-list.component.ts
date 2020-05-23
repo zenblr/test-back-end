@@ -244,7 +244,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
       userId: broker.userId,
       nameOnPanCard:broker.nameOnPanCard,
       panCard:broker.nameOnPanCard,
-      panCardNumber:broker.panCardNumber
+      panCardNumber:broker.user.panCardNumber
     }
     return data
   }

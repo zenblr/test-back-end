@@ -1,7 +1,10 @@
 <!-- begin:: Header Topbar -->
 <div class="kt-header__topbar">
     <div class="row justify-content-center">
-        <div class="col-4 align-self-center">
+        <div class="" *ngIf="showBackButton" (click)="goBack()">
+            <img src="../../../../../assets//media/icons/arrow_back.svg" class="kt-pointer">
+        </div>
+        <div class="col align-self-center">
             <div class="kt-subheader__main m-0" [hidden]="subheaderService.disabled$ | async" id="kt_subheader">
                 <label *ngIf="title" class="kt-subheader__title">{{title}}</label>
                 <span class="kt-subheader__divider" *ngIf="totalRecords">|</span>
