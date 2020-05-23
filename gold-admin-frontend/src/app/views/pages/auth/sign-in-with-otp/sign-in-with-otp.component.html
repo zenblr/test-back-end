@@ -9,19 +9,19 @@
 <form [formGroup]="singInOtp" autocomplete="off">
     <div class="row justify-content-center kt-margin-b-20">
         <div class="col">
-            <input type="text" class="login-form-input text-center" numbersOnly maxlength="1" #one
+            <input type="text" class="login-form-input otp-input text-center" numbersOnly maxlength="1" #one
                 (input)="input($event,'one')" formControlName="one">
         </div>
         <div class="col">
-            <input type="text" class="login-form-input text-center" numbersOnly maxlength="1" #two
+            <input type="text" class="login-form-input otp-input text-center" numbersOnly maxlength="1" #two
                 (input)="input($event,'two')" formControlName="two">
         </div>
         <div class="col">
-            <input type="text" class="login-form-input text-center" numbersOnly maxlength="1" #three
+            <input type="text" class="login-form-input otp-input text-center" numbersOnly maxlength="1" #three
                 (input)="input($event,'three')" formControlName="three">
         </div>
         <div class="col">
-            <input type="text" class="login-form-input text-center" numbersOnly maxlength="1" #four
+            <input type="text" class="login-form-input otp-input text-center" numbersOnly maxlength="1" #four
                 (input)="input($event,'four')" formControlName="four">
         </div>
     </div>
