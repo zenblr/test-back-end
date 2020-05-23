@@ -130,9 +130,10 @@
                 </ng-container>
                 <ng-container matColumnDef="orderStatus">
                     <mat-header-cell *matHeaderCellDef>Order Status</mat-header-cell>
-                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element['orderCurrentStatus.id'] == 5,
-                    'text-red' : element['orderCurrentStatus.id'] == 13,
-                    'text-green' : element['orderCurrentStatus.id'] != 5 || element['orderCurrentStatus.id'] != 13}">
+                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element['orderCurrentStatus.id'] == 1 || element['orderCurrentStatus.id'] == 5,
+                    'text-red' : element['orderCurrentStatus.id'] == 9 || element['orderCurrentStatus.id'] == 13,
+                    'text-green' : element['orderCurrentStatus.id'] != 1 || element['orderCurrentStatus.id'] != 5 ||
+                    element['orderCurrentStatus.id'] != 9 || element['orderCurrentStatus.id'] != 13}">
                         {{element['orderCurrentStatus.statusName'] ? (element['orderCurrentStatus.statusName'] | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>

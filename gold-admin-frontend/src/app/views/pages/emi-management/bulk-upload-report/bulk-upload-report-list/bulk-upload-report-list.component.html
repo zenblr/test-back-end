@@ -55,7 +55,12 @@
                 </ng-container>
                 <ng-container matColumnDef="time">
                     <mat-header-cell *matHeaderCellDef>Time</mat-header-cell>
-                    <mat-cell *matCellDef="let report">{{report?.createdAt}}</mat-cell>
+                    <mat-cell *matCellDef="let report">
+                        <div class="d-block">
+                            <div>{{report?.createdAt ? (report?.createdAt | date:'MMM d, y') : '-'}}</div>
+                            <div>{{report?.createdAt ? (report?.createdAt | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>

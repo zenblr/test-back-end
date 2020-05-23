@@ -11,7 +11,7 @@
                 <label *ngIf="totalRecords" class="kt-subheader__desc">{{totalRecords}} Total</label>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-6 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
             <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)"
                 class="kt-margin-r-10 kt-margin-l-10">

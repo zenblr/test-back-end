@@ -4,403 +4,397 @@ export class MenuConfig {
 			self: {},
 			itemsOne: [
 				{
-					title: 'Dashboard',
+					title: "Dashboard",
 					root: true,
-					src: 'assets/media/aside-icons/icons-01.svg',
-					page: '/dashboard',
-					translate: 'MENU.DASHBOARD',
-
+					src: "assets/media/aside-icons/icons-01.svg",
+					page: "/dashboard",
+					translate: "MENU.DASHBOARD",
 				},
 				{
-					title: 'Admin Account',
+					title: "Admin Account",
 					root: true,
-					src: 'assets/media/aside-icons/icons-02.svg',
-					page: '/dashboard',
+					src: "assets/media/aside-icons/icons-02.svg",
+					page: "/dashboard",
 
 					submenu: [
 						{
-							title: 'Change Password',
-							page: '/admin-account/change-password',
-
+							title: "Change Password",
+							page: "/admin-account/change-password",
 						},
 						{
-							title: 'Show Queries',
-							page: '/admin-account/show-queries',
-
+							title: "Show Queries",
+							page: "/admin-account/show-queries",
 						},
 						{
-							title: 'Show Feedback',
-							page: '/admin-account/show-feedback',
-
+							title: "Show Feedback",
+							page: "/admin-account/show-feedback",
 						},
-					]
+					],
 				},
 				{
-					title: 'Admin-Settings',
+					title: "Admin-Settings",
 					root: true,
-					src: 'assets/media/aside-icons/icons-03.svg',
+					src: "assets/media/aside-icons/icons-03.svg",
 
 					submenu: [
 						{
-							title: 'Upload Data',
+							title: "Upload Data",
 							root: true,
 
 							submenu: [
 								{
-									title: 'Promotional Banners',
-									page: '/upload-data/upload-banner',
-
+									title: "Promotional Banners",
+									page: "/upload-data/upload-banner",
 								},
 								{
-									title: 'Offer Banners',
-									page: '/upload-data/upload-offer',
-
+									title: "Offer Banners",
+									page: "/upload-data/upload-offer",
 								},
 								{
-									title: 'Partner Banners',
-									page: '/upload-data/upload-lender-banner',
-
+									title: "Partner Banners",
+									page: "/upload-data/upload-lender-banner",
 								},
 								// {
 								// 	title: 'Upload Scheme',
 								// 	page: '/upload-data/upload-scheme',
-								// 	
+								//
 								// },
-							]
+							],
 						},
 						{
-							title: 'Loan Settings',
+							title: "Loan Settings",
 							root: true,
 
 							submenu: [
 								{
-									title: 'Scheme',
-									page: '/loan-setting/scheme',
-
+									title: "Scheme",
+									page: "/loan-setting/scheme",
 								},
 								{
-									title: 'Packet',
-									page: '/loan-setting/packet',
-
+									title: "Packet",
+									page: "/loan-setting/packet",
 								},
 								{
-									title: 'Karat details',
-									page: '/loan-setting/karat-details'
-								}
-							]
+									title: "Karat details",
+									page: "/loan-setting/karat-details",
+								},
+							],
 						},
 						{
-							title: 'Notification Settings',
+							title: "Notification Settings",
 							root: true,
 
 							submenu: [
 								{
-									title: 'Email Alerts',
-									page: '/loan-setting/email-alerts',
-
+									title: "Email Alerts",
+									page: "/loan-setting/email-alerts",
 								},
 								{
-									title: 'SMS Alerts',
-									page: '/loan-setting/sms-alerts'
-
+									title: "SMS Alerts",
+									page: "/loan-setting/sms-alerts",
 								},
-							]
+							],
 						},
-
-					]
+					],
 				},
 
 				{
-					title: 'User Management',
+					title: "User Management",
 					root: true,
-					src: 'assets/media/aside-icons/icons-04.svg',
-					page: '/user-management',
-
+					src: "assets/media/aside-icons/icons-04.svg",
+					page: "/user-management",
 				},
 				{
-					title: 'Lead Management',
+					title: "Lead Management",
 					root: true,
-					src: 'assets/media/aside-icons/icons-05.svg',
-					page: '/lead-management',
-
+					src: "assets/media/aside-icons/icons-05.svg",
+					page: "/lead-management",
 				},
 				{
-					title: 'Customer Setting',
+					title: "Customer Setting",
 					root: true,
-					src: 'assets/media/aside-icons/icons-06.svg',
+					src: "assets/media/aside-icons/icons-06.svg",
 					submenu: [
 						{
-							title: 'KYC Setting',
-							page: '/kyc-setting'
+							title: "KYC Setting",
+							page: "/kyc-setting",
 						},
 						{
-							title: 'Applied Kyc',
-							page: '/applied-kyc'
-						}
-					]
+							title: "Applied Kyc",
+							page: "/applied-kyc",
+						},
+					],
 				},
 				{
-					title: 'Loan Managment',
+					title: "Loan Managment",
 					root: true,
-					src: 'assets/media/aside-icons/icons-07.svg',
+					src: "assets/media/aside-icons/icons-07.svg",
 					submenu: [
 						{
-							title: 'Loan Calculator',
-							page: '/loan-management/loan-calculator'
+							title: "Loan Calculator",
+							page: "/loan-management/loan-calculator",
 						},
 						{
-							title: 'Loan Application Form',
-							page: '/loan-management/loan-application-form'
+							title: "Loan Application Form",
+							page: "/loan-management/loan-application-form",
 						},
 						{
-							title: 'Packet',
-							page: '/loan-management/packet',
-
+							title: "Packet",
+							page: "/loan-management/packet",
 						},
 						{
-							title: 'Applied Loan',
-							page: '/loan-management/applied-loan'
+							title: "Applied Loan",
+							page: "/loan-management/applied-loan",
 						},
 						{
-							title: 'Loan Details',
-							page: '/loan-management/all-loan'
+							title: "Loan Details",
+							page: "/loan-management/all-loan",
 						},
-
-					]
+					],
 				},
 				{
-					title: 'Customer Management',
+					title: "Customer Management",
 					root: true,
-					src: 'assets/media/aside-icons/icons-08.svg',
-					page: '/customer-management/customer-list',
+					src: "assets/media/aside-icons/icons-08.svg",
+					page: "/customer-management/customer-list",
 				},
 				{
-					title: 'Repayment Structure',
+					title: "Repayment Structure",
 					root: true,
-					src: 'assets/media/aside-icons/icons-09.svg',
+					src: "assets/media/aside-icons/icons-09.svg",
 					submenu: [
 						{
-							title: 'Monthly Payment',
-							page: '/repayment/monthly'
+							title: "Monthly Payment",
+							page: "/repayment/monthly",
 						},
 						// {
 						// 	title: 'One Shot Payment',
 						// 	path: '/one-shot-payment',
 						// }
-					]
+					],
 				},
 				{
-					title: 'Account',
+					title: "Account",
 					root: true,
-					src: 'assets/media/aside-icons/icons-12.svg',
+					src: "assets/media/aside-icons/icons-12.svg",
 					submenu: [
 						{
-							title: 'Loan Disbursed Details',
-							path: '/Loan-disbursed-detail'
+							title: "Loan Disbursed Details",
+							path: "/Loan-disbursed-detail",
 						},
 						{
-							title: 'Loan Repayment Details',
-							path: '/Loan-repayment-detail',
-						}
-					]
+							title: "Loan Repayment Details",
+							path: "/Loan-repayment-detail",
+						},
+					],
 				},
 				{
-					title: 'Report',
+					title: "Report",
 					root: true,
-					src: 'assets/media/aside-icons/icons-11.svg',
+					src: "assets/media/aside-icons/icons-11.svg",
 					submenu: [
 						{
-							title: 'KYC',
-							path: '/kyc'
+							title: "KYC",
+							path: "/kyc",
 						},
 						{
-							title: 'Loan Status Report',
-							path: '/loan-status',
+							title: "Loan Status Report",
+							path: "/loan-status",
 						},
 						{
-							title: 'Branch Report',
-							path: '/branch',
+							title: "Branch Report",
+							path: "/branch",
 						},
 						{
-							title: 'Loan Type Reports',
-							path: '/loan-type'
+							title: "Loan Type Reports",
+							path: "/loan-type",
 						},
 						{
-							title: 'Margin Reports',
-							path: '/marign'
-						}
-					]
+							title: "Margin Reports",
+							path: "/marign",
+						},
+					],
 				},
 				{
-					title: 'EMI Management',
+					title: "EMI Management",
 					root: true,
-					src: 'assets/media/aside-icons/icons-04.svg',
-					page: '/emi-management',
+					src: "assets/media/aside-icons/icons-04.svg",
+					page: "/emi-management",
 				},
 				{
-					title: 'Log Out',
-					src: 'assets/media/aside-icons/icons-12.svg',
-				}
+					title: "Log Out",
+					src: "assets/media/aside-icons/icons-12.svg",
+				},
 			],
 
 			itemsTwo: [
 				{
-					title: 'Partner',
+					title: "Partner",
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
-					page: '/user-management/partner',
+					icon: "flaticon2-architecture-and-city",
+					page: "/user-management/partner",
 				},
 				{
-					title: 'Partner Branch ',
+					title: "Partner Branch ",
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
-					page: '/user-management/branch',
+					icon: "flaticon2-architecture-and-city",
+					page: "/user-management/branch",
 				},
 
 				{
-					title: 'Internal User',
+					title: "Internal User",
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
-					page: '/user-management/internal-user',
+					icon: "flaticon2-architecture-and-city",
+					page: "/user-management/internal-user",
 				},
 				{
-					title: 'Internal User Branch',
+					title: "Internal User Branch",
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
-					page: '/user-management/internal-user-branch',
-
+					icon: "flaticon2-architecture-and-city",
+					page: "/user-management/internal-user-branch",
 				},
 				{
-					title: 'Assign Appraiser',
+					title: "Assign Appraiser",
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
-					page: '/user-management/assign-appraiser',
+					icon: "flaticon2-architecture-and-city",
+					page: "/user-management/assign-appraiser",
 				},
 				{
-					title: 'Merchant',
+					title: "Merchant",
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
-					page: '/user-management/merchant',
+					icon: "flaticon2-architecture-and-city",
+					page: "/user-management/merchant",
 				},
 				{
-					title: 'Broker',
+					title: "Broker",
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
-					page: '/user-management/broker',
+					icon: "flaticon2-architecture-and-city",
+					page: "/user-management/broker",
 				},
 				{
-					title: 'Store',
+					title: "Store",
 					root: true,
-					icon: 'flaticon2-architecture-and-city',
-					page: '/user-management/store',
-
+					icon: "flaticon2-architecture-and-city",
+					page: "/user-management/store",
 				},
 				{
-					title: 'Roles and permissions',
-					icon: 'flaticon2-architecture-and-city',
+					title: "Roles and permissions",
+					icon: "flaticon2-architecture-and-city",
 					root: true,
-					page: '/user-management/roles',
+					page: "/user-management/roles",
 				},
 				{
-					title: 'Back',
-					icon: 'flaticon-logout',
+					title: "Back",
+					icon: "flaticon-logout",
 					root: true,
-					page: '/dashboard',
+					page: "/dashboard",
 				},
 			],
 
 			itemsThree: [
 				{
-					title: 'Product',
+					title: "Product",
 					root: true,
-					icon: 'flaticon2-open-box',
+					icon: "flaticon2-open-box",
 					submenu: [
 						{
-							title: 'Show Product',
-							page: '/emi-management/products',
+							title: "Show Product",
+							page: "/emi-management/products",
 						},
 						{
-							title: 'Category',
-							page: '/emi-management/category',
+							title: "Category",
+							page: "/emi-management/category",
 						},
 						{
-							title: 'Sub-Category',
-							page: '/emi-management/sub-category',
+							title: "Sub-Category",
+							page: "/emi-management/sub-category",
 						},
 						{
-							title: 'Bulk Upload Product',
-							page: '/emi-management/bulk-upload-product',
+							title: "Bulk Upload Product",
+							page: "/emi-management/bulk-upload-product",
 						},
 						{
-							title: 'Bulk Edit Product',
-							page: '/emi-management/bulk-edit-product',
+							title: "Bulk Edit Product",
+							page: "/emi-management/bulk-edit-product",
 						},
 						{
-							title: 'Upload Design',
-							page: '/emi-management/upload-design',
+							title: "Upload Design",
+							page: "/emi-management/upload-design",
 						},
-					]
+					],
 				},
 				{
-					title: 'Logistic Partner',
-					icon: 'flaticon2-architecture-and-city',
-					page: '/emi-management/logistic-partner',
+					title: "Logistic Partner",
+					icon: "flaticon2-architecture-and-city",
+					page: "/emi-management/logistic-partner",
 				},
 				{
-					title: 'Bulk Upload Report',
+					title: "Bulk Upload Report",
 					root: true,
-					icon: 'flaticon2-download-2',
-					page: '/emi-management/bulk-upload-report',
+					icon: "flaticon2-download-2",
+					page: "/emi-management/bulk-upload-report",
 				},
 				{
-					title: 'Config Details',
+					title: "Config Details",
 					root: true,
-					icon: 'flaticon2-console',
+					icon: "flaticon2-console",
 					submenu: [
 						{
-							title: 'Wallet Price',
-							page: '/emi-management/wallet-price',
+							title: "Wallet Price",
+							page: "/emi-management/wallet-price",
 						},
 						{
-							title: 'Admin Log',
-							page: '/emi-management/admin-log',
+							title: "Admin Log",
+							page: "/emi-management/admin-log",
 						},
-					]
+					],
 				},
 				{
-					title: 'Order Management',
+					title: "Order Management",
 					root: true,
-					icon: 'flaticon2-shopping-cart',
+					icon: "flaticon2-shopping-cart",
 					submenu: [
 						{
-							title: 'Order Details',
-							page: '/emi-management/order-details',
+							title: "Order Details",
+							page: "/emi-management/order-details",
 						},
 						{
-							title: 'EMI Details',
-							page: '/emi-management/emi-details'
-						},
-						// {
-						// 	title: 'Refund Management',
-						// 	page: '/emi-management/refund-management'
-						// },
-						{
-							title: 'Cancel Order Details',
-							page: '/emi-management/cancel-order-details',
+							title: "EMI Details",
+							page: "/emi-management/emi-details",
 						},
 						{
-							title: 'Deposit Details',
-							page: '/emi-management/deposit-details',
-						}
-					]
+							title: "Refund Management",
+							page: "/emi-management/refund-management",
+						},
+						{
+							title: "Cancel Order Details",
+							page: "/emi-management/cancel-order-details",
+						},
+						{
+							title: "Deposit Details",
+							page: "/emi-management/deposit-details",
+						},
+					],
 				},
 				{
-					title: 'Back',
-					icon: 'flaticon-logout',
+					title: "User Details",
 					root: true,
-					page: '/dashboard',
+					icon: "flaticon2-architecture-and-city",
+					page: "/emi-management/users",
 				},
-			]
+				// {
+				// 	title: "Reports",
+				// 	root: true,
+				// 	icon: "flaticon2-download-2",
+				// 	page: "/emi-management/reports",
+				// },
+				{
+					title: "Back",
+					icon: "flaticon-logout",
+					root: true,
+					page: "/dashboard",
+				},
+			],
 		},
 	};
 
