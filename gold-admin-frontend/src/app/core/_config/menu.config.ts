@@ -1,16 +1,30 @@
 import { SharedService } from '../shared/services/shared.service';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 export class MenuConfig {
 	public defaults: any;
 	permissionsArr = [];
+	modulesArr = [];
 
-	constructor(private sharedService: SharedService) {
-		this.sharedService.getPermission().subscribe(res => {
-			if (res) {
-				for (const item of res) {
+	constructor(
+		private sharedService: SharedService,
+		public permissionsService: NgxPermissionsService
+	) {
+		this.sharedService.getUserDetailsFromStorage().subscribe(res => {
+			if (res && res.permissions.length) {
+				for (const item of res.permissions) {
 					this.permissionsArr.push(item.description);
 				}
+				this.sharedService.permission.next(this.permissionsArr);
+				this.permissionsService.loadPermissions(this.permissionsArr);
 				console.log(this.permissionsArr);
+			}
+
+			if (res && res.modules.length) {
+				for (const item of res.modules) {
+					this.modulesArr.push(item.module.id);
+				}
+				console.log(this.modulesArr);
 			}
 
 			this.defaults = {
@@ -280,7 +294,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
 							page: "/emi-management",
-							permission: false,
+							permission: !this.modulesArr.includes(2),
 						},
 						{
 							title: "Log Out",
@@ -367,7 +381,11 @@ export class MenuConfig {
 							title: "Product",
 							root: true,
 							icon: "flaticon2-open-box",
-							permission: false,
+							permission: !(this.permissionsArr.includes('productView') ||
+								this.permissionsArr.includes('categoryView') ||
+								this.permissionsArr.includes('sub-categoryView') ||
+								this.permissionsArr.includes('productAdd') ||
+								this.permissionsArr.includes('productEdit')),
 
 							submenu: [
 								{

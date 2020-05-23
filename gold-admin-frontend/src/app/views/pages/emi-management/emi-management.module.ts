@@ -9,6 +9,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 // Translate
 import { TranslateModule } from "@ngx-translate/core";
 import { PartialsModule } from "../../partials/partials.module";
+import { NgxPermissionsModule } from 'ngx-permissions';
 // Services
 import {
 	HttpUtilsService,
@@ -161,6 +162,7 @@ const routes: Routes = [
 		HttpClientModule,
 		PartialsModule,
 		RouterModule.forChild(routes),
+		NgxPermissionsModule.forChild(),
 		FormsModule,
 		ReactiveFormsModule,
 		TranslateModule.forChild(),

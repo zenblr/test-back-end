@@ -61,11 +61,10 @@ export class SharedService {
     return JSON.parse(localStorage.getItem('UserDetails'));
   }
 
-  getPermission(): Observable<any> {
-    const token = JSON.parse(localStorage.getItem('UserDetails'));
-    if (token && token.permissions.length) {
-      // console.log(token.permissions);
-      return of(token.permissions);
+  getUserDetailsFromStorage(): Observable<any> {
+    const details = JSON.parse(localStorage.getItem('UserDetails'));
+    if (details) {
+      return of(details);
     }
   }
 }
