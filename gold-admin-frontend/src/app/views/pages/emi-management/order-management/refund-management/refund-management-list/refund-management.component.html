@@ -194,10 +194,13 @@
                 </ng-container>
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element.refundStatus.id == 1 || element.refundStatus.id == 5,
+                    'text-red' : element.refundStatus.id == 9 || element.refundStatus.id == 13,
+                    'text-green' : element.refundStatus.id != 1 || element.refundStatus.id != 5 ||
+                    element.refundStatus.id != 9 || element.refundStatus.id != 13}">
                         {{
 							element?.refundStatus?.statusName
-								? element?.refundStatus?.statusName
+								? (element?.refundStatus?.statusName | titlecase)
 								: "-"
 						}}</mat-cell>
                 </ng-container>

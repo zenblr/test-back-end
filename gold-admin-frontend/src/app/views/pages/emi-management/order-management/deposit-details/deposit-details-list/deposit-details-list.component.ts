@@ -209,5 +209,6 @@ export class DepositDetailsListComponent implements OnInit {
 		this.destroy$.complete();
 		this.unsubscribeSearch$.next();
 		this.unsubscribeSearch$.complete();
+		this.depositDetailsService.applyFilter.next(0);
 	}
 }

@@ -310,10 +310,10 @@
               <div class="form-group kt-form__group row">
                 <div class="col-12 kt-margin-bottom-20-mobile">
                   <div class="row">
-                    <div class="col-4">
-                      <label>By Payment Type</label>
-                      <ng-select [items]="tenure" [multiple]="true" bindLabel="paymentType" [selectableGroup]="true"
-                        [closeOnSelect]="false" bindValue="paymentTypeId" formControlName="multiSelect1">
+                    <div class="col-5">
+                      <label>By Merchant Name</label>
+                      <ng-select [items]="name" [multiple]="true" bindLabel="merchantName" [selectableGroup]="true"
+                        [closeOnSelect]="false" bindValue="id" formControlName="multiSelect1">
                         <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
                             [ngModelOptions]="{ standalone : true }" />
@@ -321,7 +321,7 @@
                         </ng-template>
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.paymentType}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.merchantName}}
                         </ng-template>
                         <ng-template ng-label-tmp>
                           <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
@@ -329,12 +329,12 @@
                       </ng-select>
                     </div>
                     <div class="col-4">
-                      <label>By Payment Recieved Date</label>
+                      <label>By Cancel Date</label>
                       <input type="text" class="form-control" [matDatepicker]="pickerStartDate"
                         (click)="pickerStartDate.open()" formControlName="startDate">
                       <mat-datepicker #pickerStartDate></mat-datepicker>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
                         (click)="applyFilter()">
                       </kt-button>
