@@ -68,6 +68,7 @@ export class TopbarComponent implements OnInit {
 	listType = "";
 	filterWidth = "";
 	downloadbtn: boolean = false;
+	showBackButton = false;
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -96,11 +97,19 @@ export class TopbarComponent implements OnInit {
 		private emiDetailsService: EmiDetailsService,
 		private monthlyService: MonthlyService,
 		private userDetailsService: UserDetailsService,
-		private leadService: LeadService
-	) {
-		this.router.events.subscribe((val) => {
-			this.reset();
-			this.setTopbar(location.path());
+		private leadService: LeadService) {
+
+		this.router.events.subscribe(val => {
+			this.reset()
+			this.setTopbar(location.path())
+		})
+
+		this.walletPriceService.download$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+			if (res) {
+				this.downloadbtn = true;
+			} else {
+				this.downloadbtn = false;
+			}
 		});
 
 		this.walletPriceService.download$
@@ -169,6 +178,7 @@ export class TopbarComponent implements OnInit {
 		this.showfilter = false;
 		this.showInput = false;
 		this.toogle = false;
+		this.showBackButton = false;
 	}
 
 	dataSourceHeader() {
@@ -185,12 +195,12 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add New Scheme";
 			this.type2 = "button";
 		}
-		if (this.path == "lead-management") {
-			this.dataSourceHeader();
-			this.value1 = "Add New Lead";
-			this.showfilter = true;
-			this.filterName = "leads";
-			this.filterWidth = "900px";
+		if (this.path == 'lead-management') {
+			this.dataSourceHeader()
+			this.value1 = 'Add New Lead';
+			this.showfilter = false;
+			this.filterName = 'leads';
+			this.filterWidth = '900px';
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
@@ -212,7 +222,18 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.toogle = true;
 		}
-		if (this.path == "monthly") {
+		if (this.path == 'applied-loan') {
+			this.showfilter = false;
+			this.showInput = true;
+		}
+		if (this.path == 'all-loan') {
+			this.showfilter = false;
+			this.showInput = true;
+		}
+		if (this.path == 'applied-kyc') {
+			this.showInput = true;
+		}
+		if (this.path == 'monthly') {
 			this.dataSourceHeader();
 			this.value1 = "Add Payment";
 		}
@@ -335,6 +356,9 @@ export class TopbarComponent implements OnInit {
 			this.type2 = "button";
 			this.rightButton = true;
 		}
+		if (location.href.includes('view-loan')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
@@ -435,5 +459,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "deposit-details") {
 			this.depositDetailsService.applyFilter.next(data);
 		}
+	}
+
+	goBack() {
+		this.location.back();
 	}
 }

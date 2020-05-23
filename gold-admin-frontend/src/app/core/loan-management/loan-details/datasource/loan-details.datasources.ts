@@ -18,7 +18,7 @@ export class LoanDetailsDatasource extends BaseDataSource {
         super();
     }
 
-    loadDetailsLoans(from, to,search) {
+    loadDetailsLoans(from, to, search) {
         this.loadingSubject.next(true);
         this.loanDetailsService.getAllLoans(from, to, search)
             .pipe(

@@ -66,7 +66,9 @@ export class LoanApplicationFormComponent implements OnInit {
         const pack = document.getElementById('packets');
         pack.scrollIntoView({ behavior: "smooth" });
         this.ref.detectChanges()
-      } else {
+      } else if(this.url == "view-loan"){
+        this.disabledForm = true;
+      }else {
         this.disabledForm = false;
       }
     }, 1000)

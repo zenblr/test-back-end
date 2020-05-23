@@ -1,64 +1,89 @@
-
 <div class="kt-margin-r-5 kt-margin-l-5 pb-3" *ngIf="loanDetails">
     <div class="row ">
         <div class="col-12 card kt-padding-15">
             <div class="row justify-content-around kt-padding-b-15">
-                <div class="col-2">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan ID</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanUniqueId}}</div>
                 </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer ID</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanPersonalDetail.customerUniqueId}}</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{loanDetails.loanPersonalDetail.customerUniqueId}}</div>
                 </div>
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Amount</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.finalLoanAmount}}</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.finalLoanAmount}}
+                    </div>
                 </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Tenure</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.tenure}} Months</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.tenure}} Months
+                    </div>
                 </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Start Date</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.loanStartDate | date: 'mediumDate'}}</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{loanDetails.finalLoan.loanStartDate | date: 'mediumDate'}}</div>
                 </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">End Date</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.loanEndDate | date: 'mediumDate'}}</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{loanDetails.finalLoan.loanEndDate | date: 'mediumDate'}}</div>
+                </div>
+                <div class="col">
+                    <div class="text-gray font-weight-500 kt-padding-b-5">Status</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanStage.name | titlecase}}
+                    </div>
                 </div>
             </div>
             <div class="row justify-content-around">
-                <div class="col-2">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Interest Rate</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.interestRate}}% P.M</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.interestRate}}% P.M
+                    </div>
                 </div>
-                <div class="col-2">
-                    <div class="text-gray font-weight-500 kt-padding-b-5">Status</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanStage.name | titlecase}}</div>
-                </div>
-                <div class="col-2">
+
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer Name</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">Atul Oroskar</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{loanDetails.customer.firstName | titlecase}}
+                        {{loanDetails.customer.lastName | titlecase}}
+                    </div>
                 </div>
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Account Number</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanBankDetail.accountNumber}}</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanBankDetail.accountNumber}}
+                    </div>
                 </div>
-                <div class="col-2">
+                <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">IFSC Code</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanBankDetail.ifscCode | uppercase}}</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{loanDetails.loanBankDetail.ifscCode | uppercase}}</div>
                 </div>
-                <div class="col-2"></div>
+                <div class="col">
+                    <div class="text-gray font-weight-500 kt-margin-b-5">Nominee</div>
+                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].nomineeName | titlecase}}</div>
+                </div>
+                <div class="col">
+                    <div class="text-gray font-weight-500 kt-margin-b-5">Age</div>
+                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].nomineeAge}}</div>
+                </div>
+                <div class="col">
+                    <div class="text-gray font-weight-500 kt-margin-b-5">Relation</div>
+                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].relationship | titlecase}}</div>
+                </div>
             </div>
         </div>
     </div>
-    
+
     <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
-            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total {{loanDetails.loanOrnamentsDetail.length}} Ornaments</label>
-            <mat-tab-group style="min-height: 300px;" >
-                <mat-tab label="Ornaments {{idx + 1}}" *ngFor="let ornaments of loanDetails.loanOrnamentsDetail;index as idx">
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total
+                {{loanDetails.loanOrnamentsDetail.length}} Ornaments</label>
+            <mat-tab-group style="min-height: 300px;">
+                <mat-tab label="Ornaments {{idx + 1}}"
+                    *ngFor="let ornaments of loanDetails.loanOrnamentsDetail;index as idx">
                     <div class="row">
                         <div class="col-3">
                             <img [src]="ornaments.ornamentImage" class="ornaments" alt="">
@@ -67,7 +92,7 @@
                             <div class="row kt-margin-t-15">
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Ornament Type</div>
-                                    <div class="text-color font-weight-500">{{ornaments.ornamentType}}</div>
+                                    <div class="text-color font-weight-500">{{ornaments.ornamentType | titlecase}}</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Quantity</div>
@@ -89,25 +114,30 @@
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">WM 00 wt.</div>
-                                    <div class="text-primary font-weight-500 kt-pointer" (click)="preview(ornaments.weightMachineZeroWeight,idx)">View Image</div>
+                                    <div class="text-primary font-weight-500 kt-pointer"
+                                        (click)="preview(ornaments.weightMachineZeroWeight,idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">With Ornaments</div>
-                                    <div class="text-primary font-weight-500 kt-pointer" (click)="preview(ornaments.withOrnamentWeight,idx)">View Image</div>
+                                    <div class="text-primary font-weight-500 kt-pointer"
+                                        (click)="preview(ornaments.withOrnamentWeight,idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Stone Touch</div>
-                                    <div class="text-primary font-weight-500 kt-pointer" (click)="preview(ornaments.stoneTouch,idx)">View Image</div>
+                                    <div class="text-primary font-weight-500 kt-pointer"
+                                        (click)="preview(ornaments.stoneTouch,idx)">View Image</div>
                                 </div>
                             </div>
                             <div class="row kt-margin-t-25">
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Acid Test</div>
-                                    <div class="text-primary font-weight-500 kt-pointer" (click)="preview(ornaments.acidTest,idx)">View Image</div>
+                                    <div class="text-primary font-weight-500 kt-pointer"
+                                        (click)="preview(ornaments.acidTest,idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Ornament Type</div>
-                                    <div class="text-primary font-weight-500 kt-pointer" (click)="preview(ornaments.purityTest[0],idx)">View Image</div>
+                                    <div class="text-primary font-weight-500 kt-pointer"
+                                        (click)="preview(ornaments.purityTest[0],idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">LTV %</div>
@@ -124,16 +154,19 @@
             </mat-tab-group>
         </div>
     </div>
-    
-     <div class="row kt-margin-t-15">
+
+    <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
-            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total {{loanDetails.loanOrnamentsDetail.length}} Packets</label>
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
+                {{loanDetails.loanPacketDetails.length}} Packets</label>
             <mat-tab-group style="min-height: 300px;">
-                <mat-tab label="{{packets.packet.packetUniqueId | uppercase}}" *ngFor="let packets of loanDetails.loanPacketDetails;index as idx">
+                <mat-tab label="{{packets.packet.packetUniqueId | uppercase}}"
+                    *ngFor="let packets of loanDetails.loanPacketDetails;index as idx">
                     <div class="row">
                         <div class="col-3">
                             <img class="packets" [src]="packets.emptyPacketWithNoOrnament">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with No
+                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
+                                No
                                 Ornaments</label>
                         </div>
                         <div class="col-3">
@@ -145,7 +178,7 @@
                             <img class="packets" [src]="packets.packetWithSealing">
                             <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
                                 Sealing</label>
-    
+
                         </div>
                         <div class="col-3">
                             <img class="packets" [src]="packets.packetWithWeight">
@@ -153,12 +186,12 @@
                                 Weight</label>
                         </div>
                     </div>
-    
+
                 </mat-tab>
-    
+
             </mat-tab-group>
         </div>
-    </div> 
-    
-    
+    </div>
+
+
 </div>

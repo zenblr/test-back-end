@@ -31,11 +31,25 @@ export class PermissionsComponent implements OnInit {
     this.permissionService.getPermission(this.id).pipe(
       map(res => {
         this.permissions = res.permissions;
+        this.createSelectedPermissionArray()
         this.ref.detectChanges();
       }), catchError(err => {
         this.toast.error(err.error.message)
         throw err
       })).subscribe()
+  }
+
+  createSelectedPermissionArray(){
+    this.permissions.forEach(per=>{
+      per.entity.forEach(ent=>{
+        if(ent.isSelected){
+          ent.permission.forEach(perId => {
+            this.selectedPermission.push(perId.id)
+          });
+        }
+      })
+    })
+    // console.log(this.selectedPermission)
   }
 
   toogleChange(event, moduleIndex, entityIndex) {
@@ -56,7 +70,7 @@ export class PermissionsComponent implements OnInit {
           this.selectedPermission.splice(findIndex,1)
         }
       }
-      console.log(this.selectedPermission)
+      // console.log(this.selectedPermission)
       
   }
 
@@ -70,7 +84,7 @@ export class PermissionsComponent implements OnInit {
       var findIndex = this.selectedPermission.indexOf(permission.id)
       this.selectedPermission.splice(findIndex,1)
     }
-    console.log(this.selectedPermission)
+    // console.log(this.selectedPermission)
   }
 
   submit(){
