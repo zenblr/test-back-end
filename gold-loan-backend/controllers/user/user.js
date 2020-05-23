@@ -10,7 +10,8 @@ const { createReferenceCode } = require('../../utils/referenceCode');
 //for email
 const { sendMail } = require('../../service/emailService')
 const CONSTANT = require('../../utils/constant');
-const moment = require('moment')
+const moment = require('moment');
+const cache = require('../../utils/cache');
 
 exports.addUser = async (req, res, next) => {
     let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId, userTypeId, internalBranchId } = req.body;
@@ -247,6 +248,8 @@ exports.updateInternalUser = async (req, res, next) => {
             await models.userInternalBranch.create({ userId: id, internalBranchId }, { transaction: t })
         }
     })
+    cache(`${id}permissions`);
+    cache(`${id}`);
     return res.status(200).json({ message: 'User updated.' });
 }
 
@@ -257,6 +260,7 @@ exports.deleteInternalUser = async (req, res, next) => {
         const user = await models.user.update({ isActive: false, modifiedBy }, { where: { id: id } })
         await models.userRole.destroy({ where: { userId: id } });
     })
+    cache(`${id}`);
     return res.status(200).json({ message: 'User deleted.' });
 }
 
