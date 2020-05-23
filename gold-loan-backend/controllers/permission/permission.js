@@ -95,3 +95,13 @@ exports.readPermission = async (req, res, next) => {
     }
 }
 
+exports.addsystemInfoPermissions = async (req, res) => {
+      const dataArray = req.body;
+      let createdPermissions = await models.permissionSystemInfo.bulkCreate(dataArray, { returning: true });
+      if (!createdPermissions) {
+        res.status(422).json({ message: 'permissions not created' });
+      } else {
+        res.status(201).json(createdPermissions);
+      }
+  }
+
