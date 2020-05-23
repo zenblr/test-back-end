@@ -13,7 +13,9 @@
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div *ngxPermissionsOnly="['logisticPartnerEdit']" (click)="editRole(role)"
-                                class="kt-pointer"> Edit | &nbsp;</div>
+                                class="kt-pointer"> Edit</div>
+                            <div *ngxPermissionsOnly="['logisticPartnerEdit','logisticPartnerDelete']" class="px-1">|
+                            </div>
                             <div *ngxPermissionsOnly="['logisticPartnerDelete']" (click)="deleteRole(role)"
                                 class="kt-pointer text-danger">Delete</div>
                         </div>

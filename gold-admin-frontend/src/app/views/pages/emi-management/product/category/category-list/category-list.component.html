@@ -62,7 +62,8 @@
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div *ngxPermissionsOnly="['categoryEdit']" (click)="editCategory(element)"
-                                class="kt-pointer"> Edit | &nbsp;</div>
+                                class="kt-pointer"> Edit</div>
+                            <div *ngxPermissionsOnly="['categoryEdit','categoryDelete']" class="px-1">|</div>
                             <div *ngxPermissionsOnly="['categoryDelete']" (click)="deleteCategory(element)"
                                 class="kt-pointer text-danger"> Delete </div>
                         </div>

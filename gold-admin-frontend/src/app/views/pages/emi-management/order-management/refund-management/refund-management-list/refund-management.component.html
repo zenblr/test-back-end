@@ -205,8 +205,11 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="viewRefund(element)" class="kt-pointer"> View | &nbsp;</div>
-                            <div (click)="editRefund(element)" class="kt-pointer"> Edit</div>
+                            <div *ngxPermissionsOnly="['refundDetailsView']" (click)="viewRefund(element)"
+                                class="kt-pointer"> View | &nbsp;</div>
+                            <div *ngxPermissionsOnly="['refundDetailsEdit']" class="px-1">|</div>
+                            <div *ngxPermissionsOnly="['refundDetailsEdit']" (click)="editRefund(element)"
+                                class="kt-pointer"> Edit</div>
                         </div>
                     </mat-cell>
                 </ng-container>

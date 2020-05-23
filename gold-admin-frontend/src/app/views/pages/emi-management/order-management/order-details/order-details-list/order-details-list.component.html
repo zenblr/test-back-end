@@ -147,8 +147,11 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="viewOrder(element)" class="kt-pointer"> View | &nbsp;</div>
-                            <div (click)="editOrder(element)" class="kt-pointer"> Edit</div>
+                            <div *ngxPermissionsOnly="['orderView']" (click)="viewOrder(element)" class="kt-pointer">
+                                View</div>
+                            <div *ngxPermissionsOnly="['orderEdit']" class="px-1">|</div>
+                            <div *ngxPermissionsOnly="['orderEdit']" (click)="editOrder(element)" class="kt-pointer">
+                                Edit</div>
                         </div>
                     </mat-cell>
                 </ng-container>
