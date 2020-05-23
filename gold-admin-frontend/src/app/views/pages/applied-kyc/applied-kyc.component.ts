@@ -100,7 +100,7 @@ export class AppliedKycComponent implements OnInit {
       map(res => {
         console.log(res);
         this.appliedKycService.editKyc.next({ editable: true });
-        this.router.navigate(['/kyc-setting']);
+        this.router.navigate(['/kyc-setting/edit-kyc']);
       })
     ).subscribe();
   }

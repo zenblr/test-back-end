@@ -63,7 +63,9 @@
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
                                 <span
                                     *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'pending') || (roles == 'Branch Manager' && role.customerKycClassification.kycStatusFromCce == 'approved' && (role.kycStatus == 'rejected' || role.kycStatus == 'pending'))">
-                                    <img src="../../../../assets/media/icons/action.svg"></span>
+                                    <!-- <img src="../../../../assets/media/icons/action.svg"> -->
+                                    <strong>Action ></strong>
+                                </span>
                             </div>
                             <span
                                 *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'approved') || (roles == 'Branch Manager' && role.kycStatus == 'approved')"></span>

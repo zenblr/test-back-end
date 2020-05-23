@@ -10,9 +10,17 @@
                                 <label class="text-color ">Ornament Type</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" class="form-control" placeholder="Ring"
+                                <!-- <input type="text" class="form-control" placeholder="Ring"
                                     formControlName="ornamentType"
+                                    [class.isError]="ornament.controls.ornamentType.touched && ornament.controls.ornamentType.invalid"> -->
+
+                                <select class="form-control" formControlName="ornamentType"
                                     [class.isError]="ornament.controls.ornamentType.touched && ornament.controls.ornamentType.invalid">
+                                    <option value=null [disabled]="true" [selected]="true">Select Ornament</option>
+                                    <option [value]="karat.id" *ngFor="let karat of ornamentType">
+                                        {{karat.name | titlecase}}
+                                    </option>
+                                </select>
                                 <mat-error
                                     *ngIf="ornament.controls.ornamentType.touched && ornament.controls.ornamentType.invalid">
                                     <span *ngIf="ornament.controls.ornamentType.errors?.required">Field Required</span>
@@ -109,7 +117,7 @@
                                     class="my-auto text-primary text-center kt-padding-l-15 kt-pointer"
                                     (click)="preview(ornament.controls.weightMachineZeroWeight.value,idx)">View
                                     Image</label>
-                                <mat-error 
+                                <mat-error
                                     *ngIf="ornament.controls.weightMachineZeroWeight.touched && ornament.controls.weightMachineZeroWeight.invalid">
                                     <span *ngIf="ornament.controls.weightMachineZeroWeight.errors?.required">Upload
                                         Image</span>
@@ -122,8 +130,7 @@
                                     [value]="'Attach'" (click)="weightMachineZeroWeight.click()"></kt-button>
 
                                 <div class="form-label">
-                                    <label
-                                        *ngIf="ornament.controls.weightMachineZeroWeight.value && !disable"
+                                    <label *ngIf="ornament.controls.weightMachineZeroWeight.value && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('weightMachineZeroWeight',idx,ornament.controls.weightMachineZeroWeight.value)">Remove</label>
                                 </div>
@@ -155,8 +162,7 @@
                                 <kt-button *ngIf="!ornament.controls.withOrnamentWeight.value" [type]="'button'"
                                     [value]="'Attach'" (click)="withOrnamentWeight.click()"></kt-button>
                                 <div class="form-label">
-                                    <label
-                                        *ngIf="ornament.controls.withOrnamentWeight.value && !disable"
+                                    <label *ngIf="ornament.controls.withOrnamentWeight.value && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('withOrnamentWeight',idx,ornament.controls.withOrnamentWeight.value)">Remove</label>
                                 </div>
@@ -240,8 +246,7 @@
                                 <kt-button *ngIf="ornament.controls.purityTest.value.length == 0" [type]="'button'"
                                     [value]="'Attach'" (click)="purity.click()"></kt-button>
                                 <div class="form-label">
-                                    <label
-                                        *ngIf="ornament.controls.purityTest.value.length > 0 && !disable"
+                                    <label *ngIf="ornament.controls.purityTest.value.length > 0 && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('purity',idx,ornament.controls.purityTest.value)">Remove</label>
                                 </div>

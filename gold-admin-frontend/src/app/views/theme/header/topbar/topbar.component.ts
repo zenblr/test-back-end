@@ -359,6 +359,22 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('view-loan')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('package-image-upload')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('loan-details/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('customer-list/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('kyc-setting?mob')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('edit-kyc')) {
+			this.showBackButton = true;
+		}
+
 	}
 
 	action(event: Event) {

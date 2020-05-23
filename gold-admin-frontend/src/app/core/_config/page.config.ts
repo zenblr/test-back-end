@@ -78,6 +78,9 @@ export class PageConfig {
 		},
 		"kyc-setting": {
 			page: { title: "Customer KYC", desc: "" },
+			'edit-kyc': {
+				page: { title: "Customer KYC", desc: "" },
+			}
 		},
 		"emi-management": {
 			products: {
@@ -137,8 +140,10 @@ export class PageConfig {
 		},
 		'customer-management': {
 			'customer-list': {
-				page: { title: 'My Customer', desc: '' }
-
+				page: { title: 'My Customer', desc: '' },
+				id: {
+					page: { title: 'Customer Details', desc: '' }
+				}
 			}
 		},
 
