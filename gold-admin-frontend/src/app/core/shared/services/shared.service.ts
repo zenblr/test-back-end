@@ -12,7 +12,7 @@ export class SharedService {
 	role$ = this.role.asObservable();
 
 	constructor(private http: HttpClient) {
-		var token = localStorage.getItem("accessToken");
+		var token = localStorage.getItem("UserDetails");
 		if (token) {
 			var decodedValue = JSON.parse(atob(token.split(".")[1]));
 			this.role.next(decodedValue.roleName[0]);
@@ -35,7 +35,7 @@ export class SharedService {
 	}
 
 	getRole(): Observable<any> {
-		var token = localStorage.getItem("accessToken");
+		var token = localStorage.getItem("UserDetails");
 		// if (token) {
 		var decodedValue = JSON.parse(atob(token.split(".")[1]));
 		return of(decodedValue.roleName[0]);

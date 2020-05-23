@@ -12,8 +12,8 @@ import { catchError, map } from 'rxjs/operators';
 export class PermissionsComponent implements OnInit {
   panelOpenState = false;
   permissions: any[] = []
-  selectedPermission:any[]=[]
-  id:number=0;
+  selectedPermission: any[] = []
+  id: number = 0;
   constructor(
     private permissionService: PermissionService,
     private rout: ActivatedRoute,
@@ -24,7 +24,7 @@ export class PermissionsComponent implements OnInit {
   ngOnInit() {
     this.id = this.rout.snapshot.params.id
     this.getPermission();
-    
+
   }
 
   getPermission() {
@@ -39,19 +39,36 @@ export class PermissionsComponent implements OnInit {
       })).subscribe()
   }
 
-  createSelectedPermissionArray(){
-    this.permissions.forEach(per=>{
-      per.entity.forEach(ent=>{
-        if(ent.isSelected){
+  createSelectedPermissionArray() {
+    this.permissions.forEach(per => {
+      per.entity.forEach(ent => {
+        if (ent.isSelected) {
           ent.permission.forEach(perId => {
-            this.selectedPermission.push(perId.id)
+            if (perId.isSelected)
+              this.selectedPermission.push(perId.id)
           });
         }
       })
     })
-    // console.log(this.selectedPermission)
+    console.log(this.selectedPermission)
   }
 
+  checkForChecked(moduleIndex, index, entity) {
+    let unchecked = 0;
+    entity.permission.forEach(per => {
+      if (!per.isSelected) {
+        unchecked += 1;
+      }
+    })
+    if (unchecked == entity.permission.length) {
+      this.permissions[moduleIndex].entity[index].isSelected = false;
+      return false
+    } else {
+      this.permissions[moduleIndex].entity[index].isSelected = true;
+      return true
+    }
+    console.log(entity)
+  }
   toogleChange(event, moduleIndex, entityIndex) {
     var toogle = this.permissions[moduleIndex].entity[entityIndex]
     if (event) {
@@ -60,18 +77,18 @@ export class PermissionsComponent implements OnInit {
       toogle.isSelected = false;
     }
 
-      for (let index = 0; index < toogle.permission.length; index++) {
-        if(event){
+    for (let index = 0; index < toogle.permission.length; index++) {
+      if (event) {
         toogle.permission[index].isSelected = true
         this.selectedPermission.push(toogle.permission[index].id)
-        }else{
-          toogle.permission[index].isSelected = false
-          var findIndex = this.selectedPermission.indexOf(toogle.permission[index].id)
-          this.selectedPermission.splice(findIndex,1)
-        }
+      } else {
+        toogle.permission[index].isSelected = false
+        var findIndex = this.selectedPermission.indexOf(toogle.permission[index].id)
+        this.selectedPermission.splice(findIndex, 1)
       }
-      // console.log(this.selectedPermission)
-      
+    }
+    console.log(this.selectedPermission)
+
   }
 
   actionChange(event, moduleIndex, entityIndex, permissionIndex) {
@@ -82,17 +99,17 @@ export class PermissionsComponent implements OnInit {
     } else {
       permission.isSelected = false
       var findIndex = this.selectedPermission.indexOf(permission.id)
-      this.selectedPermission.splice(findIndex,1)
+      this.selectedPermission.splice(findIndex, 1)
     }
-    // console.log(this.selectedPermission)
+    console.log(this.selectedPermission)
   }
 
-  submit(){
-    this.permissionService.updatePermission(this.selectedPermission,this.id).pipe(
-      map(res =>{
+  submit() {
+    this.permissionService.updatePermission(this.selectedPermission, this.id).pipe(
+      map(res => {
         this.toast.success(res.message)
       }),
-      catchError(err=>{
+      catchError(err => {
         this.toast.error(err.error.message)
         throw err
       })).subscribe()
