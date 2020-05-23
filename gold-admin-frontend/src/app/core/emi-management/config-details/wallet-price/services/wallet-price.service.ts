@@ -20,9 +20,7 @@ export class WalletPriceService {
   constructor(private http: HttpClient, private excelService: ExcelService) { }
 
   getWalletPrice(): Observable<any> {
-    return this.http
-      .get<any>(`http://173.249.49.7:9120/api/wallet`, { observe: 'response' })
-      .pipe(map(response => response.body));
+    return this.http.get<any>(`http://173.249.49.7:9120/api/wallet`);
   }
 
   addWalletPrice(data): Observable<any> {
@@ -34,8 +32,7 @@ export class WalletPriceService {
   }
 
   report(): Observable<any> {
-    return this.http
-      .get(`http://173.249.49.7:9120/api/wallet/wallet-update-report`, { responseType: 'arraybuffer' })
+    return this.http.get(`http://173.249.49.7:9120/api/wallet/wallet-update-report`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
           return res;

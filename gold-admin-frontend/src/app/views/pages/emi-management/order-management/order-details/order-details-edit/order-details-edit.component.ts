@@ -109,16 +109,11 @@ export class OrderDetailsEditComponent implements OnInit {
       case 5: case 7: this.hiddenFlag = true;
         this.getOrderLogistic();
         break;
-      case 6: this.hiddenFlag = true;
-        this.getOrderLogistic();
-        this.orderForm.controls['trackingId'].disable();
-        this.orderForm.controls['logisticPartnerId'].disable();
-        break;
       case 8: this.showUploadedFile = true;
         this.getOrderLogistic();
         this.orderForm.disable();
         break;
-      case 12: this.hiddenFlag = true;
+      case 6: case 11: case 12: this.hiddenFlag = true;
         this.getOrderLogistic();
         this.orderForm.controls['trackingId'].disable();
         this.orderForm.controls['logisticPartnerId'].disable();

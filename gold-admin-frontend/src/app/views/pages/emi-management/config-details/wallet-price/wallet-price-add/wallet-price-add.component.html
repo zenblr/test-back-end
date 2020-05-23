@@ -20,7 +20,7 @@
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
                         <div class="row">
                             <div class="col-5">
-                                <label [class.mandatory]="isMandatory">Wallet Gold Price(1 gm)</label>
+                                <label [class.mandatory]="isMandatory">Wallet Gold Price (1 gm)</label>
                             </div>
                             <div class="col-7">
                                 <input class="form-control" formControlName="walletGoldPrice" type="number"
@@ -34,7 +34,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-5">
-                                <label [class.mandatory]="isMandatory">Wallet Silver Price(1 gm)</label>
+                                <label [class.mandatory]="isMandatory">Wallet Silver Price (1 gm)</label>
                             </div>
                             <div class="col-7">
                                 <input class="form-control" formControlName="walletSilverPrice" type="number"
@@ -111,7 +111,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-5">
-                                <label [class.mandatory]="isMandatory">Cancel Value</label>
+                                <label [class.mandatory]="isMandatory">Cancel Value (%)</label>
                             </div>
                             <div class="col-7">
                                 <input class="form-control" formControlName="cancelValue" type="number"
@@ -131,8 +131,7 @@
                                 <input class="form-control" formControlName="kycLimit" type="number"
                                     placeholder="eg - 2" min="0" max="100"
                                     [class.isError]="controls.kycLimit.touched && controls.kycLimit.invalid">
-                                <mat-error
-                                    *ngIf="controls.kycLimit.errors?.required && controls.kycLimit.touched">
+                                <mat-error *ngIf="controls.kycLimit.errors?.required && controls.kycLimit.touched">
                                     Required field
                                 </mat-error>
                             </div>
