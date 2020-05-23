@@ -75,4 +75,8 @@ export class SharedService {
 			`http://173.249.49.7:9120/api/emi-details/all-emi-status`
 		);
 	}
+
+	getDataFromStorage() {
+		return JSON.parse(localStorage.getItem('UserDetails'));
+	  }
 }

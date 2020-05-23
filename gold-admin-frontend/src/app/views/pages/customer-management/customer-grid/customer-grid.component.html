@@ -1,12 +1,11 @@
-<div class="row justify-content-center">
+<div class="row justify-content-between">
     <div class="card" *ngFor="let customer of customers;index as i">
         <div class="bg-white">
-            <img src="../../../../../assets/media/users/default.jpg" alt="test " [class.d-none]="i%9!=0">
-            <img src="../../../../../assets/media/users/300_4.jpg" alt="test" [class.d-none]="i%9 ==0">
-            <p class="text-secondary">AG76895B</p>
-            <p class="text-color font-weight-bold">Kajal Thirtimare</p>
-            <p class="text-color">+918006555580</p>
-            <p class="text-primary font-weight-bold kt-pointer" (click)="viewDetails(1)">View Details</p>
+            <img [src]="customer.customerKycPersonal.profileImage" alt="test " >
+            <p class="text-secondary">{{customer.panCardNumber}}</p>
+            <p class="text-color font-weight-bold">{{customer.firstName | titlecase}} {{customer.lastName | titlecase}}</p>
+            <p class="text-color">{{customer.mobileNumber}}</p>
+            <p class="text-primary font-weight-bold kt-pointer" (click)="viewDetails(customer.id)">View Details</p>
         </div>
     </div>
 </div>

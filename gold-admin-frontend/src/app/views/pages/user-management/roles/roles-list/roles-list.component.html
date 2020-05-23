@@ -3,7 +3,7 @@
 	<kt-portlet-body>
 		<!-- MATERIAL TABLE | Binded to datasources -->
 		<!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
-		<div class="mat-table__wrapper">
+		<div class="mat-table__wrapper" [ngStyle]="{ 'overflow-x': 'hidden' }">
 			<mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 				<!-- Checkbox Column -->
 
@@ -12,7 +12,7 @@
 
 				<ng-container matColumnDef="roleName">
 					<!-- ATTRIBUTE   for sorting | https://material.angular.io/components/sort/overview -->
-					<mat-header-cell *matHeaderCellDef >Role Name</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef>Role Name</mat-header-cell>
 					<mat-cell *matCellDef="let role">
 						<div class="font-weight-bold text-color kt-pointer" (click)="permissions(role)">
 							{{role.roleName | titlecase}}
@@ -21,19 +21,21 @@
 				</ng-container>
 
 				<ng-container matColumnDef="createdBy">
-					<mat-header-cell *matHeaderCellDef >Created By</mat-header-cell>
-					<mat-cell *matCellDef="let role">{{role.createdByUser.firstName | titlecase}} &nbsp; {{role.createdByUser.lastName | titlecase}}</mat-cell>
+					<mat-header-cell *matHeaderCellDef>Created By</mat-header-cell>
+					<mat-cell *matCellDef="let role">{{role.createdByUser.firstName | titlecase}} &nbsp;
+						{{role.createdByUser.lastName | titlecase}}</mat-cell>
 				</ng-container>
 				<ng-container matColumnDef="modifiedBy">
-					<mat-header-cell *matHeaderCellDef >Modified By</mat-header-cell>
-					<mat-cell *matCellDef="let role">{{role.updatedByUser.firstName | titlecase}} &nbsp; {{role.updatedByUser.lastName | titlecase}}</mat-cell>
+					<mat-header-cell *matHeaderCellDef>Modified By</mat-header-cell>
+					<mat-cell *matCellDef="let role">{{role.updatedByUser.firstName | titlecase}} &nbsp;
+						{{role.updatedByUser.lastName | titlecase}}</mat-cell>
 				</ng-container>
 				<ng-container matColumnDef="modifiedDate">
-					<mat-header-cell *matHeaderCellDef >Modified Date</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef>Modified Date</mat-header-cell>
 					<mat-cell *matCellDef="let role">{{role.createdAt | date:'mediumDate'}}</mat-cell>
 				</ng-container>
 				<ng-container matColumnDef="modifiedTime">
-					<mat-header-cell *matHeaderCellDef >Modified Time</mat-header-cell>
+					<mat-header-cell *matHeaderCellDef>Modified Time</mat-header-cell>
 					<mat-cell *matCellDef="let role">{{role.updatedAt | date:'mediumDate'}}</mat-cell>
 				</ng-container>
 
@@ -41,10 +43,12 @@
 					<mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
 					<mat-cell *matCellDef="let role">
 						<div [ngStyle]="{'display': 'inherit'}">
-							<div (click)="editRole(role,'Update')" class="kt-pointer text-color font-weight-bold"> Edit |
+							<div (click)="editRole(role,'Update')" class="kt-pointer text-color font-weight-bold"> Edit
+								|
 								&nbsp;
 							</div>
-							<div class="kt-pointer text-color font-weight-bold" (click)="deleteRole(role.id)">Delete</div>
+							<div class="kt-pointer text-color font-weight-bold" (click)="deleteRole(role.id)">Delete
+							</div>
 						</div>
 					</mat-cell>
 				</ng-container>
@@ -65,8 +69,8 @@
 			<mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
 			<!-- MATERIAL PAGINATOR | Binded to dasources -->
 			<!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
-			<mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]" [length]="dataSource.paginatorTotal$ | async"
-				[showFirstLastButtons]="true"></mat-paginator>
+			<mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+				[length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
 		</div>
 		<!-- end: BOTTOM -->
 	</kt-portlet-body>

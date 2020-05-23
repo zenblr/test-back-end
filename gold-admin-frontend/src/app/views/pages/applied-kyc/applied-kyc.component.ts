@@ -7,6 +7,7 @@ import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators'
 import { DataTableService } from '../../../core/shared/services/data-table.service';
 import { Router } from '@angular/router';
 import { SharedService } from '../../../core/shared/services/shared.service';
+import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 
 @Component({
   selector: 'kt-applied-kyc',
@@ -16,7 +17,7 @@ import { SharedService } from '../../../core/shared/services/shared.service';
 export class AppliedKycComponent implements OnInit {
 
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'actions'];
+  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -102,5 +103,14 @@ export class AppliedKycComponent implements OnInit {
         this.router.navigate(['/kyc-setting']);
       })
     ).subscribe();
+  }
+
+  viewKYC(data) {
+    // this.dialog.open(UserReviewComponent)
+    const params = { customerId: data.customerId, customerKycId: data.id };
+    this.appliedKycService.editKycDetails(params).subscribe(res => {
+      console.log(res)
+      const dialogRef = this.dialog.open(UserReviewComponent, { data: { action: 'view' }, width: '900px' });
+    })
   }
 }

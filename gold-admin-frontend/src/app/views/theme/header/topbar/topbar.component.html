@@ -17,15 +17,17 @@
                 <p class="text-right mb-0 kt-pointer" (click)="download()">{{value3}}</p>
             </div>
             <!-- Toggle Button -->
-            <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style"
-                #group="matButtonToggleGroup" value="list" *ngIf="toogle">
-                <mat-button-toggle value="grid" (click)="check('grid')">
-                    <img src="../../../../../assets/media/icons/svg/Layout/Layout-grid.svg">
-                </mat-button-toggle>
-                <mat-button-toggle value="list" (click)="check('list')">
-                    <img src="../../../../../assets/media/icons/svg/Text/Bullet-list.svg">
-                </mat-button-toggle>
-            </mat-button-toggle-group>
+            <span class="kt-margin-l-15">
+                <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style"
+                    #group="matButtonToggleGroup" value="list" *ngIf="toogle">
+                    <mat-button-toggle value="grid" (click)="check('grid')">
+                        <img src="../../../../../assets/media/icons/svg/Layout/Layout-grid.svg">
+                    </mat-button-toggle>
+                    <mat-button-toggle value="list" (click)="check('list')">
+                        <img src="../../../../../assets/media/icons/svg/Text/Bullet-list.svg">
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </span>
         </div>
         <div class="col-2 text-right">
             <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' (click)="action($event)"></kt-button>

@@ -147,11 +147,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 		this.auth
 			.login(authData.mobileNo, authData.password)
 			.pipe(
-				tap(user => {
+				tap(res => {
 					// console.log(user);
-					if (user) {
+					if (res) {
 						// this.store.dispatch(new Login({ authToken: user.accessToken }));
-						localStorage.setItem('accessToken', user['Token']);
+						localStorage.setItem('UserDetails', JSON.stringify(res));
 						// debugger
 						if (this.returnUrl === '/') {
 							this.router.navigate(['/dashboard']);
@@ -172,7 +172,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 					this.cdr.markForCheck();
 				}),
 				catchError(err => {
-
 					let showError = JSON.stringify(err.error.message);
 					this.toastr.errorToastr(showError);
 					throw err;

@@ -30,6 +30,10 @@ const routes: Routes = [
   {
     path: 'customer-list/:id/loan-details/:loanId',
     component: LoanDetailsComponent
+  },
+  {
+    path: 'loan-details/:loanId',
+    component: LoanDetailsComponent
   }
 ];
 

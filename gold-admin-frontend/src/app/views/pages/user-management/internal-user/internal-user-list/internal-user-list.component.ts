@@ -17,6 +17,7 @@ import { InternalUserDatasource, InternalUserService } from '../../../../../core
 
 import { AddInternalUserComponent } from '../add-internal-user/add-internal-user.component'
 import { ToastrService } from 'ngx-toastr';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 
 @Component({
   selector: 'kt-internal-user-list',
@@ -24,6 +25,10 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./internal-user-list.component.scss']
 })
 export class InternalUserListComponent implements OnInit {
+
+  
+  searchValue = ''
+  unsubscribeSearch$ = new Subject()
   // Table fields
   dataSource: InternalUserDatasource;
   displayedColumns = ['userId', 'userName', 'email', 'mobileNumber', 'branchName', 'action'];
@@ -51,6 +56,7 @@ export class InternalUserListComponent implements OnInit {
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
     private internalUserService: InternalUserService,
+    private dataTableService: DataTableService,
     private router: Router) {
     this.internalUserService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
@@ -67,6 +73,19 @@ export class InternalUserListComponent implements OnInit {
    * On init
    */
   ngOnInit() {
+
+    const paginatorSubscriptions = merge(this.paginator.page).pipe(
+			tap(() => this.loadUserList())
+		).subscribe();
+    this.subscriptions.push(paginatorSubscriptions);
+    
+    const searchSubscription = this.dataTableService.searchInput$.pipe(
+      takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadUserList();
+      });
     // Init DataSource
     this.dataSource = new InternalUserDatasource(this.internalUserService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
@@ -80,7 +99,7 @@ export class InternalUserListComponent implements OnInit {
 
     // First load
     of(undefined).pipe(take(1), delay(1000)).subscribe(() => { // Remove this line, just loading imitation
-      this.loadRolesList();
+      this.loadUserList();
     });
   }
 
@@ -96,13 +115,13 @@ export class InternalUserListComponent implements OnInit {
   /**
    * Load Roles List
    */
-  loadRolesList() {
+  loadUserList() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadUser('', from, to);
+    this.dataSource.loadUser(this.searchValue, from, to);
   }
 
   /**
@@ -126,7 +145,7 @@ export class InternalUserListComponent implements OnInit {
       this.internalUserService.deleteUser(user.id).pipe(
         map(res => {
           this.toast.success(_deleteMessage)
-          this.loadRolesList();
+          this.loadUserList();
 
         }), catchError(err => {
           this.toast.error("Something Went Wrong")
@@ -145,7 +164,7 @@ export class InternalUserListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.internalUserService.openModal.next(false);
-        this.loadRolesList();
+        this.loadUserList();
       }
     })
   }
@@ -161,7 +180,7 @@ export class InternalUserListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.internalUserService.openModal.next(false);
-        this.loadRolesList();
+        this.loadUserList();
 
       }
     });

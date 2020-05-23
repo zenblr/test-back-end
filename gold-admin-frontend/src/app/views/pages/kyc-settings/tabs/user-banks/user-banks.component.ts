@@ -41,7 +41,8 @@ export class UserBanksComponent implements OnInit {
       accountHolderName: ['', [Validators.required]],
       accountNumber: ['', [Validators.required]],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
-      passbookProof: []
+      passbookProof: [],
+      passbookProofImage: [, Validators.required],
     })
   }
 
@@ -54,9 +55,9 @@ export class UserBanksComponent implements OnInit {
       this.sharedService.uploadFile(this.file).pipe(
         map(res => {
           this.passBookImage.push(res.uploadFile.URL);
-          // this.bankForm.patchValue({ passbookProof: this.passBookImage });
+          this.bankForm.patchValue({ passbookProof: this.passBookImage });
 
-          this.bankForm.get('passbookProof').patchValue(event.target.files[0].name);
+          this.bankForm.get('passbookProofImage').patchValue(event.target.files[0].name);
           this.ref.detectChanges();
           console.log(this.bankForm.value);
         }), catchError(err => {

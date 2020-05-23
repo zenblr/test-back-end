@@ -68,6 +68,7 @@ import { UplodPreviewImageComponent } from './components/uplod-preview-image/upl
 import { SelectWithSearchComponent } from './components/select-with-search/select-with-search.component';
 
 import { NgSelectModule } from '@ng-select/ng-select';
+import { UserReviewComponent } from '../pages/kyc-settings/tabs/user-review/user-review.component';
 
 @NgModule({
 	declarations: [
@@ -128,6 +129,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 		UplodPreviewImageComponent,
 
 		SelectWithSearchComponent,
+		UserReviewComponent
 	],
 	exports: [
 		WidgetModule,
@@ -179,6 +181,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 		UserClassificationComponent,
 		UplodPreviewImageComponent,
 		SelectWithSearchComponent,
+		UserReviewComponent
 		// spinner
 
 	],

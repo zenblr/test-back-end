@@ -52,14 +52,14 @@ export class InterestCalculatorComponent implements OnInit {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.finalInterestForm.patchValue(changes.details.currentValue.finalLoan)
+        this.getSchemes()
         // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(changes.details.currentValue.finalLoan.loanStartDate))
         this.editedDate = changes.details.currentValue.finalLoan.loanStartDate;
         this.currentDate = new Date(changes.details.currentValue.finalLoan.loanStartDate)
         this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
-        this.getSchemes()
         this.finalInterestForm.controls.schemeId.patchValue(changes.details.currentValue.finalLoan.schemeId)
-        this.scheme()
-        this.calcInterestAmount()
+        this.finalInterestForm.controls.interestRate.patchValue(changes.details.currentValue.finalLoan.interestRate)
+
         this.ref.markForCheck()
       }
     }
@@ -85,6 +85,11 @@ export class InterestCalculatorComponent implements OnInit {
     this.partnerService.getSchemesByParnter(Number(this.controls.partnerId.value)).pipe(
       map(res => {
         this.schemesList = res.data.schemes;
+        if (this.controls.schemeId.value) {
+          this.scheme()
+          this.getIntrest()
+          this.calcInterestAmount()
+        }
       })).subscribe()
   }
 

@@ -29,6 +29,7 @@ export class PermissionComponent implements OnInit, AfterViewInit {
   userId: number = null;
   isEdit: boolean = true;
   lengthOf = { category: 0, subCategory: 0, product: 0 }
+  editMerchant = false;
 
   constructor(
     private merchantService: MerchantService,
@@ -46,6 +47,7 @@ export class PermissionComponent implements OnInit, AfterViewInit {
     var id = this.rout.snapshot.params.id;
     if (id) {
       this.userId = id;
+      this.editMerchant = true;
     }
     this.getData()
   }
@@ -148,14 +150,14 @@ export class PermissionComponent implements OnInit, AfterViewInit {
     this.checkedSubCategory = []
     this.permissions.forEach(cat => {
       cat.subCategory.forEach(sub => {
-        if (sub.isSelected){
+        if (sub.isSelected) {
           this.checkedSubCategory.push(sub)
-          sub.products.forEach(pro=>{
+          sub.products.forEach(pro => {
             pro.isSelected = true
             this.checkedProduct.push(pro.id)
           })
         }
-          
+
       })
     })
     this.calculateLength()
@@ -174,14 +176,14 @@ export class PermissionComponent implements OnInit, AfterViewInit {
     this.checkedSubCategory = []
     this.permissions.forEach(cat => {
       cat.subCategory.forEach(sub => {
-        if (sub.isSelected){
+        if (sub.isSelected) {
           this.checkedSubCategory.push(sub)
-          sub.products.forEach(pro=>{
+          sub.products.forEach(pro => {
             pro.isSelected = true
             this.checkedProduct.push(pro.id)
           })
         }
-          
+
       })
     })
     this.calculateLength()
@@ -421,6 +423,8 @@ export class PermissionComponent implements OnInit, AfterViewInit {
           this.toastr.errorToastr(err.error.message)
           throw err
         })).subscribe()
+    } else {
+      this.router.navigate(['/user-management/merchant']);
     }
   }
 

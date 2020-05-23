@@ -2,71 +2,72 @@
 
     <kt-portlet-body>
 
-        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
+        <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="customerID">
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan.customer.firstName | titlecase}}&nbsp;{{loan.customer.lastName | titlecase}}
+                        {{loan.customer.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.customerUniqueId}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.loanUniqueId | uppercase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="schemeName">
                     <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amount">
-                    <mat-header-cell *matHeaderCellDef>Loan Amount.</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.mobileNumber}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="interestRate">
                     <mat-header-cell *matHeaderCellDef>Intrest Rate</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.interestRate}} % P.M</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="tenure">
                     <mat-header-cell *matHeaderCellDef>Loan Tenure</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date: 'mediumDate'}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.tenure}} Months</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="interestRestDays">
+                    <mat-header-cell *matHeaderCellDef>Interest Rest Days</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <span *ngIf="loan.finalLoan.paymentFrequency == '30'">Monthly</span>
+                        <span *ngIf="loan.finalLoan.paymentFrequency == '90'">Quarterly</span>
+                        <span *ngIf="loan.finalLoan.paymentFrequency == '180'">Half Yearly</span>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="startDate">
                     <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date : 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="endDate">
                     <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span
-                            [ngClass]="loan.loanStatusForAppraiser == 'pending' ? 'text-warning' :loan.loanStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
-                            {{loan.loanStatusForAppraiser | titlecase}}
-                        </span>
+                        {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
-                    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-                    <mat-cell *matCellDef="let loan"> 
-                        <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngIf="((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected') 
-                            && roles == 'Branch Manager') || (loan.loanStatusForAppraiser == 'pending' 
-                            && roles == 'Appraiser')">
-                                <div class="kt-pointer" (click)="editLoan(loan)" class="kt-pointer" >
-                                    <img src="../../../../../assets/media/icons/action.svg" alt="">
-                                </div>
-                            </div>
-                            <div *ngIf="loan.loanStatusForBM == 'approved' && roles == 'Appraiser'">
-                                <div class="kt-pointer" (click)="packageImageUpload(loan)" class="kt-pointer" >
-                                    <img src="../../../../../assets/media/icons/action.svg" alt="">
-                                </div>
-                            </div>
-                            
-                        </div>
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <!-- <div style="display: contents" class="kt-pointer" > -->
+                        <span (click)="viewLoan(loan)" class=" font-weight-bold">View Loan </span>
+                        <!-- </div> -->
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="new">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <!-- <div style="display: contents" class="kt-pointer" > -->
+                        <button (click)="new(loan)" class="addmore">Add New Loan</button>
+                        <!-- </div> -->
                     </mat-cell>
                 </ng-container>
 

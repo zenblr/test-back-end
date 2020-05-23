@@ -20,7 +20,7 @@ export class StoreDatasource extends BaseDataSource {
         super();
     }
 
-    loadRoles(search, from, to) {
+    loadStores(search, from, to) {
         
 
         this.storeService.getStore(search, from, to)

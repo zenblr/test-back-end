@@ -1,5 +1,42 @@
 :host{
     .mat-column-customerID{
         padding-left: 10px !important;
+        flex : 0 0 10% !important;
     }
+    .mat-column-loanId{
+        flex : 0 0 7% !important;
+    }
+    .mat-column-schemeName {
+        flex: 0 0 10% !important;
+    }
+    .mat-column-amount{
+        flex: 0 0 10% !important;
+    }
+    .mat-column-interestRate{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-tenure{
+        flex: 0 0 9% !important;
+    }
+    .mat-column-interestRestDays {
+        flex: 0 0 12% !important;
+    }
+    .mat-column-startDate  {
+        flex: 0 0 9% !important;
+    }
+    .mat-column-endDate  {
+        flex: 0 0 9% !important;
+    }
+    .mat-column-actions  {
+        flex: 0 0 8% !important;
+    }
+    .mat-column-new  {
+        flex: 0 0 10% !important;
+    }
+    .addmore {
+		background: transparent;
+		border: thin solid #454D67;
+		border-radius: 5px;
+		padding: 5px;
+	}
 }
