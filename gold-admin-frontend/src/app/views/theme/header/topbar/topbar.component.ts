@@ -60,6 +60,7 @@ export class TopbarComponent implements OnInit {
 	listType = '';
 	filterWidth = '';
 	downloadbtn: boolean = false;
+	showBackButton = false;
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -153,6 +154,7 @@ export class TopbarComponent implements OnInit {
 		this.showfilter = false;
 		this.showInput = false;
 		this.toogle = false;
+		this.showBackButton = false;
 	}
 
 	dataSourceHeader() {
@@ -321,6 +323,9 @@ export class TopbarComponent implements OnInit {
 			this.type2 = 'button';
 			this.rightButton = true;
 		}
+		if (location.href.includes('view-loan')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
@@ -407,5 +412,9 @@ export class TopbarComponent implements OnInit {
 
 	applyFilter(data) {
 		this.productService.applyFilter.next(data);
+	}
+
+	goBack() {
+		this.location.back();
 	}
 }
