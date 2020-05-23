@@ -1,6 +1,5 @@
 <kt-portlet>
     <kt-portlet-body>
-
         <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
@@ -13,8 +12,10 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="editRole(role)" class="kt-pointer"> Edit | &nbsp;</div>
-                            <div class="kt-pointer text-danger" (click)="deleteRole(role)">Delete</div>
+                            <div *ngxPermissionsOnly="['logisticPartnerEdit']" (click)="editRole(role)"
+                                class="kt-pointer"> Edit | &nbsp;</div>
+                            <div *ngxPermissionsOnly="['logisticPartnerDelete']" (click)="deleteRole(role)"
+                                class="kt-pointer text-danger">Delete</div>
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -28,7 +29,6 @@
             <!-- Message for empty data  -->
             <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
         </div>
-
         <!-- start: BOTTOM -->
         <div class="mat-table__bottom">
             <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
