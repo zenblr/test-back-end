@@ -55,6 +55,9 @@ export class PageConfig {
 			"assign-appraiser": {
 				page: { title: "Assigned Appraiser", desc: "" },
 			},
+			'redirect-assign-appraiser': {
+				page: { title: "Assigned Appraiser", desc: "" },
+			},
 			merchant: {
 				page: { title: "All Merchants", desc: "" },
 			},

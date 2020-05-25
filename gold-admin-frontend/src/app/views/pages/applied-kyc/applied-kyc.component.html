@@ -25,7 +25,7 @@
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date & Time</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span class="d-block">{{role.createdAt | date:'mediumDate'}},&nbsp;</span>
+                        <span class="d-block">{{role.createdAt | date:'mediumDate'}}&nbsp;</span>
                     </mat-cell>
                 </ng-container>
 
@@ -82,9 +82,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="appraiser">
-                    <mat-header-cell *matHeaderCellDef>KYC Details</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role" (click)="assign()" class="kt-pointer">
-                        Assign Appraiser
+                        <button class="apply-kyc">Assign Appraiser</button>
                     </mat-cell>
                 </ng-container>
 

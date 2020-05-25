@@ -4,49 +4,71 @@
             <form action="" [formGroup]="finalLoanForm">
                 <div class="row kt-margin-t-30">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">Gold Gross Weight </label>
+                        <label for="" class="mandatory text-color">Gold Gross Weight </label>
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="goldGrossWeight"
-                            placeholder="0.00 gram">
+                            placeholder="0.00 gram"
+                            [class.isError]="controls.goldGrossWeight.touched && controls.goldGrossWeight.invalid">
+                        <mat-error
+                            *ngIf="controls.goldGrossWeight.errors?.required && controls.goldGrossWeight.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
 
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">Gold Net Weight </label>
+                        <label for="" class="mandatory text-color">Gold Net Weight </label>
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="goldNetWeight"
-                            placeholder="0.00 gram">
+                            placeholder="0.00 gram"
+                            [class.isError]="controls.goldNetWeight.touched && controls.goldNetWeight.invalid">
+                        <mat-error *ngIf="controls.goldNetWeight.errors?.required && controls.goldNetWeight.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">Gold Deduction Weight </label>
+                        <label for="" class="mandatory text-color">Gold Deduction Weight </label>
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="goldDeductionWeight"
-                            placeholder="0.00 gram">
+                            placeholder="0.00 gram"
+                            [class.isError]="controls.goldDeductionWeight.touched && controls.goldDeductionWeight.invalid">
+                        <mat-error
+                            *ngIf="controls.goldDeductionWeight.errors?.required && controls.goldDeductionWeight.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">Karat</label>
+                        <label for="" class="mandatory text-color">Karat</label>
                     </div>
                     <div class="col-6">
-                        <select class="form-control" formControlName="karat" (change)="selectKarat()">
-                            <option value=null [disabled]="true" [selected]="true">Select Karat</option>
+                        <select class="form-control" formControlName="karat" (change)="selectKarat()"
+                            [class.isError]="controls.karat.touched && controls.karat.invalid">
+                            <option value='' [disabled]="true" [selected]="true">Select Karat</option>
                             <option [value]="karat.karat" *ngFor="let karat of karatArr">{{karat.karat}} K</option>
                         </select>
+                        <mat-error *ngIf="controls.karat.errors?.required && controls.karat.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">Purity %</label>
+                        <label for="" class="mandatory text-color">Purity %</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="purity" placeholder="00%">
+                        <input type="number" class="form-control" formControlName="purity" placeholder="00%"
+                            [class.isError]="controls.purity.touched && controls.purity.invalid">
+                        <mat-error *ngIf="controls.purity.errors?.required && controls.purity.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-30">
@@ -58,40 +80,52 @@
             <form action=""> -->
                 <div class="row kt-margin-t-30">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">Final Net Weight </label>
+                        <label for="" class="mandatory text-color">Final Net Weight </label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="finalNetWeight" placeholder="48,000">
+                        <input type="number" class="form-control" formControlName="finalNetWeight" placeholder="48,000"
+                            [class.isError]="controls.finalNetWeight.touched && controls.finalNetWeight.invalid">
+                        <mat-error *ngIf="controls.finalNetWeight.errors?.required && controls.finalNetWeight.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">Current LTV Amount</label>
+                        <label for="" class="mandatory text-color">Current LTV Amount</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="currentLtvAmount"
-                            placeholder="4,800">
+                        <input type="number" class="form-control" formControlName="currentLtvAmount" placeholder="4,800"
+                            readonly>
                         <mat-hint><small> 75% of current gold rate</small></mat-hint>
                     </div>
                 </div>
 
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">LTV %</label>
+                        <label for="" class="mandatory text-color">LTV %</label>
                     </div>
                     <div class="col-6">
-                        <select class="form-control" formControlName="ltvPercent" (change)="chnageLtvPercent()">
-                            <option value=null [disabled]="true" [selected]="true">Select Purity</option>
+                        <select class="form-control" formControlName="ltvPercent" (change)="chnageLtvPercent()"
+                            [class.isError]="controls.ltvPercent.touched && controls.ltvPercent.invalid">
+                            <option value='' [disabled]="true" [selected]="true">Select Purity</option>
                             <option [value]="purity" *ngFor="let purity of purity">{{purity}} %</option>
                         </select>
+                        <mat-error *ngIf="controls.ltvPercent.errors?.required && controls.ltvPercent.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">LTV Amount</label>
+                        <label for="" class="mandatory text-color">LTV Amount</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="ltvAmount" placeholder="4,800">
+                        <input type="number" class="form-control" formControlName="ltvAmount" placeholder="4,800"
+                            [class.isError]="controls.ltvAmount.touched && controls.ltvAmount.invalid">
+                        <mat-error *ngIf="controls.ltvAmount.errors?.required && controls.ltvAmount.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
                 <div class="row kt-margin-t-30">
@@ -100,10 +134,10 @@
                     </div>
                 </div>
 
-                <div class="row kt-margin-t-20">
+                <div class="row kt-margin-t-20 kt-margin-b-50">
                     <div class="offset-4 col-6">
                         <p class="text-gray font-weight-500 m-0">Total Amount</p>
-                        <h3 class="text-color">{{loanAmount | currency :'INR'}}</h3>
+                        <h3 class=" text-color">{{loanAmount | currency :'INR'}}</h3>
                     </div>
                 </div>
             </form>
