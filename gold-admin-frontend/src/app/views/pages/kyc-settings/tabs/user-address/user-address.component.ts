@@ -129,7 +129,7 @@ export class UserAddressComponent implements OnInit {
             this.addressControls.controls[1].patchValue({ addressProof: this.images.permanent });
             this.addressControls.at(1)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
           }else{
-            this.toastr.error("You can only upload 2 images for a proof")
+            this.toastr.error("Cannot upload more than two images")
           }
           this.ref.detectChanges();
           // console.log(this.addressControls)
