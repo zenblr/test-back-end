@@ -1,4 +1,5 @@
-<div *ngIf="type != 'view'">
+<div *ngIf="type != 'view'" class="position-relative">
+  <img src="../../../../../assets/media/icons/cancel.svg" class="cancel" alt="" (click)="close()">
   <div class="row kt-padding-l-40 kt-padding-r-40">
     <div class="col-12">
       <ngb-carousel *ngIf="images">

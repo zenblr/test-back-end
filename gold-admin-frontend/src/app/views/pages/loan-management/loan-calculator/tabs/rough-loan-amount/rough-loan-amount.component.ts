@@ -39,6 +39,16 @@ export class RoughLoanAmountComponent implements OnInit {
     }
   }
 
+  weightCheck(){
+    if(this.controls.grossWeight.valid){
+      if(this.controls.grossWeight.value < this.controls.netWeight.value){
+        this.controls.netWeight.setErrors({weight:true})
+      }else{
+        this.controls.netWeight.setErrors(null)
+      }
+    }
+  }
+
   calculate() {
     if (this.roughLoanForm.invalid) {
       this.roughLoanForm.markAllAsTouched();

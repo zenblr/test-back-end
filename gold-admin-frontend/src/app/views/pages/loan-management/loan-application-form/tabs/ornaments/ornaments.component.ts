@@ -63,7 +63,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit() {
     this.url = this.router.url.split('/')[2]
     this.getKarat()
-    this.getOrnamentType()
+    // this.getOrnamentType()
     this.initForm()
     this.ornamentsForm.valueChanges.subscribe(() => {
       this.OrnamentsDataEmit.emit(this.OrnamentsData)
@@ -79,14 +79,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     ).subscribe()
   }
 
-  getOrnamentType() {
-    this.loanApplicationFormService.getOrnamentType().pipe(
-      map(res => {
-        console.log(res);
-        this.ornamentType = res.data;
-      })
-    ).subscribe();
-  }
+  // getOrnamentType() {
+  //   this.loanApplicationFormService.getOrnamentType().pipe(
+  //     map(res => {
+  //       console.log(res);
+  //       this.ornamentType = res.data;
+  //     })
+  //   ).subscribe();
+  // }
 
   initForm() {
     this.ornamentsForm = this.fb.group({
@@ -146,6 +146,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       return this.ornamentsForm.controls.ornamentData as FormArray;
   }
 
+  weightCheck(index){
+    const group = this.OrnamentsData.at(index) as FormGroup;
+    if(group.controls.grossWeight.valid){
+      if(group.controls.grossWeight.value < group.controls.netWeight.value){
+        group.controls.netWeight.setErrors({weight:true})
+      }else{
+        group.controls.netWeight.setErrors(null)
+      }
+    }
+  }
   calcGoldDeductionWeight(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
     if (group.controls.grossWeight.valid && group.controls.netWeight.valid) {

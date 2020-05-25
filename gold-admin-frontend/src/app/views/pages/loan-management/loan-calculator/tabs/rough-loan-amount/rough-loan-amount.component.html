@@ -8,11 +8,12 @@
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="grossWeight"
-                            placeholder="10.50 grams"
+                            placeholder="10.50 grams" (blur)="weightCheck()"
                             [class.isError]="controls.grossWeight.touched && controls.grossWeight.invalid">
                         <mat-error *ngIf="controls.grossWeight.errors?.required && controls.grossWeight.touched">
                             Required field
                         </mat-error>
+                        
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
@@ -21,9 +22,12 @@
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="netWeight" placeholder="8.50 grams"
-                            [class.isError]="controls.netWeight.touched && controls.netWeight.invalid">
+                            [class.isError]="controls.netWeight.touched && controls.netWeight.invalid" (blur)="weightCheck()">
                         <mat-error *ngIf="controls.netWeight.errors?.required && controls.netWeight.touched">
                             Required field
+                        </mat-error>
+                        <mat-error *ngIf="controls.netWeight.errors?.weight && controls.netWeight.touched">
+                            <small>Gross Weight should be lesser then Net Weight</small>
                         </mat-error>
                     </div>
                 </div>
