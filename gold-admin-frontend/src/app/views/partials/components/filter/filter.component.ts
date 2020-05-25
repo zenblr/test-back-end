@@ -118,8 +118,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 
 		this.sharedService.closeFilter$.subscribe(res => {
 			if (res) {
-				this.clearFilterForm();
-				this.dropdown.close();
+				setTimeout(() => {
+					this.clearFilterForm();
+					this.dropdown.close();
+				});
 			}
 		});
 	}
@@ -367,9 +369,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		if (this.filterForm.invalid) {
 			return;
 		}
-		if ((parseFloat(this.controls.priceFrom.value) > parseFloat(this.controls.priceTo.value))) {
-			return;
-		}
+		// if ((parseFloat(this.controls.priceFrom.value) > parseFloat(this.controls.priceTo.value))) {
+		// 	return;
+		// }
 		const filterData = this.prepareFilter();
 		if (filterData) {
 			setTimeout(() => {

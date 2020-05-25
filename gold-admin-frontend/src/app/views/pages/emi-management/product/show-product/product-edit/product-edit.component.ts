@@ -125,6 +125,14 @@ export class ProductEditComponent implements OnInit {
     this.productService.getSingleProduct(id).subscribe(
       res => {
         console.log(res);
+        if (this.data.action == 'view') {
+          if (res.productImage != '0') {
+            const prodImage = {
+              url: res.productImage
+            }
+            res.productImages.push(prodImage);
+          }
+        }
         this.productData = res;
         this.productForm.patchValue(res);
         this.productForm.controls['price'].patchValue(res.productPrice[0].finalProductPrice);
