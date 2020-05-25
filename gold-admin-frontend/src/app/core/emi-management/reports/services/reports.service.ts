@@ -156,4 +156,28 @@ export class ReportsService {
 				)
 			);
 	}
+	getFranchiseReport(event?: any): Observable<any> {
+		return this.http
+			.get(
+				`http://173.249.49.7:9120/api/store/franchise-report/` +
+					event.startDate +
+					"/" +
+					event.endDate,
+				{ responseType: "arraybuffer" }
+			)
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.excelService.saveAsExcelFile(
+							data,
+							"Franchise Report"
+						);
+					},
+					(error) => console.log(error)
+				)
+			);
+	}
 }

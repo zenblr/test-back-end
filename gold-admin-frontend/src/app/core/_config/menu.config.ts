@@ -359,8 +359,8 @@ export class MenuConfig {
 							page: "/emi-management/emi-details",
 						},
 						{
-							title: "Refund Management",
-							page: "/emi-management/refund-management",
+							title: "Refund Details",
+							page: "/emi-management/refund-details",
 						},
 						{
 							title: "Cancel Order Details",
@@ -378,12 +378,12 @@ export class MenuConfig {
 					icon: "flaticon2-architecture-and-city",
 					page: "/emi-management/users",
 				},
-				// {
-				// 	title: "Reports",
-				// 	root: true,
-				// 	icon: "flaticon2-download-2",
-				// 	page: "/emi-management/reports",
-				// },
+				{
+					title: "Reports",
+					root: true,
+					icon: "flaticon2-download-2",
+					page: "/emi-management/reports",
+				},
 				{
 					title: "Back",
 					icon: "flaticon-logout",
