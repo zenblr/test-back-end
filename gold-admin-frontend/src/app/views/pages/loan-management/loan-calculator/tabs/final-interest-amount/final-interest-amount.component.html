@@ -194,24 +194,24 @@
                                     <th scope="col" style="width: 50%" class="rating-cce">Interest Amount</th>
                                 </tr>
                             </thead>
-                            <tbody *ngIf="dateOfPayment.length%colJoin == 0 || colJoin == null">
+                            <tbody *ngIf="colJoin == null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
-                                    <td>{{date.key | date :'mediumDate'}}</td>
+                                    <td>{{date.key | date :'mediumDate'}}1</td>
 
                                     <td [attr.rowspan]="colJoin" *ngIf="(idx%colJoin == 0 || colJoin == null)">
                                         {{intrestAmount | currency : 'INR'}}</td>
 
                                 </tr>
                             </tbody>
-                            <tbody *ngIf="dateOfPayment.length%colJoin != 0 && colJoin !== null">
+                            <tbody *ngIf="dateOfPayment.length%colJoin > 0 || colJoin != null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
-                                    <td>{{date.key | date :'mediumDate'}}</td>
+                                    <td>{{date.key | date :'mediumDate'}}2</td>
                                     <!-- <td>{{idx%colJoin == 0}}{{colJoin == null}}{{dateOfPayment.length%colJoin < dateOfPayment.length-idx}} {{dateOfPayment.length%colJoin}}{{dateOfPayment.length-idx}}</td> -->
                                     <td [attr.rowspan]="colJoin"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
                                         {{intrestAmount | currency : 'INR'}}</td>
-                                    <td *ngIf="(dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
-                                        {{intrestAmount / colJoin | currency : 'INR'}}</td>
+                                    <td [attr.rowspan]="colJoin" *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
+                                        {{(intrestAmount /colJoin) * (dateOfPayment.length%colJoin) | currency : 'INR'}}</td>
 
                                 </tr>
                             </tbody>

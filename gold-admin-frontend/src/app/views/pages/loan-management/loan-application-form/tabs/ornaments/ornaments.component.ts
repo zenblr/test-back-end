@@ -63,7 +63,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit() {
     this.url = this.router.url.split('/')[2]
     this.getKarat()
-    this.getOrnamentType()
+    // this.getOrnamentType()
     this.initForm()
     this.ornamentsForm.valueChanges.subscribe(() => {
       this.OrnamentsDataEmit.emit(this.OrnamentsData)
@@ -79,14 +79,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     ).subscribe()
   }
 
-  getOrnamentType() {
-    this.loanApplicationFormService.getOrnamentType().pipe(
-      map(res => {
-        console.log(res);
-        this.ornamentType = res.data;
-      })
-    ).subscribe();
-  }
+  // getOrnamentType() {
+  //   this.loanApplicationFormService.getOrnamentType().pipe(
+  //     map(res => {
+  //       console.log(res);
+  //       this.ornamentType = res.data;
+  //     })
+  //   ).subscribe();
+  // }
 
   initForm() {
     this.ornamentsForm = this.fb.group({
