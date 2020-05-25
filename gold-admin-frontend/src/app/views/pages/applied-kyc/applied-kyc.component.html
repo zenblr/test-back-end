@@ -83,8 +83,10 @@
                 </ng-container>
                 <ng-container matColumnDef="appraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let role" (click)="assign()" class="kt-pointer">
-                        <button class="apply-kyc">Assign Appraiser</button>
+                    <mat-cell *matCellDef="let role"  class="kt-pointer">
+                        <button class="apply-kyc" (click)="assign()" 
+                        *ngIf="role.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved'"
+                        >Assign Appraiser</button>
                     </mat-cell>
                 </ng-container>
 

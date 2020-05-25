@@ -27,12 +27,12 @@ export class FinalLoanAmountComponent implements OnInit {
   ngOnInit() {
     this.getKarat()
     this.initForm();
-    this.controls.goldNetWeight.valueChanges.subscribe(res => {
-      // if (this.controls.goldNetWeight.touched) {
-      if (this.controls.goldGrossWeight.valid && this.controls.goldNetWeight.valid) {
-        this.calcGoldDeductionWeight();
-      }
-    });
+    // this.controls.goldNetWeight.valueChanges.subscribe(res => {
+    //   // if (this.controls.goldNetWeight.touched) {
+    //   if (this.controls.goldGrossWeight.valid && this.controls.goldNetWeight.valid) {
+    //     this.calcGoldDeductionWeight();
+    //   }
+    // });
 
     this.uploadOfferService.goldRate$.subscribe(res => {
       this.currentLtvAmount = res;
@@ -56,9 +56,11 @@ export class FinalLoanAmountComponent implements OnInit {
   }
 
   calcGoldDeductionWeight() {
-    const goldDeductionWeight = this.controls.goldGrossWeight.value - this.controls.goldNetWeight.value;
-    this.controls.goldDeductionWeight.patchValue(goldDeductionWeight);
-    // console.log(goldDeductionWeight)
+    if (this.controls.goldGrossWeight.valid && this.controls.goldNetWeight.valid) {
+      const goldDeductionWeight = this.controls.goldGrossWeight.value - this.controls.goldNetWeight.value;
+      this.controls.goldDeductionWeight.patchValue(goldDeductionWeight);
+      // console.log(goldDeductionWeight)
+    }
   }
 
   selectKarat() {
@@ -102,6 +104,15 @@ export class FinalLoanAmountComponent implements OnInit {
 
   }
 
+  weightCheck() {
+    if (this.controls.goldGrossWeight.valid) {
+      if (this.controls.goldGrossWeight.value < this.controls.goldNetWeight.value) {
+        this.controls.goldNetWeight.setErrors({ weight: true })
+      } else {
+        this.controls.goldNetWeight.setErrors(null)
+      }
+    }
+  }
   calFinalNetWeight() {
     // Current Net Weight = Net Weight - Purity %
     //                        = 10 - 1 / 100
