@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UploadOfferService } from '../../../../../../core/upload-data';
 import { KaratDetailsService } from '../../../../../../core/loan-setting/karat-details/services/karat-details.service';
 import { map } from 'rxjs/operators';
@@ -42,16 +42,16 @@ export class FinalLoanAmountComponent implements OnInit {
 
   initForm() {
     this.finalLoanForm = this.fb.group({
-      goldGrossWeight: [],
-      goldNetWeight: [],
-      goldDeductionWeight: [],
-      karat: [],
-      purity: [],
-      finalNetWeight: [],
-      ltvAmount: [],
-      ltvPercent: [],
-      currentLtvAmount: [],
-      loanAmount: []
+      goldGrossWeight: [, [Validators.required]],
+      goldNetWeight: [, [Validators.required]],
+      goldDeductionWeight: [, [Validators.required]],
+      karat: ['', [Validators.required]],
+      purity: [, [Validators.required]],
+      finalNetWeight: [, [Validators.required]],
+      ltvAmount: [, [Validators.required]],
+      ltvPercent: ['', [Validators.required]],
+      currentLtvAmount: [, [Validators.required]],
+      loanAmount: [, [Validators.required]]
     })
   }
 

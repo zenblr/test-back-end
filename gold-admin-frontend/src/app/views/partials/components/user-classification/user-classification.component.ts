@@ -55,6 +55,7 @@ export class UserClassificationComponent implements OnInit {
   showTextBoxBM = true;
   editRating: boolean;
   role: any;
+  viewBMForm = true;
 
   constructor(
     private userDetailsService: UserDetailsService,
@@ -64,11 +65,11 @@ export class UserClassificationComponent implements OnInit {
     private userBankService: UserBankService,
     private appliedKycService: AppliedKycService,
     private route: Router,
-    private sharedService:SharedService,
+    private sharedService: SharedService,
   ) {
-   this.sharedService.getRole().subscribe(res=>{
-     this.role = res
-   })
+    this.sharedService.getRole().subscribe(res => {
+      this.role = res
+    })
   }
 
   ngOnInit() {
@@ -130,13 +131,14 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationForm.controls.addressProofRatingVerifiedBm.disable();
       this.custClassificationForm.controls.kycStatusFromBm.disable();
       this.custClassificationForm.controls.reasonFromBm.disable();
+      this.viewBMForm = false;
     } else if (this.role == 'Branch Manager') {
       this.custClassificationForm.controls.behaviourRatingCce.disable();
       this.custClassificationForm.controls.idProofRatingCce.disable();
       this.custClassificationForm.controls.addressProofRatingCce.disable();
       this.custClassificationForm.controls.kycStatusFromCce.disable();
       this.custClassificationForm.controls.reasonFromCce.disable();
-    } else{
+    } else {
       this.custClassificationForm.disable()
     }
 

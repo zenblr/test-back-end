@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LayoutUtilsService, } from '../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
-import { AppraiserDatasource,AppraiserService } from '../../../../../core/user-management/appraiser';
+import { AppraiserDatasource, AppraiserService } from '../../../../../core/user-management/appraiser';
 import { Subscription, merge, Subject } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { AddAppraiserComponent } from '../add-appraiser/add-appraiser.component';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-appraiser-list',
@@ -15,13 +16,13 @@ import { DataTableService } from '../../../../../core/shared/services/data-table
 })
 export class AppraiserListComponent implements OnInit {
 
- 
+
   // Table fields
   dataSource: AppraiserDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ['customerId', 'customerName','actions'];
+  displayedColumns = ['customerId', 'customerName', 'actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
- 
+
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   appraiserResult: any[] = [];
@@ -39,8 +40,13 @@ export class AppraiserListComponent implements OnInit {
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
     private appraiserService: AppraiserService,
-    private dataTableService: DataTableService
+    public dataTableService: DataTableService,
+    private router: Router,
   ) {
+    // if (this.router.url == '/user-management/redirect-assign-appraiser') {
+    //   this.addAppraiser();
+    // }
+
     this.appraiserService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
         this.addAppraiser();
@@ -49,7 +55,7 @@ export class AppraiserListComponent implements OnInit {
   }
 
   ngOnInit() {
-   
+
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
@@ -70,7 +76,7 @@ export class AppraiserListComponent implements OnInit {
     // First load
     // this.loadBranchPage();
 
-    this.dataSource.loadBranches(this.searchValue,1, 25);
+    this.dataSource.loadBranches(this.searchValue, 1, 25);
   }
 
 	/**
@@ -91,7 +97,7 @@ export class AppraiserListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadBranches(this.searchValue,from, to, );
+    this.dataSource.loadBranches(this.searchValue, from, to);
   }
 
 
@@ -114,7 +120,7 @@ export class AppraiserListComponent implements OnInit {
 	 *
 	 * @param appraiser: appraiser
 	 */
-  editappraiser(appraiser,action) {
+  editappraiser(appraiser, action) {
     console.log(appraiser);
     // const _saveMessage = `appraiser successfully has been saved.`;
     // const _messageType = appraiser.id ? MessageType.Update : MessageType.Create;
