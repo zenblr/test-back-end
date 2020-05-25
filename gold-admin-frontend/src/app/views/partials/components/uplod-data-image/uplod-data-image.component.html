@@ -22,8 +22,7 @@
 
         </div>
     </div>
-    <div class="col-2 kt-margin-t-10 kt-margin-b-10">
-        <div class="div-height kt-pointer">
+    <div class="col-2 kt-margin-t-10 kt-margin-b-10" *ngxPermissionsOnly="['promotionalBannerAdd',]">        <div class="div-height kt-pointer">
             <input type="file" accept="image/*" class="d-none" #file (change)="uploadImages($event)">
             <button (click)="file.click();index = null" class="img-add w-100">
                 <img src="../../../../../assets/media/icons/add.svg" alt="">
