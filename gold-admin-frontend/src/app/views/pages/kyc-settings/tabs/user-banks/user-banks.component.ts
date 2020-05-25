@@ -65,7 +65,7 @@ export class UserBanksComponent implements OnInit {
             this.toastr.error(err.error.message);
             throw err
           }), finalize(() => {
-            this.signature.nativeElement.value = ''
+            
           })).subscribe();
         this.ref.detectChanges();
       } else {
@@ -74,6 +74,7 @@ export class UserBanksComponent implements OnInit {
     } else {
       this.toastr.error('Cannot upload more than two images');
     }
+    this.signature.nativeElement.value = ''
   }
 
   submit() {
