@@ -578,3 +578,15 @@ mat-header-row {
 	padding: 5px;
 	color: #f8b150 !important;
 }
+
+// mat-form-field
+.mat-form-field-empty.mat-form-field-label {
+    color: gray !important;
+}
+.mat-form-field-underline {
+    background-color: gray !important;
+}
+
+.mat-input-element{
+	caret-color: black !important;
+}

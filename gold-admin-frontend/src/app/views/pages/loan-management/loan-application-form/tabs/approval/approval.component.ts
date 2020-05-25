@@ -72,6 +72,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.approvalForm.patchValue(changes.details.currentValue)
+        this.statusAppraiser()
+        this.statusBM()
         this.ref.markForCheck()
       }
     }

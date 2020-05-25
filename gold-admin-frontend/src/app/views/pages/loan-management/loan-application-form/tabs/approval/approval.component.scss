@@ -1,4 +1,11 @@
 :host {
+	::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+		color: gray !important;
+	  }
+	  ::ng-deep .mat-focused .mat-form-field-underline .mat-form-field-ripple {
+		background-color: #e3e3e3 !important;
+	  }
+	  
 	.cursor-not-allowed{
 		cursor: not-allowed !important;
 	}
