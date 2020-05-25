@@ -8,11 +8,13 @@ import { UserBankService } from '../../../../core/kyc-settings/services/user-ban
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../core/shared/services/shared.service';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'kt-user-classification',
   templateUrl: './user-classification.component.html',
-  styleUrls: ['./user-classification.component.scss']
+  styleUrls: ['./user-classification.component.scss'],
+  providers:[TitleCasePipe]
 })
 export class UserClassificationComponent implements OnInit {
 
@@ -66,6 +68,7 @@ export class UserClassificationComponent implements OnInit {
     private appliedKycService: AppliedKycService,
     private route: Router,
     private sharedService: SharedService,
+    private titlecase:TitleCasePipe,
   ) {
     this.sharedService.getRole().subscribe(res => {
       this.role = res
@@ -207,7 +210,7 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationService.updateCceRating(this.custClassificationForm.value).pipe(
         map(res => {
           if (res) {
-            this.toastr.success(res.message);
+            this.toastr.success(this.titlecase.transform(res.message));
             // this.next.emit(true);
             this.route.navigate(['/applied-kyc']);
           }
@@ -217,7 +220,7 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationService.cceRating(this.custClassificationForm.value).pipe(
         map(res => {
           if (res) {
-            this.toastr.success(res.message);
+            this.toastr.success(this.titlecase.transform(res.message));
             // this.next.emit(true);
             this.route.navigate(['/applied-kyc']);
 

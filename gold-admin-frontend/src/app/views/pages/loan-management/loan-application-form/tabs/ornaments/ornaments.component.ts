@@ -149,13 +149,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   weightCheck(index){
     const group = this.OrnamentsData.at(index) as FormGroup;
     if(group.controls.grossWeight.valid){
-      if(group.controls.grossWeight.value < group.controls.netWeight.value){
+      if(Number(group.controls.grossWeight.value) < Number(group.controls.netWeight.value)){
         group.controls.netWeight.setErrors({weight:true})
       }else{
         group.controls.netWeight.setErrors(null)
       }
     }
   }
+
   calcGoldDeductionWeight(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
     if (group.controls.grossWeight.valid && group.controls.netWeight.valid) {
