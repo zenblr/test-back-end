@@ -363,8 +363,8 @@ export class MenuConfig {
 							page: "/emi-management/emi-details",
 						},
 						{
-							title: "Refund Management",
-							page: "/emi-management/refund-management",
+							title: "Refund Details",
+							page: "/emi-management/refund-details",
 						},
 						{
 							title: "Cancel Order Details",

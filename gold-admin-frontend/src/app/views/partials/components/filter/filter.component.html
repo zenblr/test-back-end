@@ -60,11 +60,11 @@
                   <div class="row">
                     <div class="col-4">
                       <label>Price From</label>
-                      <input class="form-control" formControlName="priceFrom" type="number" />
+                      <input class="form-control" formControlName="priceFrom" type="text" numbersOnly />
                     </div>
                     <div class="col-4">
                       <label>Price To</label>
-                      <input class="form-control" formControlName="priceTo" type="number" />
+                      <input class="form-control" formControlName="priceTo" type="text" numbersOnly />
                     </div>
                     <div class="col-4">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
@@ -190,7 +190,8 @@
                   <div class="row">
                     <div class="col-3">
                       <label>By Weight(gm)</label>
-                      <input class="form-control" placeholder="eg-100" formControlName="priceFrom" type="number" />
+                      <input class="form-control" placeholder="eg-100" formControlName="priceFrom" type="text"
+                        numbersOnly />
                     </div>
                     <div class="col-3">
                       <label>By tenure(m)</label>

@@ -122,8 +122,8 @@ export class PageConfig {
 			"deposit-details": {
 				page: { title: "Deposit Details", desc: "" },
 			},
-			"refund-management": {
-				page: { title: "Refund Management", desc: "" },
+			"refund-details": {
+				page: { title: "Refund Details", desc: "" },
 			},
 			users: {
 				page: { title: "Users", desc: "" },
@@ -135,11 +135,10 @@ export class PageConfig {
 		"applied-kyc": {
 			page: { title: "Applied KYC", desc: "" },
 		},
-		'customer-management': {
-			'customer-list': {
-				page: { title: 'My Customer', desc: '' }
-
-			}
+		"customer-management": {
+			"customer-list": {
+				page: { title: "My Customer", desc: "" },
+			},
 		},
 
 		"loan-management": {

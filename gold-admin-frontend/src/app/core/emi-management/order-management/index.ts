@@ -14,6 +14,6 @@ export { EmiDetailsService } from "./emi-details/services/emi-details.service";
 export { EmiDetailsModel } from "./emi-details/models/emi-details.model";
 export { EmiDetailsDatasource } from "./emi-details/datasources/emi-details.datasource";
 
-export { RefundManagementDatasource } from "./refund-management/datasources/refund-management.datasource";
-export { RefundManagementModel } from "./refund-management/models/refund-management.model";
-export { RefundManagementService } from "./refund-management/services/refund-management.service";
+export { RefundDetailsDatasource } from "./refund-details/datasources/refund-details.datasource";
+export { RefundDetailsModel } from "./refund-details/models/refund-details.model";
+export { RefundDetailsService } from "./refund-details/services/refund-details.service";
