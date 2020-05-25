@@ -47,7 +47,7 @@ export class AddBrokerComponent implements OnInit {
     if (this.data.action == 'add') {
       this.title = 'Add Broker'
     } else if (this.data.action == 'edit') {
-      this.title = 'Edit Broker'
+      this.title = 'Update Broker'
       this.brokerFrom.patchValue(this.data.broker)
       this.getCities()
       this.getStore()

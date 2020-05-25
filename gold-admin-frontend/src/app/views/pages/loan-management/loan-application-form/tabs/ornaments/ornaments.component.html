@@ -56,7 +56,7 @@
                                 <input type="text" class="form-control" placeholder="12.02 gram"
                                     formControlName="grossWeight"
                                     [class.isError]="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid"
-                                    (blur)="calcGoldDeductionWeight(idx)">
+                                    (blur)="calcGoldDeductionWeight(idx);weightCheck(idx)">
                                 <mat-error
                                     *ngIf="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid">
                                     <span *ngIf="ornament.controls.grossWeight.errors?.pattern">Enter a valid
@@ -75,12 +75,15 @@
                             <div class="col-8">
                                 <input type="text" class="form-control" placeholder="10.20" formControlName="netWeight"
                                     [class.isError]="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid"
-                                    (blur)="calcGoldDeductionWeight(idx);finalNetWeight(idx)">
+                                    (blur)="calcGoldDeductionWeight(idx);finalNetWeight(idx);weightCheck(idx)">
                                 <mat-error
                                     *ngIf="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid">
                                     <span *ngIf="ornament.controls.netWeight.errors?.pattern">Enter a valid
                                         Number</span>
                                     <span *ngIf="ornament.controls.netWeight.errors?.required">Field Required</span>
+                                    <span *ngIf="ornament.controls.netWeight.errors?.weight">
+                                        <small>Net  Weight should be lesser then Gross  Weight</small>
+                                    </span>
                                 </mat-error>
                             </div>
                         </div>

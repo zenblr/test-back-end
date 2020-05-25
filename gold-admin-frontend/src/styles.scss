@@ -542,3 +542,51 @@ mat-header-row {
 	top     : 5px;
 	right   : 10px;
 }
+// action buttons
+.apply-kyc {
+	background: transparent;
+	border: thin solid #454D67;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+.primary-button {
+	background: transparent;
+	border: thin solid #6580f5;
+	border-radius: 5px;
+	padding: 5px;
+	color: #6580f5 !important;
+}
+.red-button {
+	background: transparent;
+	border: thin solid #ff7272;
+	border-radius: 5px;
+	padding: 5px;
+	color: #ff7272 !important;
+}
+.green-button {
+	background: transparent;
+	border: thin solid #8ddb5d;
+	border-radius: 5px;
+	padding: 5px;
+	color: #8ddb5d !important;
+}
+.warning-button {
+	background: transparent;
+	border: thin solid #f8b150;
+	border-radius: 5px;
+	padding: 5px;
+	color: #f8b150 !important;
+}
+
+// mat-form-field
+.mat-form-field-empty.mat-form-field-label {
+    color: gray !important;
+}
+.mat-form-field-underline {
+    background-color: gray !important;
+}
+
+.mat-input-element{
+	caret-color: black !important;
+}

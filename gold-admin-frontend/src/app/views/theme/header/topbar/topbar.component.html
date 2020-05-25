@@ -1,7 +1,7 @@
 <!-- begin:: Header Topbar -->
 <div class="kt-header__topbar">
     <div class="row justify-content-center">
-        <div class="" *ngIf="showBackButton" (click)="goBack()">
+        <div class="align-self-center" *ngIf="showBackButton" (click)="goBack()">
             <img src="../../../../../assets//media/icons/arrow_back.svg" class="kt-pointer">
         </div>
         <div class="col align-self-center">
@@ -24,10 +24,13 @@
                 <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style"
                     #group="matButtonToggleGroup" value="list" *ngIf="toogle">
                     <mat-button-toggle value="grid" (click)="check('grid')">
-                        <img src="../../../../../assets/media/icons/svg/Layout/Layout-grid.svg">
+                        <img src="../../../../../assets/media/aside-icons/icons-22.svg" class="w-100 pos">
                     </mat-button-toggle>
                     <mat-button-toggle value="list" (click)="check('list')">
-                        <img src="../../../../../assets/media/icons/svg/Text/Bullet-list.svg">
+                        <!-- <div > -->
+                            <img src="../../../../../assets/media/aside-icons/icons-23.svg" class="w-100 pos">
+
+                        <!-- </div> -->
                     </mat-button-toggle>
                 </mat-button-toggle-group>
             </span>

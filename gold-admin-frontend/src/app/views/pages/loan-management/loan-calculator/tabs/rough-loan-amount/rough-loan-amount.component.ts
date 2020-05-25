@@ -39,6 +39,16 @@ export class RoughLoanAmountComponent implements OnInit {
     }
   }
 
+  weightCheck() {
+    if (this.controls.grossWeight.valid) {
+      if (this.controls.grossWeight.value < this.controls.netWeight.value) {
+        this.controls.netWeight.setErrors({ weight: true })
+      } else {
+        this.controls.netWeight.setErrors(null)
+      }
+    }
+  }
+
   calculate() {
     if (this.roughLoanForm.invalid) {
       this.roughLoanForm.markAllAsTouched();
@@ -46,5 +56,13 @@ export class RoughLoanAmountComponent implements OnInit {
     }
     this.loanAmount = this.controls.netWeight.value * this.controls.currentLTV.value;
 
+  }
+
+  calcGoldDeductionWeight() {
+    if (this.controls.grossWeight.valid && this.controls.netWeight.valid) {
+      const deductionWeight = this.controls.grossWeight.value - this.controls.netWeight.value;
+      this.controls.deductionWeight.patchValue(deductionWeight);
+      // console.log(goldDeductionWeight)
+    }
   }
 }
