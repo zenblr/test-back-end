@@ -95,6 +95,7 @@ export class FilterComponent implements OnInit, OnChanges {
 	subCategoryList = [];
 	tenure = [];
 	status = [];
+	name = [];
 
 	public memberMultiFilterCtrl: FormControl = new FormControl();
 	public filteredMemberMulti: ReplaySubject<[]> = new ReplaySubject<[]>(1);
@@ -226,6 +227,9 @@ export class FilterComponent implements OnInit, OnChanges {
 							break;
 						case "emiStatus":
 							this.getEmiStatus();
+							break;
+						case "merchantName":
+							this.getMerchant();
 							break;
 					}
 				}
@@ -677,6 +681,12 @@ export class FilterComponent implements OnInit, OnChanges {
 	getEmiStatus() {
 		this.sharedService.getEmiStatus().subscribe((res) => {
 			this.status = res;
+		});
+	}
+
+	getMerchant() {
+		this.sharedService.getMerchant().subscribe((res) => {
+			this.name = res;
 		});
 	}
 
