@@ -324,7 +324,10 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.value1 = "Export";
 			this.type1 = "button";
-			// this.showfilter = true;
+			this.showfilter = true;
+			this.filterName = "cancelOrderDetails";
+			this.filterWidth = "500px";
+			this.listType = "merchantName";
 		}
 		if (this.path == "deposit-details") {
 			this.showInput = true;
@@ -474,6 +477,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "deposit-details") {
 			this.depositDetailsService.applyFilter.next(data);
+		}
+		if (this.path == "cancel-order-details") {
+			this.cancelOrderDetailsService.applyFilter.next(data);
 		}
 	}
 
