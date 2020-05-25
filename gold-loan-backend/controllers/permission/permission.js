@@ -62,7 +62,7 @@ exports.readPermission = async (req, res, next) => {
 
     let permissions=[];
     allPermissions.map(data=>{
-      console.log(data)
+    //   console.log(data)
       data.entity.map(entity => {
         let isExist=entityId.filter(id=>id==entity.dataValues.id)
         if(isExist.length!=0){
