@@ -19,6 +19,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
   role: any = ''
   @Input() action;
+  @Output() apply: EventEmitter<any> = new EventEmitter<any>();
 
   // kycStatus = [];
   approvalForm: FormGroup;
@@ -125,5 +126,9 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.controls.commentByBM.updateValueAndValidity();
       this.controls.commentByBM.markAsUntouched()
     }
+  }
+
+  applyForm(){
+    this.apply.emit(true)
   }
 }
