@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
 import { OrderDetailsService } from "../../../../../../core/emi-management/order-management/order-details/services/order-details.service";
-import { Observable } from "rxjs";
+import { Observable, Observer } from "rxjs";
 
 @Component({
 	selector: "kt-order-details-view",
@@ -12,7 +12,9 @@ export class OrderDetailsViewComponent implements OnInit {
 	viewLoading = false;
 	title: string;
 	orderTrackingLogs$: Observable<[]>;
-
+	base64TrimmedURL: any;
+	base64DefaultURL: any;
+	generatedImage: any;
 	constructor(
 		public dialogRef: MatDialogRef<OrderDetailsViewComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
@@ -38,10 +40,4 @@ export class OrderDetailsViewComponent implements OnInit {
 			this.dialogRef.close();
 		}
 	}
-
-	// downloadFile(data: any) {
-	// 	const blob = new Blob([data], { type: "text/csv/jpeg/png" });
-	// 	const url = window.URL.createObjectURL(blob);
-	// 	window.open(url);
-	// }
 }

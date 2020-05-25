@@ -87,6 +87,12 @@ export class PageConfigService {
 			finalUrl = finalUrl.substring(0, finalUrl.indexOf('?'));
 		}
 
+		var temp = finalUrl.split('.')
+		if (!isNaN(Number(temp[temp.length - 1]))) {
+			temp[temp.length - 1] = "id"
+			finalUrl = temp.join(".")
+		}
+
 		return finalUrl;
 	}
 }

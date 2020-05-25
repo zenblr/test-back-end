@@ -108,9 +108,8 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   editLoan(loan) {
-    if (
-      ((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
-        && this.roles == 'Branch Manager') || (loan.loanStatusForAppraiser == 'pending'
+    if (((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
+        && this.roles == 'Branch Manager' && loan.loanStatusForAppraiser == 'approved') || (loan.loanStatusForAppraiser == 'pending'
           && this.roles == 'Appraiser')) {
       this.router.navigate(['/loan-management/loan-application-form', loan.id])
     }

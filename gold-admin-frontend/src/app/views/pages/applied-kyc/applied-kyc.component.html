@@ -25,7 +25,7 @@
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date & Time</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span class="d-block">{{role.createdAt | date:'mediumDate'}},&nbsp;</span>
+                        <span class="d-block">{{role.createdAt | date:'mediumDate'}}&nbsp;</span>
                     </mat-cell>
                 </ng-container>
 
@@ -63,7 +63,9 @@
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
                                 <span
                                     *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'pending') || (roles == 'Branch Manager' && role.customerKycClassification.kycStatusFromCce == 'approved' && (role.kycStatus == 'rejected' || role.kycStatus == 'pending'))">
-                                    <img src="../../../../assets/media/icons/action.svg"></span>
+                                    <!-- <img src="../../../../assets/media/icons/action.svg"> -->
+                                    <strong>Action ></strong>
+                                </span>
                             </div>
                             <span
                                 *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'approved') || (roles == 'Branch Manager' && role.kycStatus == 'approved')"></span>
@@ -77,6 +79,14 @@
                     <mat-header-cell *matHeaderCellDef>KYC Details</mat-header-cell>
                     <mat-cell *matCellDef="let role" (click)="viewKYC(role)" class="kt-pointer">
                         View
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="appraiser">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let role"  class="kt-pointer">
+                        <button class="apply-kyc" (click)="assign()" 
+                        *ngIf="role.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved'"
+                        >Assign Appraiser</button>
                     </mat-cell>
                 </ng-container>
 

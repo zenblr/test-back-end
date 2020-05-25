@@ -301,69 +301,68 @@ export class MenuConfig {
 							permission: false,
 						},
 					],
-
 					itemsTwo: [
 						{
 							title: "Partner",
 							root: true,
-							icon: "flaticon2-architecture-and-city",
 							page: "/user-management/partner",
+							src: "assets/media/aside-icons/icons-06.svg",
 							permission: false,
 						},
 						{
 							title: "Partner Branch ",
 							root: true,
-							icon: "flaticon2-architecture-and-city",
 							page: "/user-management/branch",
+							src: "assets/media/aside-icons/icons-13.svg",
 							permission: false,
 						},
 						{
 							title: "Internal User",
 							root: true,
-							icon: "flaticon2-architecture-and-city",
 							page: "/user-management/internal-user",
+							src: "assets/media/aside-icons/icons-14.svg",
 							permission: false,
 						},
 						{
 							title: "Internal User Branch",
 							root: true,
-							icon: "flaticon2-architecture-and-city",
 							page: "/user-management/internal-user-branch",
+							src: "assets/media/aside-icons/icons-15.svg",
 							permission: false,
 						},
 						{
 							title: "Assign Appraiser",
 							root: true,
-							icon: "flaticon2-architecture-and-city",
 							page: "/user-management/assign-appraiser",
+							src: "assets/media/aside-icons/icons-16.svg",
 							permission: false,
 						},
 						{
 							title: "Merchant",
 							root: true,
-							icon: "flaticon2-architecture-and-city",
 							page: "/user-management/merchant",
+							src: "assets/media/aside-icons/icons-17.svg",
 							permission: false,
 						},
 						{
 							title: "Broker",
 							root: true,
-							icon: "flaticon2-architecture-and-city",
 							page: "/user-management/broker",
+							src: "assets/media/aside-icons/icons-18.svg",
 							permission: false,
 						},
 						{
 							title: "Store",
 							root: true,
-							icon: "flaticon2-architecture-and-city",
 							page: "/user-management/store",
+							src: "assets/media/aside-icons/icons-19.svg",
 							permission: false,
 						},
 						{
 							title: "Roles and permissions",
-							icon: "flaticon2-architecture-and-city",
 							root: true,
 							page: "/user-management/roles",
+							src: "assets/media/aside-icons/icons-20.svg",
 							permission: false,
 						},
 						{
@@ -374,7 +373,6 @@ export class MenuConfig {
 							permission: false,
 						},
 					],
-
 					itemsThree: [
 						{
 							title: "Product",
