@@ -47,28 +47,32 @@ export class UserBanksComponent implements OnInit {
   }
 
   getFileInfo(event) {
-    this.file = event.target.files[0];
-    var name = event.target.files[0].name
-    var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      console.log(this.file);
-      this.sharedService.uploadFile(this.file).pipe(
-        map(res => {
-          this.passBookImage.push(res.uploadFile.URL);
-          this.bankForm.patchValue({ passbookProof: this.passBookImage });
+    if (this.passBookImage.length < 2) {
+      this.file = event.target.files[0];
+      var name = event.target.files[0].name
+      var ext = name.split('.')
+      if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+        console.log(this.file);
+        this.sharedService.uploadFile(this.file).pipe(
+          map(res => {
+            this.passBookImage.push(res.uploadFile.URL);
+            this.bankForm.patchValue({ passbookProof: this.passBookImage });
 
-          this.bankForm.get('passbookProofImage').patchValue(event.target.files[0].name);
-          this.ref.detectChanges();
-          console.log(this.bankForm.value);
-        }), catchError(err => {
-          this.toastr.error(err.error.message);
-          throw err
-        }), finalize(() => {
-          this.signature.nativeElement.value = ''
-        })).subscribe();
-      this.ref.detectChanges();
+            this.bankForm.get('passbookProofImage').patchValue(event.target.files[0].name);
+            this.ref.detectChanges();
+            console.log(this.bankForm.value);
+          }), catchError(err => {
+            this.toastr.error(err.error.message);
+            throw err
+          }), finalize(() => {
+            this.signature.nativeElement.value = ''
+          })).subscribe();
+        this.ref.detectChanges();
+      } else {
+        this.toastr.error('Upload Valid File Format');
+      }
     } else {
-      this.toastr.error('Upload Valid File Format');
+      this.toastr.error('Cannot upload more than two images');
     }
   }
 
