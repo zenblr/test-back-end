@@ -24,7 +24,7 @@
                             [invalid]="invalid.intreset"  [disable]="disabledForm" [action]="action" [totalAmt]="totalAmount" [details]="customerDetail"></kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Approval" [disabled]="disabled[5]">
-                        <kt-approval (approvalFormEmit)="approvalFormEmit($event)" [action]="action" [invalid]="invalid.approval"  [disable]="disabledForm" [details]="customerDetail">
+                        <kt-approval (apply)="apply()" (approvalFormEmit)="approvalFormEmit($event)" [action]="action" [invalid]="invalid.approval"  [disable]="disabledForm" [details]="customerDetail">
                         </kt-approval>
                     </mat-tab>
                 </mat-tab-group>
@@ -52,13 +52,7 @@
                 <mat-divider></mat-divider>
             </div>
         </div>
-        <div class="row py-3" *ngIf="!disabledForm">
-            <div class="col-12">
-                <kt-button [value]="'Apply'" [type]="'button'" (click)="apply()"></kt-button>
-                <span class="kt-padding-10"></span>
-                <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>
-            </div>
-        </div>
+       
         <div class="row " id="packets" *ngIf="url == 'package-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)">
             <div class="col packets-height" >
                 <kt-upload-packets [viewpacketsDetails]="customerDetail"></kt-upload-packets>

@@ -12,7 +12,8 @@
                                 <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof"
                                     [class.isError]="controls.identityTypeId.invalid && controls.identityTypeId.touched">
                                     <option value="" [disabled]="true" [selected]="true"> Select Proof</option>
-                                    <option *ngFor="let proof of identityProofs" [value]="proof.id">{{ proof.name }}
+                                    <option *ngFor="let proof of identityProofs" [value]="proof.id">
+                                        {{ proof.name | titlecase}}
                                     </option>
                                 </select>
                                 <mat-error
@@ -370,7 +371,7 @@
                                                 <option value="" [disabled]=true [selected]="true"> Select Proof
                                                 </option>
                                                 <option *ngFor="let proof of addressProofs" [value]="proof.id">
-                                                    {{proof.name}}
+                                                    {{proof.name | titlecase}}
                                                 </option>
                                             </select>
                                             <mat-error

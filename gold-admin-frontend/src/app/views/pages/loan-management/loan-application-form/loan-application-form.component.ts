@@ -145,13 +145,13 @@ export class LoanApplicationFormComponent implements OnInit {
     } else {
       this.disabled[4] = true;
     }
-
+    this.ref.detectChanges()
   }
 
   calculateTotalEligibleAmount() {
     this.totalAmount = 0;
     this.Ornaments.value.forEach(element => {
-      this.totalAmount += element.loanAmount
+      this.totalAmount += Number(element.loanAmount)
     });
 
   }

@@ -7,6 +7,16 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 
+//FUNCTION GET ORNAMENT TYPE
+
+exports.getOrnamentType = async (req, res, next) => {
+    let ornametData = await models.ornamentType.findAll({
+        where: { isActive: true },
+        attributes: ['id', 'name']
+    })
+    return res.status(200).json({ message: 'success', data: ornametData })
+}
+
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID
 exports.customerDetails = async (req, res, next) => {
 
@@ -57,7 +67,7 @@ exports.customerDetails = async (req, res, next) => {
             model: models.customerKycBankDetail,
             // where: { isActive: true },
             as: 'customerKycBank',
-            attributes: ['id', 'bankName', 'accountNumber', 'ifscCode']
+            attributes: ['id', 'bankName', 'bankBranchName', 'accountNumber', 'ifscCode', 'accountType', 'accountHolderName', 'passbookProof']
         }]
     }
     )
@@ -87,7 +97,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
         goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
 
     // customerLoanBank
-    let { bankName, accountNumber, ifscCode } = loanBank
+    let { bankName, accountNumber, ifscCode, bankBranchName, accountType, accountHolderName, passbookProof } = loanBank
 
     // customerLoanKycAddress
     let { identityTypeId, identityProof, idCardNumber, permanentAddProofTypeId, permanentAddress, permanentAddStateId, permanentAddCityId, permanentAddPin, permanentAddProof, permanentAddCardNumber, residentialAddProofTypeId, residentialAddress, residentialAddStateId, residentialAddCityId, residentialAddPin, residentialAddProof, residentialAddCardNumber } = loanKyc
@@ -127,7 +137,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
 
         // customerLoanBank
         await models.customerLoanBankDetail.create({
-            loanId, bankName, accountNumber, ifscCode, createdBy, modifiedBy
+            loanId, bankName, accountNumber, ifscCode, bankBranchName, accountType, accountHolderName, passbookProof, createdBy, modifiedBy
         }, { transaction: t });
 
         //customerLoanKycAddress

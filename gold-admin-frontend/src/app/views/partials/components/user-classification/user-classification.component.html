@@ -70,7 +70,8 @@
                             <tr>
                                 <th scope="col" style="width: 40%" class="rating-title">Company</th>
                                 <th scope="col" style="width: 30%" class="rating-cce">CCE</th>
-                                <th scope="col" style="width: 30%" class="rating-bm">BM/ Operation Team</th>
+                                <th scope="col" style="width: 30%" class="rating-bm" *ngIf="viewBMForm">BM/ Operation
+                                    Team</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -86,7 +87,7 @@
                                         </option>
                                     </select>
                                 </td>
-                                <td class="rating-bm text-center">
+                                <td class="rating-bm text-center" *ngIf="viewBMForm">
                                     <img src="../../../../../../../assets/media/icons/correct.svg"
                                         *ngIf="cceControls.behaviourRatingVerifiedByBm.value"
                                         (click)="approvalOfBM(false,'behaviour')">
@@ -107,7 +108,7 @@
                                         </option>
                                     </select>
                                 </td>
-                                <td class="rating-bm text-center">
+                                <td class="rating-bm text-center" *ngIf="viewBMForm">
                                     <img src="../../../../../../../assets/media/icons/correct.svg"
                                         *ngIf="cceControls.idProofRatingVerifiedByBm.value"
                                         (click)="approvalOfBM(false,'identity')">
@@ -128,7 +129,7 @@
                                         </option>
                                     </select>
                                 </td>
-                                <td class="rating-bm text-center">
+                                <td class="rating-bm text-center" *ngIf="viewBMForm">
                                     <img src="../../../../../../../assets/media/icons/correct.svg"
                                         *ngIf="cceControls.addressProofRatingVerifiedBm.value"
                                         (click)="approvalOfBM(false,'address')">
@@ -149,7 +150,7 @@
                                         </option>
                                     </select>
                                 </td>
-                                <td class="rating-bm">
+                                <td class="rating-bm" *ngIf="viewBMForm">
                                     <select class="form-control" formControlName="kycStatusFromBm">
                                         <option value="pending" disabled selected> Select Status
                                         </option>
@@ -164,13 +165,17 @@
 
                 <div *ngIf="showTextBoxCce  && role == 'Customer Care Executive'"
                     class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
-                    <textarea class="form-control" formControlName="reasonFromCce"
-                        [class.isError]="cceControls.reasonFromCce.invalid && cceControls.reasonFromCce.touched"></textarea>
+                    <mat-form-field class="w-100">
+                        <textarea matInput formControlName="reasonFromCce" placeholder="Reason for Pending"></textarea>
+                        <mat-error>Field Required</mat-error>
+                    </mat-form-field>
                 </div>
                 <div *ngIf="showTextBoxBM && role== 'Branch Manager'" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
-                    <textarea class="form-control" formControlName="reasonFromBm"
-                        [class.isError]="cceControls.reasonFromBm.invalid && cceControls.reasonFromBm.touched"></textarea>
+                    <mat-form-field class="w-100">
+                        <textarea matInput formControlName="reasonFromBm" placeholder="Reason for Rejection"></textarea>
+                        <mat-error>Field Required</mat-error>
+                    </mat-form-field>
                 </div>
                 <div class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
                     <kt-button [value]="'Submit'" [type]="'submit'" (action)="submit()"></kt-button>

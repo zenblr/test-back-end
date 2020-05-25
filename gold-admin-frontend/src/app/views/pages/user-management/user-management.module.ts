@@ -88,6 +88,10 @@ const routes: Routes = [
 		component: AppraiserListComponent,
 	},
 	{
+		path: 'redirect-assign-appraiser',
+		component: AppraiserListComponent,
+	},
+	{
 		path: 'branch',
 		component: BranchListComponent
 	},

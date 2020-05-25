@@ -19,16 +19,18 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
   role: any = ''
   @Input() action;
+  @Output() apply: EventEmitter<any> = new EventEmitter<any>();
 
   // kycStatus = [];
   approvalForm: FormGroup;
   url: string;
+  viewBMForm = true;
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
     private sharedSerive: SharedService,
     private ref: ChangeDetectorRef,
-    public router:Router
+    public router: Router
   ) { }
 
   ngOnInit() {
@@ -41,6 +43,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.role = res
       if (this.role == 'Appraiser') {
         this.controls.loanStatusForBM.disable()
+        this.viewBMForm = false;
       } else if (this.role == 'Branch Manager') {
         this.controls.loanStatusForAppraiser.disable()
       } else {
@@ -71,6 +74,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.approvalForm.patchValue(changes.details.currentValue)
+        this.statusAppraiser()
+        this.statusBM()
         this.ref.markForCheck()
       }
     }
@@ -125,5 +130,9 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.controls.commentByBM.updateValueAndValidity();
       this.controls.commentByBM.markAsUntouched()
     }
+  }
+
+  applyForm() {
+    this.apply.emit(true)
   }
 }

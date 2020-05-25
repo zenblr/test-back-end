@@ -31,9 +31,7 @@ exports.addCustomer = async (req, res, next) => {
     where: { mobileNumber: mobileNumber },
   });
   if (!check.isEmpty(customerExist)) {
-    return res
-      .status(404)
-      .json({ message: "This Mobile number already Exists" });
+    return res.status(404).json({ message: "This Mobile number already Exists" });
   }
 
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
@@ -466,10 +464,10 @@ exports.getsingleCustomerManagement = async (req, res) => {
       {
         model: models.customerKycPersonalDetail,
         as: 'customerKycPersonal',
-        include:[{
+        include: [{
           model: models.identityType,
-          as:'identityType',
-          attributes:['id','name']
+          as: 'identityType',
+          attributes: ['id', 'name']
         }]
       },
       {

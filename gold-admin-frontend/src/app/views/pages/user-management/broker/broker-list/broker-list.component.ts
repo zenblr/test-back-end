@@ -243,7 +243,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
       approvalStatusId: broker.approvalStatus.id,
       userId: broker.userId,
       nameOnPanCard:broker.nameOnPanCard,
-      panCard:broker.nameOnPanCard,
+      panCard:broker.panCard,
       panCardNumber:broker.user.panCardNumber
     }
     return data

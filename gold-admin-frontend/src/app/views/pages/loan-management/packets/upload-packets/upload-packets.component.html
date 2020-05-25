@@ -92,7 +92,7 @@
         <div class="col-8">
             <select class="packet-dropdown" class="form-control packet-dropdown" [formControl]="packetId"
                 [class.isError]="packetId.invalid && packetId.touched" >
-                <option value="" [selected]="true" [disabled]="true">Select Packet</option>
+                <option value="" [selected]="true">Select Packet</option>
                 <option [value]="packet.id" *ngFor="let packet of packetsDetais; index as idx">
                     {{packet.packetUniqueId | uppercase}}</option>
             </select>

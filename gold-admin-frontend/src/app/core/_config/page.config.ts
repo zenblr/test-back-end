@@ -55,6 +55,9 @@ export class PageConfig {
 			"assign-appraiser": {
 				page: { title: "Assigned Appraiser", desc: "" },
 			},
+			'redirect-assign-appraiser': {
+				page: { title: "Assigned Appraiser", desc: "" },
+			},
 			merchant: {
 				page: { title: "All Merchants", desc: "" },
 			},
@@ -78,6 +81,9 @@ export class PageConfig {
 		},
 		"kyc-setting": {
 			page: { title: "Customer KYC", desc: "" },
+			'edit-kyc': {
+				page: { title: "Customer KYC", desc: "" },
+			}
 		},
 		"emi-management": {
 			products: {
@@ -137,8 +143,10 @@ export class PageConfig {
 		},
 		'customer-management': {
 			'customer-list': {
-				page: { title: 'My Customer', desc: '' }
-
+				page: { title: 'My Customer', desc: '' },
+				id: {
+					page: { title: 'Customer Details', desc: '' }
+				}
 			}
 		},
 
