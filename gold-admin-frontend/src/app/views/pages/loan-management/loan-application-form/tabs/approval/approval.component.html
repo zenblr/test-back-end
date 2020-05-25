@@ -1,11 +1,11 @@
 <div class="container">
     <form [formGroup]="approvalForm">
         <div class="row justify-content-center kt-margin-b-25">
-            <div class="col-8 bordered">
+            <!-- <div class="col-8 bordered">
                 <div class="row head">
                     <div class="col-4">Field</div>
                     <div class="col-4 border text-center">Appraiser</div>
-                    <div class="col-4 text-center">Branch Manager</div>
+                    <div class="col-4 text-center" *ngIf="viewBMForm">Branch Manager</div>
                 </div>
                 <div class="row body border-top-bottom">
                     <div class="col-4 form-label">
@@ -21,7 +21,7 @@
                             *ngIf="!controls.applicationFormForAppraiser.value"
                             (click)="approvalOfAppraiser(true,'form')">
                     </div>
-                    <div class="col-4 text-center">
+                    <div class="col-4 text-center" *ngIf="viewBMForm">
                         <img src="../../../../../../../assets/media/icons/correct.svg"
                             [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
                             *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
@@ -45,7 +45,7 @@
                             (click)="approvalOfAppraiser(true,'gold')">
 
                     </div>
-                    <div class="col-4 text-center">
+                    <div class="col-4 text-center" *ngIf="viewBMForm">
                         <img src="../../../../../../../assets/media/icons/correct.svg"
                             [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable )}"
                             *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')" disabled>
@@ -71,7 +71,7 @@
                             *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                             Field Required</mat-error>
                     </div>
-                    <div class="col-4 text-center select">
+                    <div class="col-4 text-center select" *ngIf="viewBMForm">
                         <select class="form-control" formControlName="loanStatusForBM" (change)="statusBM()"
                             [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                             <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
@@ -82,6 +82,94 @@
                             Required</mat-error>
                     </div>
                 </div>
+            </div> -->
+
+            <div class="table-div">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 40%" class="rating-title">Field</th>
+                            <th scope="col" style="width: 30%" class="rating-cce">Appraiser</th>
+                            <th scope="col" style="width: 30%" class="rating-bm" *ngIf="viewBMForm">Branch Manager</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td scope="row" class="rating-title">Loan Application Form</td>
+                            <td class="rating-cce">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable )}"
+                                    *ngIf="controls.applicationFormForAppraiser.value"
+                                    (click)="approvalOfAppraiser(false,'form')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable )}"
+                                    *ngIf="!controls.applicationFormForAppraiser.value"
+                                    (click)="approvalOfAppraiser(true,'form')">
+                            </td>
+                            <td class="rating-bm text-center" *ngIf="viewBMForm">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
+                                    *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
+                                    *ngIf="!controls.applicationFormForBM.value" (click)="approvalOfBM(true,'form')">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td scope="row" class="rating-title">Gold Valuation
+                            </td>
+                            <td class="rating-cce">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable)}"
+                                    *ngIf="controls.goldValuationForAppraiser.value"
+                                    (click)="approvalOfAppraiser(false,'gold')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable)}"
+                                    *ngIf="!controls.goldValuationForAppraiser.value"
+                                    (click)="approvalOfAppraiser(true,'gold')">
+                            </td>
+                            <td class="rating-bm text-center" *ngIf="viewBMForm">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable )}"
+                                    *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')"
+                                    disabled>
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
+                                    *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')"
+                                    disabled>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td scope="row" class="rating-title">Final Status
+                            </td>
+                            <td class="rating-cce">
+                                <select class="form-control " formControlName="loanStatusForAppraiser"
+                                    (change)="statusAppraiser()"
+                                    [class.isError]="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
+                                    <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" *ngFor="let status of appraiser">
+                                        {{status.name | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
+                                    Field Required</mat-error>
+                            </td>
+                            <td class="rating-bm" *ngIf="viewBMForm">
+                                <select class="form-control" formControlName="loanStatusForBM" (change)="statusBM()"
+                                    [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
+                                    <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" *ngFor="let status of branchManager">
+                                        {{status.name | titlecase}}</option>
+                                </select>
+                                <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
+                                    Field
+                                    Required</mat-error>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="row justify-content-center " *ngIf="controls.loanStatusForAppraiser.value == 'pending'">
@@ -107,6 +195,9 @@
                 </mat-form-field>
             </div>
         </div>
+
+
+
     </form>
 </div>
 <div class="row py-3" *ngIf="!disable">

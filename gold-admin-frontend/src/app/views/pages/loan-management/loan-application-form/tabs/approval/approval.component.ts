@@ -24,12 +24,13 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   // kycStatus = [];
   approvalForm: FormGroup;
   url: string;
+  viewBMForm = true;
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
     private sharedSerive: SharedService,
     private ref: ChangeDetectorRef,
-    public router:Router
+    public router: Router
   ) { }
 
   ngOnInit() {
@@ -42,6 +43,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.role = res
       if (this.role == 'Appraiser') {
         this.controls.loanStatusForBM.disable()
+        this.viewBMForm = false;
       } else if (this.role == 'Branch Manager') {
         this.controls.loanStatusForAppraiser.disable()
       } else {
@@ -128,7 +130,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  applyForm(){
+  applyForm() {
     this.apply.emit(true)
   }
 }
