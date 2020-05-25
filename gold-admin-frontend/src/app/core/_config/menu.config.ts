@@ -73,52 +73,47 @@ export class MenuConfig {
 								{
 									title: "Upload Data",
 									root: true,
-									permission: false,
+									permission: !(this.permissionsArr.includes('promotionalBannerView') ||
+										this.permissionsArr.includes('offerBannerView') ||
+										this.permissionsArr.includes('goldRateView') ||
+										this.permissionsArr.includes('partnerBannerView')),
 
 									submenu: [
 										{
 											title: "Promotional Banners",
 											page: "/upload-data/upload-banner",
-											permission: false,
+											permission: !this.permissionsArr.includes('promotionalBannerView'),
 										},
 										{
 											title: "Offer Banners",
 											page: "/upload-data/upload-offer",
-											permission: false,
+											permission: !(this.permissionsArr.includes('offerBannerView') ||
+												this.permissionsArr.includes('goldRateView')),
 										},
 										{
 											title: "Partner Banners",
 											page: "/upload-data/upload-lender-banner",
-											permission: false,
+											permission: !this.permissionsArr.includes('partnerBannerView'),
 										},
-										// {
-										// 	title: 'Upload Scheme',
-										// 	page: '/upload-data/upload-scheme',
-										// permission: false,
-										//
-										// },
+
 									],
 								},
 								{
 									title: "Loan Settings",
 									root: true,
-									permission: false,
+									permission: !(this.permissionsArr.includes('schemeView') ||
+										this.permissionsArr.includes('karatDetailsView')),
 
 									submenu: [
 										{
 											title: "Scheme",
 											page: "/loan-setting/scheme",
-											permission: false,
-										},
-										{
-											title: "Packet",
-											page: "/loan-setting/packet",
-											permission: false,
+											permission: !this.permissionsArr.includes('schemeView'),
 										},
 										{
 											title: "Karat details",
 											page: "/loan-setting/karat-details",
-											permission: false,
+											permission: !this.permissionsArr.includes('karatDetailsView'),
 										},
 									],
 								},
@@ -154,24 +149,28 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-05.svg",
 							page: "/lead-management",
-							permission: false,
+							permission: !(this.permissionsArr.includes('leadManagmentAdd') ||
+								this.permissionsArr.includes('leadManagmentView')),
 						},
 						{
 							title: "Customer Setting",
 							root: true,
 							src: "assets/media/aside-icons/icons-06.svg",
-							permission: false,
+							permission: !(this.permissionsArr.includes('customerKycAdd') ||
+								this.permissionsArr.includes('customerKycView') ||
+								this.permissionsArr.includes('appliedKycAdd') ||
+								this.permissionsArr.includes('appliedKycView')),
 
 							submenu: [
 								{
 									title: "KYC Setting",
 									page: "/kyc-setting",
-									permission: false,
+									permission: !this.permissionsArr.includes('customerKycAdd'),
 								},
 								{
 									title: "Applied Kyc",
 									page: "/applied-kyc",
-									permission: false,
+									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 							],
 						},
@@ -190,17 +189,21 @@ export class MenuConfig {
 								{
 									title: "Loan Application Form",
 									page: "/loan-management/loan-application-form",
-									permission: false,
+									permission: !(this.permissionsArr.includes('loanApplicationAdd') ||
+										this.permissionsArr.includes('loanApplicationEdit') ||
+										this.permissionsArr.includes('loanApplicationView')),
 								},
 								{
 									title: "Packet",
 									page: "/loan-management/packet",
-									permission: false,
+									permission: !(this.permissionsArr.includes('packetEdit') ||
+										this.permissionsArr.includes('packetAdd') ||
+										this.permissionsArr.includes('packetView')),
 								},
 								{
 									title: "Applied Loan",
 									page: "/loan-management/applied-loan",
-									permission: false,
+									permission: !this.permissionsArr.includes('appliedLoanView'),
 								},
 								{
 									title: "Loan Details",
