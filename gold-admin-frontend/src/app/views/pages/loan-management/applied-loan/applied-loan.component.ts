@@ -3,7 +3,7 @@ import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
-import { AppliedLoanDatasource,AppliedLoanService } from '../../../../core/loan-management'
+import { AppliedLoanDatasource, AppliedLoanService } from '../../../../core/loan-management'
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.component';
@@ -13,10 +13,10 @@ import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.comp
   styleUrls: ['./applied-loan.component.scss']
 })
 export class AppliedLoanComponent implements OnInit {
-  
-  roles:any
+
+  roles: any
   dataSource: AppliedLoanDatasource;
-  displayedColumns = ['fullName','customerID', 'mobile', 'pan', 'date', 'schemeName', 'appraisalApproval', 'bMApproval','loanStage', 'actions'];
+  displayedColumns = ['fullName', 'customerID', 'mobile', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -33,15 +33,15 @@ export class AppliedLoanComponent implements OnInit {
     public dialog: MatDialog,
     private AppliedLoanService: AppliedLoanService,
     private dataTableService: DataTableService,
-    private router:Router,
-    private sharedService:SharedService
+    private router: Router,
+    private sharedService: SharedService
   ) {
   }
 
   ngOnInit() {
-    this.sharedService.getRole().subscribe(res => 
-      {this.roles = res
-      })
+    this.sharedService.getRole().subscribe(res => {
+      this.roles = res
+    })
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
@@ -71,7 +71,7 @@ export class AppliedLoanComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadAppliedLoans(this.searchValue,1, 25);
+    this.dataSource.loadAppliedLoans(this.searchValue, 1, 25);
 
   }
 
@@ -84,20 +84,20 @@ export class AppliedLoanComponent implements OnInit {
   }
 
 
-  
+
   loadAppliedLoansPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadAppliedLoans(this.searchValue,from, to);
+    this.dataSource.loadAppliedLoans(this.searchValue, from, to);
   }
 
   disburse(loan) {
     // console.log(event);
     const dialogRef = this.dialog.open(DisburseDialogComponent, {
-      data: loan ,
+      data: loan,
       width: '500px'
     });
     dialogRef.afterClosed().subscribe(res => {
@@ -108,11 +108,19 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   editLoan(loan) {
-    this.router.navigate(['/loan-management/loan-application-form',loan.id])
+    if (((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
+        && this.roles == 'Branch Manager' && loan.loanStatusForAppraiser == 'approved') || (loan.loanStatusForAppraiser == 'pending'
+          && this.roles == 'Appraiser')) {
+      this.router.navigate(['/loan-management/loan-application-form', loan.id])
+    }
   }
 
-  packageImageUpload(loan){
-    this.router.navigate(['/loan-management/package-image-upload',loan.id])
+  packageImageUpload(loan) {
+    this.router.navigate(['/loan-management/package-image-upload', loan.id])
+  }
+
+  viewLoan(loan) {
+    this.router.navigate(['/loan-management/view-loan', loan.id])
   }
 
 }

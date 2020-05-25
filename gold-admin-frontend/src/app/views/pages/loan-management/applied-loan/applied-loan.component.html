@@ -6,7 +6,6 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="fullName">
-                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         {{loan.customer.firstName | titlecase}}&nbsp;{{loan.customer.lastName | titlecase}}
@@ -31,6 +30,11 @@
                     <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="loanAmount">
+                    <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="schemeName">
                     <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName | titlecase}}</mat-cell>
@@ -46,7 +50,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bMApproval">
-                    <mat-header-cell *matHeaderCellDef>Loan Application</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>BM Approval</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <span
                             [ngClass]="loan.loanStatusForBM == 'pending' ? 'text-warning' :loan.loanStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
@@ -54,44 +58,69 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="loanStage">
+                <!-- <ng-container matColumnDef="loanStage">
                     <mat-header-cell *matHeaderCellDef>Loan Stage</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <span class="text-primary">
                             {{loan.loanStage.name | uppercase}}
                         </span>
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-                    <mat-cell *matCellDef="let loan"> 
+                    <mat-cell *matCellDef="let loan">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngIf="((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected') 
-                            && roles == 'Branch Manager') || (loan.loanStatusForAppraiser == 'pending' 
-                            && roles == 'Appraiser')">
-                                <div class="kt-pointer" (click)="editLoan(loan)" class="kt-pointer" >
-                                    <img src="../../../../../assets/media/icons/action.svg" alt="">
+                            <div *ngIf="loan.loanStage.id == 1 ">
+                                <div class="kt-pointer" class="kt-pointer">
+                                    <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
+                                    <button (click)="editLoan(loan)"  [ngClass]="{'cursor-not-allowed':  !(loan.loanStatusForAppraiser == 'pending'
+                                    && this.roles == 'Appraiser')}"
+                                        class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                                </div>
+                            </div>
+                            <div *ngIf="loan.loanStage.id == 2">
+                                <div class="kt-pointer" class="kt-pointer">
+                                    <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
+                                    <button (click)="editLoan(loan)"[ngClass]="{'cursor-not-allowed': !((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
+                                    && this.roles == 'Branch Manager' && loan.loanStatusForAppraiser == 'approved')}" 
+                                    
+                                        class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
                             <div *ngIf="loan.loanStage.id == 3">
-                                <div class="kt-pointer" (click)="packageImageUpload(loan)" class="kt-pointer" >
-                                    <img src="../../../../../assets/media/icons/action.svg" alt="">
+                                <div class="kt-pointer" class="kt-pointer">
+                                    <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
+                                    <button (click)="packageImageUpload(loan)" class="red-button">Assign
+                                        Packet</button>
                                 </div>
                             </div>
                             <div *ngIf="loan.loanStage.id == 4">
-                                <div class="kt-pointer" class="kt-pointer" >
-                                    <button (click)="disburse(loan)" class="apply-kyc">Disburse</button>
-                                    
+                                <div class="kt-pointer" class="kt-pointer">
+                                    <button (click)="disburse(loan)" class="green-button">Disburse Amount</button>
+
                                 </div>
                             </div>
-                            
+                            <div *ngIf="loan.loanStage.id == 5">
+                                <div class="kt-pointer" class="kt-pointer">
+                                    <button class="warning-button">Disbursed</button>
+
+                                </div>
+                            </div>
+
                         </div>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <span (click)="viewLoan(loan)" class="kt-pointer">
+                            View
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '110%'}"></mat-header-row>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-
-                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'width': '110%'}"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

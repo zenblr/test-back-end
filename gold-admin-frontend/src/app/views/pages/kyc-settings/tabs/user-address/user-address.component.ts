@@ -215,6 +215,7 @@ export class UserAddressComponent implements OnInit {
       this.cities1 = [];
       this.images.permanent = [];
       this.addressControls.at(1).reset();
+      this.addressControls.at(1)['controls'].addressType.patchValue('residential')
       this.addressControls.at(1).enable();
 
     }

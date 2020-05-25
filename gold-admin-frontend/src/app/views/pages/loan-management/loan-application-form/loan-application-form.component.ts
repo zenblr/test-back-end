@@ -66,7 +66,9 @@ export class LoanApplicationFormComponent implements OnInit {
         const pack = document.getElementById('packets');
         pack.scrollIntoView({ behavior: "smooth" });
         this.ref.detectChanges()
-      } else {
+      } else if(this.url == "view-loan"){
+        this.disabledForm = true;
+      }else {
         this.disabledForm = false;
       }
     }, 1000)
@@ -143,13 +145,13 @@ export class LoanApplicationFormComponent implements OnInit {
     } else {
       this.disabled[4] = true;
     }
-
+    this.ref.detectChanges()
   }
 
   calculateTotalEligibleAmount() {
     this.totalAmount = 0;
     this.Ornaments.value.forEach(element => {
-      this.totalAmount += element.loanAmount
+      this.totalAmount += Number(element.loanAmount)
     });
 
   }

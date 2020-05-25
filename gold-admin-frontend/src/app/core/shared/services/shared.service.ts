@@ -10,9 +10,11 @@ export class SharedService {
 	totalCount$ = this.totalCount.asObservable();
 	role = new BehaviorSubject(null);
 	role$ = this.role.asObservable();
+	closeFilter = new BehaviorSubject<any>(false);
+	closeFilter$ = this.closeFilter.asObservable();
 
 	constructor(private http: HttpClient) {
-		var token = localStorage.getItem("accessToken");
+		var token = localStorage.getItem("UserDetails");
 		if (token) {
 			var decodedValue = JSON.parse(atob(token.split(".")[1]));
 			this.role.next(decodedValue.roleName[0]);
@@ -35,7 +37,7 @@ export class SharedService {
 	}
 
 	getRole(): Observable<any> {
-		var token = localStorage.getItem("accessToken");
+		var token = localStorage.getItem("UserDetails");
 		// if (token) {
 		var decodedValue = JSON.parse(atob(token.split(".")[1]));
 		return of(decodedValue.roleName[0]);

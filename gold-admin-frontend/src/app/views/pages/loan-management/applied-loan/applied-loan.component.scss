@@ -1,33 +1,83 @@
 :host{
+    // ::ng-deep.mat-row, ::ng-deep.mat-header-row  {
+    //     width: 110% !important;
+    // }
     .mat-column-pan{
-        flex: 0 0 9% !important;
+        flex: 0 0 8% !important;
     }
     .mat-column-date{
-        flex: 0 0 10% !important;
+        flex: 0 0 8% !important;
     }
     .mat-column-mobile{
         flex: 0 0 8% !important;
     }
     .mat-column-fullName{
         padding-left: 0 !important;
+        word-break: break-all !important;
+        flex: 0 0 11% !important;
+        word-break: break-all;
     }
-    .mat-column-actions{
-        flex:0 0 8% !important;
-    }
-    .mat-column-customerID{
+    .mat-column-loanAmount{
         flex: 0 0 9% !important;
     }
+    .mat-column-schemeName{
+        flex: 0 0 9% !important;
+    }
+    .mat-column-actions{
+        flex:0 0 14% !important;
+    }
+  
+    .mat-column-customerID{
+        flex: 0 0 8% !important;
+    }
     .mat-column-appraisalApproval{ 
-        flex-basis: 4% !important;
+        flex: 0 0 12% !important;        
     }
     .mat-column-bMApproval{ 
-        flex-basis: 3% !important;
+        flex: 0 0 8% !important;        
     }
-    
+    .mat-column-view{ 
+        flex: 0 0 5% !important;        
+    }
+    button {
+        width: 120px;
+    }
     .apply-kyc {
 		background: transparent;
 		border: thin solid #454D67;
 		border-radius: 5px;
 		padding: 5px;
+    }
+    
+    .primary-button {
+		background: transparent;
+		border: thin solid #6580f5;
+		border-radius: 5px;
+        padding: 5px;
+        color: #6580f5 !important;
+    }
+    .red-button {
+		background: transparent;
+		border: thin solid #ff7272;
+		border-radius: 5px;
+        padding: 5px;
+        color: #ff7272 !important;
+    }
+    .green-button {
+		background: transparent;
+		border: thin solid #8ddb5d;
+		border-radius: 5px;
+        padding: 5px;
+        color: #8ddb5d !important;
+    }
+    .warning-button {
+		background: transparent;
+		border: thin solid #f8b150;
+		border-radius: 5px;
+        padding: 5px;
+        color: #f8b150 !important;
+    }
+    .cursor-not-allowed{
+		cursor: not-allowed !important;
 	}
 }

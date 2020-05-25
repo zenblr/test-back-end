@@ -97,6 +97,7 @@
                         <input type="number" class="form-control" formControlName="finalLoanAmount"
                             placeholder="0,00,000" (blur)="amountValidation()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
+                        <mat-hint><small>Eligible Amount: {{totalAmt | currency: 'INR'}}</small></mat-hint>
                         <mat-error
                             *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
                             Required field
@@ -155,11 +156,11 @@
             </div>
         </div>
 
-        <!-- <div class="row kt-margin-b-20">
+        <div class="row kt-margin-b-20">
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label>Processing Charges(fixed)</label>
+                        <label class="mandatory">Processing Charges(fixed)</label>
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="processingChargeFixed"
@@ -169,13 +170,17 @@
                             *ngIf="controls.processingChargeFixed.errors?.pattern && controls.processingChargeFixed.touched">
                             Invalid Input
                         </mat-error>
+                        <mat-error
+                            *ngIf="controls.processingChargeFixed.errors?.required && controls.processingChargeFixed.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label>Processing Charges(%)</label>
+                        <label class="mandatory">Processing Charges(%)</label>
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="processingChargePercent"
@@ -185,11 +190,15 @@
                             *ngIf="controls.processingChargePercent.errors?.pattern && controls.processingChargePercent.touched">
                             Invalid Input
                         </mat-error>
+                        <mat-error
+                            *ngIf="controls.processingChargePercent.errors?.required && controls.processingChargePercent.touched">
+                            Required field
+                        </mat-error>
                     </div>
                 </div>
             </div>
-        </div> -->
-        <div class="row">
+        </div>
+        <div class="row" *ngIf="!disable">
             <div class="col-6 kt-margin-t-30 kt-margin-b-30">
 
                 <div class="offset-4 col">
@@ -202,10 +211,10 @@
         <div class="col-6">
             <div class="row justify-content-center">
                 <div class="col-7">
-                    <!-- <div>
-                        <label for="" class="text-color font-weight-500">Processing Charges :-
+                    <div>
+                        <label for="" class="text-color font-weight-500">Processing Charges -
                             {{controls.processingCharge.value}}</label>
-                    </div> -->
+                    </div>
                     <div class="table-div" id="print">
                         <table class="table table-bordered">
                             <thead>
@@ -230,10 +239,10 @@
 
                                 </tr>
                             </tbody>
+
                             <tbody *ngIf="dateOfPayment.length%colJoin != 0 && colJoin !== null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
                                     <td>{{date.key | date :'mediumDate'}}</td>
-                                    <!-- <td>{{idx%colJoin == 0}}{{colJoin == null}}{{dateOfPayment.length%colJoin < dateOfPayment.length-idx}} {{dateOfPayment.length%colJoin}}{{dateOfPayment.length-idx}}</td> -->
                                     <td [attr.rowspan]="colJoin"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
                                         {{intrestAmount | currency : 'INR'}}</td>
@@ -242,6 +251,17 @@
 
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td><strong>Total Amount</strong></td>
+                                    <td *ngIf="colJoin != null">
+                                        <strong>{{(intrestAmount/colJoin) * dateOfPayment.length | currency : 'INR'}}</strong>
+                                    </td>
+                                    <td *ngIf="colJoin == null">
+                                        <strong>{{(intrestAmount) * dateOfPayment.length | currency : 'INR'}}</strong>
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
 

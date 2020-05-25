@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UploadOfferService } from '../../../../../../core/upload-data';
 
 @Component({
   selector: 'kt-rough-loan-amount',
@@ -11,16 +12,22 @@ export class RoughLoanAmountComponent implements OnInit {
   roughLoanForm: FormGroup;
   loanAmount: number = 0;
 
-  constructor(public fb: FormBuilder) { }
+  constructor(public fb: FormBuilder, private uploadOfferService: UploadOfferService) {
+
+  }
 
   ngOnInit() {
     this.initForm();
+    this.uploadOfferService.goldRate$.subscribe(res => {
+      this.controls.currentLTV.patchValue(res * 0.75);
+    })
   }
 
   initForm() {
     this.roughLoanForm = this.fb.group({
-      grossWeight: [],
-      netWeight: [, Validators.required],
+      grossWeight: [, [Validators.required]],
+      netWeight: [, [Validators.required]],
+      deductionWeight: [, Validators.required],
       currentLTV: [, Validators.required]
     })
 

@@ -9,7 +9,7 @@
                 </div>
                 <img class="packets position-relative" [src]="packet.controls.emptyPacketWithNoOrnament.value"
                     *ngIf="packet.controls.emptyPacketWithNoOrnament.value">
-                <img *ngIf="packet.controls.emptyPacketWithNoOrnament.value"
+                <img *ngIf="packet.controls.emptyPacketWithNoOrnament.value && url != 'view-loan'"
                     src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
                     (click)="emptyPacketWithNoOrnament.click()">
                 <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with No
@@ -29,7 +29,7 @@
                 </div>
                 <img class="packets position-relative" [src]="packet.controls.packetWithAllOrnaments.value"
                     *ngIf="packet.controls.packetWithAllOrnaments.value">
-                <img *ngIf="packet.controls.packetWithAllOrnaments.value"
+                <img *ngIf="packet.controls.packetWithAllOrnaments.value && url != 'view-loan'"
                     src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
                     (click)="packetWithAllOrnaments.click()">
                 <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with All
@@ -49,7 +49,7 @@
                 </div>
                 <img class="packets position-relative" [src]="packet.controls.packetWithSealing.value"
                     *ngIf="packet.controls.packetWithSealing.value" (click)="packetWithSealing.click()">
-                <img *ngIf="packet.controls.packetWithSealing.value" src="../../../../../assets/media/icons/edit.svg"
+                <img *ngIf="packet.controls.packetWithSealing.value && url != 'view-loan'" src="../../../../../assets/media/icons/edit.svg"
                     alt="" class="kt-pointer edit-icon" (click)="packetWithSealing.click()">
                 <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with
                     Sealing</label>
@@ -71,7 +71,7 @@
                 <img class="packets position-relative" [src]="packet.controls.packetWithWeight.value"
                     *ngIf="packet.controls.packetWithWeight.value">
                 <!-- </span> -->
-                <img *ngIf="packet.controls.packetWithWeight.value" src="../../../../../assets/media/icons/edit.svg"
+                <img *ngIf="packet.controls.packetWithWeight.value && url != 'view-loan'" src="../../../../../assets/media/icons/edit.svg"
                     alt="" class="kt-pointer edit-icon" (click)="packetWithWeight.click()">
                 <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with
                     Weight</label>
@@ -88,11 +88,11 @@
     </mat-tab>
 </mat-tab-group>
 <div class="addMore">
-    <div class="row">
+    <div class="row" *ngIf="url != 'view-loan'">
         <div class="col-8">
             <select class="packet-dropdown" class="form-control packet-dropdown" [formControl]="packetId"
-                [class.isError]="packetId.invalid && packetId.touched">
-                <option value="" [selected]="true" [disabled]="true">Select Packet</option>
+                [class.isError]="packetId.invalid && packetId.touched" >
+                <option value="" [selected]="true">Select Packet</option>
                 <option [value]="packet.id" *ngFor="let packet of packetsDetais; index as idx">
                     {{packet.packetUniqueId | uppercase}}</option>
             </select>
@@ -108,5 +108,5 @@
     </div>
 </div>
 <div class="text-center p-5" *ngIf="packets.length > 0">
-    <kt-button [type]="'button'" [value]="'Save'" (click)="save()"></kt-button>
+    <kt-button [type]="'button'" [value]="'Save'" (click)="save()" *ngIf="url != 'view-loan'"></kt-button>
 </div>

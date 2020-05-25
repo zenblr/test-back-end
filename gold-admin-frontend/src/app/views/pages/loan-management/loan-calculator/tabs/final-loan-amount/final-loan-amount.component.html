@@ -43,7 +43,7 @@
                 </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">Purity</label>
+                        <label for="" class="text-color">Purity %</label>
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="purity" placeholder="00%">
@@ -66,12 +66,15 @@
                 </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">LTV Amount</label>
+                        <label for="" class="text-color">Current LTV Amount</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="ltvAmount" placeholder="4,800">
+                        <input type="number" class="form-control" formControlName="currentLtvAmount"
+                            placeholder="4,800">
+                        <mat-hint><small> 75% of current gold rate</small></mat-hint>
                     </div>
                 </div>
+
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
                         <label for="" class="text-color">LTV %</label>
@@ -85,12 +88,10 @@
                 </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="text-color">Current LTV Amount</label>
+                        <label for="" class="text-color">LTV Amount</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="currentLtvAmount"
-                            placeholder="4,800">
-                        <mat-hint><small> 75% of current gold rate</small></mat-hint>
+                        <input type="number" class="form-control" formControlName="ltvAmount" placeholder="4,800">
                     </div>
                 </div>
                 <div class="row kt-margin-t-30">

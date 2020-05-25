@@ -52,7 +52,6 @@ export class ReportsComponent implements OnInit {
 			{ id: 3, name: "EMI Report" },
 			{ id: 4, name: "Order Report" },
 			{ id: 5, name: "Order Cancel Report" },
-			{ id: 6, name: "Label Report" },
 			{ id: 7, name: "Products Report" },
 			{ id: 8, name: "Franchise Report" },
 		];
@@ -146,6 +145,8 @@ export class ReportsComponent implements OnInit {
 			this.reportsService.getCancelReport(reportData).subscribe();
 		} else if (this.controls.reportType.value == 7) {
 			this.reportsService.getProductReport(reportData).subscribe();
+		} else if (this.controls.reportType.value == 8) {
+			this.reportsService.getFranchiseReport(reportData).subscribe();
 		}
 	}
 }

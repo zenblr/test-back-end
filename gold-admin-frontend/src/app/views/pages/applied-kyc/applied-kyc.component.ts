@@ -17,7 +17,7 @@ import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-revie
 export class AppliedKycComponent implements OnInit {
 
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'actions', 'view'];
+  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'actions', 'view','appraiser'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -44,20 +44,20 @@ export class AppliedKycComponent implements OnInit {
     // const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     // this.subscriptions.push(sortSubscription);
 
-    // const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-    //   tap(() => {
-    //     this.loadPage();
-    //   })
-    // )
-    //   .subscribe();
-    // this.subscriptions.push(paginatorSubscriptions);
+    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
+      tap(() => {
+        this.loadPage();
+      })
+    )
+      .subscribe();
+    this.subscriptions.push(paginatorSubscriptions);
 
-    // const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
-    //   .subscribe(res => {
-    //     this.searchValue = res;
-    //     this.paginator.pageIndex = 0;
-    //     this.loadPage();
-    //   });
+    const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadPage();
+      });
 
     // Init DataSource
     this.dataSource = new AppliedKycDatasource(this.appliedKycService);
@@ -100,9 +100,13 @@ export class AppliedKycComponent implements OnInit {
       map(res => {
         console.log(res);
         this.appliedKycService.editKyc.next({ editable: true });
-        this.router.navigate(['/kyc-setting']);
+        this.router.navigate(['/kyc-setting/edit-kyc']);
       })
     ).subscribe();
+  }
+
+  assign(){
+    this.router.navigate(['/user-management/assign-appraiser'])
   }
 
   viewKYC(data) {

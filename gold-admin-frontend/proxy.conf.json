@@ -1,8 +1,8 @@
 {
-	"/api/*": {
-		"target": "http://173.249.49.7:8300/",
-		"secure": false,
-		"logLevel": "debug",
-		"changeOrigin": true
-	}
+    "/api/*": {
+        "target": "http://173.249.49.7:8300/",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    }
 }
