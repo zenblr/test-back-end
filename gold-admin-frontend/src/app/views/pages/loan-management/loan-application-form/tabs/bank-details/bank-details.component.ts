@@ -27,18 +27,18 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
 
 
-  ngOnChanges(changes:SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges) {
     if (changes.details) {
-      if(changes.action.currentValue == 'add'){
+      if (changes.action.currentValue == 'add') {
         this.bankForm.patchValue(changes.details.currentValue.customerKycBank[0])
-      }else if(changes.action.currentValue == 'edit'){
+      } else if (changes.action.currentValue == 'edit') {
         this.bankForm.patchValue(changes.details.currentValue.loanBankDetail)
         this.ref.markForCheck()
       }
-      
+
       this.bankFormEmit.emit(this.bankForm);
     }
-    if(this.disable){
+    if (this.disable) {
       this.bankForm.disable()
     }
   }
@@ -47,7 +47,11 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     this.bankForm = this.fb.group({
       bankName: [],
       accountNumber: [],
-      ifscCode: []
+      ifscCode: [],
+      accountType: [],
+      accountHolderName: [],
+      bankBranchName: [],
+      passbookProof: [[]]
     })
     this.bankForm.disable()
   }

@@ -1,3 +1,31 @@
-.mat-column-cceApprovalStatus{
-    flex: 0 0 16% !important;
+
+:host {
+	.mat-column-fullName {
+        flex: 0 0 13% !important;
+        padding-left: 10px !important;
+	}
+	.mat-column-mobile {
+		flex: 0 0 10% !important;
+	}
+	.mat-column-pan {
+		flex: 0 0 10% !important;
+	}
+	.mat-column-date {
+		flex: 0 0 10% !important;
+	}
+	.mat-column-cceApprovalStatus {
+		flex: 0 0 14%  !important;
+	}
+	.mat-column-kycStatus {
+		flex: 0 0 10% !important;
+	}
+	.mat-column-actions {
+		flex: 0 0 10% !important;
+	}
+	.mat-column-view {
+		flex: 0 0 9% !important;
+	}
+	.mat-column-appraiser {
+		flex: 0 0 12% !important;
+	}
 }
