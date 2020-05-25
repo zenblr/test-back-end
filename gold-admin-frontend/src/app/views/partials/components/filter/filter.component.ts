@@ -30,7 +30,7 @@ import { SharedService } from "../../../../core/shared/services/shared.service";
 	templateUrl: "./filter.component.html",
 	styleUrls: ["./filter.component.scss"],
 })
-export class FilterComponent implements OnInit, OnChanges {
+export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	@ViewChild("filterDropdown", { static: true }) dropdown: NgbDropdown;
 	@ViewChild("multiSelect", { static: true }) multiSelect: MatSelect;
 	@ViewChild("customerMulti", { static: true }) customerMulti: MatSelect;
@@ -115,6 +115,13 @@ export class FilterComponent implements OnInit, OnChanges {
 	) {
 		// customize default values of dropdowns used by this component tree
 		config.autoClose = false;
+
+		this.sharedService.closeFilter$.subscribe(res => {
+			if (res) {
+				this.clearFilterForm();
+				this.dropdown.close();
+			}
+		});
 	}
 
 	ngOnInit() {
@@ -249,7 +256,7 @@ export class FilterComponent implements OnInit, OnChanges {
 		});
 	}
 
-	get form() {
+	get controls() {
 		return this.filterForm.controls;
 	}
 
@@ -358,6 +365,9 @@ export class FilterComponent implements OnInit, OnChanges {
 	applyFilter() {
 		this.clearData = false;
 		if (this.filterForm.invalid) {
+			return;
+		}
+		if ((parseFloat(this.controls.priceFrom.value) > parseFloat(this.controls.priceTo.value))) {
 			return;
 		}
 		const filterData = this.prepareFilter();
@@ -696,6 +706,12 @@ export class FilterComponent implements OnInit, OnChanges {
 	//     this.cities = res.message;
 	//   });
 	// }
+
+	clearFilterForm() {
+		if (this.filterForm) {
+			this.filterForm.reset();
+		}
+	}
 
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());

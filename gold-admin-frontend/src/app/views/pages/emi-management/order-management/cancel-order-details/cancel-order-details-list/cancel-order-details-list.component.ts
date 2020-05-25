@@ -24,6 +24,7 @@ import {
 } from "rxjs/operators";
 import { ToastrComponent } from "../../../../../../views/partials/components/toastr/toastr.component";
 import { DataTableService } from "../../../../../../core/shared/services/data-table.service";
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
 	selector: "kt-cancel-order-details-list",
@@ -54,7 +55,7 @@ export class CancelOrderDetailsListComponent implements OnInit {
 	@ViewChild("sort1", { static: true }) sort: MatSort;
 	// Filter fields
 	@ViewChild("searchInput", { static: true }) searchInput: ElementRef;
-	bulkUploadReportResult: CancelOrderDetailsModel[] = [];
+	cancelOrderDetailsResult: CancelOrderDetailsModel[] = [];
 	// Subscriptions
 	private subscriptions: Subscription[] = [];
 	private destroy$ = new Subject();
@@ -67,12 +68,14 @@ export class CancelOrderDetailsListComponent implements OnInit {
 		cancelDate: "",
 		merchantName: "",
 	};
+	
 	constructor(
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
 		private cancelOrderDetailsService: CancelOrderDetailsService,
-		private dataTableService: DataTableService
+		private dataTableService: DataTableService,
+		private sharedService: SharedService,
 	) {
 		this.cancelOrderDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -142,7 +145,7 @@ export class CancelOrderDetailsListComponent implements OnInit {
 		const entitiesSubscription = this.dataSource.entitySubject
 			.pipe(skip(1), distinctUntilChanged())
 			.subscribe((res) => {
-				this.bulkUploadReportResult = res;
+				this.cancelOrderDetailsResult = res;
 			});
 		this.subscriptions.push(entitiesSubscription);
 		this.dataSource.loadCancelOrderDetails(this.cancelData);
@@ -192,6 +195,7 @@ export class CancelOrderDetailsListComponent implements OnInit {
 		}
 		this.dataSource.loadCancelOrderDetails(this.cancelData);
 	}
+	
 	/**
 	 * On Destroy
 	 */
@@ -201,6 +205,7 @@ export class CancelOrderDetailsListComponent implements OnInit {
 		this.destroy$.complete();
 		this.unsubscribeSearch$.next();
 		this.unsubscribeSearch$.complete();
-		this.cancelOrderDetailsService.applyFilter.next(0);
+		this.cancelOrderDetailsService.applyFilter.next({});
+		this.sharedService.closeFilter.next(true);
 	}
 }

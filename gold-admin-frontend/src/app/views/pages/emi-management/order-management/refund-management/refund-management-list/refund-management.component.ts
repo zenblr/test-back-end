@@ -51,7 +51,7 @@ export class RefundManagementComponent implements OnInit {
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild("sort1", { static: true }) sort: MatSort;
 	@ViewChild("searchInput", { static: true }) searchInput: ElementRef;
-	bulkUploadReportResult: RefundManagementModel[] = [];
+	refundDetailsResult: RefundManagementModel[] = [];
 	private subscriptions: Subscription[] = [];
 	private destroy$ = new Subject();
 	private unsubscribeSearch$ = new Subject();
@@ -73,6 +73,7 @@ export class RefundManagementComponent implements OnInit {
 				}
 			});
 	}
+	
 	ngOnInit() {
 		const sortSubscription = this.sort.sortChange.subscribe(
 			() => (this.paginator.pageIndex = 0)
@@ -105,7 +106,7 @@ export class RefundManagementComponent implements OnInit {
 		const entitiesSubscription = this.dataSource.entitySubject
 			.pipe(skip(1), distinctUntilChanged())
 			.subscribe((res) => {
-				this.bulkUploadReportResult = res;
+				this.refundDetailsResult = res;
 			});
 		this.subscriptions.push(entitiesSubscription);
 		this.dataSource.loadRefundManagement(1, 25, this.searchValue);
@@ -115,7 +116,7 @@ export class RefundManagementComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -150,7 +151,7 @@ export class RefundManagementComponent implements OnInit {
 		]);
 	}
 
-	printCancellationReceipt(order) {}
+	printCancellationReceipt(order) { }
 
 	downloadReport() {
 		this.refundManagementService.reportExport().subscribe();

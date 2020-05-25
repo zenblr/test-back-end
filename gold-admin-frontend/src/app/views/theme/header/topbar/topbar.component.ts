@@ -316,7 +316,7 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 			this.filterName = "orderDetails";
-			this.filterWidth = "550px";
+			this.filterWidth = "600px";
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
 		}
@@ -335,7 +335,7 @@ export class TopbarComponent implements OnInit {
 			this.type1 = "button";
 			this.showfilter = true;
 			this.filterName = "depositDetails";
-			this.filterWidth = "550px";
+			this.filterWidth = "450px";
 			this.listType = "tenure,orderStatus";
 		}
 		if (this.path == "emi-details") {
@@ -344,7 +344,7 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 			this.filterName = "emiDetails";
-			this.filterWidth = "400px";
+			this.filterWidth = "350px";
 			this.listType = "emiStatus";
 		}
 		if (this.path == "users") {
