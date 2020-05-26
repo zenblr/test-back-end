@@ -142,23 +142,28 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
 							page: "/user-management",
-							permission: false,
+							permission: !(this.permissionsArr.includes('merchantView')||
+							this.permissionsArr.includes('brokerView') ||
+							this.permissionsArr.includes('storeView')||
+							this.permissionsArr.includes('partnerBannerView')||
+							this.permissionsArr.includes('partnerView')||
+							this.permissionsArr.includes('partnerBranchView')||
+							this.permissionsArr.includes('internalBranchView')||
+							this.permissionsArr.includes('internalUserView')||
+							this.permissionsArr.includes('assignAppraiserView')),
 						},
 						{
 							title: "Lead Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-05.svg",
 							page: "/lead-management",
-							permission: !(this.permissionsArr.includes('leadManagmentAdd') ||
-								this.permissionsArr.includes('leadManagmentView')),
+							permission: !(this.permissionsArr.includes('leadManagmentView')),
 						},
 						{
 							title: "Customer Setting",
 							root: true,
 							src: "assets/media/aside-icons/icons-06.svg",
-							permission: !(this.permissionsArr.includes('customerKycAdd') ||
-								this.permissionsArr.includes('customerKycView') ||
-								this.permissionsArr.includes('appliedKycAdd') ||
+							permission: !(this.permissionsArr.includes('customerKycView')||
 								this.permissionsArr.includes('appliedKycView')),
 
 							submenu: [
@@ -189,9 +194,7 @@ export class MenuConfig {
 								{
 									title: "Loan Application Form",
 									page: "/loan-management/loan-application-form",
-									permission: !(this.permissionsArr.includes('loanApplicationAdd') ||
-										this.permissionsArr.includes('loanApplicationEdit') ||
-										this.permissionsArr.includes('loanApplicationView')),
+									permission: !this.permissionsArr.includes('loanApplicationAdd'),
 								},
 								{
 									title: "Packet",
@@ -208,7 +211,7 @@ export class MenuConfig {
 								{
 									title: "Loan Details",
 									page: "/loan-management/all-loan",
-									permission: false,
+									permission: !this.permissionsArr.includes('loanDetailsView'),
 								},
 							],
 						},
@@ -217,7 +220,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-08.svg",
 							page: "/customer-management/customer-list",
-							permission: false,
+							permission: !this.permissionsArr.includes('customerManagementView'),
 						},
 						{
 							title: "Repayment Structure",
@@ -310,56 +313,56 @@ export class MenuConfig {
 							root: true,
 							page: "/user-management/partner",
 							src: "assets/media/aside-icons/icons-06.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('partnerView'),
 						},
 						{
 							title: "Partner Branch ",
 							root: true,
 							page: "/user-management/branch",
 							src: "assets/media/aside-icons/icons-13.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('partnerBranchView'),
 						},
 						{
 							title: "Internal User",
 							root: true,
 							page: "/user-management/internal-user",
 							src: "assets/media/aside-icons/icons-14.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('internalUserView'),
 						},
 						{
 							title: "Internal User Branch",
 							root: true,
 							page: "/user-management/internal-user-branch",
 							src: "assets/media/aside-icons/icons-15.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('internalBranchView')					,
 						},
 						{
 							title: "Assign Appraiser",
 							root: true,
 							page: "/user-management/assign-appraiser",
 							src: "assets/media/aside-icons/icons-16.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('assignAppraiserView'),
 						},
 						{
 							title: "Merchant",
 							root: true,
 							page: "/user-management/merchant",
 							src: "assets/media/aside-icons/icons-17.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('merchantView')
 						},
 						{
 							title: "Broker",
 							root: true,
 							page: "/user-management/broker",
 							src: "assets/media/aside-icons/icons-18.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('brokerView'),
 						},
 						{
 							title: "Store",
 							root: true,
 							page: "/user-management/store",
 							src: "assets/media/aside-icons/icons-19.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('storeView')
 						},
 						{
 							title: "Roles and permissions",
