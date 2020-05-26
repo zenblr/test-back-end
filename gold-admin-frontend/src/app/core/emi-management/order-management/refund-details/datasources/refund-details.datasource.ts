@@ -2,15 +2,15 @@ import { catchError, finalize } from "rxjs/operators";
 import { map } from "rxjs/operators";
 import { BehaviorSubject, of } from "rxjs";
 import { BaseDataSource } from "../../../../_base/crud";
-import { RefundManagementService } from "../services/refund-management.service";
-export class RefundManagementDatasource extends BaseDataSource {
+import { RefundDetailsService } from "../services/refund-details.service";
+export class RefundDetailsDatasource extends BaseDataSource {
 	private loadingSubject = new BehaviorSubject<boolean>(false);
 	private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
 
 	public loading$ = this.loadingSubject.asObservable();
 	public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
 
-	constructor(private refundManagementService: RefundManagementService) {
+	constructor(private refundManagementService: RefundDetailsService) {
 		super();
 	}
 

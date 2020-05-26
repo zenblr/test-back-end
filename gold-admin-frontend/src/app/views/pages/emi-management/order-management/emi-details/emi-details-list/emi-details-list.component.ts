@@ -15,6 +15,8 @@ import {
 } from "../../../../../../core/emi-management/order-management";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { EmiDetailsViewComponent } from "../emi-details-view/emi-details-view.component";
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
+
 @Component({
 	selector: "kt-emi-details-list",
 	templateUrl: "./emi-details-list.component.html",
@@ -38,7 +40,7 @@ export class EmiDetailsListComponent implements OnInit {
 	@ViewChild("sort1", { static: true }) sort: MatSort;
 	// Filter fields
 	@ViewChild("searchInput", { static: true }) searchInput: ElementRef;
-	bulkUploadReportResult: EmiDetailsModel[] = [];
+	emiDetailsResult: EmiDetailsModel[] = [];
 	// Subscriptions
 	private subscriptions: Subscription[] = [];
 	private destroy$ = new Subject();
@@ -56,7 +58,8 @@ export class EmiDetailsListComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
 		private emiDetailsService: EmiDetailsService,
-		private dataTableService: DataTableService
+		private dataTableService: DataTableService,
+		private sharedService: SharedService,
 	) {
 		this.emiDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -124,7 +127,7 @@ export class EmiDetailsListComponent implements OnInit {
 		const entitiesSubscription = this.dataSource.entitySubject
 			.pipe(skip(1), distinctUntilChanged())
 			.subscribe((res) => {
-				this.bulkUploadReportResult = res;
+				this.emiDetailsResult = res;
 			});
 		this.subscriptions.push(entitiesSubscription);
 		this.dataSource.loadEmiDetails(this.emiData);
@@ -134,7 +137,7 @@ export class EmiDetailsListComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -167,7 +170,7 @@ export class EmiDetailsListComponent implements OnInit {
 		});
 	}
 
-	printCancellationReceipt(order) {}
+	printCancellationReceipt(order) { }
 
 	downloadReport() {
 		this.emiDetailsService.reportExport().subscribe();
@@ -179,6 +182,7 @@ export class EmiDetailsListComponent implements OnInit {
 		this.emiData.orderemistatus = data.filterData.multiSelect1;
 		this.dataSource.loadEmiDetails(this.emiData);
 	}
+	
 	/**
 	 * On Destroy
 	 */
@@ -188,6 +192,7 @@ export class EmiDetailsListComponent implements OnInit {
 		this.destroy$.complete();
 		this.unsubscribeSearch$.next();
 		this.unsubscribeSearch$.complete();
-		this.emiDetailsService.applyFilter.next(0);
+		this.emiDetailsService.applyFilter.next({});
+		this.sharedService.closeFilter.next(true);
 	}
 }

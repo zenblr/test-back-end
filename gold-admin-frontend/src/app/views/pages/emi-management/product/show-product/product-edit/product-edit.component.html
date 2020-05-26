@@ -76,7 +76,7 @@
                                 <label [class.mandatory]="isMandatory">Weight</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" formControlName="weight" type="number"
+                                <input class="form-control" formControlName="weight" type="text" numbersOnly
                                     [class.isError]="controls.weight.touched && controls.weight.invalid">
                                 <mat-error *ngIf="controls.weight.errors?.required && controls.weight.touched">
                                     Required field
@@ -88,7 +88,7 @@
                                 <label>Price</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" formControlName="price" type="number" disabled>
+                                <input class="form-control" formControlName="price" type="text" numbersOnly disabled>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
@@ -96,7 +96,8 @@
                                 <label [class.mandatory]="isMandatory">Manufacturing Charges</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" formControlName="manufacturingCostPerGram" type="number"
+                                <input class="form-control" formControlName="manufacturingCostPerGram" type="text"
+                                    numbersOnly
                                     [class.isError]="controls.manufacturingCostPerGram.touched && controls.manufacturingCostPerGram.invalid">
                                 <mat-error
                                     *ngIf="controls.manufacturingCostPerGram.errors?.required && controls.manufacturingCostPerGram.touched">
@@ -109,7 +110,8 @@
                                 <label [class.mandatory]="isMandatory">Hallmarking & Packaging Charges</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" formControlName="hallmarkingPackaging" type="number"
+                                <input class="form-control" formControlName="hallmarkingPackaging" type="text"
+                                    numbersOnly
                                     [class.isError]="controls.hallmarkingPackaging.touched && controls.hallmarkingPackaging.invalid">
                                 <mat-error
                                     *ngIf="controls.hallmarkingPackaging.errors?.required && controls.hallmarkingPackaging.touched">
@@ -122,7 +124,7 @@
                                 <label [class.mandatory]="isMandatory">Shipping Charges</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" formControlName="shipping" type="number"
+                                <input class="form-control" formControlName="shipping" type="text" numbersOnly
                                     [class.isError]="controls.shipping.touched && controls.shipping.invalid">
                                 <mat-error *ngIf="controls.shipping.errors?.required && controls.shipping.touched">
                                     Required field

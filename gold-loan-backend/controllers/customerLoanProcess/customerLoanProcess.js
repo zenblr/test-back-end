@@ -7,6 +7,16 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 
+//FUNCTION GET ORNAMENT TYPE
+
+exports.getOrnamentType = async (req, res, next) => {
+    let ornametData = await models.ornamentType.findAll({
+        where: { isActive: true },
+        attributes: ['id', 'name']
+    })
+    return res.status(200).json({ message: 'success', data: ornametData })
+}
+
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID
 exports.customerDetails = async (req, res, next) => {
 
@@ -57,7 +67,7 @@ exports.customerDetails = async (req, res, next) => {
             model: models.customerKycBankDetail,
             // where: { isActive: true },
             as: 'customerKycBank',
-            attributes: ['id', 'bankName', 'accountNumber', 'ifscCode']
+            attributes: ['id', 'bankName', 'bankBranchName', 'accountNumber', 'ifscCode', 'accountType', 'accountHolderName', 'passbookProof']
         }]
     }
     )
@@ -87,7 +97,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
         goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
 
     // customerLoanBank
-    let { bankName, accountNumber, ifscCode } = loanBank
+    let { bankName, accountNumber, ifscCode, bankBranchName, accountType, accountHolderName, passbookProof } = loanBank
 
     // customerLoanKycAddress
     let { identityTypeId, identityProof, idCardNumber, permanentAddProofTypeId, permanentAddress, permanentAddStateId, permanentAddCityId, permanentAddPin, permanentAddProof, permanentAddCardNumber, residentialAddProofTypeId, residentialAddress, residentialAddStateId, residentialAddCityId, residentialAddPin, residentialAddProof, residentialAddCardNumber } = loanKyc
@@ -96,7 +106,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
     let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
 
     //customerFinalLoan
-    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate } = loanFinalCalculator
 
     //customerPersonal
     let { customerUniqueId, mobileNumber, panCardNumber, startDate } = loanPersonal
@@ -127,7 +137,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
 
         // customerLoanBank
         await models.customerLoanBankDetail.create({
-            loanId, bankName, accountNumber, ifscCode, createdBy, modifiedBy
+            loanId, bankName, accountNumber, ifscCode, bankBranchName, accountType, accountHolderName, passbookProof, createdBy, modifiedBy
         }, { transaction: t });
 
         //customerLoanKycAddress
@@ -149,7 +159,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
 
         //customerFinalLoan
         await models.customerFinalLoan.create({
-            loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate, createdBy, modifiedBy
+            loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, createdBy, modifiedBy
         }, { transaction: t })
 
         let allOrnmanets = []
@@ -178,83 +188,99 @@ exports.getSingleLoanDetails = async (req, res, next) => {
     let customerLoan = await models.customerLoan.findOne({
         where: { id: customerLoanId },
         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        include: [
-            {
-                model: models.customerLoanPersonalDetail,
-                as: 'loanPersonalDetail',
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-            }, {
-                model: models.customerLoanBankDetail,
-                as: 'loanBankDetail',
-                where: { isActive: true },
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-            },
-            {
-                model: models.customerLoanKycDetail,
-                as: 'loanKycDetail',
-                where: { isActive: true },
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [
-                    {
-                        model: models.identityType,
-                        as: 'identityType',
-                        attributes: ['id', 'name']
-                    },
-                    {
-                        model: models.state,
-                        as: 'perState',
-                        attributes: ['id', 'name']
-                    },
-                    {
-                        model: models.city,
-                        as: 'perCity',
-                        attributes: ['id', 'name']
-                    },
-                    {
-                        model: models.addressProofType,
-                        as: 'perAddressProofType',
-                        attributes: ['id', 'name']
-                    },
-                    {
-                        model: models.state,
-                        as: 'resState',
-                        attributes: ['id', 'name']
-                    },
-                    {
-                        model: models.city,
-                        as: 'resCity',
-                        attributes: ['id', 'name']
-                    },
-                    {
-                        model: models.addressProofType,
-                        as: 'resAddressProofType',
-                        attributes: ['id', 'name']
-                    },
-                ]
-            },
-            {
-                model: models.customerLoanNomineeDetail,
-                as: 'loanNomineeDetail',
-                where: { isActive: true },
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-            },
-            {
-                model: models.customerLoanOrnamentsDetail,
-                as: 'loanOrnamentsDetail',
-                where: { isActive: true },
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-            },
-            {
-                model: models.customerFinalLoan,
-                as: 'finalLoan',
-                where: { isActive: true },
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-            },
-            {
-                model: models.customerLoanPackageDetails,
-                as: 'loanPacketDetails',
-            },
-        ]
+        include: [{
+            model: models.loanStage,
+            as: 'loanStage',
+            attributes: ['id', 'name']
+        }, {
+            model: models.customerLoanPersonalDetail,
+            as: 'loanPersonalDetail',
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+        }, {
+            model: models.customerLoanBankDetail,
+            as: 'loanBankDetail',
+            where: { isActive: true },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+        },
+        {
+            model: models.customerLoanKycDetail,
+            as: 'loanKycDetail',
+            where: { isActive: true },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            include: [
+                {
+                    model: models.identityType,
+                    as: 'identityType',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: models.state,
+                    as: 'perState',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: models.city,
+                    as: 'perCity',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: models.addressProofType,
+                    as: 'perAddressProofType',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: models.state,
+                    as: 'resState',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: models.city,
+                    as: 'resCity',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: models.addressProofType,
+                    as: 'resAddressProofType',
+                    attributes: ['id', 'name']
+                },
+            ]
+        },
+        {
+            model: models.customerLoanNomineeDetail,
+            as: 'loanNomineeDetail',
+            where: { isActive: true },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+        },
+        {
+            model: models.customerLoanOrnamentsDetail,
+            as: 'loanOrnamentsDetail',
+            where: { isActive: true },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+        },
+        {
+            model: models.customerFinalLoan,
+            as: 'finalLoan',
+            where: { isActive: true },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            include: [{
+                model: models.scheme,
+                as: 'scheme'
+            }]
+        },
+        {
+            model: models.customerLoanPackageDetails,
+            as: 'loanPacketDetails',
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            include: [{
+                model: models.packet,
+                as: 'packet',
+                attributes: ['id', 'packetUniqueId'],
+            }]
+        }, {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'firstName', 'lastName']
+        }]
     })
 
     return res.status(200).json({ message: 'success', data: customerLoan })
@@ -267,7 +293,7 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
     let modifiedBy = req.userData.id;
 
     //customerFinalLoan
-    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate } = loanFinalCalculator
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate } = loanFinalCalculator
 
     //customerLoanNominee
     let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
@@ -276,12 +302,15 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
     let { applicationFormForAppraiser,
         goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM } = loanApproval
     let cutomerLoanApproval = {}
-    if (req.userData.roleName[0] == "Appraiser") {
+
+    let user = await models.user.findOne({ where: { id: req.userData.id } });
+
+    if (user.userTypeId == 7) {
         let stageId;
         if (loanStatusForAppraiser == 'approved') {
-            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
         } else {
-            stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
+            stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' } })
         }
 
         cutomerLoanApproval['loanStageId'] = stageId.id
@@ -294,7 +323,7 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
         cutomerLoanApproval['modifiedBy'] = modifiedBy
     }
 
-    if (req.userData.roleName[0] == "Branch Manager") {
+    if (user.userTypeId == 5) {
         var loanUniqueId = null;
         if (loanStatusForBM === 'approved') {
             if (applicationFormForBM == true && goldValuationForBM == true) {
@@ -306,9 +335,9 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
 
         let stageId;
         if (loanStatusForBM == 'approved') {
-            stageId = await models.loanStage.findOne({ where: { name: 'packet assign' }, transaction: t })
+            stageId = await models.loanStage.findOne({ where: { name: 'assign packet' } })
         } else {
-            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
         }
 
         cutomerLoanApproval['loanStageId'] = stageId.id
@@ -333,7 +362,7 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
 
         //customerFinalLoan
         await models.customerFinalLoan.update({
-            partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate, modifiedBy
+            partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, modifiedBy
         }, { where: { loanId }, transaction: t })
 
 
@@ -356,32 +385,60 @@ exports.updateCustomerLoanDetail = async (req, res, next) => {
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS
 exports.appliedLoanDetails = async (req, res, next) => {
+    let { schemeId, appraiserApproval, bmApproval, loanStageId } = req.query
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
+    let query = {};
+    if (schemeId) {
+        schemeId = req.query.schemeId.split(",");
+        query["$finalLoan.scheme_id$"] = schemeId;
+    }
+    if (appraiserApproval) {
+        appraiserApproval = req.query.appraiserApproval.split(",");
+        query.loanStatusForAppraiser = appraiserApproval
+    }
+    if (bmApproval) {
+        appraiserApproval = req.query.bmApproval.split(",");
+        query.loanStatusForBM = bmApproval
+    }
+    if (loanStageId) {
+        loanStageId = req.query.loanStageId.split(",");
+        query.loanStageId = loanStageId;
+    }
+
+
     let searchQuery = {
-        [Op.or]: {
-            "$customer.first_name$": { [Op.iLike]: search + '%' },
-            "$customer.mobile_number$": { [Op.iLike]: search + '%' },
-            "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
-            "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            appraiser_status: sequelize.where(
-                sequelize.cast(sequelize.col("customerLoan.loan_status_for_appraiser"), "varchar"),
-                {
-                    [Op.iLike]: search + "%",
-                }
-            ),
-            bm_status: sequelize.where(
-                sequelize.cast(sequelize.col("customerLoan.loan_status_for_bm"), "varchar"),
-                {
-                    [Op.iLike]: search + "%",
-                }
-            )
-        },
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$customer.first_name$": { [Op.iLike]: search + '%' },
+                "$customer.last_name$": { [Op.iLike]: search + '%' },
+                "$customer.mobile_number$": { [Op.iLike]: search + '%' },
+                "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                appraiser_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customerLoan.loan_status_for_appraiser"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                bm_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customerLoan.loan_status_for_bm"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                )
+            },
+        }],
+
         isActive: true
     };
 
     let associateModel = [{
+        model: models.loanStage,
+        as: 'loanStage',
+        attributes: ['id', 'name']
+    }, {
         model: models.customer,
         as: 'customer',
         where: { isActive: true },
@@ -391,7 +448,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
         model: models.customerFinalLoan,
         as: 'finalLoan',
         where: { isActive: true },
-        attributes: ['loanStartDate'],
+        attributes: ['loanStartDate', 'finalLoanAmount', 'schemeId'],
         include: [{
             model: models.scheme,
             as: 'scheme',
@@ -402,7 +459,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     let appliedLoanDetails = await models.customerLoan.findAll({
         where: searchQuery,
         include: associateModel,
-        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM'],
+        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStageId'],
         order: [
             ['id', 'DESC']
         ],
@@ -455,18 +512,19 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
             obj.customerId = loanDetails.customerId;
             obj.loanId = loanId;
             obj.modifiedBy = modifiedBy
-            obj.isActive = true
+            obj.packetAssigned = true;
             return obj
         })
-        let stageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' }, transaction: t })
 
         await sequelize.transaction(async (t) => {
+            let stageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' }, transaction: t })
+
             await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
 
             await models.customerLoanPackageDetails.bulkCreate(finalPackageData, { returning: true, transaction: t })
 
             let d = await models.packet.bulkCreate(packetUpdateArray, {
-                updateOnDuplicate: ["customerId", "loanId", "modifiedBy", "isActive"]
+                updateOnDuplicate: ["customerId", "loanId", "modifiedBy", "packetAssigned"]
             }, { transaction: t })
         })
 
@@ -485,13 +543,18 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
+    let matchStageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
 
-    if (loanDetails !== null && loanDetails.loanUniqueId !== null && loanDetails.loanStatusForBM === 'confirmed') {
-        let loanAmountDisbursed = await models.disbursementOfLoan.disbursementOfLoanAmount(
-            loanId, transactionId, date, createdBy, modifiedBy);
-        res.status(201).json({ message: 'you loan amount has been disbursed successfully' });
+    if (loanDetails.loanStageId == matchStageId.id) {
+        let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+
+        await sequelize.transaction(async (t) => {
+            await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
+            await models.customerLoanDisbursement.create({ loanId, transactionId, date, createdBy, modifiedBy }, { transaction: t })
+        })
+        return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });
     } else {
-        res.status(404).json({ message: 'given loan id is not proper' })
+        return res.status(404).json({ message: 'Given loan id is not proper' })
     }
 }
 
@@ -501,50 +564,52 @@ exports.getLoanDetails = async (req, res, next) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
+    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+    let query = {}
+    let searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$customer.first_name$": { [Op.iLike]: search + '%' },
+                "$customer.last_name$": { [Op.iLike]: search + '%' },
+                "$customer.mobile_number$": { [Op.iLike]: search + '%' },
+                "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                "$finalLoan.final_loan_amount$": { [Op.iLike]: search + '%' },
+                "$finalLoan.interest_rate$": { [Op.iLike]: search + '%' },
+                tenure: sequelize.where(
+                    sequelize.cast(sequelize.col("finalLoan.tenure"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                )
+            },
+        }],
+        isActive: true,
+        loanStageId: stageId.id
+    };
+
     let associateModel = [{
         model: models.customer,
         as: 'customer',
         where: { isActive: true },
-        attributes: { exclude: ['password'] }
-    },
-    {
-        model: models.customerLoanBankDetail,
-        as: 'loanBankDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanKycDetail,
-        as: 'loanKycDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanNomineeDetail,
-        as: 'loanNomineeDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanOrnamentsDetail,
-        as: 'loanOrnamentsDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanPersonalDetail,
-        as: 'loanPersonalDetail',
-        where: { isActive: true }
-    },
-    {
-        model: models.customerLoanPackageDetails,
-        as: 'loanPacketDetails',
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
     },
     {
         model: models.customerFinalLoan,
         as: 'finalLoan',
-        where: { isActive: true }
+        where: { isActive: true },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        include: [{
+            model: models.scheme,
+            as: 'scheme',
+            attributes: ['id', 'schemeName']
+        }]
     }]
 
     let loanDetails = await models.customerLoan.findAll({
-        where: { isActive: true },
+        where: searchQuery,
         include: associateModel,
+        attributes: ['id', 'loanUniqueId'],
         order: [
             ['id', 'DESC']
         ],
@@ -552,13 +617,13 @@ exports.getLoanDetails = async (req, res, next) => {
         limit: pageSize
     });
     let count = await models.customerLoan.findAll({
-        where: { isActive: true },
+        where: searchQuery,
         include: associateModel,
     });
     if (loanDetails.length === 0) {
-        res.status(404).json({ message: 'no loan details found' });
+        return res.status(200).json([]);
     } else {
-        res.status(200).json({ message: 'loan details fetch successfully', loanDetails, count: count.length });
+        return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
     }
 }
 

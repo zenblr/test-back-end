@@ -8,27 +8,27 @@ import {
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { SharedService } from "../../../../../../core/shared/services/shared.service";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
-import { ToastrComponent } from "../../../../../../views/partials/components/toastr/toastr.component";
+import { ToastrComponent } from "../../../../../partials/components/toastr/toastr.component";
 import {
-	RefundManagementDatasource,
-	RefundManagementModel,
-	RefundManagementService,
+	RefundDetailsDatasource,
+	RefundDetailsModel,
+	RefundDetailsService,
 } from "../../../../../../core/emi-management/order-management";
 @Component({
-	selector: "kt-refund-management-view",
-	templateUrl: "./refund-management-view.component.html",
-	styleUrls: ["./refund-management-view.component.scss"],
+	selector: "kt-refund-details-view",
+	templateUrl: "./refund-details-view.component.html",
+	styleUrls: ["./refund-details-view.component.scss"],
 })
-export class RefundManagementViewComponent implements OnInit {
+export class RefundDetailsViewComponent implements OnInit {
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 	refundData: any;
 	viewLoading = false;
 	title: string;
 	isMandatory = false;
 	constructor(
-		public dialogRef: MatDialogRef<RefundManagementViewComponent>,
+		public dialogRef: MatDialogRef<RefundDetailsViewComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
-		private refundManagementService: RefundManagementService,
+		private refundDetailsService: RefundDetailsService,
 		private ref: ChangeDetectorRef
 	) {}
 
@@ -49,7 +49,7 @@ export class RefundManagementViewComponent implements OnInit {
 
 	getSingleRefundData(refundId) {
 		this.viewLoading = true;
-		this.refundManagementService.getSingleRefund(refundId).subscribe(
+		this.refundDetailsService.getSingleRefund(refundId).subscribe(
 			(res) => {
 				console.log(res);
 				this.refundData = res;

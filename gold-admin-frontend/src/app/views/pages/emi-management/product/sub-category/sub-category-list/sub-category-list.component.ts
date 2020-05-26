@@ -130,7 +130,7 @@ export class SubCategoryListComponent implements OnInit, OnDestroy {
 
   deleteSubCategory(category) {
     const _title = 'Delete Sub-Category';
-    const _description = 'Are you sure to permanently delete this sub-category?';
+    const _description = 'Are you sure you want to delete this sub-category? it will also delete the product related to it.';
     const _waitDesciption = 'Sub-Category is deleting...';
     const _deleteMessage = `Sub-Category has been deleted`;
 
