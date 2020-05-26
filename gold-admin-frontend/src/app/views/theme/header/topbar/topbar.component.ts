@@ -212,7 +212,7 @@ export class TopbarComponent implements OnInit {
 			this.type2 = "button";
 		}
 		if (this.path == "customer-list") {
-			this.showfilter = true;
+			this.showfilter = false;
 			this.showInput = true;
 			this.toogle = true;
 		}
