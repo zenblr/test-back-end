@@ -1,398 +1,525 @@
+import { SharedService } from '../shared/services/shared.service';
+import { NgxPermissionsService } from 'ngx-permissions';
+
 export class MenuConfig {
-	public defaults: any = {
-		aside: {
-			self: {},
-			itemsOne: [
-				{
-					title: "Dashboard",
-					root: true,
-					src: "assets/media/aside-icons/icons-01.svg",
-					page: "/dashboard",
-					translate: "MENU.DASHBOARD",
-				},
-				{
-					title: "Admin Account",
-					root: true,
-					src: "assets/media/aside-icons/icons-02.svg",
-					page: "/dashboard",
+	public defaults: any;
+	permissionsArr = [];
+	modulesArr = [];
 
-					submenu: [
-						{
-							title: "Change Password",
-							page: "/admin-account/change-password",
-						},
-						{
-							title: "Show Queries",
-							page: "/admin-account/show-queries",
-						},
-						{
-							title: "Show Feedback",
-							page: "/admin-account/show-feedback",
-						},
-					],
-				},
-				{
-					title: "Admin-Settings",
-					root: true,
-					src: "assets/media/aside-icons/icons-03.svg",
+	constructor(
+		private sharedService: SharedService,
+		public permissionsService: NgxPermissionsService
+	) {
+		this.sharedService.getUserDetailsFromStorage().subscribe(res => {
+			if (res && res.permissions.length) {
+				for (const item of res.permissions) {
+					this.permissionsArr.push(item.description);
+				}
+				this.permissionsService.loadPermissions(this.permissionsArr);
+				console.log(this.permissionsArr);
+			}
 
-					submenu: [
+			if (res && res.modules.length) {
+				for (const item of res.modules) {
+					this.modulesArr.push(item.module.id);
+				}
+				console.log(this.modulesArr);
+			}
+
+			this.defaults = {
+				aside: {
+					self: {},
+					itemsOne: [
 						{
-							title: "Upload Data",
+							title: "Dashboard",
 							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/dashboard",
+							translate: "MENU.DASHBOARD",
+							permission: false,
+						},
+						{
+							title: "Admin Account",
+							root: true,
+							src: "assets/media/aside-icons/icons-02.svg",
+							page: "/dashboard",
+							permission: false,
 
 							submenu: [
 								{
-									title: "Promotional Banners",
-									page: "/upload-data/upload-banner",
+									title: "Change Password",
+									page: "/admin-account/change-password",
+									permission: false,
 								},
 								{
-									title: "Offer Banners",
-									page: "/upload-data/upload-offer",
+									title: "Show Queries",
+									page: "/admin-account/show-queries",
+									permission: false,
 								},
 								{
-									title: "Partner Banners",
-									page: "/upload-data/upload-lender-banner",
+									title: "Show Feedback",
+									page: "/admin-account/show-feedback",
+									permission: false,
+								},
+							],
+						},
+						{
+							title: "Admin-Settings",
+							root: true,
+							src: "assets/media/aside-icons/icons-03.svg",
+							permission: false,
+
+							submenu: [
+								{
+									title: "Upload Data",
+									root: true,
+									permission: false,
+
+									submenu: [
+										{
+											title: "Promotional Banners",
+											page: "/upload-data/upload-banner",
+											permission: false,
+										},
+										{
+											title: "Offer Banners",
+											page: "/upload-data/upload-offer",
+											permission: false,
+										},
+										{
+											title: "Partner Banners",
+											page: "/upload-data/upload-lender-banner",
+											permission: false,
+										},
+										// {
+										// 	title: 'Upload Scheme',
+										// 	page: '/upload-data/upload-scheme',
+										// permission: false,
+										//
+										// },
+									],
+								},
+								{
+									title: "Loan Settings",
+									root: true,
+									permission: false,
+
+									submenu: [
+										{
+											title: "Scheme",
+											page: "/loan-setting/scheme",
+											permission: false,
+										},
+										{
+											title: "Packet",
+											page: "/loan-setting/packet",
+											permission: false,
+										},
+										{
+											title: "Karat details",
+											page: "/loan-setting/karat-details",
+											permission: false,
+										},
+									],
+								},
+								{
+									title: "Notification Settings",
+									root: true,
+									permission: false,
+
+									submenu: [
+										{
+											title: "Email Alerts",
+											page: "/loan-setting/email-alerts",
+											permission: false,
+										},
+										{
+											title: "SMS Alerts",
+											page: "/loan-setting/sms-alerts",
+											permission: false,
+										},
+									],
+								},
+							],
+						},
+						{
+							title: "User Management",
+							root: true,
+							src: "assets/media/aside-icons/icons-04.svg",
+							page: "/user-management",
+							permission: false,
+						},
+						{
+							title: "Lead Management",
+							root: true,
+							src: "assets/media/aside-icons/icons-05.svg",
+							page: "/lead-management",
+							permission: false,
+						},
+						{
+							title: "Customer Setting",
+							root: true,
+							src: "assets/media/aside-icons/icons-06.svg",
+							permission: false,
+
+							submenu: [
+								{
+									title: "KYC Setting",
+									page: "/kyc-setting",
+									permission: false,
+								},
+								{
+									title: "Applied Kyc",
+									page: "/applied-kyc",
+									permission: false,
+								},
+							],
+						},
+						{
+							title: "Loan Managment",
+							root: true,
+							src: "assets/media/aside-icons/icons-07.svg",
+							permission: false,
+
+							submenu: [
+								{
+									title: "Loan Calculator",
+									page: "/loan-management/loan-calculator",
+									permission: false,
+								},
+								{
+									title: "Loan Application Form",
+									page: "/loan-management/loan-application-form",
+									permission: false,
+								},
+								{
+									title: "Packet",
+									page: "/loan-management/packet",
+									permission: false,
+								},
+								{
+									title: "Applied Loan",
+									page: "/loan-management/applied-loan",
+									permission: false,
+								},
+								{
+									title: "Loan Details",
+									page: "/loan-management/all-loan",
+									permission: false,
+								},
+							],
+						},
+						{
+							title: "Customer Management",
+							root: true,
+							src: "assets/media/aside-icons/icons-08.svg",
+							page: "/customer-management/customer-list",
+							permission: false,
+						},
+						{
+							title: "Repayment Structure",
+							root: true,
+							src: "assets/media/aside-icons/icons-09.svg",
+							permission: false,
+
+							submenu: [
+								{
+									title: "Monthly Payment",
+									page: "/repayment/monthly",
+									permission: false,
 								},
 								// {
-								// 	title: 'Upload Scheme',
-								// 	page: '/upload-data/upload-scheme',
-								//
-								// },
+								// 	title: 'One Shot Payment',
+								// 	path: '/one-shot-payment',
+								// permission: false,
+								// }
 							],
 						},
 						{
-							title: "Loan Settings",
+							title: "Account",
 							root: true,
+							src: "assets/media/aside-icons/icons-12.svg",
+							permission: false,
 
 							submenu: [
 								{
-									title: "Scheme",
-									page: "/loan-setting/scheme",
+									title: "Loan Disbursed Details",
+									path: "/Loan-disbursed-detail",
+									permission: false,
 								},
 								{
-									title: "Karat details",
-									page: "/loan-setting/karat-details",
+									title: "Loan Repayment Details",
+									path: "/Loan-repayment-detail",
+									permission: false,
 								},
 							],
 						},
 						{
-							title: "Notification Settings",
+							title: "Report",
 							root: true,
+							src: "assets/media/aside-icons/icons-11.svg",
+							permission: false,
 
 							submenu: [
 								{
-									title: "Email Alerts",
-									page: "/loan-setting/email-alerts",
+									title: "KYC",
+									path: "/kyc",
+									permission: false,
 								},
 								{
-									title: "SMS Alerts",
-									page: "/loan-setting/sms-alerts",
+									title: "Loan Status Report",
+									path: "/loan-status",
+									permission: false,
+								},
+								{
+									title: "Branch Report",
+									path: "/branch",
+									permission: false,
+								},
+								{
+									title: "Loan Type Reports",
+									path: "/loan-type",
+									permission: false,
+								},
+								{
+									title: "Margin Reports",
+									path: "/marign",
+									permission: false,
 								},
 							],
 						},
+						{
+							title: "EMI Management",
+							root: true,
+							src: "assets/media/aside-icons/icons-04.svg",
+							page: "/emi-management",
+							permission: !this.modulesArr.includes(2),
+						},
+						{
+							title: "Log Out",
+							src: "assets/media/aside-icons/icons-12.svg",
+							permission: false,
+						},
 					],
-				},
+					itemsTwo: [
+						{
+							title: "Partner",
+							root: true,
+							page: "/user-management/partner",
+							src: "assets/media/aside-icons/icons-06.svg",
+							permission: false,
+						},
+						{
+							title: "Partner Branch ",
+							root: true,
+							page: "/user-management/branch",
+							src: "assets/media/aside-icons/icons-13.svg",
+							permission: false,
+						},
+						{
+							title: "Internal User",
+							root: true,
+							page: "/user-management/internal-user",
+							src: "assets/media/aside-icons/icons-14.svg",
+							permission: false,
+						},
+						{
+							title: "Internal User Branch",
+							root: true,
+							page: "/user-management/internal-user-branch",
+							src: "assets/media/aside-icons/icons-15.svg",
+							permission: false,
+						},
+						{
+							title: "Assign Appraiser",
+							root: true,
+							page: "/user-management/assign-appraiser",
+							src: "assets/media/aside-icons/icons-16.svg",
+							permission: false,
+						},
+						{
+							title: "Merchant",
+							root: true,
+							page: "/user-management/merchant",
+							src: "assets/media/aside-icons/icons-17.svg",
+							permission: false,
+						},
+						{
+							title: "Broker",
+							root: true,
+							page: "/user-management/broker",
+							src: "assets/media/aside-icons/icons-18.svg",
+							permission: false,
+						},
+						{
+							title: "Store",
+							root: true,
+							page: "/user-management/store",
+							src: "assets/media/aside-icons/icons-19.svg",
+							permission: false,
+						},
+						{
+							title: "Roles and permissions",
+							root: true,
+							page: "/user-management/roles",
+							src: "assets/media/aside-icons/icons-20.svg",
+							permission: false,
+						},
+						{
+							title: "Back",
+							icon: "flaticon-logout",
+							root: true,
+							page: "/dashboard",
+							permission: false,
+						},
+					],
+					itemsThree: [
+						{
+							title: "Product",
+							root: true,
+							icon: "flaticon2-open-box",
+							permission: !(this.permissionsArr.includes('productView') ||
+								this.permissionsArr.includes('categoryView') ||
+								this.permissionsArr.includes('sub-categoryView') ||
+								this.permissionsArr.includes('productAdd') ||
+								this.permissionsArr.includes('productEdit')),
 
-				{
-					title: "User Management",
-					root: true,
-					src: "assets/media/aside-icons/icons-04.svg",
-					page: "/user-management",
-				},
-				{
-					title: "Lead Management",
-					root: true,
-					src: "assets/media/aside-icons/icons-05.svg",
-					page: "/lead-management",
-				},
-				{
-					title: "Customer Setting",
-					root: true,
-					src: "assets/media/aside-icons/icons-06.svg",
-					submenu: [
-						{
-							title: "KYC Setting",
-							page: "/kyc-setting",
+							submenu: [
+								{
+									title: "Show Product",
+									page: "/emi-management/products",
+									permission: !this.permissionsArr.includes('productView'),
+								},
+								{
+									title: "Category",
+									page: "/emi-management/category",
+									permission: !this.permissionsArr.includes('categoryView'),
+								},
+								{
+									title: "Sub-Category",
+									page: "/emi-management/sub-category",
+									permission: !this.permissionsArr.includes('sub-categoryView'),
+								},
+								{
+									title: "Bulk Upload Product",
+									page: "/emi-management/bulk-upload-product",
+									permission: !this.permissionsArr.includes('productAdd'),
+								},
+								{
+									title: "Bulk Edit Product",
+									page: "/emi-management/bulk-edit-product",
+									permission: !this.permissionsArr.includes('productEdit'),
+								},
+								{
+									title: "Upload Design",
+									page: "/emi-management/upload-design",
+									permission: !(this.permissionsArr.includes('productAdd') || this.permissionsArr.includes('productEdit')),
+								},
+							],
 						},
 						{
-							title: "Applied KYC",
-							page: "/applied-kyc",
-						},
-					],
-				},
-				{
-					title: "Loan Managment",
-					root: true,
-					src: "assets/media/aside-icons/icons-07.svg",
-					submenu: [
-						{
-							title: "Loan Calculator",
-							page: "/loan-management/loan-calculator",
+							title: "Logistic Partner",
+							icon: "flaticon2-architecture-and-city",
+							page: "/emi-management/logistic-partner",
+							permission: !this.permissionsArr.includes('logisticPartnerView'),
 						},
 						{
-							title: "Loan Application Form",
-							page: "/loan-management/loan-application-form",
+							title: "Bulk Upload Report",
+							root: true,
+							icon: "flaticon2-download-2",
+							page: "/emi-management/bulk-upload-report",
+							permission: !this.permissionsArr.includes('bulkReportView'),
 						},
 						{
-							title: "Packet",
-							page: "/loan-management/packet",
-						},
-						{
-							title: "Applied Loan",
-							page: "/loan-management/applied-loan",
-						},
-						{
-							title: "Loan Details",
-							page: "/loan-management/all-loan",
-						},
-					],
-				},
-				{
-					title: "Customer Management",
-					root: true,
-					src: "assets/media/aside-icons/icons-08.svg",
-					page: "/customer-management/customer-list",
-				},
-				{
-					title: "Repayment Structure",
-					root: true,
-					src: "assets/media/aside-icons/icons-09.svg",
-					submenu: [
-						{
-							title: "Monthly Payment",
-							page: "/repayment/monthly",
-						},
-						// {
-						// 	title: 'One Shot Payment',
-						// 	path: '/one-shot-payment',
-						// }
-					],
-				},
-				{
-					title: "Account",
-					root: true,
-					src: "assets/media/aside-icons/icons-12.svg",
-					submenu: [
-						{
-							title: "Loan Disbursed Details",
-							path: "/Loan-disbursed-detail",
-						},
-						{
-							title: "Loan Repayment Details",
-							path: "/Loan-repayment-detail",
-						},
-					],
-				},
-				{
-					title: "Report",
-					root: true,
-					src: "assets/media/aside-icons/icons-11.svg",
-					submenu: [
-						{
-							title: "KYC",
-							path: "/kyc",
-						},
-						{
-							title: "Loan Status Report",
-							path: "/loan-status",
-						},
-						{
-							title: "Branch Report",
-							path: "/branch",
-						},
-						{
-							title: "Loan Type Reports",
-							path: "/loan-type",
-						},
-						{
-							title: "Margin Reports",
-							path: "/marign",
-						},
-					],
-				},
-				{
-					title: "EMI Management",
-					root: true,
-					src: "assets/media/aside-icons/icons-04.svg",
-					page: "/emi-management",
-				},
-				{
-					title: "Log Out",
-					src: "assets/media/aside-icons/icons-12.svg",
-				},
-			],
+							title: "Config Details",
+							root: true,
+							icon: "flaticon2-console",
+							permission: !(this.permissionsArr.includes('walletView') || this.permissionsArr.includes('adminLogView')),
 
-			itemsTwo: [
-				{
-					title: "Partner",
-					root: true,
-					page: "/user-management/partner",
-					src: "assets/media/aside-icons/icons-06.svg",
-				},
-				{
-					title: "Partner Branch ",
-					root: true,
-					page: "/user-management/branch",
-					src: "assets/media/aside-icons/icons-13.svg",
-				},
+							submenu: [
+								{
+									title: "Wallet Price",
+									page: "/emi-management/wallet-price",
+									permission: !this.permissionsArr.includes('walletView'),
+								},
+								{
+									title: "Admin Log",
+									page: "/emi-management/admin-log",
+									permission: !this.permissionsArr.includes('adminLogView'),
+								},
+							],
+						},
+						{
+							title: "Order Management",
+							root: true,
+							icon: "flaticon2-shopping-cart",
+							permission: !(this.permissionsArr.includes('orderView') ||
+								this.permissionsArr.includes('EMIDetailsView') ||
+								this.permissionsArr.includes('refundDetailsView') ||
+								this.permissionsArr.includes('cancelOrderView') ||
+								this.permissionsArr.includes('depositDetailsView')),
 
-				{
-					title: "Internal User",
-					root: true,
-					page: "/user-management/internal-user",
-					src: "assets/media/aside-icons/icons-14.svg",
-				},
-				{
-					title: "Internal User Branch",
-					root: true,
-					page: "/user-management/internal-user-branch",
-					src: "assets/media/aside-icons/icons-15.svg",
-				},
-				{
-					title: "Assign Appraiser",
-					root: true,
-					page: "/user-management/assign-appraiser",
-					src: "assets/media/aside-icons/icons-16.svg",
-				},
-				{
-					title: "Merchant",
-					root: true,
-					page: "/user-management/merchant",
-					src: "assets/media/aside-icons/icons-17.svg",
-				},
-				{
-					title: "Broker",
-					root: true,
-					page: "/user-management/broker",
-					src: "assets/media/aside-icons/icons-18.svg",
-				},
-				{
-					title: "Store",
-					root: true,
-					page: "/user-management/store",
-					src: "assets/media/aside-icons/icons-19.svg",
-				},
-				{
-					title: "Roles and permissions",
-					root: true,
-					page: "/user-management/roles",
-					src: "assets/media/aside-icons/icons-20.svg",
-				},
-				{
-					title: "Back",
-					icon: "flaticon-logout",
-					root: true,
-					page: "/dashboard",
-				},
-			],
-
-			itemsThree: [
-				{
-					title: "Product",
-					root: true,
-					icon: "flaticon2-open-box",
-					submenu: [
-						{
-							title: "Show Product",
-							page: "/emi-management/products",
+							submenu: [
+								{
+									title: "Order Details",
+									page: "/emi-management/order-details",
+									permission: !this.permissionsArr.includes('orderView'),
+								},
+								{
+									title: "EMI Details",
+									page: "/emi-management/emi-details",
+									permission: !this.permissionsArr.includes('EMIDetailsView'),
+								},
+								{
+									title: "Refund Management",
+									page: "/emi-management/refund-management",
+									permission: !this.permissionsArr.includes('refundDetailsView'),
+								},
+								{
+									title: "Cancel Order Details",
+									page: "/emi-management/cancel-order-details",
+									permission: !this.permissionsArr.includes('cancelOrderView'),
+								},
+								{
+									title: "Deposit Details",
+									page: "/emi-management/deposit-details",
+									permission: !this.permissionsArr.includes('depositDetailsView'),
+								},
+							],
 						},
 						{
-							title: "Category",
-							page: "/emi-management/category",
+							title: 'User Details',
+							root: true,
+							icon: 'flaticon2-architecture-and-city',
+							page: "/emi-management/users",
+							permission: !this.permissionsArr.includes('customerView'),
 						},
 						{
-							title: "Sub-Category",
-							page: "/emi-management/sub-category",
+							title: 'Reports',
+							root: true,
+							icon: 'flaticon2-download-2',
+							page: '/emi-management/reports',
+							permission: !(this.permissionsArr.includes('userReport') ||
+								this.permissionsArr.includes('depositReport') ||
+								this.permissionsArr.includes('EMIReport') ||
+								this.permissionsArr.includes('orderReport') ||
+								this.permissionsArr.includes('cancelOrderReport') ||
+								this.permissionsArr.includes('labelReport') ||
+								this.permissionsArr.includes('productsReport') ||
+								this.permissionsArr.includes('franchiseReport')),
 						},
 						{
-							title: "Bulk Upload Product",
-							page: "/emi-management/bulk-upload-product",
-						},
-						{
-							title: "Bulk Edit Product",
-							page: "/emi-management/bulk-edit-product",
-						},
-						{
-							title: "Upload Design",
-							page: "/emi-management/upload-design",
+							title: 'Back',
+							icon: 'flaticon-logout',
+							root: true,
+							page: "/dashboard",
+							permission: false,
 						},
 					],
 				},
-				{
-					title: "Logistic Partner",
-					icon: "flaticon2-architecture-and-city",
-					page: "/emi-management/logistic-partner",
-				},
-				{
-					title: "Bulk Upload Report",
-					root: true,
-					icon: "flaticon2-download-2",
-					page: "/emi-management/bulk-upload-report",
-				},
-				{
-					title: "Config Details",
-					root: true,
-					icon: "flaticon2-console",
-					submenu: [
-						{
-							title: "Wallet Price",
-							page: "/emi-management/wallet-price",
-						},
-						{
-							title: "Admin Log",
-							page: "/emi-management/admin-log",
-						},
-					],
-				},
-				{
-					title: "Order Management",
-					root: true,
-					icon: "flaticon2-shopping-cart",
-					submenu: [
-						{
-							title: "Order Details",
-							page: "/emi-management/order-details",
-						},
-						{
-							title: "EMI Details",
-							page: "/emi-management/emi-details",
-						},
-						{
-							title: "Refund Management",
-							page: "/emi-management/refund-management",
-						},
-						{
-							title: "Cancel Order Details",
-							page: "/emi-management/cancel-order-details",
-						},
-						{
-							title: "Deposit Details",
-							page: "/emi-management/deposit-details",
-						},
-					],
-				},
-				{
-					title: "User Details",
-					root: true,
-					icon: "flaticon2-architecture-and-city",
-					page: "/emi-management/users",
-				},
-				// {
-				// 	title: "Reports",
-				// 	root: true,
-				// 	icon: "flaticon2-download-2",
-				// 	page: "/emi-management/reports",
-				// },
-				{
-					title: "Back",
-					icon: "flaticon-logout",
-					root: true,
-					page: "/dashboard",
-				},
-			],
-		},
-	};
+			};
+		});
+	}
 
 	public get configs(): any {
 		return this.defaults;

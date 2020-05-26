@@ -32,6 +32,7 @@ import {
 import { ProductEditComponent } from "../product-edit/product-edit.component";
 import { ToastrComponent } from "../../../../../../views/partials/components/toastr/toastr.component";
 import { DataTableService } from "../../../../../../core/shared/services/data-table.service";
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
 	selector: "kt-product-list",
@@ -80,7 +81,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
 		private productService: ProductService,
 		private ref: ChangeDetectorRef,
 		public layoutUtilsService: LayoutUtilsService,
-		private dataTableService: DataTableService
+		private dataTableService: DataTableService,
+		private sharedService: SharedService,
 	) {
 		this.productService.applyFilter$
 			.pipe(takeUntil(this.destroy$))
@@ -215,7 +217,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -255,6 +257,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 		this.destroy$.complete();
 		this.unsubscribeSearch$.next();
 		this.unsubscribeSearch$.complete();
-		this.productService.applyFilter.next(0);
+		this.productService.applyFilter.next({});
+		this.sharedService.closeFilter.next(true);
 	}
 }
