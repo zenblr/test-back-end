@@ -1,7 +1,13 @@
 :host {
+    .card-container {
+        margin: 0 -5px;
+    }
+    .customer-id {
+        margin-bottom: 0.5rem;
+    }
     .card {
         position     : relative;
-        width        : 23%;
+        width        : 24%;
         padding      : 10px;
         margin       : 5px;
         border-radius: 15px;
