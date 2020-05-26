@@ -31,9 +31,7 @@ exports.addCustomer = async (req, res, next) => {
     where: { mobileNumber: mobileNumber },
   });
   if (!check.isEmpty(customerExist)) {
-    return res
-      .status(404)
-      .json({ message: "This Mobile number already Exists" });
+    return res.status(404).json({ message: "This Mobile number already Exists" });
   }
 
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
@@ -209,8 +207,8 @@ exports.deactivateCustomer = async (req, res, next) => {
 };
 
 
-exports.getAllCustomers = async (req, res, next) => {
-  let { stageName } = req.query;
+exports.getAllCustomersForLead = async (req, res, next) => {
+  let { stageName, cityId, stateId, statusId } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -218,51 +216,68 @@ exports.getAllCustomers = async (req, res, next) => {
   );
   let stage = await models.stage.findOne({ where: { stageName } });
 
-  // console.log(search, offset, pageSize, stage.id);
+  let query = {};
+  if (cityId) {
+    cityId = req.query.cityId.split(",");
+    query.cityId = cityId;
+  }
+  if (statusId) {
+    statusId = req.query.statusId.split(",");
+    query.statusId = statusId;
+  }
+  if (stateId) {
+    stateId = req.query.stateId.split(",");
+    query.stateId = stateId;
+  }
 
   const searchQuery = {
-    [Op.or]: {
-      first_name: { [Op.iLike]: search + "%" },
-      last_name: { [Op.iLike]: search + "%" },
-      mobile_number: { [Op.iLike]: search + "%" },
-      pan_card_number: { [Op.iLike]: search + "%" },
-      "$internalBranch.name$": {
-        [Op.iLike]: search + "%",
+    [Op.and]: [query, {
+      [Op.or]: {
+        first_name: { [Op.iLike]: search + "%" },
+        last_name: { [Op.iLike]: search + "%" },
+        mobile_number: { [Op.iLike]: search + "%" },
+        pan_card_number: { [Op.iLike]: search + "%" },
+        "$internalBranch.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$status.status_name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$city.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$state.name$": {
+          [Op.iLike]: search + "%",
+        }
       },
-      "$status.status_name$": {
-        [Op.iLike]: search + "%",
-      },
-      "$city.name$": {
-        [Op.iLike]: search + "%",
-      },
-      "$state.name$": {
-        [Op.iLike]: search + "%",
-      }
-    },
+    }],
     isActive: true,
   };
-  let includeArray = [
-    {
-      model: models.state,
-      as: "state",
-    },
-    {
-      model: models.city,
-      as: "city",
-    },
-    {
-      model: models.stage,
-      as: "stage",
-      where: { id: stage.id },
-    },
-    {
-      model: models.status,
-      as: "status",
-    },
-    {
-      model: models.internalBranch,
-      as: "internalBranch"
-    }
+  let includeArray = [{
+    model: models.customerKyc,
+    as: "customerKyc",
+    attributes: ['isKycSubmitted']
+  }, {
+    model: models.state,
+    as: "state",
+  },
+  {
+    model: models.city,
+    as: "city",
+  },
+  {
+    model: models.stage,
+    as: "stage",
+    where: { id: stage.id },
+  },
+  {
+    model: models.status,
+    as: "status",
+  },
+  {
+    model: models.internalBranch,
+    as: "internalBranch"
+  }
   ]
 
   let allCustomers = await models.customer.findAll({
@@ -272,12 +287,12 @@ exports.getAllCustomers = async (req, res, next) => {
     limit: pageSize,
     include: includeArray,
   });
-  let count = await models.customer.count({
+  let count = await models.customer.findAll({
     where: searchQuery,
     include: includeArray,
   });
 
-  return res.status(200).json({ data: allCustomers, count: count });
+  return res.status(200).json({ data: allCustomers, count: count.length });
 };
 
 
@@ -316,7 +331,7 @@ exports.getSingleCustomer = async (req, res, next) => {
 exports.filterCustomer = async (req, res) => {
   var { cityId, stateId, statusId } = req.query;
   const query = {};
-
+  query.isActive = true;
   if (cityId) {
     cityId = req.query.cityId.split(",");
     query.cityId = cityId;
@@ -325,14 +340,12 @@ exports.filterCustomer = async (req, res) => {
     statusId = req.query.statusId.split(",");
     query.statusId = statusId;
   }
-
   if (stateId) {
     query.stateId = stateId;
   }
 
   let customerFilterData = await models.customer.findAll({
-    where: query,
-    isActive: true,
+    where: query
   });
   if (!customerFilterData[0]) {
     return res.status(404).json({ message: "data not found" });
@@ -361,7 +374,131 @@ exports.getCustomerUniqueId = async (req, res) => {
     let d = arrayDiff(b, a);
     return [...c, ...d]
   }
-  
+
   let diff = getDiff(customer, assignCustomer)
   return res.status(200).json({ data: diff })
+}
+
+
+exports.getAllCustomerForCustomerManagement = async (req, res) => {
+  let { cityId, stateId } = req.query;
+
+  const { search, offset, pageSize } = paginationWithFromTo(
+    req.query.search,
+    req.query.from,
+    req.query.to
+  );
+  let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+
+  let query = {};
+  if (cityId) {
+    cityId = req.query.cityId.split(",");
+    query.cityId = cityId;
+  }
+  if (stateId) {
+    stateId = req.query.stateId.split(",");
+    query.stateId = stateId;
+  }
+
+  const searchQuery = {
+    [Op.and]: [query, {
+      [Op.or]: {
+        first_name: { [Op.iLike]: search + "%" },
+        last_name: { [Op.iLike]: search + "%" },
+        mobile_number: { [Op.iLike]: search + "%" },
+        pan_card_number: { [Op.iLike]: search + "%" },
+        "$city.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$state.name$": {
+          [Op.iLike]: search + "%",
+        }
+      },
+    }],
+    isActive: true,
+  };
+  let includeArray = [{
+    model: models.customerLoan,
+    as: 'customerLoan',
+    where: { loanStageId: stageId.id },
+    attributes: [],
+  }, {
+    model: models.state,
+    as: "state",
+  }, {
+    model: models.city,
+    as: "city",
+  }, {
+    model: models.customerKycPersonalDetail,
+    as: 'customerKycPersonal',
+    attributes: ['profileImage']
+  }]
+
+  let allCustomers = await models.customer.findAll({
+    where: searchQuery,
+    order: [["id", "DESC"]],
+    offset: offset,
+    subQuery: false,
+    limit: pageSize,
+    include: includeArray,
+  });
+  let count = await models.customer.findAll({
+    where: searchQuery,
+    include: includeArray,
+    subQuery: false
+  });
+  if (allCustomers.length === 0) {
+    return res.status(200).json([]);
+  } else {
+    return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
+  }
+}
+
+
+exports.getsingleCustomerManagement = async (req, res) => {
+  const { customerId } = req.params;
+  let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+  let singleCustomer = await models.customer.findOne({
+    where: { id: customerId },
+    include: [
+      {
+        model: models.customerKycPersonalDetail,
+        as: 'customerKycPersonal',
+        include: [{
+          model: models.identityType,
+          as: 'identityType',
+          attributes: ['id', 'name']
+        }]
+      },
+      {
+        model: models.customerKycAddressDetail,
+        as: 'customerKycAddress',
+        include: [{
+          model: models.state,
+          as: "state"
+        }, {
+          model: models.city,
+          as: "city"
+        }]
+      },
+      {
+        model: models.customerKycBankDetail,
+        as: 'customerKycBank'
+      },
+      {
+        model: models.customerLoan,
+        as: 'customerLoan',
+        where: { loanStageId: stageId.id },
+        include: [{
+          model: models.customerFinalLoan,
+          as: 'finalLoan'
+        }, {
+          model: models.customerLoanNomineeDetail,
+          as: 'loanNomineeDetail'
+        }]
+      }
+    ]
+  })
+
+  return res.status(200).json({ message: "Success", data: singleCustomer })
 }

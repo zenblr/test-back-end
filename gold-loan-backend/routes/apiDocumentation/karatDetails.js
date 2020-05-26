@@ -1,11 +1,11 @@
 /**
  * @swagger
- * /occupation:
+ * /karat-details:
  *   post:
  *     tags:
- *       - Occupation
- *     name: Occupation
- *     summary: To add occupation
+ *       - Karat Details
+ *     name: add karat details
+ *     summary: To add karat details
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -16,22 +16,28 @@
  *         schema:
  *           type: object
  *           properties:
- *             name:
- *               type: string
+ *             karat:
+ *               type: number
+ *             fromPercentage:
+ *               type: number
+ *             toPercentage:
+ *               type: number
  *         required:
- *           - name
+ *           - karat
+ *           - fromPercentage
+ *           - toPercentage
  *     responses:
  *       201:
- *          description: Occupation Created
+ *          description: karat details is created
  *       400:
- *          description: This Occupation is already Exist
+ *          description: from percentage should less than to percentage/karat is already exist
  *       422:
- *          description: Occupation is not created
+ *          description: karat details is not created
  *   get:
  *     tags:
- *       - Occupation
- *     name: read partner
- *     summary: To read occupation
+ *       - Karat Details
+ *     name: read karat details
+ *     summary: To read karat details
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -39,23 +45,16 @@
  *     responses:
  *       200:
  *          description: Success
- *       404:
- *          description: Data not found
  *   delete:
  *     tags:
- *       - Occupation
+ *       - Karat Details
  *     summary: To delete by Id
  *     parameters:
  *     - name: "id"
  *       in: "query"
- *       description: "Id of occupations to delete"
+ *       description: "Id of karat details to delete"
  *       required: true
  *       type: "integer"
- *     - name: "isActive"
- *       in: "query"
- *       description: "value of isActive of occupation to delete"
- *       required: true
- *       type: "boolean"
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -64,12 +63,12 @@
  *       200:
  *         description: Updated.
  *       404:
- *         description: Occupation deleted failed.
- * /occupation/{id}:
+ *         description: deleted failed
+ * /karat-details/{id}:
  *   put:
  *     tags:
- *       - Occupation
- *     summary: To update occupation
+ *       - Karat Details
+ *     summary: To update karat details
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -77,7 +76,7 @@
  *     parameters:
  *       - name: "id"
  *         in: "path"
- *         description: "Id of occupation to update"
+ *         description: "Id of karat details to update"
  *         required: true
  *         type: "integer"
  *       - name: body
@@ -85,15 +84,22 @@
  *         schema:
  *           type: object
  *           properties:
- *             name:
- *               type: string
+ *             karat:
+ *               type: number
+ *             fromPercentage:
+ *               type: number
+ *             toPercentage:
+ *               type: number
  *         required:
- *           - name
+ *           - karat
+ *           - fromPercentage
+ *           - toPercentage
  *     responses:
  *       200:
  *         description: Updated
  *       404:
- *         description: Occupation updated failed
+ *         description: karat details updated failed
  *       400:
- *         description: This Occupation is already Exist
+ *         description: This karat is already Exist
+
  */

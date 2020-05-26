@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
     }, {
         freezeTableName: true,

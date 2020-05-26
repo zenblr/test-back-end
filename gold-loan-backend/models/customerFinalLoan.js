@@ -34,9 +34,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'payment_frequency'
         },
-        processingCharge:{
+        processingCharge: {
             type: DataTypes.STRING,
             field: 'processing_charge'
+        },
+        processingChargeFixed: {
+            type: DataTypes.STRING,
+            field: 'processing_charge_fixed'
+        },
+        processingChargePercent: {
+            type: DataTypes.STRING,
+            field: 'processing_charge_percent'
         },
         interestRate: {
             type: DataTypes.STRING,
