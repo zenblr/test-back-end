@@ -118,6 +118,11 @@ export class PageConfig {
 			},
 			"order-details": {
 				page: { title: "Order Details", desc: "" },
+				'edit-order-details': {
+					id: {
+						page: { title: "Order Details", desc: "" },
+					},
+				},
 			},
 			"emi-details": {
 				page: { title: "EMI Details", desc: "" },
@@ -130,6 +135,11 @@ export class PageConfig {
 			},
 			"refund-details": {
 				page: { title: "Refund Details", desc: "" },
+				'edit-refund-details': {
+					id: {
+						page: { title: "Refund Details", desc: "" },
+					},
+				},
 			},
 			users: {
 				page: { title: "Users", desc: "" },

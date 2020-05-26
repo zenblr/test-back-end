@@ -8,17 +8,17 @@ import { ExcelService } from "../../../_base/crud/services/excel.service";
 	providedIn: "root",
 })
 export class ReportsService {
-	constructor(private http: HttpClient, private excelService: ExcelService) {}
+	constructor(private http: HttpClient, private excelService: ExcelService) { }
 
 	getUserReport(event?: any): Observable<any> {
 		return this.http
 			.get(
 				`http://173.249.49.7:9120/api/customer/customer-by-merchant-id/` +
-					event.merchantId +
-					"/" +
-					event.startDate +
-					"/" +
-					event.endDate,
+				event.merchantId +
+				"/" +
+				event.startDate +
+				"/" +
+				event.endDate,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -27,7 +27,7 @@ export class ReportsService {
 				}),
 				tap(
 					(data) => {
-						this.excelService.saveAsExcelFile(data, "User Report");
+						this.excelService.saveAsExcelFile(data, "UserReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				)
@@ -38,11 +38,11 @@ export class ReportsService {
 		return this.http
 			.get(
 				`http://173.249.49.7:9120/api/deposit-details/merchant-deposit-report/` +
-					event.merchantId +
-					"/" +
-					event.startDate +
-					"/" +
-					event.endDate,
+				event.merchantId +
+				"/" +
+				event.startDate +
+				"/" +
+				event.endDate,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -53,8 +53,7 @@ export class ReportsService {
 					(data) => {
 						this.excelService.saveAsExcelFile(
 							data,
-							"DepositReport"
-						);
+							"DepositReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				)
@@ -65,11 +64,11 @@ export class ReportsService {
 		return this.http
 			.get(
 				`http://173.249.49.7:9120/api/emi-details/emi-report-by-merchant/` +
-					event.merchantId +
-					"/" +
-					event.startDate +
-					"/" +
-					event.endDate,
+				event.merchantId +
+				"/" +
+				event.startDate +
+				"/" +
+				event.endDate,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -78,7 +77,7 @@ export class ReportsService {
 				}),
 				tap(
 					(data) => {
-						this.excelService.saveAsExcelFile(data, "EMI Report");
+						this.excelService.saveAsExcelFile(data, "EMIReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				)
@@ -88,13 +87,13 @@ export class ReportsService {
 		return this.http
 			.get(
 				`http://173.249.49.7:9120/api/order/order-report-by-merchant/` +
-					event.merchantId +
-					"/" +
-					event.statusId +
-					"/" +
-					event.startDate +
-					"/" +
-					event.endDate,
+				event.merchantId +
+				"/" +
+				event.statusId +
+				"/" +
+				event.startDate +
+				"/" +
+				event.endDate,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -103,7 +102,7 @@ export class ReportsService {
 				}),
 				tap(
 					(data) => {
-						this.excelService.saveAsExcelFile(data, "Order Report");
+						this.excelService.saveAsExcelFile(data, "OrderReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				)
@@ -113,11 +112,11 @@ export class ReportsService {
 		return this.http
 			.get(
 				`http://173.249.49.7:9120/api/cancel-order/cancel-report-by-Merchantid/` +
-					event.merchantId +
-					"/" +
-					event.startDate +
-					"/" +
-					event.endDate,
+				event.merchantId +
+				"/" +
+				event.startDate +
+				"/" +
+				event.endDate,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -128,8 +127,7 @@ export class ReportsService {
 					(data) => {
 						this.excelService.saveAsExcelFile(
 							data,
-							"Order Cancel Report"
-						);
+							"OrderCancelReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				)
@@ -149,8 +147,7 @@ export class ReportsService {
 					(data) => {
 						this.excelService.saveAsExcelFile(
 							data,
-							"Product Report"
-						);
+							"ProductReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				)
@@ -160,9 +157,9 @@ export class ReportsService {
 		return this.http
 			.get(
 				`http://173.249.49.7:9120/api/store/franchise-report/` +
-					event.startDate +
-					"/" +
-					event.endDate,
+				event.startDate +
+				"/" +
+				event.endDate,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -173,8 +170,7 @@ export class ReportsService {
 					(data) => {
 						this.excelService.saveAsExcelFile(
 							data,
-							"Franchise Report"
-						);
+							"FranchiseReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				)
