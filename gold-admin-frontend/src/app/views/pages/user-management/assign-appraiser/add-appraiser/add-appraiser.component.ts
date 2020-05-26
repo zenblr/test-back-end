@@ -59,6 +59,7 @@ export class AddAppraiserComponent implements OnInit {
       id: [null],
       customerUniqueId: [''],
       customerId: [, [Validators.required]],
+      customerName: [''],
       appraiserId: ['', [Validators.required]],
     });
   }
@@ -88,6 +89,10 @@ export class AddAppraiserComponent implements OnInit {
     } else if (!event) {
       this.dialogRef.close()
     }
+  }
+
+  bindCustomerName(event) {
+    console.log(event)
   }
 
   onSubmit() {
