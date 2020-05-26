@@ -59,6 +59,7 @@ import { SearchComponent } from './components/search/search.component';
 import { ModalHeaderComponent } from './components/modal/modal-header/modal-header.component';
 import { ModalFooterComponent } from './components/modal/modal-footer/modal-footer.component';
 import { LoanSchemeComponent } from "../../views/pages/loan-settings/loan-scheme/loan-scheme.component";
+import { FilteredDataComponent } from './components/filtered-data/filtered-data.component';
 
 // spinner
 import { UplodDataImageComponent } from './components/uplod-data-image/uplod-data-image.component';
@@ -130,7 +131,10 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 		UplodPreviewImageComponent,
 
 		SelectWithSearchComponent,
-		UserReviewComponent
+
+		UserReviewComponent,
+
+		FilteredDataComponent
 	],
 	exports: [
 		WidgetModule,
@@ -183,6 +187,7 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 		UplodPreviewImageComponent,
 		SelectWithSearchComponent,
 		UserReviewComponent,
+		FilteredDataComponent,
 		// spinner
 		NgxPermissionsModule,
 
