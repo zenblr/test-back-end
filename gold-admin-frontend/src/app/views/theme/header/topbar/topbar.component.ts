@@ -193,6 +193,8 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.value2 = "Add New Scheme";
 			this.type2 = "button";
+			this.permissionType = "schemeAdd";
+
 		}
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
