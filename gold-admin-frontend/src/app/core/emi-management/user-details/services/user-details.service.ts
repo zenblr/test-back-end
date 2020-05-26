@@ -25,7 +25,7 @@ export class UserDetailsService {
         }),
         tap(
           data => {
-            this.excelService.saveAsExcelFile(data, 'CustomerReport')
+            this.excelService.saveAsExcelFile(data, 'UserReport_'+ Date.now());
           },
           error => console.log(error),
         ),

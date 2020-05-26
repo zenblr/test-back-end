@@ -145,7 +145,7 @@ export class RefundDetailsComponent implements OnInit {
 
 	editRefund(refund) {
 		this.router.navigate([
-			"emi-management/refund-details/edit-refund/",
+			"emi-management/refund-details/edit-refund-details/",
 			refund.id,
 		]);
 	}

@@ -39,7 +39,7 @@ export class WalletPriceService {
         }),
         tap(
           data => {
-            this.excelService.saveAsExcelFile(data, 'WalletPriceReport')
+            this.excelService.saveAsExcelFile(data, 'WalletPriceReport_' + Date.now());
           },
           error => console.log(error),
         ),
