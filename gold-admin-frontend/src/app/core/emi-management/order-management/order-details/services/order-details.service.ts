@@ -14,7 +14,7 @@ export class OrderDetailsService {
 	applyFilter = new BehaviorSubject<any>({});
 	applyFilter$ = this.applyFilter.asObservable();
 
-	constructor(private http: HttpClient, private excelService: ExcelService) {}
+	constructor(private http: HttpClient, private excelService: ExcelService) { }
 
 	getAllOrderDetails(event?: any): Observable<any> {
 		const reqParams: any = {};
@@ -77,7 +77,7 @@ export class OrderDetailsService {
 				}),
 				tap(
 					(data) => {
-						this.excelService.saveAsExcelFile(data, "OrderReport");
+						this.excelService.saveAsExcelFile(data, "OrderReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				),

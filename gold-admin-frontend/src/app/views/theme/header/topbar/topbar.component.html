@@ -16,6 +16,9 @@
             <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)"
                 class="kt-margin-r-10 kt-margin-l-10">
             </kt-button>
+            <kt-button *ngIf="value4" [value]='value4' [type]='type4' (click)="action($event)"
+                class="kt-margin-r-10 kt-margin-l-10">
+            </kt-button>
             <div *ngIf="downloadbtn">
                 <p class="text-right mb-0 kt-pointer" (click)="download()">{{value3}}</p>
             </div>
@@ -28,7 +31,7 @@
                     </mat-button-toggle>
                     <mat-button-toggle value="list" (click)="check('list')">
                         <!-- <div > -->
-                            <img src="../../../../../assets/media/aside-icons/icons-23.svg" class="w-100 pos">
+                        <img src="../../../../../assets/media/aside-icons/icons-23.svg" class="w-100 pos">
 
                         <!-- </div> -->
                     </mat-button-toggle>

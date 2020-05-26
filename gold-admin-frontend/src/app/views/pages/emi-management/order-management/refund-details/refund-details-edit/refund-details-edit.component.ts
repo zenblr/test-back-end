@@ -36,6 +36,7 @@ export class RefundDetailsEditComponent implements OnInit {
 	isMandatory = false;
 	showUploadFile = false;
 	showUploadedFile = false;
+	hiddenFlag = true;
 	constructor(
 		public dialogRef: MatDialogRef<RefundDetailsEditComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
@@ -135,6 +136,10 @@ export class RefundDetailsEditComponent implements OnInit {
 
 		if (this.refundData.refundStatus.id == 14) {
 			this.refundForm.controls["utrNumber"].disable();
+			this.hiddenFlag = false;
+		} else {
+			this.refundForm.controls["utrNumber"].enable();
+			this.hiddenFlag = true;
 		}
 		this.ref.detectChanges();
 	}

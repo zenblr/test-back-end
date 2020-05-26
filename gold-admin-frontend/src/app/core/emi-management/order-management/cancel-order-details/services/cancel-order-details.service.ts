@@ -52,8 +52,7 @@ export class CancelOrderDetailsService {
 					(data) => {
 						this.excelService.saveAsExcelFile(
 							data,
-							"CancelOrderReport"
-						);
+							"CancelOrderReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				),

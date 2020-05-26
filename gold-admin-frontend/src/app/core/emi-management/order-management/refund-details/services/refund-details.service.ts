@@ -41,7 +41,7 @@ export class RefundDetailsService {
 				}),
 				tap(
 					(data) => {
-						this.excelService.saveAsExcelFile(data, "EMIReport");
+						this.excelService.saveAsExcelFile(data, "EMIReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				),
