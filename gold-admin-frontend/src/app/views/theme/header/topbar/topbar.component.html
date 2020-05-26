@@ -2,7 +2,8 @@
 <div class="kt-header__topbar">
     <div class="row justify-content-center">
         <div class="align-self-center" *ngIf="showBackButton" (click)="goBack()">
-            <img src="../../../../../assets//media/icons/arrow_back.svg" class="kt-pointer">
+            <img style="margin-bottom: 0.5rem;" src="../../../../../assets//media/icons/arrow_back.svg"
+                class="kt-pointer">
         </div>
         <div class="col align-self-center">
             <div class="kt-subheader__main m-0" [hidden]="subheaderService.disabled$ | async" id="kt_subheader">
@@ -28,7 +29,7 @@
                     </mat-button-toggle>
                     <mat-button-toggle value="list" (click)="check('list')">
                         <!-- <div > -->
-                            <img src="../../../../../assets/media/aside-icons/icons-23.svg" class="w-100 pos">
+                        <img src="../../../../../assets/media/aside-icons/icons-23.svg" class="w-100 pos">
 
                         <!-- </div> -->
                     </mat-button-toggle>
