@@ -364,7 +364,7 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Print Performa";
 			this.type1 = "button";
 			this.value4 = "Contract";
-			this.type4 = "button";
+			this.type4 = "reset";
 			this.rightButton = true;
 			this.showBackButton = true;
 		}

@@ -23,9 +23,9 @@
                 <p class="text-right mb-0 kt-pointer" (click)="download()">{{value3}}</p>
             </div>
             <!-- Toggle Button -->
-            <span class="kt-margin-l-15">
+            <span class="kt-margin-l-15" *ngIf="toogle">
                 <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style"
-                    #group="matButtonToggleGroup" value="list" *ngIf="toogle">
+                    #group="matButtonToggleGroup" value="list">
                     <mat-button-toggle value="grid" (click)="check('grid')">
                         <img src="../../../../../assets/media/aside-icons/icons-22.svg" class="w-100 pos">
                     </mat-button-toggle>
