@@ -291,7 +291,7 @@ export class MenuConfig {
 						{
 							title: "EMI Management",
 							root: true,
-							src: "assets/media/aside-icons/icons-04.svg",
+							src: "assets/media/aside-icons/icons-24.svg",
 							page: "/emi-management",
 							permission: !this.modulesArr.includes(2),
 						},
@@ -419,7 +419,7 @@ export class MenuConfig {
 						},
 						{
 							title: "Logistic Partner",
-							icon: "flaticon2-architecture-and-city",
+							src: "assets/media/aside-icons/icons-25.svg",
 							page: "/emi-management/logistic-partner",
 							permission: !this.permissionsArr.includes('logisticPartnerView'),
 						},
@@ -471,9 +471,9 @@ export class MenuConfig {
 									permission: !this.permissionsArr.includes('EMIDetailsView'),
 								},
 								{
-									title: "Refund Management",
-									page: "/emi-management/refund-management",
-									permission: !this.permissionsArr.includes('refundDetailsView'),
+									title: "Deposit Details",
+									page: "/emi-management/deposit-details",
+									permission: !this.permissionsArr.includes('depositDetailsView'),
 								},
 								{
 									title: "Cancel Order Details",
@@ -481,23 +481,23 @@ export class MenuConfig {
 									permission: !this.permissionsArr.includes('cancelOrderView'),
 								},
 								{
-									title: "Deposit Details",
-									page: "/emi-management/deposit-details",
-									permission: !this.permissionsArr.includes('depositDetailsView'),
+									title: "Refund Details",
+									page: "/emi-management/refund-details",
+									permission: !this.permissionsArr.includes('refundDetailsView'),
 								},
 							],
 						},
 						{
 							title: 'User Details',
 							root: true,
-							icon: 'flaticon2-architecture-and-city',
+							src: "assets/media/aside-icons/icons-26.svg",
 							page: "/emi-management/users",
 							permission: !this.permissionsArr.includes('customerView'),
 						},
 						{
 							title: 'Reports',
 							root: true,
-							icon: 'flaticon2-download-2',
+							src: "assets/media/aside-icons/icons-27.svg",
 							page: '/emi-management/reports',
 							permission: !(this.permissionsArr.includes('userReport') ||
 								this.permissionsArr.includes('depositReport') ||

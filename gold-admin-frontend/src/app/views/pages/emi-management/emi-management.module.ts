@@ -145,7 +145,7 @@ const routes: Routes = [
 				component: ReportsComponent,
 			},
 			{
-				path: "refund-details/edit-refund/:id",
+				path: "refund-details/edit-refund-details/:id",
 				component: RefundDetailsEditComponent,
 			},
 		],

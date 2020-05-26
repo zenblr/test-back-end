@@ -360,6 +360,10 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Contract";
 			this.type2 = "button";
 			this.rightButton = true;
+			this.showBackButton = true;
+		}
+		if (location.href.includes("edit-refund-details")) {
+			this.showBackButton = true;
 		}
 		if (location.href.includes('view-loan')) {
 			this.showBackButton = true;
