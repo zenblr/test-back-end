@@ -24,11 +24,12 @@ export class UploadOfferComponent implements OnInit {
   constructor(
     private uploadOfferService: UploadOfferService,
     private ref: ChangeDetectorRef,
-  ) { }
+  ) { 
+    this.getGoldRate();
+  }
 
   ngOnInit() {
     this.getData();
-    this.getGoldRate();
   }
 
   getData() {

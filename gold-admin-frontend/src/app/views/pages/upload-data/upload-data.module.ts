@@ -45,6 +45,7 @@ const routes: Routes = [
     PartialsModule,
     AngularMaterialModule,
     RouterModule.forChild(routes),
+    NgxPermissionsModule.forChild(),
     ReactiveFormsModule,
     FormsModule,
     

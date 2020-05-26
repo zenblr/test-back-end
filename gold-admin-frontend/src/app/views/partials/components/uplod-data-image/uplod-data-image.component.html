@@ -7,22 +7,23 @@
 
             <span class="pos-action">
                 <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer kt-margin-r-10"
-                    (click)="edit(idx)">
-                <ng-container *ngIf="promotionPage">
+                    (click)="edit(idx)" *ngIf="editBanner">
+                <ng-container *ngIf="promotionPage && deleteBanner">
                     <img *ngIf="idx !== 0" src="../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer"
                         (click)="removeImages(idx);">
                 </ng-container>
 
                 <ng-container *ngIf="!promotionPage">
                     <img src="../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer"
-                        (click)="removeImages(idx);">
+                        (click)="removeImages(idx);" *ngIf="deleteBanner">
                 </ng-container>
             </span>
             <img [src]="image" *ngIf="image" class="w-100 div-height border-radius kt-pointer" (click)="open(idx)">
 
         </div>
     </div>
-    <div class="col-2 kt-margin-t-10 kt-margin-b-10" *ngxPermissionsOnly="['promotionalBannerAdd',]">        <div class="div-height kt-pointer">
+    <div class="col-2 kt-margin-t-10 kt-margin-b-10" *ngIf="add">
+        <div class="div-height kt-pointer">
             <input type="file" accept="image/*" class="d-none" #file (change)="uploadImages($event)">
             <button (click)="file.click();index = null" class="img-add w-100">
                 <img src="../../../../../assets/media/icons/add.svg" alt="">
