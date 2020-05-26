@@ -14,7 +14,7 @@ import { TitleCasePipe } from '@angular/common';
   selector: 'kt-user-classification',
   templateUrl: './user-classification.component.html',
   styleUrls: ['./user-classification.component.scss'],
-  providers:[TitleCasePipe]
+  providers: [TitleCasePipe]
 })
 export class UserClassificationComponent implements OnInit {
 
@@ -53,8 +53,8 @@ export class UserClassificationComponent implements OnInit {
   //   }
   // }
 
-  showTextBoxCce = true;
-  showTextBoxBM = true;
+  showTextBoxCce = false;
+  showTextBoxBM = false;
   editRating: boolean;
   role: any;
   viewBMForm = true;
@@ -68,7 +68,7 @@ export class UserClassificationComponent implements OnInit {
     private appliedKycService: AppliedKycService,
     private route: Router,
     private sharedService: SharedService,
-    private titlecase:TitleCasePipe,
+    private titlecase: TitleCasePipe,
   ) {
     this.sharedService.getRole().subscribe(res => {
       this.role = res

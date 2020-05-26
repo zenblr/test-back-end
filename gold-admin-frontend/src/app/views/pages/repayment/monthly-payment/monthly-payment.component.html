@@ -13,6 +13,16 @@
                     <mat-cell *matCellDef="let item">{{item.name}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>CustomerId ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.calories}}</mat-cell>
@@ -30,6 +40,12 @@
                         {{item.fat}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="interestPaid">
+                    <mat-header-cell *matHeaderCellDef>Interest Paid Upto</mat-header-cell>
+                    <mat-cell *matCellDef="let item" [ngStyle]="{'justify-content':'center !important'}">
+                        {{item.fat}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let item" [ngStyle]="{'justify-content':'center !important'}">
@@ -40,9 +56,9 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div class="kt-pointer" (click)="viewItem(item.id)"> View | &nbsp;</div>
-                            <div (click)="editItem(item)" class="kt-pointer"> Edit | &nbsp;</div>
-                            <div class="kt-pointer text-danger" (click)="deleteItem(item)">Delete</div>
+                            <div class="kt-pointer" (click)="viewItem(item.id)"> PAY EMI | &nbsp;</div>
+                            <div (click)="editItem(item)" class="kt-pointer"> PART Payment | &nbsp;</div>
+                            <!-- <div class="kt-pointer text-danger" (click)="deleteItem(item)">Delete</div> -->
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -52,19 +68,15 @@
                 <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>
 
-            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
-            <!-- Message for empty data  -->
-            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+            <!-- <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div> -->
         </div>
 
-        <!-- start: BOTTOM -->
-        <div class="mat-table__bottom">
+        <!-- <div class="mat-table__bottom">
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
-
             <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
-        </div>
-        <!-- end: BOTTOM -->
+        </div> -->
     </kt-portlet-body>
     <!-- end::Body -->
 </kt-portlet>
