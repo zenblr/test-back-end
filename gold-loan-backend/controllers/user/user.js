@@ -10,7 +10,8 @@ const { createReferenceCode } = require('../../utils/referenceCode');
 //for email
 const { sendMail } = require('../../service/emailService')
 const CONSTANT = require('../../utils/constant');
-const moment = require('moment')
+const moment = require('moment');
+const cache = require('../../utils/cache');
 
 exports.addUser = async (req, res, next) => {
     let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId, userTypeId, internalBranchId } = req.body;
@@ -216,16 +217,13 @@ exports.addAdmin = async (req, res, next) => {
 
 //Add internal user
 exports.addInternalUser = async (req, res, next) => {
-    let { firstName, lastName, mobileNumber, email, internalBranchId, roleId, userUniqueId } = req.body;
+    let { firstName, lastName, mobileNumber, email, internalBranchId, roleId, userTypeId, userUniqueId } = req.body;
     let createdBy = req.userData.id
     let modifiedBy = req.userData.id
     let password = firstName.slice(0, 3) + '@' + mobileNumber.slice(mobileNumber.length - 5, 9);
 
-    let userType = await models.userType.findOne({ where: { userType: "internalUser" } })
-    let userTypeId = userType.id
-
     await sequelize.transaction(async t => {
-        const user = await models.user.create({ userUniqueId, firstName, lastName, password, mobileNumber, email, userTypeId: userTypeId, createdBy, modifiedBy }, { transaction: t })
+        const user = await models.user.create({ userUniqueId, firstName, lastName, password, mobileNumber, email, userTypeId, createdBy, modifiedBy }, { transaction: t })
         await models.userRole.create({ userId: user.id, roleId }, { transaction: t })
         if (internalBranchId != null && internalBranchId != undefined) {
             await models.userInternalBranch.create({ userId: user.id, internalBranchId }, { transaction: t })
@@ -239,10 +237,10 @@ exports.addInternalUser = async (req, res, next) => {
 
 exports.updateInternalUser = async (req, res, next) => {
     const id = req.params.id;
-    let { firstName, lastName, mobileNumber, email, internalBranchId, roleId } = req.body;
+    let { firstName, lastName, mobileNumber, email, internalBranchId, userTypeId, roleId } = req.body;
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
-        const user = await models.user.update({ firstName, lastName, mobileNumber, email, modifiedBy }, { where: { id: id }, transaction: t })
+        const user = await models.user.update({ firstName, lastName, mobileNumber, userTypeId, email, modifiedBy }, { where: { id: id }, transaction: t })
         await models.userRole.destroy({ where: { userId: id }, transaction: t });
         await models.userRole.create({ userId: id, roleId }, { transaction: t });
         if (internalBranchId != null && internalBranchId != undefined) {
@@ -250,6 +248,8 @@ exports.updateInternalUser = async (req, res, next) => {
             await models.userInternalBranch.create({ userId: id, internalBranchId }, { transaction: t })
         }
     })
+    cache(`${id}permissions`);
+    cache(`${id}`);
     return res.status(200).json({ message: 'User updated.' });
 }
 
@@ -258,8 +258,9 @@ exports.deleteInternalUser = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
         const user = await models.user.update({ isActive: false, modifiedBy }, { where: { id: id } })
-        await models.userRole.update({ isActive: false }, { where: { userId: user.id } });
+        await models.userRole.destroy({ where: { userId: id } });
     })
+    cache(`${id}`);
     return res.status(200).json({ message: 'User deleted.' });
 }
 
@@ -270,8 +271,6 @@ exports.GetInternalUser = async (req, res) => {
         req.query.to
     );
 
-    let userType = await models.userType.findOne({ where: { userType: "internalUser" } })
-    let userTypeId = userType.id
 
     let includeArray = [
         {
@@ -282,6 +281,12 @@ exports.GetInternalUser = async (req, res) => {
         {
             model: models.internalBranch,
             subQuery: false
+        },
+        {
+            model: models.userType,
+            as: 'Usertype',
+            where: { isInternal: true },
+            attributes: []
         }
     ]
     let searchQuery = {
@@ -298,9 +303,8 @@ exports.GetInternalUser = async (req, res) => {
             }
         },
         isActive: true,
-        userTypeId: userTypeId
     }
-    let CategoryData = await models.user.findAll({
+    let userData = await models.user.findAll({
         where: searchQuery,
         offset: offset,
         limit: pageSize,
@@ -313,7 +317,7 @@ exports.GetInternalUser = async (req, res) => {
         subQuery: false
     });
     res.status(200).json({
-        data: CategoryData,
+        data: userData,
         count: count.length
     });
 }
@@ -323,16 +327,37 @@ exports.GetInternalUser = async (req, res) => {
 
 exports.getAppraiser = async (req, res, next) => {
 
+    let id = req.userData.id
+    let logedInUser = await models.user.findOne({
+        where: { id },
+        include: [models.internalBranch]
+    })
+    let branchId = logedInUser.internalBranches[0].id
+
     let getAppraiserList = await models.user.findAll({
         where: { isActive: true },
         attributes: ['id', 'firstName', 'lastName'],
         include: [{
-            model: models.role,
-            where: { roleName: 'Appraiser' },
+            model: models.internalBranch,
+            where: { id: branchId }
+        }, {
+            model: models.userType,
+            as: 'Usertype',
+            where: { isInternal: true, userType: 'Appraiser' },
             attributes: []
         }]
     })
 
     return res.status(200).json({ message: 'success', data: getAppraiserList })
 
+}
+
+exports.getUserTypeInternal = async (req, res, next) => {
+
+    let userType = await models.userType.findAll({
+        where: { isInternal: true, isActive: true },
+        attributes: ['id', 'userType']
+    })
+
+    return res.status(200).json({ data: userType })
 }

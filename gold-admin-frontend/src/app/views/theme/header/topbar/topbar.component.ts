@@ -69,6 +69,8 @@ export class TopbarComponent implements OnInit {
 	filterWidth = "";
 	downloadbtn: boolean = false;
 	showBackButton = false;
+	permissionType = '';
+
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -111,16 +113,6 @@ export class TopbarComponent implements OnInit {
 				this.downloadbtn = false;
 			}
 		});
-
-		this.walletPriceService.download$
-			.pipe(takeUntil(this.destroy$))
-			.subscribe((res) => {
-				if (res) {
-					this.downloadbtn = true;
-				} else {
-					this.downloadbtn = false;
-				}
-			});
 	}
 
 	ngOnInit() {
@@ -179,6 +171,7 @@ export class TopbarComponent implements OnInit {
 		this.showInput = false;
 		this.toogle = false;
 		this.showBackButton = false;
+		this.permissionType = '';
 	}
 
 	dataSourceHeader() {
@@ -211,6 +204,7 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.value2 = "Add Logistic Partner";
 			this.type2 = "button";
+			this.permissionType = 'logisticPartnerAdd';
 		}
 		if (this.path == "karat-details") {
 			this.rightButton = true;
@@ -269,6 +263,7 @@ export class TopbarComponent implements OnInit {
 			this.type2 = "button";
 			this.value2 = "Edit Wallet Price";
 			this.value3 = "Download Wallet Price Report";
+			this.permissionType = 'walletEdit';
 		}
 		if (this.path == "bulk-upload-report") {
 			this.showInput = true;
@@ -285,12 +280,14 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.value2 = "Add Category";
 			this.type2 = "button";
+			this.permissionType = 'categoryAdd';
 		}
 		if (this.path == "sub-category") {
 			this.rightButton = true;
 			this.showInput = true;
 			this.value2 = "Add Sub Category";
 			this.type2 = "button";
+			this.permissionType = 'sub-categoryAdd';
 		}
 		if (this.path == "internal-user") {
 			this.dataSourceHeader();
@@ -321,7 +318,7 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 			this.filterName = "orderDetails";
-			this.filterWidth = "550px";
+			this.filterWidth = "600px";
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
 		}
@@ -329,7 +326,10 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.value1 = "Export";
 			this.type1 = "button";
-			// this.showfilter = true;
+			this.showfilter = true;
+			this.filterName = "cancelOrderDetails";
+			this.filterWidth = "500px";
+			this.listType = "merchantName";
 		}
 		if (this.path == "deposit-details") {
 			this.showInput = true;
@@ -337,7 +337,7 @@ export class TopbarComponent implements OnInit {
 			this.type1 = "button";
 			this.showfilter = true;
 			this.filterName = "depositDetails";
-			this.filterWidth = "550px";
+			this.filterWidth = "450px";
 			this.listType = "tenure,orderStatus";
 		}
 		if (this.path == "emi-details") {
@@ -346,7 +346,7 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 			this.filterName = "emiDetails";
-			this.filterWidth = "400px";
+			this.filterWidth = "350px";
 			this.listType = "emiStatus";
 		}
 		if (this.path == "users") {
@@ -488,6 +488,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "deposit-details") {
 			this.depositDetailsService.applyFilter.next(data);
+		}
+		if (this.path == "cancel-order-details") {
+			this.cancelOrderDetailsService.applyFilter.next(data);
 		}
 	}
 

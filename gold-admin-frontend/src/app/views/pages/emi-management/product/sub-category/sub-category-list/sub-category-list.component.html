@@ -57,8 +57,11 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="editSubCategory(element)" class="kt-pointer"> Edit | &nbsp;</div>
-                            <div (click)="deleteSubCategory(element)" class="kt-pointer text-danger"> Delete </div>
+                            <div *ngxPermissionsOnly="['sub-categoryEdit']" (click)="editSubCategory(element)"
+                                class="kt-pointer"> Edit</div>
+                            <div *ngxPermissionsOnly="['sub-categoryEdit','sub-categoryDelete']" class="px-1">|</div>
+                            <div *ngxPermissionsOnly="['sub-categoryDelete']" (click)="deleteSubCategory(element)"
+                                class="kt-pointer text-danger"> Delete </div>
                         </div>
                     </mat-cell>
                 </ng-container>

@@ -30,7 +30,7 @@ import { SharedService } from "../../../../core/shared/services/shared.service";
 	templateUrl: "./filter.component.html",
 	styleUrls: ["./filter.component.scss"],
 })
-export class FilterComponent implements OnInit, OnChanges {
+export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	@ViewChild("filterDropdown", { static: true }) dropdown: NgbDropdown;
 	@ViewChild("multiSelect", { static: true }) multiSelect: MatSelect;
 	@ViewChild("customerMulti", { static: true }) customerMulti: MatSelect;
@@ -95,6 +95,7 @@ export class FilterComponent implements OnInit, OnChanges {
 	subCategoryList = [];
 	tenure = [];
 	status = [];
+	name = [];
 
 	public memberMultiFilterCtrl: FormControl = new FormControl();
 	public filteredMemberMulti: ReplaySubject<[]> = new ReplaySubject<[]>(1);
@@ -114,6 +115,15 @@ export class FilterComponent implements OnInit, OnChanges {
 	) {
 		// customize default values of dropdowns used by this component tree
 		config.autoClose = false;
+
+		this.sharedService.closeFilter$.subscribe(res => {
+			if (res) {
+				setTimeout(() => {
+					this.clearFilterForm();
+					this.dropdown.close();
+				});
+			}
+		});
 	}
 
 	ngOnInit() {
@@ -227,6 +237,9 @@ export class FilterComponent implements OnInit, OnChanges {
 						case "emiStatus":
 							this.getEmiStatus();
 							break;
+						case "merchantName":
+							this.getMerchant();
+							break;
 					}
 				}
 			}
@@ -245,7 +258,7 @@ export class FilterComponent implements OnInit, OnChanges {
 		});
 	}
 
-	get form() {
+	get controls() {
 		return this.filterForm.controls;
 	}
 
@@ -356,6 +369,9 @@ export class FilterComponent implements OnInit, OnChanges {
 		if (this.filterForm.invalid) {
 			return;
 		}
+		// if ((parseFloat(this.controls.priceFrom.value) > parseFloat(this.controls.priceTo.value))) {
+		// 	return;
+		// }
 		const filterData = this.prepareFilter();
 		if (filterData) {
 			setTimeout(() => {
@@ -680,12 +696,24 @@ export class FilterComponent implements OnInit, OnChanges {
 		});
 	}
 
+	getMerchant() {
+		this.sharedService.getMerchant().subscribe((res) => {
+			this.name = res;
+		});
+	}
+
 	// getCities() {
 	//   const stateId = this.controls.stateId.value;
 	//   this.sharedService.getCities(stateId).subscribe(res => {
 	//     this.cities = res.message;
 	//   });
 	// }
+
+	clearFilterForm() {
+		if (this.filterForm) {
+			this.filterForm.reset();
+		}
+	}
 
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());

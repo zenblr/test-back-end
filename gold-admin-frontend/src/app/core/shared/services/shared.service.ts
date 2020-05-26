@@ -7,9 +7,11 @@ import { Observable, BehaviorSubject, of } from "rxjs";
 })
 export class SharedService {
 	totalCount = new BehaviorSubject(0);
-	totalCount$ = this.totalCount.asObservable();
-	role = new BehaviorSubject(null);
+	totalCount$ = this.totalCount.asObservable()
+	role = new BehaviorSubject(null)
 	role$ = this.role.asObservable();
+	closeFilter = new BehaviorSubject<any>(false);
+	closeFilter$ = this.closeFilter.asObservable();
 
 	constructor(private http: HttpClient) {
 		var token = localStorage.getItem("UserDetails");
@@ -76,7 +78,20 @@ export class SharedService {
 		);
 	}
 
+	getMerchant(): Observable<any> {
+		return this.http.get<any>(
+			`http://173.249.49.7:9120/api/merchant/all-merchant`
+		);
+	}
+
 	getDataFromStorage() {
 		return JSON.parse(localStorage.getItem('UserDetails'));
-	  }
+	}
+
+	getUserDetailsFromStorage(): Observable<any> {
+		const details = JSON.parse(localStorage.getItem('UserDetails'));
+		if (details) {
+			return of(details);
+		}
+	}
 }

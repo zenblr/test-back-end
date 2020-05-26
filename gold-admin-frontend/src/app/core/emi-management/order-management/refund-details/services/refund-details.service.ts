@@ -7,7 +7,7 @@ import { ExcelService } from "../../../../_base/crud/services/excel.service";
 @Injectable({
 	providedIn: "root",
 })
-export class RefundManagementService {
+export class RefundDetailsService {
 	exportExcel = new BehaviorSubject<any>(false);
 	exportExcel$ = this.exportExcel.asObservable();
 
