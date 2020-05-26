@@ -1,11 +1,11 @@
 /**
  * @swagger
- * /partner:
+ * /packet:
  *   post:
  *     tags:
- *       - Partner
- *     name: partner
- *     summary: To add partner
+ *       - Packet
+ *     name: Packet
+ *     summary: To add packet
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -16,23 +16,20 @@
  *         schema:
  *           type: object
  *           properties:
- *             name:
+ *             packetUniqueId:
  *               type: string
- *             commission:
- *               type: number
  *         required:
- *           - name
- *           - commission
+ *           - packetUniqueId
  *     responses:
  *       201:
- *          description: partner created
- *       404:
- *          description: This Partner is already Exist
+ *          description: you adeed packet successfully
+ *       400:
+ *          description: This packet Id is already exist
  *   get:
  *     tags:
- *       - Partner
- *     name: read partner
- *     summary: To read partner with pagination
+ *       - Packet
+ *     name: read Packet
+ *     summary: To read Packet
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -52,22 +49,20 @@
  *       type: "string"
  *     responses:
  *       200:
- *          description: Success
- *       404:
- *          description: Data not found
+ *          description: packet details fetch successfully
  *   delete:
  *     tags:
- *       - Partner
+ *       - Packet
  *     summary: To delete by Id
  *     parameters:
  *     - name: "id"
  *       in: "query"
- *       description: "Id of partner to delete"
+ *       description: "Id of Packet to delete"
  *       required: true
  *       type: "integer"
  *     - name: "isActive"
  *       in: "query"
- *       description: " value of isActive of partner to delete"
+ *       description: "IsActive of Packect to delete"
  *       required: true
  *       type: "boolean"
  *     security:
@@ -78,32 +73,12 @@
  *       200:
  *         description: Updated.
  *       404:
- *         description: partner deleted failed.
- * /partner/{id}:
- *   get:
- *     tags:
- *       - Partner
- *     name: Read partner
- *     summary: To read partner by Id
- *     parameters:
- *     - name: "id"
- *       in: "path"
- *       description: "ID of partner to return"
- *       required: true
- *       type: "integer"
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Success
- *       404:
- *         description: data not found
+ *         description: Packet deleted failed.
+ * /packet/{id}:
  *   put:
  *     tags:
- *       - Partner
- *     summary: To update partner
+ *       - Packet
+ *     summary: To update Packet
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -111,7 +86,7 @@
  *     parameters:
  *       - name: "id"
  *         in: "path"
- *         description: "Id of Partner to update"
+ *         description: "Id of packet to update"
  *         required: true
  *         type: "integer"
  *       - name: body
@@ -119,18 +94,27 @@
  *         schema:
  *           type: object
  *           properties:
- *             name:
+ *             packetUniqueId:
  *               type: string
- *             commission:
- *               type: number
  *         required:
- *           - name
- *           - commission
+ *           - packetUniqueId
  *     responses:
  *       200:
- *         description: success
+ *         description: packet updated successfully
  *       404:
- *         description: Data not Updated
- *       400:
- *         description: This Partner is already Exist
+ *         description: packet not update
+ * /packet/available-packet:
+ *   get:
+ *     tags:
+ *       - Packet
+ *     summary: To read the available Packet
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: avalable packet details fetch successfully
+ *       404:
+ *         description: no packet details found  
  */

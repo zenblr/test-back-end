@@ -57,10 +57,9 @@ exports.updateRating = async (req, res, next) => {
         return res.status(400).json({ message: `This customer rating is not available` })
     }
 
-    // let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
-    // console.log(roleName)
+    let user = await models.user.findOne({ where: { id: req.userData.id } });
 
-    if ("Customer Care Executive" == req.userData.roleName[0]) {
+    if (user.userTypeId == 6) {
         let { behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, reasonFromCce } = req.body
         let cceId = req.userData.id
 
@@ -92,7 +91,7 @@ exports.updateRating = async (req, res, next) => {
         }
     }
 
-    if ("Branch Manager" == req.userData.roleName[0]) {
+    if (user.userTypeId == 5) {
         let { behaviourRatingVerifiedByBm, idProofRatingVerifiedByBm, addressProofRatingVerifiedBm, kycStatusFromBm, reasonFromBm } = req.body
 
         let checkCceVerified = await models.customerKyc.findOne({ customerId, isVerifiedByCce: true })

@@ -36,7 +36,7 @@
                                 <input class="form-control" formControlName="customerUniqueId" autocomplete="off"
                                     *ngIf="data.action !='add'" readonly>
                                 <ng-select formControlName="customerId" [items]="customers" bindLabel="customerUniqueId"
-                                    bindValue="id" *ngIf="data.action =='add'"
+                                    bindValue="id" *ngIf="data.action =='add'" (change)="bindCustomerName($event)"
                                     [class.isError]="controls.customerId.touched && controls.customerId.invalid">
                                     <!-- <ng-template ng-multi-label-tmp>
                                                 <span style="display:block" class="ng-placeholder">Select items</span>
@@ -51,6 +51,16 @@
                                 </mat-error>
                             </div>
                         </div>
+
+                        <!-- <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label class="mandatory kt-padding-l-10">Customer Name</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="customerName" readonly>
+                            </div>
+                        </div> -->
+
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
                                 <label class="mandatory kt-padding-l-10">Appraiser Name</label>
