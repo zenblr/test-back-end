@@ -55,7 +55,7 @@
                                 <label [class.mandatory]="isMandatory">Conversion Factor</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" formControlName="conversionFactor" type="number"
+                                <input class="form-control" formControlName="conversionFactor" type="text" numbersOnly
                                     placeholder="eg: 999"
                                     [class.isError]="controls.conversionFactor.touched && controls.conversionFactor.invalid">
                                 <mat-error

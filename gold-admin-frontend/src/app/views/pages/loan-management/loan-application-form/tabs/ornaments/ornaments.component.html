@@ -10,9 +10,17 @@
                                 <label class="text-color ">Ornament Type</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" class="form-control" placeholder="Ring"
+                                <!-- <input type="text" class="form-control" placeholder="Ring"
                                     formControlName="ornamentType"
+                                    [class.isError]="ornament.controls.ornamentType.touched && ornament.controls.ornamentType.invalid"> -->
+
+                                <select class="form-control" formControlName="ornamentType"
                                     [class.isError]="ornament.controls.ornamentType.touched && ornament.controls.ornamentType.invalid">
+                                    <option value=null [disabled]="true" [selected]="true">Select Ornament</option>
+                                    <option [value]="karat.id" *ngFor="let karat of ornamentType">
+                                        {{karat.name | titlecase}}
+                                    </option>
+                                </select>
                                 <mat-error
                                     *ngIf="ornament.controls.ornamentType.touched && ornament.controls.ornamentType.invalid">
                                     <span *ngIf="ornament.controls.ornamentType.errors?.required">Field Required</span>
@@ -48,7 +56,7 @@
                                 <input type="text" class="form-control" placeholder="12.02 gram"
                                     formControlName="grossWeight"
                                     [class.isError]="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid"
-                                    (blur)="calcGoldDeductionWeight(idx)">
+                                    (blur)="calcGoldDeductionWeight(idx);weightCheck(idx)">
                                 <mat-error
                                     *ngIf="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid">
                                     <span *ngIf="ornament.controls.grossWeight.errors?.pattern">Enter a valid
@@ -67,12 +75,15 @@
                             <div class="col-8">
                                 <input type="text" class="form-control" placeholder="10.20" formControlName="netWeight"
                                     [class.isError]="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid"
-                                    (blur)="calcGoldDeductionWeight(idx);finalNetWeight(idx)">
+                                    (blur)="calcGoldDeductionWeight(idx);finalNetWeight(idx);weightCheck(idx)">
                                 <mat-error
                                     *ngIf="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid">
                                     <span *ngIf="ornament.controls.netWeight.errors?.pattern">Enter a valid
                                         Number</span>
                                     <span *ngIf="ornament.controls.netWeight.errors?.required">Field Required</span>
+                                    <span *ngIf="ornament.controls.netWeight.errors?.weight">
+                                        <small>Net  Weight should be lesser then Gross  Weight</small>
+                                    </span>
                                 </mat-error>
                             </div>
                         </div>
@@ -109,7 +120,7 @@
                                     class="my-auto text-primary text-center kt-padding-l-15 kt-pointer"
                                     (click)="preview(ornament.controls.weightMachineZeroWeight.value,idx)">View
                                     Image</label>
-                                <mat-error 
+                                <mat-error
                                     *ngIf="ornament.controls.weightMachineZeroWeight.touched && ornament.controls.weightMachineZeroWeight.invalid">
                                     <span *ngIf="ornament.controls.weightMachineZeroWeight.errors?.required">Upload
                                         Image</span>
@@ -122,8 +133,7 @@
                                     [value]="'Attach'" (click)="weightMachineZeroWeight.click()"></kt-button>
 
                                 <div class="form-label">
-                                    <label
-                                        *ngIf="ornament.controls.weightMachineZeroWeight.value && !disable"
+                                    <label *ngIf="ornament.controls.weightMachineZeroWeight.value && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('weightMachineZeroWeight',idx,ornament.controls.weightMachineZeroWeight.value)">Remove</label>
                                 </div>
@@ -155,8 +165,7 @@
                                 <kt-button *ngIf="!ornament.controls.withOrnamentWeight.value" [type]="'button'"
                                     [value]="'Attach'" (click)="withOrnamentWeight.click()"></kt-button>
                                 <div class="form-label">
-                                    <label
-                                        *ngIf="ornament.controls.withOrnamentWeight.value && !disable"
+                                    <label *ngIf="ornament.controls.withOrnamentWeight.value && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('withOrnamentWeight',idx,ornament.controls.withOrnamentWeight.value)">Remove</label>
                                 </div>
@@ -240,8 +249,7 @@
                                 <kt-button *ngIf="ornament.controls.purityTest.value.length == 0" [type]="'button'"
                                     [value]="'Attach'" (click)="purity.click()"></kt-button>
                                 <div class="form-label">
-                                    <label
-                                        *ngIf="ornament.controls.purityTest.value.length > 0 && !disable"
+                                    <label *ngIf="ornament.controls.purityTest.value.length > 0 && !disable"
                                         class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
                                         (click)="removeImage('purity',idx,ornament.controls.purityTest.value)">Remove</label>
                                 </div>
@@ -299,7 +307,7 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="row kt-margin-t-15">
+                        <div class="row kt-margin-t-15 kt-padding-l-10">
                             <div class="col-4 form-label">
                                 <label class="my-auto text-color ">LTV Range</label>
                             </div>
@@ -314,7 +322,7 @@
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <div class="row kt-margin-t-15 kt-padding-l-10">
+                        <div class="row kt-margin-t-15">
                             <div class="col-4 form-label">
                                 <label class="text-color " style="position: relative; bottom: 6px;">Current LTV
                                     Amt</label>
@@ -327,7 +335,7 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="row kt-margin-t-15">
+                        <div class="row kt-margin-t-15 kt-padding-l-10">
                             <div class="col-4 form-label">
                                 <label class="my-auto text-color ">LTV %</label>
                             </div>
@@ -353,7 +361,7 @@
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <div class="row kt-margin-t-15 kt-padding-l-10">
+                        <div class="row kt-margin-t-15 ">
                             <div class="col-4 form-label">
                                 <label class="text-color ">LTV Amount</label>
                             </div>

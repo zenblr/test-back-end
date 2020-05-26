@@ -13,20 +13,20 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
 import { map, catchError } from "rxjs/operators";
 import { ToastrService } from "ngx-toastr";
-import { ToastrComponent } from "../../../../../../views/partials/components";
+import { ToastrComponent } from "../../../../../partials/components";
 import { SharedService } from "../../../../../../core/shared/services/shared.service";
 import {
-	RefundManagementDatasource,
-	RefundManagementModel,
-	RefundManagementService,
+	RefundDetailsDatasource,
+	RefundDetailsModel,
+	RefundDetailsService,
 } from "../../../../../../core/emi-management/order-management";
 
 @Component({
-	selector: "kt-refund-management-edit",
-	templateUrl: "./refund-management-edit.component.html",
-	styleUrls: ["./refund-management-edit.component.scss"],
+	selector: "kt-refund-details-edit",
+	templateUrl: "./refund-details-edit.component.html",
+	styleUrls: ["./refund-details-edit.component.scss"],
 })
-export class RefundManagementEditComponent implements OnInit {
+export class RefundDetailsEditComponent implements OnInit {
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 	refundForm: FormGroup;
 	refundId: number;
@@ -37,9 +37,9 @@ export class RefundManagementEditComponent implements OnInit {
 	showUploadFile = false;
 	showUploadedFile = false;
 	constructor(
-		public dialogRef: MatDialogRef<RefundManagementEditComponent>,
+		public dialogRef: MatDialogRef<RefundDetailsEditComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
-		private refundManagementService: RefundManagementService,
+		private refundDetailsService: RefundDetailsService,
 		private ref: ChangeDetectorRef,
 		private fb: FormBuilder,
 		private sharedService: SharedService,
@@ -52,7 +52,7 @@ export class RefundManagementEditComponent implements OnInit {
 		this.formInitialize();
 		this.refundId = this.route.snapshot.params.id;
 		if (this.refundId) {
-			this.refundManagementService
+			this.refundDetailsService
 				.getSingleRefund(this.refundId)
 				.pipe(
 					map((res) => {
@@ -170,7 +170,7 @@ export class RefundManagementEditComponent implements OnInit {
 				transactionId: this.controls.utrNumber.value,
 			};
 			console.log(refundData);
-			this.refundManagementService
+			this.refundDetailsService
 				.updateRefundStatus(refundData, this.refundId)
 				.pipe(
 					map((res) => {

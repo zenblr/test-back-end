@@ -9,6 +9,11 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
   img{ border-radius:15px !important; }
   :focus { outline: none; }
   .viewImage { max-height: 300px; max-width: 300px; }
+  .cancel{     position: absolute;
+    top: 0;
+    right: 0;
+    height: 30px;
+  cursor:pointer}
   `]
 })
 export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {
@@ -47,5 +52,9 @@ export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {
     var el = (document.querySelector('.mat-dialog-container') as HTMLElement)
     el.style.background = "transparent";
     el.style.boxShadow = "none";
+  }
+
+  close(){
+    this.dialogRef.close()
   }
 }

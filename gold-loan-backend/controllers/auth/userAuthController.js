@@ -33,13 +33,17 @@ exports.userLogin = async (req, res, next) => {
                 }
             ]
         },
-        include: [{ model: models.role }]
+        include: [{
+            model: models.role
+        }, {
+            model: models.internalBranch
+        }]
     })
 
     if (!checkUser) {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }
-   
+
 
     let userRoleId = await checkUser.roles.map((data) => data.id);
     let roleName = await checkUser.roles.map((data) => data.roleName)
@@ -52,7 +56,7 @@ exports.userLogin = async (req, res, next) => {
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
             roleId: userRoleId,
-            roleName:roleName
+            roleName: roleName
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -90,19 +94,13 @@ exports.userLogin = async (req, res, next) => {
 
         let getPermissions = await models.rolePermission.findAll({ where: { roleId: { [Op.in]: roleId }, isActive: true }, attributes: ['permissionId'] });
         let permissionId = await getPermissions.map((data) => data.permissionId);
-        let permissions = await models.entity.findAll({
-            where: { isActive: true },
-            attributes: ['id', 'entityName'],
-            include: [
-                {
-                    model: models.permission,
-                    as: 'permission',
-                    attributes: ['id', 'actionName'],
+        let permissions = await models.permission.findAll({
+                    attributes: ['id', 'actionName','description'],
+                    raw:true,
                     where: { isActive: true, id: { [Op.in]: permissionId } }
                 },
-            ]
-        })
-        return res.status(200).json({ message: 'login successful', Token, modules, permissions });
+        )
+        return res.status(200).json({ message: 'login successful', Token, modules, permissions, userDetails: checkUser.internalBranches[0] });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
@@ -130,7 +128,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(401).json({ message: `Invalid Otp` })
+        return res.status(400).json({ message: `Invalid Otp` })
     }
 
 
@@ -139,7 +137,11 @@ exports.verifyLoginOtp = async (req, res, next) => {
         let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
         let checkUser = await models.user.findOne({
             where: { id: user.id, isActive: true },
-            include: [{ model: models.role }],
+            include: [{
+                model: models.role
+            }, {
+                model: models.internalBranch
+            }],
             transaction: t
         });
         let roleId = await checkUser.roles.map((data) => data.id);
@@ -173,6 +175,6 @@ exports.verifyLoginOtp = async (req, res, next) => {
         return Token
 
     })
-    return res.status(200).json({ message: 'login successful', token });
+    return res.status(200).json({ message: 'login successful', token, userDetails: checkUser.internalBranches[0] });
 
 }

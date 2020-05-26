@@ -2,6 +2,7 @@
     <div class="card" *ngFor="let customer of customers;index as i">
         <div class="bg-white">
             <img [src]="customer.customerKycPersonal.profileImage" alt="test " >
+            <p class="text-color">{{customer.customerUniqueId}}</p>
             <p class="text-secondary">{{customer.panCardNumber}}</p>
             <p class="text-color font-weight-bold">{{customer.firstName | titlecase}} {{customer.lastName | titlecase}}</p>
             <p class="text-color">{{customer.mobileNumber}}</p>

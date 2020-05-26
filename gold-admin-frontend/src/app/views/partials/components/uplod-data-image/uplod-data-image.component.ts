@@ -7,6 +7,7 @@ import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-previ
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { NgxPermissionsService } from 'ngx-permissions'
 
 @Component({
   selector: 'kt-uplod-data-image',
@@ -27,6 +28,7 @@ export class UplodDataImageComponent implements OnInit {
 
 
   constructor(
+    public ngxPermissionService:NgxPermissionsService,
     private ref: ChangeDetectorRef,
     private sharedService: SharedService,
     public dilaog: MatDialog,
@@ -38,6 +40,7 @@ export class UplodDataImageComponent implements OnInit {
 
 
   ngOnInit() {
+    this.getPermission()
     const currentPage = this.router.url;
     if (currentPage == '/upload-data/upload-banner') {
       this.promotionPage = true;
@@ -125,5 +128,10 @@ export class UplodDataImageComponent implements OnInit {
     })
   }
 
+  getPermission(){
+    this.ngxPermissionService.permissions$.subscribe(res=>{
+      console.log(res)
+    })
+  }
 
 }

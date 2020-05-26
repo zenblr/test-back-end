@@ -184,6 +184,7 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 		SelectWithSearchComponent,
 		UserReviewComponent,
 		// spinner
+		NgxPermissionsModule,
 
 	],
 	imports: [

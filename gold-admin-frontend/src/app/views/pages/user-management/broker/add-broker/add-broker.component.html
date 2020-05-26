@@ -216,7 +216,7 @@
 
                             </div>
                         </div>
-                        <div class="row kt-padding-t-15">
+                        <div class="row kt-padding-t-15" *ngIf="data.action!='view'">
                             <div class="col-4 form-label">
                                 <label class="text-color  kt-padding-l-10">Upload PAN
                                 </label>
@@ -234,6 +234,11 @@
                                     (input)="getFileInfo($event)" class="d-none">
                                 <span class="file-custom"></span>
 
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15" *ngIf="data.action  != 'add' && controls.panCard.value">
+                            <div class="col-12">
+                                <img [src]="controls.panCard.value" alt="" class="img-fluid">
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
@@ -263,7 +268,8 @@
     </div>
     <kt-portlet-footer *ngIf="data.action != 'view'">
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)" [value]="data.action"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="'Update'" *ngIf="data.action == 'edit'"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="data.action" *ngIf="data.action == 'add'"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 </div>

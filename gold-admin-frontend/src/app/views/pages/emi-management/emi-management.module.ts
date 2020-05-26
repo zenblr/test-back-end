@@ -58,11 +58,11 @@ import { DepositDetailsListComponent } from "./order-management/deposit-details/
 import { EmiDetailsListComponent } from "./order-management/emi-details/emi-details-list/emi-details-list.component";
 import { EmiDetailsViewComponent } from "./order-management/emi-details/emi-details-view/emi-details-view.component";
 import { OrderDetailsEditComponent } from "./order-management/order-details/order-details-edit/order-details-edit.component";
-import { RefundManagementComponent } from "./order-management/refund-management/refund-management-list/refund-management.component";
-import { RefundManagementEditComponent } from "./order-management/refund-management/refund-management-edit/refund-management-edit.component";
+import { RefundDetailsComponent } from "./order-management/refund-details/refund-details-list/refund-details.component";
+import { RefundDetailsEditComponent } from "./order-management/refund-details/refund-details-edit/refund-details-edit.component";
 import { UserDetailsListComponent } from "./user-details/user-details-list/user-details-list.component";
 import { ReportsComponent } from "./reports/reports.component";
-import { RefundManagementViewComponent } from "./order-management/refund-management/refund-management-view/refund-management-view.component";
+import { RefundDetailsViewComponent } from "./order-management/refund-details/refund-details-view/refund-details-view.component";
 
 const routes: Routes = [
 	{
@@ -133,8 +133,8 @@ const routes: Routes = [
 				component: EmiDetailsListComponent,
 			},
 			{
-				path: "refund-management",
-				component: RefundManagementComponent,
+				path: "refund-details",
+				component: RefundDetailsComponent,
 			},
 			{
 				path: "users",
@@ -145,8 +145,8 @@ const routes: Routes = [
 				component: ReportsComponent,
 			},
 			{
-				path: "refund-management/edit-refund/:id",
-				component: RefundManagementEditComponent,
+				path: "refund-details/edit-refund/:id",
+				component: RefundDetailsEditComponent,
 			},
 		],
 	},
@@ -200,7 +200,7 @@ const routes: Routes = [
 		AddLogisticPartnerComponent,
 		OrderDetailsViewComponent,
 		EmiDetailsViewComponent,
-		RefundManagementViewComponent,
+		RefundDetailsViewComponent,
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -226,11 +226,11 @@ const routes: Routes = [
 		EmiDetailsListComponent,
 		EmiDetailsViewComponent,
 		OrderDetailsEditComponent,
-		RefundManagementComponent,
-		RefundManagementEditComponent,
+		RefundDetailsComponent,
+		RefundDetailsEditComponent,
 		UserDetailsListComponent,
 		ReportsComponent,
-		RefundManagementViewComponent,
+		RefundDetailsViewComponent,
 	],
 })
 export class EMIManagementModule {}

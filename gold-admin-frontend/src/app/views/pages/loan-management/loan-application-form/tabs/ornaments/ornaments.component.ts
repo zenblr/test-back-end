@@ -8,6 +8,7 @@ import { ImagePreviewDialogComponent } from '../../../../../../views/partials/co
 import { UploadOfferService } from '../../../../../../core/upload-data';
 import { KaratDetailsService } from '../../../../../../core/loan-setting/karat-details/services/karat-details.service';
 import { Router } from '@angular/router';
+import { LoanApplicationFormService } from '../../../../../../core/loan-management';
 
 
 @Component({
@@ -28,8 +29,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
   @ViewChild('acidTest', { static: false }) acidTest: ElementRef
-  @ViewChild('purity', { static: false })purity: ElementRef
-  @ViewChild('ornamentImage', { static: false })ornamentImage: ElementRef
+  @ViewChild('purity', { static: false }) purity: ElementRef
+  @ViewChild('ornamentImage', { static: false }) ornamentImage: ElementRef
   left: number = 150
   width: number = 0
   ornamentsForm: FormGroup;
@@ -39,10 +40,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   // { value: 20, name: '20 K' },
   // { value: 21, name: '21 K' },
   // { value: 22, name: '22 K' }]
-  karatArr:any
+  karatArr: any
   purityBasedDeduction: number;
   ltvPercent = [];
-  url:string
+  url: string
+  ornamentType = [];
   constructor(
     public fb: FormBuilder,
     public sharedService: SharedService,
@@ -52,7 +54,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public ref: ChangeDetectorRef,
     public uploadOfferService: UploadOfferService,
     public karatService: KaratDetailsService,
-    public router:Router
+    public router: Router,
+    public loanApplicationFormService: LoanApplicationFormService
   ) {
 
   }
@@ -60,6 +63,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit() {
     this.url = this.router.url.split('/')[2]
     this.getKarat()
+    this.getOrnamentType()
     this.initForm()
     this.ornamentsForm.valueChanges.subscribe(() => {
       this.OrnamentsDataEmit.emit(this.OrnamentsData)
@@ -73,6 +77,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         console.log(res)
       })
     ).subscribe()
+  }
+
+  getOrnamentType() {
+    this.loanApplicationFormService.getOrnamentType().pipe(
+      map(res => {
+        console.log(res);
+        this.ornamentType = res.data;
+      })
+    ).subscribe();
   }
 
   initForm() {
@@ -95,13 +108,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           const group = this.OrnamentsData.at(index) as FormGroup
           group.patchValue(array[index])
           this.calcGoldDeductionWeight(index)
-          Object.keys(group.value).forEach(key =>{
-            this.patchUrlIntoForm(key,group.value[key],index)
+          Object.keys(group.value).forEach(key => {
+            this.patchUrlIntoForm(key, group.value[key], index)
           })
           this.ref.detectChanges()
         }
       }
-      
+
     }
 
     if (this.disable) {
@@ -131,6 +144,17 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   get OrnamentsData() {
     if (this.ornamentsForm)
       return this.ornamentsForm.controls.ornamentData as FormArray;
+  }
+
+  weightCheck(index){
+    const group = this.OrnamentsData.at(index) as FormGroup;
+    if(group.controls.grossWeight.valid){
+      if(Number(group.controls.grossWeight.value) < Number(group.controls.netWeight.value)){
+        group.controls.netWeight.setErrors({weight:true})
+      }else{
+        group.controls.netWeight.setErrors(null)
+      }
+    }
   }
 
   calcGoldDeductionWeight(index) {
@@ -175,7 +199,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       stoneTouch: [, Validators.required],
       acidTest: [, Validators.required],
       karat: ['', Validators.required],
-      purity: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      purity: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ltvRange: [[]],
       finalNetWeight: [''],
       purityTest: [[], Validators.required],
@@ -188,14 +212,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.createImageArray()
   }
 
-  createImageArray(){
-    let data={
-      withOrnamentWeight:'',
-      acidTest:'',
-      weightMachineZeroWeight:'',
-      stoneTouch:'',
-      purity:'',
-      ornamentImage:''
+  createImageArray() {
+    let data = {
+      withOrnamentWeight: '',
+      acidTest: '',
+      weightMachineZeroWeight: '',
+      stoneTouch: '',
+      purity: '',
+      ornamentImage: ''
     }
     this.images.push(data)
   }
@@ -204,9 +228,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     const controls = this.OrnamentsData.at(index) as FormGroup;;
     controls.controls.ltvPercent.patchValue('');
     controls.controls.ltvAmount.patchValue(null)
-    let karat = this.karatArr.filter(kart=>{
+    let karat = this.karatArr.filter(kart => {
       return kart.karat == controls.controls.karat.value
-    }) 
+    })
     controls.controls.ltvRange.patchValue(karat[0].range)
     // switch (controls.controls.karat.value) {
     //   case '18':
@@ -268,24 +292,24 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     switch (key) {
       case 'withOrnamentWeight':
         controls.controls.withOrnamentWeight.patchValue(url)
-        this.withOrnamentWeight.nativeElement.value =''
+        this.withOrnamentWeight.nativeElement.value = ''
         this.images[index].withOrnamentWeight = url
         break;
       case 'acidTest':
         controls.controls.acidTest.patchValue(url)
-        this.acidTest.nativeElement.value =''
+        this.acidTest.nativeElement.value = ''
         this.images[index].acidTest = url
 
         break;
       case 'weightMachineZeroWeight':
         controls.controls.weightMachineZeroWeight.patchValue(url)
-        this.weightMachineZeroWeight.nativeElement.value =''
+        this.weightMachineZeroWeight.nativeElement.value = ''
         this.images[index].weightMachineZeroWeight = url
 
         break;
       case 'stoneTouch':
         controls.controls.stoneTouch.patchValue(url)
-        this.stoneTouch.nativeElement.value =''
+        this.stoneTouch.nativeElement.value = ''
         this.images[index].stoneTouch = url
 
         break;
@@ -294,20 +318,20 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         // if (controls.controls.purityTest.value.length > 0)
         //   temp = controls.controls.purityTest.value
         temp.push(url)
-        if(typeof url == "object"){
+        if (typeof url == "object") {
           this.images[index].purity = url[0]
-        }else{
+        } else {
           this.images[index].purity = url
         }
         controls.controls.purityTest.patchValue([this.images[index].purity])
-        this.purity.nativeElement.value =''
-        
+        this.purity.nativeElement.value = ''
+
 
         break;
 
       case 'ornamentImage':
         controls.controls.ornamentImage.patchValue(url)
-        this.ornamentImage.nativeElement.value =''
+        this.ornamentImage.nativeElement.value = ''
         this.images[index].ornamentImage = url
 
         break;
@@ -355,8 +379,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   preview(value, formIndex) {
     let filterImage = []
     filterImage = Object.values(this.images[formIndex])
-    var temp =[]
-    temp = filterImage.filter(el=>{
+    var temp = []
+    temp = filterImage.filter(el => {
       return el != ''
     })
     let index = temp.indexOf(value)

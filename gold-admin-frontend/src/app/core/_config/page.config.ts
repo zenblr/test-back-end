@@ -55,6 +55,9 @@ export class PageConfig {
 			"assign-appraiser": {
 				page: { title: "Assigned Appraiser", desc: "" },
 			},
+			'redirect-assign-appraiser': {
+				page: { title: "Assigned Appraiser", desc: "" },
+			},
 			merchant: {
 				page: { title: "All Merchants", desc: "" },
 			},
@@ -78,6 +81,9 @@ export class PageConfig {
 		},
 		"kyc-setting": {
 			page: { title: "Customer KYC", desc: "" },
+			"edit-kyc": {
+				page: { title: "Customer KYC", desc: "" },
+			},
 		},
 		"emi-management": {
 			products: {
@@ -122,24 +128,26 @@ export class PageConfig {
 			"deposit-details": {
 				page: { title: "Deposit Details", desc: "" },
 			},
-			"refund-management": {
-				page: { title: "Refund Management", desc: "" },
+			"refund-details": {
+				page: { title: "Refund Details", desc: "" },
 			},
-			'users': {
+			users: {
 				page: { title: "Users", desc: "" },
 			},
-			'reports': {
+			reports: {
 				page: { title: "Reports", desc: "" },
 			},
 		},
 		"applied-kyc": {
 			page: { title: "Applied KYC", desc: "" },
 		},
-		'customer-management': {
-			'customer-list': {
-				page: { title: 'My Customer', desc: '' }
-
-			}
+		"customer-management": {
+			"customer-list": {
+				page: { title: "My Customer", desc: "" },
+				id: {
+					page: { title: "Customer Details", desc: "" },
+				},
+			},
 		},
 
 		"loan-management": {

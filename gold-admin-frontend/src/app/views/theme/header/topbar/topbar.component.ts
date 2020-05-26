@@ -239,6 +239,11 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.value1 = "Assign Appraiser";
 		}
+		if (this.path == "redirect-assign-appraiser") {
+			this.dataSourceHeader();
+			this.value1 = "Assign Appraiser";
+		}
+
 		if (this.path == "roles") {
 			this.showInput = true;
 			this.rightButton = true;
@@ -313,7 +318,7 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 			this.filterName = "orderDetails";
-			this.filterWidth = "550px";
+			this.filterWidth = "600px";
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
 		}
@@ -332,7 +337,7 @@ export class TopbarComponent implements OnInit {
 			this.type1 = "button";
 			this.showfilter = true;
 			this.filterName = "depositDetails";
-			this.filterWidth = "550px";
+			this.filterWidth = "450px";
 			this.listType = "tenure,orderStatus";
 		}
 		if (this.path == "emi-details") {
@@ -341,7 +346,7 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 			this.filterName = "emiDetails";
-			this.filterWidth = "400px";
+			this.filterWidth = "350px";
 			this.listType = "emiStatus";
 		}
 		if (this.path == "users") {
@@ -359,6 +364,28 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('view-loan')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('package-image-upload')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('loan-details/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('customer-list/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('kyc-setting?mob')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('edit-kyc')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('redirect-assign-appraiser')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('edit-merchant') || location.href.includes('add-merchant')) {
+			this.showBackButton = true;
+		}
+
 	}
 
 	action(event: Event) {
@@ -387,6 +414,9 @@ export class TopbarComponent implements OnInit {
 			this.internalUserService.openModal.next(true);
 		}
 		if (this.path == "assign-appraiser") {
+			this.appraiserService.openModal.next(true);
+		}
+		if (this.path == "redirect-assign-appraiser") {
 			this.appraiserService.openModal.next(true);
 		}
 		if (this.path == "merchant") {

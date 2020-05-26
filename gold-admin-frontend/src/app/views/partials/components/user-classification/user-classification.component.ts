@@ -8,11 +8,13 @@ import { UserBankService } from '../../../../core/kyc-settings/services/user-ban
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../core/shared/services/shared.service';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'kt-user-classification',
   templateUrl: './user-classification.component.html',
-  styleUrls: ['./user-classification.component.scss']
+  styleUrls: ['./user-classification.component.scss'],
+  providers:[TitleCasePipe]
 })
 export class UserClassificationComponent implements OnInit {
 
@@ -55,6 +57,7 @@ export class UserClassificationComponent implements OnInit {
   showTextBoxBM = true;
   editRating: boolean;
   role: any;
+  viewBMForm = true;
 
   constructor(
     private userDetailsService: UserDetailsService,
@@ -64,11 +67,12 @@ export class UserClassificationComponent implements OnInit {
     private userBankService: UserBankService,
     private appliedKycService: AppliedKycService,
     private route: Router,
-    private sharedService:SharedService,
+    private sharedService: SharedService,
+    private titlecase:TitleCasePipe,
   ) {
-   this.sharedService.getRole().subscribe(res=>{
-     this.role = res
-   })
+    this.sharedService.getRole().subscribe(res => {
+      this.role = res
+    })
   }
 
   ngOnInit() {
@@ -130,13 +134,14 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationForm.controls.addressProofRatingVerifiedBm.disable();
       this.custClassificationForm.controls.kycStatusFromBm.disable();
       this.custClassificationForm.controls.reasonFromBm.disable();
+      this.viewBMForm = false;
     } else if (this.role == 'Branch Manager') {
       this.custClassificationForm.controls.behaviourRatingCce.disable();
       this.custClassificationForm.controls.idProofRatingCce.disable();
       this.custClassificationForm.controls.addressProofRatingCce.disable();
       this.custClassificationForm.controls.kycStatusFromCce.disable();
       this.custClassificationForm.controls.reasonFromCce.disable();
-    } else{
+    } else {
       this.custClassificationForm.disable()
     }
 
@@ -205,7 +210,7 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationService.updateCceRating(this.custClassificationForm.value).pipe(
         map(res => {
           if (res) {
-            this.toastr.success(res.message);
+            this.toastr.success(this.titlecase.transform(res.message));
             // this.next.emit(true);
             this.route.navigate(['/applied-kyc']);
           }
@@ -215,7 +220,7 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationService.cceRating(this.custClassificationForm.value).pipe(
         map(res => {
           if (res) {
-            this.toastr.success(res.message);
+            this.toastr.success(this.titlecase.transform(res.message));
             // this.next.emit(true);
             this.route.navigate(['/applied-kyc']);
 

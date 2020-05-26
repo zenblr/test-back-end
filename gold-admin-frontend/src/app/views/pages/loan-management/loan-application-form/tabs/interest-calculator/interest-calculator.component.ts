@@ -128,7 +128,7 @@ export class InterestCalculatorComponent implements OnInit {
     if (this.controls.loanStartDate.valid && this.controls.tenure.valid) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      this.controls.loanEndDate.patchValue(new Date(date.setMonth(startDate.getMonth() + Number(this.controls.tenure.value))))
+      this.controls.loanEndDate.patchValue(new Date(date.setDate(startDate.getDate() + (Number(this.controls.tenure.value))*30)))
     } else {
       this.controls.loanStartDate.markAsTouched()
     }
@@ -215,7 +215,7 @@ export class InterestCalculatorComponent implements OnInit {
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      var data = { key: new Date(date.setMonth(date.getMonth() + index)) }
+      var data = { key: new Date(date.setDate(date.getDate() + (30*index))) }
       this.dateOfPayment.push(data)
     }
     console.log(this.dateOfPayment)

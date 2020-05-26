@@ -122,7 +122,8 @@
                         </div>
                         <div class="col-8">
                             <a class="text-body" [href]="orderInfo?.trackingDetails?.uploadedAwbFile?.url"
-                                download="{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}">
+                                download="{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}"
+                                target="_blank">
                                 <span>{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}</span>
                                 <span class="pl-2">
                                     <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
@@ -136,7 +137,7 @@
                         </div>
                         <div class="col-8">
                             <a class="text-body" [href]="orderInfo?.trackingDetails?.uploadedAwbBox?.url"
-                                download="{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}">
+                                download="{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}" target="_blank">
                                 <span>{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}</span>
                                 <span class="pl-2">
                                     <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
