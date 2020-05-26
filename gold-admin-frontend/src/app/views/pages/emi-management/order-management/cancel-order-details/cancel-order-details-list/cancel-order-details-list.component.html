@@ -126,7 +126,8 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="printCancellationReceipt(element)" class="kt-pointer">Print Cancellation
+                            <div *ngxPermissionsOnly="['cancelOrderView']" (click)="printCancellationReceipt(element)"
+                                class="kt-pointer">Print Cancellation
                                 Receipt</div>
                         </div>
                     </mat-cell>

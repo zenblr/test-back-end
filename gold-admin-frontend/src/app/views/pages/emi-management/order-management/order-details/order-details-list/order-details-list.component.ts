@@ -26,6 +26,7 @@ import { ToastrComponent } from "../../../../../../views/partials/components/toa
 import { DataTableService } from "../../../../../../core/shared/services/data-table.service";
 import { OrderDetailsViewComponent } from "../order-details-view/order-details-view.component";
 import { Router } from "@angular/router";
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
 	selector: "kt-order-details-list",
@@ -59,7 +60,7 @@ export class OrderDetailsListComponent implements OnInit {
 	@ViewChild("sort1", { static: true }) sort: MatSort;
 	// Filter fields
 	@ViewChild("searchInput", { static: true }) searchInput: ElementRef;
-	bulkUploadReportResult: OrderDetailsModel[] = [];
+	orderDetailsResult: OrderDetailsModel[] = [];
 	// Subscriptions
 	private subscriptions: Subscription[] = [];
 	private destroy$ = new Subject();
@@ -80,7 +81,8 @@ export class OrderDetailsListComponent implements OnInit {
 		private layoutUtilsService: LayoutUtilsService,
 		private orderDetailsService: OrderDetailsService,
 		private dataTableService: DataTableService,
-		private router: Router
+		private router: Router,
+		private sharedService: SharedService,
 	) {
 		this.orderDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -148,7 +150,7 @@ export class OrderDetailsListComponent implements OnInit {
 		const entitiesSubscription = this.dataSource.entitySubject
 			.pipe(skip(1), distinctUntilChanged())
 			.subscribe((res) => {
-				this.bulkUploadReportResult = res;
+				this.orderDetailsResult = res;
 			});
 		this.subscriptions.push(entitiesSubscription);
 		this.dataSource.loadOrderDetails(this.orderData);
@@ -220,6 +222,7 @@ export class OrderDetailsListComponent implements OnInit {
 		this.destroy$.complete();
 		this.unsubscribeSearch$.next();
 		this.unsubscribeSearch$.complete();
-		this.orderDetailsService.applyFilter.next(0);
+		this.orderDetailsService.applyFilter.next({});
+		this.sharedService.closeFilter.next(true);
 	}
 }

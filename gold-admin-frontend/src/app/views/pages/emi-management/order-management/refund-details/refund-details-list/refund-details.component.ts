@@ -9,21 +9,21 @@ import { Subscription, Subject, merge } from "rxjs";
 import { LayoutUtilsService } from "../../../../../../core/_base/crud";
 import { DataTableService } from "../../../../../../core/shared/services/data-table.service";
 import {
-	RefundManagementDatasource,
-	RefundManagementModel,
-	RefundManagementService,
+	RefundDetailsDatasource,
+	RefundDetailsModel,
+	RefundDetailsService,
 } from "../../../../../../core/emi-management/order-management";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
-import { RefundManagementViewComponent } from "../refund-management-view/refund-management-view.component";
+import { RefundDetailsViewComponent } from "../refund-details-view/refund-details-view.component";
 import { Router } from "@angular/router";
 
 @Component({
-	selector: "kt-refund-management",
-	templateUrl: "./refund-management.component.html",
-	styleUrls: ["./refund-management.component.scss"],
+	selector: "kt-refund-details",
+	templateUrl: "./refund-details.component.html",
+	styleUrls: ["./refund-details.component.scss"],
 })
-export class RefundManagementComponent implements OnInit {
-	dataSource: RefundManagementDatasource;
+export class RefundDetailsComponent implements OnInit {
+	dataSource: RefundDetailsDatasource;
 	displayedColumns = [
 		"storeId",
 		"userId",
@@ -51,7 +51,7 @@ export class RefundManagementComponent implements OnInit {
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild("sort1", { static: true }) sort: MatSort;
 	@ViewChild("searchInput", { static: true }) searchInput: ElementRef;
-	bulkUploadReportResult: RefundManagementModel[] = [];
+	bulkUploadReportResult: RefundDetailsModel[] = [];
 	private subscriptions: Subscription[] = [];
 	private destroy$ = new Subject();
 	private unsubscribeSearch$ = new Subject();
@@ -61,11 +61,11 @@ export class RefundManagementComponent implements OnInit {
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
-		private refundManagementService: RefundManagementService,
+		private refundDetailsService: RefundDetailsService,
 		private dataTableService: DataTableService,
 		private router: Router
 	) {
-		this.refundManagementService.exportExcel$
+		this.refundDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
 			.subscribe((res) => {
 				if (res) {
@@ -99,8 +99,8 @@ export class RefundManagementComponent implements OnInit {
 				this.loadRefundManagementPage();
 			});
 
-		this.dataSource = new RefundManagementDatasource(
-			this.refundManagementService
+		this.dataSource = new RefundDetailsDatasource(
+			this.refundDetailsService
 		);
 		const entitiesSubscription = this.dataSource.entitySubject
 			.pipe(skip(1), distinctUntilChanged())
@@ -132,7 +132,7 @@ export class RefundManagementComponent implements OnInit {
 	}
 
 	viewRefund(refund) {
-		const dialogRef = this.dialog.open(RefundManagementViewComponent, {
+		const dialogRef = this.dialog.open(RefundDetailsViewComponent, {
 			data: { refundId: refund.id, action: "view" },
 			width: "600px",
 		});
@@ -145,7 +145,7 @@ export class RefundManagementComponent implements OnInit {
 
 	editRefund(refund) {
 		this.router.navigate([
-			"emi-management/refund-management/edit-refund/",
+			"emi-management/refund-details/edit-refund/",
 			refund.id,
 		]);
 	}
@@ -153,8 +153,8 @@ export class RefundManagementComponent implements OnInit {
 	printCancellationReceipt(order) {}
 
 	downloadReport() {
-		this.refundManagementService.reportExport().subscribe();
-		this.refundManagementService.exportExcel.next(false);
+		this.refundDetailsService.reportExport().subscribe();
+		this.refundDetailsService.exportExcel.next(false);
 	}
 
 	/**

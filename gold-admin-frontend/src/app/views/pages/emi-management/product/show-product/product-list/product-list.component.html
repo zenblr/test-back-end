@@ -95,9 +95,14 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="viewProduct(element)" class="kt-pointer"> View | &nbsp;</div>
-                            <div (click)="editProduct(element)" class="kt-pointer"> Edit | &nbsp;</div>
-                            <div class="kt-pointer text-danger" (click)="deleteProduct(element)">Delete</div>
+                            <div *ngxPermissionsOnly="['productView']" (click)="viewProduct(element)"
+                                class="kt-pointer"> View</div>
+                            <div *ngxPermissionsOnly="['productEdit']" class="px-1">|</div>
+                            <div *ngxPermissionsOnly="['productEdit']" (click)="editProduct(element)"
+                                class="kt-pointer"> Edit</div>
+                            <div *ngxPermissionsOnly="['productDelete']" class="px-1">|</div>
+                            <div *ngxPermissionsOnly="['productDelete']" (click)="deleteProduct(element)"
+                                class="kt-pointer text-danger">Delete</div>
                         </div>
                     </mat-cell>
                 </ng-container>

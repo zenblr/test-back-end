@@ -24,6 +24,7 @@ import {
 } from "rxjs/operators";
 import { ToastrComponent } from "../../../../../../views/partials/components/toastr/toastr.component";
 import { DataTableService } from "../../../../../../core/shared/services/data-table.service";
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
 	selector: "kt-deposit-details-list",
@@ -61,7 +62,7 @@ export class DepositDetailsListComponent implements OnInit {
 	@ViewChild("sort1", { static: true }) sort: MatSort;
 	// Filter fields
 	@ViewChild("searchInput", { static: true }) searchInput: ElementRef;
-	bulkUploadReportResult: DepositDetailsModel[] = [];
+	depositDetailsResult: DepositDetailsModel[] = [];
 	// Subscriptions
 	private subscriptions: Subscription[] = [];
 	private destroy$ = new Subject();
@@ -75,12 +76,14 @@ export class DepositDetailsListComponent implements OnInit {
 		paymentType: "",
 		orderCurrentStatus: "",
 	};
+	
 	constructor(
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
 		private depositDetailsService: DepositDetailsService,
-		private dataTableService: DataTableService
+		private dataTableService: DataTableService,
+		private sharedService: SharedService,
 	) {
 		this.depositDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -150,7 +153,7 @@ export class DepositDetailsListComponent implements OnInit {
 		const entitiesSubscription = this.dataSource.entitySubject
 			.pipe(skip(1), distinctUntilChanged())
 			.subscribe((res) => {
-				this.bulkUploadReportResult = res;
+				this.depositDetailsResult = res;
 			});
 		this.subscriptions.push(entitiesSubscription);
 		this.dataSource.loadDepositDetails(this.depositData);
@@ -160,7 +163,7 @@ export class DepositDetailsListComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -209,5 +212,7 @@ export class DepositDetailsListComponent implements OnInit {
 		this.destroy$.complete();
 		this.unsubscribeSearch$.next();
 		this.unsubscribeSearch$.complete();
+		this.depositDetailsService.applyFilter.next({});
+		this.sharedService.closeFilter.next(true);
 	}
 }
