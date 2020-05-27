@@ -4,6 +4,7 @@ import { map, catchError, finalize } from 'rxjs/operators';
 import { FormControl, Validators } from '@angular/forms';
 import { ToastrComponent } from '../../../../views/partials/components';
 import { SharedService } from '../../../../core/shared/services/shared.service';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   selector: 'kt-upload-offer',
@@ -24,12 +25,19 @@ export class UploadOfferComponent implements OnInit {
   constructor(
     private uploadOfferService: UploadOfferService,
     private ref: ChangeDetectorRef,
+    private ngxPermissions:NgxPermissionsService
   ) { 
-    this.getGoldRate();
+    this.ngxPermissions.permissions$.subscribe(permission=>{
+      if(permission.goldRateView){
+        this.getGoldRate();
+      }
+      if(permission.offerBannerView){
+        this.getData();
+      }
+    })
   }
 
   ngOnInit() {
-    this.getData();
   }
 
   getData() {
