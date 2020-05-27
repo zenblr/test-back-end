@@ -1,138 +1,50 @@
-<kt-portlet>
-    <kt-portlet-body>
-        <div class="row row-no-padding row-col-separator-xl">
-            <div class="col-12 d-flex overflow-auto py-2">
-                <div class="filtered-data">
-                    <div class="filtered-title">By Status</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                    </div>
-                </div>
-                <div class="filtered-data">
-                    <div class="filtered-title">By Location</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
+<div *ngIf="(filteredList | json) !== '{}'">
+    <kt-portlet>
+        <kt-portlet-body>
+            <div class="row row-no-padding row-col-separator-xl">
+                <div class="col-12 d-flex overflow-auto py-2">
+                    <!-- Category -->
+                    <div class="filtered-data" *ngIf="filteredList?.category?.length">
+                        <div class="filtered-title">By Category</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.category">
+                                <span>{{item?.categoryName}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="filtered-data">
-                    <div class="filtered-title">By Status</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
+                    <!-- Sub-Category -->
+                    <div class="filtered-data" *ngIf="filteredList?.subCategory?.length">
+                        <div class="filtered-title">By Sub-Category</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.subCategory">
+                                <span>{{item?.subCategoryName}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="filtered-data">
-                    <div class="filtered-title">By Location</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
+                    <!-- Price From -->
+                    <div class="filtered-data" *ngIf="filteredList?.priceFrom">
+                        <div class="filtered-title">By Price From</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span>{{filteredList?.priceFrom}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="filtered-data">
-                    <div class="filtered-title">By Status</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                    </div>
-                </div>
-                <div class="filtered-data">
-                    <div class="filtered-title">By Location</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                    </div>
-                </div>
-                <div class="filtered-data">
-                    <div class="filtered-title">By Status</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                    </div>
-                </div>
-                <div class="filtered-data">
-                    <div class="filtered-title">By Location</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                    </div>
-                </div>
-                <div class="filtered-data">
-                    <div class="filtered-title">By Status</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                    </div>
-                </div>
-                <div class="filtered-data">
-                    <div class="filtered-title">By Location</div>
-                    <div class="d-flex">
-                        <div class="filtered-value">
-                            <span>Active</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
-                        </div>
-                        <div class="filtered-value">
-                            <span>Deactive</span>
-                            <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
+                    <!-- Price To -->
+                    <div class="filtered-data" *ngIf="filteredList?.priceTo">
+                        <div class="filtered-title">By Price To</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span>{{filteredList?.priceTo}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </kt-portlet-body>
-</kt-portlet>
+        </kt-portlet-body>
+    </kt-portlet>
+</div>

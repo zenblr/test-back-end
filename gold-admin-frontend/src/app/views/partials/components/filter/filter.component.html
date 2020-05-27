@@ -23,14 +23,14 @@
                     <div class="col-6">
                       <label>By Category</label>
                       <ng-select [items]="categoryList" [multiple]="true" bindLabel="categoryName"
-                        [closeOnSelect]="false" bindValue="id" formControlName="multiSelect1">
+                        [closeOnSelect]="false" formControlName="category">
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.categoryName}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.categoryName | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].categoryName}}&nbsp;
+                          {{items[0].categoryName | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>
@@ -38,14 +38,14 @@
                     <div class="col-6">
                       <label>By Sub-Category</label>
                       <ng-select [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
-                        [closeOnSelect]="false" bindValue="id" formControlName="multiSelect2">
+                        [closeOnSelect]="false" formControlName="subCategory">
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.subCategoryName}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.subCategoryName | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].subCategoryName}}&nbsp;
+                          {{items[0].subCategoryName | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>
@@ -77,14 +77,13 @@
           </div>
         </div>
 
-
         <!-- leads -->
         <div class="kt-portlet__body" *ngIf="filterName == 'leads'">
           <div class="kt-form">
             <div class="row">
               <div class="col">
                 <label>By Location</label>
-                <!-- <select class="form-control" name="multiSelect1">
+                <!-- <select class="form-control" name="category">
                   <option value="" [selected]="true">Select State</option>
                   <option *ngFor="let item of states" [value]="item?.id">
                     {{item?.name}}
@@ -121,7 +120,7 @@
               </div>
               <div class="col">
                 <label style="visibility: hidden;">nostatus</label>
-                <select class="form-control" name="multiSelect1">
+                <select class="form-control" name="category">
                   <option value="" [selected]="true">Select City</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
                     {{item?.categoryName}}
@@ -130,7 +129,7 @@
               </div>
               <div class="col">
                 <label>By Status</label>
-                <select class="form-control" name="multiSelect1">
+                <select class="form-control" name="category">
                   <option value="" [selected]="true">Select Category</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
                     {{item?.categoryName}}
@@ -155,7 +154,7 @@
                     <div class="col-8">
                       <label>By Status</label>
                       <ng-select [items]="status" [multiple]="true" bindLabel="statusName" [closeOnSelect]="false"
-                        bindValue="statusId" formControlName="multiSelect1">
+                        bindValue="statusId" formControlName="category">
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
@@ -194,7 +193,7 @@
                     <div class="col-3">
                       <label>By tenure(m)</label>
                       <ng-select [items]="tenure" [multiple]="true" bindLabel="paymentType" [closeOnSelect]="false"
-                        bindValue="paymentTypeId" formControlName="multiSelect1">
+                        bindValue="paymentTypeId" formControlName="category">
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
@@ -209,7 +208,7 @@
                     <div class="col-4">
                       <label>By Status</label>
                       <ng-select [items]="status" [multiple]="true" bindLabel="statusName" [closeOnSelect]="false"
-                        bindValue="statusId" formControlName="multiSelect2">
+                        bindValue="statusId" formControlName="subCategory">
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
@@ -249,7 +248,7 @@
                     <div class="col-6">
                       <label>By Payment Type</label>
                       <ng-select [items]="tenure" [multiple]="true" bindLabel="paymentType" [closeOnSelect]="false"
-                        bindValue="paymentTypeId" formControlName="multiSelect1">
+                        bindValue="paymentTypeId" formControlName="category">
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
@@ -266,7 +265,7 @@
                     <div class="col-6">
                       <label>By Order Current Status</label>
                       <ng-select [items]="status" [multiple]="true" bindLabel="statusName" [closeOnSelect]="false"
-                        bindValue="statusId" formControlName="multiSelect2">
+                        bindValue="statusId" formControlName="subCategory">
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
@@ -300,7 +299,7 @@
                     <div class="col-5">
                       <label>By Merchant Name</label>
                       <ng-select [items]="name" [multiple]="true" bindLabel="merchantName" [closeOnSelect]="false"
-                        bindValue="id" formControlName="multiSelect1">
+                        bindValue="id" formControlName="category">
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"

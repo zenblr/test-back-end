@@ -12,6 +12,7 @@ import { SharedService } from "../../../../core/shared/services/shared.service";
 	styleUrls: ["./filtered-data.component.scss"],
 })
 export class FilteredDataComponent implements OnInit, OnDestroy {
+	@Input() filteredList: any;
 	subscriptions: Subscription[] = [];
 
 	constructor(
