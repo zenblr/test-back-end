@@ -219,7 +219,7 @@
                             <input type="text" formControlName="status" class="form-control" disabled>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15">
+                    <div class="row kt-margin-t-15" *ngIf="hiddenFlag">
                         <div class="col-12 text-right">
                             <kt-button [value]="'Update'" [type]="'submit'" (click)="submit()"></kt-button>
                         </div>

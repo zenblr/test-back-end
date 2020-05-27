@@ -1,6 +1,6 @@
 <kt-portlet>
     <kt-portlet-body>
-        <div class="mat-table__wrapper">
+        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x': 'hidden'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="customerResult">
 
                 <ng-container matColumnDef="fullName">

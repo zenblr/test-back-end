@@ -373,7 +373,7 @@ export class MenuConfig {
 						},
 						{
 							title: "Back",
-							icon: "flaticon-logout",
+							src: "assets/media/aside-icons/icons-21.svg",
 							root: true,
 							page: "/dashboard",
 							permission: false,
