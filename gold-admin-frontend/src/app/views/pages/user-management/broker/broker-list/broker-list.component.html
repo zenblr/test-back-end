@@ -92,7 +92,8 @@
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef >Status</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <mat-slide-toggle [color]="'accent'" [checked]="broker.status" (change)="toogle(broker,$event)">
+                        <mat-slide-toggle [color]="'accent'" [checked]="broker.status"
+                        *ngxPermissionsOnly="['brokerEdit','brokerAdd']" (change)="toogle(broker,$event)">
                         </mat-slide-toggle>
                     </mat-cell>
                 </ng-container>
@@ -100,11 +101,13 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="editBroker(broker,'view')" class="kt-pointer"> View
+                            <div (click)="editBroker(broker,'view')" class="kt-pointer"
+                            *ngxPermissionsOnly="['brokerView']"> View
                                 |
                                 &nbsp;
                             </div>
-                            <div (click)="editBroker(broker,'edit')" class="kt-pointer"> Edit
+                            <div (click)="editBroker(broker,'edit')" class="kt-pointer"
+                            *ngxPermissionsOnly="['brokerDelete']"> Edit
 
                             </div>
                         </div>

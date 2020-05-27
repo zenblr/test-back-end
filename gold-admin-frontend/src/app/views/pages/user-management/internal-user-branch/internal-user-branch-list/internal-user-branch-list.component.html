@@ -37,15 +37,18 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let internalBranch">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="editInternalBranch(internalBranch,'view')" class="kt-pointer"> View
+                            <div (click)="editInternalBranch(internalBranch,'view')" class="kt-pointer"
+                            *ngxPermissionsOnly="['internalBranchView']"> View
                                 |
                                 &nbsp;
                             </div>
-                            <div (click)="editInternalBranch(internalBranch,'edit')" class="kt-pointer"> Edit
+                            <div (click)="editInternalBranch(internalBranch,'edit')" class="kt-pointer"
+                            *ngxPermissionsOnly="['internalBranchEdit']"> Edit
                                 |
                                 &nbsp;
                             </div>
-                            <div (click)="deleteInternalBranch(internalBranch)" class="kt-pointer text-danger"> Delete
+                            <div (click)="deleteInternalBranch(internalBranch)" class="kt-pointer text-danger"
+                            *ngxPermissionsOnly="['internalBranchDelete']"> Delete
 
                             </div>
                         </div>

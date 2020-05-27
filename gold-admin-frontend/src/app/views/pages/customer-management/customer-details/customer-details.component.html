@@ -147,8 +147,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)">View
-                    Details</div>
+                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)"
+                *ngxPermissionsOnly="['loanDetailsView']">View  Details</div>
             </div>
         </div>
     </div>
