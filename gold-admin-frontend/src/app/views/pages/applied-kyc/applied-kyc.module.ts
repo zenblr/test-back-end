@@ -12,6 +12,7 @@ import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsServi
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 const rout: Routes = [
   {
@@ -29,7 +30,8 @@ const rout: Routes = [
     AngularMaterialModule,
     RouterModule.forChild(rout),
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    NgxPermissionsModule.forChild()
   ],
   providers: [
     InterceptService,

@@ -84,7 +84,8 @@ export class PermissionsComponent implements OnInit {
       } else {
         toogle.permission[index].isSelected = false
         var findIndex = this.selectedPermission.indexOf(toogle.permission[index].id)
-        this.selectedPermission.splice(findIndex, 1)
+        if (findIndex >= 0)
+          this.selectedPermission.splice(findIndex, 1)
       }
     }
     console.log(this.selectedPermission)

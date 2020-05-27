@@ -73,52 +73,47 @@ export class MenuConfig {
 								{
 									title: "Upload Data",
 									root: true,
-									permission: false,
+									permission: !(this.permissionsArr.includes('promotionalBannerView') ||
+										this.permissionsArr.includes('offerBannerView') ||
+										this.permissionsArr.includes('goldRateView') ||
+										this.permissionsArr.includes('partnerBannerView')),
 
 									submenu: [
 										{
 											title: "Promotional Banners",
 											page: "/upload-data/upload-banner",
-											permission: false,
+											permission: !this.permissionsArr.includes('promotionalBannerView'),
 										},
 										{
 											title: "Offer Banners",
 											page: "/upload-data/upload-offer",
-											permission: false,
+											permission: !(this.permissionsArr.includes('offerBannerView') ||
+												this.permissionsArr.includes('goldRateView')),
 										},
 										{
 											title: "Partner Banners",
 											page: "/upload-data/upload-lender-banner",
-											permission: false,
+											permission: !this.permissionsArr.includes('partnerBannerView'),
 										},
-										// {
-										// 	title: 'Upload Scheme',
-										// 	page: '/upload-data/upload-scheme',
-										// permission: false,
-										//
-										// },
+
 									],
 								},
 								{
 									title: "Loan Settings",
 									root: true,
-									permission: false,
+									permission: !(this.permissionsArr.includes('schemeView') ||
+										this.permissionsArr.includes('karatDetailsView')),
 
 									submenu: [
 										{
 											title: "Scheme",
 											page: "/loan-setting/scheme",
-											permission: false,
-										},
-										{
-											title: "Packet",
-											page: "/loan-setting/packet",
-											permission: false,
+											permission: !this.permissionsArr.includes('schemeView'),
 										},
 										{
 											title: "Karat details",
 											page: "/loan-setting/karat-details",
-											permission: false,
+											permission: !this.permissionsArr.includes('karatDetailsView'),
 										},
 									],
 								},
@@ -147,36 +142,45 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
 							page: "/user-management",
-							permission: false,
+							permission: !(this.permissionsArr.includes('merchantView')||
+							this.permissionsArr.includes('brokerView') ||
+							this.permissionsArr.includes('storeView')||
+							this.permissionsArr.includes('partnerBannerView')||
+							this.permissionsArr.includes('partnerView')||
+							this.permissionsArr.includes('partnerBranchView')||
+							this.permissionsArr.includes('internalBranchView')||
+							this.permissionsArr.includes('internalUserView')||
+							this.permissionsArr.includes('assignAppraiserView')),
 						},
 						{
 							title: "Lead Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-05.svg",
 							page: "/lead-management",
-							permission: false,
+							permission: !(this.permissionsArr.includes('leadManagmentView')),
 						},
 						{
 							title: "Customer Setting",
 							root: true,
 							src: "assets/media/aside-icons/icons-06.svg",
-							permission: false,
+							permission: !(this.permissionsArr.includes('customerKycView')||
+								this.permissionsArr.includes('appliedKycView')),
 
 							submenu: [
 								{
 									title: "KYC Setting",
 									page: "/kyc-setting",
-									permission: false,
+									permission: !this.permissionsArr.includes('customerKycAdd'),
 								},
 								{
 									title: "Applied Kyc",
 									page: "/applied-kyc",
-									permission: false,
+									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 							],
 						},
 						{
-							title: "Loan Managment",
+							title: "Loan Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-07.svg",
 							permission: false,
@@ -190,22 +194,24 @@ export class MenuConfig {
 								{
 									title: "Loan Application Form",
 									page: "/loan-management/loan-application-form",
-									permission: false,
+									permission: !this.permissionsArr.includes('loanApplicationAdd'),
 								},
 								{
 									title: "Packet",
 									page: "/loan-management/packet",
-									permission: false,
+									permission: !(this.permissionsArr.includes('packetEdit') ||
+										this.permissionsArr.includes('packetAdd') ||
+										this.permissionsArr.includes('packetView')),
 								},
 								{
 									title: "Applied Loan",
 									page: "/loan-management/applied-loan",
-									permission: false,
+									permission: !this.permissionsArr.includes('appliedLoanView'),
 								},
 								{
 									title: "Loan Details",
 									page: "/loan-management/all-loan",
-									permission: false,
+									permission: !this.permissionsArr.includes('loanDetailsView'),
 								},
 							],
 						},
@@ -214,7 +220,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-08.svg",
 							page: "/customer-management/customer-list",
-							permission: false,
+							permission: !this.permissionsArr.includes('customerManagementView'),
 						},
 						{
 							title: "Repayment Structure",
@@ -307,56 +313,56 @@ export class MenuConfig {
 							root: true,
 							page: "/user-management/partner",
 							src: "assets/media/aside-icons/icons-06.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('partnerView'),
 						},
 						{
 							title: "Partner Branch ",
 							root: true,
 							page: "/user-management/branch",
 							src: "assets/media/aside-icons/icons-13.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('partnerBranchView'),
 						},
 						{
 							title: "Internal User",
 							root: true,
 							page: "/user-management/internal-user",
 							src: "assets/media/aside-icons/icons-14.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('internalUserView'),
 						},
 						{
 							title: "Internal User Branch",
 							root: true,
 							page: "/user-management/internal-user-branch",
 							src: "assets/media/aside-icons/icons-15.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('internalBranchView')					,
 						},
 						{
 							title: "Assign Appraiser",
 							root: true,
 							page: "/user-management/assign-appraiser",
 							src: "assets/media/aside-icons/icons-16.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('assignAppraiserView'),
 						},
 						{
 							title: "Merchant",
 							root: true,
 							page: "/user-management/merchant",
 							src: "assets/media/aside-icons/icons-17.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('merchantView')
 						},
 						{
 							title: "Broker",
 							root: true,
 							page: "/user-management/broker",
 							src: "assets/media/aside-icons/icons-18.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('brokerView'),
 						},
 						{
 							title: "Store",
 							root: true,
 							page: "/user-management/store",
 							src: "assets/media/aside-icons/icons-19.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('storeView')
 						},
 						{
 							title: "Roles and permissions",

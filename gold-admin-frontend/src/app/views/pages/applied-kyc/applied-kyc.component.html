@@ -56,10 +56,10 @@
                     </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="actions">
+                <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <div [ngStyle]="{'display': 'inherit'}">
+                        <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['appliedKycEdit']">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
                                 <span
                                     *ngIf="(roles == 'Customer Care Executive' && role.customerKycClassification.kycStatusFromCce == 'pending') || (roles == 'Branch Manager' && role.customerKycClassification.kycStatusFromCce == 'approved' && (role.kycStatus == 'rejected' || role.kycStatus == 'pending'))">
@@ -78,15 +78,19 @@
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef>KYC Details</mat-header-cell>
                     <mat-cell *matCellDef="let role" (click)="viewKYC(role)" class="kt-pointer">
-                        View
+                        <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['appliedKycView']">
+                            View
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="appraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let role"  class="kt-pointer">
-                        <button class="apply-kyc" (click)="assign()" 
-                        *ngIf="role.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved'"
-                        >Assign Appraiser</button>
+                    <mat-cell *matCellDef="let role" class="kt-pointer">
+                        <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
+                            <button class="apply-kyc" (click)="assign()"
+                                *ngIf="role.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved'">Assign
+                                Appraiser</button>
+                        </div>
                     </mat-cell>
                 </ng-container>
 

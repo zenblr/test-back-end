@@ -1,5 +1,7 @@
-const models = require('../../models');
+const models = require('../../models'); // importing models.
+const Sequelize = models.Sequelize;
 const sequelize = models.sequelize;
+const Op = Sequelize.Op;
 const check = require('../../lib/checkLib');
 
 // add scheme
@@ -81,9 +83,32 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
         }],
     })
     if (!readSchemeByPartner) {
-        return res.status(200).json({ data: [] });
+        return res.status(200).json({ data: {} });
     }
     return res.status(200).json({ data: readSchemeByPartner });
+}
+
+
+//scheme Read based on amount
+
+exports.readSchemeOnAmount = async (req, res, next) => {
+    let { amount } = req.params
+
+    let partnerScheme = await models.partner.findAll({
+        include: [{
+            model: models.scheme,
+            where: {
+                [Op.and]: {
+                    schemeAmountStart: { [Op.lte]: amount },
+                    schemeAmountEnd: { [Op.gte]: amount },
+                }
+            }
+        }]
+    })
+    if (!partnerScheme) {
+        return res.status(200).json({ data: {} });
+    }
+    return res.status(200).json({ data: partnerScheme });
 }
 
 
@@ -149,18 +174,3 @@ exports.filterScheme = async (req, res, next) => {
 
 //edit scheme
 
-// exports.editScheme= async(req,res,next)=>{
-//     let {partnerId,schemeId}=req.query;
-//     const {schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-//         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually}=req.body;
-//         await sequelize.transaction(async t => {
-
-//      let schemePartner= await models.partnerScheme.findOne({where:{partnerId,schemeId}});
-//      if(schemePartner){
-
-//      let editScheme=await models.scheme.update({schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-//         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually},{where:{id:schemeId}})
-// return res.status(200).json({message:'updated'}),{transaction:t}
-// }})
-// return res.status(404).json({message:'updated failed'});
-// }

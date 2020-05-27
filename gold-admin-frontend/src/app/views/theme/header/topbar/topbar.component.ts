@@ -193,6 +193,8 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.value2 = "Add New Scheme";
 			this.type2 = "button";
+			this.permissionType = "schemeAdd";
+
 		}
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
@@ -200,10 +202,12 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = false;
 			this.filterName = "leads";
 			this.filterWidth = "900px";
+			this.permissionType ="leadManagmentAdd";
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
 			this.value1 = "Add Partner";
+			this.permissionType = 'partnerAdd';
 		}
 		if (this.path == "logistic-partner") {
 			this.showInput = true;
@@ -216,6 +220,8 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.value2 = "Add Karat Details";
 			this.type2 = "button";
+			this.permissionType = "karatDetailsAdd";
+
 		}
 		if (this.path == "customer-list") {
 			this.showfilter = true;
@@ -240,14 +246,17 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "branch") {
 			this.dataSourceHeader();
 			this.value1 = "Add New Branch";
+			this.permissionType = 'partnerBranchAdd';
 		}
 		if (this.path == "assign-appraiser") {
 			this.dataSourceHeader();
 			this.value1 = "Assign Appraiser";
+			this.permissionType = 'assignAppraiserAdd';
 		}
 		if (this.path == "redirect-assign-appraiser") {
 			this.dataSourceHeader();
 			this.value1 = "Assign Appraiser";
+			this.permissionType = 'assignAppraiserAdd';
 		}
 
 		if (this.path == "roles") {
@@ -259,10 +268,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "broker") {
 			this.dataSourceHeader();
 			this.value1 = "Add Broker";
+			this.permissionType = 'brokerAdd';
 		}
 		if (this.path == "merchant") {
 			this.dataSourceHeader();
 			this.value1 = "Add Merchant";
+			this.permissionType = 'merchantAdd';
 		}
 		if (this.path == "wallet-price") {
 			this.rightButton = true;
@@ -298,18 +309,24 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "internal-user") {
 			this.dataSourceHeader();
 			this.value1 = "Add Internal User";
+			this.permissionType = "internalUserAdd"
 		}
 		if (this.path == "internal-user-branch") {
 			this.dataSourceHeader();
 			this.value1 = "Add Internal Branch";
+			this.permissionType = "internalBranchAdd"
+
 		}
 		if (this.path == "packet") {
 			this.dataSourceHeader();
 			this.value1 = "Add Packets";
+			this.permissionType = "packetAdd";
+
 		}
 		if (this.path == "store") {
 			this.dataSourceHeader();
 			this.value1 = "Create Stores";
+			this.permissionType = "storeAdd"
 		}
 		if (this.path == "bulk-upload-product") {
 			this.rightButton = true;

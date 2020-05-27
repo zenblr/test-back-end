@@ -28,12 +28,6 @@
  *               type: number
  *             interestRateOneHundredEightyDaysMonthly:
  *               type: number
- *             interestRateThirtyDaysAnnually:
- *               type: number
- *             interestRateNinetyDaysAnnually:
- *               type: number  
- *             interestRateOneHundredEightyDaysAnnually:
- *               type: number
  *             partnerId:
  *               type: number
  *         required:
@@ -43,15 +37,12 @@
  *           - interestRateThirtyDaysMonthly
  *           - interestRateNinetyDaysMonthly
  *           - interestRateOneHundredEightyDaysMonthly
- *           - interestRateThirtyDaysAnnually
- *           - interestRateNinetyDaysAnnually
- *           - interestRateOneHundredEightyDaysAnnually
  *           - partnerId
  *     responses:
  *       201:
  *          description: schemes created
  *       400:
- *          description: interest Rate required/ partnerId is required/start amount is required/end amount is required/ internal branch name is already exist
+ *          description: This Scheme Name is already Exist /Your Scheme start amount is must be less  than your Scheme end amount
  *   get:
  *     tags:
  *       - Scheme
@@ -90,65 +81,27 @@
  *         description: Success.
  *       404:
  *         description: data not found
- * /scheme/{id}:
- *   put:
+ * /scheme/filter-scheme:
+ *   get:
  *     tags:
  *       - Scheme
- *     name: update scheme
- *     summary: To update scheme
+ *     summary: To filter by is active
+ *     parameters:
+ *     - name: "isActive"
+ *       in: "query"
+ *       description: "isActive of scheme to filter"
+ *       type: "boolean"
  *     security:
  *       - bearerAuth: []
  *     consumes:
  *       - application/json
- *     parameters:
- *       - name: "id"
- *         in: "path"
- *         description: "Id of Partner to update"
- *         required: true
- *         type: "integer"
- *       - name: body
- *         in: body
- *         schema:
- *           type: object
- *           properties:
- *             schemeName:
- *               type: string
- *             schemeAmountStart:
- *               type: number
- *             schemeAmountEnd:
- *               type: number
- *             interestRateThirtyDaysMonthly:
- *               type: number
- *             interestRateNinetyDaysMonthly:
- *               type: number
- *             interestRateOneHundredEightyDaysMonthly:
- *               type: number
- *             interestRateThirtyDaysAnnually:
- *               type: number
- *             interestRateNinetyDaysAnnually:
- *               type: number  
- *             interestRateOneHundredEightyDaysAnnually:
- *               type: number
- *             partnerId:
- *               type: number
- *         required:
- *           - schemeName
- *           - schemeAmountStart
- *           - schemeAmountEnd
- *           - interestRateThirtyDaysMonthly
- *           - interestRateNinetyDaysMonthly
- *           - interestRateOneHundredEightyDaysMonthly
- *           - interestRateThirtyDaysAnnually
- *           - interestRateNinetyDaysAnnually
- *           - interestRateOneHundredEightyDaysAnnually
- *           - partnerId
  *     responses:
  *       200:
- *          description: Success
+ *         description: Success.
  *       404:
- *          description: data not found
- *       400:
- *          description: interest Rate required/ partnerId is required/start amount is required/end amount is required
+ *         description: data not found
+ * 
+ * /scheme/{id}:
  *   get:
  *     tags:
  *       - Scheme
@@ -168,4 +121,41 @@
  *         description: Success.
  *       404:
  *         description: data not found
+ * /scheme/partner-scheme/{id}:
+ *  get:
+ *     tags:
+ *       - Scheme
+ *     summary: To read by Partner Id
+ *     parameters:
+ *     - name: "id"
+ *       in: "path"
+ *       description: "Id of partner to read scheme"
+ *       required: true
+ *       type: "integer"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
+ * /scheme/partner-scheme-amount/{amount}:
+ *  get:
+ *     tags:
+ *       - Scheme
+ *     summary: To read by amount
+ *     parameters:
+ *     - name: "amount"
+ *       in: "path"
+ *       description: "Amount wise read scheme"
+ *       required: true
+ *       type: number
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
+ * 
  */
