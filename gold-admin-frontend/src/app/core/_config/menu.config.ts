@@ -175,7 +175,7 @@ export class MenuConfig {
 							],
 						},
 						{
-							title: "Loan Managment",
+							title: "Loan Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-07.svg",
 							permission: false,
