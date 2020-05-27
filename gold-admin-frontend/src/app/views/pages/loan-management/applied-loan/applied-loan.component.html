@@ -89,13 +89,14 @@
                             <div *ngIf="loan.loanStage.id == 3">
                                 <div class="kt-pointer" class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="packageImageUpload(loan)" class="red-button">Assign
+                                    <button (click)="packageImageUpload(loan)" class="red-button" 
+                                    [ngClass]="{'cursor-not-allowed':!edit}">Assign
                                         Packet</button>
                                 </div>
                             </div>
                             <div *ngIf="loan.loanStage.id == 4">
                                 <div class="kt-pointer" class="kt-pointer">
-                                    <button (click)="disburse(loan)" class="green-button">Disburse Amount</button>
+                                    <button (click)="disburse(loan)" [ngClass]="{'cursor-not-allowed':!edit}" class="green-button">Disburse Amount</button>
 
                                 </div>
                             </div>
