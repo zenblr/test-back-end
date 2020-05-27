@@ -31,7 +31,8 @@ export class CustomerGridComponent implements OnInit, OnChanges {
       if (this.count < this.page.to) {
         let data = {
           from: this.page.from + 20,
-          to: this.page.to + 20
+          to: this.page.to + 20,
+          search: this.page.search
         }
         this.pagination.emit(data)
       }
