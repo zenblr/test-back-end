@@ -488,6 +488,12 @@ export class TopbarComponent implements OnInit {
 		this.customerManagementServiceCustomer.toggle.next(val);
 	}
 
+	buttonValue(value) {
+		if (location.href.includes("edit-order-details")) {
+			this.orderDetailsService.buttonValue.next(value);
+		}
+	}
+
 	applyFilter(data) {
 		if (this.path == "products") {
 			this.productService.applyFilter.next(data);

@@ -52,7 +52,8 @@ export class CancelOrderDetailsService {
 					(data) => {
 						this.excelService.saveAsExcelFile(
 							data,
-							"CancelOrderReport_" + Date.now());
+							"CancelOrderReport_" + Date.now()
+						);
 					},
 					(error) => console.log(error)
 				),
@@ -60,5 +61,11 @@ export class CancelOrderDetailsService {
 					return null;
 				})
 			);
+	}
+
+	getReceipt(id): Observable<any> {
+		return this.http.get(
+			`http://173.249.49.7:9120/api/cancel-order/cancel-recept/${id}`
+		);
 	}
 }

@@ -14,7 +14,9 @@ export class OrderDetailsService {
 	applyFilter = new BehaviorSubject<any>({});
 	applyFilter$ = this.applyFilter.asObservable();
 
-	constructor(private http: HttpClient, private excelService: ExcelService) { }
+	buttonValue = new BehaviorSubject<any>({});
+	buttonValue$ = this.buttonValue.asObservable();
+	constructor(private http: HttpClient, private excelService: ExcelService) {}
 
 	getAllOrderDetails(event?: any): Observable<any> {
 		const reqParams: any = {};
@@ -77,7 +79,10 @@ export class OrderDetailsService {
 				}),
 				tap(
 					(data) => {
-						this.excelService.saveAsExcelFile(data, "OrderReport_" + Date.now());
+						this.excelService.saveAsExcelFile(
+							data,
+							"OrderReport_" + Date.now()
+						);
 					},
 					(error) => console.log(error)
 				),
@@ -85,5 +90,17 @@ export class OrderDetailsService {
 					return null;
 				})
 			);
+	}
+
+	getPerforma(id): Observable<any> {
+		return this.http.get<any>(
+			`http://173.249.49.7:9120/api/order/order-proforma-invoice/${id}`
+		);
+	}
+
+	getContract(id): Observable<any> {
+		return this.http.get<any>(
+			`http://173.249.49.7:9120/api/order/order-contract/${id}`
+		);
 	}
 }
