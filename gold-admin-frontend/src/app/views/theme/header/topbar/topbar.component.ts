@@ -35,6 +35,8 @@ import {
 import { MonthlyService } from "../../../../core/repayment/services/monthly.service";
 import { UserDetailsService } from "../../../../core/emi-management/user-details";
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
+import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
+import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -99,7 +101,10 @@ export class TopbarComponent implements OnInit {
 		private emiDetailsService: EmiDetailsService,
 		private monthlyService: MonthlyService,
 		private userDetailsService: UserDetailsService,
-		private leadService: LeadService) {
+		private leadService: LeadService,
+		private emailAlertService: EmailAlertService,
+		private smsAlertService: SmsAlertService
+	) {
 
 		this.router.events.subscribe(val => {
 			this.reset()
@@ -210,6 +215,14 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.value2 = "Add Karat Details";
 			this.type2 = "button";
+		}
+		if (this.path == 'email-alert') {
+			this.dataSourceHeader();
+			this.value1 = 'Create Email Alert';
+		}
+		if (this.path == 'sms-alert') {
+			this.dataSourceHeader();
+			this.value1 = 'Create SMS Alert';
 		}
 		if (this.path == "customer-list") {
 			this.showfilter = false;
@@ -448,6 +461,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "karat-details") {
 			this.karatDetailsService.openModal.next(true);
+		}
+		if (this.path == "email-alert") {
+			this.emailAlertService.openModal.next(true);
+		}
+		if (this.path == "sms-alert") {
+			this.emailAlertService.openModal.next(true);
 		}
 		if (this.path == "order-details") {
 			this.orderDetailsService.exportExcel.next(true);

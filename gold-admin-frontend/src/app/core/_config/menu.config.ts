@@ -129,13 +129,13 @@ export class MenuConfig {
 
 									submenu: [
 										{
-											title: "Email Alerts",
-											page: "/loan-setting/email-alerts",
+											title: "Email Alert",
+											page: "/notification-setting/email-alert",
 											permission: false,
 										},
 										{
-											title: "SMS Alerts",
-											page: "/loan-setting/sms-alerts",
+											title: "SMS Alert",
+											page: "/notification-setting/sms-alert",
 											permission: false,
 										},
 									],
@@ -169,7 +169,7 @@ export class MenuConfig {
 									permission: false,
 								},
 								{
-									title: "Applied Kyc",
+									title: "Applied KYC",
 									page: "/applied-kyc",
 									permission: false,
 								},

@@ -126,17 +126,23 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
   }
 
   uploadFile(index, value, event) {
-    this.sharedService.uploadFile(event.target.files[0]).pipe(
-      map(res => {
-        const packet = this.packets.at(index) as FormArray
-        packet.controls[value].patchValue(res.uploadFile.URL)
-        console.log(this.packets.value)
-      }),
-      catchError(err => {
-        throw err
-      }), finalize(() => {
-        this.clear()
-      })).subscribe()
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      this.sharedService.uploadFile(event.target.files[0]).pipe(
+        map(res => {
+          const packet = this.packets.at(index) as FormArray
+          packet.controls[value].patchValue(res.uploadFile.URL)
+          console.log(this.packets.value)
+        }),
+        catchError(err => {
+          throw err
+        }), finalize(() => {
+          this.clear()
+        })).subscribe()
+    } else {
+      this.toast.error('Upload Valid File Format');
+    }
   }
 
   removePackets() {
