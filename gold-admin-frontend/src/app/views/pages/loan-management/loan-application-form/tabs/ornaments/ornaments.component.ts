@@ -225,8 +225,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   selectKarat(index) {
-    const controls = this.OrnamentsData.at(index) as FormGroup;;
-    controls.controls.ltvPercent.patchValue('');
+    const controls = this.OrnamentsData.at(index) as FormGroup;
+    controls.controls.ltvPercent.reset()
+    controls.controls.ltvPercent.patchValue(null);
     controls.controls.ltvAmount.patchValue(null)
     let karat = this.karatArr.filter(kart => {
       return kart.karat == controls.controls.karat.value
