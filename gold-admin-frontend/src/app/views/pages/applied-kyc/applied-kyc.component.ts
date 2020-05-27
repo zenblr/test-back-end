@@ -26,7 +26,7 @@ export class AppliedKycComponent implements OnInit {
   private subscriptions: Subscription[] = [];
 
   private unsubscribeSearch$ = new Subject();
-  roles = '';
+  userType;
   private destroy$ = new Subject();
 
   constructor(
@@ -37,13 +37,8 @@ export class AppliedKycComponent implements OnInit {
     private sharedService: SharedService,
     private ngxPermissionsService: NgxPermissionsService
   ) {
-    this.sharedService.getRole().subscribe(res => {
-      this.roles = res;
-      if (this.roles == 'Customer Care Executive') {
-        var appraiserIndex = this.displayedColumns.indexOf('appraiser')
-        this.displayedColumns.splice(appraiserIndex, 1)
-      }
-    });
+    let res = this.sharedService.getDataFromStorage()
+    this.userType = res.userDetails.userTypeId;
   }
 
   ngOnInit() {
