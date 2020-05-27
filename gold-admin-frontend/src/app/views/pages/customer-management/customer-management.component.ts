@@ -22,7 +22,7 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
   toogler: string
   dataSource: CustomerManagementDatasource;
   private subscriptions: Subscription[] = [];
-  page = {from:1,to:20}
+  page = { from: 1, to: 20, search: '' }
   customerResult = [];
   constructor(
     private customerManagementService: CustomerManagementService,
@@ -44,6 +44,13 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
     });
     this.subscriptions.push(entitiesSubscription);
 
+    // const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+    //   .subscribe(res => {
+    //     this.searchValue = res;
+    //     this.paginator.pageIndex = 0;
+    //     this.loadLeadsPage();
+    //   });
+
     this.dataSource.isPreloadTextViewed$.subscribe(res => {
       this.isPreloadTextViewed = res
       console.log(res)
@@ -61,12 +68,13 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
   }
 
   loadCustomers(event) {
-    this.dataSource.getCustomers(event.from, event.to, '');
+    console.log(event)
+    this.dataSource.getCustomers(event.from, event.to, event.search);
     this.page.from = event.from;
     this.page.to = event.to;
-
+    this.page.search = event.search;
   }
- 
+
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
   }

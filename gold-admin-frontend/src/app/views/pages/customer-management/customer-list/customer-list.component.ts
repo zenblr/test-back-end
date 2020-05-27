@@ -2,11 +2,12 @@ import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnChanges, S
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
 import { CustomerManagementDatasource } from '../../../../core/customer-management/datasources/customer-management.datasource';
-import { Subscription, merge } from 'rxjs';
+import { Subscription, merge, Subject } from 'rxjs';
 import { CustomerManagementService } from '../../../../core/customer-management/services/customer-management.service';
-import { tap, distinctUntilChanged, skip } from 'rxjs/operators';
+import { tap, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { Router } from '@angular/router';
+import { DataTableService } from '../../../../core/shared/services/data-table.service';
 
 @Component({
   selector: 'kt-customer-list',
@@ -19,7 +20,7 @@ export class CustomerListComponent implements OnInit, OnChanges {
   @Input() data;
   @Input() hasItems
   @Input() isPreloadTextViewed
-  @Output () pagination = new EventEmitter
+  @Output() pagination = new EventEmitter
   @Input() paginatorTotal;
   dataSource: CustomerManagementDatasource;
   displayedColumns = ['fullName', 'customerId', 'mobile', 'pan', 'state', 'city', 'actions'];
@@ -31,11 +32,14 @@ export class CustomerListComponent implements OnInit, OnChanges {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   // Subscriptions
   private subscriptions: Subscription[] = [];
+  searchValue = '';
+  unsubscribeSearch$: any = new Subject();
 
   constructor(
     private customerManagementService: CustomerManagementService,
     private layoutUtilsService: LayoutUtilsService,
-    private router: Router
+    private router: Router,
+    private dataTableService: DataTableService
   ) {
     window.scrollTo(0, 0);
   }
@@ -53,6 +57,14 @@ export class CustomerListComponent implements OnInit, OnChanges {
       tap(() => this.loadLeadsPage())
     ).subscribe()
     this.subscriptions.push(paginatorSubscriptions);
+
+    const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+      .subscribe(res => {
+        console.log(res)
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadLeadsPage();
+      });
 
     // Init DataSource
     this.dataSource = new CustomerManagementDatasource(this.customerManagementService);
@@ -83,7 +95,8 @@ export class CustomerListComponent implements OnInit, OnChanges {
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-    this.pagination.emit({from:from,to:to})
+    let search = this.searchValue;
+    this.pagination.emit({ from: from, to: to, search: search })
     // this.dataSource.getCustomers(from, to, '');
   }
 
@@ -118,8 +131,8 @@ export class CustomerListComponent implements OnInit, OnChanges {
     this.router.navigate(['/customer-management/customer-list/' + id])
   }
 
-  newLoan(customer){
-    this.router.navigate(['/loan-management/loan-application-form/'],{queryParams:{customerID:customer.customerUniqueId}})
+  newLoan(customer) {
+    this.router.navigate(['/loan-management/loan-application-form/'], { queryParams: { customerID: customer.customerUniqueId } })
   }
 
 }

@@ -56,7 +56,8 @@ exports.userLogin = async (req, res, next) => {
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
             roleId: userRoleId,
-            roleName: roleName
+            roleName: roleName,
+            userTypeId: checkUser.userTypeId
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -95,12 +96,21 @@ exports.userLogin = async (req, res, next) => {
         let getPermissions = await models.rolePermission.findAll({ where: { roleId: { [Op.in]: roleId }, isActive: true }, attributes: ['permissionId'] });
         let permissionId = await getPermissions.map((data) => data.permissionId);
         let permissions = await models.permission.findAll({
-                    attributes: ['id', 'actionName','description'],
-                    raw:true,
-                    where: { isActive: true, id: { [Op.in]: permissionId } }
-                },
+            attributes: ['id', 'actionName', 'description'],
+            raw: true,
+            where: { isActive: true, id: { [Op.in]: permissionId } }
+        },
         )
-        return res.status(200).json({ message: 'login successful', Token, modules, permissions, userDetails: checkUser.internalBranches[0] });
+        return res.status(200).json({
+            message: 'login successful', Token, modules, permissions,
+            userDetails: {
+                userTypeId: checkUser.userTypeId,
+                stateId: checkUser.internalBranches[0].stateId,
+                cityId: checkUser.internalBranches[0].cityId,
+                internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
+            }
+        });
+
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
@@ -131,11 +141,11 @@ exports.verifyLoginOtp = async (req, res, next) => {
         return res.status(400).json({ message: `Invalid Otp` })
     }
 
-
+    let checkUser;
     var token = await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
         let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
-        let checkUser = await models.user.findOne({
+        checkUser = await models.user.findOne({
             where: { id: user.id, isActive: true },
             include: [{
                 model: models.role
@@ -153,7 +163,8 @@ exports.verifyLoginOtp = async (req, res, next) => {
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
             roleId: roleId,
-            roleName: roleName
+            roleName: roleName,
+            userTypeId: checkUser.userTypeId
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -175,6 +186,36 @@ exports.verifyLoginOtp = async (req, res, next) => {
         return Token
 
     })
-    return res.status(200).json({ message: 'login successful', token, userDetails: checkUser.internalBranches[0] });
+    let getRole = await models.userRole.getAllRole(checkUser.dataValues.id);
+    let roleId = await getRole.map((data) => data.roleId);
+    let modules = await models.roleModule.findAll({
+        where: { roleId: { [Op.in]: roleId }, isActive: true },
+        attributes: [],
+        include: [
+            {
+                model: models.module,
+                as: 'module',
+                attributes: ['id', 'moduleName'],
+                where: { isActive: true }
+            },
+        ]
+    });
+
+    let getPermissions = await models.rolePermission.findAll({ where: { roleId: { [Op.in]: roleId }, isActive: true }, attributes: ['permissionId'] });
+    let permissionId = await getPermissions.map((data) => data.permissionId);
+    let permissions = await models.permission.findAll({
+        attributes: ['id', 'actionName', 'description'],
+        raw: true,
+        where: { isActive: true, id: { [Op.in]: permissionId } }
+    },
+    )
+    return res.status(200).json({
+        message: 'login successful', token, modules, permissions, userDetails: {
+            userTypeId: checkUser.userTypeId,
+            stateId: checkUser.internalBranches[0].stateId,
+            cityId: checkUser.internalBranches[0].cityId,
+            internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
+        }
+    });
 
 }

@@ -27,6 +27,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 
 	@ViewChild('asideMenu', { static: true }) asideMenu: ElementRef;
 
+    private returnUrl: string;
 	currentRouteUrl = '';
 	insideTm: any;
 	outsideTm: any;
@@ -81,6 +82,12 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		private auth: AuthService,
 		private sharedService: SharedService
 	) {
+		this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                if (event.url != '/logout' && event.url != '/auth' && event.url != '/login')
+                    this.returnUrl = event.url;
+            }
+        });
 	}
 
 	ngAfterViewInit(): void {
@@ -231,7 +238,8 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			res => {
 				localStorage.clear();
 				this.sharedService.role.next(null);
-				this.router.navigate(['/auth/login']);
+				this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl }});
+
 			}
 		), catchError(err => {
 			throw err
