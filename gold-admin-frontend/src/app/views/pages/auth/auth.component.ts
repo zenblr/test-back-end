@@ -37,7 +37,7 @@ export class AuthComponent implements OnInit {
 		private translationService: TranslationService,
 		private splashScreenService: SplashScreenService,
 		public router: Router,
-		private location: Location) {
+		public location: Location) {
 		
 	}
 
