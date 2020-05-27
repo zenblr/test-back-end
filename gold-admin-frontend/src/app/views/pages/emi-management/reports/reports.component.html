@@ -89,6 +89,7 @@
                             <select class="form-control" formControlName="statusId"
                                 [class.isError]="controls.statusId.touched && controls.statusId.invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                <option value="0">All</option>
                                 <option [value]="item.statusId" *ngFor="let item of status">
                                     {{item.statusName | titlecase}}</option>
                             </select>
