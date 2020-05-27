@@ -1,0 +1,46 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="alertId">
+                    <mat-header-cell *matHeaderCellDef>Alert Id</mat-header-cell>
+                    <mat-cell *matCellDef="let alert">{{alert.mobileNumber}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="subject">
+                    <mat-header-cell *matHeaderCellDef>Alert For</mat-header-cell>
+                    <mat-cell *matCellDef="let alert">{{alert.mobileNumber}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="content">
+                    <mat-header-cell *matHeaderCellDef>Content</mat-header-cell>
+                    <mat-cell *matCellDef="let alert">{{alert.mobileNumber}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                    <mat-cell *matCellDef="let alert">
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <div class="kt-pointer" (click)="viewAlert(alert)">View &nbsp;|&nbsp;</div>
+                            <div class="kt-pointer" (click)="editAlert(alert)">Edit &nbsp;|&nbsp;</div>
+                            <div class="kt-pointer text-danger" (click)="deleteAlert(alert)">
+                                <span class="text-danger">Delete</span></div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+            </mat-table>
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+        <div class="mat-table__bottom">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

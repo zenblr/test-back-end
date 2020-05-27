@@ -466,7 +466,7 @@ export class TopbarComponent implements OnInit {
 			this.emailAlertService.openModal.next(true);
 		}
 		if (this.path == "sms-alert") {
-			this.emailAlertService.openModal.next(true);
+			this.smsAlertService.openDialog.next(true);
 		}
 		if (this.path == "order-details") {
 			this.orderDetailsService.exportExcel.next(true);
