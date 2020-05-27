@@ -72,6 +72,8 @@ export class TopbarComponent implements OnInit {
 	downloadbtn: boolean = false;
 	showBackButton = false;
 	permissionType = "";
+	showDropdown = false;
+	isDisabled = false;
 
 	constructor(
 		public sharedService: SharedService,
@@ -177,6 +179,7 @@ export class TopbarComponent implements OnInit {
 		this.showInput = false;
 		this.toogle = false;
 		this.showBackButton = false;
+		this.showDropdown = false;
 		this.permissionType = "";
 	}
 
@@ -327,6 +330,7 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = "600px";
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
+			this.showDropdown = true;
 		}
 		if (this.path == "cancel-order-details") {
 			this.showInput = true;
@@ -486,6 +490,17 @@ export class TopbarComponent implements OnInit {
 
 	check(val) {
 		this.customerManagementServiceCustomer.toggle.next(val);
+	}
+
+	selectedValue(value: string) {
+		this.orderDetailsService.dropdownValue.next(value);
+	}
+
+	buttonValue(value) {
+		console.log(value);
+		if (location.href.includes("edit-order-details")) {
+			this.orderDetailsService.buttonValue.next(value);
+		}
 	}
 
 	applyFilter(data) {

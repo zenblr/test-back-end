@@ -13,11 +13,21 @@
         </div>
         <div class="col-6 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
+            <div *ngIf="showDropdown" ngbDropdown class="d-inline-block">
+                <button class="btn-custom kt-margin-r-10 kt-margin-l-10" mat-raised-button id="dropdownBasic1"
+                    ngbDropdownToggle [disabled]="isDisabled">Generate</button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                    <button ngbDropdownItem (click)="selectedValue('label')">Label</button>
+                    <button ngbDropdownItem (click)="selectedValue('mainfest')">Mainfest</button>
+                    <button ngbDropdownItem (click)="selectedValue('deliMainfest')">Deli Mainfest</button>
+                    <button ngbDropdownItem (click)="selectedValue('uninsuredMainfest')">Uninsured Mainfest</button>
+                </div>
+            </div>
             <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)"
-                class="kt-margin-r-10 kt-margin-l-10">
+                (action)="buttonValue($event)" class="kt-margin-r-10 kt-margin-l-10">
             </kt-button>
             <kt-button *ngIf="value4" [value]='value4' [type]='type4' (click)="action($event)"
-                class="kt-margin-r-10 kt-margin-l-10">
+                (action)="buttonValue($event)" class="kt-margin-r-10 kt-margin-l-10">
             </kt-button>
             <div *ngIf="downloadbtn">
                 <p class="text-right mb-0 kt-pointer" (click)="download()">{{value3}}</p>

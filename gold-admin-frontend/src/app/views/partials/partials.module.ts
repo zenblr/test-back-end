@@ -1,15 +1,20 @@
 // Angular
-import { RouterModule } from '@angular/router';
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AngularMaterialModule } from '../pages/angular-material/angular-material.module'
+import { RouterModule } from "@angular/router";
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { AngularMaterialModule } from "../pages/angular-material/angular-material.module";
 // NgBootstrap
-import { NgbDropdownModule, NgbTabsetModule, NgbTooltipModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+	NgbDropdownModule,
+	NgbTabsetModule,
+	NgbTooltipModule,
+	NgbModule,
+} from "@ng-bootstrap/ng-bootstrap";
 // Perfect Scrollbar
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 // Core module
-import { CoreModule } from '../../core/core.module';
+import { CoreModule } from "../../core/core.module";
 // CRUD Partials
 import {
 	ActionNotificationComponent,
@@ -17,7 +22,7 @@ import {
 	DeleteEntityDialogComponent,
 	FetchEntityDialogComponent,
 	UpdateStatusDialogComponent,
-} from './content/crud';
+} from "./content/crud";
 // Layout partials
 import {
 	ContextMenu2Component,
@@ -41,34 +46,34 @@ import {
 	UserProfile2Component,
 	UserProfile3Component,
 	UserProfileComponent,
-} from './layout';
+} from "./layout";
 // General
-import { NoticeComponent } from './content/general/notice/notice.component';
-import { PortletModule } from './content/general/portlet/portlet.module';
+import { NoticeComponent } from "./content/general/notice/notice.component";
+import { PortletModule } from "./content/general/portlet/portlet.module";
 // Errpr
-import { ErrorComponent } from './content/general/error/error.component';
+import { ErrorComponent } from "./content/general/error/error.component";
 // Extra module
-import { WidgetModule } from './content/widgets/widget.module';
+import { WidgetModule } from "./content/widgets/widget.module";
 // SVG inline
-import { InlineSVGModule } from 'ng-inline-svg';
-import { CartComponent } from './layout/topbar/cart/cart.component';
-import { ToastrComponent } from './components/toastr/toastr.component';
-import { ButtonComponent } from './components/button/button.component';
-import { FilterComponent } from './components/filter/filter.component';
-import { SearchComponent } from './components/search/search.component';
-import { ModalHeaderComponent } from './components/modal/modal-header/modal-header.component';
-import { ModalFooterComponent } from './components/modal/modal-footer/modal-footer.component';
+import { InlineSVGModule } from "ng-inline-svg";
+import { CartComponent } from "./layout/topbar/cart/cart.component";
+import { ToastrComponent } from "./components/toastr/toastr.component";
+import { ButtonComponent } from "./components/button/button.component";
+import { FilterComponent } from "./components/filter/filter.component";
+import { SearchComponent } from "./components/search/search.component";
+import { ModalHeaderComponent } from "./components/modal/modal-header/modal-header.component";
+import { ModalFooterComponent } from "./components/modal/modal-footer/modal-footer.component";
 import { LoanSchemeComponent } from "../../views/pages/loan-settings/loan-scheme/loan-scheme.component";
 
 // spinner
-import { UplodDataImageComponent } from './components/uplod-data-image/uplod-data-image.component';
-import { ImagePreviewDialogComponent } from './components/image-preview-dialog/image-preview-dialog.component';
-import { UserClassificationComponent } from './components/user-classification/user-classification.component';
-import { UplodPreviewImageComponent } from './components/uplod-preview-image/uplod-preview-image.component';
-import { SelectWithSearchComponent } from './components/select-with-search/select-with-search.component';
+import { UplodDataImageComponent } from "./components/uplod-data-image/uplod-data-image.component";
+import { ImagePreviewDialogComponent } from "./components/image-preview-dialog/image-preview-dialog.component";
+import { UserClassificationComponent } from "./components/user-classification/user-classification.component";
+import { UplodPreviewImageComponent } from "./components/uplod-preview-image/uplod-preview-image.component";
+import { SelectWithSearchComponent } from "./components/select-with-search/select-with-search.component";
 
-import { NgSelectModule } from '@ng-select/ng-select';
-import { UserReviewComponent } from '../pages/kyc-settings/tabs/user-review/user-review.component';
+import { NgSelectModule } from "@ng-select/ng-select";
+import { UserReviewComponent } from "../pages/kyc-settings/tabs/user-review/user-review.component";
 
 @NgModule({
 	declarations: [
@@ -129,7 +134,7 @@ import { UserReviewComponent } from '../pages/kyc-settings/tabs/user-review/user
 		UplodPreviewImageComponent,
 
 		SelectWithSearchComponent,
-		UserReviewComponent
+		UserReviewComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -181,9 +186,9 @@ import { UserReviewComponent } from '../pages/kyc-settings/tabs/user-review/user
 		UserClassificationComponent,
 		UplodPreviewImageComponent,
 		SelectWithSearchComponent,
-		UserReviewComponent
+		UserReviewComponent,
 		// spinner
-
+		NgbDropdownModule,
 	],
 	imports: [
 		NgbModule,
@@ -203,13 +208,10 @@ import { UserReviewComponent } from '../pages/kyc-settings/tabs/user-review/user
 		NgbTabsetModule,
 		NgbTooltipModule,
 		NgbModule,
-		NgSelectModule
+		NgSelectModule,
 
 		// spinner
 	],
-	entryComponents: [
-		ImagePreviewDialogComponent
-	]
+	entryComponents: [ImagePreviewDialogComponent],
 })
-export class PartialsModule {
-}
+export class PartialsModule {}
