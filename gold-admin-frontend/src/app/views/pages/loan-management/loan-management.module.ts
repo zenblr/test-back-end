@@ -27,6 +27,7 @@ import { InterestCalculatorComponent } from './loan-application-form/tabs/intere
 import { DeleteEntityDialogComponent } from '../../partials/content/crud';
 import { LoanDetailsComponent } from './loan-details/loan-details.component';
 import { DisburseDialogComponent } from './disburse-dialog/disburse-dialog.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -86,6 +87,7 @@ const rout: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(rout),
+    NgxPermissionsModule.forChild(),
     AngularMaterialModule,
     ReactiveFormsModule,
     FormsModule,

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject, Subscription, merge } from 'rxjs';
-import {KaratDetailsDataSource} from '../../../../../core/loan-setting/karat-details/datasource/karat-details.datasource'
+import { KaratDetailsDataSource } from '../../../../../core/loan-setting/karat-details/datasource/karat-details.datasource'
 import { MatPaginator, MatDialog, MatSort } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'lodash';
@@ -10,6 +10,7 @@ import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud'
 import { KaratDetailsService } from '../../../../../core/loan-setting/karat-details/services/karat-details.service';
 import { takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
 import { AddKaratDetailsComponent } from '../add-karat-details/add-karat-details.component';
+import { NgxPermissionsService } from 'ngx-permissions';
 @Component({
   selector: 'kt-list-karat-details',
   templateUrl: './list-karat-details.component.html',
@@ -19,43 +20,47 @@ export class ListKaratDetailsComponent implements OnInit {
 
   destroy$ = new Subject();
   private subscriptions: Subscription[] = [];
-  public logisticPartner:any=[];
+  public logisticPartner: any = [];
   dataSource: KaratDetailsDataSource;
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
- /**
-  * @param layoutUtilsService:LayoutUtilsService
-  */
-  displayedColumns = ['karat','fromPercentage','toPercentage','actions'];
+  /**
+   * @param layoutUtilsService:LayoutUtilsService
+   */
+  displayedColumns = ['karat', 'fromPercentage', 'toPercentage', 'actions'];
   // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   partnerService: any;
- 
-  constructor(public dialog: MatDialog, private karatDetailsServices:KaratDetailsService,    private dataTableService: DataTableService,    private layoutUtilsService: LayoutUtilsService,
-    private toast:ToastrService
 
-    ) {
-    
-      this.karatDetailsServices.openModal$.pipe(
-        // // map((res)=>{
-        // //   if (res) {
-        // //     this.addRole();
-        // //   }
-        // }),
-        takeUntil(this.destroy$)).subscribe((res=>{
-          if(res){
-            this.addRole()
-          }
-        }));
-  
+  constructor(
+    public dialog: MatDialog,
+    private karatDetailsServices: KaratDetailsService,
+    private dataTableService: DataTableService,
+    private layoutUtilsService: LayoutUtilsService,
+    private toast: ToastrService,
+    private ngxPermissionService: NgxPermissionsService
+  ) {
+
+    this.karatDetailsServices.openModal$.pipe(
+      takeUntil(this.destroy$)).subscribe((res => {
+        if (res) {
+          this.addRole()
+        }
+      }));
+
   }
- 
- 
+
+
   ngOnInit() {
+    this.ngxPermissionService.permissions$.subscribe(res => {
+      if (!(res.karatDetailsEdit || res.karatDetailsDelete))
+        this.displayedColumns.splice(3, 1)
+    })
+
     // const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     // this.subscriptions.push(sortSubscription);
-  
+
     // const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
     //   tap(() => {
     // //     this.loadBranchPage();
@@ -101,7 +106,7 @@ export class ListKaratDetailsComponent implements OnInit {
 
     this.dataSource.loadKaratDetails();
   }
-   /** ACTIONS */
+  /** ACTIONS */
 	/**
 	 * Delete role
 	 *
@@ -132,8 +137,9 @@ export class ListKaratDetailsComponent implements OnInit {
 
 
   addRole(): void {
-      const dialogRef = this.dialog.open(AddKaratDetailsComponent, {
-         data: { action: 'add' }, width: '450px' });
+    const dialogRef = this.dialog.open(AddKaratDetailsComponent, {
+      data: { action: 'add' }, width: '450px'
+    });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadBranchPage();
@@ -146,18 +152,18 @@ export class ListKaratDetailsComponent implements OnInit {
 	 *
 	 * @param role: Role
 	 */
-    editRole(role: Role) {
-      const _saveMessage = `Role successfully has been saved.`;
-      const _messageType = role.id ? MessageType.Update : MessageType.Create;
-      const dialogRef = this.dialog.open(AddKaratDetailsComponent, {
-        data: { karatDetailsId: role.id, action: 'edit' },
-        width: '450px'
-      });
-      dialogRef.afterClosed().subscribe(res => {
-        if (res) {
-          this.loadBranchPage();
-        }
-      });
-    
-}
+  editRole(role: Role) {
+    const _saveMessage = `Role successfully has been saved.`;
+    const _messageType = role.id ? MessageType.Update : MessageType.Create;
+    const dialogRef = this.dialog.open(AddKaratDetailsComponent, {
+      data: { karatDetailsId: role.id, action: 'edit' },
+      width: '450px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadBranchPage();
+      }
+    });
+
+  }
 }

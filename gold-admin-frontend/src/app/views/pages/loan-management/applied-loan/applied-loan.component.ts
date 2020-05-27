@@ -7,6 +7,7 @@ import { AppliedLoanDatasource, AppliedLoanService } from '../../../../core/loan
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.component';
+import { NgxPermissionsService } from 'ngx-permissions';
 @Component({
   selector: 'kt-applied-loan',
   templateUrl: './applied-loan.component.html',
@@ -14,7 +15,7 @@ import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.comp
 })
 export class AppliedLoanComponent implements OnInit {
 
-  roles: any
+  userType: any
   dataSource: AppliedLoanDatasource;
   displayedColumns = ['fullName', 'customerID', 'mobile', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions', 'view'];
   leadsResult = []
@@ -28,20 +29,28 @@ export class AppliedLoanComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
+  edit: boolean;
 
   constructor(
     public dialog: MatDialog,
     private AppliedLoanService: AppliedLoanService,
     private dataTableService: DataTableService,
     private router: Router,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private ngxPermission:NgxPermissionsService
   ) {
+    this.ngxPermission.permissions$.subscribe(res=>{
+      if(res.loanDetailsEdit){
+        this.edit = true
+      }else{
+        this.edit = false
+      }
+    })
   }
 
   ngOnInit() {
-    this.sharedService.getRole().subscribe(res => {
-      this.roles = res
-    })
+    let res = this.sharedService.getDataFromStorage();
+    this.userType = res.userDetails.userTypeId
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
@@ -108,9 +117,9 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   editLoan(loan) {
-    if (((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
-        && this.roles == 'Branch Manager' && loan.loanStatusForAppraiser == 'approved') || (loan.loanStatusForAppraiser == 'pending'
-          && this.roles == 'Appraiser')) {
+    if ((((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
+        && this.userType == 5 && loan.loanStatusForAppraiser == 'approved') || (loan.loanStatusForAppraiser == 'pending'
+          && this.userType == 7) && this.edit)) {
       this.router.navigate(['/loan-management/loan-application-form', loan.id])
     }
   }

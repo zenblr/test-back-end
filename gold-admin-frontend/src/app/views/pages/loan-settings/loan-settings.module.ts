@@ -18,6 +18,7 @@ import { LoanSchemeComponent } from './loan-scheme/loan-scheme.component';
 import { CoreModule } from '../../../core/core.module';
 import { AddKaratDetailsComponent } from './karat-details/add-karat-details/add-karat-details.component';
 import { ListKaratDetailsComponent } from './karat-details/list-karat-details/list-karat-details.component'
+import { NgxPermissionsModule } from 'ngx-permissions';
 const routes: Routes = [
   { path: 'loan-status', component: LoanStatusComponent },
   { path: 'scheme', component: LoanSchemeComponent },
@@ -36,7 +37,7 @@ const routes: Routes = [
     HttpClientModule,
     PartialsModule,
     RouterModule.forChild(routes),
-
+    NgxPermissionsModule.forChild(),
     FormsModule,
     ReactiveFormsModule,
     TranslateModule.forChild(),

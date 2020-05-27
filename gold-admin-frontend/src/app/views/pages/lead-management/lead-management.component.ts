@@ -73,9 +73,6 @@ export class LeadManagementComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // First load
-    // this.loadLeadsPage();
-
     this.dataSource.loadLeads(1, 25, this.searchValue, this.stageName);
   }
 

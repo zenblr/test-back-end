@@ -161,7 +161,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     const group = this.OrnamentsData.at(index) as FormGroup;
     if (group.controls.grossWeight.valid && group.controls.netWeight.valid) {
       const deductionWeight = group.controls.grossWeight.value - group.controls.netWeight.value;
-      group.controls.deductionWeight.patchValue(deductionWeight);
+      group.controls.deductionWeight.patchValue(deductionWeight.toFixed(2));
       this.finalNetWeight(index)
     }
   }
@@ -225,8 +225,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   selectKarat(index) {
-    const controls = this.OrnamentsData.at(index) as FormGroup;;
-    controls.controls.ltvPercent.patchValue('');
+    const controls = this.OrnamentsData.at(index) as FormGroup;
+    controls.controls.ltvPercent.reset()
+    controls.controls.ltvPercent.patchValue(null);
     controls.controls.ltvAmount.patchValue(null)
     let karat = this.karatArr.filter(kart => {
       return kart.karat == controls.controls.karat.value
