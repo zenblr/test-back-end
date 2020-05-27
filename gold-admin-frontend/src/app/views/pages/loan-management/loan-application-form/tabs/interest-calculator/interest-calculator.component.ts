@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, OnChanges, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PartnerService } from '../../../../../../core/user-management/partner/services/partner.service';
-import { map } from 'rxjs/operators';
+import { map, last, takeLast, switchMap } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'kt-interest-calculator',
@@ -75,13 +76,12 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   partner() {
-    this.partnerService.getPartnerBySchemeAmount(Math.floor(this.totalAmt)).pipe(
-      map(res => {
-        this.partnerList = res.data;
+    this.partnerService.getPartnerBySchemeAmount(Math.floor(this.totalAmt)).subscribe(res => {
+        this.partnerList = res['data'];
         if (this.controls.schemeId.value) {
           this.returnScheme()
         }
-      })).subscribe()
+      })
   }
 
   getSchemes() {
@@ -174,22 +174,22 @@ export class InterestCalculatorComponent implements OnInit {
         case "30":
           if (this.schemesList.length > 0)
             this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateThirtyDaysMonthly)
-          
-            this.colJoin = null
-          
-            break;
+
+          this.colJoin = null
+
+          break;
         case "90":
           if (this.schemesList.length > 0)
             this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateNinetyDaysMonthly)
-          
-            this.colJoin = 3
+
+          this.colJoin = 3
 
           break;
         case "180":
           if (this.schemesList.length > 0)
             this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateOneHundredEightyDaysMonthly)
-          
-            this.colJoin = 6
+
+          this.colJoin = 6
 
           break;
       }

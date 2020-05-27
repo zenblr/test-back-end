@@ -13,20 +13,20 @@
                     </div>
                     <div class="col-4 border text-center">
                         <img src="../../../../../../../assets/media/icons/correct.svg"
-                            [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable )}"
+                            [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
                             *ngIf="controls.applicationFormForAppraiser.value"
                             (click)="approvalOfAppraiser(false,'form')">
                         <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                            [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable )}"
+                            [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
                             *ngIf="!controls.applicationFormForAppraiser.value"
                             (click)="approvalOfAppraiser(true,'form')">
                     </div>
                     <div class="col-4 text-center" *ngIf="viewBMForm">
                         <img src="../../../../../../../assets/media/icons/correct.svg"
-                            [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
+                            [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
                             *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
                         <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                            [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
+                            [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
                             *ngIf="!controls.applicationFormForBM.value" (click)="approvalOfBM(true,'form')">
                     </div>
                 </div>
@@ -36,21 +36,21 @@
                     </div>
                     <div class="col-4 border text-center">
                         <img src="../../../../../../../assets/media/icons/correct.svg"
-                            [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable)}"
+                            [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
                             *ngIf="controls.goldValuationForAppraiser.value"
                             (click)="approvalOfAppraiser(false,'gold')">
                         <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                            [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable)}"
+                            [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
                             *ngIf="!controls.goldValuationForAppraiser.value"
                             (click)="approvalOfAppraiser(true,'gold')">
 
                     </div>
                     <div class="col-4 text-center" *ngIf="viewBMForm">
                         <img src="../../../../../../../assets/media/icons/correct.svg"
-                            [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable )}"
+                            [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable )}"
                             *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')" disabled>
                         <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                            [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
+                            [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
                             *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')" disabled>
 
                     </div>
@@ -90,7 +90,7 @@
                         <tr>
                             <th scope="col" style="width: 40%" class="rating-title">Field</th>
                             <th scope="col" style="width: 30%" class="rating-cce">Appraiser</th>
-                            <th scope="col" style="width: 30%" class="rating-bm" *ngIf="viewBMForm">Branch Manager</th>
+                            <th scope="col" style="width: 30%" class="rating-bm text-center" *ngIf="viewBMForm">Branch Manager</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -98,20 +98,20 @@
                             <td scope="row" class="rating-title">Loan Application Form</td>
                             <td class="rating-cce">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable )}"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
                                     *ngIf="controls.applicationFormForAppraiser.value"
                                     (click)="approvalOfAppraiser(false,'form')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable )}"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
                                     *ngIf="!controls.applicationFormForAppraiser.value"
                                     (click)="approvalOfAppraiser(true,'form')">
                             </td>
                             <td class="rating-bm text-center" *ngIf="viewBMForm">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
                                     *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
                                     *ngIf="!controls.applicationFormForBM.value" (click)="approvalOfBM(true,'form')">
                             </td>
                         </tr>
@@ -120,21 +120,21 @@
                             </td>
                             <td class="rating-cce">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
                                     *ngIf="controls.goldValuationForAppraiser.value"
                                     (click)="approvalOfAppraiser(false,'gold')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(role !='Appraiser' || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
                                     *ngIf="!controls.goldValuationForAppraiser.value"
                                     (click)="approvalOfAppraiser(true,'gold')">
                             </td>
                             <td class="rating-bm text-center" *ngIf="viewBMForm">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable )}"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable )}"
                                     *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')"
                                     disabled>
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(role !='Branch Manager' || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
                                     *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')"
                                     disabled>
                             </td>
