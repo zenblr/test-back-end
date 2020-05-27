@@ -17,7 +17,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
   appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }];
   branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
-  role: any = ''
+  userType: any = ''
   @Input() action;
   @Output() apply: EventEmitter<any> = new EventEmitter<any>();
 
@@ -39,17 +39,16 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.getRoles()
   }
   getRoles() {
-    this.sharedSerive.getRole().subscribe(res => {
-      this.role = res
-      if (this.role == 'Appraiser') {
+    let res = this.sharedSerive.getDataFromStorage()
+      this.userType = res.userDetails.userTypeId
+      if (this.userType == 7) {
         this.controls.loanStatusForBM.disable()
         this.viewBMForm = false;
-      } else if (this.role == 'Branch Manager') {
+      } else if (this.userType == 5) {
         this.controls.loanStatusForAppraiser.disable()
       } else {
         this.approvalForm.disable()
       }
-    })
   }
 
   initForm() {
@@ -94,7 +93,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   approvalOfAppraiser(value: boolean, type: string) {
-    if (this.role == 'Appraiser' && !this.disable) {
+    if (this.userType == 7 && !this.disable) {
       if (type == 'gold') {
         this.controls.goldValuationForAppraiser.patchValue(value)
       } else {
@@ -103,7 +102,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   approvalOfBM(value: boolean, type: string) {
-    if (this.role == 'Branch Manager' && !this.disable) {
+    if (this.userType == 5 && !this.disable) {
       if (type == 'gold') {
         this.controls.goldValuationForBM.patchValue(value)
       } else {

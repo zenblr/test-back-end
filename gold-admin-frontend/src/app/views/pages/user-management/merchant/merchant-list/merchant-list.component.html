@@ -72,7 +72,7 @@
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <mat-slide-toggle [color]="'accent'" [checked]="merchant.status"
-                            (change)="toogle(merchant,$event.checked)">
+                        *ngxPermissionsOnly="['merchantAdd','merchantEdit']" (change)="toogle(merchant,$event.checked)">
                         </mat-slide-toggle>
                     </mat-cell>
                 </ng-container>
@@ -81,11 +81,13 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let merchant">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="viewMerchant(merchant)" class="kt-pointer"> View
+                            <div (click)="viewMerchant(merchant)" class="kt-pointer" 
+                            *ngxPermissionsOnly="['merchantView']"> View
                                 |
                                 &nbsp;
                             </div>
-                            <div (click)="editMerchant(merchant)" class="kt-pointer"> Edit
+                            <div (click)="editMerchant(merchant)" class="kt-pointer"
+                            *ngxPermissionsOnly="['merchantEdit']"> Edit
 
                             </div>
                         </div>
@@ -93,7 +95,9 @@
                 </ng-container>
                 <ng-container matColumnDef="apiKey">
                     <mat-header-cell *matHeaderCellDef>API Key</mat-header-cell>
-                    <mat-cell *matCellDef="let merchant" (click)="apiKey(merchant)" class="kt-pointer">View API
+                    <mat-cell *matCellDef="let merchant"> <div (click)="apiKey(merchant)"
+                    *ngxPermissionsOnly="['merchantAdd','merchantEdit']" class="kt-pointer">View API
+                    </div>
                     </mat-cell>
                 </ng-container>
 

@@ -37,7 +37,7 @@ export class AuthComponent implements OnInit {
 		private translationService: TranslationService,
 		private splashScreenService: SplashScreenService,
 		public router: Router,
-		private location: Location) {
+		public location: Location) {
 		
 	}
 
@@ -53,6 +53,7 @@ export class AuthComponent implements OnInit {
 		this.headerLogo = this.layoutConfigService.getLogo();
 
 		this.splashScreenService.hide();
+		console.log(this.location.path().includes('login'))
 	}
 
 	/**
