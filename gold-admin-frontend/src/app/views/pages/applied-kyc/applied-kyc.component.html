@@ -86,9 +86,11 @@
                 <ng-container matColumnDef="appraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role" class="kt-pointer">
-                        <button class="apply-kyc" (click)="assign()"
-                            *ngIf="role.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved' && roles == 'Branch Manager'">Assign
-                            Appraiser</button>
+                        <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
+                            <button class="apply-kyc" (click)="assign()"
+                                *ngIf="role.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved'">Assign
+                                Appraiser</button>
+                        </div>
                     </mat-cell>
                 </ng-container>
 
