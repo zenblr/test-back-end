@@ -14,7 +14,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, address, statusId, comment, pinCode, internalBranchId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -44,21 +44,6 @@ exports.addCustomer = async (req, res, next) => {
       { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true },
       { transaction: t }
     );
-    if (check.isEmpty(address.length)) {
-      for (let i = 0; i < address.length; i++) {
-        let data = await models.customerAddress.create(
-          {
-            customerId: customer.id,
-            address: address[i].address,
-            landMark: address[i].landMark,
-            stateId: address[i].stateId,
-            cityId: address[i].cityId,
-            postalCode: address[i].postalCode,
-          },
-          { transaction: t }
-        );
-      }
-    }
   });
   return res.status(200).json({ messgae: `Customer created` });
 };
@@ -270,7 +255,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
-    attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    attributes: { exclude: ['mobileNumber', 'createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
     order: [["id", "DESC"]],
     offset: offset,
     limit: pageSize,
@@ -445,10 +430,6 @@ exports.getsingleCustomerManagement = async (req, res) => {
           model: models.city,
           as: "city"
         }]
-      },
-      {
-        model: models.customerKycBankDetail,
-        as: 'customerKycBank'
       },
       {
         model: models.customerLoan,

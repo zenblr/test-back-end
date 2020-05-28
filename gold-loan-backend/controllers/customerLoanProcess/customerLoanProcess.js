@@ -63,11 +63,6 @@ exports.customerDetails = async (req, res, next) => {
                 model: models.addressProofType,
                 as: 'addressProofType'
             }]
-        }, {
-            model: models.customerKycBankDetail,
-            // where: { isActive: true },
-            as: 'customerKycBank',
-            attributes: ['id', 'bankName', 'bankBranchName', 'accountNumber', 'ifscCode', 'accountType', 'accountHolderName', 'passbookProof']
         }]
     }
     )
