@@ -15,7 +15,7 @@ import {
 } from "../../../../../../core/emi-management/order-management";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { EmiDetailsViewComponent } from "../emi-details-view/emi-details-view.component";
-import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { SharedService } from "../../../../../../core/shared/services/shared.service";
 
 @Component({
 	selector: "kt-emi-details-list",
@@ -59,7 +59,7 @@ export class EmiDetailsListComponent implements OnInit {
 		private layoutUtilsService: LayoutUtilsService,
 		private emiDetailsService: EmiDetailsService,
 		private dataTableService: DataTableService,
-		private sharedService: SharedService,
+		private sharedService: SharedService
 	) {
 		this.emiDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -137,7 +137,7 @@ export class EmiDetailsListComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-			this.paginator.length / this.paginator.pageSize
+				this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -170,7 +170,9 @@ export class EmiDetailsListComponent implements OnInit {
 		});
 	}
 
-	printCancellationReceipt(order) { }
+	printCancellationReceipt(emi) {
+		this.emiDetailsService.emiReceipt(emi.id).subscribe();
+	}
 
 	downloadReport() {
 		this.emiDetailsService.reportExport().subscribe();
@@ -182,7 +184,7 @@ export class EmiDetailsListComponent implements OnInit {
 		this.emiData.orderemistatus = data.filterData.multiSelect1;
 		this.dataSource.loadEmiDetails(this.emiData);
 	}
-	
+
 	/**
 	 * On Destroy
 	 */

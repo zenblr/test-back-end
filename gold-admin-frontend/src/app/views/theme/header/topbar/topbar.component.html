@@ -14,7 +14,7 @@
         </div>
         <div class="col-6 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
-            <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)"
+            <kt-button *ngIf="value1 && button" [value]='value1' [type]='type1' (click)="action($event)"
                 (action)="buttonValue($event)" class="kt-margin-r-10 kt-margin-l-10">
             </kt-button>
             <kt-button *ngIf="value4" [value]='value4' [type]='type4' (click)="action($event)"

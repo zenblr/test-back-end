@@ -72,7 +72,7 @@ export class TopbarComponent implements OnInit {
 	downloadbtn: boolean = false;
 	showBackButton = false;
 	permissionType = "";
-
+	button = true;
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -115,6 +115,16 @@ export class TopbarComponent implements OnInit {
 					this.downloadbtn = true;
 				} else {
 					this.downloadbtn = false;
+				}
+			});
+
+		this.orderDetailsService.button$
+			.pipe(takeUntil(this.destroy$))
+			.subscribe((res) => {
+				if (res && res == "spot") {
+					this.button = false;
+				} else {
+					this.button = true;
 				}
 			});
 	}

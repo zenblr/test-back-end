@@ -68,6 +68,9 @@ export class OrderDetailsEditComponent implements OnInit {
 				.pipe(
 					map((res) => {
 						this.orderInfo = res;
+						let paymentType = this.orderInfo.allOrderData
+							.paymentType.paymentType;
+						this.orderDetailsService.button.next(paymentType);
 						this.editOrder();
 					})
 					// catchError(err => {
@@ -256,7 +259,8 @@ export class OrderDetailsEditComponent implements OnInit {
 	ngOnDestroy() {
 		this.destroy$.next();
 		this.destroy$.complete();
-		this.orderDetailsService.buttonValue.next(null);
+		this.orderDetailsService.buttonValue.next({});
+		this.orderDetailsService.button.next({});
 		this.sharedService.closeFilter.next(true);
 	}
 }
