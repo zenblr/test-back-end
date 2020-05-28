@@ -67,8 +67,8 @@ export class OrderDetailsListComponent implements OnInit {
 	private unsubscribeSearch$ = new Subject();
 	searchValue = "";
 	orderData = {
-		from: 0,
-		to: 0,
+		from: 1,
+		to: 25,
 		search: "",
 		weight: 0,
 		paymentType: 0,

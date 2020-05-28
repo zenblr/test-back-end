@@ -62,8 +62,8 @@ export class CancelOrderDetailsListComponent implements OnInit {
 	private unsubscribeSearch$ = new Subject();
 	searchValue = "";
 	cancelData = {
-		from: 0,
-		to: 0,
+		from: 1,
+		to: 25,
 		search: "",
 		cancelDate: "",
 		merchantName: "",
