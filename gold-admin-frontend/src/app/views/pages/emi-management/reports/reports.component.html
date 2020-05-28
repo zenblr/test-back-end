@@ -12,8 +12,10 @@
                             <select class="form-control" formControlName="reportType"
                                 [class.isError]="controls.reportType.touched && controls.reportType.invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select Report</option>
-                                <option [value]="item.id" *ngFor="let item of reportTypes">
-                                    {{item.name | titlecase}}</option>
+                                <ng-container *ngFor="let item of reportTypes">
+                                    <option *ngIf="item?.permission" [value]="item.id">
+                                        {{item.name | titlecase}}</option>
+                                </ng-container>
                             </select>
                             <div *ngIf="controls.reportType.touched && controls.reportType.invalid">
                                 <mat-error *ngIf="controls.reportType.touched && controls.reportType.errors?.required">
@@ -41,8 +43,8 @@
                             <select class="form-control" formControlName="merchantId"
                                 [class.isError]="controls.merchantId.touched && controls.merchantId.invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select Report</option>
-                                <option [value]="item.id" *ngFor="let item of merchantName">
-                                    {{item.merchantName | titlecase}}</option>
+                                <option [value]="item.id" *ngFor="let item of merchantList">
+                                    {{item?.merchantName | titlecase}}</option>
                             </select>
                             <div *ngIf="controls.merchantId.touched && controls.merchantId.invalid">
                                 <mat-error *ngIf="controls.merchantId.touched && controls.merchantId.errors?.required">
@@ -90,8 +92,8 @@
                                 [class.isError]="controls.statusId.touched && controls.statusId.invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select Status</option>
                                 <option value="0">All</option>
-                                <option [value]="item.statusId" *ngFor="let item of status">
-                                    {{item.statusName | titlecase}}</option>
+                                <option [value]="item.statusId" *ngFor="let item of orderStatusList">
+                                    {{item?.statusName | titlecase}}</option>
                             </select>
                             <div *ngIf="controls.statusId.touched && controls.statusId.invalid">
                                 <mat-error *ngIf="controls.statusId.touched && controls.statusId.errors?.required">

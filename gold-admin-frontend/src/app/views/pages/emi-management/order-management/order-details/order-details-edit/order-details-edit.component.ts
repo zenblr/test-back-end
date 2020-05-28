@@ -39,8 +39,6 @@ export class OrderDetailsEditComponent implements OnInit {
 
   ngOnInit() {
     this.formInitialize();
-    // this.getStates();
-    // this.getStatus();
     this.orderId = this.route.snapshot.params.id;
     if (this.orderId) {
       this.orderDetailsService.getOrderDetails(this.orderId).pipe(

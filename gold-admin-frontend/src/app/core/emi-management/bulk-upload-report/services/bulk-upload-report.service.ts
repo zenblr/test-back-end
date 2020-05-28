@@ -27,7 +27,7 @@ export class BulkUploadReportService {
           data => {
             const fileName = report.originalname.split('.');
             const file = fileName['0'];
-            this.excelService.saveAsExcelFile(data, file)
+            this.excelService.saveAsExcelFile(data, "BulkReport_" + Date.now())
           },
           error => console.log(error),
         ),

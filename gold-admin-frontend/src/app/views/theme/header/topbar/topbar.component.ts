@@ -325,7 +325,7 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.value2 = "Add Sub Category";
 			this.type2 = "button";
-			this.permissionType = "sub-categoryAdd";
+			this.permissionType = "subCategoryAdd";
 		}
 		if (this.path == "internal-user") {
 			this.dataSourceHeader();

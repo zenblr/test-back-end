@@ -60,7 +60,12 @@
                 <ng-container matColumnDef="shippingAddress">
                     <mat-header-cell *matHeaderCellDef>Shipping Address</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element['customerDetails.customeraddress.address'] ? element['customerDetails.customeraddress.address'] : '-'}}
+                        <!-- {{element['customerDetails.customeraddress.address'] ? element['customerDetails.customeraddress.address'] : '-'}} -->
+                        {{element['customerDetails.customeraddress.landMark']}}
+                        {{element['customerDetails.customeraddress.address']}}
+                        {{element['customerDetails.customeraddress.city.name']}}
+                        {{element['customerDetails.customeraddress.state.name']}}
+                        {{element['customerDetails.customeraddress.postalCode']}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="memberId">
