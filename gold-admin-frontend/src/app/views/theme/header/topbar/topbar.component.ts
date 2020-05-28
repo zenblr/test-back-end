@@ -74,7 +74,7 @@ export class TopbarComponent implements OnInit {
 	downloadbtn: boolean = false;
 	showBackButton = false;
 	permissionType = "";
-
+	button = true;
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -121,13 +121,13 @@ export class TopbarComponent implements OnInit {
 			}
 		});
 
-		this.walletPriceService.download$
+		this.orderDetailsService.button$
 			.pipe(takeUntil(this.destroy$))
 			.subscribe((res) => {
-				if (res) {
-					this.downloadbtn = true;
+				if (res && res == "spot") {
+					this.button = false;
 				} else {
-					this.downloadbtn = false;
+					this.button = true;
 				}
 			});
 	}
@@ -325,7 +325,7 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.value2 = "Add Sub Category";
 			this.type2 = "button";
-			this.permissionType = "sub-categoryAdd";
+			this.permissionType = "subCategoryAdd";
 		}
 		if (this.path == "internal-user") {
 			this.dataSourceHeader();
@@ -530,6 +530,12 @@ export class TopbarComponent implements OnInit {
 
 	check(val) {
 		this.customerManagementServiceCustomer.toggle.next(val);
+	}
+
+	buttonValue(value) {
+		if (location.href.includes("edit-order-details")) {
+			this.orderDetailsService.buttonValue.next(value);
+		}
 	}
 
 	applyFilter(data) {

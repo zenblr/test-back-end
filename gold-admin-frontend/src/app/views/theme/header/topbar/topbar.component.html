@@ -15,10 +15,8 @@
         <div class="col-6 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
             <div *ngxPermissionsOnly="permissionType; then elseBlock"></div>
-
-
             <kt-button *ngIf="value4" [value]='value4' [type]='type4' (click)="action($event)"
-                class="kt-margin-r-10 kt-margin-l-10">
+                (action)="buttonValue($event)" class="kt-margin-r-10 kt-margin-l-10">
             </kt-button>
             <div *ngIf="downloadbtn">
                 <p class="text-right mb-0 kt-pointer" (click)="download()">{{value3}}</p>
@@ -52,10 +50,11 @@
     <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' (click)="action($event)"></kt-button>
 </ng-template> -->
 <ng-template #thenBlock>
-    <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' (click)="action($event)"></kt-button>
+    <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' (click)="action($event)"
+        (action)="buttonValue($event)"></kt-button>
 </ng-template>
 <ng-template #elseBlock>
-    <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)"
+    <kt-button *ngIf="value1 && button" [value]='value1' [type]='type1' (click)="action($event)" (action)="buttonValue($event)"
         class="kt-margin-r-10 kt-margin-l-10">
     </kt-button>
 </ng-template>

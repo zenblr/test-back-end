@@ -386,7 +386,7 @@ export class MenuConfig {
 							icon: "flaticon2-open-box",
 							permission: !(this.permissionsArr.includes('productView') ||
 								this.permissionsArr.includes('categoryView') ||
-								this.permissionsArr.includes('sub-categoryView') ||
+								this.permissionsArr.includes('subCategoryView') ||
 								this.permissionsArr.includes('productAdd') ||
 								this.permissionsArr.includes('productEdit')),
 
@@ -404,7 +404,7 @@ export class MenuConfig {
 								{
 									title: "Sub-Category",
 									page: "/emi-management/sub-category",
-									permission: !this.permissionsArr.includes('sub-categoryView'),
+									permission: !this.permissionsArr.includes('subCategoryView'),
 								},
 								{
 									title: "Bulk Upload Product",

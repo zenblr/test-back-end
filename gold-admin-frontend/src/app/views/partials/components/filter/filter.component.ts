@@ -24,6 +24,7 @@ import { map, takeUntil, take } from "rxjs/operators";
 import { Subscription, ReplaySubject, Subject } from "rxjs";
 import { MatDatepickerInputEvent, MatSelect } from "@angular/material";
 import { SharedService } from "../../../../core/shared/services/shared.service";
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
 	selector: "kt-filter",
@@ -96,6 +97,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	tenure = [];
 	status = [];
 	name = [];
+	permissions: any;
 
 	public memberMultiFilterCtrl: FormControl = new FormControl();
 	public filteredMemberMulti: ReplaySubject<[]> = new ReplaySubject<[]>(1);
@@ -111,10 +113,16 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		// private addressService: AddressService,
 		// private authService: AuthService,
 		private sharedService: SharedService,
-		private ref: ChangeDetectorRef
+		private ref: ChangeDetectorRef,
+		private ngxPermissionService: NgxPermissionsService,
 	) {
 		// customize default values of dropdowns used by this component tree
 		config.autoClose = false;
+		this.ngxPermissionService.permissions$.subscribe(res => {
+			if (res) {
+				this.permissions = res;
+			}
+		});
 
 		this.sharedService.closeFilter$.subscribe(res => {
 			if (res) {
@@ -222,17 +230,19 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				const listTypeList = this.listType.split(",");
 				for (const listType of listTypeList) {
 					switch (listType) {
-						case "category":
+						case "category": if (this.permissions.categoryView) {
 							this.getCategory();
+						}
 							break;
-						case "sub-category":
+						case "sub-category": if (this.permissions.subCategoryView) {
 							this.getSubCategory();
+						}
 							break;
 						case "tenure":
 							this.getTenure();
 							break;
 						case "orderStatus":
-							this.getStatus();
+							this.getOrderStatus();
 							break;
 						case "emiStatus":
 							this.getEmiStatus();
@@ -689,8 +699,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		});
 	}
 
-	getStatus() {
-		this.sharedService.getStatus().subscribe((res) => {
+	getOrderStatus() {
+		this.sharedService.getOrderStatus().subscribe((res) => {
 			this.status = res;
 		});
 	}
