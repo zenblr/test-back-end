@@ -25,6 +25,14 @@ export class FilteredDataComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 	}
 
+	clearFilter(name, index) {
+		const data = {
+			name: name,
+			index: index
+		}
+		this.sharedService.clearFilter.next(data);
+	}
+
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
 	}

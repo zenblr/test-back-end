@@ -244,12 +244,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
 	applyFilter(data) {
 		console.log(data);
-		this.productData.categoryId = data.filterData.category;
-		this.productData.subCategoryId = data.filterData.subCategory;
-		this.productData.priceFrom = data.filterData.priceFrom;
-		this.productData.priceTo = data.filterData.priceTo;
+		this.productData.categoryId = data.data.category;
+		this.productData.subCategoryId = data.data.subCategory;
+		this.productData.priceFrom = data.data.priceFrom;
+		this.productData.priceTo = data.data.priceTo;
 		this.dataSource.loadProducts(this.productData);
-		this.filteredDataList = data.filterList;
+		this.filteredDataList = data.list;
 	}
 
 	/*** On Destroy ***/

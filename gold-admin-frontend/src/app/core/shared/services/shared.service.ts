@@ -12,6 +12,8 @@ export class SharedService {
 	role$ = this.role.asObservable();
 	closeFilter = new BehaviorSubject<any>(false);
 	closeFilter$ = this.closeFilter.asObservable();
+	clearFilter = new BehaviorSubject<any>({});
+	clearFilter$ = this.clearFilter.asObservable();
 
 	constructor(private http: HttpClient) {
 		var token = localStorage.getItem("UserDetails");

@@ -11,6 +11,7 @@
     .filtered-title {
         padding-bottom: 0.5rem;
         font-weight: 500;
+        white-space: nowrap;
     }
     .filtered-value {
         padding: 5px 10px;
@@ -19,6 +20,7 @@
         background-color: #f2f3f7;
         border-radius: 4px;
         font-weight: bolder;
+        white-space: nowrap;
     }
     .cancel-filtered-value {
         height: 8px;

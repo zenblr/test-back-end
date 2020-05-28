@@ -52,17 +52,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	clearData: boolean = false;
 	viewLoading: boolean = false;
 	showError: boolean = false;
-	// filteredDataList = {
-	// 	LocationFilter: [
-	// 		{
-	// 			CountryFilter: [],
-	// 			StateFilter: [],
-	// 			CityFilter: [],
-	// 			LocalityFilter: [],
-	// 		},
-	// 	],
-	// 	categoryFilter: [],		
-	// };
+	filterObject: any = {};
 	filterData: any = {};
 	filteredDataList: any = {};
 	categoryList = [];
@@ -86,6 +76,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				setTimeout(() => {
 					this.clearFilterForm();
 					this.dropdown.close();
+				});
+			}
+		});
+
+		this.sharedService.clearFilter$.subscribe(res => {
+			if (res) {
+				setTimeout(() => {
+					this.clearFilter(res.name, res.index);
 				});
 			}
 		});
@@ -195,23 +193,31 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	}
 
 	prepareFilter() {
-		this.filterData = {};
+		this.filterObject = {
+			data: {},
+			list: {}
+		};
 		if (this.controls['category'].value.length) {
-			this.filterData.category = this.controls['category'].value.map(e => e.id).toString();
+			this.filterObject.data.category = this.controls['category'].value.map(e => e.id).toString();
+			this.filterObject.list.category = this.controls['category'].value;
 		}
 		if (this.controls['subCategory'].value.length) {
-			this.filterData.subCategory = this.controls['subCategory'].value.map(e => e.id).toString();
+			this.filterObject.data.subCategory = this.controls['subCategory'].value.map(e => e.id).toString();
+			this.filterObject.list.subCategory = this.controls['subCategory'].value;
 		}
 		if (this.controls['priceFrom'].value) {
-			this.filterData.priceFrom = this.controls['priceFrom'].value;
+			this.filterObject.data.priceFrom = this.controls['priceFrom'].value;
+			this.filterObject.list.priceFrom = this.controls['priceFrom'].value;
 		}
 		if (this.controls['priceTo'].value) {
-			this.filterData.priceTo = this.controls['priceTo'].value;
+			this.filterObject.data.priceTo = this.controls['priceTo'].value;
+			this.filterObject.list.priceTo = this.controls['priceTo'].value;
 		}
 		if (this.controls['startDate'].value) {
-			this.filterData.startDate = this.controls['startDate'].value;
+			this.filterObject.data.startDate = this.controls['startDate'].value;
+			this.filterObject.list.startDate = this.controls['startDate'].value;
 		}
-		return this.filterData;
+		return this.filterObject;
 	}
 
 	applyFilter() {
@@ -219,182 +225,40 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		if (this.filterForm.invalid) {
 			return;
 		}
-		const filterData = this.prepareFilter();
-		const filterList = this.generateFilteredList();
-		if (filterData) {
+		const filterObj = this.prepareFilter();
+		if (filterObj) {
 			setTimeout(() => {
-				this.filterApplyEvent.emit({ filterData, filterList });
+				this.filterApplyEvent.emit(filterObj);
 				this.dropdown.close();
 				this.viewLoading = false;
 			});
 		}
 	}
 
-	generateFilteredList() {
-		this.filteredDataList = {};
-		if (this.controls) {
-			if (this.controls['category'].value.length) {
-				this.filteredDataList.category = this.controls['category'].value;
-			}
-			if (this.controls['subCategory'].value.length) {
-				this.filteredDataList.subCategory = this.controls['subCategory'].value;
-			}
-			if (this.controls['priceFrom'].value) {
-				this.filteredDataList.priceFrom = this.controls['priceFrom'].value;
-			}
-			if (this.controls['priceTo'].value) {
-				this.filteredDataList.priceTo = this.controls['priceTo'].value;
-			}
-			if (this.controls['startDate'].value) {
-				this.filteredDataList.startDate = this.controls['startDate'].value;
-			}
-			return this.filteredDataList;
-		}
-	}
-
-	clearFilter(Name, value, index) {
-		switch (Name) {
-			case 'Location':
-				if (value == 'locality') {
-					this.filterForm.patchValue({ LocalityId: '' });
-				} else if (value == 'city') {
-					this.filterForm.patchValue({ CityId: '', LocalityId: '' });
-				} else if (value == 'state') {
-					this.filterForm.patchValue({
-						StateId: '',
-						CityId: '',
-						LocalityId: '',
-					});
-				} else {
-					this.filterForm.patchValue({
-						CountryId: '',
-						StateId: '',
-						CityId: '',
-						LocalityId: '',
-					});
-				}
+	clearFilter(name, index) {
+		switch (name) {
+			case 'category':
+				this.controls['category'].value.splice(index, 1);
 				break;
-			case 'Status':
-				if (value == 'multiple') {
-					this.filterForm.patchValue({ StatusIds: '' });
-				} else if (
-					this.filterName == 'mytask' ||
-					this.filterName == 'users'
-				) {
-					this.filterForm.patchValue({ StatusIds: '' });
-				} else {
-					this.filterForm.controls['StatusIds'].value.splice(
-						index,
-						1
-					);
-				}
+			case 'subCategory':
+				this.controls['subCategory'].value.splice(index, 1);
 				break;
-			case 'Category':
-				if (value == 'multiple') {
-					this.filterForm.patchValue({ Category: '' });
-				} else {
-					this.filterForm.controls['Category'].value.splice(index, 1);
-				}
+			case 'priceFrom':
+				this.controls['priceFrom'].patchValue('');
 				break;
-			case 'leaveStatusIds':
-				if (value == 'multiple') {
-					this.filterForm.patchValue({ leaveStatusIds: '' });
-				} else {
-					this.filterForm.controls['leaveStatusIds'].value.splice(
-						index,
-						1
-					);
-				}
+			case 'priceTo':
+				this.controls['priceTo'].patchValue('');
 				break;
-			case 'Stage':
-				if (value == 'multiple') {
-					this.filterForm.patchValue({ StageIds: '' });
-				} else {
-					this.filterForm.controls['StageIds'].value.splice(index, 1);
-				}
+			case 'startDate':
+				this.controls['startDate'].patchValue('');
 				break;
-			case 'Source':
-				if (value == 'multiple') {
-					this.filterForm.patchValue({ SourceIds: '' });
-				} else {
-					this.filterForm.controls['SourceIds'].value.splice(
-						index,
-						1
-					);
-				}
-				break;
-			case 'Type':
-				if (value == 'multiple') {
-					this.filterForm.patchValue({ TypeIds: '' });
-				} else {
-					this.filterForm.controls['TypeIds'].value.splice(index, 1);
-				}
-				break;
-			case 'Territory':
-				if (value == 'multiple') {
-					this.filterForm.patchValue({ TerritoryIds: '' });
-				} else {
-					this.filterForm.controls['TerritoryIds'].value.splice(
-						index,
-						1
-					);
-				}
-				break;
-			case 'Date':
-				this.filterForm.controls['ToDate'].clearValidators();
-				this.filterForm.controls['ToDate'].updateValueAndValidity();
-				this.filterForm.patchValue({ FromDate: '' });
-				this.filterForm.patchValue({ ToDate: '' });
-				break;
-			case 'Amount':
-				this.filterForm.patchValue({ MaxValue: '' });
-				this.filterForm.patchValue({ MinValue: '' });
-				break;
-			case 'Sort':
-				this.filterForm.patchValue({ Sort: '' });
+			default:
 				break;
 		}
-		this.filterForm.patchValue({
-			StatusIds: this.filterForm.controls['StatusIds'].value,
-			leaveStatusIds: this.filterForm.controls['leaveStatusIds'].value,
-			StageIds: this.filterForm.controls['StageIds'].value,
-			SourceIds: this.filterForm.controls['SourceIds'].value,
-			TypeIds: this.filterForm.controls['TypeIds'].value,
-			TerritoryIds: this.filterForm.controls['TerritoryIds'].value,
-			Category: this.filterForm.controls['Category'].value,
-			FromDate: this.filterForm.controls['FromDate'].value,
-			ToDate: this.filterForm.controls['ToDate'].value,
-			MaxValue: this.filterForm.controls['MaxValue'].value,
-			MinValue: this.filterForm.controls['MinValue'].value,
-			Sort: this.filterForm.controls['Sort'].value,
-		});
-		if (this.filterForm.controls['TagIds'].value) {
-			if (this.filterForm.controls['TagIds'].value.Tags) {
-				this.filterForm.patchValue({
-					TagIds: this.filterForm.controls['TagIds'].value.Tags,
-				});
-			} else {
-				this.filterForm.patchValue({
-					TagIds: this.filterForm.controls['TagIds'].value,
-				});
-			}
-		}
-		if (this.filterForm.controls['UserIds'].value) {
-			if (
-				this.filterForm.controls['UserIds'].value
-					.searchMultipleCheckValue
-			) {
-				this.filterForm.patchValue({
-					UserIds: this.filterForm.controls['UserIds'].value
-						.searchMultipleCheckValue,
-				});
-			} else {
-				this.filterForm.patchValue({
-					UserIds: this.filterForm.controls['UserIds'].value,
-				});
-			}
-		}
-
+		// this.filterForm.patchValue({
+		// 	category: this.filterForm.controls['category'].value,
+		// 	subCategory: this.filterForm.controls['subCategory'].value,
+		// });
 		setTimeout(() => {
 			this.applyFilter();
 		});
