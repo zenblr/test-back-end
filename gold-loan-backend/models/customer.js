@@ -59,6 +59,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status_id',
         },
+        comment: {
+            type: DataTypes.TEXT,
+            field: 'comment',
+        },
         stateId: {
             type: DataTypes.INTEGER,
             field: 'state_id',

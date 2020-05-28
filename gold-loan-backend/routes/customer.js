@@ -5,7 +5,7 @@ const { wrapper } = require('../utils/errorWrap')
 const validationError = require('../middleware/validationError');
 const { customerValidation, customerUpdateValidation } = require('../validations/customer');
 
-const { addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, filterCustomer, getCustomerUniqueId, getAllCustomerForCustomerManagement, getsingleCustomerManagement } = require('../controllers/customer/customer')
+const { addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId, getAllCustomerForCustomerManagement, getsingleCustomerManagement } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -30,8 +30,6 @@ router.put('/:customerId', validationError, checkAuth, checkRolePermission, wrap
 router.delete('/', checkAuth, checkRolePermission, wrapper(deactivateCustomer));
 
 router.get('/', checkAuth, checkRolePermission, wrapper(getAllCustomersForLead));
-
-router.get('/filter-customer', checkAuth, checkRolePermission, wrapper(filterCustomer));
 
 router.get('/customer-management', checkAuth, checkRolePermission, wrapper(getAllCustomerForCustomerManagement));
 

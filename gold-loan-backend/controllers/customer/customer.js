@@ -14,7 +14,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, address, statusId, pinCode, internalBranchId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, address, statusId, comment, pinCode, internalBranchId } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -41,7 +41,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, createdBy, modifiedBy, isActive: true },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true },
       { transaction: t }
     );
     if (check.isEmpty(address.length)) {
@@ -81,13 +81,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   let otp = Math.floor(1000 + Math.random() * 9000);
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
-  await models.customerOtp.create({
-    mobileNumber,
-    otp,
-    createdTime,
-    expiryTime,
-    referenceCode,
-  });
+  await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
   request(
     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
@@ -119,13 +113,7 @@ exports.sendOtp = async (req, res, next) => {
   let otp = Math.floor(1000 + Math.random() * 9000);
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
-  await models.customerOtp.create({
-    mobileNumber,
-    otp,
-    createdTime,
-    expiryTime,
-    referenceCode,
-  });
+  await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
   request(
     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
   );
@@ -170,7 +158,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment } = req.body;
 
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
@@ -183,7 +171,7 @@ exports.editCustomer = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, pinCode, internalBranchId, modifiedBy },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -282,6 +270,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
+    attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
     order: [["id", "DESC"]],
     offset: offset,
     limit: pageSize,
@@ -327,31 +316,6 @@ exports.getSingleCustomer = async (req, res, next) => {
   return res.status(200).json({ singleCustomer })
 };
 
-
-exports.filterCustomer = async (req, res) => {
-  var { cityId, stateId, statusId } = req.query;
-  const query = {};
-  query.isActive = true;
-  if (cityId) {
-    cityId = req.query.cityId.split(",");
-    query.cityId = cityId;
-  }
-  if (statusId) {
-    statusId = req.query.statusId.split(",");
-    query.statusId = statusId;
-  }
-  if (stateId) {
-    query.stateId = stateId;
-  }
-
-  let customerFilterData = await models.customer.findAll({
-    where: query
-  });
-  if (!customerFilterData[0]) {
-    return res.status(404).json({ message: "data not found" });
-  }
-  return res.status(200).json({ customerFilterData });
-};
 
 exports.getCustomerUniqueId = async (req, res) => {
   let customer = await models.customer.findAll({
@@ -436,6 +400,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
+    attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
     order: [["id", "DESC"]],
     offset: offset,
     subQuery: false,
