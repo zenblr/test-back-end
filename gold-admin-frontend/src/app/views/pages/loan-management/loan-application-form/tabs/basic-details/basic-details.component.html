@@ -23,6 +23,22 @@
             </div>
             <div class="row kt-margin-t-15">
                 <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">Payment Type</label>
+                </div>
+                <div class="col-6">
+                    <select name="" id="" formControlName="paymentType" 
+                    [class.isError]="controls.paymentType.touched && controls.paymentType.invalid">
+                        <option value="">Select Payment Type</option>
+                        <option value="">Cash</option>
+                        <option value="">Bank Transfer</option>
+                    </select>
+                    <mat-error *ngIf="controls.paymentType.touched && controls.customerUniqueId.errors?.required">
+                            Field is Required
+                        </mat-error>
+                </div>
+            </div>
+            <div class="row kt-margin-t-15">
+                <div class="col-4 form-label">
                     <label class="text-color kt-padding-l-10">Mobile Number</label>
                 </div>
                 <div class="col-6">
@@ -36,6 +52,15 @@
                 </div>
                 <div class="col-6">
                     <input type="text" class="form-control" placeholder="qwert1234q" formControlName="panCardNumber"
+                        readonly>
+                </div>
+            </div>
+            <div class="row kt-margin-t-15">
+                <div class="col-4 form-label">
+                    <label class="text-color kt-padding-l-10">KYC Status</label>
+                </div>
+                <div class="col-6">
+                    <input type="text" class="form-control" formControlName="kycStatus"
                         readonly>
                 </div>
             </div>

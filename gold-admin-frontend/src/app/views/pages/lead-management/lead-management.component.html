@@ -10,12 +10,6 @@
                     <mat-cell *matCellDef="let lead">{{lead.firstName | titlecase}}&nbsp;{{lead.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
-
-                <ng-container matColumnDef="mobile">
-                    <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
-                    <mat-cell *matCellDef="let lead">{{lead.mobileNumber}}</mat-cell>
-                </ng-container>
-
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
                     <mat-cell *matCellDef="let lead">{{lead.panCardNumber | uppercase}}</mat-cell>
@@ -95,6 +89,12 @@
                         <div *ngIf="lead.status.id == 1" [ngStyle]="{'display': 'inherit'}">
                             <div>-</div>
                         </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let lead">
+                        <div *ngxPermissionsOnly="['leadManagmentView']" class="kt-pointer" (click)="viewLead(lead)">View</div>
                     </mat-cell>
                 </ng-container>
 

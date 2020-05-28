@@ -97,6 +97,8 @@ export class UserPersonalComponent implements OnInit {
     }
   }
 
+  
+
   submit() {
 
     console.log(this.personalForm.value);
