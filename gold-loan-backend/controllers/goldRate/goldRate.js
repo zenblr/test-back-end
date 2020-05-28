@@ -20,7 +20,7 @@ exports.addGoldRate = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
             let CreatedGoldRate = await models.goldRate.create({ goldRate, previousGoldRate: goldRate, createdBy, modifiedBy, modifiedTime }, { transaction: t });
 
-            await models.goldRateHistory.create({ goldRate, modifiedBy, modifiedTime }, { transaction: t });
+            await models.goldRateHistory.create({ goldRate, previousGoldRate: goldRate, modifiedBy, modifiedTime }, { transaction: t });
         });
         return res.status(200).json({ message: "Success" })
     } else {
@@ -30,7 +30,7 @@ exports.addGoldRate = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
             let updateGoldRate = await models.goldRate.update({ goldRate, previousGoldRate, modifiedBy, modifiedTime }, { where: { id }, transaction: t })
 
-            await models.goldRateHistory.create({ goldRate, modifiedBy, modifiedTime }, { transaction: t });
+            await models.goldRateHistory.create({ goldRate, previousGoldRate, modifiedBy, modifiedTime }, { transaction: t });
             return updateGoldRate
         });
         return res.status(200).json({ message: 'Success' });
@@ -47,11 +47,10 @@ exports.readGoldRate = async (req, res, next) => {
             attributes: ['id', 'firstName', 'lastName']
         }]
     })
-
-    if (!goldRate) {
-        res.status(404).json({ message: 'Data not found' });
+    if (goldRate.length == 0) {
+        res.status(200).json({ goldRate: 0 });
     } else {
-        res.status(200).json(goldRate[0]);
+    res.status(200).json(goldRate[0]);
     }
 }
 
