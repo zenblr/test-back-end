@@ -1,0 +1,14 @@
+<div [formGroup]="form">
+    <ng-select [items]="items" [multiple]="multiple" [bindLabel]="bindLabel" [closeOnSelect]="false"
+        [bindValue]="bindValue" formControlName="multiSelect">
+
+        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+            <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                [ngModelOptions]="{ standalone : true }" /> {{item[bindLabel]}}
+        </ng-template>
+        <ng-template ng-multi-label-tmp let-items="items">
+            {{items[0][bindLabel]}}&nbsp;
+            <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
+        </ng-template>
+    </ng-select>
+</div>
