@@ -16,6 +16,9 @@ exports.uploadScheme = async (req, res, next) => {
         if (jsonArray[i].AmountStart >= jsonArray[i].AmountEnd) {
             return res.status(400).json({ message: `Your Scheme start amount is must be greater than your Scheme end amount` })
         }
+        if(jsonArray[i].schemeName == '' || jsonArray[i].schemeName == undefined || jsonArray[i].schemeName == false){
+            return res.status(400).json({ message: `Scheme name is required` })
+        }
     }
     let scheme = await jsonArray.map(value => { return value.schemeName })
     var repeatSchemeName = _.filter(scheme, (val, i, iteratee) => _.includes(iteratee, val, i + 1));
