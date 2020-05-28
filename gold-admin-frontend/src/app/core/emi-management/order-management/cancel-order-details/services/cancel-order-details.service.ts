@@ -3,6 +3,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
 import { ExcelService } from "../../../../_base/crud/services/excel.service";
+import { PdfService } from "../../../../_base/crud/services/pdf.service";
 
 @Injectable({
 	providedIn: "root",
@@ -14,7 +15,11 @@ export class CancelOrderDetailsService {
 	applyFilter = new BehaviorSubject<any>({});
 	applyFilter$ = this.applyFilter.asObservable();
 
-	constructor(private http: HttpClient, private excelService: ExcelService) {}
+	constructor(
+		private http: HttpClient,
+		private excelService: ExcelService,
+		private pdfService: PdfService
+	) {}
 
 	getAllCancelOrderDetails(event?: any): Observable<any> {
 		const reqParams: any = {};
@@ -52,7 +57,33 @@ export class CancelOrderDetailsService {
 					(data) => {
 						this.excelService.saveAsExcelFile(
 							data,
-							"CancelOrderReport_" + Date.now());
+							"CancelOrderReport_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getReceipt(id): Observable<any> {
+		return this.http
+			.get(
+				`http://173.249.49.7:9120/api/cancel-order/cancel-receipt/${id}`,
+				{ responseType: "arraybuffer" }
+			)
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.pdfService.saveAsPdfFile(
+							data,
+							"CancellationReceipt_" + Date.now()
+						);
 					},
 					(error) => console.log(error)
 				),
