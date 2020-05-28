@@ -4,19 +4,19 @@ const sequelize = models.sequelize;
 const paginationFUNC = require('../../utils/pagination'); // importing pagination function
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
+const _=require('loadsh');
 
 // add internal branch
 
 exports.addInternalBranch = async (req, res) => {
-    const { name, cityId, stateId, address, pinCode } = req.body;
+    const { name, cityId, stateId, address, pinCode, partnerId } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let nameExist = await models.internalBranch.findOne({ where: { name, isActive: true } })
 
     if (!check.isEmpty(nameExist)) {
         return res.status(404).json({ message: "Your internal branch name is already exist." });
-    }
-
+    }   
 
     await sequelize.transaction(async t => {
         let addInternalBranch = await models.internalBranch.create({ name, cityId, stateId, address, pinCode, createdBy, modifiedBy }, { transaction: t });
@@ -24,7 +24,15 @@ exports.addInternalBranch = async (req, res) => {
         let newId = addInternalBranch.dataValues.name.slice(0, 3).toUpperCase() + '-' + id;
         console.log(newId);
         await models.internalBranch.update({ internalBranchUniqueId: newId }, { where: { id }, transaction: t });
-        return addInternalBranch;
+        console.log(typeof partnerId)
+        for (var i = 0; i < partnerId.length; i++) {
+            console.log(partnerId.length);
+            var data = await models.internalBranchPartner.create({
+                internalBranchId: addInternalBranch.id,
+                partnerId: partnerId[i]
+            }, { transaction: t })
+            console.log(data);
+        }
     })
     return res.status(201).json({ message: "internal branch created" });
 
@@ -182,13 +190,38 @@ exports.readInternalBranchById = async (req, res) => {
 // update Internal branch 
 
 exports.updateInternalBranch = async (req, res) => {
-    let internalBranchId = req.params.id;
-    const { name, cityId, stateId, pinCode,address } = req.body;
-    let updateInternalBranch = await models.internalBranch.update({ name, cityId, stateId, pinCode,address }, { where: { id: internalBranchId, isActive: true } });
+    const internalBranchId = req.params.id;
+    const { name, cityId, stateId, pinCode, address, partnerId } = req.body;
+    let updateInternalBranch = await models.internalBranch.update({ name, cityId, stateId, pinCode, address }, { where: { id: internalBranchId, isActive: true } });
     if (!updateInternalBranch[0]) {
         return res.status(404).json({ message: 'internal branch updated failed' });
+    }else{
+        let readInternalBranchData = await models.internalBranchPartner.findAll({where:{internalBranchId:internalBranchId},attributes:['partnerId']});
+        console.log(readInternalBranchData);
+        let oldPartnerId = await readInternalBranchData.map((data) => data.partnerId);
+        console.log(oldPartnerId);
+        let deleteValues=await _.difference(oldPartnerId,partnerId);
+        let addValues=await _.difference(partnerId,oldPartnerId);
+        addValues.map( async (partnerId)=>{
+        console.log(partnerId);
+         let data=await models.internalBranchPartner.create({internalBranchId:internalBranchId,partnerId:partnerId});
+         console.log(data);
+        });
+        await models.internalBranchPartner.destroy({ where: { internalBranchId : internalBranchId, partnerId: deleteValues } });
+
+        // for (var i = 0; i < partnerId.length; i++) {
+        //     console.log(partnerId.length);
+        //     var data = await models.internalBranchPartner.create({
+        //         internalBranchId: addInternalBranch.id
+        //         partnerId: partnerId[i],
+
+        //     }, { transaction: t })
+            //  if (!updateInternalBranch[0]) {
+            //     return res.status(404).json({ message: 'internal branch updated failed' });
+            // }
+        
+        return res.status(200).json({ message: 'Updated' });
     }
-    return res.status(200).json({ message: 'Updated' });
 }
 
 // deactive internal branch
