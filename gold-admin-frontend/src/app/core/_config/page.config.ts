@@ -95,7 +95,7 @@ export class PageConfig {
 		},
 		"emi-management": {
 			products: {
-				page: { title: "Show Poducts", desc: "" },
+				page: { title: "Show Products", desc: "" },
 			},
 			category: {
 				page: { title: "Category", desc: "" },

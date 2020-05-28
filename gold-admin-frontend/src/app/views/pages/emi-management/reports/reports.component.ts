@@ -15,7 +15,7 @@ import { ToastrService } from "ngx-toastr";
 import { ToastrComponent } from "../../../../views/partials/components";
 import { SharedService } from "../../../../core/shared/services/shared.service";
 import { ReportsService } from "../../../../core/emi-management/reports/services/reports.service";
-import { NgxPermissionsService } from 'ngx-permissions';
+import { NgxPermissionsService } from "ngx-permissions";
 
 @Component({
 	selector: "kt-reports",
@@ -39,24 +39,44 @@ export class ReportsComponent implements OnInit {
 		private route: ActivatedRoute,
 		private toast: ToastrService,
 		private router: Router,
-		private ngxPermissionService: NgxPermissionsService,
-	) { }
+		private ngxPermissionService: NgxPermissionsService
+	) {}
 
 	ngOnInit() {
-		this.ngxPermissionService.permissions$.subscribe(res => {
+		this.ngxPermissionService.permissions$.subscribe((res) => {
 			if (res) {
-				console.log(res)
+				console.log(res);
 				this.reportTypes = [
 					{ id: 1, name: "User Report", permission: res.userReport },
-					{ id: 2, name: "Deposit Report", permission: res.depositReport },
+					{
+						id: 2,
+						name: "Deposit Report",
+						permission: res.depositReport,
+					},
 					{ id: 3, name: "EMI Report", permission: res.EMIReport },
-					{ id: 4, name: "Order Report", permission: res.orderReport },
-					{ id: 5, name: "Order Cancel Report", permission: res.cancelOrderReport },
-					{ id: 7, name: "Products Report", permission: res.productsReport },
-					{ id: 8, name: "Franchise Report", permission: res.franchiseReport },
+					{
+						id: 4,
+						name: "Order Report",
+						permission: res.orderReport,
+					},
+					{
+						id: 5,
+						name: "Order Cancel Report",
+						permission: res.cancelOrderReport,
+					},
+					{
+						id: 7,
+						name: "Products Report",
+						permission: res.productsReport,
+					},
+					{
+						id: 8,
+						name: "Franchise Report",
+						permission: res.franchiseReport,
+					},
 				];
 			}
-		})
+		});
 
 		this.formInitialize();
 		this.getMerchant();
@@ -123,12 +143,15 @@ export class ReportsComponent implements OnInit {
 			this.reportForm.markAllAsTouched();
 			return;
 		}
-		console.log(this.reportForm.value);
 		let startDate = new Date(this.controls.startDate.value);
-		let sd = startDate.toISOString();
+		let sd = new Date(
+			startDate.getTime() - startDate.getTimezoneOffset() * 60000
+		).toISOString();
 
 		let endDate = new Date(this.controls.endDate.value);
-		let ed = endDate.toISOString();
+		let ed = new Date(
+			endDate.getTime() - endDate.getTimezoneOffset() * 60000
+		).toISOString();
 		const reportData = {
 			merchantId: this.controls.merchantId.value,
 			statusId: this.controls.statusId.value,
