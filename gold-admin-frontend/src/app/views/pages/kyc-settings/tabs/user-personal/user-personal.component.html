@@ -25,6 +25,8 @@
                             </div>
                         </div>
 
+                        <webcam></webcam>
+
                         <!-- DOB & Gender -->
                         <div class="row">
                             <div class="col-6 kt-margin-t-20">
@@ -139,7 +141,11 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="mandatory">Father / Spouse Name</label>
+                                        <label
+                                            *ngIf="controls.martialStatus.value == 'single' || controls.martialStatus.value == 'divorced' || controls.martialStatus.value == ''"
+                                            class="mandatory">Father's Name</label>
+                                        <label *ngIf="controls.martialStatus.value == 'married'" class="mandatory">
+                                            Spouse Name</label>
                                     </div>
                                     <div class="col-7">
                                         <input type="text" formControlName="spouseName" class="form-control"
@@ -157,7 +163,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="mandatory">Signature</label>
+                                        <label class="">Signature</label>
                                     </div>
                                     <div class="col-7">
                                         <div class="input-group mb-3">

@@ -16,8 +16,8 @@ export class UserPersonalComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   personalForm: FormGroup;
   occupations = [];
-  customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2 }
+  // customerDetails = this.userDetailsService.userData;
+  customerDetails = { customerId: 1, customerKycId: 2 }
   file: any;
   profile = '';
   signatureJSON = { url: null, isImage: false };
@@ -45,8 +45,8 @@ export class UserPersonalComponent implements OnInit {
       gender: ['', [Validators.required]],
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
-      signatureProof: ['', [Validators.required]],
-      signatureProofFileName: ['', [Validators.required]],
+      signatureProof: [''],
+      signatureProofFileName: [''],
       occupationId: [null],
       dateOfBirth: ['', [Validators.required]],
     })

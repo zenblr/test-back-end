@@ -20,7 +20,7 @@ export class UserClassificationComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   cceKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }];
-  bmKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
+  bmKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'incomplete', name: 'incomplete' }, { value: 'rejected', name: 'rejected' }];
 
   // kycStatus = [];
   rating = [];
@@ -71,7 +71,7 @@ export class UserClassificationComponent implements OnInit {
     private titlecase: TitleCasePipe,
   ) {
     let res = this.sharedService.getDataFromStorage()
-      this.userType = res.userDetails.userTypeId;
+    this.userType = res.userDetails.userTypeId;
   }
 
   ngOnInit() {

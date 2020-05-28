@@ -169,7 +169,7 @@
                         <mat-error>Field Required</mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="showTextBoxBM && userType== 5 || cceControls.kycStatusFromBm.value == 'rejected'" class="col kt-margin-t-20 kt-margin-b-20"
+                <div *ngIf="showTextBoxBM && userType== 5 || cceControls.kycStatusFromBm.value !== 'approved'" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <mat-form-field class="w-100">
                         <textarea matInput formControlName="reasonFromBm" placeholder="Reason for Rejection"></textarea>

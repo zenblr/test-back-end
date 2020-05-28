@@ -10,8 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class KycSettingsComponent implements OnInit {
 
-  active = 1;
-  disabled: boolean[] = [false, true, true, true, true, true];
+  active = 3;
+  disabled: boolean[] = [false, true, true, true, true];
   // disabled: boolean[] = [false, false, false, false, false, false]; // delete this line
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;
 
@@ -30,11 +30,11 @@ export class KycSettingsComponent implements OnInit {
     } else {
       const EDIT_KYC = this.appliedKycService.editKyc.getValue();
       if (EDIT_KYC.editable) {
-        this.active = 5;
+        this.active = 4;
         for (let index = 0; index < this.disabled.length; index++) {
           this.disabled[index] = true;
         }
-        this.disabled[4] = false;
+        this.disabled[3] = false;
       }
 
     }
