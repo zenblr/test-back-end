@@ -5,7 +5,7 @@ export class MenuConfig {
 	public defaults: any;
 	permissionsArr = [];
 	modulesArr = [];
-
+	userType:number;
 	constructor(
 		private sharedService: SharedService,
 		public permissionsService: NgxPermissionsService
@@ -17,6 +17,9 @@ export class MenuConfig {
 				}
 				this.permissionsService.loadPermissions(this.permissionsArr);
 				console.log(this.permissionsArr);
+			}
+			if(res.userDetails){
+				this.userType = res.userDetails.userTypeId;
 			}
 
 			if (res && res.modules.length) {
@@ -80,6 +83,11 @@ export class MenuConfig {
 
 									submenu: [
 										{
+											title: "Gold Rate",
+											page: "/upload-data/gold-rate",
+											permission: !this.permissionsArr.includes('goldRateView'),
+										},
+										{
 											title: "Promotional Banners",
 											page: "/upload-data/upload-banner",
 											permission: !this.permissionsArr.includes('promotionalBannerView'),
@@ -87,8 +95,7 @@ export class MenuConfig {
 										{
 											title: "Offer Banners",
 											page: "/upload-data/upload-offer",
-											permission: !(this.permissionsArr.includes('offerBannerView') ||
-												this.permissionsArr.includes('goldRateView')),
+											permission: !this.permissionsArr.includes('offerBannerView'),
 										},
 										{
 											title: "Partner Banners",
@@ -150,7 +157,8 @@ export class MenuConfig {
 							this.permissionsArr.includes('partnerBranchView')||
 							this.permissionsArr.includes('internalBranchView')||
 							this.permissionsArr.includes('internalUserView')||
-							this.permissionsArr.includes('assignAppraiserView')),
+							this.permissionsArr.includes('assignAppraiserView') ||
+							this.userType ===4),
 						},
 						{
 							title: "Lead Management",
@@ -369,7 +377,7 @@ export class MenuConfig {
 							root: true,
 							page: "/user-management/roles",
 							src: "assets/media/aside-icons/icons-20.svg",
-							permission: false,
+							permission: !(this.userType ===4),
 						},
 						{
 							title: "Back",

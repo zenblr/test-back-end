@@ -17,7 +17,7 @@ import { LeadService } from '../../../core/lead-management/services/lead.service
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kyc', 'actions'];
+  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kyc', 'actions','view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
@@ -112,6 +112,20 @@ export class LeadManagementComponent implements OnInit {
     const dialogRef = this.dialog.open(AddLeadComponent,
       {
         data: { id: role.id, action: 'edit' },
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadLeadsPage();
+      }
+    });
+  }
+
+  
+  viewLead(role) {
+    const dialogRef = this.dialog.open(AddLeadComponent,
+      {
+        data: { id: role.id, action: 'view' },
         width: '500px'
       });
     dialogRef.afterClosed().subscribe(res => {
