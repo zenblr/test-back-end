@@ -209,7 +209,7 @@
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div *ngxPermissionsOnly="['refundDetailsView']" (click)="viewRefund(element)"
-                                class="kt-pointer"> View | &nbsp;</div>
+                                class="kt-pointer"> View </div>
                             <div *ngxPermissionsOnly="['refundDetailsEdit']" class="px-1">|</div>
                             <div *ngxPermissionsOnly="['refundDetailsEdit']" (click)="editRefund(element)"
                                 class="kt-pointer"> Edit</div>

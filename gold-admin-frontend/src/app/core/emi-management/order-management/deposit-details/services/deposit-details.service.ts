@@ -14,7 +14,7 @@ export class DepositDetailsService {
 	applyFilter = new BehaviorSubject<any>({});
 	applyFilter$ = this.applyFilter.asObservable();
 
-	constructor(private http: HttpClient, private excelService: ExcelService) {}
+	constructor(private http: HttpClient, private excelService: ExcelService) { }
 
 	getAllDepositDetails(event?: any): Observable<any> {
 		const reqParams: any = {};
@@ -58,8 +58,7 @@ export class DepositDetailsService {
 					(data) => {
 						this.excelService.saveAsExcelFile(
 							data,
-							"DepositReport"
-						);
+							"DepositReport_" + Date.now());
 					},
 					(error) => console.log(error)
 				),

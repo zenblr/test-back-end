@@ -162,15 +162,14 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div *ngIf="showTextBoxCce  && role == 'Customer Care Executive' || cceControls.kycStatusFromCce.value == 'pending'"
+                <div *ngIf="showTextBoxCce  && userType == 6 || cceControls.kycStatusFromCce.value == 'pending'"
                     class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
                     <mat-form-field class="w-100">
                         <textarea matInput formControlName="reasonFromCce" placeholder="Reason for Pending"></textarea>
                         <mat-error>Field Required</mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="showTextBoxBM && role== 'Branch Manager' || cceControls.kycStatusFromBm.value == 'rejected'" class="col kt-margin-t-20 kt-margin-b-20"
+                <div *ngIf="showTextBoxBM && userType== 5 || cceControls.kycStatusFromBm.value == 'rejected'" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <mat-form-field class="w-100">
                         <textarea matInput formControlName="reasonFromBm" placeholder="Reason for Rejection"></textarea>

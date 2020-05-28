@@ -4,7 +4,7 @@
     </label>
     <img *ngIf="action == 'remove'" id="remove{{index}}" class="removeImage" [src]="'assets/media/icons/cancel.png'"
         (click)="removeFile($event)" />
-    <input id="file-upload{{index}}" type="file" accept="image/*" (change)="uploadFile($event)" />
+    <input #file id="file-upload{{index}}" type="file" accept="image/*" (change)="uploadFile($event)" />
 </div>
 
 <div *ngIf="type == 'formField'">

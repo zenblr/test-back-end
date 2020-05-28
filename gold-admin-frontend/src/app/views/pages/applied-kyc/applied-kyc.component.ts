@@ -8,6 +8,7 @@ import { DataTableService } from '../../../core/shared/services/data-table.servi
 import { Router } from '@angular/router';
 import { SharedService } from '../../../core/shared/services/shared.service';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   selector: 'kt-applied-kyc',
@@ -17,7 +18,7 @@ import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-revie
 export class AppliedKycComponent implements OnInit {
 
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'actions', 'view', 'appraiser'];
+  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -25,7 +26,7 @@ export class AppliedKycComponent implements OnInit {
   private subscriptions: Subscription[] = [];
 
   private unsubscribeSearch$ = new Subject();
-  roles = '';
+  userType;
   private destroy$ = new Subject();
 
   constructor(
@@ -33,16 +34,20 @@ export class AppliedKycComponent implements OnInit {
     public dialog: MatDialog,
     private dataTableService: DataTableService,
     private router: Router,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private ngxPermissionsService: NgxPermissionsService
   ) {
-    this.sharedService.getRole().subscribe(res => {
-      this.roles = res;
-    });
+    let res = this.sharedService.getDataFromStorage()
+    this.userType = res.userDetails.userTypeId;
   }
 
   ngOnInit() {
     // const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     // this.subscriptions.push(sortSubscription);
+
+    this.ngxPermissionsService.permissions$.subscribe(res => {
+      console.log(res);
+    })
 
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {

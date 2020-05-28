@@ -11,7 +11,7 @@
                             [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Partner</option>
                             <option [value]="partner.id" *ngFor="let partner of partnerList">
-                                {{partner.name | titlecase}}
+                                {{partner.name | uppercase}}
                             </option>
                         </select>
                         <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.invalid">Filed is
@@ -29,7 +29,7 @@
                             [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
                             <option [value]="schemes.id" *ngFor="let schemes of schemesList">
-                                {{schemes.schemeName}} {{schemes.schemeAmountStart}} - {{schemes.schemeAmountEnd}}
+                                {{schemes.schemeName | uppercase}} {{schemes.schemeAmountStart}} - {{schemes.schemeAmountEnd}}
                             </option>
                         </select>
                         <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Filed is required

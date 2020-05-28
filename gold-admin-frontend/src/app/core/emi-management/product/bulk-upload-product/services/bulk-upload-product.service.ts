@@ -29,7 +29,7 @@ export class BulkUploadProductService {
           return res;
         }),
         tap(
-          data => this.excelService.saveAsExcelFile(data, 'AllProductReport'),
+          data => this.excelService.saveAsExcelFile(data, 'AllProductReport_'+ Date.now()),
           error => console.log(error),
         ),
         catchError(err => {

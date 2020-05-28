@@ -14,16 +14,19 @@
         </div>
         <div class="col-6 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
-            <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)"
+            <div *ngxPermissionsOnly="permissionType; then elseBlock"></div>
+
+
+            <kt-button *ngIf="value4" [value]='value4' [type]='type4' (click)="action($event)"
                 class="kt-margin-r-10 kt-margin-l-10">
             </kt-button>
             <div *ngIf="downloadbtn">
                 <p class="text-right mb-0 kt-pointer" (click)="download()">{{value3}}</p>
             </div>
             <!-- Toggle Button -->
-            <span class="kt-margin-l-15">
+            <span class="kt-margin-l-15" *ngIf="toogle">
                 <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style"
-                    #group="matButtonToggleGroup" value="list" *ngIf="toogle">
+                    #group="matButtonToggleGroup" value="list">
                     <mat-button-toggle value="grid" (click)="check('grid')">
                         <img src="../../../../../assets/media/aside-icons/icons-22.svg" class="w-100 pos">
                     </mat-button-toggle>
@@ -50,4 +53,9 @@
 </ng-template> -->
 <ng-template #thenBlock>
     <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' (click)="action($event)"></kt-button>
+</ng-template>
+<ng-template #elseBlock>
+    <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)"
+        class="kt-margin-r-10 kt-margin-l-10">
+    </kt-button>
 </ng-template>

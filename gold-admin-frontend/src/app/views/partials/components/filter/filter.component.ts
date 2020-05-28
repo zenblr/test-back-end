@@ -256,6 +256,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			priceTo: [""],
 			startDate: [""],
 		});
+
+		this.filterForm.valueChanges.subscribe(val => {
+			if (val && (parseFloat(val.priceFrom) > parseFloat(val.priceTo))) {
+				this.controls.priceTo.setErrors({ priceRange: true });
+			} else {
+				this.controls.priceTo.setErrors(null);
+			}
+		})
 	}
 
 	get controls() {
@@ -369,9 +377,6 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		if (this.filterForm.invalid) {
 			return;
 		}
-		// if ((parseFloat(this.controls.priceFrom.value) > parseFloat(this.controls.priceTo.value))) {
-		// 	return;
-		// }
 		const filterData = this.prepareFilter();
 		if (filterData) {
 			setTimeout(() => {

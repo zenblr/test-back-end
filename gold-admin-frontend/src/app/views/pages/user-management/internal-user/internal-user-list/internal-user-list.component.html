@@ -56,11 +56,13 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let user">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="editUser(user,'edit')" class="kt-pointer"> Edit
+                            <div (click)="editUser(user,'edit')" class="kt-pointer"
+                            *ngxPermissionsOnly="['internalUserEdit']"> Edit
                                 |
                                 &nbsp;
                             </div>
-                            <div (click)="deleteUser(user)" class="kt-pointer text-danger"> Delete
+                            <div (click)="deleteUser(user)" class="kt-pointer text-danger"
+                            *ngxPermissionsOnly="['internalUserDelete']"> Delete
 
                             </div>
                         </div>

@@ -62,6 +62,8 @@ export class TopbarComponent implements OnInit {
 	type2: string;
 	value2: string;
 	value3: string;
+	type4: string;
+	value4: string;
 	showInput: boolean;
 	toogle: boolean;
 	toogler: string;
@@ -71,7 +73,7 @@ export class TopbarComponent implements OnInit {
 	filterWidth = "";
 	downloadbtn: boolean = false;
 	showBackButton = false;
-	permissionType = '';
+	permissionType = "";
 
 	constructor(
 		public sharedService: SharedService,
@@ -118,6 +120,16 @@ export class TopbarComponent implements OnInit {
 				this.downloadbtn = false;
 			}
 		});
+
+		this.walletPriceService.download$
+			.pipe(takeUntil(this.destroy$))
+			.subscribe((res) => {
+				if (res) {
+					this.downloadbtn = true;
+				} else {
+					this.downloadbtn = false;
+				}
+			});
 	}
 
 	ngOnInit() {
@@ -172,11 +184,13 @@ export class TopbarComponent implements OnInit {
 		this.type2 = "";
 		this.value2 = "";
 		this.value3 = "";
+		this.type4 = "";
+		this.value4 = "";
 		this.showfilter = false;
 		this.showInput = false;
 		this.toogle = false;
 		this.showBackButton = false;
-		this.permissionType = '';
+		this.permissionType = "";
 	}
 
 	dataSourceHeader() {
@@ -192,29 +206,35 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.value2 = "Add New Scheme";
 			this.type2 = "button";
+			this.permissionType = "schemeAdd";
+
 		}
-		if (this.path == 'lead-management') {
-			this.dataSourceHeader()
-			this.value1 = 'Add New Lead';
+		if (this.path == "lead-management") {
+			this.dataSourceHeader();
+			this.value1 = "Add New Lead";
 			this.showfilter = false;
-			this.filterName = 'leads';
-			this.filterWidth = '900px';
+			this.filterName = "leads";
+			this.filterWidth = "900px";
+			this.permissionType = "leadManagmentAdd";
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
 			this.value1 = "Add Partner";
+			this.permissionType = 'partnerAdd';
 		}
 		if (this.path == "logistic-partner") {
 			this.showInput = true;
 			this.rightButton = true;
 			this.value2 = "Add Logistic Partner";
 			this.type2 = "button";
-			this.permissionType = 'logisticPartnerAdd';
+			this.permissionType = "logisticPartnerAdd";
 		}
 		if (this.path == "karat-details") {
 			this.rightButton = true;
 			this.value2 = "Add Karat Details";
 			this.type2 = "button";
+			this.permissionType = "karatDetailsAdd";
+
 		}
 		if (this.path == 'email-alert') {
 			this.dataSourceHeader();
@@ -229,32 +249,35 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.toogle = true;
 		}
-		if (this.path == 'applied-loan') {
+		if (this.path == "applied-loan") {
 			this.showfilter = false;
 			this.showInput = true;
 		}
-		if (this.path == 'all-loan') {
+		if (this.path == "all-loan") {
 			this.showfilter = false;
 			this.showInput = true;
 		}
-		if (this.path == 'applied-kyc') {
+		if (this.path == "applied-kyc") {
 			this.showInput = true;
 		}
-		if (this.path == 'monthly') {
+		if (this.path == "monthly") {
 			this.dataSourceHeader();
 			this.value1 = "Add Payment";
 		}
 		if (this.path == "branch") {
 			this.dataSourceHeader();
 			this.value1 = "Add New Branch";
+			this.permissionType = 'partnerBranchAdd';
 		}
 		if (this.path == "assign-appraiser") {
 			this.dataSourceHeader();
 			this.value1 = "Assign Appraiser";
+			this.permissionType = 'assignAppraiserAdd';
 		}
 		if (this.path == "redirect-assign-appraiser") {
 			this.dataSourceHeader();
 			this.value1 = "Assign Appraiser";
+			this.permissionType = 'assignAppraiserAdd';
 		}
 
 		if (this.path == "roles") {
@@ -266,17 +289,19 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "broker") {
 			this.dataSourceHeader();
 			this.value1 = "Add Broker";
+			this.permissionType = 'brokerAdd';
 		}
 		if (this.path == "merchant") {
 			this.dataSourceHeader();
 			this.value1 = "Add Merchant";
+			this.permissionType = 'merchantAdd';
 		}
 		if (this.path == "wallet-price") {
 			this.rightButton = true;
 			this.type2 = "button";
 			this.value2 = "Edit Wallet Price";
 			this.value3 = "Download Wallet Price Report";
-			this.permissionType = 'walletEdit';
+			this.permissionType = "walletEdit";
 		}
 		if (this.path == "bulk-upload-report") {
 			this.showInput = true;
@@ -293,30 +318,36 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.value2 = "Add Category";
 			this.type2 = "button";
-			this.permissionType = 'categoryAdd';
+			this.permissionType = "categoryAdd";
 		}
 		if (this.path == "sub-category") {
 			this.rightButton = true;
 			this.showInput = true;
 			this.value2 = "Add Sub Category";
 			this.type2 = "button";
-			this.permissionType = 'sub-categoryAdd';
+			this.permissionType = "sub-categoryAdd";
 		}
 		if (this.path == "internal-user") {
 			this.dataSourceHeader();
 			this.value1 = "Add Internal User";
+			this.permissionType = "internalUserAdd"
 		}
 		if (this.path == "internal-user-branch") {
 			this.dataSourceHeader();
 			this.value1 = "Add Internal Branch";
+			this.permissionType = "internalBranchAdd"
+
 		}
 		if (this.path == "packet") {
 			this.dataSourceHeader();
 			this.value1 = "Add Packets";
+			this.permissionType = "packetAdd";
+
 		}
 		if (this.path == "store") {
 			this.dataSourceHeader();
 			this.value1 = "Create Stores";
+			this.permissionType = "storeAdd"
 		}
 		if (this.path == "bulk-upload-product") {
 			this.rightButton = true;
@@ -370,35 +401,41 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("edit-order-details")) {
 			this.value1 = "Print Performa";
 			this.type1 = "button";
-			this.value2 = "Contract";
-			this.type2 = "button";
+			this.value4 = "Contract";
+			this.type4 = "reset";
 			this.rightButton = true;
-		}
-		if (location.href.includes('view-loan')) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('package-image-upload')) {
+		if (location.href.includes("edit-refund-details")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('loan-details/')) {
+		if (location.href.includes("view-loan")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('customer-list/')) {
+		if (location.href.includes("package-image-upload")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('kyc-setting?mob')) {
+		if (location.href.includes("loan-details/")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('edit-kyc')) {
+		if (location.href.includes("customer-list/")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('redirect-assign-appraiser')) {
+		if (location.href.includes("kyc-setting?mob")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('edit-merchant') || location.href.includes('add-merchant')) {
+		if (location.href.includes("edit-kyc")) {
 			this.showBackButton = true;
 		}
-
+		if (location.href.includes("redirect-assign-appraiser")) {
+			this.showBackButton = true;
+		}
+		if (
+			location.href.includes("edit-merchant") ||
+			location.href.includes("add-merchant")
+		) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
