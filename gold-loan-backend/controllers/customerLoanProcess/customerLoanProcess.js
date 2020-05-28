@@ -442,7 +442,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
         model: models.customer,
         as: 'customer',
         where: { isActive: true },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId', 'mobileNumber']
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId']
     },
     {
         model: models.customerFinalLoan,
@@ -592,7 +592,7 @@ exports.getLoanDetails = async (req, res, next) => {
         model: models.customer,
         as: 'customer',
         where: { isActive: true },
-        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+        attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
     },
     {
         model: models.customerFinalLoan,

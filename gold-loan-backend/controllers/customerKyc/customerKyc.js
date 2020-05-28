@@ -435,7 +435,7 @@ exports.appliedKyc = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['firstName', 'lastName', 'mobileNumber', 'panCardNumber']
+            attributes: ['firstName', 'lastName', 'panCardNumber']
         }
     ]
 
