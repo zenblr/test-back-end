@@ -22,7 +22,7 @@ exports.addGoldRate = async (req, res, next) => {
 
             await models.goldRateHistory.create({ goldRate, modifiedBy, modifiedTime }, { transaction: t });
         });
-        return res.status(200).json({ message: "success" })
+        return res.status(200).json({ message: "Success" })
     } else {
 
         let id = getGoldRate[0].id;
@@ -33,7 +33,7 @@ exports.addGoldRate = async (req, res, next) => {
             await models.goldRateHistory.create({ goldRate, modifiedBy, modifiedTime }, { transaction: t });
             return updateGoldRate
         });
-        return res.status(200).json({ message: 'success' });
+        return res.status(200).json({ message: 'Success' });
 
     }
 
@@ -45,7 +45,9 @@ exports.readGoldRate = async (req, res, next) => {
             model: models.user,
             as:'Modifiedby',
             attributes:['id','firstName','lastName']
-        }]
+        }],
+        limit: 5,
+        order: [ [ 'createdAt', 'DESC' ]],
     })
     
     if (!goldRate) {
