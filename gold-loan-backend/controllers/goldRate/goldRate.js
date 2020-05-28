@@ -43,16 +43,31 @@ exports.readGoldRate = async (req, res, next) => {
     let goldRate = await models.goldRate.findAll({
         include: [{
             model: models.user,
-            as:'Modifiedby',
-            attributes:['id','firstName','lastName']
-        }],
-        limit: 5,
-        order: [ [ 'createdAt', 'DESC' ]],
+            as: 'Modifiedby',
+            attributes: ['id', 'firstName', 'lastName']
+        }]
     })
-    
+
     if (!goldRate) {
         res.status(404).json({ message: 'Data not found' });
     } else {
         res.status(200).json(goldRate[0]);
+    }
+}
+
+exports.goldRateLog = async (req, res, next) => {
+    let goldRateHistory = await models.goldRateHistory.findAll({
+        include: [{
+            model: models.user,
+            as: 'Modifiedby',
+            attributes: ['id', 'firstName', 'lastName']
+        }],
+        limit: 5,
+        order: [['createdAt', 'DESC']]
+    })
+    if (!goldRateHistory) {
+        res.status(404).json({ message: 'Data not found' });
+    } else {
+        res.status(200).json({ data: goldRateHistory });
     }
 }
