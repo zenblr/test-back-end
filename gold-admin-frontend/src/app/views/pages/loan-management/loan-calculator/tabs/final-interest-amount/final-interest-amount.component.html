@@ -30,13 +30,13 @@
 
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Tenure</label>
+                        <label class="mandatory">Tenure </label>
                     </div>
                     <div class="col-7">
                         <select formControlName="tenure" class="form-control" (change)="setEndDate()"
                             [class.isError]="controls.tenure.touched && controls.tenure.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
-                            <option [value]="ten" *ngFor="let ten of tenure">{{ten}}</option>
+                            <option [value]="ten" *ngFor="let ten of tenure">{{ten}} Month</option>
                         </select>
                         <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
                             Required field
@@ -86,7 +86,7 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Interest Rest Days</label>
+                        <label class="mandatory">Payment Frequency</label>
                     </div>
                     <div class="col-7">
                         <select formControlName="paymentFrequency" class="form-control" (change)="getIntrest()"

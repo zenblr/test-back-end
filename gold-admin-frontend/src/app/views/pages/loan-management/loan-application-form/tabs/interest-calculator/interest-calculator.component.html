@@ -63,7 +63,7 @@
                         <select formControlName="tenure" class="form-control" (change)="setEndDate()"
                             [class.isError]="controls.tenure.touched && controls.tenure.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
-                            <option [value]="ten" *ngFor="let ten of tenure">{{ten}}</option>
+                            <option [value]="ten" *ngFor="let ten of tenure">{{ten}} Month</option>
                         </select>
                         <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
                             Required field
@@ -97,7 +97,7 @@
                         <input type="number" class="form-control" formControlName="finalLoanAmount"
                             placeholder="0,00,000" (blur)="amountValidation()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
-                        <mat-hint><small>Eligible Amount: {{totalAmt | currency: 'INR'}}</small></mat-hint>
+                        <mat-hint><small>Eligible Amount: <span class="currency"> {{totalAmount | currency:'INR':'symbol' : '1.0-0'}}</span> </small></mat-hint>
                         <div>
                             <mat-error
                             *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
@@ -125,7 +125,7 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Interest Rest Days</label>
+                        <label class="mandatory">Payment Frequency</label>
                     </div>
                     <div class="col-7">
                         <select class="form-control" formControlName="paymentFrequency" (change)="getIntrest()"
@@ -219,7 +219,7 @@
                             {{controls.processingCharge.value}}</label>
                     </div>
                     <div class="table-div" id="print">
-                        <table class="table table-bordered">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th scope="col" style="width: 50%" class="rating-title text-left">Date</th>
