@@ -52,6 +52,10 @@
 	width: 100% !important;
 }
 
+.mat-table__wrapper .mat-table {
+	max-height: 74vh !important;
+	overflow: auto;
+}
 .position-static {
 	position: static;
 }

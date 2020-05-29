@@ -133,7 +133,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 250%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;sticky: true" style="width: 250%;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 250%;"></mat-row>
             </mat-table>

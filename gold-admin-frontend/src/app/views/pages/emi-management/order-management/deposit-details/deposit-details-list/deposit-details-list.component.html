@@ -106,7 +106,8 @@
                 </ng-container>
                 <ng-container matColumnDef="transactionAmount">
                     <mat-header-cell *matHeaderCellDef>Transaction Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.transactionAmount ? element?.transactionAmount : '-'}}</mat-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.transactionAmount ? element?.transactionAmount : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
@@ -172,7 +173,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 350%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;sticky: true" style="width: 350%;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 350%;"></mat-row>
             </mat-table>
