@@ -64,11 +64,11 @@
                     </div>
                 </div> -->
 
-                <div class="table-div">
-                    <table class="table table-bordered">
+                <div class=" table-div">
+                    <table class="table ">
                         <thead>
                             <tr>
-                                <th scope="col" style="width: 40%" class="rating-title">Company</th>
+                                <th scope="col" style="width: 40%" class="rating-title">Category</th>
                                 <th scope="col" style="width: 30%" class="rating-cce">CCE</th>
                                 <th scope="col" style="width: 30%" class="rating-bm" *ngIf="viewBMForm">BM/ Operation
                                     Team</th>
@@ -76,10 +76,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td scope="row" class="rating-title">Customer Behaviour</td>
+                                <td scope="row" class="rating-title">KYC Rating</td>
                                 <td class="rating-cce">
-                                    <select class="form-control" formControlName="behaviourRatingCce"
-                                        [class.isError]="cceControls.behaviourRatingCce.invalid && cceControls.behaviourRatingCce.touched">
+                                    <select class="form-control" formControlName="kycRatingFromCCe"
+                                        [class.isError]="cceControls.kycRatingFromCCe.invalid && cceControls.kycRatingFromCCe.touched">
                                         <option value="" [disabled]=true [selected]="true"> Select Rating
                                         </option>
                                         <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
@@ -89,14 +89,14 @@
                                 </td>
                                 <td class="rating-bm text-center" *ngIf="viewBMForm">
                                     <img src="../../../../../../../assets/media/icons/correct.svg"
-                                        *ngIf="cceControls.behaviourRatingVerifiedByBm.value"
-                                        (click)="approvalOfBM(false,'behaviour')">
+                                        *ngIf="cceControls.kycRatingFromBM.value"
+                                        (click)="approvalOfBM(false,'kycRating')">
                                     <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                        *ngIf="!cceControls.behaviourRatingVerifiedByBm.value"
-                                        (click)="approvalOfBM(true,'behaviour')">
+                                        *ngIf="!cceControls.kycRatingFromBM.value"
+                                        (click)="approvalOfBM(true,'kycRating')">
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td scope="row" class="rating-title">ID Proof</td>
                                 <td class="rating-cce">
                                     <select class="form-control" formControlName="idProofRatingCce"
@@ -137,7 +137,7 @@
                                         *ngIf="!cceControls.addressProofRatingVerifiedBm.value"
                                         (click)="approvalOfBM(true,'address')">
                                 </td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td scope="row" class="rating-title">KYC Status</td>
                                 <td class="rating-cce">
@@ -162,15 +162,15 @@
                         </tbody>
                     </table>
                 </div>
-                <div *ngIf="showTextBoxCce  && userType == 6 || cceControls.kycStatusFromCce.value == 'pending'"
+                <div *ngIf="showTextBoxCce  && userType == 6 || cceControls.kycStatusFromCce.value != 'approved' || cceControls.kycRatingFromCCe.value != 5 "
                     class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
                     <mat-form-field class="w-100">
                         <textarea matInput formControlName="reasonFromCce" placeholder="Reason for Pending"></textarea>
                         <mat-error>Field Required</mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="showTextBoxBM && userType== 5 || cceControls.kycStatusFromBm.value !== 'approved'" class="col kt-margin-t-20 kt-margin-b-20"
-                    style="width: 600px; margin: auto">
+                <div *ngIf="showTextBoxBM && userType== 5 || cceControls.kycStatusFromBm.value == 'pending' || cceControls.kycRatingFromBM.value == 'incomplete'"
+                    class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
                     <mat-form-field class="w-100">
                         <textarea matInput formControlName="reasonFromBm" placeholder="Reason for Rejection"></textarea>
                         <mat-error>Field Required</mat-error>

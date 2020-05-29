@@ -16,8 +16,8 @@ export class UserPersonalComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   personalForm: FormGroup;
   occupations = [];
-  // customerDetails = this.userDetailsService.userData;
-  customerDetails = { customerId: 1, customerKycId: 2 }
+  customerDetails = this.userDetailsService.userData;
+  // customerDetails = { customerId: 1, customerKycId: 2 }
   file: any;
   profile = '';
   signatureJSON = { url: null, isImage: false };
@@ -49,6 +49,7 @@ export class UserPersonalComponent implements OnInit {
       signatureProofFileName: [''],
       occupationId: [null],
       dateOfBirth: ['', [Validators.required]],
+      age: []
     })
   }
 
@@ -97,7 +98,30 @@ export class UserPersonalComponent implements OnInit {
     }
   }
 
-  
+  public calculateAge(dateOfBirth: any) {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth.value);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    this.controls.age.patchValue(age);
+    this.ageValidation()
+  }
+
+  ageValidation() {
+    if (this.controls.gender.value) {
+      if (this.controls.gender.value == 'm') {
+        this.controls.age.setValidators(Validators.pattern('^0*(2[1-9]|[3-9][0-9]|100)$'))
+      } else {
+        this.controls.age.setValidators(Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$'))
+      }
+      this.controls.age.markAsTouched()
+    }
+  }
 
   submit() {
 
