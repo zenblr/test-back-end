@@ -20,8 +20,9 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="editRole(role)" class="kt-pointer"> Edit | &nbsp;</div>
-                            <div class="kt-pointer text-danger" (click)="deleteRole(role)">Delete</div>
+                            <div (click)="editRole(role)" class="kt-pointer" *ngxPermissionsOnly="['karatDetailsEdit']"> Edit </div>
+                            <div class="px-2" *ngxPermissionsOnly="['karatDetailsEdit']&& ['karatDetailsDelete']">|</div>
+                            <div class="kt-pointer text-danger" (click)="deleteRole(role)" *ngxPermissionsOnly="['karatDetailsDelete']">Delete</div>
                         </div>
                     </mat-cell>
                 </ng-container>

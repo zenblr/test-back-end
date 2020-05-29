@@ -68,7 +68,7 @@ export class SharedService {
 		return this.http.get<any>(`http://173.249.49.7:9120/api/payment-type`);
 	}
 
-	getStatus(): Observable<any> {
+	getOrderStatus(): Observable<any> {
 		return this.http.get<any>(
 			`http://173.249.49.7:9120/api/order/all-order-status`
 		);

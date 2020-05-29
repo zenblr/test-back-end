@@ -19,8 +19,8 @@
             <form [formGroup]="filterForm">
               <div class="form-group kt-form__group row">
                 <div class="col-12 kt-margin-bottom-20-mobile">
-                  <div class="row pb-3">
-                    <div class="col-6">
+                  <div class="row pb-3" *ngxPermissionsOnly="['categoryView', 'subCategoryView']">
+                    <div class="col-6" *ngxPermissionsOnly="['categoryView']">
                       <label>By Category</label>
                       <ng-select [items]="categoryList" [multiple]="true" bindLabel="categoryName"
                         [closeOnSelect]="false" formControlName="category">
@@ -35,7 +35,7 @@
                         </ng-template>
                       </ng-select>
                     </div>
-                    <div class="col-6">
+                    <div class="col-6" *ngxPermissionsOnly="['subCategoryView']">
                       <label>By Sub-Category</label>
                       <ng-select [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
                         [closeOnSelect]="false" formControlName="subCategory">

@@ -69,8 +69,8 @@ export class DepositDetailsListComponent implements OnInit {
 	private unsubscribeSearch$ = new Subject();
 	searchValue = "";
 	depositData = {
-		from: 0,
-		to: 0,
+		from: 1,
+		to: 25,
 		search: "",
 		paymentRecievedDate: "",
 		paymentType: "",

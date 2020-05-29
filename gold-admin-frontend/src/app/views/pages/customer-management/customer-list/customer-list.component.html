@@ -37,8 +37,9 @@
                     <mat-header-cell [ngClass]="'w-200'" *matHeaderCellDef>Action</mat-header-cell>
                     <mat-cell *matCellDef="let customer" [ngClass]="'w-200'">
                         <p>
-                            <span class="kt-pointer" (click)="newLoan(customer)">Add New Loan</span>&nbsp;|&nbsp;
-                            <span class="kt-pointer" (click)="viewDetails(customer.id)">View Details</span>&nbsp;
+                            <span class="kt-pointer" (click)="newLoan(customer)" *ngxPermissionsOnly="['loanApplicationAdd']">Add New Loan</span>
+                            <span *ngxPermissionsOnly="['loanApplicationAdd']" class="px-1">|</span>
+                            <span class="kt-pointer" (click)="viewDetails(customer.id)" >View Details</span>
                             <!-- <span class="kt-pointer" (click)="editCustomer(customer)">Edit</span>&nbsp;|&nbsp;
                             <span class="text-danger kt-pointer" (click)="deleteCustomer(customer)">Delete</span> -->
                         </p>

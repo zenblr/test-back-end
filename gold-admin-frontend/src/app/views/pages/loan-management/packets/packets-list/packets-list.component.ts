@@ -7,6 +7,7 @@ import { PacketsDatasource, PacketsService } from '../../../../../core/loan-mana
 import { AssignPacketsComponent } from '../assign-packets/assign-packets.component';
 import { LayoutUtilsService } from '../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
+import { NgxPermissionsService } from 'ngx-permissions';
 @Component({
   selector: 'kt-packets-list',
   templateUrl: './packets-list.component.html',
@@ -32,7 +33,8 @@ export class PacketsListComponent implements OnInit {
     private packetsService: PacketsService,
     private dataTableService: DataTableService,
     private layoutUtilsService: LayoutUtilsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private ngxPermissionService: NgxPermissionsService
   ) {
     this.packetsService.openModal$.pipe(
       map(res => {
@@ -44,8 +46,11 @@ export class PacketsListComponent implements OnInit {
   }
 
   ngOnInit() {
-
-
+    const permission = this.ngxPermissionService.permissions$.subscribe(res => {
+      if (!(res.packetEdit || res.packetDelete))
+        this.displayedColumns.splice(3, 1)
+    })
+    this.subscriptions.push(permission);
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
         this.loadPackets();

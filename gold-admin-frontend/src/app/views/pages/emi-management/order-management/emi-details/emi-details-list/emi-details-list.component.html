@@ -111,8 +111,12 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element)" class="kt-pointer"> View | &nbsp;</div>
-                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="printCancellationReceipt(element)" class="kt-pointer">Print EMI Receipt</div>
+                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element)"
+                                class="kt-pointer"> View</div>
+                            <div *ngxPermissionsOnly="['EMIDetailsView']"
+                                [ngStyle]="{'display':element.orderemistatus.id == 4 ? 'block':'none'}"
+                                (click)="printCancellationReceipt(element)" class="kt-pointer">&nbsp;| Print EMI Receipt
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>

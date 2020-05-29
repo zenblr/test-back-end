@@ -66,7 +66,7 @@
 					<img src="../../../../assets/media/logos/header-logo.png" alt="">
 					<router-outlet></router-outlet>
 				</div>
-				<div class="footer" *ngIf="router.url != '/auth/login'">
+				<div class="footer" *ngIf="!(this.location.path().includes('login'))">
 					<img src="../../../../assets/media/icons/back.svg" alt="" class="m-auto d-block kt-pointer"
 						height="40" (click)="back()">
 				</div>

@@ -75,12 +75,12 @@
                     <mat-cell *matCellDef="let lead">
                         <ng-container *ngIf="lead.status.id == '1' &&  lead.customerKyc !== null">
                             <div [ngStyle]="{'display': 'inherit'}" *ngIf="!lead.customerKyc.isKycSubmitted">
-                                <button (click)="goToKyc(lead.mobileNumber)" class="apply-kyc">Apply KYC</button>
+                                <button (click)="goToKyc(lead.mobileNumber)" class="apply-kyc" *ngxPermissionsOnly="['customerKycAdd']">Apply KYC</button>
                             </div>
                         </ng-container>
                         <ng-container *ngIf="lead.status.id == '1' &&  lead.customerKyc == null">
                             <div [ngStyle]="{'display': 'inherit'}">
-                                <button (click)="goToKyc(lead.mobileNumber)" class="apply-kyc">Apply KYC</button>
+                                <button (click)="goToKyc(lead.mobileNumber)" class="apply-kyc" *ngxPermissionsOnly="['customerKycAdd']">Apply KYC</button>
                             </div>
                         </ng-container>
                     </mat-cell>
@@ -90,7 +90,7 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let lead">
                         <div *ngIf="lead.status.id !== 1" [ngStyle]="{'display': 'inherit'}">
-                            <div class="kt-pointer" (click)="editLead(lead)" class="kt-pointer">Edit</div>
+                            <div class="kt-pointer" (click)="editLead(lead)" class="kt-pointer" *ngxPermissionsOnly="['leadManagmentEdit']">Edit</div>
                         </div>
                         <div *ngIf="lead.status.id == 1" [ngStyle]="{'display': 'inherit'}">
                             <div>-</div>

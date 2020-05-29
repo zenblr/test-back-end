@@ -50,6 +50,7 @@ import { InternalUserBranchListComponent } from './internal-user-branch/internal
 import { AddInternalUserBranchComponent } from './internal-user-branch/add-internal-user-branch/add-internal-user-branch.component';
 import { CreateStoreComponent } from './store/create-store/create-store.component';
 import { StoreListComponent } from './store/store-list/store-list.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 
 const routes: Routes = [
@@ -127,6 +128,7 @@ const routes: Routes = [
 		FormsModule,
 		ReactiveFormsModule,
 		TranslateModule.forChild(),
+		NgxPermissionsModule.forChild(),
 		AngularMaterialModule,
 		CoreModule,
 		NgbModule,

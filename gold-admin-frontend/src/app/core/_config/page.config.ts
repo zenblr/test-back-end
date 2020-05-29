@@ -28,6 +28,14 @@ export class PageConfig {
 				page: { title: "Karat", desc: "" },
 			},
 		},
+		"notification-setting": {
+			"email-alert": {
+				page: { title: "Email Alerts", desc: "" }
+			},
+			"sms-alert": {
+				page: { title: "SMS Alerts", desc: "" }
+			}
+		},
 		"upload-data": {
 			"upload-banner": {
 				page: { title: "Promotional Banner", desc: "" },
@@ -87,7 +95,7 @@ export class PageConfig {
 		},
 		"emi-management": {
 			products: {
-				page: { title: "Show Poducts", desc: "" },
+				page: { title: "Show Products", desc: "" },
 			},
 			category: {
 				page: { title: "Category", desc: "" },

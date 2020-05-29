@@ -107,7 +107,7 @@
                 </div>
                 <div class="col">
                     <div class="text-primary font-weight-500 kt-pointer"
-                        (click)="preview(cutomerDetails.customerKycBank[1].passbookProof[0])">View Proof</div>
+                        (click)="preview(cutomerDetails.customerKycBank[0].passbookProof[0])">View Proof</div>
                 </div>
                 <div class="col">
                     <div class="text-primary font-weight-500 kt-pointer"
@@ -148,8 +148,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)">View
-                    Details</div>
+                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)"
+                *ngxPermissionsOnly="['loanDetailsView']">View  Details</div>
             </div>
         </div>
     </div>
