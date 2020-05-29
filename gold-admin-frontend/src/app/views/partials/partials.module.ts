@@ -74,6 +74,7 @@ import { SelectWithSearchComponent } from "./components/select-with-search/selec
 
 import { NgSelectModule } from "@ng-select/ng-select";
 import { UserReviewComponent } from "../pages/kyc-settings/tabs/user-review/user-review.component";
+import { NgxPermissionsModule } from "ngx-permissions";
 
 @NgModule({
 	declarations: [
@@ -189,6 +190,7 @@ import { UserReviewComponent } from "../pages/kyc-settings/tabs/user-review/user
 		UserReviewComponent,
 		// spinner
 		NgbDropdownModule,
+		NgxPermissionsModule,
 	],
 	imports: [
 		NgbModule,
@@ -201,6 +203,7 @@ import { UserReviewComponent } from "../pages/kyc-settings/tabs/user-review/user
 		CoreModule,
 		PortletModule,
 		WidgetModule,
+		NgxPermissionsModule.forChild(),
 
 		AngularMaterialModule,
 		// ng-bootstrap modules

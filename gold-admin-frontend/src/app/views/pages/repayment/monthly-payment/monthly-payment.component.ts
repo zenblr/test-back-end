@@ -19,7 +19,7 @@ export class MonthlyPaymentComponent implements OnInit {
 
   // Table fields
   dataSource: MonthlyRepaymentDatasource;
-  displayedColumns = ['loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'status', 'actions'];
+  displayedColumns = ['loanId', 'customerId', 'customerName', 'loanAmount', 'loanStartDate', 'loanEndDate', 'interestPaid', 'status', 'actions'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
@@ -48,33 +48,31 @@ export class MonthlyPaymentComponent implements OnInit {
 
   ngOnInit() {
 
-    const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
-      tap(() => {
-        this.loadPage();
-      })
-    )
-      .subscribe();
-    this.subscriptions.push(paginatorSubscriptions);
+    // const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
+    //   tap(() => {
+    //     this.loadPage();
+    //   })
+    // )
+    //   .subscribe();
+    // this.subscriptions.push(paginatorSubscriptions);
 
-    const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
-      .subscribe(res => {
-        this.searchValue = res;
-        this.paginator.pageIndex = 0;
-        this.loadPage();
-      });
+    // const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+    //   .subscribe(res => {
+    //     this.searchValue = res;
+    //     this.paginator.pageIndex = 0;
+    //     this.loadPage();
+    //   });
 
-    // Init DataSource
-    this.dataSource = new MonthlyRepaymentDatasource(this.monthlyService);
-    // console.log(this.dataSource);
-    const entitiesSubscription = this.dataSource.entitySubject.pipe(
-      skip(1),
-      distinctUntilChanged()
-    ).subscribe(res => {
-      this.monthlyPaymentResult = res;
-    });
-    this.subscriptions.push(entitiesSubscription);
+    // this.dataSource = new MonthlyRepaymentDatasource(this.monthlyService);
+    // const entitiesSubscription = this.dataSource.entitySubject.pipe(
+    //   skip(1),
+    //   distinctUntilChanged()
+    // ).subscribe(res => {
+    //   this.monthlyPaymentResult = res;
+    // });
+    // this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.loadPartners(this.searchValue, 1, 25, '', '', '');
+    // this.dataSource.loadPartners(this.searchValue, 1, 25, '', '', '');
   }
 
   loadPage() {

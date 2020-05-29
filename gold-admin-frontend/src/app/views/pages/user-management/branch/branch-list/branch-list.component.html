@@ -66,9 +66,9 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="viewRole(role)" class="kt-pointer"> View | &nbsp;</div>
-                            <div (click)="editRole(role)" class="kt-pointer"> Edit | &nbsp;</div>
-                            <div class="kt-pointer text-danger" (click)="deleteRole(role)">Delete</div>
+                            <div (click)="viewRole(role)" class="kt-pointer" *ngxPermissionsOnly="['partnerBranchView']"> View | &nbsp;</div>
+                            <div (click)="editRole(role)" class="kt-pointer" *ngxPermissionsOnly="['partnerBranchEdit']"> Edit | &nbsp;</div>
+                            <div class="kt-pointer text-danger" (click)="deleteRole(role)" *ngxPermissionsOnly="['partnerBranchDelete']">Delete</div>
                         </div>
                     </mat-cell>
                 </ng-container>

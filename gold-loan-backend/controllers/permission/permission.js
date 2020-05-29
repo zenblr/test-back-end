@@ -62,7 +62,7 @@ exports.readPermission = async (req, res, next) => {
 
     let permissions=[];
     allPermissions.map(data=>{
-      console.log(data)
+    //   console.log(data)
       data.entity.map(entity => {
         let isExist=entityId.filter(id=>id==entity.dataValues.id)
         if(isExist.length!=0){
@@ -94,4 +94,14 @@ exports.readPermission = async (req, res, next) => {
         res.status(200).json({ permissions});
     }
 }
+
+exports.addsystemInfoPermissions = async (req, res) => {
+      const dataArray = req.body;
+      let createdPermissions = await models.permissionSystemInfo.bulkCreate(dataArray, { returning: true });
+      if (!createdPermissions) {
+        res.status(422).json({ message: 'permissions not created' });
+      } else {
+        res.status(201).json(createdPermissions);
+      }
+  }
 

@@ -1,6 +1,6 @@
 // Anglar
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 // Layout Directives
 // Services
 import {
@@ -18,14 +18,14 @@ import {
 	TabClickEventDirective,
 	TimeElapsedPipe,
 	ToggleDirective,
-	NumberDirective
-} from './_base/layout';
+	NumberDirective,
+} from "./_base/layout";
 // Services
-import { AuthService } from './auth/_services/auth.service';
-import { AlphabetsDirective } from './_base/layout/directives/alphabets.directive';
-import { DecimalOnlyDirective } from './_base/layout/directives/decimal-only.directive';
-import { SchemeAmountPipe } from './_base/layout/pipes/scheme-amount.pipe';
-import { ExcelService } from './_base/crud';
+import { AuthService } from "./auth/_services/auth.service";
+import { AlphabetsDirective } from "./_base/layout/directives/alphabets.directive";
+import { DecimalOnlyDirective } from "./_base/layout/directives/decimal-only.directive";
+import { SchemeAmountPipe } from "./_base/layout/pipes/scheme-amount.pipe";
+import { ExcelService, PdfService } from "./_base/crud";
 
 @NgModule({
 	imports: [CommonModule],
@@ -71,11 +71,8 @@ import { ExcelService } from './_base/crud';
 		SchemeAmountPipe,
 		FirstLetterPipe,
 		AlphabetsDirective,
-		DecimalOnlyDirective
+		DecimalOnlyDirective,
 	],
-	providers: [
-		AuthService,
-		ExcelService
-	]
+	providers: [AuthService, ExcelService, PdfService],
 })
-export class CoreModule { }
+export class CoreModule {}

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         accountType:{
             type: DataTypes.ENUM,
-            field: 'account_type_id',
+            field: 'account_type',
             values: ['saving', 'current']
         },
         accountHolderName:{

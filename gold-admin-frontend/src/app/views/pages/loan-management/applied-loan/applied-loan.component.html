@@ -73,30 +73,30 @@
                             <div *ngIf="loan.loanStage.id == 1 ">
                                 <div class="kt-pointer" class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="editLoan(loan)"  [ngClass]="{'cursor-not-allowed':  !(loan.loanStatusForAppraiser == 'pending'
-                                    && this.roles == 'Appraiser')}"
+                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed':  !((loan.loanStatusForAppraiser == 'pending'
+                                    && this.userType == 7) && edit)}"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
                             <div *ngIf="loan.loanStage.id == 2">
                                 <div class="kt-pointer" class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="editLoan(loan)"[ngClass]="{'cursor-not-allowed': !((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
-                                    && this.roles == 'Branch Manager' && loan.loanStatusForAppraiser == 'approved')}" 
-                                    
+                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed': !(((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
+                                    && this.userType == 5 && loan.loanStatusForAppraiser == 'approved')&&edit)}"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
                             <div *ngIf="loan.loanStage.id == 3">
                                 <div class="kt-pointer" class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="packageImageUpload(loan)" class="red-button">Assign
+                                    <button (click)="packageImageUpload(loan)" class="red-button" 
+                                    [ngClass]="{'cursor-not-allowed':!edit}">Assign
                                         Packet</button>
                                 </div>
                             </div>
                             <div *ngIf="loan.loanStage.id == 4">
                                 <div class="kt-pointer" class="kt-pointer">
-                                    <button (click)="disburse(loan)" class="green-button">Disburse Amount</button>
+                                    <button (click)="disburse(loan)" [ngClass]="{'cursor-not-allowed':!edit}" class="green-button">Disburse Amount</button>
 
                                 </div>
                             </div>
@@ -113,7 +113,7 @@
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span (click)="viewLoan(loan)" class="kt-pointer">
+                        <span (click)="viewLoan(loan)" class="kt-pointer" *ngxPermissionsOnly="['loanDetailsView']">
                             View
                         </span>
                     </mat-cell>

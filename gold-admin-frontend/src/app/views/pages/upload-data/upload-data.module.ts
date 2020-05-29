@@ -13,7 +13,8 @@ import { UploadOfferComponent } from './upload-offer/upload-offer.component';
 import { UploadLenderBannerComponent } from './upload-lender-banner/upload-lender-banner.component';
 
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-
+// ngx-permission
+import { NgxPermissionsModule } from 'ngx-permissions'
 
 const routes: Routes = [
   {
@@ -44,6 +45,7 @@ const routes: Routes = [
     PartialsModule,
     AngularMaterialModule,
     RouterModule.forChild(routes),
+    NgxPermissionsModule.forChild(),
     ReactiveFormsModule,
     FormsModule,
     

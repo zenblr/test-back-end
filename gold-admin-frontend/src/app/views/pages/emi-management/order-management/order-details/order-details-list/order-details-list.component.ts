@@ -70,8 +70,8 @@ export class OrderDetailsListComponent implements OnInit {
 	private unsubscribeSearch$ = new Subject();
 	searchValue = "";
 	orderData = {
-		from: 0,
-		to: 0,
+		from: 1,
+		to: 25,
 		search: "",
 		weight: 0,
 		paymentType: 0,
@@ -188,11 +188,6 @@ export class OrderDetailsListComponent implements OnInit {
 				this.selection.select(row)
 			);
 		}
-		this.isChecked();
-	}
-
-	isChecked() {
-		console.log(this.selection.selected.length);
 	}
 
 	loadOrderDetailsPage() {
@@ -246,7 +241,28 @@ export class OrderDetailsListComponent implements OnInit {
 
 	selectedDropdown(value) {
 		if (this.selection.selected.length) {
-			console.log(value);
+			let selectedIds = [];
+			for (let i = 0; i < this.selection.selected.length; i++) {
+				selectedIds.push(this.selection.selected[i].id);
+			}
+
+			let params = {
+				orderId: selectedIds,
+			};
+
+			if (value == "label") {
+				this.orderDetailsService.getLabel(params).subscribe();
+			} else if (value == "mainfest") {
+				this.orderDetailsService.getMainfest(params).subscribe();
+			} else if (value == "deliMainfest") {
+				this.orderDetailsService.getDeliMainfest(params).subscribe();
+			} else if (value == "uninsuredMainfest") {
+				this.orderDetailsService
+					.getUninsuredMainfest(params)
+					.subscribe();
+			} else {
+				this.toastr.errorToastr("Something went Wrong");
+			}
 		} else {
 			this.toastr.errorToastr("Select atleast 1 Order");
 		}
@@ -270,6 +286,7 @@ export class OrderDetailsListComponent implements OnInit {
 		this.unsubscribeSearch$.next();
 		this.unsubscribeSearch$.complete();
 		this.orderDetailsService.applyFilter.next({});
+		this.orderDetailsService.dropdownValue.next({});
 		this.sharedService.closeFilter.next(true);
 	}
 }

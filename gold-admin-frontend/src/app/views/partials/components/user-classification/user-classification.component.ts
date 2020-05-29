@@ -14,7 +14,7 @@ import { TitleCasePipe } from '@angular/common';
   selector: 'kt-user-classification',
   templateUrl: './user-classification.component.html',
   styleUrls: ['./user-classification.component.scss'],
-  providers:[TitleCasePipe]
+  providers: [TitleCasePipe]
 })
 export class UserClassificationComponent implements OnInit {
 
@@ -53,10 +53,10 @@ export class UserClassificationComponent implements OnInit {
   //   }
   // }
 
-  showTextBoxCce = true;
-  showTextBoxBM = true;
+  showTextBoxCce = false;
+  showTextBoxBM = false;
   editRating: boolean;
-  role: any;
+  userType: any;
   viewBMForm = true;
 
   constructor(
@@ -68,11 +68,10 @@ export class UserClassificationComponent implements OnInit {
     private appliedKycService: AppliedKycService,
     private route: Router,
     private sharedService: SharedService,
-    private titlecase:TitleCasePipe,
+    private titlecase: TitleCasePipe,
   ) {
-    this.sharedService.getRole().subscribe(res => {
-      this.role = res
-    })
+    let res = this.sharedService.getDataFromStorage()
+      this.userType = res.userDetails.userTypeId;
   }
 
   ngOnInit() {
@@ -127,7 +126,7 @@ export class UserClassificationComponent implements OnInit {
       reasonFromBm: []
     })
 
-    if (this.role == 'Customer Care Executive') {
+    if (this.userType == 6) {
       // this.custClassificationForm.disable()
       this.custClassificationForm.controls.behaviourRatingVerifiedByBm.disable();
       this.custClassificationForm.controls.idProofRatingVerifiedByBm.disable();
@@ -135,7 +134,7 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationForm.controls.kycStatusFromBm.disable();
       this.custClassificationForm.controls.reasonFromBm.disable();
       this.viewBMForm = false;
-    } else if (this.role == 'Branch Manager') {
+    } else if (this.userType == 5) {
       this.custClassificationForm.controls.behaviourRatingCce.disable();
       this.custClassificationForm.controls.idProofRatingCce.disable();
       this.custClassificationForm.controls.addressProofRatingCce.disable();
@@ -236,7 +235,7 @@ export class UserClassificationComponent implements OnInit {
   }
 
   approvalOfBM(value: boolean, type: string) {
-    if (this.role == 'Branch Manager') {
+    if (this.userType == 5) {
       if (type == 'behaviour') {
         this.cceControls.behaviourRatingVerifiedByBm.patchValue(value)
       } else if (type == 'identity') {

@@ -7,6 +7,7 @@ import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-previ
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { NgxPermissionsService } from 'ngx-permissions'
 
 @Component({
   selector: 'kt-uplod-data-image',
@@ -24,9 +25,13 @@ export class UplodDataImageComponent implements OnInit {
   @ViewChild("file", { static: false }) file;
   @ViewChild(ToastrComponent, { static: false }) toastr: ToastrComponent;
   promotionPage = false;
+  add: boolean;
+  editBanner: boolean;
+  deleteBanner: boolean;
 
 
   constructor(
+    public ngxPermissionService: NgxPermissionsService,
     private ref: ChangeDetectorRef,
     private sharedService: SharedService,
     public dilaog: MatDialog,
@@ -38,6 +43,9 @@ export class UplodDataImageComponent implements OnInit {
 
 
   ngOnInit() {
+    this.ngxPermissionService.permissions$.subscribe(res => {
+      this.getPermission(res)
+    })
     const currentPage = this.router.url;
     if (currentPage == '/upload-data/upload-banner') {
       this.promotionPage = true;
@@ -125,5 +133,39 @@ export class UplodDataImageComponent implements OnInit {
     })
   }
 
+  reset() {
+    this.add = false;
+    this.editBanner = false;
+    this.deleteBanner = false;
+  }
 
+  getPermission(permission) {
+    this.reset()
+    if (location.href.includes('upload-banner')) {
+      if (permission.promotionalBannerAdd)
+        this.add = true
+      if (permission.promotionalBannerEdit)
+        this.editBanner = true
+      if (permission.promotionalBannerDelete)
+        this.deleteBanner = true
+    }
+    if (location.href.includes('upload-offer')) {
+      if (permission.offerBannerAdd)
+        this.add = true
+      if (permission.offerBannerEdit)
+        this.editBanner = true
+      if (permission.offerBannerDelete)
+        this.deleteBanner = true
+
+    }
+    if (location.href.includes('upload-lender-banner')) {
+      if (permission.partnerBannerAdd)
+        this.add = true
+      if (permission.partnerBannerEdit)
+        this.editBanner = true
+      if (permission.partnerBannerDelete)
+        this.deleteBanner = true
+    }
+    console.log(this.add,this.editBanner,this.deleteBanner)
+  }
 }

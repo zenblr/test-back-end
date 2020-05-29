@@ -58,15 +58,17 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <!-- <div style="display: contents" class="kt-pointer" > -->
-                        <span (click)="viewLoan(loan)" class="kt-pointer font-weight-bold">View Loan </span>
+                        <span (click)="viewLoan(loan)" class="kt-pointer font-weight-bold"
+                        *ngxPermissionsOnly="['loanDetailsView']">View Loan </span>
                         <!-- </div> -->
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="new">
+                <ng-container matColumnDef="new" >
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <!-- <div style="display: contents" class="kt-pointer" > -->
-                        <button (click)="new(loan)" class="addmore">Add New Loan</button>
+                        <button (click)="new(loan)" class="addmore" *ngxPermissionsOnly="['loanApplicationAdd']"
+                        >Add New Loan</button>
                         <!-- </div> -->
                     </mat-cell>
                 </ng-container>

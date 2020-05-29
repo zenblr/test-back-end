@@ -404,32 +404,35 @@ export class UserReviewComponent implements OnInit {
             this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.URL })
             this.ref.markForCheck();
           }
-          if (type == "identityProof") {
+          if (type == "identityProof" && this.data.customerKycReview.customerKycPersonal.identityProof.length < 2) {
             this.data.customerKycReview.customerKycPersonal.identityProof.push(res.uploadFile.URL)
             this.customerKycPersonal.patchValue({ identityProof: this.data.customerKycReview.customerKycPersonal.identityProof })
             this.reviewForm.patchValue({ identityProofFileName: event.target.files[0].name });
-          }
-          if (type == 'permanent') {
-            this.data.customerKycReview.customerKycAddress[0].addressProof.push(res.uploadFile.URL)
-            this.customerKycAddressOne.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[0].addressProof })
-            this.customerKycAddressOne.patchValue({ addressProofFileName: event.target.files[0].name });
-          }
-          if (type == 'residential') {
-            this.data.customerKycReview.customerKycAddress[1].addressProof.push(res.uploadFile.URL)
-            this.customerKycAddressTwo.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[1].addressProof })
-            this.customerKycAddressTwo.patchValue({ addressProofFileName: event.target.files[0].name });
-          }
+          } else
+            if (type == 'permanent' && this.data.customerKycReview.customerKycAddress[0].addressProof.length < 2) {
+              this.data.customerKycReview.customerKycAddress[0].addressProof.push(res.uploadFile.URL)
+              this.customerKycAddressOne.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[0].addressProof })
+              this.customerKycAddressOne.patchValue({ addressProofFileName: event.target.files[0].name });
+            } else
+              if (type == 'residential' && this.data.customerKycReview.customerKycAddress[1].addressProof.length < 2) {
+                this.data.customerKycReview.customerKycAddress[1].addressProof.push(res.uploadFile.URL)
+                this.customerKycAddressTwo.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[1].addressProof })
+                this.customerKycAddressTwo.patchValue({ addressProofFileName: event.target.files[0].name });
+              } else
+                if (type == 'passbook' && this.data.customerKycReview.customerKycBank[0].passbookProof.length < 2) {
+                  this.data.customerKycReview.customerKycBank[0].passbookProof.push(res.uploadFile.URL)
+                  this.customerKycBank.patchValue({ passbookProof: this.data.customerKycReview.customerKycBank[0].passbookProof })
+                  this.customerKycBank.patchValue({ passbookProofFileName: event.target.files[0].name });
+                } else {
+                  this.toastr.error("Cannot upload more than two images")
+                }
           if (type == "signature") {
             this.data.customerKycReview.customerKycPersonal.signatureProof = res.uploadFile.URL;
             this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.URL })
             this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
             this.ref.markForCheck();
           }
-          if (type == 'passbook') {
-            this.data.customerKycReview.customerKycBank[0].passbookProof.push(res.uploadFile.URL)
-            this.customerKycBank.patchValue({ passbookProof: this.data.customerKycReview.customerKycBank[0].passbookProof })
-            this.customerKycBank.patchValue({ passbookProofFileName: event.target.files[0].name });
-          }
+
           this.ref.detectChanges();
           // console.log(this.addressControls)
         }), catchError(err => {

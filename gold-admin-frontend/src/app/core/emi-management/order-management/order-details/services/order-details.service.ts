@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
-import { ExcelService } from "../../../../_base/crud/services/excel.service";
+import { ExcelService, PdfService } from "../../../../_base/crud";
 
 @Injectable({
 	providedIn: "root",
@@ -20,7 +20,14 @@ export class OrderDetailsService {
 	buttonValue = new BehaviorSubject<any>({});
 	buttonValue$ = this.buttonValue.asObservable();
 
-	constructor(private http: HttpClient, private excelService: ExcelService) {}
+	button = new BehaviorSubject<any>({});
+	button$ = this.button.asObservable();
+
+	constructor(
+		private http: HttpClient,
+		private excelService: ExcelService,
+		private pdfService: PdfService
+	) {}
 
 	getAllOrderDetails(event?: any): Observable<any> {
 		const reqParams: any = {};
@@ -86,6 +93,159 @@ export class OrderDetailsService {
 						this.excelService.saveAsExcelFile(
 							data,
 							"OrderReport_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getPerforma(id): Observable<any> {
+		return this.http
+			.get(
+				`http://173.249.49.7:9120/api/order/order-proforma-invoice/${id}`,
+				{ responseType: "arraybuffer" }
+			)
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.pdfService.saveAsPdfFile(
+							data,
+							"Performa_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getContract(id): Observable<any> {
+		return this.http
+			.get(`http://173.249.49.7:9120/api/order/order-contract/${id}`, {
+				responseType: "arraybuffer",
+			})
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.pdfService.saveAsPdfFile(
+							data,
+							"Contract_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getLabel(params): Observable<any> {
+		return this.http
+			.post("http://173.249.49.7:9120/api/order/label", params, {
+				responseType: "arraybuffer",
+			})
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.pdfService.saveAsPdfFile(
+							data,
+							"Label_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getMainfest(params): Observable<any> {
+		return this.http
+			.post("http://173.249.49.7:9120/api/mainfest", params, {
+				responseType: "arraybuffer",
+			})
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.excelService.saveAsExcelFile(
+							data,
+							"Manifest_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getDeliMainfest(params): Observable<any> {
+		return this.http
+			.post(
+				"http://173.249.49.7:9120/api/mainfest/deli-mainfest",
+				params,
+				{
+					responseType: "arraybuffer",
+				}
+			)
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.excelService.saveAsExcelFile(
+							data,
+							"DeliManifest_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getUninsuredMainfest(params): Observable<any> {
+		return this.http
+			.post(
+				"http://173.249.49.7:9120/api/mainfest/uninsured-mainfest",
+				params,
+				{
+					responseType: "arraybuffer",
+				}
+			)
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.excelService.saveAsExcelFile(
+							data,
+							"UninsuredManifest_" + Date.now()
 						);
 					},
 					(error) => console.log(error)

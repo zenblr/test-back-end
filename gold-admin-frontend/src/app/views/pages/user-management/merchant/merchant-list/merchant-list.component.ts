@@ -17,6 +17,7 @@ import { ViewMerchantComponent } from '../view-merchant/view-merchant.component'
 import { ApiKeyComponent } from '../api-key/api-key.component';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 
 @Component({
@@ -27,7 +28,7 @@ import { ToastrService } from 'ngx-toastr';
 export class MerchantListComponent implements OnInit {
 
   dataSource: MerchantDatasource;
-  displayedColumns = ['merchantName','initial','fullName', 'mobileNumber', 'email', 'state', 'city', 'pincode', 'approvalStatus', 'action', 'apiKey'];
+  displayedColumns = ['merchantName', 'initial', 'fullName', 'mobileNumber', 'email', 'state', 'city', 'pincode', 'approvalStatus', 'action', 'apiKey'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   searchValue = ''
   unsubscribeSearch$ = new Subject()
@@ -48,22 +49,39 @@ export class MerchantListComponent implements OnInit {
    * @param layoutUtilsService: LayoutUtilsService
    */
   constructor(
-    
+
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
     private merchantService: MerchantService,
     private dataTableService: DataTableService,
     private router: Router,
-    private toast:ToastrService) {
+    private toast: ToastrService,
+    private ngxPermissionService: NgxPermissionsService) {
   }
 
 
   ngOnInit() {
 
+    const permission = this.ngxPermissionService.permissions$.subscribe(res => {
+      if (!(res.merchantEdit || res.merchantView)) {
+        let index = this.displayedColumns.indexOf('action')
+        this.displayedColumns.splice(index, 1)
+      }
+      if (!(res.merchantAdd)) {
+        let index = this.displayedColumns.indexOf('apiKey')
+        this.displayedColumns.splice(index, 1)
+      }
+      if (!(res.merchantEdit)) {
+        let index = this.displayedColumns.indexOf('approvalStatus')
+        this.displayedColumns.splice(index, 1)
+      }
+    })
+    this.subscriptions.push(permission);
+
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
-			tap(() => this.loadMerchantList())
-		).subscribe();
+      tap(() => this.loadMerchantList())
+    ).subscribe();
     this.subscriptions.push(paginatorSubscriptions);
     const searchSubscription = this.dataTableService.searchInput$.pipe(
       takeUntil(this.unsubscribeSearch$))
@@ -72,7 +90,7 @@ export class MerchantListComponent implements OnInit {
         this.paginator.pageIndex = 0;
         this.loadMerchantList();
       });
-      this.subscriptions.push(searchSubscription);
+    this.subscriptions.push(searchSubscription);
     // Init DataSource
     this.dataSource = new MerchantDatasource(this.merchantService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
@@ -122,24 +140,24 @@ export class MerchantListComponent implements OnInit {
   viewMerchant(merchant) {
     const dialog = this.dialog.open(ViewMerchantComponent, {
       data: { userId: merchant.userId },
-      width:'630px'
+      width: '630px'
     })
   }
 
   apiKey(merchant) {
     const dialog = this.dialog.open(ApiKeyComponent, {
       data: { userId: merchant.userId },
-      width:'420px'
+      width: '420px'
     })
   }
 
-  toogle(merchant,event){
-    this.merchantService.changeStatus(merchant.userId,event).pipe(
-      map(res=>{
+  toogle(merchant, event) {
+    this.merchantService.changeStatus(merchant.userId, event).pipe(
+      map(res => {
         this.toast.success(res.message)
-      }),catchError(err =>{
+      }), catchError(err => {
         this.toast.error(err.error.message)
-        throw err;      
+        throw err;
       })).subscribe()
   }
 }

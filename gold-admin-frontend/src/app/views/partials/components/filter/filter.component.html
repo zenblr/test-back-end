@@ -16,11 +16,11 @@
         <!-- Product -->
         <div class="kt-portlet__body" *ngIf="filterName =='product'">
           <div class="kt-form">
-            <form [formGroup]="filterForm" *ngIf="filterName =='product'">
+            <form [formGroup]="filterForm">
               <div class="form-group kt-form__group row">
                 <div class="col-12 kt-margin-bottom-20-mobile">
-                  <div class="row pb-3">
-                    <div class="col-6">
+                  <div class="row pb-3" *ngxPermissionsOnly="['categoryView', 'subCategoryView']">
+                    <div class="col-6" *ngxPermissionsOnly="['categoryView']">
                       <label>By Category</label>
                       <ng-select [items]="categoryList" [multiple]="true" bindLabel="categoryName"
                         [closeOnSelect]="false" bindValue="id" formControlName="multiSelect1">
@@ -35,7 +35,7 @@
                         </ng-template>
                       </ng-select>
                     </div>
-                    <div class="col-6">
+                    <div class="col-6" *ngxPermissionsOnly="['subCategoryView']">
                       <label>By Sub-Category</label>
                       <ng-select [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
                         [closeOnSelect]="false" bindValue="id" formControlName="multiSelect2">
@@ -65,14 +65,17 @@
                         (click)="applyFilter()">
                       </kt-button>
                     </div>
-
+                    <div class="col-12 pt-2">
+                      <mat-error *ngIf="controls.priceTo.errors?.priceRange">
+                        <span>Price To should be greater then Price From</span>
+                      </mat-error>
+                    </div>
                   </div>
                 </div>
               </div>
             </form>
           </div>
         </div>
-
 
         <!-- leads -->
         <div class="kt-portlet__body" *ngIf="filterName == 'leads'">

@@ -28,12 +28,13 @@ export class CustomerGridComponent implements OnInit, OnChanges {
   onWindowScoll() {
     console.log(Math.floor(this.getScrollXY()[1] + window.innerHeight))
     if (this.getDocHeight() === Math.floor(this.getScrollXY()[1] + window.innerHeight)) {
-      if(this.count < this.page.to){
-      let data = {
-        from: this.page.from + 20,
-        to: this.page.to + 20
-      }
-      this.pagination.emit(data)
+      if (this.count < this.page.to) {
+        let data = {
+          from: this.page.from + 20,
+          to: this.page.to + 20,
+          search: this.page.search
+        }
+        this.pagination.emit(data)
       }
     }
   }
@@ -43,7 +44,7 @@ export class CustomerGridComponent implements OnInit, OnChanges {
       console.log(this.page)
     }
     if (changes.data) {
-      Array.prototype.push.apply(this.customers,changes.data.currentValue)
+      Array.prototype.push.apply(this.customers, changes.data.currentValue)
       // this.customers.push()
     }
   }
