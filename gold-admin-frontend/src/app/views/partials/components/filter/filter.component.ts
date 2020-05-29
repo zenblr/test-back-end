@@ -265,10 +265,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			default:
 				break;
 		}
-		// this.filterForm.patchValue({
-		// 	category: this.filterForm.controls['category'].value,
-		// 	subCategory: this.filterForm.controls['subCategory'].value,
-		// });
+		this.filterForm.patchValue({
+			category: this.filterForm.controls['category'].value,
+			subCategory: this.filterForm.controls['subCategory'].value,
+		});
 		setTimeout(() => {
 			this.applyFilter();
 		});
