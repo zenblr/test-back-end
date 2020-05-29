@@ -207,27 +207,30 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			data: {},
 			list: {}
 		};
-		if (this.controls['category'].value.multiSelect.length) {
-			this.filterObject.data.category = this.controls['category'].value.multiSelect.map(e => e.id).toString();
-			this.filterObject.list.category = this.controls['category'].value.multiSelect;
+		if (this.controls) {
+			const controls = this.controls;
+			if (controls['category'].value && controls['category'].value.multiSelect.length) {
+				this.filterObject.data.category = controls['category'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.category = controls['category'].value.multiSelect;
+			}
+			if (controls['subCategory'].value && controls['subCategory'].value.multiSelect.length) {
+				this.filterObject.data.subCategory = controls['subCategory'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.subCategory = controls['subCategory'].value.multiSelect;
+			}
+			if (controls['priceFrom'].value) {
+				this.filterObject.data.priceFrom = controls['priceFrom'].value;
+				this.filterObject.list.priceFrom = controls['priceFrom'].value;
+			}
+			if (controls['priceTo'].value) {
+				this.filterObject.data.priceTo = controls['priceTo'].value;
+				this.filterObject.list.priceTo = controls['priceTo'].value;
+			}
+			if (controls['startDate'].value) {
+				this.filterObject.data.startDate = controls['startDate'].value;
+				this.filterObject.list.startDate = controls['startDate'].value;
+			}
+			return this.filterObject;
 		}
-		if (this.controls['subCategory'].value.multiSelect.length) {
-			this.filterObject.data.subCategory = this.controls['subCategory'].value.multiSelect.map(e => e.id).toString();
-			this.filterObject.list.subCategory = this.controls['subCategory'].value.multiSelect;
-		}
-		if (this.controls['priceFrom'].value) {
-			this.filterObject.data.priceFrom = this.controls['priceFrom'].value;
-			this.filterObject.list.priceFrom = this.controls['priceFrom'].value;
-		}
-		if (this.controls['priceTo'].value) {
-			this.filterObject.data.priceTo = this.controls['priceTo'].value;
-			this.filterObject.list.priceTo = this.controls['priceTo'].value;
-		}
-		if (this.controls['startDate'].value) {
-			this.filterObject.data.startDate = this.controls['startDate'].value;
-			this.filterObject.list.startDate = this.controls['startDate'].value;
-		}
-		return this.filterObject;
 	}
 
 	applyFilter() {
