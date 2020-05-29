@@ -114,7 +114,7 @@ export class UserClassificationComponent implements OnInit {
     this.custClassificationForm = this.fb.group({
       customerId: [this.customerDetails.customerId, [Validators.required]],
       customerKycId: [this.customerDetails.customerKycId, [Validators.required]],
-      kycRatingFromCCe: ['', [Validators.required]],
+      kycRatingFromCce: ['', [Validators.required]],
       kycRatingFromBM: ['', [Validators.required]],
       // behaviourRatingCce: ['', [Validators.required]],
       // idProofRatingCce: ['', [Validators.required]],
@@ -130,16 +130,18 @@ export class UserClassificationComponent implements OnInit {
 
     if (this.userType == 6) {
       // this.custClassificationForm.disable()
-      this.custClassificationForm.controls.behaviourRatingVerifiedByBm.disable();
-      this.custClassificationForm.controls.idProofRatingVerifiedByBm.disable();
-      this.custClassificationForm.controls.addressProofRatingVerifiedBm.disable();
+      // this.custClassificationForm.controls.behaviourRatingVerifiedByBm.disable();
+      // this.custClassificationForm.controls.idProofRatingVerifiedByBm.disable();
+      // this.custClassificationForm.controls.addressProofRatingVerifiedBm.disable();
+      this.custClassificationForm.controls.kycRatingFromBM.disable();
       this.custClassificationForm.controls.kycStatusFromBm.disable();
       this.custClassificationForm.controls.reasonFromBm.disable();
       this.viewBMForm = false;
     } else if (this.userType == 5) {
-      this.custClassificationForm.controls.behaviourRatingCce.disable();
-      this.custClassificationForm.controls.idProofRatingCce.disable();
-      this.custClassificationForm.controls.addressProofRatingCce.disable();
+      //   this.custClassificationForm.controls.behaviourRatingCce.disable();
+      //   this.custClassificationForm.controls.idProofRatingCce.disable();
+      //   this.custClassificationForm.controls.addressProofRatingCce.disable();
+      this.custClassificationForm.controls.kycRatingFromCce.disable();
       this.custClassificationForm.controls.kycStatusFromCce.disable();
       this.custClassificationForm.controls.reasonFromCce.disable();
     } else {
@@ -158,7 +160,7 @@ export class UserClassificationComponent implements OnInit {
   }
 
   conditionalValidation() {
-    this.custClassificationForm.get('kycRatingFromCcE').valueChanges.subscribe(res => {
+    this.custClassificationForm.get('kycRatingFromCce').valueChanges.subscribe(res => {
       if (res == 5) {
         this.custClassificationForm.get('reasonFromCce').clearValidators();
         this.custClassificationForm.get('reasonFromCce').patchValue('');
@@ -206,6 +208,9 @@ export class UserClassificationComponent implements OnInit {
 
   submit() {
 
+    console.log(this.custClassificationForm.value)
+
+
     if (this.custClassificationForm.invalid) {
       this.custClassificationForm.markAllAsTouched();
       return;
@@ -214,9 +219,9 @@ export class UserClassificationComponent implements OnInit {
     console.log(this.custClassificationForm.value)
 
     this.custClassificationForm.patchValue({
-      behaviourRatingCce: +(this.custClassificationForm.get('behaviourRatingCce').value),
-      idProofRatingCce: +(this.custClassificationForm.get('idProofRatingCce').value),
-      addressProofRatingCce: +(this.custClassificationForm.get('addressProofRatingCce').value),
+      behaviourRatingCce: +(this.custClassificationForm.get('kycRatingFromCce').value),
+      // idProofRatingCce: +(this.custClassificationForm.get('idProofRatingCce').value),
+      // addressProofRatingCce: +(this.custClassificationForm.get('addressProofRatingCce').value),
     })
 
     if (this.editRating) {
