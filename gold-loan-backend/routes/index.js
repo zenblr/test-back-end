@@ -128,5 +128,8 @@ router.use('/assign-appraiser', assignAppraiser);
 const packet = require('./packet');
 router.use('/packet', packet)
 
+const ratingReason = require('./ratingReason');
+router.use('/rating-reason', ratingReason)
+
 
 module.exports = router;
