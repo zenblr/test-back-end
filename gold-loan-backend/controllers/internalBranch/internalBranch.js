@@ -4,7 +4,7 @@ const sequelize = models.sequelize;
 const paginationFUNC = require('../../utils/pagination'); // importing pagination function
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
-const _=require('loadsh');
+const _ = require('lodash');
 
 // add internal branch
 
@@ -192,7 +192,8 @@ exports.readInternalBranchById = async (req, res) => {
 exports.updateInternalBranch = async (req, res) => {
     const internalBranchId = req.params.id;
     const { name, cityId, stateId, pinCode, address, partnerId } = req.body;
-    let updateInternalBranch = await models.internalBranch.update({ name, cityId, stateId, pinCode, address }, { where: { id: internalBranchId, isActive: true } });
+    let modifiedBy=req.userData.id;
+    let updateInternalBranch = await models.internalBranch.update({ name, cityId, stateId, pinCode, address,modifiedBy }, { where: { id: internalBranchId, isActive: true } });
     if (!updateInternalBranch[0]) {
         return res.status(404).json({ message: 'internal branch updated failed' });
     }else{

@@ -128,5 +128,10 @@ router.use('/assign-appraiser', assignAppraiser);
 const packet = require('./packet');
 router.use('/packet', packet)
 
+const holidayMaster= require('./holidayMaster'); // add holiday list master
+router.use('/holiday-master',holidayMaster)
+
+const uploadHolidayMaster= require('./uploadHolidayMaster'); // upload holiday list master
+router.use('/upload-holiday-master',uploadHolidayMaster)
 
 module.exports = router;
