@@ -78,8 +78,8 @@
                             <tr>
                                 <td scope="row" class="rating-title">KYC Rating</td>
                                 <td class="rating-cce">
-                                    <select class="form-control" formControlName="kycRatingFromCCe"
-                                        [class.isError]="cceControls.kycRatingFromCCe.invalid && cceControls.kycRatingFromCCe.touched">
+                                    <select class="form-control" formControlName="kycRatingFromCce"
+                                        [class.isError]="cceControls.kycRatingFromCce.invalid && cceControls.kycRatingFromCce.touched">
                                         <option value="" [disabled]=true [selected]="true"> Select Rating
                                         </option>
                                         <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
@@ -169,7 +169,7 @@
                         <mat-error>Field Required</mat-error>
                     </mat-form-field>
                 </div>
-                <div *ngIf="showTextBoxBM && userType== 5 || cceControls.kycStatusFromBm.value == 'pending' || cceControls.kycRatingFromBM.value == 'incomplete'"
+                <div *ngIf="showTextBoxBM && userType== 5 || cceControls.kycStatusFromBm.value == 'incomplete' "
                     class="col kt-margin-t-20 kt-margin-b-20" style="width: 600px; margin: auto">
                     <mat-form-field class="w-100">
                         <textarea matInput formControlName="reasonFromBm" placeholder="Reason for Rejection"></textarea>
