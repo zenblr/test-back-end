@@ -22,33 +22,13 @@
                   <div class="row pb-3" *ngxPermissionsOnly="['categoryView', 'subCategoryView']">
                     <div class="col-6" *ngxPermissionsOnly="['categoryView']">
                       <label>By Category</label>
-                      <ng-select [items]="categoryList" [multiple]="true" bindLabel="categoryName"
-                        [closeOnSelect]="false" formControlName="category">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.categoryName | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].categoryName | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <kt-multi-select-search [items]="categoryList" [multiple]="true" bindLabel="categoryName"
+                        formControlName="category"></kt-multi-select-search>
                     </div>
                     <div class="col-6" *ngxPermissionsOnly="['subCategoryView']">
                       <label>By Sub-Category</label>
-                      <ng-select [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
-                        [closeOnSelect]="false" formControlName="subCategory">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.subCategoryName | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].subCategoryName | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <kt-multi-select-search [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
+                        formControlName="subCategory"></kt-multi-select-search>
                     </div>
                   </div>
                   <div class="row">

@@ -89,7 +89,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		});
 
 		this.sharedService.clearFilter$.subscribe(res => {
-			if (res) {
+			if (Object.entries(res).length) {
 				setTimeout(() => {
 					this.clearFilter(res.name, res.index);
 				});
@@ -207,13 +207,13 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			data: {},
 			list: {}
 		};
-		if (this.controls['category'].value.length) {
-			this.filterObject.data.category = this.controls['category'].value.map(e => e.id).toString();
-			this.filterObject.list.category = this.controls['category'].value;
+		if (this.controls['category'].value.multiSelect.length) {
+			this.filterObject.data.category = this.controls['category'].value.multiSelect.map(e => e.id).toString();
+			this.filterObject.list.category = this.controls['category'].value.multiSelect;
 		}
-		if (this.controls['subCategory'].value.length) {
-			this.filterObject.data.subCategory = this.controls['subCategory'].value.map(e => e.id).toString();
-			this.filterObject.list.subCategory = this.controls['subCategory'].value;
+		if (this.controls['subCategory'].value.multiSelect.length) {
+			this.filterObject.data.subCategory = this.controls['subCategory'].value.multiSelect.map(e => e.id).toString();
+			this.filterObject.list.subCategory = this.controls['subCategory'].value.multiSelect;
 		}
 		if (this.controls['priceFrom'].value) {
 			this.filterObject.data.priceFrom = this.controls['priceFrom'].value;
@@ -248,10 +248,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	clearFilter(name, index) {
 		switch (name) {
 			case 'category':
-				this.controls['category'].value.splice(index, 1);
+				this.controls['category'].value.multiSelect.splice(index, 1);
 				break;
 			case 'subCategory':
-				this.controls['subCategory'].value.splice(index, 1);
+				this.controls['subCategory'].value.multiSelect.splice(index, 1);
 				break;
 			case 'priceFrom':
 				this.controls['priceFrom'].patchValue('');

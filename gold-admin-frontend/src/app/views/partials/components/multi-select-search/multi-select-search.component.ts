@@ -1,19 +1,6 @@
 // Angular
-import {
-	Component,
-	ChangeDetectionStrategy,
-	Input,
-	forwardRef,
-	OnDestroy,
-} from "@angular/core";
-import {
-	FormGroup,
-	FormBuilder,
-	NG_VALUE_ACCESSOR,
-	NG_VALIDATORS,
-	FormControl,
-	ControlValueAccessor,
-} from "@angular/forms";
+import { Component, ChangeDetectionStrategy, Input, forwardRef, OnDestroy, } from "@angular/core";
+import { FormGroup, FormBuilder, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormControl, ControlValueAccessor, } from "@angular/forms";
 import { Subscription } from "rxjs";
 
 @Component({
@@ -34,8 +21,7 @@ import { Subscription } from "rxjs";
 		},
 	],
 })
-export class MultiSelectSearchComponent
-	implements ControlValueAccessor, OnDestroy {
+export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestroy {
 	@Input() items: Array<any>;
 	@Input() multiple: boolean;
 	@Input() bindLabel: string;
@@ -54,6 +40,7 @@ export class MultiSelectSearchComponent
 		this.onChange(value);
 		this.onTouched();
 	}
+
 	constructor(private formBuilder: FormBuilder) {
 		// create the inner form
 		this.form = this.formBuilder.group({
@@ -79,8 +66,8 @@ export class MultiSelectSearchComponent
 		this.subscriptions.forEach((s) => s.unsubscribe());
 	}
 
-	onChange: any = () => {};
-	onTouched: any = () => {};
+	onChange: any = () => { };
+	onTouched: any = () => { };
 
 	registerOnChange(fn) {
 		this.onChange = fn;
@@ -98,6 +85,6 @@ export class MultiSelectSearchComponent
 
 	// communicate the inner form validation to the parent form
 	validate(_: FormControl) {
-		return this.form.valid ? null : { image: { valid: false } };
+		return this.form.valid ? null : { value: { valid: false } };
 	}
 }

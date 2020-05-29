@@ -8,7 +8,7 @@
                         <div class="filtered-title">By Category</div>
                         <div class="d-flex">
                             <div class="filtered-value" *ngFor="let item of filteredList?.category; let i = index;">
-                                <span>{{item?.categoryName}}</span>
+                                <span>{{item?.categoryName | titlecase}}</span>
                                 <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
                                     (click)="clearFilter('category', i)">
                             </div>
@@ -19,7 +19,7 @@
                         <div class="filtered-title">By Sub-Category</div>
                         <div class="d-flex">
                             <div class="filtered-value" *ngFor="let item of filteredList?.subCategory; let i = index;">
-                                <span>{{item?.subCategoryName}}</span>
+                                <span>{{item?.subCategoryName | titlecase}}</span>
                                 <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
                                     (click)="clearFilter('subCategory', i)">
                             </div>
