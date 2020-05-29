@@ -167,30 +167,33 @@
             </div>
         </div>
         <div class="row py-2">
-            <div class="col-6">
+            <div class="col-12">
                 <div class="row">
-                    <div class="col-6 text-muted">IFSC Code:</div>
-                    <div class="col-6"> {{ refundData?.ifscCode ? refundData?.ifscCode : "-" }}</div>
+                    <div class="col-3 text-muted">Passbook Copy :</div>
+                    <div class="col image-text-truncate">{{refundData?.passbookCopy?.originalname}}&nbsp;&nbsp;<a
+                            href="{{refundData?.passbookCopy?.url}}" target="_blank"
+                            download="{{refundData?.passbookCopy?.originalname}}"><img
+                                src="assets/media/icons/_download.svg" alt="" width="16px"></a></div>
+                    <div class="col-2"></div>
                 </div>
             </div>
-            <div class="col-6">
+        </div>
+        <div class="row py-2">
+            <div class="col-12">
                 <div class="row">
-                    <div class="col-6 text-muted">Passbook Copy :</div>
-                    <div class="col-4">{{refundData?.passbookCopy?.originalname}}</div>
-                    <div class="col-2"><a href="{{refundData?.passbookCopy?.url}}" target="_blank"
+                    <div class="col-3 text-muted">Check Copy:</div>
+                    <div class="col image-text-truncate">{{refundData?.checkCopy?.originalname}}&nbsp;&nbsp;<a
+                            href="{{refundData?.checkCopy?.url}}" target="_blank"
                             download="{{refundData?.passbookCopy?.originalname}}"><img
-                                src="assets/media/icons/_download.svg" alt="" width="50%"></a></div>
+                                src="assets/media/icons/_download.svg" alt="" width="16px"></a></div>
                 </div>
             </div>
         </div>
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Check Copy:</div>
-                    <div class="col-4">{{refundData?.checkCopy?.originalname}}</div>
-                    <div class="col-2"><a href="{{refundData?.checkCopy?.url}}" target="_blank"
-                            download="{{refundData?.passbookCopy?.originalname}}"><img
-                                src="assets/media/icons/_download.svg" alt="" width="50%"></a></div>
+                    <div class="col-6 text-muted">IFSC Code:</div>
+                    <div class="col-6"> {{ refundData?.ifscCode ? refundData?.ifscCode : "-" }}</div>
                 </div>
             </div>
             <div class="col-6">
@@ -214,7 +217,7 @@
                     <div class="col-6 text-muted">Refund Status :</div>
                     <div class="col-6">{{
                         refundData?.refundStatus?.statusName
-                            ? refundData?.refundStatus?.statusName
+                            ? (refundData?.refundStatus?.statusName | titlecase)
                             : "-"
                     }}</div>
                 </div>

@@ -27,10 +27,10 @@
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.categoryName}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.categoryName | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].categoryName}}&nbsp;
+                          {{items[0].categoryName | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>
@@ -42,10 +42,10 @@
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.subCategoryName}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.subCategoryName | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].subCategoryName}}&nbsp;
+                          {{items[0].subCategoryName | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>
@@ -93,11 +93,11 @@
                   bindValue="id" [closeOnSelect]="false" [searchable]="false">
                   <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
                     <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                      [ngModelOptions]="{ standalone : true }" /> {{item.gender | uppercase}}
+                      [ngModelOptions]="{ standalone : true }" /> {{item.gender | titlecase}}
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                     <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                      [ngModelOptions]="{ standalone : true }" /> {{item.name}}
+                      [ngModelOptions]="{ standalone : true }" /> {{item.name | titlecase}}
                   </ng-template>
                   <ng-template ng-label-tmp>
                     <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
@@ -123,7 +123,7 @@
                 <select class="form-control" name="multiSelect1">
                   <option value="" [selected]="true">Select City</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
-                    {{item?.categoryName}}
+                    {{item?.categoryName | titlecase}}
                   </option>
                 </select>
               </div>
@@ -132,7 +132,7 @@
                 <select class="form-control" name="multiSelect1">
                   <option value="" [selected]="true">Select Category</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
-                    {{item?.categoryName}}
+                    {{item?.categoryName | titlecase}}
                   </option>
                 </select>
               </div>
@@ -158,10 +158,10 @@
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].statusName}}&nbsp;
+                          {{items[0].statusName | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>
@@ -197,10 +197,10 @@
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.paymentType}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.paymentType | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].paymentType}}&nbsp;
+                          {{items[0].paymentType | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>
@@ -212,10 +212,10 @@
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].statusName}}&nbsp;
+                          {{items[0].statusName | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>
@@ -252,10 +252,10 @@
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.paymentType}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.paymentType | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].paymentType}}&nbsp;
+                          {{items[0].paymentType | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>
@@ -269,10 +269,10 @@
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].statusName}}&nbsp;
+                          {{items[0].statusName | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>
@@ -303,10 +303,10 @@
 
                         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                           <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.merchantName}}
+                            [ngModelOptions]="{ standalone : true }" /> {{item.merchantName | titlecase}}
                         </ng-template>
                         <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].merchantName}}&nbsp;
+                          {{items[0].merchantName | titlecase}}&nbsp;
                           <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
                         </ng-template>
                       </ng-select>

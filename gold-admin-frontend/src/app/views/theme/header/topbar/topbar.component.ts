@@ -74,6 +74,9 @@ export class TopbarComponent implements OnInit {
 	downloadbtn: boolean = false;
 	showBackButton = false;
 	permissionType = "";
+	showDropdown = false;
+	isDisabled = false;
+
 	button = true;
 	constructor(
 		public sharedService: SharedService,
@@ -103,23 +106,24 @@ export class TopbarComponent implements OnInit {
 		private emiDetailsService: EmiDetailsService,
 		private monthlyService: MonthlyService,
 		private userDetailsService: UserDetailsService,
-		private leadService: LeadService,
-		// private emailAlertService: EmailAlertService,
-		// private smsAlertService: SmsAlertService
-	) {
-
-		this.router.events.subscribe(val => {
-			this.reset()
-			this.setTopbar(location.path())
-		})
-
-		this.walletPriceService.download$.pipe(takeUntil(this.destroy$)).subscribe(res => {
-			if (res) {
-				this.downloadbtn = true;
-			} else {
-				this.downloadbtn = false;
-			}
+		private leadService: LeadService
+	) // private emailAlertService: EmailAlertService,
+	// private smsAlertService: SmsAlertService
+	{
+		this.router.events.subscribe((val) => {
+			this.reset();
+			this.setTopbar(location.path());
 		});
+
+		this.walletPriceService.download$
+			.pipe(takeUntil(this.destroy$))
+			.subscribe((res) => {
+				if (res) {
+					this.downloadbtn = true;
+				} else {
+					this.downloadbtn = false;
+				}
+			});
 
 		this.orderDetailsService.button$
 			.pipe(takeUntil(this.destroy$))
@@ -190,6 +194,7 @@ export class TopbarComponent implements OnInit {
 		this.showInput = false;
 		this.toogle = false;
 		this.showBackButton = false;
+		this.showDropdown = false;
 		this.permissionType = "";
 	}
 
@@ -207,7 +212,6 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add New Scheme";
 			this.type2 = "button";
 			this.permissionType = "schemeAdd";
-
 		}
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
@@ -215,12 +219,12 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = false;
 			this.filterName = "leads";
 			this.filterWidth = "900px";
-			this.permissionType ="leadManagmentAdd";
+			this.permissionType = "leadManagmentAdd";
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
 			this.value1 = "Add Partner";
-			this.permissionType = 'partnerAdd';
+			this.permissionType = "partnerAdd";
 		}
 		if (this.path == "logistic-partner") {
 			this.showInput = true;
@@ -234,15 +238,14 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add Karat Details";
 			this.type2 = "button";
 			this.permissionType = "karatDetailsAdd";
-
 		}
-		if (this.path == 'email-alert') {
+		if (this.path == "email-alert") {
 			this.dataSourceHeader();
-			this.value1 = 'Create Email Alert';
+			this.value1 = "Create Email Alert";
 		}
-		if (this.path == 'sms-alert') {
+		if (this.path == "sms-alert") {
 			this.dataSourceHeader();
-			this.value1 = 'Create SMS Alert';
+			this.value1 = "Create SMS Alert";
 		}
 		if (this.path == "customer-list") {
 			this.showfilter = false;
@@ -267,17 +270,17 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "branch") {
 			this.dataSourceHeader();
 			this.value1 = "Add New Branch";
-			this.permissionType = 'partnerBranchAdd';
+			this.permissionType = "partnerBranchAdd";
 		}
 		if (this.path == "assign-appraiser") {
 			this.dataSourceHeader();
 			this.value1 = "Assign Appraiser";
-			this.permissionType = 'assignAppraiserAdd';
+			this.permissionType = "assignAppraiserAdd";
 		}
 		if (this.path == "redirect-assign-appraiser") {
 			this.dataSourceHeader();
 			this.value1 = "Assign Appraiser";
-			this.permissionType = 'assignAppraiserAdd';
+			this.permissionType = "assignAppraiserAdd";
 		}
 
 		if (this.path == "roles") {
@@ -289,12 +292,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "broker") {
 			this.dataSourceHeader();
 			this.value1 = "Add Broker";
-			this.permissionType = 'brokerAdd';
+			this.permissionType = "brokerAdd";
 		}
 		if (this.path == "merchant") {
 			this.dataSourceHeader();
 			this.value1 = "Add Merchant";
-			this.permissionType = 'merchantAdd';
+			this.permissionType = "merchantAdd";
 		}
 		if (this.path == "wallet-price") {
 			this.rightButton = true;
@@ -330,24 +333,22 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "internal-user") {
 			this.dataSourceHeader();
 			this.value1 = "Add Internal User";
-			this.permissionType = "internalUserAdd"
+			this.permissionType = "internalUserAdd";
 		}
 		if (this.path == "internal-user-branch") {
 			this.dataSourceHeader();
 			this.value1 = "Add Internal Branch";
-			this.permissionType = "internalBranchAdd"
-
+			this.permissionType = "internalBranchAdd";
 		}
 		if (this.path == "packet") {
 			this.dataSourceHeader();
 			this.value1 = "Add Packets";
 			this.permissionType = "packetAdd";
-
 		}
 		if (this.path == "store") {
 			this.dataSourceHeader();
 			this.value1 = "Create Stores";
-			this.permissionType = "storeAdd"
+			this.permissionType = "storeAdd";
 		}
 		if (this.path == "bulk-upload-product") {
 			this.rightButton = true;
@@ -365,6 +366,7 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = "600px";
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
+			this.showDropdown = true;
 		}
 		if (this.path == "cancel-order-details") {
 			this.showInput = true;
@@ -530,6 +532,10 @@ export class TopbarComponent implements OnInit {
 
 	check(val) {
 		this.customerManagementServiceCustomer.toggle.next(val);
+	}
+
+	selectedValue(value: string) {
+		this.orderDetailsService.dropdownValue.next(value);
 	}
 
 	buttonValue(value) {
