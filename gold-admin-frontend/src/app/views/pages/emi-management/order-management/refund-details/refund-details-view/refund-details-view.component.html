@@ -214,7 +214,7 @@
                     <div class="col-6 text-muted">Refund Status :</div>
                     <div class="col-6">{{
                         refundData?.refundStatus?.statusName
-                            ? refundData?.refundStatus?.statusName
+                            ? (refundData?.refundStatus?.statusName | titlecase)
                             : "-"
                     }}</div>
                 </div>
