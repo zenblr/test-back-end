@@ -32,7 +32,7 @@ exports.readLogisticPartner = async (req, res) => {
 
     let allLogisticPartner = await models.logisticPartner.findAll({
         where: searchQuery,
-        order: [["id", "DESC"]],
+        order: [["updatedAt", "DESC"]],
         offset: offset,
         limit: pageSize,
         include: [
