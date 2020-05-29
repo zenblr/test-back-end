@@ -18,7 +18,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class AppliedKycComponent implements OnInit {
 
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
+  displayedColumns = ['fullName', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;

@@ -20,6 +20,15 @@ export class CustomerClassificationService {
       }))
   }
 
+  getReasonsList(): Observable<any> {
+    return this.http.get(`/api/rating-reason`).pipe(
+      map(res => res),
+      catchError(err => {
+        this.toastr.error(err.error.message);
+        throw (err)
+      }))
+  }
+
   cceRating(data): Observable<any> {
     return this.http.post(`/api/classification/cce`, data).pipe(
       map(res => res),
