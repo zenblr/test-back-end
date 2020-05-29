@@ -1,6 +1,4 @@
 export class OrderDetailsModel {
-
-    clear() {
-
-    }
+	id: number;
+	clear() {}
 }

@@ -31,7 +31,7 @@
 
                 <!-- Table with selection -->
                 <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
-                <!-- <ng-container matColumnDef="select">
+                <ng-container matColumnDef="select">
                     <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
                         <mat-checkbox (change)="$event ? masterToggle() : null"
                             [checked]="selection.hasValue() && isAllSelected()"
@@ -43,7 +43,7 @@
                             (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
                         </mat-checkbox>
                     </mat-cell>
-                </ng-container> -->
+                </ng-container>
 
                 <ng-container matColumnDef="storeId">
                     <mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>

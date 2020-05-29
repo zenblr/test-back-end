@@ -14,6 +14,9 @@ export class OrderDetailsService {
 	applyFilter = new BehaviorSubject<any>({});
 	applyFilter$ = this.applyFilter.asObservable();
 
+	dropdownValue = new BehaviorSubject<any>({});
+	dropdownValue$ = this.dropdownValue.asObservable();
+
 	buttonValue = new BehaviorSubject<any>({});
 	buttonValue$ = this.buttonValue.asObservable();
 
@@ -139,6 +142,110 @@ export class OrderDetailsService {
 						this.pdfService.saveAsPdfFile(
 							data,
 							"Contract_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getLabel(params): Observable<any> {
+		return this.http
+			.post("http://173.249.49.7:9120/api/order/label", params, {
+				responseType: "arraybuffer",
+			})
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.pdfService.saveAsPdfFile(
+							data,
+							"Label_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getMainfest(params): Observable<any> {
+		return this.http
+			.post("http://173.249.49.7:9120/api/mainfest", params, {
+				responseType: "arraybuffer",
+			})
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.excelService.saveAsExcelFile(
+							data,
+							"Manifest_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getDeliMainfest(params): Observable<any> {
+		return this.http
+			.post(
+				"http://173.249.49.7:9120/api/mainfest/deli-mainfest",
+				params,
+				{
+					responseType: "arraybuffer",
+				}
+			)
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.excelService.saveAsExcelFile(
+							data,
+							"DeliManifest_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	getUninsuredMainfest(params): Observable<any> {
+		return this.http
+			.post(
+				"http://173.249.49.7:9120/api/mainfest/uninsured-mainfest",
+				params,
+				{
+					responseType: "arraybuffer",
+				}
+			)
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.excelService.saveAsExcelFile(
+							data,
+							"UninsuredManifest_" + Date.now()
 						);
 					},
 					(error) => console.log(error)
