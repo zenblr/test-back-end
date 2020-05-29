@@ -5,6 +5,8 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { catchError, map, finalize } from 'rxjs/operators';
 import { UserDetailsService } from '../../../../../core/kyc-settings';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material';
+import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 
 @Component({
   selector: 'kt-user-personal',
@@ -16,8 +18,8 @@ export class UserPersonalComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   personalForm: FormGroup;
   occupations = [];
-  customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2 }
+  // customerDetails = this.userDetailsService.userData;
+  customerDetails = { customerId: 1, customerKycId: 2 }
   file: any;
   profile = '';
   signatureJSON = { url: null, isImage: false };
@@ -28,7 +30,8 @@ export class UserPersonalComponent implements OnInit {
   constructor(private fb: FormBuilder, private userDetailsService: UserDetailsService,
     private userPersonalService: UserPersonalService,
     private sharedService: SharedService, private ref: ChangeDetectorRef,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private dialog:MatDialog) { }
 
   ngOnInit() {
     // console.log(this.signature)
@@ -59,6 +62,22 @@ export class UserPersonalComponent implements OnInit {
     }, err => {
       // console.log(err);
     })
+  }
+
+  webcam(){
+    const dialogRef = this.dialog.open(WebcamDialogComponent,
+      {
+        data: {},
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.profile = res
+        this.personalForm.get('profileImage').patchValue(this.profile);
+        this.ref.detectChanges()
+        // this.controls.
+      }
+    });
   }
 
   getFileInfo(event, type: any) {
