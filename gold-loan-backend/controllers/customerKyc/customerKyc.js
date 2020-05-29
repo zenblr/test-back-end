@@ -191,7 +191,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let kyc = await sequelize.transaction(async (t) => {
 
-        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, customerKycCurrentStage: "2" })
+        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" })
 
         await models.customer.update({ panCardNumber: panCardNumber }, { where: { id: getCustomerInfo.id }, transaction: t })
 
@@ -220,7 +220,8 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 exports.submitCustomerKycAddress = async (req, res, next) => {
 
     let { customerId, customerKycId, identityProof, identityTypeId, identityProofNumber, address } = req.body
-
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
     if (identityProof.length == 0) {
         return res.status(404).json({ message: "Identity proof file must be required." });
     }
@@ -239,6 +240,8 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
 
         address[i]['customerId'] = customerId
         address[i]['customerKycId'] = customerKycId
+        address[i]['createdBy'] = createdBy
+        address[i]['modifiedBy'] = modifiedBy
         addressArray.push(address[i])
     }
     let { firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
@@ -248,10 +251,11 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
         await models.customerKycPersonalDetail.update({
             identityProof: identityProof,
             identityTypeId: identityTypeId,
-            identityProofNumber: identityProofNumber
+            identityProofNumber: identityProofNumber,
+            modifiedBy: modifiedBy
         }, { where: { id: customerKycId }, transaction: t });
 
-        await models.customerKyc.update({ customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
+        await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
         await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
     })
 
@@ -264,6 +268,9 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
 exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
 
     let { customerId, customerKycId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof } = req.body
+
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
 
     let customer = await models.customer.findOne({ where: { id: customerId } })
 
@@ -287,10 +294,11 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
             martialStatus: martialStatus,
             occupationId: occupationId,
             spouseName: spouseName,
-            signatureProof: signatureProof
+            signatureProof: signatureProof,
+            modifiedBy: modifiedBy
         }, { where: { id: customerKycId }, transaction: t });
 
-        await models.customerKyc.update({ customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+        await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
 
     })
     let customerKycReview = await models.customer.findOne({
@@ -407,15 +415,24 @@ exports.submitAllKycInfo = async (req, res, next) => {
     // if (check.isEmpty(findCustomerKyc)) {
     //     return res.status(404).json({ message: "This customer kyc detailes is not filled." });
     // }
+    let modifiedBy = req.userData.id;
+    customerKycPersonal['modifiedBy'] = modifiedBy
+
+    let addressArray = []
+    for (let i = 0; i < customerKycAddress.length; i++) {
+
+        customerKycAddress[i]['modifiedBy'] = modifiedBy
+        addressArray.push(customerKycAddress[i])
+    }
 
     await sequelize.transaction(async (t) => {
         // await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId }, transaction: t });
 
         await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t })
 
-        await models.customerKycAddressDetail.bulkCreate(customerKycAddress, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProof", "addressProofTypeId", "addressProofNumber"] }, { transaction: t })
+        await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProof", "addressProofTypeId", "addressProofNumber", "modifiedBy"] }, { transaction: t })
 
-        await models.customerKyc.update({ customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+        await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
 
     })
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
@@ -440,7 +457,7 @@ exports.appliedKyc = async (req, res, next) => {
     let query = {};
     if (req.query.kycStatus) {
         query.kycStatus = sequelize.where(
-            sequelize.cast(sequelize.col("customerKyc.kyc_status"), "varchar"),
+            sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
             {
                 [Op.iLike]: req.query.kycStatus + "%",
             }
@@ -471,7 +488,7 @@ exports.appliedKyc = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + "%" },
                 "$customer.pan_card_number$": { [Op.iLike]: search + "%" },
                 kyc_status: sequelize.where(
-                    sequelize.cast(sequelize.col("customerKyc.kyc_status"), "varchar"),
+                    sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
                     {
                         [Op.iLike]: search + "%",
                     }
@@ -503,7 +520,7 @@ exports.appliedKyc = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['firstName', 'lastName', 'panCardNumber']
+            attributes: ['firstName', 'lastName', 'panCardNumber', 'kycStatus']
         }
     ]
 
@@ -515,7 +532,7 @@ exports.appliedKyc = async (req, res, next) => {
 
     let getAppliedKyc = await models.customerKyc.findAll({
         where: searchQuery,
-        attributes: ['id', 'customerId', 'kycStatus', 'createdAt'],
+        attributes: ['id', 'customerId', 'createdAt'],
         offset: offset,
         limit: pageSize,
         include: includeArray

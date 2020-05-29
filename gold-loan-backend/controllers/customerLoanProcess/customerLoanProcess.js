@@ -81,7 +81,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
 
     let { customerId, totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanBank, loanOrnmanets, loanFinalCalculator, loanPersonal, loanKyc, loanNominee } = req.body
 
-    let checkKycStatus = await models.customerKyc.findOne({ where: { customerId, kycStatus: "approved" } })
+    let checkKycStatus = await models.customer.findOne({ where: { id: customerId, kycStatus: "approved" } })
     if (check.isEmpty(checkKycStatus)) {
         return res.status(400).json({ message: `customer Kyc status is not approved` })
     }

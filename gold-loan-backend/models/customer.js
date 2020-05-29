@@ -47,6 +47,12 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
+        kycStatus: {
+            type: DataTypes.ENUM,
+            field: 'kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'pending', 'rejected']
+        },
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',

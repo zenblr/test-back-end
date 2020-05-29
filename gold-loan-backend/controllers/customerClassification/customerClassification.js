@@ -13,13 +13,16 @@ var uniqid = require('uniqid');
 
 exports.addCceRating = async (req, res, next) => {
 
-    let { customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, reasonFromCce } = req.body;
+    let { customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce } = req.body;
 
 
     let cceId = req.userData.id
     let checkRatingExist = await models.customerKycClassification.findOne({ where: { customerId } })
     if (!check.isEmpty(checkRatingExist)) {
         return res.status(200).json({ message: `This customer rating is already exist` })
+    }
+    if ((kycRatingFromCce == 1 || kycRatingFromCce == 2 || kycRatingFromCce == 3 || kycRatingFromCce == 4) && kycStatusFromCce == "approved") {
+        return res.status(400).json({ message: `Please check rating.` })
     }
     if (kycStatusFromCce !== "approved") {
 
@@ -32,7 +35,7 @@ exports.addCceRating = async (req, res, next) => {
                 { cceVerifiedBy: cceId, isKycSubmitted: true },
                 { where: { customerId: customerId }, transaction: t })
 
-            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, reasonFromCce, cceId }, { transaction: t })
+            await models.customerKycClassification.create({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { transaction: t })
         });
     } else {
         reasonFromCce = ""
@@ -41,7 +44,7 @@ exports.addCceRating = async (req, res, next) => {
                 { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true },
                 { where: { customerId: customerId }, transaction: t })
 
-            await models.customerKycClassification.create({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, cceId }, { transaction: t })
+            await models.customerKycClassification.create({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, cceId }, { transaction: t })
         });
     }
     return res.status(200).json({ message: 'success' })
@@ -60,7 +63,7 @@ exports.updateRating = async (req, res, next) => {
     let user = await models.user.findOne({ where: { id: req.userData.id } });
 
     if (user.userTypeId == 6) {
-        let { behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, reasonFromCce } = req.body
+        let { kycRatingFromCce, kycStatusFromCce, reasonFromCce } = req.body
         let cceId = req.userData.id
 
         if (customerRating.kycStatusFromCce == "approved") {
@@ -75,10 +78,13 @@ exports.updateRating = async (req, res, next) => {
                     { cceVerifiedBy: cceId, isKycSubmitted: true },
                     { where: { customerId: customerId }, transaction: t })
 
-                await models.customerKycClassification.update({ customerId, customerKycId, behaviourRatingCce, idProofRatingCce, addressProofRatingCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
+                await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
             });
             return res.status(200).json({ message: 'success' })
         } else {
+            if ((kycRatingFromCce == 1 || kycRatingFromCce == 2 || kycRatingFromCce == 3 || kycRatingFromCce == 4) && kycStatusFromCce == "approved") {
+                return res.status(400).json({ message: `Please check rating.` })
+            }
             reasonFromCce = ""
             await sequelize.transaction(async (t) => {
                 await models.customerKyc.update(
@@ -92,7 +98,7 @@ exports.updateRating = async (req, res, next) => {
     }
 
     if (user.userTypeId == 5) {
-        let { behaviourRatingVerifiedByBm, idProofRatingVerifiedByBm, addressProofRatingVerifiedBm, kycStatusFromBm, reasonFromBm } = req.body
+        let { kycStatusFromBm, reasonFromBm } = req.body
 
         let checkCceVerified = await models.customerKyc.findOne({ customerId, isVerifiedByCce: true })
         if (check.isEmpty(checkCceVerified)) {
@@ -101,21 +107,36 @@ exports.updateRating = async (req, res, next) => {
 
         let bmId = req.userData.id
 
-        if (customerRating.kycStatusFromBm == "approved") {
-            return res.status(400).json({ message: `You cannot change status from approved` })
+        if (customerRating.kycStatusFromBm == "approved" || customerRating.kycStatusFromBm == "rejected") {
+            return res.status(400).json({ message: `You cannot change status for this customer` })
         }
         if (kycStatusFromBm !== "approved") {
             if (reasonFromBm.length == 0) {
                 return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
             }
-            await sequelize.transaction(async (t) => {
-                await models.customerKyc.update(
-                    { branchManagerVerifiedBy: bmId, kycStatus: kycStatusFromBm },
-                    { where: { customerId: customerId }, transaction: t })
+            if (kycStatusFromBm == "incomplete") {
+                await sequelize.transaction(async (t) => {
 
-                await models.customerKycClassification.update({ customerId, customerKycId, behaviourRatingVerifiedByBm, idProofRatingVerifiedByBm, addressProofRatingVerifiedBm, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
-            });
-            return res.status(200).json({ message: 'success' })
+                    await models.customer.update({ kycStatus: "pending" })
+                    await models.customerKyc.update(
+                        { branchManagerVerifiedBy: bmId, isVerifiedByCce: false, kycStatusFromCce: "pending" },
+                        { where: { customerId: customerId }, transaction: t })
+
+                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
+                });
+                return res.status(200).json({ message: 'success' })
+            } else {
+                await sequelize.transaction(async (t) => {
+                    await models.customerKyc.update(
+                        { branchManagerVerifiedBy: bmId },
+                        { where: { customerId: customerId }, transaction: t })
+
+                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
+                });
+                return res.status(200).json({ message: 'success' })
+            }
+
+
         } else {
             if (behaviourRatingVerifiedByBm == true & idProofRatingVerifiedByBm == true & addressProofRatingVerifiedBm == true) {
                 reasonFromBm = ""
@@ -149,8 +170,6 @@ exports.updateRating = async (req, res, next) => {
             return res.status(400).json({ message: `One of field is not verified` })
         }
     }
-
-
     return res.status(400).json({ message: `You do not have authority.` })
 
 }
