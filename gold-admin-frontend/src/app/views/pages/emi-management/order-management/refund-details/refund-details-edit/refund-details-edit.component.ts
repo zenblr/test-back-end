@@ -101,7 +101,6 @@ export class RefundDetailsEditComponent implements OnInit {
 	}
 
 	editRefund() {
-		console.log(this.refundData);
 		const data = {
 			storeId: this.refundData.order.orderBy.broker.store.storeUniqueId,
 			userId: this.refundData.order.customerDetails.customerUniqueId,
