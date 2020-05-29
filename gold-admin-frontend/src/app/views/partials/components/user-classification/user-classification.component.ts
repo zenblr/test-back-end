@@ -19,8 +19,8 @@ import { TitleCasePipe } from '@angular/common';
 export class UserClassificationComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
-  cceKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }];
-  bmKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
+  cceKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
+  bmKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'incomplete', name: 'incomplete' }, { value: 'rejected', name: 'rejected' }];
 
   // kycStatus = [];
   rating = [];
@@ -71,7 +71,7 @@ export class UserClassificationComponent implements OnInit {
     private titlecase: TitleCasePipe,
   ) {
     let res = this.sharedService.getDataFromStorage()
-      this.userType = res.userDetails.userTypeId;
+    this.userType = res.userDetails.userTypeId;
   }
 
   ngOnInit() {
@@ -114,14 +114,16 @@ export class UserClassificationComponent implements OnInit {
     this.custClassificationForm = this.fb.group({
       customerId: [this.customerDetails.customerId, [Validators.required]],
       customerKycId: [this.customerDetails.customerKycId, [Validators.required]],
-      behaviourRatingCce: ['', [Validators.required]],
-      idProofRatingCce: ['', [Validators.required]],
-      addressProofRatingCce: ['', [Validators.required]],
+      kycRatingFromCCe: ['', [Validators.required]],
+      kycRatingFromBM: ['', [Validators.required]],
+      // behaviourRatingCce: ['', [Validators.required]],
+      // idProofRatingCce: ['', [Validators.required]],
+      // addressProofRatingCce: ['', [Validators.required]],
       kycStatusFromCce: ['', [Validators.required]],
       reasonFromCce: [],
-      behaviourRatingVerifiedByBm: [false, [Validators.required]],
-      idProofRatingVerifiedByBm: [false, [Validators.required]],
-      addressProofRatingVerifiedBm: [false, [Validators.required]],
+      // behaviourRatingVerifiedByBm: [false, [Validators.required]],
+      // idProofRatingVerifiedByBm: [false, [Validators.required]],
+      // addressProofRatingVerifiedBm: [false, [Validators.required]],
       kycStatusFromBm: ['pending', [Validators.required]],
       reasonFromBm: []
     })
@@ -156,27 +158,39 @@ export class UserClassificationComponent implements OnInit {
   }
 
   conditionalValidation() {
-    this.custClassificationForm.get('kycStatusFromCce').valueChanges.subscribe(res => {
-      if (res == 'pending') {
-        this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
-        this.showTextBoxCce = true;
-      } else if (res == 'approved') {
+    this.custClassificationForm.get('kycRatingFromCcE').valueChanges.subscribe(res => {
+      if (res == 5) {
         this.custClassificationForm.get('reasonFromCce').clearValidators();
         this.custClassificationForm.get('reasonFromCce').patchValue('');
         this.showTextBoxCce = false;
+      } else {
+        this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
+        this.showTextBoxCce = true;
+      }
+      this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
+    })
+
+    this.custClassificationForm.get('kycStatusFromCce').valueChanges.subscribe(res => {
+      if (res == 'approved') {
+        this.custClassificationForm.get('reasonFromCce').clearValidators();
+        this.custClassificationForm.get('reasonFromCce').patchValue('');
+        this.showTextBoxCce = false;
+      } else {
+        this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
+        this.showTextBoxCce = true;
       }
       this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
     })
 
     // Validation for BM
     this.custClassificationForm.get('kycStatusFromBm').valueChanges.subscribe(res => {
-      if (res == 'rejected') {
-        this.custClassificationForm.get('reasonFromBm').setValidators(Validators.required);
-        this.showTextBoxBM = true;
-      } else if (res == 'approved') {
+      if (res == 'approved') {
         this.custClassificationForm.get('reasonFromBm').clearValidators();
         this.custClassificationForm.get('reasonFromBm').patchValue('');
         this.showTextBoxBM = false;
+      } else {
+        this.custClassificationForm.get('reasonFromBm').setValidators(Validators.required);
+        this.showTextBoxBM = true;
       }
       this.custClassificationForm.get('reasonFromBm').updateValueAndValidity();
     })
@@ -236,13 +250,14 @@ export class UserClassificationComponent implements OnInit {
 
   approvalOfBM(value: boolean, type: string) {
     if (this.userType == 5) {
-      if (type == 'behaviour') {
-        this.cceControls.behaviourRatingVerifiedByBm.patchValue(value)
-      } else if (type == 'identity') {
-        this.cceControls.idProofRatingVerifiedByBm.patchValue(value)
-      } else if (type == 'address') {
-        this.cceControls.addressProofRatingVerifiedBm.patchValue(value)
+      if (type == 'kycRating') {
+        this.cceControls.kycRatingFromBM.patchValue(value)
       }
+      // else if (type == 'identity') {
+      //   this.cceControls.idProofRatingVerifiedByBm.patchValue(value)
+      // } else if (type == 'address') {
+      //   this.cceControls.addressProofRatingVerifiedBm.patchValue(value)
+      // }
     }
   }
 }
