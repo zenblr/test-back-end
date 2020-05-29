@@ -428,6 +428,13 @@ exports.appliedLoanDetails = async (req, res, next) => {
 
         isActive: true
     };
+    let internalBranchId = req.userData.internalBranchId
+    let internalBranchWhere;
+    if (req.userData.userTypeId != 4) {
+        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    } else {
+        internalBranchWhere = { isActive: true }
+    }
 
     let associateModel = [{
         model: models.loanStage,
@@ -436,7 +443,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     }, {
         model: models.customer,
         as: 'customer',
-        where: { isActive: true },
+        where: internalBranchWhere,
         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId']
     },
     {
@@ -582,11 +589,18 @@ exports.getLoanDetails = async (req, res, next) => {
         isActive: true,
         loanStageId: stageId.id
     };
+    let internalBranchId = req.userData.internalBranchId
+    let internalBranchWhere;
+    if (req.userData.userTypeId != 4) {
+        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    } else {
+        internalBranchWhere = { isActive: true }
+    }
 
     let associateModel = [{
         model: models.customer,
         as: 'customer',
-        where: { isActive: true },
+        where: internalBranchWhere,
         attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
     },
     {

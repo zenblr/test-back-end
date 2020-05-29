@@ -510,6 +510,13 @@ exports.appliedKyc = async (req, res, next) => {
         isActive: true,
         isKycSubmitted: true
     }
+    let internalBranchId = req.userData.internalBranchId
+    let internalBranchWhere;
+    if (req.userData.userTypeId != 4) {
+        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    } else {
+        internalBranchWhere = { isActive: true }
+    }
 
     const includeArray = [
         {
@@ -520,7 +527,8 @@ exports.appliedKyc = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['firstName', 'lastName', 'panCardNumber', 'kycStatus']
+            attributes: ['firstName', 'lastName', 'panCardNumber', 'kycStatus'],
+            where: internalBranchWhere
         }
     ]
 

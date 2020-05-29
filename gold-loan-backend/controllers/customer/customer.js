@@ -252,6 +252,10 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     as: "internalBranch"
   }
   ]
+  let internalBranchId = req.userData.internalBranchId
+  if (req.userData.userTypeId != 4) {
+    searchQuery.internalBranchId = internalBranchId
+  }
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
@@ -265,7 +269,9 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     where: searchQuery,
     include: includeArray,
   });
-
+  if (allCustomers.length == 0) {
+    return res.status(200).json({ data: [] });
+  }
   return res.status(200).json({ data: allCustomers, count: count.length });
 };
 
@@ -366,6 +372,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
     }],
     isActive: true,
   };
+
   let includeArray = [{
     model: models.customerLoan,
     as: 'customerLoan',
@@ -382,6 +389,10 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
     as: 'customerKycPersonal',
     attributes: ['profileImage']
   }]
+  let internalBranchId = req.userData.internalBranchId
+  if (req.userData.userTypeId != 4) {
+    searchQuery.internalBranchId = internalBranchId
+  }
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
