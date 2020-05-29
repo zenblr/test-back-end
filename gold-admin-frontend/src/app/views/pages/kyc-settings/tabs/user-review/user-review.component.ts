@@ -280,7 +280,7 @@ export class UserReviewComponent implements OnInit {
 
   public calculateAge(dateOfBirth: any) {
     const today = new Date();
-    const birthDate = new Date(dateOfBirth.value);
+    const birthDate = new Date(dateOfBirth);
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
 
@@ -290,6 +290,18 @@ export class UserReviewComponent implements OnInit {
 
     this.customerKycPersonal.controls.age.patchValue(age)
     // this.controls.age.patchValue(age);
+  }
+
+  ageValidation() {
+    if (this.customerKycPersonal.controls.gender.value) {
+      if (this.customerKycPersonal.controls.gender.value == 'm') {
+        this.customerKycPersonal.controls.age.setValidators(Validators.pattern('^0*(2[1-9]|[3-9][0-9]|100)$'))
+      } else {
+        this.customerKycPersonal.controls.age.setValidators(Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$'))
+      }
+      this.customerKycPersonal.controls.age.markAsTouched()
+      this.calculateAge(this.customerKycPersonal.controls.dateOfBirth.value)
+    }
   }
 
   submit() {

@@ -100,7 +100,7 @@ export class UserPersonalComponent implements OnInit {
 
   public calculateAge(dateOfBirth: any) {
     const today = new Date();
-    const birthDate = new Date(dateOfBirth.value);
+    const birthDate = new Date(dateOfBirth);
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
 
@@ -109,7 +109,7 @@ export class UserPersonalComponent implements OnInit {
     }
 
     this.controls.age.patchValue(age);
-    this.ageValidation()
+    // this.ageValidation()
   }
 
   ageValidation() {
@@ -120,6 +120,7 @@ export class UserPersonalComponent implements OnInit {
         this.controls.age.setValidators(Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$'))
       }
       this.controls.age.markAsTouched()
+      this.calculateAge(this.controls.dateOfBirth.value)
     }
   }
 
