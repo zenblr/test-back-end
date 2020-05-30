@@ -76,6 +76,7 @@ export class DepositDetailsListComponent implements OnInit {
 		paymentType: "",
 		orderCurrentStatus: "",
 	};
+	filteredDataList = {};
 	
 	constructor(
 		public dialog: MatDialog,
@@ -191,16 +192,17 @@ export class DepositDetailsListComponent implements OnInit {
 
 	applyFilter(data) {
 		console.log(data);
-		this.depositData.paymentType = data.filterData.multiSelect1;
-		if (data.filterData.startDate) {
-			let d = new Date(data.filterData.startDate);
+		this.depositData.paymentType = data.data.paymentType;
+		if (data.data.startDate) {
+			let d = new Date(data.data.startDate);
 			let n = d.toISOString();
 			this.depositData.paymentRecievedDate = n;
 		} else {
 			this.depositData.paymentRecievedDate = "";
 		}
-		this.depositData.orderCurrentStatus = data.filterData.multiSelect2;
+		this.depositData.orderCurrentStatus = data.data.status;
 		this.dataSource.loadDepositDetails(this.depositData);
+		this.filteredDataList = data.list;
 	}
 
 	/**

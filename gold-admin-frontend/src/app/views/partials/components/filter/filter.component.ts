@@ -58,9 +58,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	filteredDataList: any = {};
 	categoryList = [];
 	subCategoryList = [];
-	tenure = [];
-	status = [];
-	name = [];
+	paymentTypeList = [];
+	statusList = [];
+	merchantList = [];
 	states = [];
 	permissions: any;
 
@@ -161,7 +161,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 						}
 							break;
 						case 'tenure':
-							this.getTenure();
+							this.getPaymentType();
 							break;
 						case "orderStatus":
 							this.getOrderStatus();
@@ -187,6 +187,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			priceFrom: [''],
 			priceTo: [''],
 			startDate: [''],
+			status: [''],
+			weight: [''],
+			paymentType: [''],
+			merchant: ['']
 		});
 
 		this.filterForm.valueChanges.subscribe(val => {
@@ -229,6 +233,22 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.startDate = controls['startDate'].value;
 				this.filterObject.list.startDate = controls['startDate'].value;
 			}
+			if (controls['status'].value && controls['status'].value.multiSelect.length) {
+				this.filterObject.data.status = controls['status'].value.multiSelect.map(e => e.statusId).toString();
+				this.filterObject.list.status = controls['status'].value.multiSelect;
+			}
+			if (controls['paymentType'].value && controls['paymentType'].value.multiSelect.length) {
+				this.filterObject.data.paymentType = controls['paymentType'].value.multiSelect.map(e => e.paymentTypeId).toString();
+				this.filterObject.list.paymentType = controls['paymentType'].value.multiSelect;
+			}
+			if (controls['weight'].value) {
+				this.filterObject.data.weight = controls['weight'].value;
+				this.filterObject.list.weight = controls['weight'].value;
+			}
+			if (controls['merchant'].value && controls['merchant'].value.multiSelect.length) {
+				this.filterObject.data.merchant = controls['merchant'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.merchant = controls['merchant'].value.multiSelect;
+			}
 			return this.filterObject;
 		}
 	}
@@ -265,12 +285,27 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'startDate':
 				this.controls['startDate'].patchValue('');
 				break;
+			case 'status':
+				this.controls['status'].value.multiSelect.splice(index, 1);
+				break;
+			case 'paymentType':
+				this.controls['paymentType'].value.multiSelect.splice(index, 1);
+				break;
+			case 'weight':
+				this.controls['weight'].patchValue('');
+				break;
+			case 'merchant':
+				this.controls['merchant'].value.multiSelect.splice(index, 1);
+				break;
 			default:
 				break;
 		}
 		this.filterForm.patchValue({
 			category: this.filterForm.controls['category'].value,
 			subCategory: this.filterForm.controls['subCategory'].value,
+			status: this.filterForm.controls['status'].value,
+			paymentType: this.filterForm.controls['paymentType'].value,
+			merchant: this.filterForm.controls['merchant'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
@@ -330,27 +365,27 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		});
 	}
 
-	getTenure() {
-		this.sharedService.getTenure().subscribe((res) => {
-			this.tenure = res;
+	getPaymentType() {
+		this.sharedService.getPaymentType().subscribe((res) => {
+			this.paymentTypeList = res;
 		});
 	}
 
 	getOrderStatus() {
 		this.sharedService.getOrderStatus().subscribe((res) => {
-			this.status = res;
+			this.statusList = res;
 		});
 	}
 
 	getEmiStatus() {
 		this.sharedService.getEmiStatus().subscribe((res) => {
-			this.status = res;
+			this.statusList = res;
 		});
 	}
 
 	getMerchant() {
 		this.sharedService.getMerchant().subscribe((res) => {
-			this.name = res;
+			this.merchantList = res;
 		});
 	}
 
