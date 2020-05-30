@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-
+import { EmiDetailsService } from "../../../../../../core/emi-management/order-management";
 @Component({
   selector: 'kt-emi-details-view',
   templateUrl: './emi-details-view.component.html',
@@ -8,14 +8,18 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 })
 export class EmiDetailsViewComponent implements OnInit {
   title: string;
-  orderData:any;
+  orderData: any;
   constructor(
     public dialogRef: MatDialogRef<EmiDetailsViewComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private emiDetailsService: EmiDetailsService
   ) { }
 
   ngOnInit() {
-    this.orderData = this.data.order;
+    this.emiDetailsService.getEmiDetails(this.data.orderId).subscribe(res => {
+      this.orderData = res;
+    });
+
     this.getTitle()
   }
 

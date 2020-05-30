@@ -90,7 +90,9 @@ ngAfterViewInit(){
       mobileNumber: [''],
       panCardNumber: [''],
       startDate: [this.currentDate],
-      customerId:[]
+      customerId:[],
+      kycStatus:[],
+      paymentType:['',Validators.required]
     })
   }
 

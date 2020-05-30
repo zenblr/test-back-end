@@ -46,6 +46,9 @@ export class PageConfig {
 			"upload-lender-banner": {
 				page: { title: "Lender Partner Banner", desc: "" },
 			},
+			"gold-rate": {
+				page: { title: "Gold Rate", desc: "" },
+			},
 		},
 		"user-management": {
 			partner: {
@@ -149,8 +152,8 @@ export class PageConfig {
 					},
 				},
 			},
-			users: {
-				page: { title: "Users", desc: "" },
+			customers: {
+				page: { title: "Customers", desc: "" },
 			},
 			reports: {
 				page: { title: "Reports", desc: "" },

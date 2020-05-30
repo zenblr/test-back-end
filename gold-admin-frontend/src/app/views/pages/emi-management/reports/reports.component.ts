@@ -40,7 +40,7 @@ export class ReportsComponent implements OnInit {
 		private toast: ToastrService,
 		private router: Router,
 		private ngxPermissionService: NgxPermissionsService
-	) {}
+	) { }
 
 	ngOnInit() {
 		this.ngxPermissionService.permissions$.subscribe((res) => {
@@ -135,6 +135,13 @@ export class ReportsComponent implements OnInit {
 			}
 			merchantIdControl.updateValueAndValidity();
 			statusIdControl.updateValueAndValidity();
+
+			setTimeout(() => {
+				this.controls['startDate'].patchValue('');
+				this.controls['endDate'].patchValue('');
+				this.controls['merchantId'].patchValue('');
+				this.controls['statusId'].patchValue('');
+			});
 		});
 	}
 

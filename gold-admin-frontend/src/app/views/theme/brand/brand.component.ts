@@ -5,6 +5,7 @@ import { LayoutConfigService, ToggleOptions } from '../../../core/_base/layout';
 import { HtmlClassService } from '../html-class.service';
 import { UploadOfferService } from '../../../core/upload-data';
 import { tap } from 'rxjs/operators';
+import { GoldRateService } from '../../../core/upload-data/gold-rate/gold-rate.service';
 
 @Component({
 	selector: 'kt-brand',
@@ -38,20 +39,20 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	 * @param htmlClassService: HtmlClassService
 	 */
 	constructor(private layoutConfigService: LayoutConfigService, public htmlClassService: HtmlClassService,
-		private uploadOfferService: UploadOfferService, private ref: ChangeDetectorRef) {
+		private goldRateService: GoldRateService, private ref: ChangeDetectorRef) {
 
-		this.uploadOfferService.getGoldRate().pipe(
+		this.goldRateService.getGoldRate().pipe(
 			tap(res => {
 				// console.log(res)
 				this.rate = res.goldRate;
-				this.uploadOfferService.goldRate.next(this.rate);
+				this.goldRateService.goldRate.next(this.rate);
 				this.ref.detectChanges();
 
 			})
 		).subscribe(res => {
 
 		});
-		// this.uploadOfferService.goldRate.next(this.rate);
+		// this.goldRateService.goldRate.next(this.rate);
 	}
 
 	/**
@@ -68,10 +69,10 @@ export class BrandComponent implements OnInit, AfterViewInit {
 		// var rate;
 
 
-		this.uploadOfferService.goldRate$.subscribe(res => {
+		this.goldRateService.goldRate$.subscribe(res => {
 			// console.log(res);
 			this.goldRate = res
-			// this.ref.detectChanges();
+			this.ref.detectChanges();
 		});
 	}
 

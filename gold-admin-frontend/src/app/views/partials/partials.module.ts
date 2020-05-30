@@ -197,6 +197,7 @@ import { MultiSelectSearchComponent } from "./components/multi-select-search/mul
 		UserReviewComponent,
 		FilteredDataComponent,
 		// spinner
+		NgbDropdownModule,
 		NgxPermissionsModule,
 		MultiSelectSearchComponent,
 	],

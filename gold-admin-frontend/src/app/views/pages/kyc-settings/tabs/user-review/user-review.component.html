@@ -628,7 +628,7 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                    formControlName="dateOfBirth"
+                                    formControlName="dateOfBirth" (dateChange)="calculateAge($event)"
                                     [class.isError]="customerKycPersonal.controls.dateOfBirth.touched && customerKycPersonal.controls.dateOfBirth.invalid"
                                     readonly placeholder="4/5/2020" [max]="maxDate" />
                                 <mat-datepicker #picker></mat-datepicker>
@@ -647,18 +647,6 @@
                                 <label [class.mandatory]="viewOnly" class="">Gender</label>
                             </div>
                             <div class="col-7">
-                                <!-- <ng-container *ngIf="data.customerKycReview.customerKycPersonal.gender == 'm'">
-                                    <input type="text" class="form-control" placeholder="" value="Male" />
-                                </ng-container>
-
-                                <ng-container *ngIf="data.customerKycReview.customerKycPersonal.gender == 'f'">
-                                    <input type="text" class="form-control" placeholder="" value="Female" />
-                                </ng-container>
-
-                                <ng-container *ngIf="data.customerKycReview.customerKycPersonal.gender == '0'">
-                                    <input type="text" class="form-control" placeholder="" value="Other" />
-                                </ng-container> -->
-
                                 <select formControlName="gender" class="form-control"
                                     [class.isError]="customerKycPersonal.controls.gender.touched && customerKycPersonal.controls.gender.invalid">
                                     <option value="" disabled selected> Select </option>
@@ -673,30 +661,32 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="row kt-margin-t-20">
+
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
-                                <label [class.mandatory]="viewOnly" class=""> Alternate No. </label>
+                                <label [class.mandatory]="viewOnly" class=""> Age </label>
                             </div>
                             <div class="col-7">
-                                <input type="text" class="form-control" placeholder="Mobile Number"
-                                    formControlName="alternateMobileNumber" maxlength="10" numbersOnly
-                                    [value]="data.customerKycReview.customerKycPersonal.alternateMobileNumber"
-                                    [class.isError]="customerKycPersonal.controls.alternateMobileNumber.touched && customerKycPersonal.controls.alternateMobileNumber.invalid" />
+                                <input type="text" class="form-control" placeholder="Age" formControlName="age"
+                                    numbersOnly [value]="data.customerKycReview.customerKycPersonal.age" readonly
+                                    [class.isError]="customerKycPersonal.controls.age.touched && customerKycPersonal.controls.age.invalid" />
                                 <mat-error
-                                    *ngIf="customerKycPersonal.controls.alternateMobileNumber.errors?.required && customerKycPersonal.controls.alternateMobileNumber.touched">
+                                    *ngIf="customerKycPersonal.controls.age.errors?.required && customerKycPersonal.controls.age.touched">
                                     Required field
                                 </mat-error>
                                 <mat-error
-                                    *ngIf="customerKycPersonal.controls.alternateMobileNumber.errors?.pattern && customerKycPersonal.controls.alternateMobileNumber.touched">
+                                    *ngIf="customerKycPersonal.controls.age.errors?.pattern && customerKycPersonal.controls.age.touched">
                                     Invalid Input
                                 </mat-error>
                             </div>
                         </div>
                     </div>
+
 
                     <div class="col-6">
                         <div class="row">
@@ -799,9 +789,32 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> Alternate No. </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="alternateMobileNumber" maxlength="10" numbersOnly
+                                    [value]="data.customerKycReview.customerKycPersonal.alternateMobileNumber"
+                                    [class.isError]="customerKycPersonal.controls.alternateMobileNumber.touched && customerKycPersonal.controls.alternateMobileNumber.invalid" />
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.alternateMobileNumber.errors?.required && customerKycPersonal.controls.alternateMobileNumber.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.alternateMobileNumber.errors?.pattern && customerKycPersonal.controls.alternateMobileNumber.touched">
+                                    Invalid Input
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="row kt-margin-t-20 kt-margin-b-20">
+                <div class="row kt-margin-t-20 kt-margin-b-20"
+                    *ngIf="data.customerKycReview.customerKycPersonal.signatureProof">
                     <div class="col-6">
                         <div class="col-8 offset-4">
                             <div class="img-container kt-margin-r-15">
@@ -818,7 +831,7 @@
             </form>
 
             <!-- Bank Details -->
-            <form action="" [formGroup]="customerKycBank">
+            <!-- <form action="" [formGroup]="customerKycBank">
                 <div class="row kt-margin-t-50">
                     <div class="col-6">
                         <div class="row">
@@ -874,15 +887,7 @@
                                 <label [class.mandatory]="viewOnly" class=""> A/C Type </label>
                             </div>
                             <div class="col-7">
-                                <!-- <ng-container *ngIf="data.customerKycReview.customerKycBank[0].accountType == 'saving'">
-                                    <input type="text" class="form-control" placeholder="" value="accountType"
-                                        value="Saving" />
-                                </ng-container>
-                                <ng-container
-                                    *ngIf="data.customerKycReview.customerKycBank[0].accountType == 'current'">
-                                    <input type="text" class="form-control" placeholder="" value="accountType"
-                                        value="Current" />
-                                </ng-container> -->
+                             
 
                                 <select name="" id="" class="form-control" placeholder="" formControlName="accountType"
                                     [class.isError]="customerKycBank.controls.accountType.touched && customerKycBank.controls.accountType.invalid">
@@ -1004,7 +1009,7 @@
                         </div>
                     </ng-container>
                 </div>
-            </form>
+            </form> -->
 
 
             <div class="row" *ngIf="viewOnly">

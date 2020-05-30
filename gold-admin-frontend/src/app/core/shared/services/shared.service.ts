@@ -61,7 +61,7 @@ export class SharedService {
 	}
 
 	getAllSubCategory(): Observable<any> {
-		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category`);
+		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category/all-subcategory`);
 	}
 
 	getPaymentType(): Observable<any> {

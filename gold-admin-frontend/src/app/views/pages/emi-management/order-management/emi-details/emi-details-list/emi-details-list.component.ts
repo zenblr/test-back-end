@@ -161,7 +161,7 @@ export class EmiDetailsListComponent implements OnInit {
 
 	viewOrder(order) {
 		const dialogRef = this.dialog.open(EmiDetailsViewComponent, {
-			data: { order: order, action: "view" },
+			data: { orderId: order, action: "view" },
 			width: "500px",
 		});
 		dialogRef.afterClosed().subscribe((res) => {

@@ -73,11 +73,11 @@
                   bindValue="id" [closeOnSelect]="false" [searchable]="false">
                   <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
                     <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                      [ngModelOptions]="{ standalone : true }" /> {{item.gender | uppercase}}
+                      [ngModelOptions]="{ standalone : true }" /> {{item.gender | titlecase}}
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                     <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                      [ngModelOptions]="{ standalone : true }" /> {{item.name}}
+                      [ngModelOptions]="{ standalone : true }" /> {{item.name | titlecase}}
                   </ng-template>
                   <ng-template ng-label-tmp>
                     <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
@@ -103,7 +103,7 @@
                 <select class="form-control" name="category">
                   <option value="" [selected]="true">Select City</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
-                    {{item?.categoryName}}
+                    {{item?.categoryName | titlecase}}
                   </option>
                 </select>
               </div>
@@ -112,7 +112,7 @@
                 <select class="form-control" name="category">
                   <option value="" [selected]="true">Select Category</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
-                    {{item?.categoryName}}
+                    {{item?.categoryName | titlecase}}
                   </option>
                 </select>
               </div>

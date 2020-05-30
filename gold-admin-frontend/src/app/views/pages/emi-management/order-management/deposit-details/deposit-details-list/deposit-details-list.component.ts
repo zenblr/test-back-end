@@ -24,7 +24,7 @@ import {
 } from "rxjs/operators";
 import { ToastrComponent } from "../../../../../../views/partials/components/toastr/toastr.component";
 import { DataTableService } from "../../../../../../core/shared/services/data-table.service";
-import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { SharedService } from "../../../../../../core/shared/services/shared.service";
 
 @Component({
 	selector: "kt-deposit-details-list",
@@ -84,7 +84,7 @@ export class DepositDetailsListComponent implements OnInit {
 		private layoutUtilsService: LayoutUtilsService,
 		private depositDetailsService: DepositDetailsService,
 		private dataTableService: DataTableService,
-		private sharedService: SharedService,
+		private sharedService: SharedService
 	) {
 		this.depositDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -164,7 +164,7 @@ export class DepositDetailsListComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-			this.paginator.length / this.paginator.pageSize
+				this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -193,13 +193,7 @@ export class DepositDetailsListComponent implements OnInit {
 	applyFilter(data) {
 		console.log(data);
 		this.depositData.paymentType = data.data.paymentType;
-		if (data.data.startDate) {
-			let d = new Date(data.data.startDate);
-			let n = d.toISOString();
-			this.depositData.paymentRecievedDate = n;
-		} else {
-			this.depositData.paymentRecievedDate = "";
-		}
+		this.depositData.paymentRecievedDate = data.data.startDate;
 		this.depositData.orderCurrentStatus = data.data.status;
 		this.dataSource.loadDepositDetails(this.depositData);
 		this.filteredDataList = data.list;

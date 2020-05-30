@@ -24,7 +24,7 @@ import { map, takeUntil, take } from "rxjs/operators";
 import { Subscription, ReplaySubject, Subject } from "rxjs";
 import { MatDatepickerInputEvent, MatSelect } from "@angular/material";
 import { SharedService } from "../../../../core/shared/services/shared.service";
-import { NgxPermissionsService } from 'ngx-permissions';
+import { NgxPermissionsService } from "ngx-permissions";
 
 @Component({
 	selector: 'kt-filter',
@@ -69,17 +69,17 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		private config: NgbDropdownConfig,
 		private sharedService: SharedService,
 		private ref: ChangeDetectorRef,
-		private ngxPermissionService: NgxPermissionsService,
+		private ngxPermissionService: NgxPermissionsService
 	) {
 		// customize default values of dropdowns used by this component tree
 		config.autoClose = false;
-		this.ngxPermissionService.permissions$.subscribe(res => {
+		this.ngxPermissionService.permissions$.subscribe((res) => {
 			if (res) {
 				this.permissions = res;
 			}
 		});
 
-		this.sharedService.closeFilter$.subscribe(res => {
+		this.sharedService.closeFilter$.subscribe((res) => {
 			if (res) {
 				setTimeout(() => {
 					this.clearFilterForm();
@@ -152,13 +152,15 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				const listTypeList = this.listType.split(',');
 				for (const listType of listTypeList) {
 					switch (listType) {
-						case "category": if (this.permissions.categoryView) {
-							this.getCategory();
-						}
+						case "category":
+							if (this.permissions.categoryView) {
+								this.getCategory();
+							}
 							break;
-						case "sub-category": if (this.permissions.subCategoryView) {
-							this.getSubCategory();
-						}
+						case "sub-category":
+							if (this.permissions.subCategoryView) {
+								this.getSubCategory();
+							}
 							break;
 						case 'tenure':
 							this.getPaymentType();
@@ -193,13 +195,13 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			merchant: ['']
 		});
 
-		this.filterForm.valueChanges.subscribe(val => {
-			if (val && (parseFloat(val.priceFrom) > parseFloat(val.priceTo))) {
+		this.filterForm.valueChanges.subscribe((val) => {
+			if (val && parseFloat(val.priceFrom) > parseFloat(val.priceTo)) {
 				this.controls.priceTo.setErrors({ priceRange: true });
 			} else {
 				this.controls.priceTo.setErrors(null);
 			}
-		})
+		});
 	}
 
 	get controls() {
@@ -356,7 +358,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	getSubCategory() {
 		this.sharedService
 			.getAllSubCategory()
-			.subscribe((res) => (this.subCategoryList = res.data));
+			.subscribe((res) => (this.subCategoryList = res));
 	}
 
 	getStates() {

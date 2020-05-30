@@ -78,22 +78,26 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="totalPrice">
-                    <mat-header-cell *matHeaderCellDef>Total Price</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.totalPrice ? element?.totalPrice : '-'}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="align-right">Total Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.totalPrice ? element?.totalPrice : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="cancellationCharges">
-                    <mat-header-cell *matHeaderCellDef>Cancellation Charges</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Cancellation Charges
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element?.cancellationCharges ? element?.cancellationCharges : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="differenceAmount">
-                    <mat-header-cell *matHeaderCellDef>Difference Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.diffrenceAmount ? element?.diffrenceAmount : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="align-right">Difference Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.diffrenceAmount ? element?.diffrenceAmount : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiAmount">
-                    <mat-header-cell *matHeaderCellDef>EMI Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="align-right">EMI Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element?.order?.orderdetails[0]?.emiAmount ? element?.order?.orderdetails[0]?.emiAmount : '-'}}
                     </mat-cell>
                 </ng-container>
@@ -134,7 +138,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 240%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 240%;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 240%;"></mat-row>
             </mat-table>
