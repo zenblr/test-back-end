@@ -310,13 +310,8 @@ exports.getSingleCustomer = async (req, res, next) => {
 
 exports.getCustomerUniqueId = async (req, res) => {
   let customer = await models.customer.findAll({
-    attributes: ['id', 'customerUniqueId'],
-    include: [{
-      model: models.customerKyc,
-      as: 'customerKyc',
-      where: { kycStatus: "approved" },
-      attributes: []
-    }]
+    attributes: ['id', 'customerUniqueId','firstName','lastName'],
+    where: { kycStatus: "approved" }
   })
   let assignCustomer = await models.customerAssignAppraiser.findAll({
     attributes: ['id', 'customerUniqueId']

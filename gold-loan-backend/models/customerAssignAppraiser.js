@@ -24,10 +24,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'modified_by',
             allowNull: false,
         },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true
+        }
     }, {
         freezeTableName: true,
         tableName: 'customer_assign_appraiser',
-        timestamps: false
     });
 
     CustomerAssignAppraiser.associate = function (models) {

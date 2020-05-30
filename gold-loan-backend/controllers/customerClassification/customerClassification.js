@@ -138,13 +138,12 @@ exports.updateRating = async (req, res, next) => {
 
 
         } else {
-            if (behaviourRatingVerifiedByBm == true & idProofRatingVerifiedByBm == true & addressProofRatingVerifiedBm == true) {
                 reasonFromBm = ""
                 let customerUniqueId = uniqid.time().toUpperCase();
                 await sequelize.transaction(async (t) => {
-                    await models.customer.update({ customerUniqueId }, { where: { id: customerId }, transaction: t })
+                    await models.customer.update({ customerUniqueId,kycStatus: "approved"  }, { where: { id: customerId }, transaction: t })
                     await models.customerKyc.update(
-                        { isVerifiedByBranchManager: true, branchManagerVerifiedBy: bmId, kycStatus: "approved" },
+                        { isVerifiedByBranchManager: true, branchManagerVerifiedBy: bmId },
                         { where: { customerId: customerId }, transaction: t })
 
                     await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
@@ -166,8 +165,7 @@ exports.updateRating = async (req, res, next) => {
 
 
 
-            }
-            return res.status(400).json({ message: `One of field is not verified` })
+            
         }
     }
     return res.status(400).json({ message: `You do not have authority.` })

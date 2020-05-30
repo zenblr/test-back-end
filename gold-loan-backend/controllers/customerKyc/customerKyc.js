@@ -527,8 +527,18 @@ exports.appliedKyc = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['firstName', 'lastName', 'panCardNumber', 'kycStatus'],
-            where: internalBranchWhere
+            attributes: ['firstName', 'lastName', 'panCardNumber', 'kycStatus','customerUniqueId'],
+            where: internalBranchWhere,
+            include: [{
+                model: models.customerAssignAppraiser,
+                as: 'customerAssignAppraiser',
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include:[{
+                    model: models.user,
+                    as: 'appraiser',
+                    attributes:['id','firstName','lastName']
+                }]
+            }]
         }
     ]
 
