@@ -98,7 +98,7 @@ export class PageConfig {
 		},
 		"emi-management": {
 			products: {
-				page: { title: "Show Poducts", desc: "" },
+				page: { title: "Show Products", desc: "" },
 			},
 			category: {
 				page: { title: "Category", desc: "" },
@@ -152,8 +152,8 @@ export class PageConfig {
 					},
 				},
 			},
-			users: {
-				page: { title: "Users", desc: "" },
+			customers: {
+				page: { title: "Customers", desc: "" },
 			},
 			reports: {
 				page: { title: "Reports", desc: "" },

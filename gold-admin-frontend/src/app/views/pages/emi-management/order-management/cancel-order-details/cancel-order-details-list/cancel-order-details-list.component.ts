@@ -24,7 +24,7 @@ import {
 } from "rxjs/operators";
 import { ToastrComponent } from "../../../../../../views/partials/components/toastr/toastr.component";
 import { DataTableService } from "../../../../../../core/shared/services/data-table.service";
-import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { SharedService } from "../../../../../../core/shared/services/shared.service";
 
 @Component({
 	selector: "kt-cancel-order-details-list",
@@ -62,20 +62,20 @@ export class CancelOrderDetailsListComponent implements OnInit {
 	private unsubscribeSearch$ = new Subject();
 	searchValue = "";
 	cancelData = {
-		from: 0,
-		to: 0,
+		from: 1,
+		to: 25,
 		search: "",
 		cancelDate: "",
 		merchantName: "",
 	};
-	
+
 	constructor(
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
 		private cancelOrderDetailsService: CancelOrderDetailsService,
 		private dataTableService: DataTableService,
-		private sharedService: SharedService,
+		private sharedService: SharedService
 	) {
 		this.cancelOrderDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -176,7 +176,9 @@ export class CancelOrderDetailsListComponent implements OnInit {
 		return filter;
 	}
 
-	printCancellationReceipt(order) {}
+	printCancellationReceipt(order) {
+		this.cancelOrderDetailsService.getReceipt(order.id).subscribe();
+	}
 
 	downloadReport() {
 		this.cancelOrderDetailsService.reportExport().subscribe();
@@ -184,18 +186,11 @@ export class CancelOrderDetailsListComponent implements OnInit {
 	}
 
 	applyFilter(data) {
-		console.log(data);
 		this.cancelData.merchantName = data.filterData.multiSelect1;
-		if (data.filterData.startDate) {
-			let d = new Date(data.filterData.startDate);
-			let n = d.toISOString();
-			this.cancelData.cancelDate = n;
-		} else {
-			this.cancelData.cancelDate = "";
-		}
+		this.cancelData.cancelDate = data.filterData.startDate;
 		this.dataSource.loadCancelOrderDetails(this.cancelData);
 	}
-	
+
 	/**
 	 * On Destroy
 	 */

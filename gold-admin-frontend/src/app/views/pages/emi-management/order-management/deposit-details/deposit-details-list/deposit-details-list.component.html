@@ -85,8 +85,8 @@
                         {{element?.order?.product?.productName ? element?.order?.product?.productName : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="productWeight">
-                    <mat-header-cell *matHeaderCellDef>Product Weight(in gm)</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Product Weight(in gm)</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element?.order?.product?.weight ? element?.order?.product?.weight : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="sku">
@@ -95,18 +95,24 @@
                         {{element?.order?.product?.sku ? element?.order?.product?.sku : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="invoiceAmount">
-                    <mat-header-cell *matHeaderCellDef>Invoice Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.finalOrderPrice ? element?.finalOrderPrice : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="align-right">Invoice Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.finalOrderPrice ? element?.finalOrderPrice : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="initialAmount">
-                    <mat-header-cell *matHeaderCellDef>Initial Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.initialPayment ? element?.initialPayment : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="align-right">Initial Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.initialPayment ? element?.initialPayment : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="transactionAmount">
-                    <mat-header-cell *matHeaderCellDef>Transaction Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.emiAmount ? element?.emiAmount : '-'}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="align-right">Transaction Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.transactionAmount ? element?.transactionAmount : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
@@ -172,7 +178,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 350%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 350%;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 350%;"></mat-row>
             </mat-table>

@@ -57,16 +57,16 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngxPermissionsOnly="['sub-categoryEdit']" (click)="editSubCategory(element)"
+                            <div *ngxPermissionsOnly="['subCategoryEdit']" (click)="editSubCategory(element)"
                                 class="kt-pointer"> Edit</div>
-                            <div *ngxPermissionsOnly="['sub-categoryEdit','sub-categoryDelete']" class="px-1">|</div>
-                            <div *ngxPermissionsOnly="['sub-categoryDelete']" (click)="deleteSubCategory(element)"
+                            <div *ngxPermissionsOnly="['subCategoryEdit','subCategoryDelete']" class="px-1">|</div>
+                            <div *ngxPermissionsOnly="['subCategoryDelete']" (click)="deleteSubCategory(element)"
                                 class="kt-pointer text-danger"> Delete </div>
                         </div>
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>
