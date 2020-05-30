@@ -76,20 +76,27 @@
                     <mat-cell *matCellDef="let element">{{element?.weight}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="price">
-                    <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.productPrice[0]?.finalProductPrice}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                        {{element?.productPrice[0]?.finalProductPrice}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="manufacturingCostPerGram">
-                    <mat-header-cell *matHeaderCellDef>Manufacturing Charges</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.manufacturingCostPerGram}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Manufacturing Charges
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                        {{element?.manufacturingCostPerGram}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="shipping">
-                    <mat-header-cell *matHeaderCellDef>Shipping Charges</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.shipping}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Shipping Charges
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">{{element?.shipping}}
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="hallmarkingPackaging">
-                    <mat-header-cell *matHeaderCellDef>Hallmarking & Packaging Charges</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.hallmarkingPackaging}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Hallmarking & Packaging
+                        Charges</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                        {{element?.hallmarkingPackaging}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>

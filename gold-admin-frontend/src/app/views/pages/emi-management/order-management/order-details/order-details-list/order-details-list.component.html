@@ -97,14 +97,16 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderTotalAmount">
-                    <mat-header-cell *matHeaderCellDef>Order Total Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Order Total Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
                         {{element['orderdetails.finalOrderPrice'] ? element['orderdetails.finalOrderPrice'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderInitialAmount">
-                    <mat-header-cell *matHeaderCellDef>Order Initial Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Order Initial Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
                         {{element['orderdetails.initialPayment'] ? element['orderdetails.initialPayment'] : '-'}}
                     </mat-cell>
                 </ng-container>

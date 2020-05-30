@@ -95,18 +95,23 @@
                         {{element?.order?.product?.sku ? element?.order?.product?.sku : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="invoiceAmount">
-                    <mat-header-cell *matHeaderCellDef>Invoice Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.finalOrderPrice ? element?.finalOrderPrice : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Invoice Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                        {{element?.finalOrderPrice ? element?.finalOrderPrice : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="initialAmount">
-                    <mat-header-cell *matHeaderCellDef>Initial Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.initialPayment ? element?.initialPayment : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Initial Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                        {{element?.initialPayment ? element?.initialPayment : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="transactionAmount">
-                    <mat-header-cell *matHeaderCellDef>Transaction Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Transaction Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
                         {{element?.transactionAmount ? element?.transactionAmount : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerId">

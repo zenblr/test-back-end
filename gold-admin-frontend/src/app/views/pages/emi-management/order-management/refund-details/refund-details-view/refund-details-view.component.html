@@ -2,7 +2,7 @@
 
 <div class="kt-portlet">
     <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
-    <div class="kt-portlet__body font-weight-500" *ngIf="data.action == 'view' && refundData">
+    <div class="kt-portlet__body font-weight-500 customModal" *ngIf="data.action == 'view' && refundData">
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">

@@ -182,7 +182,7 @@ export class RefundDetailsEditComponent implements OnInit {
 							"Refund Status Updated Sucessfully"
 						);
 						this.router.navigate([
-							"/emi-management/refund-management",
+							"/emi-management/refund-details",
 						]);
 					}),
 					catchError((err) => {

@@ -115,7 +115,7 @@ export class RefundDetailsComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -134,7 +134,7 @@ export class RefundDetailsComponent implements OnInit {
 	viewRefund(refund) {
 		const dialogRef = this.dialog.open(RefundDetailsViewComponent, {
 			data: { refundId: refund.id, action: "view" },
-			width: "600px",
+			width: "700px",
 		});
 		dialogRef.afterClosed().subscribe((res) => {
 			if (res) {
@@ -150,7 +150,7 @@ export class RefundDetailsComponent implements OnInit {
 		]);
 	}
 
-	printCancellationReceipt(order) {}
+	printCancellationReceipt(order) { }
 
 	downloadReport() {
 		this.refundDetailsService.reportExport().subscribe();
