@@ -35,10 +35,10 @@ const routes: Routes = [
 				path: 'loan-setting',
 				loadChildren: () => import('../app/views/pages/loan-settings/loan-settings.module').then(m => m.LoanSettingsModule)
 			},
-			// {
-			// 	path: 'notification-setting',
-				// loadChildren: () => import('../app/views/pages/notification-settings/notification-settings.module').then(m => m.NotificationSettingsModule)
-			// },
+			{
+				path: 'notification-setting',
+				loadChildren: () => import('../app/views/pages/notification-settings/notification-settings.module').then(m => m.NotificationSettingsModule)
+			},
 			{
 				path: 'loan-management',
 				loadChildren: () => import('../app/views/pages/loan-management/loan-management.module').then(m => m.LoanManagementModule)

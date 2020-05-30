@@ -13,11 +13,6 @@
                         <mat-spinner [diameter]="20"></mat-spinner>
                     </div>
 
-                    <!-- <kt-alert type="warn" [duration]="30000" [showCloseButton]="true" (close)="onAlertClose($event)">
-                    Oh snap! Change a few things up and try submitting again.
-                </kt-alert> -->
-
-
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
 
                         <!-- Name -->
@@ -27,9 +22,8 @@
                             </div>
 
                             <div class="col-4">
-                                <input type="text"  aria-label="First name"
-                                    placeholder="First Name" ktAlphabets class="form-control"
-                                    formControlName="firstName"
+                                <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
+                                    class="form-control" formControlName="firstName"
                                     [class.isError]="controls.firstName.touched && controls.firstName.invalid">
                                 <mat-error *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
                                     Required field
@@ -37,8 +31,8 @@
                             </div>
                             <div class="col-4">
 
-                                <input type="text"  aria-label="Last name" placeholder="Last Name"
-                                    ktAlphabets class="form-control" formControlName="lastName"
+                                <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
+                                    class="form-control" formControlName="lastName"
                                     [class.isError]="controls.lastName.touched && controls.lastName.invalid">
 
                                 <mat-error *ngIf=" controls.lastName.errors?.required && controls.lastName.touched">
@@ -56,9 +50,8 @@
 
                             <div class="col-5">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
-                                <input  class="form-control" type="text"
-                                    formControlName="mobileNumber" numbersOnly autocomplete="off"
-                                    placeholder="Enter mobile number" margin
+                                <input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
+                                    autocomplete="off" placeholder="Enter mobile number" margin
                                     [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid">
                                 <mat-error
                                     *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
@@ -136,8 +129,8 @@
 
                             <div class="col-5">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
-                                <input  class="form-control" formControlName="panCardNumber"
-                                    autocomplete="off" placeholder="PAN" maxlength="10"
+                                <input class="form-control" formControlName="panCardNumber" autocomplete="off"
+                                    placeholder="PAN" maxlength="10"
                                     [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
                                     style="text-transform: uppercase;">
                                 <!-- <mat-error
@@ -164,7 +157,7 @@
                                 </div>
                             </div>
                         </div>
-                       
+
                         <!-- Internal Branch -->
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
@@ -297,7 +290,8 @@
                             </div>
 
                             <div class="col-8">
-                                <textarea name="" id="" cols="10" rows="5" formControlName="comment" class="form-control"
+                                <textarea name="" id="" cols="10" rows="5" formControlName="comment"
+                                    class="form-control"
                                     [class.isError]="controls.comment.touched && controls.comment.invalid"></textarea>
                                 <mat-error *ngIf="controls.comment.errors?.required && controls.comment.touched">
                                     Required field</mat-error>
