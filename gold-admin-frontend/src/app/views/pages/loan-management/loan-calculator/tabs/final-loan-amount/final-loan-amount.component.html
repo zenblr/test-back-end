@@ -16,37 +16,38 @@
                         </mat-error>
                     </div>
                 </div>
-
-                <div class="row kt-margin-t-10">
-                    <div class="col-4 form-label">
-                        <label for="" class="mandatory text-color">Gold Net Weight </label>
-                    </div>
-                    <div class="col-6">
-                        <input type="number" class="form-control" formControlName="goldNetWeight"
-                            placeholder="0.00 gram" (blur)="weightCheck();calcGoldDeductionWeight()"
-                            [class.isError]="controls.goldNetWeight.touched && controls.goldNetWeight.invalid">
-                        <mat-error *ngIf="controls.goldNetWeight.errors?.required && controls.goldNetWeight.touched">
-                            Required field
-                        </mat-error>
-                        <mat-error *ngIf="controls.goldNetWeight.errors?.weight && controls.goldNetWeight.touched">
-                            <small>Net  Weight should be lesser then Gross  Weight</small>
-                        </mat-error>
-                    </div>
-                </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
                         <label for="" class="mandatory text-color">Gold Deduction Weight </label>
                     </div>
                     <div class="col-6">
                         <input type="text" class="form-control" formControlName="goldDeductionWeight"
-                            placeholder="0.00 gram" readonly
+                            placeholder="0.00 gram" (blur)="weightCheck();calcGoldDeductionWeight()"
                             [class.isError]="controls.goldDeductionWeight.touched && controls.goldDeductionWeight.invalid">
                         <mat-error
                             *ngIf="controls.goldDeductionWeight.errors?.required && controls.goldDeductionWeight.touched">
                             Required field
                         </mat-error>
+                        <mat-error *ngIf="controls.goldDeductionWeight.errors?.weight && controls.goldDeductionWeight.touched">
+                            <small>Net  Weight should be lesser then Gross  Weight</small>
+                        </mat-error>
                     </div>
                 </div>
+                <div class="row kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label for="" class="mandatory text-color">Gold Net Weight </label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" class="form-control" formControlName="goldNetWeight" readonly
+                            placeholder="0.00 gram" 
+                            [class.isError]="controls.goldNetWeight.touched && controls.goldNetWeight.invalid">
+                        <mat-error *ngIf="controls.goldNetWeight.errors?.required && controls.goldNetWeight.touched">
+                            Required field
+                        </mat-error>
+                       
+                    </div>
+                </div>
+                
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
                         <label for="" class="mandatory text-color">Karat</label>
@@ -67,48 +68,6 @@
                         <label for="" class="mandatory text-color">Purity %</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="purity" placeholder="00%"
-                            [class.isError]="controls.purity.touched && controls.purity.invalid">
-                        <mat-error *ngIf="controls.purity.errors?.required && controls.purity.touched">
-                            Required field
-                        </mat-error>
-                    </div>
-                </div>
-                <div class="row kt-margin-t-30">
-                    <div class="offset-4 col-6">
-                        <kt-button [value]="'Calculate'" [type]="'button'" (action)="calFinalNetWeight()"></kt-button>
-                    </div>
-                </div>
-                <!-- </form>
-            <form action=""> -->
-                <div class="row kt-margin-t-30">
-                    <div class="col-4 form-label">
-                        <label for="" class="mandatory text-color">Final Net Weight </label>
-                    </div>
-                    <div class="col-6">
-                        <input type="number" class="form-control" formControlName="finalNetWeight" placeholder="48,000"
-                            [class.isError]="controls.finalNetWeight.touched && controls.finalNetWeight.invalid">
-                        <mat-error *ngIf="controls.finalNetWeight.errors?.required && controls.finalNetWeight.touched">
-                            Required field
-                        </mat-error>
-                    </div>
-                </div>
-                <div class="row kt-margin-t-10">
-                    <div class="col-4 form-label">
-                        <label for="" class="mandatory text-color">Current LTV Amount</label>
-                    </div>
-                    <div class="col-6">
-                        <input type="number" class="form-control" formControlName="currentLtvAmount" placeholder="4,800"
-                            readonly>
-                        <mat-hint><small> 75% of current gold rate</small></mat-hint>
-                    </div>
-                </div>
-
-                <div class="row kt-margin-t-10">
-                    <div class="col-4 form-label">
-                        <label for="" class="mandatory text-color">LTV %</label>
-                    </div>
-                    <div class="col-6">
                         <select class="form-control" formControlName="ltvPercent" (change)="chnageLtvPercent()"
                             [class.isError]="controls.ltvPercent.touched && controls.ltvPercent.invalid">
                             <option value='' [disabled]="true" [selected]="true">Select Purity</option>
@@ -119,6 +78,35 @@
                         </mat-error>
                     </div>
                 </div>
+                <!-- <div class="row kt-margin-t-30">
+                    <div class="offset-4 col-6">
+                        <kt-button [value]="'Calculate'" [type]="'button'" (action)="calFinalNetWeight()"></kt-button>
+                    </div>
+                </div> -->
+                <!-- </form>
+            <form action=""> -->
+                <!-- <div class="row kt-margin-t-30">
+                    <div class="col-4 form-label">
+                        <label for="" class="mandatory text-color">Final Net Weight </label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" class="form-control" formControlName="finalNetWeight" placeholder="48,000"
+                            [class.isError]="controls.finalNetWeight.touched && controls.finalNetWeight.invalid">
+                        <mat-error *ngIf="controls.finalNetWeight.errors?.required && controls.finalNetWeight.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div> -->
+                <!-- <div class="row kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label for="" class="mandatory text-color">Current LTV Amount</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="number" class="form-control" formControlName="currentLtvAmount" placeholder="4,800"
+                            readonly>
+                        <mat-hint><small> 75% of current gold rate</small></mat-hint>
+                    </div>
+                </div> -->
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
                         <label for="" class="mandatory text-color">LTV Amount</label>

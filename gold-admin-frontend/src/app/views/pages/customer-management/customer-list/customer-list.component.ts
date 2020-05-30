@@ -23,7 +23,7 @@ export class CustomerListComponent implements OnInit, OnChanges {
   @Output() pagination = new EventEmitter
   @Input() paginatorTotal;
   dataSource: CustomerManagementDatasource;
-  displayedColumns = ['fullName', 'customerId', 'mobile', 'pan', 'state', 'city', 'actions'];
+  displayedColumns = ['fullName', 'customerId', 'pan', 'state', 'city', 'actions'];
   customerResult = [];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 

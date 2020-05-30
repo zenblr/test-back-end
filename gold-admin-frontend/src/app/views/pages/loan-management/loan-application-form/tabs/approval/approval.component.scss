@@ -46,51 +46,51 @@
 	.table-div {
         width: 600px !important;
         margin: 50px auto 20px auto;
-        border-radius: 1em;
-        overflow: hidden;
+        // border-radius: 1em;
+        // overflow: hidden;
         // border: 1px solid #e3e3e3;
         // display: flex;
         // align-items: center;
-
-    table.table-bordered{
-        border: 1px solid #e3e3e3;
-        margin: 0;
-      }
-    table.table-bordered > thead > tr > th{
-        border: 1px solid #ffffff;
+    }
+    // table.table-bordered{
+    //     border: 1px solid #e3e3e3;
+    //     margin: 0;
+    //   }
+    // table.table-bordered > thead > tr > th{
+    //     border: 1px solid #ffffff;
         
-    }
-    table.table-bordered > tbody > tr > td{
-        border: 1px solid #e3e3e3;       
-    }
+    // }
+    // table.table-bordered > tbody > tr > td{
+    //     border: 1px solid #e3e3e3;       
+    // }
 
-    table {
-        // border-collapse: collapse;
-        border-radius: 1em;
-        // overflow: hidden;
+    // table {
+    //     // border-collapse: collapse;
+    //     border-radius: 1em;
+    //     // overflow: hidden;
 
-        thead {
-            background-color: #e3e3e3;
-        }
+    //     thead {
+    //         background-color: #e3e3e3;
+    //     }
 
-        input {
-            width: 100%;
-            border: none;
-            outline: none;
-            text-align: center;
-        }
-        .rating-title {
-            width: 100px;
-            font-weight: 400;
-            padding-left: 16px;
-        }
-        .rating-cce {
-            width: 70px;
-            text-align: center;
-        }
-        .rating-bm {
-            width: 70px;
-        }
-    }
-}
+    //     input {
+    //         width: 100%;
+    //         border: none;
+    //         outline: none;
+    //         text-align: center;
+    //     }
+    //     .rating-title {
+    //         width: 100px;
+    //         font-weight: 400;
+    //         padding-left: 16px;
+    //     }
+    //     .rating-cce {
+    //         width: 70px;
+    //         text-align: center;
+    //     }
+    //     .rating-bm {
+    //         width: 70px;
+    //     }
+    // }
+// }
 }

@@ -46,6 +46,7 @@ export class AddAppraiserComponent implements OnInit {
       this.title = 'Add Appraiser'
     } else if (this.data.action == 'edit') {
       this.title = 'Edit Appraiser'
+
       this.appraiserForm.patchValue(this.data.appraiser)
     } else {
       this.title = 'View Appraiser'

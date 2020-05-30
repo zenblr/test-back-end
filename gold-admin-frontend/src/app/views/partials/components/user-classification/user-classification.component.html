@@ -195,7 +195,9 @@
                 <div *ngIf="showTextBoxBM && userType== 5" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <mat-form-field class="w-100">
-                        <textarea matInput formControlName="reasonFromBm" placeholder="Reason for Rejection"></textarea>
+                        <mat-label class="mandatory">Reason for selected status</mat-label>
+                        <textarea matInput formControlName="reasonFromBm"
+                            placeholder="Enter a valid reason for your action"></textarea>
                         <mat-error>Field Required</mat-error>
                     </mat-form-field>
                 </div>

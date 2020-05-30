@@ -1,7 +1,7 @@
 <!-- <p>applied-kyc works!</p> -->
 <kt-portlet>
     <kt-portlet-body>
-        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
+        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'auto'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
 
@@ -83,10 +83,34 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role" class="kt-pointer">
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
-                            <button class="apply-kyc" (click)="assign()"
-                                *ngIf="role.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved'">Assign
+                            <button style="width: 120px;" class="apply-kyc" (click)="assign()"
+                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved' && !role.customer.customerAssignAppraiser">Assign
                                 Appraiser</button>
                         </div>
+                        <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserEdit']">
+
+                            <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(role)"
+                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved' && role.customer.customerAssignAppraiser">Update
+                                Appraiser</button>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="appraiserName">
+                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.customer.customerAssignAppraiser">
+                            {{role.customer.customerAssignAppraiser.appraiser.firstName | titlecase}}&nbsp;{{role.customer.customerAssignAppraiser.appraiser.lastName | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.customer.customerAssignAppraiser">
+                            {{role.customer.customerAssignAppraiser.customerUniqueId | uppercase}}
+                        </span>
                     </mat-cell>
                 </ng-container>
 

@@ -430,6 +430,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("redirect-assign-appraiser")) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/roles/')) {
+			this.showBackButton = true;
+		}
 		if (
 			location.href.includes("edit-merchant") ||
 			location.href.includes("add-merchant")

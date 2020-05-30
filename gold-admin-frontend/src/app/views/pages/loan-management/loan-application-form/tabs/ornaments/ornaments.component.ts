@@ -150,20 +150,22 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   weightCheck(index){
     const group = this.OrnamentsData.at(index) as FormGroup;
     if(group.controls.grossWeight.valid){
-      if(Number(group.controls.grossWeight.value) < Number(group.controls.netWeight.value)){
-        group.controls.netWeight.setErrors({weight:true})
+      if(Number(group.controls.grossWeight.value) < Number(group.controls.deductionWeight.value)){
+        group.controls.deductionWeight.setErrors({weight:true})
       }else{
-        group.controls.netWeight.setErrors(null)
+        group.controls.deductionWeight.setErrors(null)
       }
     }
   }
 
   calcGoldDeductionWeight(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
-    if (group.controls.grossWeight.valid && group.controls.netWeight.valid) {
-      const deductionWeight = group.controls.grossWeight.value - group.controls.netWeight.value;
-      group.controls.deductionWeight.patchValue(deductionWeight.toFixed(2));
-      this.finalNetWeight(index)
+    if (group.controls.grossWeight.valid && group.controls.deductionWeight.valid
+     && group.controls.grossWeight.value && group.controls.deductionWeight.value) {
+      const deductionWeight = Number(group.controls.grossWeight.value) - Number(group.controls.deductionWeight.value);
+      group.controls.netWeight.patchValue(deductionWeight.toFixed(2));
+      // this.finalNetWeight(index)
+      this.calculateLtvAmount(index)
     }
   }
 
@@ -191,18 +193,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.OrnamentsData.push(this.fb.group({
       ornamentType: [, Validators.required],
       quantity: [, Validators.required],
-      grossWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      grossWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      deductionWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ornamentImage: [, Validators.required],
       weightMachineZeroWeight: [, Validators.required],
       withOrnamentWeight: [, Validators.required],
       stoneTouch: [, Validators.required],
       acidTest: [, Validators.required],
       karat: ['', Validators.required],
-      purity: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ltvRange: [[]],
-      finalNetWeight: [''],
       purityTest: [[], Validators.required],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
@@ -269,7 +269,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     //     break;
     // }
     this.ref.detectChanges()
-    this.finalNetWeight(index)
+    // this.finalNetWeight(index)
   }
 
   uploadFile(index, event, string, ) {
@@ -397,12 +397,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   calculateLtvAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
-    if (controls.controls.finalNetWeight.valid && controls.controls.purity.valid
-      && controls.controls.ltvPercent.valid) {
+    if (controls.controls.ltvPercent.valid) {
       let ltvPercent = controls.controls.ltvPercent.value
       let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
       controls.controls.ltvAmount.patchValue(ltv)
-      controls.controls.loanAmount.patchValue((ltv * controls.controls.finalNetWeight.value).toFixed(2))
+      controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
     }
   }
 }

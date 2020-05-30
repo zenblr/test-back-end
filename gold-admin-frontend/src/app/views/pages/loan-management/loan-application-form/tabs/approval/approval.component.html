@@ -85,18 +85,18 @@
             </div> -->
 
             <div class="table-div">
-                <table class="table table-bordered">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 40%" class="rating-title">Field</th>
-                            <th scope="col" style="width: 30%" class="rating-cce">Appraiser</th>
-                            <th scope="col" style="width: 30%" class="rating-bm text-center" *ngIf="viewBMForm">Branch Manager</th>
+                            <th scope="col" style="width: 40%" >Field</th>
+                            <th scope="col" style="width: 30%" class="text-center">Appraiser</th>
+                            <th scope="col" style="width: 30%" class="text-center" *ngIf="viewBMForm">Branch Manager</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td scope="row" class="rating-title">Loan Application Form</td>
-                            <td class="rating-cce">
+                            <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
                                     *ngIf="controls.applicationFormForAppraiser.value"
@@ -118,7 +118,7 @@
                         <tr>
                             <td scope="row" class="rating-title">Gold Valuation
                             </td>
-                            <td class="rating-cce">
+                            <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
                                     *ngIf="controls.goldValuationForAppraiser.value"
