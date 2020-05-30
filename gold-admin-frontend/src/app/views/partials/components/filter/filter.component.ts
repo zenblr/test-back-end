@@ -25,11 +25,13 @@ import { Subscription, ReplaySubject, Subject } from "rxjs";
 import { MatDatepickerInputEvent, MatSelect } from "@angular/material";
 import { SharedService } from "../../../../core/shared/services/shared.service";
 import { NgxPermissionsService } from "ngx-permissions";
+import { DatePipe } from '@angular/common';
 
 @Component({
 	selector: 'kt-filter',
 	templateUrl: './filter.component.html',
 	styleUrls: ['./filter.component.scss'],
+	providers: [DatePipe]
 })
 export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	@ViewChild('filterDropdown', { static: true }) dropdown: NgbDropdown;
@@ -69,7 +71,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		private config: NgbDropdownConfig,
 		private sharedService: SharedService,
 		private ref: ChangeDetectorRef,
-		private ngxPermissionService: NgxPermissionsService
+		private ngxPermissionService: NgxPermissionsService,
+		private datePipe: DatePipe,
 	) {
 		// customize default values of dropdowns used by this component tree
 		config.autoClose = false;
@@ -231,9 +234,11 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.priceTo = controls['priceTo'].value;
 				this.filterObject.list.priceTo = controls['priceTo'].value;
 			}
-			if (controls['startDate'].value) {
-				this.filterObject.data.startDate = controls['startDate'].value;
-				this.filterObject.list.startDate = controls['startDate'].value;
+			if (controls["startDate"].value) {
+				let startDate = controls["startDate"].value;
+				let date = new Date(startDate.getTime() - startDate.getTimezoneOffset() * 60000).toISOString();
+				this.filterObject.data.startDate = date;
+				this.filterObject.list.startDate = this.datePipe.transform(date, 'mediumDate');
 			}
 			if (controls['status'].value && controls['status'].value.multiSelect.length) {
 				this.filterObject.data.status = controls['status'].value.multiSelect.map(e => e.statusId).toString();
