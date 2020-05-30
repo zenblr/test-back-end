@@ -33,7 +33,7 @@ import {
 	EmiDetailsService,
 } from "../../../../core/emi-management/order-management";
 import { MonthlyService } from "../../../../core/repayment/services/monthly.service";
-import { UserDetailsService } from "../../../../core/emi-management/user-details";
+import { CustomerDetailsService } from "../../../../core/emi-management/customer-details";
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
 // import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
 // import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
@@ -105,7 +105,7 @@ export class TopbarComponent implements OnInit {
 		private depositDetailsService: DepositDetailsService,
 		private emiDetailsService: EmiDetailsService,
 		private monthlyService: MonthlyService,
-		private userDetailsService: UserDetailsService,
+		private customerDetailsService: CustomerDetailsService,
 		private leadService: LeadService
 	) // private emailAlertService: EmailAlertService,
 	// private smsAlertService: SmsAlertService
@@ -395,7 +395,7 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = "350px";
 			this.listType = "emiStatus";
 		}
-		if (this.path == "users") {
+		if (this.path == "customers") {
 			this.showInput = true;
 			this.value1 = "Export";
 			this.type1 = "button";
@@ -519,8 +519,8 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "emi-details") {
 			this.emiDetailsService.exportExcel.next(true);
 		}
-		if (this.path == "users") {
-			this.userDetailsService.exportExcel.next(true);
+		if (this.path == "customers") {
+			this.customerDetailsService.exportExcel.next(true);
 		}
 	}
 

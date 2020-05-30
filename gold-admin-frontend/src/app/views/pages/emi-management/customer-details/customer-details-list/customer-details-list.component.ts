@@ -1,28 +1,28 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LayoutUtilsService, QueryParamsModel } from '../../../../../core/_base/crud';
 import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material';
-import { UserDetailsDatasource, UserDetailsService, UserDetailsModel } from '../../../../../core/emi-management/user-details';
+import { CustomerDetailsDatasource, CustomerDetailsService, CustomerDetailsModel } from '../../../../../core/emi-management/customer-details';
 import { Subscription, merge, fromEvent, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 
 @Component({
-  selector: 'kt-user-details-list',
-  templateUrl: './user-details-list.component.html',
-  styleUrls: ['./user-details-list.component.scss']
+  selector: 'kt-customer-details-list',
+  templateUrl: './customer-details-list.component.html',
+  styleUrls: ['./customer-details-list.component.scss']
 })
-export class UserDetailsListComponent implements OnInit {
+export class CustomerDetailsListComponent implements OnInit {
   // Table fields
-  dataSource: UserDetailsDatasource;
+  dataSource: CustomerDetailsDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ['storeId', 'vkMobileNumber', 'centerState', 'centerCity', 'userId', 'userEmail',
-    'fullName', 'mobileNumber', 'state', 'city', 'pincode', 'panCardNumber', 'userFrom', 'createdDate'];
+  displayedColumns = ['storeId', 'vkMobileNumber', 'centerState', 'centerCity', 'customerId', 'customerEmail',
+    'fullName', 'mobileNumber', 'state', 'city', 'pincode', 'panCardNumber', 'merchant', 'createdDate'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  bulkUploadReportResult: UserDetailsModel[] = [];
+  CustomersResult: CustomerDetailsModel[] = [];
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private destroy$ = new Subject();
@@ -33,10 +33,10 @@ export class UserDetailsListComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
-    private userDetailsService: UserDetailsService,
+    private customerDetailsService: CustomerDetailsService,
     private dataTableService: DataTableService
   ) {
-    this.userDetailsService.exportExcel$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+    this.customerDetailsService.exportExcel$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
         this.downloadReport();
       }
@@ -54,7 +54,7 @@ export class UserDetailsListComponent implements OnInit {
 		**/
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {
-        this.loadUserDetailsPage();
+        this.loadCustomerDetailsPage();
       })
     )
       .subscribe();
@@ -67,7 +67,7 @@ export class UserDetailsListComponent implements OnInit {
     //   distinctUntilChanged(), // This operator will eliminate duplicate values
     //   tap(() => {
     //     this.paginator.pageIndex = 0;
-    //     this.loadUserDetailsPage();
+    //     this.loadCustomerDetailsPage();
     //   })
     // )
     //   .subscribe();
@@ -77,28 +77,28 @@ export class UserDetailsListComponent implements OnInit {
       .subscribe(res => {
         this.searchValue = res;
         this.paginator.pageIndex = 0;
-        this.loadUserDetailsPage();
+        this.loadCustomerDetailsPage();
       });
 
     // Init DataSource
-    this.dataSource = new UserDetailsDatasource(this.userDetailsService);
+    this.dataSource = new CustomerDetailsDatasource(this.customerDetailsService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      this.bulkUploadReportResult = res;
+      this.CustomersResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadUserDetails(1, 25, this.searchValue);
+    this.dataSource.loadCustomerDetails(1, 25, this.searchValue);
   }
 
-  loadUserDetailsPage() {
+  loadCustomerDetailsPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadUserDetails(from, to, this.searchValue);
+    this.dataSource.loadCustomerDetails(from, to, this.searchValue);
   }
 
 	/**
@@ -112,8 +112,8 @@ export class UserDetailsListComponent implements OnInit {
   }
 
   downloadReport() {
-    this.userDetailsService.reportExport().subscribe();
-    this.userDetailsService.exportExcel.next(false);
+    this.customerDetailsService.reportExport().subscribe();
+    this.customerDetailsService.exportExcel.next(false);
   }
 
   /**

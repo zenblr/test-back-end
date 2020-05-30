@@ -60,7 +60,7 @@ import { EmiDetailsViewComponent } from "./order-management/emi-details/emi-deta
 import { OrderDetailsEditComponent } from "./order-management/order-details/order-details-edit/order-details-edit.component";
 import { RefundDetailsComponent } from "./order-management/refund-details/refund-details-list/refund-details.component";
 import { RefundDetailsEditComponent } from "./order-management/refund-details/refund-details-edit/refund-details-edit.component";
-import { UserDetailsListComponent } from "./user-details/user-details-list/user-details-list.component";
+import { CustomerDetailsListComponent } from "./customer-details/customer-details-list/customer-details-list.component";
 import { ReportsComponent } from "./reports/reports.component";
 import { RefundDetailsViewComponent } from "./order-management/refund-details/refund-details-view/refund-details-view.component";
 
@@ -137,8 +137,8 @@ const routes: Routes = [
 				component: RefundDetailsComponent,
 			},
 			{
-				path: "users",
-				component: UserDetailsListComponent,
+				path: "customers",
+				component: CustomerDetailsListComponent,
 			},
 			{
 				path: "reports",
@@ -228,7 +228,7 @@ const routes: Routes = [
 		OrderDetailsEditComponent,
 		RefundDetailsComponent,
 		RefundDetailsEditComponent,
-		UserDetailsListComponent,
+		CustomerDetailsListComponent,
 		ReportsComponent,
 		RefundDetailsViewComponent,
 	],
