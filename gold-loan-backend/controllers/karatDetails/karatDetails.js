@@ -63,10 +63,11 @@ exports.readKaratDetailsById = async (req, res) => {
 exports.updateKaratDetails = async (req, res) => {
     let karatDetailsId = req.params.id;
     const { karat, fromPercentage, toPercentage } = req.body;
+    let modifiedBy=req.userData.id;
     if (fromPercentage >= toPercentage) {
         return res.status(400).json({ message: 'from percentage should less than to percentage' })
     }
-    let updateKaratDetails = await models.karatDetails.update({ karat, fromPercentage, toPercentage }, { where: { id: karatDetailsId, isActive: true } });
+    let updateKaratDetails = await models.karatDetails.update({ karat, fromPercentage, toPercentage,modifiedBy }, { where: { id: karatDetailsId, isActive: true } });
     if (!updateKaratDetails[0]) {
         return res.status(404).json({ message: 'karat details  update failed' });
     }

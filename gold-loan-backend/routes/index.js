@@ -128,8 +128,16 @@ router.use('/assign-appraiser', assignAppraiser);
 const packet = require('./packet');
 router.use('/packet', packet)
 
+<<<<<<< HEAD
 const ratingReason = require('./ratingReason');
 router.use('/rating-reason', ratingReason)
 
+=======
+const holidayMaster= require('./holidayMaster'); // add holiday list master
+router.use('/holiday-master',holidayMaster)
+
+const uploadHolidayMaster= require('./uploadHolidayMaster'); // upload holiday list master
+router.use('/upload-holiday-master',uploadHolidayMaster)
+>>>>>>> f66249f6cd8bd7575768e56e775b459690afa151
 
 module.exports = router;
