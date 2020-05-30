@@ -55,9 +55,10 @@ export class UserClassificationComponent implements OnInit {
 
   showTextBoxCce = false;
   showTextBoxBM = false;
-  editRating: boolean;
+  editRating = false;
   userType: any;
   viewBMForm = true;
+  reasons = [];
 
   constructor(
     private userDetailsService: UserDetailsService,
@@ -82,6 +83,7 @@ export class UserClassificationComponent implements OnInit {
       this.customerDetails = this.userDetailsService.userData;
     }
     this.getRating();
+    this.getReasonsList();
     this.initForm();
     this.dataBindingEdit();
     this.conditionalValidation();
@@ -91,22 +93,15 @@ export class UserClassificationComponent implements OnInit {
     const editable = this.appliedKycService.editKyc.getValue()
     if (editable.editable) {
       this.editRating = true;
+      console.log(this.customerDetails)
       this.custClassificationForm.patchValue(this.customerDetails)
-      // console.log(this.custClassificationForm.value)
-      // this.custClassificationForm.patchValue({
-      //   customerId: this.customerDetails.KycClassification.customerId,
-      //   customerKycId: this.customerDetails.KycClassification.customerKycId,
-      //   behaviourRatingCce: this.customerDetails.KycClassification.behaviourRatingCce,
-      //   idProofRatingCce: this.customerDetails.KycClassification.idProofRatingCce,
-      //   addressProofRatingCce: this.customerDetails.KycClassification.addressProofRatingCce,
-      //   kycStatusFromCce: this.customerDetails.KycClassification.kycStatusFromCce,
-      //   reasonFromCce: this.customerDetails.KycClassification.reasonFromCce,
-      //   behaviourRatingVerifiedByBm: this.customerDetails.KycClassification.behaviourRatingVerifiedByBm,
-      //   idProofRatingVerifiedByBm: this.customerDetails.KycClassification.idProofRatingVerifiedByBm,
-      //   addressProofRatingVerifiedBm: this.customerDetails.KycClassification.addressProofRatingVerifiedBm,
-      //   kycStatusFromBm: this.customerDetails.KycClassification.kycStatusFromBm,
-      //   reasonFromBm: this.customerDetails.KycClassification.reasonFromBm
-      // })
+      this.custClassificationForm.patchValue({ reasonForOther: this.customerDetails.reasonFromCce })
+      var temp = this.reasons.filter(res => {
+        return res.description == this.customerDetails.reasonFromCce
+      })
+      if (!temp.length) {
+        this.cceControls.reasonForOther.patchValue('other')
+      }
     }
   }
 
@@ -115,17 +110,18 @@ export class UserClassificationComponent implements OnInit {
       customerId: [this.customerDetails.customerId, [Validators.required]],
       customerKycId: [this.customerDetails.customerKycId, [Validators.required]],
       kycRatingFromCce: ['', [Validators.required]],
-      kycRatingFromBM: ['', [Validators.required]],
+      kycRatingFromBM: [false, [Validators.required]],
       // behaviourRatingCce: ['', [Validators.required]],
       // idProofRatingCce: ['', [Validators.required]],
       // addressProofRatingCce: ['', [Validators.required]],
       kycStatusFromCce: ['', [Validators.required]],
       reasonFromCce: [],
+      reasonForOther: [],
       // behaviourRatingVerifiedByBm: [false, [Validators.required]],
       // idProofRatingVerifiedByBm: [false, [Validators.required]],
       // addressProofRatingVerifiedBm: [false, [Validators.required]],
       kycStatusFromBm: ['pending', [Validators.required]],
-      reasonFromBm: []
+      reasonFromBm: ['']
     })
 
     if (this.userType == 6) {
@@ -147,42 +143,34 @@ export class UserClassificationComponent implements OnInit {
     } else {
       this.custClassificationForm.disable()
     }
-
-    // this.custClassificationFormBM = this.fb.group({
-    //   customerId: [this.customerDetails.customerId, [Validators.required]],
-    //   customerKycId: [this.customerDetails.customerKycId, [Validators.required]],
-    //   behaviourRatingVerifiedByBm: [false, [Validators.required]],
-    //   idProofRatingVerifiedByBm: [false, [Validators.required]],
-    //   addressProofRatingVerifiedBm: [false, [Validators.required]],
-    //   kycStatusFromBm: ['', [Validators.required]],
-    //   reasonFromBm: []
-    // })
   }
 
   conditionalValidation() {
-    this.custClassificationForm.get('kycRatingFromCce').valueChanges.subscribe(res => {
-      if (res == 5) {
-        this.custClassificationForm.get('reasonFromCce').clearValidators();
+    // this.custClassificationForm.get('kycRatingFromCce').valueChanges.subscribe(res => {
+    if ((this.custClassificationForm.controls.kycRatingFromCce.value == '5' || this.custClassificationForm.controls.kycRatingFromCce.value == '4') && this.custClassificationForm.controls.kycStatusFromCce.value == 'approved') {
+      this.custClassificationForm.get('reasonFromCce').clearValidators();
+      if (!this.editRating) {
         this.custClassificationForm.get('reasonFromCce').patchValue('');
-        this.showTextBoxCce = false;
-      } else {
-        this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
-        this.showTextBoxCce = true;
       }
-      this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
-    })
+      this.showTextBoxCce = false;
+    } else {
+      this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
+      this.showTextBoxCce = true;
+    }
+    this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
+    // })
 
-    this.custClassificationForm.get('kycStatusFromCce').valueChanges.subscribe(res => {
-      if (res == 'approved') {
-        this.custClassificationForm.get('reasonFromCce').clearValidators();
-        this.custClassificationForm.get('reasonFromCce').patchValue('');
-        this.showTextBoxCce = false;
-      } else {
-        this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
-        this.showTextBoxCce = true;
-      }
-      this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
-    })
+    // this.custClassificationForm.get('kycStatusFromCce').valueChanges.subscribe(res => {
+    //   if (res == 'approved') {
+    //     this.custClassificationForm.get('reasonFromCce').clearValidators();
+    //     this.custClassificationForm.get('reasonFromCce').patchValue('');
+    //     this.showTextBoxCce = false;
+    //   } else {
+    //     this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
+    //     this.showTextBoxCce = true;
+    //   }
+    //   this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
+    // })
 
     // Validation for BM
     this.custClassificationForm.get('kycStatusFromBm').valueChanges.subscribe(res => {
@@ -202,6 +190,15 @@ export class UserClassificationComponent implements OnInit {
     this.custClassificationService.getRating().pipe(
       map(res => {
         this.rating = res;
+      })
+    ).subscribe()
+  }
+
+  getReasonsList() {
+    this.custClassificationService.getReasonsList().pipe(
+      map(res => {
+        console.log(res)
+        this.reasons = res.data;
       })
     ).subscribe()
   }
@@ -263,6 +260,20 @@ export class UserClassificationComponent implements OnInit {
       // } else if (type == 'address') {
       //   this.cceControls.addressProofRatingVerifiedBm.patchValue(value)
       // }
+    }
+  }
+
+  patchReason() {
+    if (this.cceControls.reasonForOther.value != "other") {
+      // let arr = this.reasons.filter(res => {
+      //   return res.id == this.cceControls.reasonForOther.value;
+      // })
+      // console.log(arr[0].description)
+      this.cceControls.reasonFromCce.patchValue(this.cceControls.reasonForOther.value)
+
+    } else {
+      this.cceControls.reasonFromCce.reset()
+      this.cceControls.reasonFromCce.patchValue('')
     }
   }
 }

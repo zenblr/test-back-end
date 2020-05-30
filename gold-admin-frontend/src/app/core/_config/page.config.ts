@@ -80,6 +80,9 @@ export class PageConfig {
 			},
 			roles: {
 				page: { title: "Roles", desc: "" },
+				id: {
+					page: { title: "Permissions", desc: "" }
+				}
 			},
 		},
 		"lead-management": {

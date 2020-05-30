@@ -18,8 +18,8 @@ export class UserPersonalComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   personalForm: FormGroup;
   occupations = [];
-  // customerDetails = this.userDetailsService.userData;
-  customerDetails = { customerId: 1, customerKycId: 2 }
+  customerDetails = this.userDetailsService.userData;
+  // customerDetails = { customerId: 1, customerKycId: 2 }
   file: any;
   profile = '';
   signatureJSON = { url: null, isImage: false };
@@ -31,7 +31,7 @@ export class UserPersonalComponent implements OnInit {
     private userPersonalService: UserPersonalService,
     private sharedService: SharedService, private ref: ChangeDetectorRef,
     private toastr: ToastrService,
-    private dialog:MatDialog) { }
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     // console.log(this.signature)
@@ -64,7 +64,7 @@ export class UserPersonalComponent implements OnInit {
     })
   }
 
-  webcam(){
+  webcam() {
     const dialogRef = this.dialog.open(WebcamDialogComponent,
       {
         data: {},
@@ -72,9 +72,12 @@ export class UserPersonalComponent implements OnInit {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.profile = res
-        this.personalForm.get('profileImage').patchValue(this.profile);
-        this.ref.detectChanges()
+        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+          console.log(res)
+          this.profile = res.uploadFile.URL
+          this.personalForm.get('profileImage').patchValue(this.profile);
+          this.ref.detectChanges()
+        })
         // this.controls.
       }
     });

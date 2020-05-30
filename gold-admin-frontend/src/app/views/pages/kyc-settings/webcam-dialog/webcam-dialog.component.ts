@@ -26,12 +26,12 @@ export class WebcamDialogComponent implements OnInit {
   // webcam snapshot trigger
   private trigger: Subject<void> = new Subject<void>();
   // switch to next / previous / specific webcam; true/false: forward/backwards, string: deviceId
-  private nextWebcam: Subject<boolean|string> = new Subject<boolean|string>();
+  private nextWebcam: Subject<boolean | string> = new Subject<boolean | string>();
 
   constructor(
     public dialogRef: MatDialogRef<WebcamDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-  ){ }
+  ) { }
 
   public ngOnInit(): void {
     WebcamUtil.getAvailableVideoInputs()
@@ -52,7 +52,7 @@ export class WebcamDialogComponent implements OnInit {
     this.errors.push(error);
   }
 
-  public showNextWebcam(directionOrDeviceId: boolean|string): void {
+  public showNextWebcam(directionOrDeviceId: boolean | string): void {
     // true => move forward through devices
     // false => move backwards through devices
     // string => move to device with given deviceId
@@ -62,7 +62,7 @@ export class WebcamDialogComponent implements OnInit {
   public handleImage(webcamImage: WebcamImage): void {
     console.info('received webcam image', webcamImage);
     this.pictureTaken.emit(webcamImage);
-    this.dialogRef.close(webcamImage.imageAsDataUrl)
+    this.dialogRef.close(webcamImage)
   }
 
   public cameraWasSwitched(deviceId: string): void {
@@ -74,7 +74,7 @@ export class WebcamDialogComponent implements OnInit {
     return this.trigger.asObservable();
   }
 
-  public get nextWebcamObservable(): Observable<boolean|string> {
+  public get nextWebcamObservable(): Observable<boolean | string> {
     return this.nextWebcam.asObservable();
   }
 

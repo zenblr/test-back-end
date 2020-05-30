@@ -147,6 +147,7 @@ export class UserReviewComponent implements OnInit {
 
   data: any = {};
   viewOnly = true;
+  userType: any;
 
 
   constructor(private userAddressService:
@@ -162,8 +163,11 @@ export class UserReviewComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public modalData: any,
     private ele: ElementRef
   ) {
+    let res = this.sharedService.getDataFromStorage();
+    this.userType = res.userDetails.userTypeId;
+
     if (this.modalData.action) {
-      console.log(this.data)
+      console.log(this.data);
       this.viewOnly = false;
     }
   }
@@ -183,12 +187,11 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.initForm();
-    if (!this.viewOnly) {
+    if (!this.viewOnly || this.userType == 5) {
       this.reviewForm.disable();
       this.customerKycPersonal.disable();
       this.customerKycAddressOne.disable();
       this.customerKycAddressTwo.disable();
-      this.customerKycBank.disable();
 
     }
     this.getStates();
@@ -289,7 +292,6 @@ export class UserReviewComponent implements OnInit {
     }
 
     this.customerKycPersonal.controls.age.patchValue(age)
-    // this.controls.age.patchValue(age);
   }
 
   ageValidation() {
@@ -402,6 +404,9 @@ export class UserReviewComponent implements OnInit {
 
   removeImages(index, type) {
     // console.log(index, type)
+    if (this.userType == 5) {
+      return;
+    }
     if (type == 'identityProof') {
       this.data.customerKycReview.customerKycPersonal.identityProof.splice(index, 1)
       this.reviewForm.patchValue({ identityProofFileName: '' });
@@ -418,6 +423,9 @@ export class UserReviewComponent implements OnInit {
   }
 
   getFileInfo(event, type: any) {
+    if (this.userType == 5) {
+      return;
+    }
     this.file = event.target.files[0];
     // console.log(type);
     // console.log(this.addressControls)

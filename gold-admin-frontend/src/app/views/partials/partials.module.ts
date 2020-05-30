@@ -72,9 +72,10 @@ import { UserClassificationComponent } from "./components/user-classification/us
 import { UplodPreviewImageComponent } from "./components/uplod-preview-image/uplod-preview-image.component";
 import { SelectWithSearchComponent } from "./components/select-with-search/select-with-search.component";
 
-import { NgSelectModule } from "@ng-select/ng-select";
-import { UserReviewComponent } from "../pages/kyc-settings/tabs/user-review/user-review.component";
-import { NgxPermissionsModule } from "ngx-permissions";
+import { NgSelectModule } from '@ng-select/ng-select';
+import { UserReviewComponent } from '../pages/kyc-settings/tabs/user-review/user-review.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
+import { AddAppraiserComponent } from '../pages/user-management/assign-appraiser/add-appraiser/add-appraiser.component';
 
 @NgModule({
 	declarations: [
@@ -136,6 +137,7 @@ import { NgxPermissionsModule } from "ngx-permissions";
 
 		SelectWithSearchComponent,
 		UserReviewComponent,
+		AddAppraiserComponent
 	],
 	exports: [
 		WidgetModule,
@@ -188,6 +190,7 @@ import { NgxPermissionsModule } from "ngx-permissions";
 		UplodPreviewImageComponent,
 		SelectWithSearchComponent,
 		UserReviewComponent,
+		AddAppraiserComponent,
 		// spinner
 		NgbDropdownModule,
 		NgxPermissionsModule,
