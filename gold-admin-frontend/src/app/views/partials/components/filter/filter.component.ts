@@ -117,7 +117,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		private ngxPermissionService: NgxPermissionsService
 	) {
 		// customize default values of dropdowns used by this component tree
-		config.autoClose = false;
+		// config.autoClose = false;
 		this.ngxPermissionService.permissions$.subscribe((res) => {
 			if (res) {
 				this.permissions = res;
