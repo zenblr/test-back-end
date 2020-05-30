@@ -494,10 +494,10 @@ export class MenuConfig {
 							],
 						},
 						{
-							title: 'User Details',
+							title: 'Customer Details',
 							root: true,
 							src: "assets/media/aside-icons/icons-26.svg",
-							page: "/emi-management/users",
+							page: "/emi-management/customers",
 							permission: !this.permissionsArr.includes('customerView'),
 						},
 						{

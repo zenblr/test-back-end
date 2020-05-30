@@ -690,7 +690,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	getSubCategory() {
 		this.sharedService
 			.getAllSubCategory()
-			.subscribe((res) => (this.subCategoryList = res.data));
+			.subscribe((res) => (this.subCategoryList = res));
 	}
 
 	getStates() {

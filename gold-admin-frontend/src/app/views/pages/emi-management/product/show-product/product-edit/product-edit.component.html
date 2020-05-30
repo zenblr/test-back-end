@@ -41,7 +41,7 @@
                                     [class.isError]="controls.subCategoryId.touched && controls.subCategoryId.invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select SubCategory</option>
                                     <option *ngFor="let subcategory of subcategories" [value]="subcategory?.id">
-                                        {{subcategory?.subCategoryName}}
+                                        {{subcategory?.subCategoryName | titlecase}}
                                     </option>
                                 </select>
                                 <mat-error

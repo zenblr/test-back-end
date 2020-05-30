@@ -149,8 +149,8 @@ export class PageConfig {
 					},
 				},
 			},
-			users: {
-				page: { title: "Users", desc: "" },
+			customers: {
+				page: { title: "Customers", desc: "" },
 			},
 			reports: {
 				page: { title: "Reports", desc: "" },

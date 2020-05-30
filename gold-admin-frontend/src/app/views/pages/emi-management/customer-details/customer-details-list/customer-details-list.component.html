@@ -69,14 +69,14 @@
                         {{element?.Createdby?.address[0]?.city?.name ? element?.Createdby?.address[0]?.city?.name : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="userId">
-                    <mat-header-cell *matHeaderCellDef>User ID</mat-header-cell>
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element?.customerUniqueId ? element?.customerUniqueId : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="userEmail">
-                    <mat-header-cell *matHeaderCellDef>User Email</mat-header-cell>
+                <ng-container matColumnDef="customerEmail">
+                    <mat-header-cell *matHeaderCellDef>Customer Email</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element?.email ? element?.email : '-'}}
                     </mat-cell>
@@ -112,13 +112,13 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="panCardNumber">
-                    <mat-header-cell *matHeaderCellDef>User Pan Card No.</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Customer Pan Card No.</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element?.panCardNumber ? element?.panCardNumber : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="userFrom">
-                    <mat-header-cell *matHeaderCellDef>User From</mat-header-cell>
+                <ng-container matColumnDef="merchant">
+                    <mat-header-cell *matHeaderCellDef>Merchant</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element?.Createdby?.broker?.merchant?.merchantName ? element?.Createdby?.broker?.merchant?.merchantName : '-'}}
                     </mat-cell>

@@ -7,13 +7,13 @@ import { ExcelService } from '../../../_base/crud/services/excel.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UserDetailsService {
+export class CustomerDetailsService {
   exportExcel = new BehaviorSubject<any>(false);
   exportExcel$ = this.exportExcel.asObservable();
 
   constructor(private http: HttpClient, private excelService: ExcelService) { }
 
-  getAllUserDetails(from?, to?, search?): Observable<any> {
+  getAllCustomerDetails(from?, to?, search?): Observable<any> {
     return this.http.get<any>(`http://173.249.49.7:9120/api/customer?search=${search}&from=${from}&to=${to}`);
   }
 
@@ -25,7 +25,7 @@ export class UserDetailsService {
         }),
         tap(
           data => {
-            this.excelService.saveAsExcelFile(data, 'UserReport_'+ Date.now());
+            this.excelService.saveAsExcelFile(data, 'CustomerReport_'+ Date.now());
           },
           error => console.log(error),
         ),
