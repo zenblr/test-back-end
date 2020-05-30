@@ -72,30 +72,30 @@
                     <mat-cell *matCellDef="let element">{{element?.subCategory?.subCategoryName | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="weight">
-                    <mat-header-cell *matHeaderCellDef>Weight(gm)</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.weight}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="align-right">Weight(gm)</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">{{element?.weight}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="price">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Price</mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element?.productPrice[0]?.finalProductPrice}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="manufacturingCostPerGram">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Manufacturing Charges
+                    <mat-header-cell *matHeaderCellDef class="align-right">Manufacturing Charges
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element?.manufacturingCostPerGram}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="shipping">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Shipping Charges
+                    <mat-header-cell *matHeaderCellDef class="align-right">Shipping Charges
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">{{element?.shipping}}
+                    <mat-cell *matCellDef="let element" class="align-right">{{element?.shipping}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="hallmarkingPackaging">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Hallmarking & Packaging
+                    <mat-header-cell *matHeaderCellDef class="align-right">Hallmarking & Packaging
                         Charges</mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element?.hallmarkingPackaging}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">

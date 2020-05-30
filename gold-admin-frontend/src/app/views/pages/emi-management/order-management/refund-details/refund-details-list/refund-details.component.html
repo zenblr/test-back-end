@@ -63,9 +63,9 @@
 						}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bookingPrice">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Booking Price
+                    <mat-header-cell *matHeaderCellDef class="align-right">Booking Price
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{
                             element?.cancelOrder?.totalPrice
                                 ? element?.cancelOrder?.totalPrice
@@ -73,18 +73,18 @@
                         }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="totalAmt">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Total Amount Paid
+                    <mat-header-cell *matHeaderCellDef class="align-right">Total Amount Paid
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">{{
+                    <mat-cell *matCellDef="let element" class="align-right">{{
 						element?.cancelOrder?.totalAmountPaid
 							? element?.cancelOrder?.totalAmountPaid
 							: "-"   
 					}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="cancelPrice">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Cancellation Price of Order
+                    <mat-header-cell *matHeaderCellDef class="align-right">Cancellation Price of Order
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{
 							element?.cancelOrder?.productUpdatedPrice
 								? element?.cancelOrder?.productUpdatedPrice
@@ -93,9 +93,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="diffAmt">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Difference Amount
+                    <mat-header-cell *matHeaderCellDef class="align-right">Difference Amount
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{
 							element?.cancelOrder?.diffrenceAmount
 								? element?.cancelOrder?.diffrenceAmount
@@ -104,9 +104,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="cancelFees">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Cancellation Fees
+                    <mat-header-cell *matHeaderCellDef class="align-right">Cancellation Fees
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{
 							element?.cancelOrder?.cancelationFees
 								? element?.cancelOrder?.cancelationFees
@@ -115,9 +115,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="totalCancelCharge">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Total Cancellation Charges
+                    <mat-header-cell *matHeaderCellDef class="align-right">Total Cancellation Charges
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{
 							element?.cancelOrder?.cancellationCharges
 								? element?.cancelOrder?.cancellationCharges
@@ -126,9 +126,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amtPayable">
-                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Amt. Payable To Customer
+                    <mat-header-cell *matHeaderCellDef class="align-right">Amt. Payable To Customer
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{
 							element?.cancelOrder?.payableToCustomer
 								? element?.cancelOrder?.payableToCustomer
