@@ -52,10 +52,6 @@
 	width: 100% !important;
 }
 
-.mat-table__wrapper .mat-table {
-	max-height: 74vh !important;
-	overflow: auto;
-}
 .position-static {
 	position: static;
 }
@@ -367,6 +363,7 @@ mat-header-row {
 
 .mat-table__wrapper {
 	min-height: 70vh !important; //set table height
+	max-height: 74vh;
 }
 
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
@@ -603,4 +600,11 @@ mat-header-row {
 .align-right{
 	justify-content: flex-end !important;
 	text-align: end !important;
+}
+
+// mat-table-header : sticky
+.mat-table__wrapper .mat-table .mat-header-row {
+	top: 0px;
+	position: sticky !important;
+	z-index: 1;
 }
