@@ -137,7 +137,7 @@ export class EmiDetailsListComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -160,7 +160,7 @@ export class EmiDetailsListComponent implements OnInit {
 
 	viewOrder(order) {
 		const dialogRef = this.dialog.open(EmiDetailsViewComponent, {
-			data: { order: order, action: "view" },
+			data: { orderId: order, action: "view" },
 			width: "500px",
 		});
 		dialogRef.afterClosed().subscribe((res) => {
