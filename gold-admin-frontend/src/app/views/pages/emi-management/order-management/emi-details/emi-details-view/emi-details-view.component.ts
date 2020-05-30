@@ -16,7 +16,10 @@ export class EmiDetailsViewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.emiDetailsService.getEmiDetails(this.data.orderId).subscribe(res => this.orderData = res);
+    this.emiDetailsService.getEmiDetails(this.data.orderId).subscribe(res => {
+      this.orderData = res;
+    });
+
     this.getTitle()
   }
 
