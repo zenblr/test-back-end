@@ -9,7 +9,7 @@ const moment = require('moment')
 
 // upload scheme csv
 exports.uploadHolidayMaster = async (req, res, next) => {
-    try {
+    
         const csvFilePath = req.file.path;
         const jsonArray = await csv().fromFile(csvFilePath);
         if (jsonArray.length == 0) { return res.status(400).json({ message: `Your file is empty.` }) }
@@ -44,9 +44,6 @@ exports.uploadHolidayMaster = async (req, res, next) => {
             }
         })
         return res.status(201).json({ message: "Holiday Master List Created" });
-    }
-    catch (error) {
-        console.log(error.message)
-    }
+  
 }
 
