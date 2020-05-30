@@ -35,8 +35,8 @@ import {
 import { MonthlyService } from "../../../../core/repayment/services/monthly.service";
 import { CustomerDetailsService } from "../../../../core/emi-management/customer-details";
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
-// import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
-// import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
+import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
+import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -106,14 +106,15 @@ export class TopbarComponent implements OnInit {
 		private emiDetailsService: EmiDetailsService,
 		private monthlyService: MonthlyService,
 		private customerDetailsService: CustomerDetailsService,
-		private leadService: LeadService
-	) // private emailAlertService: EmailAlertService,
-	// private smsAlertService: SmsAlertService
-	{
-		this.router.events.subscribe((val) => {
-			this.reset();
-			this.setTopbar(location.path());
-		});
+		private leadService: LeadService,
+		private emailAlertService: EmailAlertService,
+		private smsAlertService: SmsAlertService
+	) {
+
+		this.router.events.subscribe(val => {
+			this.reset()
+			this.setTopbar(location.path())
+		})
 
 		this.walletPriceService.download$
 			.pipe(takeUntil(this.destroy$))
@@ -501,12 +502,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "karat-details") {
 			this.karatDetailsService.openModal.next(true);
 		}
-		// if (this.path == "email-alert") {
-		// 	this.emailAlertService.openModal.next(true);
-		// }
-		// if (this.path == "sms-alert") {
-		// 	this.emailAlertService.openModal.next(true);
-		// }
+		if (this.path == "email-alert") {
+			this.emailAlertService.openModal.next(true);
+		}
+		if (this.path == "sms-alert") {
+			this.smsAlertService.openDialog.next(true);
+		}
 		if (this.path == "order-details") {
 			this.orderDetailsService.exportExcel.next(true);
 		}

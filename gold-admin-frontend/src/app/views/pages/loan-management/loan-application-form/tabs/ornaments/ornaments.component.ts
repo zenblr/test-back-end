@@ -9,6 +9,7 @@ import { UploadOfferService } from '../../../../../../core/upload-data';
 import { KaratDetailsService } from '../../../../../../core/loan-setting/karat-details/services/karat-details.service';
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../core/loan-management';
+import { GoldRateService } from '../../../../../../core/upload-data/gold-rate/gold-rate.service';
 
 
 @Component({
@@ -52,7 +53,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public ele: ElementRef,
     public dilaog: MatDialog,
     public ref: ChangeDetectorRef,
-    public uploadOfferService: UploadOfferService,
+    public goldRateService: GoldRateService,
     public karatService: KaratDetailsService,
     public router: Router,
     public loanApplicationFormService: LoanApplicationFormService
@@ -135,7 +136,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit() {
-    this.uploadOfferService.goldRate$.subscribe(res => {
+    this.goldRateService.goldRate$.subscribe(res => {
       this.goldRate = res * (75 / 100)
       const group = this.OrnamentsData.at(0) as FormGroup
       group.controls.currentLtvAmount.patchValue(this.goldRate)

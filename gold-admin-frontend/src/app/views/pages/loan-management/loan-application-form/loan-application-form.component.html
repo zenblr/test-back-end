@@ -8,22 +8,22 @@
                         (apiHit)="customerDetails($event)">
                         </kt-basic-details>
                     </mat-tab>
-                    <mat-tab label="KYC Details" [disabled]="disabled[1]">
+                    <!-- <mat-tab label="KYC Details" [disabled]="disabled[1]">
                         <kt-kyc-details (kycEmit)="kycEmit($event)" [action]="action" [details]="customerDetail"  [disable]="disabledForm"></kt-kyc-details>
-                    </mat-tab>
-                    <mat-tab label="Bank Details" [disabled]="disabled[2]">
+                    </mat-tab> -->
+                    <mat-tab label="Bank Details" [disabled]="disabled[1]">
                         <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [action]="action" [details]="customerDetail"  [disable]="disabledForm">
                         </kt-bank-details>
                     </mat-tab>
-                    <mat-tab label="Nominee Details" [disabled]="disabled[3]">
+                    <mat-tab label="Nominee Details" [disabled]="disabled[2]">
                         <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [action]="action" [invalid]="invalid.nominee"  [disable]="disabledForm" [details]="customerDetail">
                         </kt-nominee-details>
                     </mat-tab>
-                    <mat-tab label="Final Interest Calculator" [disabled]="disabled[4]">
+                    <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">
                         <kt-interest-calculator (interestFormEmit)="interestFormEmit($event)" (nextEmit)="next($event)"
                             [invalid]="invalid.intreset"  [disable]="disabledForm" [action]="action" [totalAmt]="totalAmount" [details]="customerDetail"></kt-interest-calculator>
                     </mat-tab>
-                    <mat-tab label="Approval" [disabled]="disabled[5]">
+                    <mat-tab label="Approval" [disabled]="disabled[4]">
                         <kt-approval (apply)="apply()" (approvalFormEmit)="approvalFormEmit($event)" [action]="action" [invalid]="invalid.approval"  [disable]="disabledForm" [details]="customerDetail">
                         </kt-approval>
                     </mat-tab>
@@ -44,7 +44,11 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-12 py-2">
-                <h3 class="text-gray text-center">Total Eligible Amount {{totalAmount | currency:'INR'}}</h3>
+                <h3 class="text-gray text-center ">
+                    <b>
+                        Total Eligible Amount <span class="currency"> {{totalAmount | currency:'INR'}}</span> 
+                    </b>  
+                </h3>
             </div>
         </div>
         <div class="row">
