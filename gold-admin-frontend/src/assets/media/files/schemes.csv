@@ -1,2 +1,2 @@
-AmountStart,AmountEnd,InterestRateThirtyDaysMonthly,InterestRateNinetyDaysMonthly,InterestRateOneHundredEightyDaysMonthly,InterestRateThirtyDaysAnnually,InterestRateNinetyDaysAnnually,InterestRateOneHundredEightyDaysAnnually
-100000,200000,1.33,1.5,1.65,15.96,18,19.8
+schemeName,AmountStart,AmountEnd,InterestRateThirtyDaysMonthly,InterestRateNinetyDaysMonthly,InterestRateOneHundredEightyDaysMonthly
+Premium,100000,200000,1.33,1.5,1.65

@@ -26,6 +26,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() details;
   @Input() action
   @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
+  @Output() next: EventEmitter<any> = new EventEmitter();
+  @Output () totalAmt:EventEmitter<any> = new EventEmitter();
+
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -36,16 +39,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   width: number = 0
   ornamentsForm: FormGroup;
   images: any = [];
-  // karatArr = [{ value: 18, name: '18 K' },
-  // { value: 19, name: '19 K' },
-  // { value: 20, name: '20 K' },
-  // { value: 21, name: '21 K' },
-  // { value: 22, name: '22 K' }]
   karatArr: any
   purityBasedDeduction: number;
   ltvPercent = [];
   url: string
   ornamentType = [];
+  totalAmount = 0;
   constructor(
     public fb: FormBuilder,
     public sharedService: SharedService,
@@ -122,15 +121,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.ornamentsForm.disable()
     }
     if (this.invalid) {
-      let array = this.OrnamentsData.controls
-      for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-        if (element.invalid) {
-          element.markAllAsTouched();
-          this.selected = index
-          return
-        }
-      }
+
       this.ornamentsForm.markAllAsTouched()
     }
   }
@@ -141,29 +132,43 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       const group = this.OrnamentsData.at(0) as FormGroup
       group.controls.currentLtvAmount.patchValue(this.goldRate)
     })
+
+    this.ornamentsForm.valueChanges.subscribe(()=>{
+      if (this.ornamentsForm.valid) {
+        this.totalAmount = 0;
+        this.OrnamentsData.value.forEach(element => {
+          this.totalAmount += Number(element.loanAmount)
+        });
+        this.totalAmount = Math.round(this.totalAmount)
+        this.totalAmt.emit(this.totalAmount)
+      }
+    })
+    
   }
   get OrnamentsData() {
     if (this.ornamentsForm)
       return this.ornamentsForm.controls.ornamentData as FormArray;
   }
 
-  weightCheck(index){
+  weightCheck(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
-    if(group.controls.grossWeight.valid){
-      if(Number(group.controls.grossWeight.value) < Number(group.controls.netWeight.value)){
-        group.controls.netWeight.setErrors({weight:true})
-      }else{
-        group.controls.netWeight.setErrors(null)
+    if (group.controls.grossWeight.valid) {
+      if (Number(group.controls.grossWeight.value) < Number(group.controls.deductionWeight.value)) {
+        group.controls.deductionWeight.setErrors({ weight: true })
+      } else {
+        group.controls.deductionWeight.setErrors(null)
       }
     }
   }
 
   calcGoldDeductionWeight(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
-    if (group.controls.grossWeight.valid && group.controls.netWeight.valid) {
-      const deductionWeight = group.controls.grossWeight.value - group.controls.netWeight.value;
-      group.controls.deductionWeight.patchValue(deductionWeight.toFixed(2));
-      this.finalNetWeight(index)
+    if (group.controls.grossWeight.valid && group.controls.deductionWeight.valid
+      && group.controls.grossWeight.value && group.controls.deductionWeight.value) {
+      const deductionWeight = Number(group.controls.grossWeight.value) - Number(group.controls.deductionWeight.value);
+      group.controls.netWeight.patchValue(deductionWeight.toFixed(2));
+      // this.finalNetWeight(index)
+      this.calculateLtvAmount(index)
     }
   }
 
@@ -191,18 +196,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.OrnamentsData.push(this.fb.group({
       ornamentType: [, Validators.required],
       quantity: [, Validators.required],
-      grossWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      grossWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      deductionWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ornamentImage: [, Validators.required],
       weightMachineZeroWeight: [, Validators.required],
       withOrnamentWeight: [, Validators.required],
       stoneTouch: [, Validators.required],
       acidTest: [, Validators.required],
       karat: ['', Validators.required],
-      purity: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ltvRange: [[]],
-      finalNetWeight: [''],
       purityTest: [[], Validators.required],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
@@ -234,42 +237,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       return kart.karat == controls.controls.karat.value
     })
     controls.controls.ltvRange.patchValue(karat[0].range)
-    // switch (controls.controls.karat.value) {
-    //   case '18':
-    //     this.ltvPercent = ['75', '76', '77', '78', '79'];
-    //     controls.controls.ltvRange.patchValue(this.ltvPercent)
-    //     this.purityBasedDeduction = 7.5;
-    //     controls.controls.purity.patchValue(this.purityBasedDeduction);
-    //     break;
-    //   case '19':
-    //     this.ltvPercent = ['80', '81', '82', '83', '84'];
-    //     controls.controls.ltvRange.patchValue(this.ltvPercent)
-    //     this.purityBasedDeduction = 5;
-    //     controls.controls.purity.patchValue(this.purityBasedDeduction);
-    //     break;
-    //   case '20':
-    //     this.ltvPercent = ['85', '86', '87', '88', '89'];
-    //     controls.controls.ltvRange.patchValue(this.ltvPercent)
-    //     this.purityBasedDeduction = 2;
-    //     controls.controls.purity.patchValue(this.purityBasedDeduction);
-    //     break;
-    //   case '21':
-    //     this.ltvPercent = ['90', '91', '92', '93', '94'];
-    //     controls.controls.ltvRange.patchValue(this.ltvPercent)
-    //     this.purityBasedDeduction = 1.5;
-    //     controls.controls.purity.patchValue(this.purityBasedDeduction);
-    //     break;
-    //   case '22':
-    //     this.ltvPercent = ['95', '96', '97', '98', '99', '100'];
-    //     controls.controls.ltvRange.patchValue(this.ltvPercent)
-    //     this.purityBasedDeduction = 1;
-    //     controls.controls.purity.patchValue(this.purityBasedDeduction);
-    //     break;
-    //   default:
-    //     break;
-    // }
+
     this.ref.detectChanges()
-    this.finalNetWeight(index)
   }
 
   uploadFile(index, event, string, ) {
@@ -397,12 +366,28 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   calculateLtvAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
-    if (controls.controls.finalNetWeight.valid && controls.controls.purity.valid
-      && controls.controls.ltvPercent.valid) {
+    if (controls.controls.ltvPercent.valid) {
       let ltvPercent = controls.controls.ltvPercent.value
       let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
       controls.controls.ltvAmount.patchValue(ltv)
-      controls.controls.loanAmount.patchValue((ltv * controls.controls.finalNetWeight.value).toFixed(2))
+      controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
     }
   }
+
+  nextAction() {
+    if (this.ornamentsForm.invalid) {
+      let array = this.OrnamentsData.controls
+      for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if (element.invalid) {
+          element.markAllAsTouched();
+          this.selected = index
+          return
+        }
+      }
+      return
+    }
+    this.next.emit(3)
+  }
+
 }

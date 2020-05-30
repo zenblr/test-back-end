@@ -177,7 +177,6 @@ const routes: Routes = [
 		MerchantListComponent,
 		InternalUserListComponent,
 		AddInternalUserComponent,
-		AddAppraiserComponent,
 		AppraiserListComponent,
 		ViewMerchantComponent,
 		ApiKeyComponent,

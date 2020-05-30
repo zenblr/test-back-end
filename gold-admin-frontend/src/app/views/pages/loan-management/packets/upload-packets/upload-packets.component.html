@@ -89,7 +89,7 @@
 </mat-tab-group>
 <div class="addMore">
     <div class="row" *ngIf="url != 'view-loan'">
-        <div class="col-8">
+        <div class="col-7">
             <select class="packet-dropdown" class="form-control packet-dropdown" [formControl]="packetId"
                 [class.isError]="packetId.invalid && packetId.touched" >
                 <option value="" [selected]="true">Select Packet</option>
@@ -102,7 +102,7 @@
                 </small>
             </mat-error>
         </div>
-        <div class="col-4">
+        <div class="col-4  offset-1">
             <kt-button [value]="'ADD'" [type]="'button'" (click)="addmore()"></kt-button>
         </div>
     </div>

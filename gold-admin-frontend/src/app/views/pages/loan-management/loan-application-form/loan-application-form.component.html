@@ -4,62 +4,51 @@
             <div class="col-12">
                 <mat-tab-group [(selectedIndex)]="selected">
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
-                        <kt-basic-details (basicFormEmit)="basicForm($event)" [action]="action" [details]="customerDetail" [disable]="disabledForm" [invalid]="invalid.basic" 
-                        (apiHit)="customerDetails($event)">
+                        <kt-basic-details (basicFormEmit)="basicForm($event)" [action]="action"
+                            [details]="customerDetail" [disable]="disabledForm" [invalid]="invalid.basic"
+                            (apiHit)="customerDetails($event)" (next)="next($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <!-- <mat-tab label="KYC Details" [disabled]="disabled[1]">
                         <kt-kyc-details (kycEmit)="kycEmit($event)" [action]="action" [details]="customerDetail"  [disable]="disabledForm"></kt-kyc-details>
                     </mat-tab> -->
-                    <mat-tab label="Bank Details" [disabled]="disabled[1]">
-                        <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [action]="action" [details]="customerDetail"  [disable]="disabledForm">
-                        </kt-bank-details>
-                    </mat-tab>
-                    <mat-tab label="Nominee Details" [disabled]="disabled[2]">
-                        <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [action]="action" [invalid]="invalid.nominee"  [disable]="disabledForm" [details]="customerDetail">
+                    <mat-tab label="Nominee Details" >
+                        <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [action]="action" (next)="next($event)"
+                            [invalid]="invalid.nominee" [disable]="disabledForm" [details]="customerDetail">
                         </kt-nominee-details>
                     </mat-tab>
-                    <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">
-                        <kt-interest-calculator (interestFormEmit)="interestFormEmit($event)" (nextEmit)="next($event)"
-                            [invalid]="invalid.intreset"  [disable]="disabledForm" [action]="action" [totalAmt]="totalAmount" [details]="customerDetail"></kt-interest-calculator>
+                    <mat-tab label="Ornaments">
+                        <!-- <ng-template > -->
+                            <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0" style="padding:0px !important">
+                                <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [action]="action"
+                                [invalid]="invalid.ornaments" [disable]="disabledForm" [details]="customerDetail" (totalAmt)="total($event)">
+                            </kt-ornaments>
+                            </div>
+                        <!-- </ng-template> -->
                     </mat-tab>
-                    <mat-tab label="Approval" [disabled]="disabled[4]">
-                        <kt-approval (apply)="apply()" (approvalFormEmit)="approvalFormEmit($event)" [action]="action" [invalid]="invalid.approval"  [disable]="disabledForm" [details]="customerDetail">
+                    <mat-tab label="Final Interest Calculator" >
+                        <kt-interest-calculator (interestFormEmit)="interestFormEmit($event)" (nextEmit)="next($event)"
+                            [invalid]="invalid.intreset" [disable]="disabledForm" [action]="action"
+                            [totalAmt]="totalAmount" [details]="customerDetail"></kt-interest-calculator>
+                    </mat-tab>
+                    <mat-tab label="Bank Details" >
+                        <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [action]="action"
+                            [details]="customerDetail" [disable]="disabledForm">
+                        </kt-bank-details>
+                    </mat-tab>
+                    <mat-tab label="Loan Status Approval" >
+                        <kt-approval (apply)="apply()" (approvalFormEmit)="approvalFormEmit($event)" [action]="action"
+                            [invalid]="invalid.approval" [disable]="disabledForm" [details]="customerDetail">
                         </kt-approval>
                     </mat-tab>
+                    <mat-tab label = "Packets" *ngIf="url == 'package-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)">
+                        <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0" style="padding:0px !important">
+                            <div class="col packets-height">
+                                <kt-upload-packets [viewpacketsDetails]="customerDetail"></kt-upload-packets>
+                            </div>
+                        </div>
+                    </mat-tab>
                 </mat-tab-group>
-            </div>
-        </div>
-        <div class="row" id="ornaments">
-            <div class="col">
-                <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [action]="action" [invalid]="invalid.ornaments"  [disable]="disabledForm" [details]="customerDetail">
-                </kt-ornaments>
-            </div>
-
-        </div>
-        <div class="row kt-margin-t-10">
-            <div class="col-12">
-                <mat-divider></mat-divider>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-12 py-2">
-                <h3 class="text-gray text-center ">
-                    <b>
-                        Total Eligible Amount <span class="currency"> {{totalAmount | currency:'INR'}}</span> 
-                    </b>  
-                </h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 kt-margin-b-10">
-                <mat-divider></mat-divider>
-            </div>
-        </div>
-       
-        <div class="row " id="packets" *ngIf="url == 'package-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)">
-            <div class="col packets-height" >
-                <kt-upload-packets [viewpacketsDetails]="customerDetail"></kt-upload-packets>
             </div>
         </div>
     </kt-portlet-body>

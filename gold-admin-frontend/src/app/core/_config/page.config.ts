@@ -80,6 +80,9 @@ export class PageConfig {
 			},
 			roles: {
 				page: { title: "Roles", desc: "" },
+				id: {
+					page: { title: "Permissions", desc: "" }
+				}
 			},
 		},
 		"lead-management": {
@@ -186,6 +189,11 @@ export class PageConfig {
 			},
 			"applied-loan": {
 				page: { title: "Applied Loan", desc: "" },
+			},
+			"package-image-upload":{
+				id:{
+					page: { title: "PACKET IMAGE UPLOAD", desc: "" },
+				}
 			},
 		},
 	};

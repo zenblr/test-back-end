@@ -63,11 +63,6 @@ exports.customerDetails = async (req, res, next) => {
                 model: models.addressProofType,
                 as: 'addressProofType'
             }]
-        }, {
-            model: models.customerKycBankDetail,
-            // where: { isActive: true },
-            as: 'customerKycBank',
-            attributes: ['id', 'bankName', 'bankBranchName', 'accountNumber', 'ifscCode', 'accountType', 'accountHolderName', 'passbookProof']
         }]
     }
     )
@@ -86,7 +81,7 @@ exports.applyForLoanApplication = async (req, res, next) => {
 
     let { customerId, totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanBank, loanOrnmanets, loanFinalCalculator, loanPersonal, loanKyc, loanNominee } = req.body
 
-    let checkKycStatus = await models.customerKyc.findOne({ where: { customerId, kycStatus: "approved" } })
+    let checkKycStatus = await models.customer.findOne({ where: { id: customerId, kycStatus: "approved" } })
     if (check.isEmpty(checkKycStatus)) {
         return res.status(400).json({ message: `customer Kyc status is not approved` })
     }
@@ -433,6 +428,13 @@ exports.appliedLoanDetails = async (req, res, next) => {
 
         isActive: true
     };
+    let internalBranchId = req.userData.internalBranchId
+    let internalBranchWhere;
+    if (req.userData.userTypeId != 4) {
+        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    } else {
+        internalBranchWhere = { isActive: true }
+    }
 
     let associateModel = [{
         model: models.loanStage,
@@ -441,8 +443,8 @@ exports.appliedLoanDetails = async (req, res, next) => {
     }, {
         model: models.customer,
         as: 'customer',
-        where: { isActive: true },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId', 'mobileNumber']
+        where: internalBranchWhere,
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId']
     },
     {
         model: models.customerFinalLoan,
@@ -587,12 +589,19 @@ exports.getLoanDetails = async (req, res, next) => {
         isActive: true,
         loanStageId: stageId.id
     };
+    let internalBranchId = req.userData.internalBranchId
+    let internalBranchWhere;
+    if (req.userData.userTypeId != 4) {
+        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    } else {
+        internalBranchWhere = { isActive: true }
+    }
 
     let associateModel = [{
         model: models.customer,
         as: 'customer',
-        where: { isActive: true },
-        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+        where: internalBranchWhere,
+        attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
     },
     {
         model: models.customerFinalLoan,

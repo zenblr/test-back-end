@@ -11,25 +11,15 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_kyc_id',
             allowNull: false
         },
-        behaviourRatingCce: {
+        kycRatingFromCce: {
             type: DataTypes.INTEGER,
-            field: 'behaviour_rating_cce',
-            allowNull: false
-        },
-        idProofRatingCce: {
-            type: DataTypes.INTEGER,
-            field: 'id_proof_rating_cce',
-            allowNull: false
-        },
-        addressProofRatingCce: {
-            type: DataTypes.INTEGER,
-            field: 'address_proof_rating_cce',
+            field: 'kyc_rating_from_cce',
             allowNull: false
         },
         kycStatusFromCce: {
             type: DataTypes.ENUM,
             field: 'kyc_status_from_cce',
-            values: ['approved', 'pending', 'rejected'],
+            values: ['approved', 'pending', 'incomplete', 'rejected'],
             allowNull: false
         },
         reasonFromCce: {
@@ -41,25 +31,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'cce_id',
             allowNull: false
         },
-        behaviourRatingVerifiedByBm: {
-            type: DataTypes.BOOLEAN,
-            field: 'behaviour_rating_verified_by_bm',
-            defaultValue: false
-        },
-        idProofRatingVerifiedByBm: {
-            type: DataTypes.BOOLEAN,
-            field: 'id_proof_rating_verified_by_bm',
-            defaultValue: false
-        },
-        addressProofRatingVerifiedBm: {
-            type: DataTypes.BOOLEAN,
-            field: 'address_proof_rating_verified_by_bm',
-            defaultValue: false
-        },
         kycStatusFromBm: {
             type: DataTypes.ENUM,
             field: 'kyc_status_from_bm',
-            values: ['approved', 'pending', 'rejected'],
+            values: ['approved', 'pending', 'incomplete', 'rejected'],
             defaultValue: "pending"
         },
         reasonFromBm: {
@@ -70,7 +45,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'branch_manager_id',
         },
-
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true
+        }
 
     }, {
         freezeTableName: true,
@@ -86,10 +73,10 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'cceId', as: 'cceInfo' });
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'branchManagerId', as: 'branchManagerInfo' });
 
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'behaviourRatingCce', as: 'behaviourCce' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'idProofRatingCce', as: 'idProofCce' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'addressProofRatingCce', as: 'addressProofCce' });
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'kycRatingFromCce', as: 'KycRatingFromCce' });
 
+        CustomerKycClassification.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerKycClassification.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     return CustomerKycClassification;

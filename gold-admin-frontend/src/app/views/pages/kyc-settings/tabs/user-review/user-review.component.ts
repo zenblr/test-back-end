@@ -147,6 +147,7 @@ export class UserReviewComponent implements OnInit {
 
   data: any = {};
   viewOnly = true;
+  userType: any;
 
 
   constructor(private userAddressService:
@@ -162,8 +163,11 @@ export class UserReviewComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public modalData: any,
     private ele: ElementRef
   ) {
+    let res = this.sharedService.getDataFromStorage();
+    this.userType = res.userDetails.userTypeId;
+
     if (this.modalData.action) {
-      console.log(this.data)
+      console.log(this.data);
       this.viewOnly = false;
     }
   }
@@ -183,12 +187,11 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.initForm();
-    if (!this.viewOnly) {
+    if (!this.viewOnly || this.userType == 5) {
       this.reviewForm.disable();
       this.customerKycPersonal.disable();
       this.customerKycAddressOne.disable();
       this.customerKycAddressTwo.disable();
-      this.customerKycBank.disable();
 
     }
     this.getStates();
@@ -280,7 +283,7 @@ export class UserReviewComponent implements OnInit {
 
   public calculateAge(dateOfBirth: any) {
     const today = new Date();
-    const birthDate = new Date(dateOfBirth.value);
+    const birthDate = new Date(dateOfBirth);
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
 
@@ -289,7 +292,18 @@ export class UserReviewComponent implements OnInit {
     }
 
     this.customerKycPersonal.controls.age.patchValue(age)
-    // this.controls.age.patchValue(age);
+  }
+
+  ageValidation() {
+    if (this.customerKycPersonal.controls.gender.value) {
+      if (this.customerKycPersonal.controls.gender.value == 'm') {
+        this.customerKycPersonal.controls.age.setValidators(Validators.pattern('^0*(2[1-9]|[3-9][0-9]|100)$'))
+      } else {
+        this.customerKycPersonal.controls.age.setValidators(Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$'))
+      }
+      this.customerKycPersonal.controls.age.markAsTouched()
+      this.calculateAge(this.customerKycPersonal.controls.dateOfBirth.value)
+    }
   }
 
   submit() {
@@ -390,6 +404,9 @@ export class UserReviewComponent implements OnInit {
 
   removeImages(index, type) {
     // console.log(index, type)
+    if (this.userType == 5) {
+      return;
+    }
     if (type == 'identityProof') {
       this.data.customerKycReview.customerKycPersonal.identityProof.splice(index, 1)
       this.reviewForm.patchValue({ identityProofFileName: '' });
@@ -406,6 +423,9 @@ export class UserReviewComponent implements OnInit {
   }
 
   getFileInfo(event, type: any) {
+    if (this.userType == 5) {
+      return;
+    }
     this.file = event.target.files[0];
     // console.log(type);
     // console.log(this.addressControls)

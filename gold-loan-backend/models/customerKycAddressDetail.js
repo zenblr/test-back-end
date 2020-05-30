@@ -47,6 +47,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'address_proof_number',
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true
+        }
 
     }, {
         freezeTableName: true,
@@ -65,6 +78,9 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKycAddressDetail.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
         CustomerKycAddressDetail.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
+
+        CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });        
     }
 
 
