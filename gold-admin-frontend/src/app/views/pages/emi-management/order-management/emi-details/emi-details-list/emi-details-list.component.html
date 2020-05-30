@@ -78,8 +78,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiAmount">
-                    <mat-header-cell *matHeaderCellDef>EMI Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.emiAmount ? element?.emiAmount : '-'}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">EMI Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                        {{element?.emiAmount ? element?.emiAmount : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiPaidDate">
                     <mat-header-cell *matHeaderCellDef>EMI Paid Date</mat-header-cell>

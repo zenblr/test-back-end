@@ -14,7 +14,7 @@
                                 <option value="" [selected]="true" [disabled]="true">Select Report</option>
                                 <ng-container *ngFor="let item of reportTypes">
                                     <option *ngIf="item?.permission" [value]="item.id">
-                                        {{item.name | titlecase}}</option>
+                                        {{item.name}}</option>
                                 </ng-container>
                             </select>
                             <div *ngIf="controls.reportType.touched && controls.reportType.invalid">
@@ -60,7 +60,7 @@
                             <input type="text" class="form-control" [matDatepicker]="pickerStartDate"
                                 (click)="pickerStartDate.open()" formControlName="startDate"
                                 [class.isError]="controls.startDate.touched && controls.startDate.invalid" readonly
-                                placeholder="4/5/2020" [max]="minDate">
+                                placeholder="4/5/2020">
                             <mat-datepicker #pickerStartDate></mat-datepicker>
                             <mat-error *ngIf="controls.startDate.errors?.required && controls.startDate.touched">
                                 Field is required
@@ -75,7 +75,7 @@
                             <input type="text" class="form-control" [matDatepicker]="pickerEndDate"
                                 (click)="pickerEndDate.open()" formControlName="endDate"
                                 [class.isError]="controls.endDate.touched && controls.endDate.invalid" readonly
-                                placeholder="4/5/2020" [max]="minDate" [min]="controls.startDate.value"
+                                placeholder="4/5/2020" [min]="controls.startDate.value"
                                 [disabled]="!controls.startDate.value">
                             <mat-datepicker #pickerEndDate></mat-datepicker>
                             <mat-error *ngIf="controls.endDate.errors?.required && controls.endDate.touched">

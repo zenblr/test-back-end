@@ -77,22 +77,26 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="totalPrice">
-                    <mat-header-cell *matHeaderCellDef>Total Price</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.totalPrice ? element?.totalPrice : '-'}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Total Price</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                        {{element?.totalPrice ? element?.totalPrice : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="cancellationCharges">
-                    <mat-header-cell *matHeaderCellDef>Cancellation Charges</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Cancellation Charges
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
                         {{element?.cancellationCharges ? element?.cancellationCharges : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="differenceAmount">
-                    <mat-header-cell *matHeaderCellDef>Difference Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.diffrenceAmount ? element?.diffrenceAmount : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">Difference Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
+                        {{element?.diffrenceAmount ? element?.diffrenceAmount : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiAmount">
-                    <mat-header-cell *matHeaderCellDef>EMI Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="d-flex justify-content-end">EMI Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="d-flex justify-content-end">
                         {{element?.order?.orderdetails[0]?.emiAmount ? element?.order?.orderdetails[0]?.emiAmount : '-'}}
                     </mat-cell>
                 </ng-container>
