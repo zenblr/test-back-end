@@ -101,6 +101,9 @@ export class PermissionsComponent implements OnInit {
       permission.isSelected = false
       var findIndex = this.selectedPermission.indexOf(permission.id)
       this.selectedPermission.splice(findIndex, 1)
+      if(permission.actionName == 'view'){
+        this.toogleChange(event, moduleIndex, entityIndex)
+      }
     }
     console.log(this.selectedPermission)
   }

@@ -15,7 +15,7 @@ import {
 } from "../../../../../../core/emi-management/order-management";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { EmiDetailsViewComponent } from "../emi-details-view/emi-details-view.component";
-import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { SharedService } from "../../../../../../core/shared/services/shared.service";
 
 @Component({
 	selector: "kt-emi-details-list",
@@ -47,8 +47,8 @@ export class EmiDetailsListComponent implements OnInit {
 	private unsubscribeSearch$ = new Subject();
 	searchValue = "";
 	emiData = {
-		from: 0,
-		to: 0,
+		from: 1,
+		to: 25,
 		search: "",
 		orderemistatus: "",
 	};
@@ -59,7 +59,7 @@ export class EmiDetailsListComponent implements OnInit {
 		private layoutUtilsService: LayoutUtilsService,
 		private emiDetailsService: EmiDetailsService,
 		private dataTableService: DataTableService,
-		private sharedService: SharedService,
+		private sharedService: SharedService
 	) {
 		this.emiDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -160,7 +160,7 @@ export class EmiDetailsListComponent implements OnInit {
 
 	viewOrder(order) {
 		const dialogRef = this.dialog.open(EmiDetailsViewComponent, {
-			data: { order: order, action: "view" },
+			data: { orderId: order, action: "view" },
 			width: "500px",
 		});
 		dialogRef.afterClosed().subscribe((res) => {
@@ -170,7 +170,9 @@ export class EmiDetailsListComponent implements OnInit {
 		});
 	}
 
-	printCancellationReceipt(order) { }
+	printCancellationReceipt(emi) {
+		this.emiDetailsService.emiReceipt(emi.id).subscribe();
+	}
 
 	downloadReport() {
 		this.emiDetailsService.reportExport().subscribe();
@@ -182,7 +184,7 @@ export class EmiDetailsListComponent implements OnInit {
 		this.emiData.orderemistatus = data.filterData.multiSelect1;
 		this.dataSource.loadEmiDetails(this.emiData);
 	}
-	
+
 	/**
 	 * On Destroy
 	 */

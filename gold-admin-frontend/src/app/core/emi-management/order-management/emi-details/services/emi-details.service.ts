@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
-import { ExcelService } from "../../../../_base/crud/services/excel.service";
+import { ExcelService, PdfService } from "../../../../_base/crud";
 
 @Injectable({
 	providedIn: "root",
@@ -14,7 +14,11 @@ export class EmiDetailsService {
 	applyFilter = new BehaviorSubject<any>({});
 	applyFilter$ = this.applyFilter.asObservable();
 
-	constructor(private http: HttpClient, private excelService: ExcelService) {}
+	constructor(
+		private http: HttpClient,
+		private excelService: ExcelService,
+		private pdfService: PdfService
+	) { }
 
 	getAllEmiDetails(event?: any): Observable<any> {
 		const reqParams: any = {};
@@ -35,6 +39,11 @@ export class EmiDetailsService {
 		});
 	}
 
+	getEmiDetails(id): Observable<any> {
+		return this.http
+			.get(`http://173.249.49.7:9120/api/emi-details/${id}`);
+	}
+
 	reportExport(): Observable<any> {
 		return this.http
 			.get(`http://173.249.49.7:9120/api/emi-details/emi-report`, {
@@ -46,7 +55,34 @@ export class EmiDetailsService {
 				}),
 				tap(
 					(data) => {
-						this.excelService.saveAsExcelFile(data, "EMIReport_" + Date.now());
+						this.excelService.saveAsExcelFile(
+							data,
+							"EMIReport_" + Date.now()
+						);
+					},
+					(error) => console.log(error)
+				),
+				catchError((err) => {
+					return null;
+				})
+			);
+	}
+
+	emiReceipt(id): Observable<any> {
+		return this.http
+			.get(`http://173.249.49.7:9120/api/order/emi-receipt/${id}`, {
+				responseType: "arraybuffer",
+			})
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				tap(
+					(data) => {
+						this.pdfService.saveAsPdfFile(
+							data,
+							"EmiReceipt_" + Date.now()
+						);
 					},
 					(error) => console.log(error)
 				),

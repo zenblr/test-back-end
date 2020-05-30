@@ -24,7 +24,7 @@ import {
 } from "rxjs/operators";
 import { ToastrComponent } from "../../../../../../views/partials/components/toastr/toastr.component";
 import { DataTableService } from "../../../../../../core/shared/services/data-table.service";
-import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { SharedService } from "../../../../../../core/shared/services/shared.service";
 
 @Component({
 	selector: "kt-deposit-details-list",
@@ -69,21 +69,21 @@ export class DepositDetailsListComponent implements OnInit {
 	private unsubscribeSearch$ = new Subject();
 	searchValue = "";
 	depositData = {
-		from: 0,
-		to: 0,
+		from: 1,
+		to: 25,
 		search: "",
 		paymentRecievedDate: "",
 		paymentType: "",
 		orderCurrentStatus: "",
 	};
-	
+
 	constructor(
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
 		private depositDetailsService: DepositDetailsService,
 		private dataTableService: DataTableService,
-		private sharedService: SharedService,
+		private sharedService: SharedService
 	) {
 		this.depositDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -163,7 +163,7 @@ export class DepositDetailsListComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-			this.paginator.length / this.paginator.pageSize
+				this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -192,13 +192,7 @@ export class DepositDetailsListComponent implements OnInit {
 	applyFilter(data) {
 		console.log(data);
 		this.depositData.paymentType = data.filterData.multiSelect1;
-		if (data.filterData.startDate) {
-			let d = new Date(data.filterData.startDate);
-			let n = d.toISOString();
-			this.depositData.paymentRecievedDate = n;
-		} else {
-			this.depositData.paymentRecievedDate = "";
-		}
+		this.depositData.paymentRecievedDate = data.filterData.startDate;
 		this.depositData.orderCurrentStatus = data.filterData.multiSelect2;
 		this.dataSource.loadDepositDetails(this.depositData);
 	}

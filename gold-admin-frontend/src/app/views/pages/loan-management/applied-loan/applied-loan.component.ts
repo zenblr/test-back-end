@@ -17,7 +17,7 @@ export class AppliedLoanComponent implements OnInit {
 
   userType: any
   dataSource: AppliedLoanDatasource;
-  displayedColumns = ['fullName', 'customerID', 'mobile', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions', 'view'];
+  displayedColumns = ['fullName', 'customerID', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields

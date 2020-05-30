@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UploadOfferService } from '../../../../../../core/upload-data';
+import { GoldRateService } from '../../../../../../core/upload-data/gold-rate/gold-rate.service';
 
 @Component({
   selector: 'kt-rough-loan-amount',
@@ -12,13 +13,13 @@ export class RoughLoanAmountComponent implements OnInit {
   roughLoanForm: FormGroup;
   loanAmount: number = 0;
 
-  constructor(public fb: FormBuilder, private uploadOfferService: UploadOfferService) {
+  constructor(public fb: FormBuilder, private goldRateService: GoldRateService) {
 
   }
 
   ngOnInit() {
     this.initForm();
-    this.uploadOfferService.goldRate$.subscribe(res => {
+    this.goldRateService.goldRate$.subscribe(res => {
       this.controls.currentLTV.patchValue(res * 0.75);
     })
   }
@@ -41,10 +42,10 @@ export class RoughLoanAmountComponent implements OnInit {
 
   weightCheck() {
     if (this.controls.grossWeight.valid) {
-      if (this.controls.grossWeight.value < this.controls.netWeight.value) {
-        this.controls.netWeight.setErrors({ weight: true })
+      if (this.controls.grossWeight.value < this.controls.deductionWeight.value) {
+        this.controls.deductionWeight.setErrors({ weight: true })
       } else {
-        this.controls.netWeight.setErrors(null)
+        this.controls.deductionWeight.setErrors(null)
       }
     }
   }
@@ -59,9 +60,9 @@ export class RoughLoanAmountComponent implements OnInit {
   }
 
   calcGoldDeductionWeight() {
-    if (this.controls.grossWeight.valid && this.controls.netWeight.valid) {
-      const deductionWeight = this.controls.grossWeight.value - this.controls.netWeight.value;
-      this.controls.deductionWeight.patchValue(deductionWeight);
+    if (this.controls.grossWeight.value && this.controls.deductionWeight.value) {
+      const netWeight = this.controls.grossWeight.value - this.controls.deductionWeight.value;
+      this.controls.netWeight.patchValue(netWeight.toFixed());
       // console.log(goldDeductionWeight)
     }
   }

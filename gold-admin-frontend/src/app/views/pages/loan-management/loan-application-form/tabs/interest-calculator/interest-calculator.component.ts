@@ -28,7 +28,7 @@ export class InterestCalculatorComponent implements OnInit {
   selectedScheme: any = []
   finalInterestForm: FormGroup;
   @Input() invalid;
-  @Input() totalAmt
+  @Input() totalAmt=0;
   @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() nextEmit: EventEmitter<any> = new EventEmitter<any>();
   @Input() action;

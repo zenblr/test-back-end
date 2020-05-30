@@ -46,6 +46,9 @@ export class PageConfig {
 			"upload-lender-banner": {
 				page: { title: "Lender Partner Banner", desc: "" },
 			},
+			"gold-rate": {
+				page: { title: "Gold Rate", desc: "" },
+			},
 		},
 		"user-management": {
 			partner: {
@@ -77,6 +80,9 @@ export class PageConfig {
 			},
 			roles: {
 				page: { title: "Roles", desc: "" },
+				id: {
+					page: { title: "Permissions", desc: "" }
+				}
 			},
 		},
 		"lead-management": {
@@ -95,7 +101,7 @@ export class PageConfig {
 		},
 		"emi-management": {
 			products: {
-				page: { title: "Show Poducts", desc: "" },
+				page: { title: "Show Products", desc: "" },
 			},
 			category: {
 				page: { title: "Category", desc: "" },
@@ -149,8 +155,8 @@ export class PageConfig {
 					},
 				},
 			},
-			users: {
-				page: { title: "Users", desc: "" },
+			customers: {
+				page: { title: "Customers", desc: "" },
 			},
 			reports: {
 				page: { title: "Reports", desc: "" },
@@ -183,6 +189,11 @@ export class PageConfig {
 			},
 			"applied-loan": {
 				page: { title: "Applied Loan", desc: "" },
+			},
+			"package-image-upload":{
+				id:{
+					page: { title: "PACKET IMAGE UPLOAD", desc: "" },
+				}
 			},
 		},
 	};

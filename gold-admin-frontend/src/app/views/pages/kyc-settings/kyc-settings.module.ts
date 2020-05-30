@@ -20,7 +20,8 @@ import { UserAddressComponent } from './tabs/user-address/user-address.component
 import { UserPersonalComponent } from './tabs/user-personal/user-personal.component';
 import { UserBanksComponent } from './tabs/user-banks/user-banks.component';
 import { UserReviewComponent } from './tabs/user-review/user-review.component';
-
+import { WebcamModule } from "ngx-webcam";
+import { WebcamDialogComponent } from './webcam-dialog/webcam-dialog.component';
 
 const rout: Routes = [
   {
@@ -40,6 +41,7 @@ const rout: Routes = [
     UserAddressComponent,
     UserPersonalComponent,
     UserBanksComponent,
+    WebcamDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -49,7 +51,8 @@ const rout: Routes = [
     RouterModule.forChild(rout),
     NgbModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    WebcamModule
   ],
   providers: [
     InterceptService,
@@ -73,5 +76,8 @@ const rout: Routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
+  entryComponents:[
+    WebcamDialogComponent
+  ]
 })
 export class KycSettingsModule { }
