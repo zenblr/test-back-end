@@ -97,7 +97,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="appraiserName">
-                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Appraiser Name</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <span *ngIf="role.customer.customerAssignAppraiser">
                             {{role.customer.customerAssignAppraiser.appraiser.firstName | titlecase}}&nbsp;{{role.customer.customerAssignAppraiser.appraiser.lastName | titlecase}}
@@ -106,7 +106,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">
-                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Cutomer ID</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <span *ngIf="role.customer.customerAssignAppraiser">
                             {{role.customer.customerAssignAppraiser.customerUniqueId | uppercase}}
