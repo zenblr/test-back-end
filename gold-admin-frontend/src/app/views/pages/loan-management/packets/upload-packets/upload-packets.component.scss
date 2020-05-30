@@ -7,6 +7,7 @@
         min-width: 130px !important;
         padding: 0 !important;
     }
+   
     // select{
     //     -webkit-appearance: none !important;
     //     -moz-appearance: none !important;
@@ -15,7 +16,7 @@
     .addMore{
         width: 40%;
         position: absolute;
-		top: 10px;
+		top: 20px;
     }
 	.addMore button {
 		background: transparent;
@@ -48,5 +49,9 @@
         position: absolute;
         top: 5px;
         right: 15px;
+    }
+    .save{
+        position: relative;
+        bottom: 75px;
     }
 }
