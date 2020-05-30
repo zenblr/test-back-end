@@ -92,19 +92,22 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="weight">
-                    <mat-header-cell *matHeaderCellDef>Weight</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['product.weight'] ? element['product.weight'] : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="align-right">Weight</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element['product.weight'] ? element['product.weight'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderTotalAmount">
-                    <mat-header-cell *matHeaderCellDef>Order Total Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Order Total Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element['orderdetails.finalOrderPrice'] ? element['orderdetails.finalOrderPrice'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderInitialAmount">
-                    <mat-header-cell *matHeaderCellDef>Order Initial Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Order Initial Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element['orderdetails.initialPayment'] ? element['orderdetails.initialPayment'] : '-'}}
                     </mat-cell>
                 </ng-container>
@@ -124,8 +127,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderQty">
-                    <mat-header-cell *matHeaderCellDef>Order Qty</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['quantity'] ? element['quantity'] : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="align-right">Order Qty</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element['quantity'] ? element['quantity'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="invoiceNo">
@@ -161,7 +165,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 240%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 240%;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 240%;"></mat-row>
             </mat-table>

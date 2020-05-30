@@ -34,7 +34,7 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false, true, true, true, true, true];
+  disabled = [false,true, true, true, true];
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
@@ -53,7 +53,7 @@ export class LoanApplicationFormComponent implements OnInit {
         this.action = 'edit'
         this.customerDetail = res.data
         this.totalAmount = res.data.totalEligibleAmt
-        this.selected = 5;
+        this.selected = 4;
       })
 
     }
@@ -81,11 +81,11 @@ export class LoanApplicationFormComponent implements OnInit {
         this.action = 'add'
         this.customerDetail = res.customerData
         for (let index = 0; index < this.disabled.length; index++) {
-          if (index <= 3) {
+          if (index <= 2) {
             this.disabled[index] = false;
           }
         }
-        this.selected = 3;
+        this.selected = 2;
       }),
       catchError(err => {
         this.toast.error(err.error.message)
@@ -124,9 +124,9 @@ export class LoanApplicationFormComponent implements OnInit {
     this.intreset = event
     this.invalid.intreset = false
     if (this.intreset.valid || this.intreset.status == "DISABLED") {
-      this.disabled[5] = false
+      this.disabled[4] = false
     } else {
-      this.disabled[5] = true;
+      this.disabled[4] = true;
     }
   }
 
@@ -140,11 +140,11 @@ export class LoanApplicationFormComponent implements OnInit {
     this.Ornaments = event
     this.invalid.ornaments = false
     if (this.Ornaments.valid || this.Ornaments.status == "DISABLED") {
-      this.disabled[4] = false
+      this.disabled[3] = false
       this.calculateTotalEligibleAmount()
 
     } else {
-      this.disabled[4] = true;
+      this.disabled[3] = true;
     }
     this.ref.detectChanges()
   }
@@ -154,7 +154,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.Ornaments.value.forEach(element => {
       this.totalAmount += Number(element.loanAmount)
     });
-
+    this.totalAmount = Math.round(this.totalAmount)
   }
 
   cancel() {
@@ -170,7 +170,7 @@ export class LoanApplicationFormComponent implements OnInit {
     }
 
     if (this.nominee.invalid) {
-      this.selected = 3;
+      this.selected = 2;
       this.invalid.nominee = true;
       window.scrollTo(0, 0)
       return true
@@ -182,14 +182,14 @@ export class LoanApplicationFormComponent implements OnInit {
       return true
     }
     if (this.intreset.invalid) {
-      this.selected = 4;
+      this.selected = 3;
       this.invalid.intreset = true;
       window.scrollTo(0, 0)
       return true
     }
 
     if (this.approval.invalid) {
-      this.selected = 5;
+      this.selected = 4;
       this.invalid.approval = true;
       window.scrollTo(0, 0)
       return true

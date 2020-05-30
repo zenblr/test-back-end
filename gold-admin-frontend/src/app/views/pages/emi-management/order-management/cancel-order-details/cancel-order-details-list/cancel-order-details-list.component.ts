@@ -186,15 +186,8 @@ export class CancelOrderDetailsListComponent implements OnInit {
 	}
 
 	applyFilter(data) {
-		console.log(data);
 		this.cancelData.merchantName = data.filterData.multiSelect1;
-		if (data.filterData.startDate) {
-			let d = new Date(data.filterData.startDate);
-			let n = d.toISOString();
-			this.cancelData.cancelDate = n;
-		} else {
-			this.cancelData.cancelDate = "";
-		}
+		this.cancelData.cancelDate = data.filterData.startDate;
 		this.dataSource.loadCancelOrderDetails(this.cancelData);
 	}
 

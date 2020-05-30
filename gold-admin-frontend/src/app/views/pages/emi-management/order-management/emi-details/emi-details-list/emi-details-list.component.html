@@ -78,8 +78,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiAmount">
-                    <mat-header-cell *matHeaderCellDef>EMI Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.emiAmount ? element?.emiAmount : '-'}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="align-right">EMI Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.emiAmount ? element?.emiAmount : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiPaidDate">
                     <mat-header-cell *matHeaderCellDef>EMI Paid Date</mat-header-cell>
@@ -111,7 +112,7 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element)"
+                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element.order.orderId)"
                                 class="kt-pointer"> View</div>
                             <div *ngxPermissionsOnly="['EMIDetailsView']"
                                 [ngStyle]="{'display':element.orderemistatus.id == 4 ? 'block':'none'}"
@@ -121,7 +122,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 150%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 150%;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 150%;"></mat-row>
             </mat-table>

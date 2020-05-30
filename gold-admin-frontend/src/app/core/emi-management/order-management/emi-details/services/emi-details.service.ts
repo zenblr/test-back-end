@@ -18,7 +18,7 @@ export class EmiDetailsService {
 		private http: HttpClient,
 		private excelService: ExcelService,
 		private pdfService: PdfService
-	) {}
+	) { }
 
 	getAllEmiDetails(event?: any): Observable<any> {
 		const reqParams: any = {};
@@ -37,6 +37,11 @@ export class EmiDetailsService {
 		return this.http.get<any>(`http://173.249.49.7:9120/api/emi-details`, {
 			params: reqParams,
 		});
+	}
+
+	getEmiDetails(id): Observable<any> {
+		return this.http
+			.get(`http://173.249.49.7:9120/api/emi-details/${id}`);
 	}
 
 	reportExport(): Observable<any> {

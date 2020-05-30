@@ -100,17 +100,21 @@ export class AddLeadComponent implements OnInit {
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
-      address: this.fb.array([])
+      comment:[''],
     });
     this.getCities()
   }
 
   setForm() {
-    if (this.data.action !== 'add') {
+    if (this.data.action == 'edit') {
       this.getLeadById(this.data['id']);
       this.modalTitle = 'Edit Lead'
       this.viewOnly = true;
-    } else {
+    }  else if (this.data.action == 'view'){
+      this.getLeadById(this.data['id']);
+      this.modalTitle = 'View Lead'
+      this.leadForm.disable()
+    }else {
       this.modalTitle = 'Add New Lead'
     }
   }
@@ -170,6 +174,8 @@ export class AddLeadComponent implements OnInit {
       this.toastr.errorToastr(error.error.message);
     });
   }
+
+  
 
   verifyOTP() {
     const params = {
@@ -269,6 +275,17 @@ export class AddLeadComponent implements OnInit {
       });
     }
 
+  }
+
+  commentBox(){
+    if(this.controls.statusId.value == 5){
+      this.controls.comment.setValidators(Validators.required)
+      this.controls.comment.updateValueAndValidity()
+    }else{
+      this.controls.comment.clearValidators()
+      this.controls.comment.markAsUntouched()
+      this.controls.comment.updateValueAndValidity()
+    }
   }
 
   closeModal() {

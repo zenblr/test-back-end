@@ -17,7 +17,7 @@ import { LeadService } from '../../../core/lead-management/services/lead.service
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kyc', 'actions'];
+  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kyc', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
@@ -121,8 +121,28 @@ export class LeadManagementComponent implements OnInit {
     });
   }
 
+
+  viewLead(role) {
+    const dialogRef = this.dialog.open(AddLeadComponent,
+      {
+        data: { id: role.id, action: 'view' },
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadLeadsPage();
+      }
+    });
+  }
+
   goToKyc(data) {
-    // console.log(data)
-    this.router.navigate(['/kyc-setting'], { queryParams: { mob: data } });
+    console.log(data)
+    var mobile = '';
+    this.leadService.getLeadById(data.id).pipe(
+      map(res => {
+        mobile = res.singleCustomer.mobileNumber
+        this.router.navigate(['/kyc-setting'], { queryParams: { mob: mobile } });
+      }))
+      .subscribe();
   }
 }

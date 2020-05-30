@@ -33,10 +33,10 @@ import {
 	EmiDetailsService,
 } from "../../../../core/emi-management/order-management";
 import { MonthlyService } from "../../../../core/repayment/services/monthly.service";
-import { UserDetailsService } from "../../../../core/emi-management/user-details";
+import { CustomerDetailsService } from "../../../../core/emi-management/customer-details";
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
-// import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
-// import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
+import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
+import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -105,15 +105,16 @@ export class TopbarComponent implements OnInit {
 		private depositDetailsService: DepositDetailsService,
 		private emiDetailsService: EmiDetailsService,
 		private monthlyService: MonthlyService,
-		private userDetailsService: UserDetailsService,
-		private leadService: LeadService
-	) // private emailAlertService: EmailAlertService,
-	// private smsAlertService: SmsAlertService
-	{
-		this.router.events.subscribe((val) => {
-			this.reset();
-			this.setTopbar(location.path());
-		});
+		private customerDetailsService: CustomerDetailsService,
+		private leadService: LeadService,
+		private emailAlertService: EmailAlertService,
+		private smsAlertService: SmsAlertService
+	) {
+
+		this.router.events.subscribe(val => {
+			this.reset()
+			this.setTopbar(location.path())
+		})
 
 		this.walletPriceService.download$
 			.pipe(takeUntil(this.destroy$))
@@ -395,7 +396,7 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = "350px";
 			this.listType = "emiStatus";
 		}
-		if (this.path == "users") {
+		if (this.path == "customers") {
 			this.showInput = true;
 			this.value1 = "Export";
 			this.type1 = "button";
@@ -501,12 +502,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "karat-details") {
 			this.karatDetailsService.openModal.next(true);
 		}
-		// if (this.path == "email-alert") {
-		// 	this.emailAlertService.openModal.next(true);
-		// }
-		// if (this.path == "sms-alert") {
-		// 	this.emailAlertService.openModal.next(true);
-		// }
+		if (this.path == "email-alert") {
+			this.emailAlertService.openModal.next(true);
+		}
+		if (this.path == "sms-alert") {
+			this.smsAlertService.openDialog.next(true);
+		}
 		if (this.path == "order-details") {
 			this.orderDetailsService.exportExcel.next(true);
 		}
@@ -519,8 +520,8 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "emi-details") {
 			this.emiDetailsService.exportExcel.next(true);
 		}
-		if (this.path == "users") {
-			this.userDetailsService.exportExcel.next(true);
+		if (this.path == "customers") {
+			this.customerDetailsService.exportExcel.next(true);
 		}
 	}
 
