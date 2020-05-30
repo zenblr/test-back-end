@@ -187,6 +187,11 @@ export class PageConfig {
 			"applied-loan": {
 				page: { title: "Applied Loan", desc: "" },
 			},
+			"package-image-upload":{
+				id:{
+					page: { title: "PACKET IMAGE UPLOAD", desc: "" },
+				}
+			},
 		},
 	};
 
