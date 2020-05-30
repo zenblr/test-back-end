@@ -21,7 +21,7 @@
                         <!-- <ng-template > -->
                             <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0" style="padding:0px !important">
                                 <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [action]="action"
-                                [invalid]="invalid.ornaments" [disable]="disabledForm" [details]="customerDetail">
+                                [invalid]="invalid.ornaments" [disable]="disabledForm" [details]="customerDetail" (totalAmt)="total($event)">
                             </kt-ornaments>
                             </div>
                         <!-- </ng-template> -->

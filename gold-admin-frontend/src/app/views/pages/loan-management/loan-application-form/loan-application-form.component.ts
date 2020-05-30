@@ -192,11 +192,12 @@ export class LoanApplicationFormComponent implements OnInit {
       return true
     }
 
-
-
-
-
   }
+
+  total(event){
+    this.totalAmount = event
+  }
+
   createData() {
     let Obj = {
       loanOrnmanets: this.Ornaments.value,

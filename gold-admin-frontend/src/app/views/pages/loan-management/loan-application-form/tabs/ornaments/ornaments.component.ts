@@ -27,6 +27,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() action
   @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
+  @Output () totalAmt:EventEmitter<any> = new EventEmitter();
+
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -37,11 +39,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   width: number = 0
   ornamentsForm: FormGroup;
   images: any = [];
-  // karatArr = [{ value: 18, name: '18 K' },
-  // { value: 19, name: '19 K' },
-  // { value: 20, name: '20 K' },
-  // { value: 21, name: '21 K' },
-  // { value: 22, name: '22 K' }]
   karatArr: any
   purityBasedDeduction: number;
   ltvPercent = [];
@@ -135,7 +132,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       const group = this.OrnamentsData.at(0) as FormGroup
       group.controls.currentLtvAmount.patchValue(this.goldRate)
     })
-    
+
     this.ornamentsForm.valueChanges.subscribe(()=>{
       if (this.ornamentsForm.valid) {
         this.totalAmount = 0;
@@ -143,6 +140,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           this.totalAmount += Number(element.loanAmount)
         });
         this.totalAmount = Math.round(this.totalAmount)
+        this.totalAmt.emit(this.totalAmount)
       }
     })
     

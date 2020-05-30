@@ -99,7 +99,7 @@
                             placeholder="0,00,000" (blur)="amountValidation()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
                         <mat-hint><small>Eligible Amount: <span class="currency">
-                                    {{totalAmount | currency:'INR':'symbol' : '1.0-0'}}</span> </small></mat-hint>
+                                    {{totalAmt | currency:'INR':'symbol' : '1.0-0'}}</span> </small></mat-hint>
                         <div>
                             <mat-error
                                 *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
