@@ -72,7 +72,7 @@ export class ProductEditComponent implements OnInit {
 
   getSubCategory() {
     this.subCategoryService.getAllSubCategory().subscribe(res => {
-      this.subcategories = res.data;
+      this.subcategories = res;
       this.ref.detectChanges();
     },
       error => {
