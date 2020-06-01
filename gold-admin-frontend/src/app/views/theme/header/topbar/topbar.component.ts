@@ -64,6 +64,8 @@ export class TopbarComponent implements OnInit {
 	value3: string;
 	type4: string;
 	value4: string;
+	type5: string;
+	value5: string;
 	showInput: boolean;
 	toogle: boolean;
 	toogler: string;
@@ -76,8 +78,8 @@ export class TopbarComponent implements OnInit {
 	permissionType = "";
 	showDropdown = false;
 	isDisabled = false;
+	button: boolean = false;
 
-	button = true;
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -130,8 +132,10 @@ export class TopbarComponent implements OnInit {
 			.subscribe((res) => {
 				if (res && res == "spot") {
 					this.button = false;
-				} else {
+				} else if (res && res != "spot") {
 					this.button = true;
+				} else {
+					this.button = false;
 				}
 			});
 	}
@@ -190,6 +194,8 @@ export class TopbarComponent implements OnInit {
 		this.value3 = "";
 		this.type4 = "";
 		this.value4 = "";
+		this.type5 = "";
+		this.value5 = "";
 		this.showfilter = false;
 		this.showInput = false;
 		this.toogle = false;
@@ -401,8 +407,8 @@ export class TopbarComponent implements OnInit {
 			this.type1 = "button";
 		}
 		if (location.href.includes("edit-order-details")) {
-			this.value1 = "Print Performa";
-			this.type1 = "button";
+			this.value5 = "Print Proforma";
+			this.type5 = "button";
 			this.value4 = "Contract";
 			this.type4 = "reset";
 			this.rightButton = true;

@@ -109,7 +109,6 @@ export class OrderDetailsEditComponent implements OnInit {
 	}
 
 	editOrder() {
-		console.log(this.orderInfo);
 		const data = {
 			memberId: this.orderInfo.allOrderData.customerDetails
 				.customerUniqueId,
@@ -249,8 +248,8 @@ export class OrderDetailsEditComponent implements OnInit {
 	}
 
 	getPdf(value) {
-		if (value == "Print Performa") {
-			this.orderDetailsService.getPerforma(this.orderId).subscribe();
+		if (value == "Print Proforma") {
+			this.orderDetailsService.getProforma(this.orderId).subscribe();
 		} else if (value == "Contract") {
 			this.orderDetailsService.getContract(this.orderId).subscribe();
 		}
@@ -260,7 +259,7 @@ export class OrderDetailsEditComponent implements OnInit {
 		this.destroy$.next();
 		this.destroy$.complete();
 		this.orderDetailsService.buttonValue.next({});
-		this.orderDetailsService.button.next({});
+		this.orderDetailsService.button.next(0);
 		this.sharedService.closeFilter.next(true);
 	}
 }
