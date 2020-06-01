@@ -52,6 +52,7 @@ export class EmiDetailsListComponent implements OnInit {
 		search: "",
 		orderemistatus: "",
 	};
+	filteredDataList = {};
 
 	constructor(
 		public dialog: MatDialog,
@@ -181,8 +182,9 @@ export class EmiDetailsListComponent implements OnInit {
 
 	applyFilter(data) {
 		console.log(data);
-		this.emiData.orderemistatus = data.filterData.multiSelect1;
+		this.emiData.orderemistatus = data.data.status;
 		this.dataSource.loadEmiDetails(this.emiData);
+		this.filteredDataList = data.list;
 	}
 
 	/**

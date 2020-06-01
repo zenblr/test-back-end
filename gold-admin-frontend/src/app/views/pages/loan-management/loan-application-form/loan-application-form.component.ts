@@ -53,7 +53,15 @@ export class LoanApplicationFormComponent implements OnInit {
         this.action = 'edit'
         this.customerDetail = res.data
         this.totalAmount = res.data.totalEligibleAmt
-        this.selected = 4;
+        if (this.url == "package-image-upload") {
+          this.selected = 6;
+          this.disabledForm = true;
+        } else if(this.url == "view-loan"){
+          this.disabledForm = true;
+        }else {
+          this.disabledForm = false;
+          this.selected = 5;
+        }
       })
 
     }
@@ -63,6 +71,7 @@ export class LoanApplicationFormComponent implements OnInit {
     setTimeout(() => {
       
       if (this.url == "package-image-upload") {
+        this.selected = 6;
         this.disabledForm = true;
       } else if(this.url == "view-loan"){
         this.disabledForm = true;

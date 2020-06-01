@@ -596,10 +596,10 @@ mat-header-row {
 	white-space: nowrap;
 	overflow: hidden;
 }
-.align-right {
-	justify-content: flex-end !important;
-	text-align: end !important;
-}
+// .align-right{
+// 	justify-content: flex-end !important;
+// 	text-align: end !important;
+// }
 
 // mat-table-header : sticky
 .mat-table__wrapper .mat-table .mat-header-row {

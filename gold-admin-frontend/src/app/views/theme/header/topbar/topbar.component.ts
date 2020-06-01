@@ -364,7 +364,7 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 			this.filterName = "orderDetails";
-			this.filterWidth = "600px";
+			this.filterWidth = "630px";
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
 			this.showDropdown = true;

@@ -12,41 +12,46 @@
                     <!-- <mat-tab label="KYC Details" [disabled]="disabled[1]">
                         <kt-kyc-details (kycEmit)="kycEmit($event)" [action]="action" [details]="customerDetail"  [disable]="disabledForm"></kt-kyc-details>
                     </mat-tab> -->
-                    <mat-tab label="Nominee Details" >
+                    <mat-tab label="Nominee Details">
                         <kt-nominee-details (nomineeEmit)="nomineeEmit($event)" [action]="action" (next)="next($event)"
                             [invalid]="invalid.nominee" [disable]="disabledForm" [details]="customerDetail">
                         </kt-nominee-details>
                     </mat-tab>
                     <mat-tab label="Ornaments">
                         <!-- <ng-template > -->
-                            <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0" style="padding:0px !important">
-                                <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [action]="action"
-                                [invalid]="invalid.ornaments" [disable]="disabledForm" [details]="customerDetail" (totalAmt)="total($event)">
+                        <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
+                            style="padding:0px !important">
+                            <kt-ornaments (OrnamentsDataEmit)="OrnamentsDataEmit($event)" [action]="action"
+                                [invalid]="invalid.ornaments" [disable]="disabledForm" [details]="customerDetail"
+                                (totalAmt)="total($event)">
                             </kt-ornaments>
-                            </div>
+                        </div>
                         <!-- </ng-template> -->
                     </mat-tab>
-                    <mat-tab label="Final Interest Calculator" >
-                        <kt-interest-calculator (interestFormEmit)="interestFormEmit($event)" (nextEmit)="next($event)"
+                    <mat-tab label="Final Interest Calculator">
+                        <kt-interest-calculator (interestFormEmit)="interestFormEmit($event)" (next)="next($event)"
                             [invalid]="invalid.intreset" [disable]="disabledForm" [action]="action"
                             [totalAmt]="totalAmount" [details]="customerDetail"></kt-interest-calculator>
                     </mat-tab>
-                    <mat-tab label="Bank Details" >
+                    <mat-tab label="Bank Details">
                         <kt-bank-details (bankFormEmit)="bankFormEmit($event)" [action]="action"
-                            [details]="customerDetail" [disable]="disabledForm">
+                            [details]="customerDetail" [disable]="disabledForm" [totalAmt]="totalAmount">
                         </kt-bank-details>
                     </mat-tab>
-                    <mat-tab label="Loan Status Approval" >
+                    <mat-tab label="Loan Status Approval">
                         <kt-approval (apply)="apply()" (approvalFormEmit)="approvalFormEmit($event)" [action]="action"
                             [invalid]="invalid.approval" [disable]="disabledForm" [details]="customerDetail">
                         </kt-approval>
                     </mat-tab>
-                    <mat-tab label = "Packets" *ngIf="url == 'package-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)">
-                        <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0" style="padding:0px !important">
-                            <div class="col packets-height">
-                                <kt-upload-packets [viewpacketsDetails]="customerDetail"></kt-upload-packets>
-                            </div>
+                    <mat-tab label="Packets" 
+                        *ngIf="url == 'package-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)">
+                        <!-- <ng-template> -->
+                            <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab"
+                            style="padding:0px !important"> 
+                            <kt-upload-packets [viewpacketsDetails]="customerDetail"></kt-upload-packets>
                         </div>
+                        <!-- </ng-template> -->
+                        
                     </mat-tab>
                 </mat-tab-group>
             </div>
