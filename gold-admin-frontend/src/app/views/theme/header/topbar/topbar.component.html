@@ -14,7 +14,7 @@
         </div>
         <div class="col-6 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
-            <div *ngIf="showDropdown" ngbDropdown class="d-inline-block">
+            <div *ngIf="showDropdown" ngbDropdown class="d-inline-block" (autoClose)="true">
                 <button class="btn-custom kt-margin-r-10 kt-margin-l-10" mat-raised-button id="dropdownBasic1"
                     ngbDropdownToggle [disabled]="isDisabled">Generate</button>
                 <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
