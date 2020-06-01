@@ -28,8 +28,10 @@
                                 <div class="align-self-center">
                                     <input type="file" accept="image/png, image/jpeg" #profile class="d-none"
                                         (input)="getFileInfo($event, 'profile')" />
-                                    <label [class.mandatory]="viewOnly" (click)="profile.click()"
-                                        class="kt-pointer text-primary" style="font-weight: 600;">Change Profile
+                                    <label [class.mandatory]="viewOnly"
+                                        [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                        (click)="userType != 5 && profile.click()" class=" text-primary"
+                                        style="font-weight: 600;">Change Profile
                                         Picture</label>
                                 </div>
                             </div>
@@ -176,8 +178,9 @@
                                         aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
                                         formControlName="identityProofFileName" />
                                     <div class="input-group-append">
-                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                            (click)="identity.click()"
+                                        <span [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                            class="input-group-text bgx font-weight" id="basic-addon2"
+                                            (click)="userType != 5 && identity.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
                                     <input type="file" accept="image/png, image/jpeg" class="d-none" #identity
@@ -357,8 +360,9 @@
                                         formControlName="addressProofFileName" aria-label="Recipient's username"
                                         aria-describedby="basic-addon2" readonly />
                                     <div class="input-group-append">
-                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                            (click)="permanent.click()"
+                                        <span class="input-group-text bg font-weight" id="basic-addon2"
+                                            (click)="userType !== 5 && permanent.click()"
+                                            [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
                                     <input type="file" accept="image/png, image/jpeg" class="d-none" #permanent
@@ -557,8 +561,9 @@
                                         formControlName="addressProofFileName" aria-label="Recipient's username"
                                         aria-describedby="basic-addon2" readonly />
                                     <div class="input-group-append">
-                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                            (click)="residential.click()"
+                                        <span class="input-group-text bg font-weight" id="basic-addon2"
+                                            (click)="userType !==5 && residential.click()"
+                                            [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
                                     <input type="file" accept="image/png, image/jpeg" class="d-none" #residential
@@ -628,7 +633,7 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                    formControlName="dateOfBirth" (dateChange)="calculateAge($event)"
+                                    formControlName="dateOfBirth" (dateChange)="ageValidation()"
                                     [class.isError]="customerKycPersonal.controls.dateOfBirth.touched && customerKycPersonal.controls.dateOfBirth.invalid"
                                     readonly placeholder="4/5/2020" [max]="maxDate" />
                                 <mat-datepicker #picker></mat-datepicker>
@@ -779,8 +784,9 @@
                                         formControlName="signatureProofFileName" aria-label="Recipient's username"
                                         aria-describedby="basic-addon2" readonly />
                                     <div class="input-group-append">
-                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                            (click)="signature.click()"
+                                        <span class="input-group-text bg font-weight" id="basic-addon2"
+                                            (click)="userType !== 5 && signature.click()"
+                                            [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
                                     <input type="file" accept="image/png, image/jpeg" class="d-none" #signature

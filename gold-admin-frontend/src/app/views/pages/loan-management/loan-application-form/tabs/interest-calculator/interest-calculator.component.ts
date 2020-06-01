@@ -28,9 +28,9 @@ export class InterestCalculatorComponent implements OnInit {
   selectedScheme: any = []
   finalInterestForm: FormGroup;
   @Input() invalid;
-  @Input() totalAmt
+  @Input() totalAmt = 0;
   @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
-  @Output() nextEmit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Input() action;
 
   @ViewChild('print', { static: false }) print: ElementRef
@@ -77,11 +77,11 @@ export class InterestCalculatorComponent implements OnInit {
 
   partner() {
     this.partnerService.getPartnerBySchemeAmount(Math.floor(this.totalAmt)).subscribe(res => {
-        this.partnerList = res['data'];
-        if (this.controls.schemeId.value) {
-          this.returnScheme()
-        }
-      })
+      this.partnerList = res['data'];
+      if (this.controls.schemeId.value) {
+        this.returnScheme()
+      }
+    })
   }
 
   getSchemes() {
@@ -236,8 +236,15 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
 
-  next() {
-    this.nextEmit.emit(true)
+  nextAction() {
+    if (this.finalInterestForm.invalid) {
+      this.finalInterestForm.markAllAsTouched()
+      return
+    }
+    if (this.dateOfPayment.length) {
+      return
+    }
+    this.next.emit(4)
   }
 
 }

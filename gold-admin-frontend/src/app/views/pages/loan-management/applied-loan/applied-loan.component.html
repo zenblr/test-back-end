@@ -2,7 +2,7 @@
 
     <kt-portlet-body>
 
-        <div class="mat-table__wrapper">
+        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="fullName">
@@ -15,10 +15,10 @@
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.customer.customerUniqueId}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="mobile">
+                <!-- <ng-container matColumnDef="mobile">
                     <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.customer.mobileNumber}}</mat-cell>
-                </ng-container>
+                </ng-container> -->
 
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
@@ -118,9 +118,9 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '110%'}"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'width': '110%'}"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

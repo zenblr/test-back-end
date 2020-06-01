@@ -1,6 +1,6 @@
 <div class="container">
     <form [formGroup]="approvalForm">
-        <div class="row justify-content-center kt-margin-b-25">
+        <div class="row justify-content-center">
             <!-- <div class="col-8 bordered">
                 <div class="row head">
                     <div class="col-4">Field</div>
@@ -85,18 +85,18 @@
             </div> -->
 
             <div class="table-div">
-                <table class="table table-bordered">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 40%" class="rating-title">Field</th>
-                            <th scope="col" style="width: 30%" class="rating-cce">Appraiser</th>
-                            <th scope="col" style="width: 30%" class="rating-bm text-center" *ngIf="viewBMForm">Branch Manager</th>
+                            <th scope="col" style="width: 40%" >Field</th>
+                            <th scope="col" style="width: 30%" class="text-center">Appraiser</th>
+                            <th scope="col" style="width: 30%" class="text-center" *ngIf="viewBMForm">Branch Manager</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td scope="row" class="rating-title">Loan Application Form</td>
-                            <td class="rating-cce">
+                            <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
                                     *ngIf="controls.applicationFormForAppraiser.value"
@@ -118,7 +118,7 @@
                         <tr>
                             <td scope="row" class="rating-title">Gold Valuation
                             </td>
-                            <td class="rating-cce">
+                            <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
                                     *ngIf="controls.goldValuationForAppraiser.value"
@@ -201,7 +201,7 @@
     </form>
 </div>
 <div class="row py-3" *ngIf="!disable">
-    <div class="col-12">
+    <div class="col-12 text-center">
         <kt-button [value]="'Apply'" [type]="'button'" (click)=" applyForm()"></kt-button>
         <span class="kt-padding-10"></span>
         <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>

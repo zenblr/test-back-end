@@ -45,25 +45,26 @@
             </div>
         </div>
         <h3 class="py-2">Gold Rate Log</h3>
-        <table class="table">
-            <thead>
-
-                <th>Updated BY</th>
-                <th>Last Updated Date</th>
-                <th>Last Updated Time</th>
-                <th>Previous Gold Rate</th>
-                <th>Updated Gold Rate</th>
-            </thead>
-            <tr *ngFor="let gold of goldInfo;">
-                <td>
-                    {{gold.Modifiedby.firstName | titlecase}}
-                    {{gold.Modifiedby.lastName | titlecase}}
-                </td>
-                <td>{{gold.modifiedTime | date :'mediumDate'}}</td>
-                <td>{{gold.modifiedTime | date :'mediumTime'}}</td>
-                <td>{{gold.previousGoldRate}}</td>
-                <td>{{gold.goldRate}}</td>
-            </tr>
-        </table>
+        <div class="table-div">
+            <table class="table">
+                <thead>
+    
+                    <th>Updated BY</th>
+                    <th>Last Updated Date</th>
+                    <th>Last Updated Time</th>
+                    <th>Updated Gold Rate</th>
+                </thead>
+                <tr *ngFor="let gold of goldInfo;">
+                    <td>
+                        {{gold.Modifiedby.firstName | titlecase}}
+                        {{gold.Modifiedby.lastName | titlecase}}
+                    </td>
+                    <td>{{gold.modifiedTime | date :'mediumDate'}}</td>
+                    <td>{{gold.modifiedTime | date :'mediumTime'}}</td>
+                    <td>{{gold.goldRate}}</td>
+                </tr>
+            </table>
+        </div>
+        
     </kt-portlet-body>
 </kt-portlet>

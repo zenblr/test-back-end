@@ -10,7 +10,7 @@
 				<ng-container matColumnDef="storeId">
 					<mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
 					<mat-cell *matCellDef="let store">
-						{{store.storeUniqueId | titlecase}}
+						{{store.storeUniqueId | uppercase}}
 					</mat-cell>
 				</ng-container>
 				<ng-container matColumnDef="merchantName">

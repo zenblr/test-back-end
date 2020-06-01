@@ -34,7 +34,7 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false,true, true, true, true];
+  disabled = [false,false, false, false, false];
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
@@ -53,7 +53,15 @@ export class LoanApplicationFormComponent implements OnInit {
         this.action = 'edit'
         this.customerDetail = res.data
         this.totalAmount = res.data.totalEligibleAmt
-        this.selected = 4;
+        if (this.url == "package-image-upload") {
+          this.selected = 6;
+          this.disabledForm = true;
+        } else if(this.url == "view-loan"){
+          this.disabledForm = true;
+        }else {
+          this.disabledForm = false;
+          this.selected = 5;
+        }
       })
 
     }
@@ -63,10 +71,8 @@ export class LoanApplicationFormComponent implements OnInit {
     setTimeout(() => {
       
       if (this.url == "package-image-upload") {
+        this.selected = 6;
         this.disabledForm = true;
-        const pack = document.getElementById('packets');
-        pack.scrollIntoView({ behavior: "smooth" });
-        this.ref.detectChanges()
       } else if(this.url == "view-loan"){
         this.disabledForm = true;
       }else {
@@ -109,10 +115,10 @@ export class LoanApplicationFormComponent implements OnInit {
     this.nominee = event.nominee
     this.invalid.nominee = false
 
-    if (event.scroll) {
-      const test = document.getElementById('ornaments');
-      test.scrollIntoView({ behavior: "smooth" });
-    }
+    // if (event.scroll) {
+    //   const test = document.getElementById('ornaments');
+    //   test.scrollIntoView({ behavior: "smooth" });
+    // }
   }
 
   bankFormEmit(event) {
@@ -177,8 +183,8 @@ export class LoanApplicationFormComponent implements OnInit {
     }
     if (this.Ornaments.invalid) {
       this.invalid.ornaments = true;
-      const test = document.getElementById('ornaments');
-      test.scrollIntoView({ behavior: "smooth" });
+      // const test = document.getElementById('ornaments');
+      // test.scrollIntoView({ behavior: "smooth" });
       return true
     }
     if (this.intreset.invalid) {
@@ -195,11 +201,12 @@ export class LoanApplicationFormComponent implements OnInit {
       return true
     }
 
-
-
-
-
   }
+
+  total(event){
+    this.totalAmount = event
+  }
+
   createData() {
     let Obj = {
       loanOrnmanets: this.Ornaments.value,
@@ -251,9 +258,9 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   next(event) {
-    this.selected = 5;
-    window.scrollTo(0, 0)
-    this.disabled[5] = false;
+    this.selected = event;
+    // window.scrollTo(0, 0)
+    // this.disabled[5] = false;
   }
 
 }
