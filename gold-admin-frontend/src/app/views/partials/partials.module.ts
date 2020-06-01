@@ -64,6 +64,7 @@ import { SearchComponent } from "./components/search/search.component";
 import { ModalHeaderComponent } from "./components/modal/modal-header/modal-header.component";
 import { ModalFooterComponent } from "./components/modal/modal-footer/modal-footer.component";
 import { LoanSchemeComponent } from "../../views/pages/loan-settings/loan-scheme/loan-scheme.component";
+import { FilteredDataComponent } from './components/filtered-data/filtered-data.component';
 
 // spinner
 import { UplodDataImageComponent } from "./components/uplod-data-image/uplod-data-image.component";
@@ -72,9 +73,10 @@ import { UserClassificationComponent } from "./components/user-classification/us
 import { UplodPreviewImageComponent } from "./components/uplod-preview-image/uplod-preview-image.component";
 import { SelectWithSearchComponent } from "./components/select-with-search/select-with-search.component";
 
-import { NgSelectModule } from '@ng-select/ng-select';
-import { UserReviewComponent } from '../pages/kyc-settings/tabs/user-review/user-review.component';
-import { NgxPermissionsModule } from 'ngx-permissions';
+import { NgSelectModule } from "@ng-select/ng-select";
+import { UserReviewComponent } from "../pages/kyc-settings/tabs/user-review/user-review.component";
+import { NgxPermissionsModule } from "ngx-permissions";
+import { MultiSelectSearchComponent } from "./components/multi-select-search/multi-select-search.component";
 import { AddAppraiserComponent } from '../pages/user-management/assign-appraiser/add-appraiser/add-appraiser.component';
 
 import { WebcamModule } from "ngx-webcam";
@@ -139,9 +141,16 @@ import { WebcamDialogComponent } from '../pages/kyc-settings/webcam-dialog/webca
 		UplodPreviewImageComponent,
 
 		SelectWithSearchComponent,
+
 		UserReviewComponent,
 		AddAppraiserComponent,
-		WebcamDialogComponent
+		WebcamDialogComponent,
+
+		FilteredDataComponent,
+
+		MultiSelectSearchComponent,
+
+		AddAppraiserComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -194,12 +203,14 @@ import { WebcamDialogComponent } from '../pages/kyc-settings/webcam-dialog/webca
 		UplodPreviewImageComponent,
 		SelectWithSearchComponent,
 		UserReviewComponent,
+		FilteredDataComponent,
 		AddAppraiserComponent,
 		WebcamDialogComponent,
 		// spinner
 		NgbDropdownModule,
 		NgxPermissionsModule,
-		WebcamModule
+		WebcamModule,
+		MultiSelectSearchComponent,
 	],
 	imports: [
 		NgbModule,

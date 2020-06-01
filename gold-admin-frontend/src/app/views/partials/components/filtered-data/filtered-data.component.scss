@@ -1,0 +1,30 @@
+:host {
+    .kt-portlet__body {
+        padding: 10px 15px !important;
+    }
+    .filtered-data {
+        padding-right: 1rem;
+        // :last-of-type {
+        //     padding: 0;
+        // }
+    }
+    .filtered-title {
+        padding-bottom: 0.5rem;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    .filtered-value {
+        padding: 5px 10px;
+        margin-right: 0.5rem;
+        color: #454d67;
+        background-color: #f2f3f7;
+        border-radius: 4px;
+        font-weight: bolder;
+        white-space: nowrap;
+    }
+    .cancel-filtered-value {
+        height: 8px;
+        width: 8px;
+        margin-left: 0.5rem;
+    }
+}
