@@ -44,7 +44,7 @@ export class LeadService {
         this.toastr.error(err.error.message)
         throw (err)
       })
-    );;
+    );
   }
 
   editLead(id, data): Observable<any> {

@@ -42,9 +42,9 @@ export class FinalLoanAmountComponent implements OnInit {
 
   initForm() {
     this.finalLoanForm = this.fb.group({
-      goldGrossWeight: [, [Validators.required]],
-      goldNetWeight: [, [Validators.required]],
-      goldDeductionWeight: [, [Validators.required]],
+      goldGrossWeight: [, Validators.required],
+      goldNetWeight: [, Validators.required],
+      goldDeductionWeight: [, Validators.required],
       karat: ['', [Validators.required]],
       purity: [, [Validators.required]],
       finalNetWeight: [, [Validators.required]],
@@ -56,9 +56,9 @@ export class FinalLoanAmountComponent implements OnInit {
   }
 
   calcGoldDeductionWeight() {
-    if (this.controls.goldGrossWeight.valid && this.controls.goldNetWeight.valid) {
-      const goldDeductionWeight = this.controls.goldGrossWeight.value - this.controls.goldNetWeight.value;
-      this.controls.goldDeductionWeight.patchValue(goldDeductionWeight);
+    if (this.controls.goldGrossWeight.value && this.controls.goldDeductionWeight.value) {
+      const goldDeductionWeight = this.controls.goldGrossWeight.value - this.controls.goldDeductionWeight.value;
+      this.controls.goldNetWeight.patchValue(goldDeductionWeight.toFixed(2));
       // console.log(goldDeductionWeight)
     }
   }
@@ -106,14 +106,14 @@ export class FinalLoanAmountComponent implements OnInit {
 
   weightCheck() {
     if (this.controls.goldGrossWeight.valid) {
-      if (this.controls.goldGrossWeight.value < this.controls.goldNetWeight.value) {
-        this.controls.goldNetWeight.setErrors({ weight: true })
+      if (this.controls.goldGrossWeight.value < this.controls.goldDeductionWeight.value) {
+        this.controls.goldDeductionWeight.setErrors({ weight: true })
       } else {
-        this.controls.goldNetWeight.setErrors(null)
+        this.controls.goldDeductionWeight.setErrors(null)
       }
     }
   }
-  calFinalNetWeight() {
+  // calFinalNetWeight() {
     // Current Net Weight = Net Weight - Purity %
     //                        = 10 - 1 / 100
     //                        = 0.099
@@ -128,32 +128,32 @@ export class FinalLoanAmountComponent implements OnInit {
     // purity = (purity / 100);
 
     // current weight
-    let goldNetWeight = +(this.controls.goldNetWeight.value);
+    // let goldNetWeight = +(this.controls.goldNetWeight.value);
 
-    const currentNetWeight = goldNetWeight - Number(this.controls.purity.value / 100);
+    // const currentNetWeight = goldNetWeight - Number(this.controls.ltvPercent.value / 100);
     // console.log(currentNetWeight);
 
     // final weight
     // const finalNetWeight = goldNetWeight - currentNetWeight;
     // console.log(finalNetWeight);
 
-    this.controls.finalNetWeight.patchValue(currentNetWeight);
+    // this.controls.finalNetWeight.patchValue(currentNetWeight);
 
     // current LTV amount
-    this.controls.ltvPercent.patchValue(+(this.controls.purity.value));
+    // this.controls.ltvPercent.patchValue(+(this.controls.purity.value));
 
-    let purity = +(this.controls.purity.value);
+    // let purity = +(this.controls.ltvPercent.value);
 
-    const ltvAmount = this.currentLtvAmount * purity / 100;
+    // const ltvAmount = this.currentLtvAmount * purity / 100;
     // console.log(currentLtvAmount)
-    this.controls.ltvAmount.patchValue(ltvAmount);
-  }
+    // this.controls.ltvAmount.patchValue(ltvAmount);
+  // }
 
   calcLoanAmount() {
     // Loan Amount = Final Net Weight *  Ltv
     //   = 9.90 * 1270
 
-    const loanAmount = (+(this.controls.finalNetWeight.value) * +(this.controls.ltvAmount.value));
+    const loanAmount = (+(this.controls.goldNetWeight.value) * +(this.controls.ltvAmount.value));
     // console.log('final: ', loanAmount);
     this.loanAmount = loanAmount;
     this.controls.loanAmount.patchValue(this.loanAmount);

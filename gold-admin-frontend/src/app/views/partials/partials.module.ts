@@ -77,6 +77,7 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { UserReviewComponent } from "../pages/kyc-settings/tabs/user-review/user-review.component";
 import { NgxPermissionsModule } from "ngx-permissions";
 import { MultiSelectSearchComponent } from "./components/multi-select-search/multi-select-search.component";
+import { AddAppraiserComponent } from '../pages/user-management/assign-appraiser/add-appraiser/add-appraiser.component';
 
 @NgModule({
 	declarations: [
@@ -143,6 +144,8 @@ import { MultiSelectSearchComponent } from "./components/multi-select-search/mul
 		FilteredDataComponent,
 		
 		MultiSelectSearchComponent,
+
+		AddAppraiserComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -196,6 +199,7 @@ import { MultiSelectSearchComponent } from "./components/multi-select-search/mul
 		SelectWithSearchComponent,
 		UserReviewComponent,
 		FilteredDataComponent,
+		AddAppraiserComponent,
 		// spinner
 		NgbDropdownModule,
 		NgxPermissionsModule,

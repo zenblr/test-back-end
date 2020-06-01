@@ -89,7 +89,8 @@
     </div>
     <kt-portlet-footer *ngIf="data.action != 'view'">
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)" [value]="data.action"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="data.action == 'add' ? 'add' : 'update'">
+            </kt-modal-footer>
         </div>
     </kt-portlet-footer>
 </div>

@@ -80,6 +80,9 @@ export class PageConfig {
 			},
 			roles: {
 				page: { title: "Roles", desc: "" },
+				id: {
+					page: { title: "Permissions", desc: "" }
+				}
 			},
 		},
 		"lead-management": {
@@ -178,6 +181,11 @@ export class PageConfig {
 			"loan-application-form": {
 				page: { title: "Loan Application Form", desc: "" },
 			},
+			'view-loan':{
+				id:{
+					page: { title: "View Loan Application Form", desc: "" },
+				}
+			},
 			packet: {
 				page: { title: "Packets", desc: "" },
 			},
@@ -186,6 +194,11 @@ export class PageConfig {
 			},
 			"applied-loan": {
 				page: { title: "Applied Loan", desc: "" },
+			},
+			"package-image-upload":{
+				id:{
+					page: { title: "PACKET IMAGE UPLOAD", desc: "" },
+				}
 			},
 		},
 	};
