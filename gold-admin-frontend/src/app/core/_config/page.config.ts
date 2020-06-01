@@ -180,6 +180,9 @@ export class PageConfig {
 			},
 			"loan-application-form": {
 				page: { title: "Loan Application Form", desc: "" },
+				id:{
+					page: { title: "Loan Application Form", desc: "" },
+				}
 			},
 			'view-loan':{
 				id:{

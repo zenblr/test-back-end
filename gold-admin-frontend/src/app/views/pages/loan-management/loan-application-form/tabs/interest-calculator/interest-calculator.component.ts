@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, OnChanges, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PartnerService } from '../../../../../../core/user-management/partner/services/partner.service';
-import { map, last, takeLast, switchMap } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
-import { interval } from 'rxjs';
+import { LoanApplicationFormService } from '../../../../../../core/loan-management';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-interest-calculator',
@@ -29,9 +29,11 @@ export class InterestCalculatorComponent implements OnInit {
   finalInterestForm: FormGroup;
   @Input() invalid;
   @Input() totalAmt = 0;
-  @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
+  // @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Input() action;
+  @Input() loanId
+  @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('print', { static: false }) print: ElementRef
   editedDate: any;
@@ -41,7 +43,8 @@ export class InterestCalculatorComponent implements OnInit {
     private partnerService: PartnerService,
     public eleRef: ElementRef,
     public datePipe: DatePipe,
-    public ref: ChangeDetectorRef
+    public ref: ChangeDetectorRef,
+    public loanFormService:LoanApplicationFormService
   ) { }
 
   ngOnInit() {
@@ -89,7 +92,7 @@ export class InterestCalculatorComponent implements OnInit {
     this.schemesList = []
     this.controls.schemeId.reset()
     this.controls.interestRate.reset()
-    this.controls.intresetAmt.reset()
+    this.controls.totalFinalInterestAmt.reset()
     this.controls.paymentFrequency.reset()
     this.controls.schemeId.patchValue('')
     this.controls.paymentFrequency.patchValue('')
@@ -112,18 +115,18 @@ export class InterestCalculatorComponent implements OnInit {
       loanStartDate: [this.currentDate],
       loanEndDate: [, [Validators.required]],
       paymentFrequency: [, [Validators.required]],
-      intresetAmt: [],
+      totalFinalInterestAmt: [],
       interestRate: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]], processingCharge: [],
       processingChargeFixed: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       processingChargePercent: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]]
     })
-    this.interestFormEmit.emit(this.finalInterestForm)
+    // this.interestFormEmit.emit(this.finalInterestForm)
   }
 
   ngAfterViewInit() {
-    this.finalInterestForm.valueChanges.subscribe(() => {
-      this.interestFormEmit.emit(this.finalInterestForm)
-    })
+    // this.finalInterestForm.valueChanges.subscribe(() => {
+    //   this.interestFormEmit.emit(this.finalInterestForm)
+    // })
   }
 
   setEndDate() {
@@ -205,7 +208,7 @@ export class InterestCalculatorComponent implements OnInit {
       (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
       / 360
     this.intrestAmount = intrest.toFixed(2);
-    this.controls.intresetAmt.patchValue(this.intrestAmount)
+    this.controls.totalFinalInterestAmt.patchValue(this.intrestAmount)
     this.CheckProcessingCharge()
     this.generateTable()
   }
@@ -241,10 +244,18 @@ export class InterestCalculatorComponent implements OnInit {
       this.finalInterestForm.markAllAsTouched()
       return
     }
-    if (this.dateOfPayment.length) {
+    if (!this.dateOfPayment.length) {
       return
     }
-    this.next.emit(4)
+    this.loanFormService.submitFinalIntrest(this.finalInterestForm.value,this.loanId).pipe(
+      map(res=>{
+        if(res.finalLoanAmount)
+            this.finalLoanAmount.emit(res.finalLoanAmount)
+        this.next.emit(4)
+      }),catchError(err=>{
+        throw err;
+        
+      })).subscribe()
   }
 
 }
