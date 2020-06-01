@@ -46,6 +46,8 @@ export class MenuAsideService {
 				break;
 			case 'emi-management': aside = 'aside.itemsThree';
 				break;
+			case 'merchant-broker': aside = 'aside.itemsFour';
+				break;
 			default: aside = 'aside.itemsOne';
 				break;
 		}

@@ -72,6 +72,10 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/emi-management/emi-management.module').then(m => m.EMIManagementModule)
 			},
 			{
+				path: 'merchant-broker',
+				loadChildren: () => import('../app/views/pages/merchant/merchant.module').then(m => m.MerchantModule)
+			},
+			{
 				path: 'repayment',
 				loadChildren: () => import('../app/views/pages/repayment/repayment.module').then(m => m.RepaymentModule)
 			},

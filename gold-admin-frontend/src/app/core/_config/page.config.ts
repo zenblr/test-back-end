@@ -162,6 +162,14 @@ export class PageConfig {
 				page: { title: "Reports", desc: "" },
 			},
 		},
+		"merchant-broker": {
+			"customers": {
+				page: { title: "Customers", desc: "" },
+			},
+			"orders": {
+				page: { title: "Orders", desc: "" },
+			},
+		},
 		"applied-kyc": {
 			page: { title: "Applied KYC", desc: "" },
 		},
@@ -181,8 +189,8 @@ export class PageConfig {
 			"loan-application-form": {
 				page: { title: "Loan Application Form", desc: "" },
 			},
-			'view-loan':{
-				id:{
+			'view-loan': {
+				id: {
 					page: { title: "View Loan Application Form", desc: "" },
 				}
 			},
@@ -195,8 +203,8 @@ export class PageConfig {
 			"applied-loan": {
 				page: { title: "Applied Loan", desc: "" },
 			},
-			"package-image-upload":{
-				id:{
+			"package-image-upload": {
+				id: {
 					page: { title: "PACKET IMAGE UPLOAD", desc: "" },
 				}
 			},
