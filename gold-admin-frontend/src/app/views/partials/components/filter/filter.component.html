@@ -89,11 +89,17 @@
                     {{item?.name}}
                   </option>
                 </select> -->
-                <ng-select #select [items]="states" [dropdownPosition]="'bottom'" [multiple]="true" bindLabel="name"
+
+                <ng-select [items]="states" bindLabel="name" bindValue="id" placeholder="Select State"
+                  (change)="getCities($event)" (clear)="resetCities();">
+
+                </ng-select>
+
+                <!-- <ng-select #select [items]="states" [dropdownPosition]="'bottom'" [multiple]="true" bindLabel="name"
                   bindValue="id" [closeOnSelect]="false" [searchable]="false">
                   <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
                     <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                      [ngModelOptions]="{ standalone : true }" /> {{item.gender | titlecase}}
+                      [ngModelOptions]="{ standalone : true }" /> {{item.name | titlecase}}
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                     <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
@@ -106,7 +112,7 @@
                     <input style="width: 100%; line-height: 24px" type="text"
                       (input)="select.filter($event.target.value)" />
                   </ng-template>
-                </ng-select>
+                </ng-select> -->
                 <!-- <ng-select [items]="states" [multiple]="true" [dropdownPosition]="'bottom'" bindLabel="name" groupBy="gender" [selectableGroup]="true"
                   [closeOnSelect]="false" bindValue="id">
                   <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
@@ -120,12 +126,25 @@
               </div>
               <div class="col">
                 <label style="visibility: hidden;">nostatus</label>
-                <select class="form-control" name="multiSelect1">
+                <ng-select [items]="cities" [multiple]="true" bindLabel="name" placeholder="Select City"
+                  [closeOnSelect]="false" bindValue="id" #cityRef>
+
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                      [ngModelOptions]="{ standalone : true }" /> {{item.name | titlecase}}
+                  </ng-template>
+                  <ng-template ng-multi-label-tmp let-items="items">
+                    {{items[0].name | titlecase}}&nbsp;
+                    <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
+                  </ng-template>
+                </ng-select>
+
+                <!-- <select class="form-control" name="multiSelect1">
                   <option value="" [selected]="true">Select City</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
                     {{item?.categoryName | titlecase}}
                   </option>
-                </select>
+                </select> -->
               </div>
               <div class="col">
                 <label>By Status</label>

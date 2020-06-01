@@ -23,7 +23,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   bankForm: FormGroup;
   passbookImg: any = [];
   constructor(
-    public toastr:ToastrService,
+    public toastr: ToastrService,
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
     public sharedService:SharedService,
@@ -62,17 +62,41 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
   initForm() {
     this.bankForm = this.fb.group({
-      paymentType:['',Validators.required],
-      bankName: [,Validators.required],
-      accountNumber: [,Validators.required],
-      ifscCode: [,Validators.required],
-      // accountType: [,Validators.required],
-      accountHolderName: [,Validators.required],
-      bankBranchName: [,Validators.required],
-      passbookProof: [[],Validators.required],
-      passbookProofImage:[,Validators.required]
+      paymentType: ['', Validators.required],
+      bankName: [, [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
+      accountNumber: [, [Validators.required]],
+      ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
+      accountType: [],
+      accountHolderName: [, [Validators.required]],
+      bankBranchName: [, [Validators.required]],
+      passbookProof: [[]],
+      passbookProofImage: ['']
     })
     // this.bankForm.disable()
+  }
+
+  setValidation(event) {
+    if (event.target.value == 'bank') {
+      this.controls.bankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]);
+      this.controls.accountNumber.setValidators([Validators.required]);
+      this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]);
+      this.controls.accountHolderName.setValidators([Validators.required]);
+      this.controls.bankBranchName.setValidators([Validators.required]);
+      this.controls.passbookProofImage.setValidators([Validators.required]);
+    } else if (event.target.value == 'cash') {
+      Object.keys(this.bankForm.controls).forEach(key => {
+        if (key != 'paymentType') {
+          this.bankForm.controls[key].reset();
+          this.bankForm.controls[key].clearValidators();
+        }
+        if (key == 'passbookProof') {
+          this.bankForm.controls[key].patchValue([])
+        }
+      });
+    }
+    Object.keys(this.bankForm.controls).forEach(key => {
+      this.bankForm.controls[key].updateValueAndValidity();
+    });
   }
 
   getFileInfo(event) {
@@ -100,7 +124,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     } else {
       this.toastr.error('Cannot upload more than two images');
     }
-    
+
   }
 
   removeImages(index) {

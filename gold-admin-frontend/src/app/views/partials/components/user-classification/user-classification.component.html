@@ -148,7 +148,7 @@
                                         <option value="" disabled selected> Select Status
                                         </option>
                                         <option
-                                            [disabled]="cceControls.kycRatingFromCce.value <3 && status.value == 'approved' ? true: false"
+                                            [disabled]="cceControls.kycRatingFromCce.value <= 3 && status.value == 'approved' ? true: false"
                                             *ngFor="let status of cceKycStatus" [value]="status.value">
                                             {{status.name | titlecase}}
                                         </option>
