@@ -135,7 +135,8 @@
                 </ng-container>
                 <ng-container matColumnDef="invoiceNo">
                     <mat-header-cell *matHeaderCellDef>Invoice No</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['invoiceNumber'] ? element['invoiceNumber'] : '-'}}
+                    <mat-cell *matCellDef="let element">
+                        {{element['invoiceNumber'] ? element['invoiceNumber'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderStatus">
