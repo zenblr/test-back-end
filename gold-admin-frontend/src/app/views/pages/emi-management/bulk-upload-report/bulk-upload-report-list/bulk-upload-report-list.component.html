@@ -47,7 +47,7 @@
 
                 <ng-container matColumnDef="fileName">
                     <mat-header-cell *matHeaderCellDef>File Name</mat-header-cell>
-                    <mat-cell *matCellDef="let report">{{report?.originalname}}</mat-cell>
+                    <mat-cell *matCellDef="let report" class="image-text-truncate">{{report?.originalname}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="userName">
                     <mat-header-cell *matHeaderCellDef>Username</mat-header-cell>

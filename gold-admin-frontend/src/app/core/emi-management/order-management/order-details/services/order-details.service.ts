@@ -20,14 +20,14 @@ export class OrderDetailsService {
 	buttonValue = new BehaviorSubject<any>({});
 	buttonValue$ = this.buttonValue.asObservable();
 
-	button = new BehaviorSubject<any>({});
+	button = new BehaviorSubject<any>(0);
 	button$ = this.button.asObservable();
 
 	constructor(
 		private http: HttpClient,
 		private excelService: ExcelService,
 		private pdfService: PdfService
-	) {}
+	) { }
 
 	getAllOrderDetails(event?: any): Observable<any> {
 		const reqParams: any = {};
@@ -103,7 +103,7 @@ export class OrderDetailsService {
 			);
 	}
 
-	getPerforma(id): Observable<any> {
+	getProforma(id): Observable<any> {
 		return this.http
 			.get(
 				`http://173.249.49.7:9120/api/order/order-proforma-invoice/${id}`,
@@ -117,7 +117,7 @@ export class OrderDetailsService {
 					(data) => {
 						this.pdfService.saveAsPdfFile(
 							data,
-							"Performa_" + Date.now()
+							"Proforma_" + Date.now()
 						);
 					},
 					(error) => console.log(error)

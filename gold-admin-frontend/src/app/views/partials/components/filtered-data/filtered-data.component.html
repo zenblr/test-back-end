@@ -1,0 +1,110 @@
+<div *ngIf="(filteredList | json) !== '{}'">
+    <kt-portlet>
+        <kt-portlet-body>
+            <div class="row row-no-padding row-col-separator-xl">
+                <div class="col-12 d-flex overflow-auto py-2">
+                    <!-- Category -->
+                    <div class="filtered-data" *ngIf="filteredList?.category?.length">
+                        <div class="filtered-title">By Category</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.category; let i = index;">
+                                <span>{{item?.categoryName | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('category', i)">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Sub-Category -->
+                    <div class="filtered-data" *ngIf="filteredList?.subCategory?.length">
+                        <div class="filtered-title">By Sub-Category</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.subCategory; let i = index;">
+                                <span>{{item?.subCategoryName | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('subCategory', i)">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Price From -->
+                    <div class="filtered-data" *ngIf="filteredList?.priceFrom">
+                        <div class="filtered-title">By Price From</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span>{{filteredList?.priceFrom}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('priceFrom')">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Price To -->
+                    <div class="filtered-data" *ngIf="filteredList?.priceTo">
+                        <div class="filtered-title">By Price To</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span>{{filteredList?.priceTo}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('priceTo')">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Weight -->
+                    <div class="filtered-data" *ngIf="filteredList?.weight">
+                        <div class="filtered-title">By Weight</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span>{{filteredList?.weight}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('weight')">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Date -->
+                    <div class="filtered-data" *ngIf="filteredList?.startDate">
+                        <div class="filtered-title" *ngIf="filterName == 'deposit'">By Payment Recieved Date</div>
+                        <div class="filtered-title" *ngIf="filterName == 'cancelOrder'">By Cancel Date</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span>{{filteredList?.startDate}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('startDate')">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Merchant -->
+                    <div class="filtered-data" *ngIf="filteredList?.merchant?.length">
+                        <div class="filtered-title">By Merchant</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.merchant; let i = index;">
+                                <span>{{item?.merchantName | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('merchant', i)">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Payment Type -->
+                    <div class="filtered-data" *ngIf="filteredList?.paymentType?.length">
+                        <div class="filtered-title">By Tenure(months)</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.paymentType; let i = index;">
+                                <span>{{item?.paymentType | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('paymentType', i)">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Status -->
+                    <div class="filtered-data" *ngIf="filteredList?.status?.length">
+                        <div class="filtered-title">By Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.status; let i = index;">
+                                <span>{{item?.statusName | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('status', i)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </kt-portlet-body>
+    </kt-portlet>
+</div>
