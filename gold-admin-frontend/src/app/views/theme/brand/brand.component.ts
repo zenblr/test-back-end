@@ -39,7 +39,7 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	 * @param htmlClassService: HtmlClassService
 	 */
 	constructor(private layoutConfigService: LayoutConfigService, public htmlClassService: HtmlClassService,
-		private goldRateService: GoldRateService, private ref: ChangeDetectorRef) {
+		public goldRateService: GoldRateService, private ref: ChangeDetectorRef) {
 
 		this.goldRateService.getGoldRate().pipe(
 			tap(res => {
