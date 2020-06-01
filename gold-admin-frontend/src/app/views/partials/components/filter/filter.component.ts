@@ -175,11 +175,11 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		};
 		if (this.controls) {
 			const controls = this.controls;
-			if (controls['category'].value && controls['category'].value.multiSelect.length) {
+			if (controls['category'].value && (controls['category'].value.multiSelect && controls['category'].value.multiSelect.length)) {
 				this.filterObject.data.category = controls['category'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.category = controls['category'].value.multiSelect;
 			}
-			if (controls['subCategory'].value && controls['subCategory'].value.multiSelect.length) {
+			if (controls['subCategory'].value && (controls['subCategory'].value.multiSelect && controls['subCategory'].value.multiSelect.length)) {
 				this.filterObject.data.subCategory = controls['subCategory'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.subCategory = controls['subCategory'].value.multiSelect;
 			}
@@ -197,11 +197,11 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.startDate = date;
 				this.filterObject.list.startDate = this.datePipe.transform(date, 'mediumDate');
 			}
-			if (controls['status'].value && controls['status'].value.multiSelect.length) {
+			if (controls['status'].value && (controls['status'].value.multiSelect && controls['status'].value.multiSelect.length)) {
 				this.filterObject.data.status = controls['status'].value.multiSelect.map(e => e.statusId).toString();
 				this.filterObject.list.status = controls['status'].value.multiSelect;
 			}
-			if (controls['paymentType'].value && controls['paymentType'].value.multiSelect.length) {
+			if (controls['paymentType'].value && (controls['paymentType'].value.multiSelect && controls['paymentType'].value.multiSelect.length)) {
 				this.filterObject.data.paymentType = controls['paymentType'].value.multiSelect.map(e => e.paymentTypeId).toString();
 				this.filterObject.list.paymentType = controls['paymentType'].value.multiSelect;
 			}
@@ -209,7 +209,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.weight = controls['weight'].value;
 				this.filterObject.list.weight = controls['weight'].value;
 			}
-			if (controls['merchant'].value && controls['merchant'].value.multiSelect.length) {
+			if (controls['merchant'].value && (controls['merchant'].value.multiSelect && controls['merchant'].value.multiSelect.length)) {
 				this.filterObject.data.merchant = controls['merchant'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.merchant = controls['merchant'].value.multiSelect;
 			}
@@ -338,8 +338,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 
 	clearFilterForm() {
 		if (this.filterForm) {
-			this.filterForm.reset();
 			this.clearData = true;
+			this.filterForm.reset();
 		}
 	}
 

@@ -83,7 +83,7 @@
                     </div>
                     <!-- Payment Type -->
                     <div class="filtered-data" *ngIf="filteredList?.paymentType?.length">
-                        <div class="filtered-title">By Tenure</div>
+                        <div class="filtered-title">By Tenure(months)</div>
                         <div class="d-flex">
                             <div class="filtered-value" *ngFor="let item of filteredList?.paymentType; let i = index;">
                                 <span>{{item?.paymentType | titlecase}}</span>
