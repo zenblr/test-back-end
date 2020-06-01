@@ -12,38 +12,51 @@ module.exports = (sequelize, DataTypes) => {
         },
         applicationFormForAppraiser: {
             type: DataTypes.BOOLEAN,
-            field: 'application_form_for_appraiser'
+            field: 'application_form_for_appraiser',
+            defaultValue: false
         },
         goldValuationForAppraiser: {
             type: DataTypes.BOOLEAN,
-            field: 'gold_valuation_for_appraiser'
+            field: 'gold_valuation_for_appraiser',
+            defaultValue: false
         },
         loanStatusForAppraiser: {
             type: DataTypes.ENUM,
             field: 'loan_status_for_appraiser',
-            values: ['approved', 'pending', 'rejected']
+            values: ['approved', 'pending', 'rejected'],
+            defaultValue: 'pending'
         },
         commentByAppraiser: {
             type: DataTypes.TEXT,
             field: 'comment_by_appraiser'
         },
+        appraiserId: {
+            type: DataTypes.INTEGER,
+            field: 'appraiser_id'
+        },
         applicationFormForBM: {
             type: DataTypes.BOOLEAN,
-            field: 'application_form_for_bm'
+            field: 'application_form_for_bm',
+            defaultValue: false
         },
         goldValuationForBM: {
             type: DataTypes.BOOLEAN,
-            field: 'gold_valuation_for_bm'
+            field: 'gold_valuation_for_bm',
+            defaultValue: false
         },
         loanStatusForBM: {
             type: DataTypes.ENUM,
             field: 'loan_status_for_bm',
-            values: ['approved', 'pending', 'rejected'],
+            values: ['approved', 'pending', 'incomplete', 'rejected'],
             defaultValue: 'pending'
         },
         commentByBM: {
             type: DataTypes.TEXT,
             field: 'comment_by_bm'
+        },
+        bmId: {
+            type: DataTypes.INTEGER,
+            field: 'bm_id'
         },
         totalEligibleAmt: {
             type: DataTypes.STRING,
@@ -53,13 +66,23 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'total_final_interest_amt'
         },
-        createdBy: {
-            type: DataTypes.INTEGER,
-            field: 'created_by'
+        customerLoanCurrentStage: {
+            type: DataTypes.ENUM,
+            field: 'customer_loan_current_stage',
+            values: ['1', '2', '3', '4', '5', '6']
         },
         loanStageId: {
             type: DataTypes.INTEGER,
             field: 'loan_stage_id'
+        },
+        isLoanSubmitted: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_loan_submitted',
+            defaultValue: false
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
@@ -89,6 +112,9 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.packet, { foreignKey: 'loanId', as: 'packet' });
 
         customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
+
+        customerLoan.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
+        customerLoan.belongsTo(models.user, { foreignKey: 'bmId', as: 'bm' });
 
         customerLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
