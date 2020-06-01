@@ -23,12 +23,12 @@
                     <div class="col-6" *ngxPermissionsOnly="['categoryView']">
                       <label>By Category</label>
                       <kt-multi-select-search [items]="categoryList" [multiple]="true" bindLabel="categoryName"
-                        formControlName="category"></kt-multi-select-search>
+                        formControlName="category" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-6" *ngxPermissionsOnly="['subCategoryView']">
                       <label>By Sub-Category</label>
                       <kt-multi-select-search [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
-                        formControlName="subCategory"></kt-multi-select-search>
+                        formControlName="subCategory" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                   </div>
                   <div class="row">
@@ -134,7 +134,7 @@
                     <div class="col-8">
                       <label>By Status</label>
                       <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
-                        formControlName="status"></kt-multi-select-search>
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-4">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
@@ -163,12 +163,12 @@
                     <div class="col-3">
                       <label>By Tenure(m)</label>
                       <kt-multi-select-search [items]="paymentTypeList" [multiple]="true" bindLabel="paymentType"
-                        formControlName="paymentType"></kt-multi-select-search>
+                        formControlName="paymentType" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-4">
                       <label>By Status</label>
                       <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
-                        formControlName="status"></kt-multi-select-search>
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-2">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
@@ -198,14 +198,14 @@
                     <div class="col-6">
                       <label>By Tenure(m)</label>
                       <kt-multi-select-search [items]="paymentTypeList" [multiple]="true" bindLabel="paymentType"
-                        formControlName="paymentType"></kt-multi-select-search>
+                        formControlName="paymentType" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-6">
                       <label>By Status</label>
                       <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
-                        formControlName="status"></kt-multi-select-search>
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-6">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
@@ -229,7 +229,7 @@
                     <div class="col-5">
                       <label>By Merchant</label>
                       <kt-multi-select-search [items]="merchantList" [multiple]="true" bindLabel="merchantName"
-                        formControlName="merchant"></kt-multi-select-search>
+                        formControlName="merchant" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-4">
                       <label>By Cancel Date</label>

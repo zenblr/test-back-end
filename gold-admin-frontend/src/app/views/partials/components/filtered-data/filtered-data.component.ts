@@ -13,6 +13,7 @@ import { SharedService } from "../../../../core/shared/services/shared.service";
 })
 export class FilteredDataComponent implements OnInit, OnDestroy {
 	@Input() filteredList: any;
+	@Input() filterName: any;
 	subscriptions: Subscription[] = [];
 
 	constructor(

@@ -60,7 +60,8 @@
                     </div>
                     <!-- Date -->
                     <div class="filtered-data" *ngIf="filteredList?.startDate">
-                        <div class="filtered-title">By Date</div>
+                        <div class="filtered-title" *ngIf="filterName == 'deposit'">By Payment Recieved Date</div>
+                        <div class="filtered-title" *ngIf="filterName == 'cancelOrder'">By Cancel Date</div>
                         <div class="d-flex">
                             <div class="filtered-value">
                                 <span>{{filteredList?.startDate}}</span>

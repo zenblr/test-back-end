@@ -44,20 +44,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	@Input() clear: boolean;
 	@Input() filterWidth: string;
 
-	current: Date = new Date();
 	filterForm: FormGroup;
-	Fromdate: Date;
 	subscriptions: Subscription[] = [];
-	countryList = [];
-	stateList = [];
-	cityList = [];
-	localityList = [];
 	clearData: boolean = false;
 	viewLoading: boolean = false;
 	showError: boolean = false;
 	filterObject: any = {};
-	filterData: any = {};
-	filteredDataList: any = {};
 	categoryList = [];
 	subCategoryList = [];
 	paymentTypeList = [];
@@ -111,42 +103,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		}
 	}
 
-	ngOnChanges(change: SimpleChanges) {
-		if (change.tabIndex) {
-			this.clearData = true;
-			if (this.filterForm) {
-				this.filterForm.controls['ToDate'].clearValidators();
-				this.filterForm.controls['ToDate'].updateValueAndValidity();
-				this.filterForm.reset();
-			}
-			this.showError = false;
-			this.viewLoading = false;
-			this.dropdown.close();
-			this.filterData = {
-				CountryId: '',
-				StateId: '',
-				CityId: '',
-				LocalityId: '',
-				StatusIds: '',
-				leaveStatusIds: '',
-				SourceIds: '',
-				StageIds: '',
-				TypeIds: '',
-				TerritoryIds: '',
-				TagIds: '',
-				UserIds: '',
-				Category: '',
-				FromDate: '',
-				ToDate: '',
-				MaxValue: '',
-				MinValue: '',
-				Sort: '',
-			};
-			this.stateList = [];
-			this.cityList = [];
-			this.localityList = [];
-		}
-	}
+	ngOnChanges(change: SimpleChanges) { }
 
 	toggleDropdown(event) {
 		if (event) {
@@ -319,36 +276,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		});
 	}
 
-	restrict(event: MatDatepickerInputEvent<Date>) {
-		this.Fromdate = event.value;
-		if (this.filterForm.controls['FromDate'].touched) {
-			this.filterForm.controls['ToDate'].setValidators(
-				Validators.required
-			);
-			this.filterForm.controls['ToDate'].updateValueAndValidity();
-			this.showError = true;
-		}
-		if (this.filterForm.controls['ToDate'].value) {
-			this.showError = false;
-		}
-	}
-
 	closeDropdown() {
 		this.clearData = true;
 		this.filterForm.reset();
 		this.showError = false;
 		this.viewLoading = false;
 		this.dropdown.close();
-		this.filterData = {
-			category: '',
-			subCategory: '',
-			priceFrom: '',
-			priceTo: '',
-			startDate: '',
-		};
-		this.stateList = [];
-		this.cityList = [];
-		this.localityList = [];
 		setTimeout(() => {
 			this.applyFilter();
 		});
@@ -406,6 +339,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	clearFilterForm() {
 		if (this.filterForm) {
 			this.filterForm.reset();
+			this.clearData = true;
 		}
 	}
 
