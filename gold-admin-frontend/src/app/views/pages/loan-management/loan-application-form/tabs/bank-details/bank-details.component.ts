@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class BankDetailsComponent implements OnInit, OnChanges {
 
-  @ViewChild('passbook',{static:false}) passbook
+  @ViewChild('passbook', { static: false }) passbook
   @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
   @Input() disable
@@ -21,10 +21,10 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   bankForm: FormGroup;
   passbookImg: any = [];
   constructor(
-    public toastr:ToastrService,
+    public toastr: ToastrService,
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
-    public sharedService:SharedService
+    public sharedService: SharedService
   ) {
     this.initForm()
   }
@@ -46,8 +46,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
       this.bankFormEmit.emit(this.bankForm);
     }
-    if(changes.totalAmt){
-      if(changes.totalAmt.currentValue > '200000'){
+    if (changes.totalAmt) {
+      if (changes.totalAmt.currentValue > '200000') {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
       }
@@ -59,17 +59,41 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
   initForm() {
     this.bankForm = this.fb.group({
-      paymentType:['',Validators.required],
-      bankName: [],
-      accountNumber: [],
-      ifscCode: [],
+      paymentType: ['', Validators.required],
+      bankName: [, [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
+      accountNumber: [, [Validators.required]],
+      ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       accountType: [],
-      accountHolderName: [],
-      bankBranchName: [],
+      accountHolderName: [, [Validators.required]],
+      bankBranchName: [, [Validators.required]],
       passbookProof: [[]],
-      passbookProofImage:['']
+      passbookProofImage: ['']
     })
     // this.bankForm.disable()
+  }
+
+  setValidation(event) {
+    if (event.target.value == 'bank') {
+      this.controls.bankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]);
+      this.controls.accountNumber.setValidators([Validators.required]);
+      this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]);
+      this.controls.accountHolderName.setValidators([Validators.required]);
+      this.controls.bankBranchName.setValidators([Validators.required]);
+      this.controls.passbookProofImage.setValidators([Validators.required]);
+    } else if (event.target.value == 'cash') {
+      Object.keys(this.bankForm.controls).forEach(key => {
+        if (key != 'paymentType') {
+          this.bankForm.controls[key].reset();
+          this.bankForm.controls[key].clearValidators();
+        }
+        if (key == 'passbookProof') {
+          this.bankForm.controls[key].patchValue([])
+        }
+      });
+    }
+    Object.keys(this.bankForm.controls).forEach(key => {
+      this.bankForm.controls[key].updateValueAndValidity();
+    });
   }
 
   getFileInfo(event) {
@@ -97,7 +121,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     } else {
       this.toastr.error('Cannot upload more than two images');
     }
-    
+
   }
 
   removeImages(index) {
@@ -112,8 +136,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       return this.bankForm.controls
   }
 
-  nextAction(){
-    if(this.bankForm.invalid){
+  nextAction() {
+    if (this.bankForm.invalid) {
       this.bankForm.markAllAsTouched();
       return
     }

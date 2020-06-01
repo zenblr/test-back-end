@@ -77,6 +77,9 @@ import { UserReviewComponent } from '../pages/kyc-settings/tabs/user-review/user
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { AddAppraiserComponent } from '../pages/user-management/assign-appraiser/add-appraiser/add-appraiser.component';
 
+import { WebcamModule } from "ngx-webcam";
+import { WebcamDialogComponent } from '../pages/kyc-settings/webcam-dialog/webcam-dialog.component';
+
 @NgModule({
 	declarations: [
 		ScrollTopComponent,
@@ -137,7 +140,8 @@ import { AddAppraiserComponent } from '../pages/user-management/assign-appraiser
 
 		SelectWithSearchComponent,
 		UserReviewComponent,
-		AddAppraiserComponent
+		AddAppraiserComponent,
+		WebcamDialogComponent
 	],
 	exports: [
 		WidgetModule,
@@ -191,9 +195,11 @@ import { AddAppraiserComponent } from '../pages/user-management/assign-appraiser
 		SelectWithSearchComponent,
 		UserReviewComponent,
 		AddAppraiserComponent,
+		WebcamDialogComponent,
 		// spinner
 		NgbDropdownModule,
 		NgxPermissionsModule,
+		WebcamModule
 	],
 	imports: [
 		NgbModule,
@@ -215,9 +221,9 @@ import { AddAppraiserComponent } from '../pages/user-management/assign-appraiser
 		NgbTooltipModule,
 		NgbModule,
 		NgSelectModule,
-
+		WebcamModule
 		// spinner
 	],
 	entryComponents: [ImagePreviewDialogComponent],
 })
-export class PartialsModule {}
+export class PartialsModule { }

@@ -25,6 +25,7 @@ import { Subscription, ReplaySubject, Subject } from "rxjs";
 import { MatDatepickerInputEvent, MatSelect } from "@angular/material";
 import { SharedService } from "../../../../core/shared/services/shared.service";
 import { NgxPermissionsService } from "ngx-permissions";
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
 	selector: "kt-filter",
@@ -32,6 +33,7 @@ import { NgxPermissionsService } from "ngx-permissions";
 	styleUrls: ["./filter.component.scss"],
 })
 export class FilterComponent implements OnInit, OnChanges, OnDestroy {
+	@ViewChild(NgSelectComponent, { static: true }) cityRef: NgSelectComponent;
 	@ViewChild("filterDropdown", { static: true }) dropdown: NgbDropdown;
 	@ViewChild("multiSelect", { static: true }) multiSelect: MatSelect;
 	@ViewChild("customerMulti", { static: true }) customerMulti: MatSelect;
@@ -106,6 +108,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	public customerMultiFilterCtrl: FormControl = new FormControl();
 	public filteredCustomerMulti: ReplaySubject<[]> = new ReplaySubject<[]>(1);
 	states = [];
+	cities = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -699,6 +702,18 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		});
 	}
 
+
+	getCities($event) {
+		if ($event) {
+			const stateId = $event.id;
+			this.sharedService.getCities(stateId).subscribe(res => {
+				this.cities = res.message;
+			});
+		} else {
+			this.cities = [];
+		}
+	}
+
 	getTenure() {
 		this.sharedService.getTenure().subscribe((res) => {
 			this.tenure = res;
@@ -722,13 +737,6 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			this.name = res;
 		});
 	}
-
-	// getCities() {
-	//   const stateId = this.controls.stateId.value;
-	//   this.sharedService.getCities(stateId).subscribe(res => {
-	//     this.cities = res.message;
-	//   });
-	// }
 
 	clearFilterForm() {
 		if (this.filterForm) {
