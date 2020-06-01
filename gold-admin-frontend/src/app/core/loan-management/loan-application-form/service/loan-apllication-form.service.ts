@@ -16,8 +16,42 @@ export class LoanApplicationFormService {
     )
   }
 
-  applyForLoan(data): Observable<any> {
-    return this.http.post(`/api/loan-process/apply-for-loan`, data).pipe(
+  basicSubmit(details):Observable<any>{
+    return this.http.post(`/api/loan-process/basic-details`,details).pipe(
+      map(res => res)
+    )
+  }
+
+  nomineeSubmit(details,loanId):Observable<any>{
+    details.loanId = loanId
+    return this.http.post(`/api/loan-process/nominee-details`,details).pipe(
+      map(res => res)
+    )
+  }
+
+  submitOrnaments(loanOrnaments,totalEligibleAmt,loanId,):Observable<any>{
+    return this.http.post(`/api/loan-process/ornaments-details`,{loanOrnaments,totalEligibleAmt,loanId,}).pipe(
+      map(res => res)
+    )
+  }
+
+  submitFinalIntrest(loanFinalCalculator,loanId):Observable<any>{
+    return this.http.post(`/api/loan-process/final-loan-details`,{loanFinalCalculator,loanId}).pipe(
+      map(res => res)
+    )
+  }
+
+  submitBank(details,loanId):Observable<any>{
+    details.loanId = loanId
+    return this.http.post(`/api/loan-process/bank-details`,details).pipe(
+      map(res => res)
+    )
+  }
+
+
+  applyForLoan(data,loanId): Observable<any> {
+    data.loanId = loanId
+    return this.http.post(`/api/loan-process/appraiser-rating`, data).pipe(
       map(res => res)
     )
   }

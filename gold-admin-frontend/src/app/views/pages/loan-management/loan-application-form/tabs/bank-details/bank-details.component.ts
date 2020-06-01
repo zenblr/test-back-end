@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { LoanApplicationFormService } from '../../../../../../core/loan-management';
 
 @Component({
   selector: 'kt-bank-details',
@@ -11,20 +12,22 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class BankDetailsComponent implements OnInit, OnChanges {
 
-  @ViewChild('passbook', { static: false }) passbook
+  @Input() loanId
+  @ViewChild('passbook',{static:false}) passbook
   @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
   @Input() disable
   @Input() action
-  @Input() totalAmt
-  @Input() next
+  @Input() finalLoanAmt
+  @Output() next: EventEmitter<any> = new EventEmitter();
   bankForm: FormGroup;
   passbookImg: any = [];
   constructor(
     public toastr: ToastrService,
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
-    public sharedService: SharedService
+    public sharedService:SharedService,
+    public loanFormService:LoanApplicationFormService,
   ) {
     this.initForm()
   }
@@ -46,8 +49,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
       this.bankFormEmit.emit(this.bankForm);
     }
-    if (changes.totalAmt) {
-      if (changes.totalAmt.currentValue > '200000') {
+    if(changes.finalLoanAmt){
+      if(changes.finalLoanAmt.currentValue > '200000'){
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
       }
@@ -136,12 +139,21 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       return this.bankForm.controls
   }
 
-  nextAction() {
-    if (this.bankForm.invalid) {
-      this.bankForm.markAllAsTouched();
+  nextAction(){
+    if(this.controls.paymentType.invalid){
+      this.controls.paymentType.markAsTouched();
       return
     }
-    this.next.emit(5)
+    if(this.controls.paymentType.value == "bank"){
+      if(this.bankForm.invalid){
+        this.bankForm.markAllAsTouched()
+        return
+      }
+    }
+    this.loanFormService.submitBank(this.bankForm.value,this.loanId).pipe(
+      map(res=>{
+        this.next.emit(5)
+      })).subscribe()
   }
 
 }

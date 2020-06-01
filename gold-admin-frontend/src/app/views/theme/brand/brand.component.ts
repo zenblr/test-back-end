@@ -69,11 +69,11 @@ export class BrandComponent implements OnInit, AfterViewInit {
 		// var rate;
 
 
-		this.goldRateService.goldRate$.subscribe(res => {
-			// console.log(res);
-			this.goldRate = res
-			this.ref.detectChanges();
-		});
+		// this.goldRateService.goldRate$.subscribe(res => {
+		// 	// console.log(res);
+		// 	this.goldRate = res
+		// 	this.ref.detectChanges();
+		// });
 	}
 
 	/**

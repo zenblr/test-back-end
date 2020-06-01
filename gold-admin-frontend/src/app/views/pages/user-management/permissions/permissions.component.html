@@ -1,7 +1,7 @@
 <kt-portlet>
         <kt-portlet-body>
             <mat-accordion>
-                <mat-expansion-panel *ngFor="let permission of permissions;index as moduleIndex;last as l;" [expanded]="moduleIndex==l">
+                <mat-expansion-panel *ngFor="let permission of permissions;index as moduleIndex;last as l;first as f" [expanded]="moduleIndex==l || f==l">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             {{permission.moduleName | titlecase}}
