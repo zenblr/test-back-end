@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, Output, OnChanges, Input, ChangeDetect
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, finalize } from 'rxjs/operators';
 import { LoanApplicationFormService } from '../../../../../../core/loan-management';
 import { ToastrService } from 'ngx-toastr';
 
@@ -99,7 +99,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             stage = Number(stage) - 1;
             this.next.emit(stage)
             this.laonId.emit(res.loanId)
-            if (stage > 1) {
+            if (stage >= 1) {
               this.apiHit.emit(res.loanId)
             }
             if (res.totalEligibleAmt)
@@ -142,6 +142,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.markAllAsTouched();
       return
     }
+    this.basicForm.enable()
     this.loanApplicationFormService.basicSubmit(this.basicForm.value).pipe(
       map(res => {
         let stage = res.loanCurrentStage
@@ -151,6 +152,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       }), catchError(err => {
         this.toast.error(err.error.message)
         throw err
+      }),finalize(()=>{
       })).subscribe()
   }
 

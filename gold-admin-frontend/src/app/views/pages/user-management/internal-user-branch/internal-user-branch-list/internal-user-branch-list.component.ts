@@ -195,13 +195,19 @@ export class InternalUserBranchListComponent implements OnInit {
   }
 
   createData(internalBranch){
+   let partner = []
+    internalBranch.partners.forEach(element => {
+      partner.push(element.id)
+    });
     var  data = {
       name:internalBranch.name,
       cityId:internalBranch.city.id,
       stateId:internalBranch.state.id,
       address:internalBranch.address,
       pinCode:internalBranch.pinCode,
-      userId:internalBranch.id
+      userId:internalBranch.id,
+      partnerId:partner,
+      multiselect:{multiSelect:partner}
     }
     return data
   }

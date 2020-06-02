@@ -122,7 +122,7 @@ export class AppliedKycComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'edit', appraiser: item.customer.customerAssignAppraiser }, width: '500px' });
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'edit', appraiser: item.customer.customerAssignAppraiser, customer: item.customer }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

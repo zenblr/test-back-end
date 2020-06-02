@@ -19,9 +19,9 @@
                     ngbDropdownToggle [disabled]="isDisabled">Generate</button>
                 <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
                     <button ngbDropdownItem (click)="selectedValue('label')">Label</button>
-                    <button ngbDropdownItem (click)="selectedValue('mainfest')">Mainfest</button>
-                    <button ngbDropdownItem (click)="selectedValue('deliMainfest')">Deli Mainfest</button>
-                    <button ngbDropdownItem (click)="selectedValue('uninsuredMainfest')">Uninsured Mainfest</button>
+                    <button ngbDropdownItem (click)="selectedValue('mainfest')">Manifest</button>
+                    <button ngbDropdownItem (click)="selectedValue('deliMainfest')">Deli Manifest</button>
+                    <button ngbDropdownItem (click)="selectedValue('uninsuredMainfest')">Uninsured Manifest</button>
                 </div>
             </div>
             <div *ngxPermissionsOnly="permissionType; then elseBlock"></div>

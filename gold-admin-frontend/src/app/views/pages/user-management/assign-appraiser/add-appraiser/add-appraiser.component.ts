@@ -42,12 +42,16 @@ export class AddAppraiserComponent implements OnInit {
   }
 
   setForm() {
+    console.log(this.data)
     if (this.data.action == 'add') {
       this.title = 'Add Appraiser'
     } else if (this.data.action == 'edit') {
       this.title = 'Edit Appraiser'
 
       this.appraiserForm.patchValue(this.data.appraiser)
+      if (this.data.customer) {
+        this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
+      }
     } else {
       this.title = 'View Appraiser'
       this.appraiserForm.patchValue(this.data.appraiser)
@@ -94,6 +98,11 @@ export class AddAppraiserComponent implements OnInit {
 
   bindCustomerName(event) {
     console.log(event)
+    if (event) {
+      this.controls.customerName.patchValue(event.firstName + " " + event.lastName);
+    } else {
+      this.controls.customerName.patchValue('');
+    }
   }
 
   onSubmit() {

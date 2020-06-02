@@ -61,6 +61,10 @@ exports.getSingleAssign = async (req, res) => {
             model: models.user,
             as: "appraiser",
             attributes: ['id', 'firstName', 'lastName']
+        }, {
+            model: models.customer,
+            as: "customer",
+            attributes: ['id', 'firstName', 'lastName']
         }]
     })
 
@@ -93,6 +97,11 @@ exports.getListAssignAppraiser = async (req, res) => {
         {
             model: models.user,
             as: "appraiser",
+            attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.customer,
+            as: "customer",
             attributes: ['id', 'firstName', 'lastName']
         }
     ]

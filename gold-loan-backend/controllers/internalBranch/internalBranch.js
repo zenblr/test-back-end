@@ -16,27 +16,24 @@ exports.addInternalBranch = async (req, res) => {
 
     if (!check.isEmpty(nameExist)) {
         return res.status(404).json({ message: "Your internal branch name is already exist." });
-    }   
+    }
 
     await sequelize.transaction(async t => {
         let addInternalBranch = await models.internalBranch.create({ name, cityId, stateId, address, pinCode, createdBy, modifiedBy }, { transaction: t });
         let id = addInternalBranch.dataValues.id;
         let newId = addInternalBranch.dataValues.name.slice(0, 3).toUpperCase() + '-' + id;
-        console.log(newId);
         await models.internalBranch.update({ internalBranchUniqueId: newId }, { where: { id }, transaction: t });
-        console.log(typeof partnerId)
         for (var i = 0; i < partnerId.length; i++) {
-            console.log(partnerId.length);
             var data = await models.internalBranchPartner.create({
                 internalBranchId: addInternalBranch.id,
                 partnerId: partnerId[i]
             }, { transaction: t })
-            console.log(data);
         }
     })
     return res.status(201).json({ message: "internal branch created" });
 
 }
+
 // read internal branch
 exports.readInternalBranch = async (req, res) => {
 
@@ -65,6 +62,10 @@ exports.readInternalBranch = async (req, res) => {
         offset: offset,
         limit: pageSize,
         include: [
+            {
+                model: models.partner,
+                attributes: ['id', 'name', 'partnerId']
+            },
             {
                 model: models.user,
                 as: "Createdby",
@@ -141,8 +142,6 @@ exports.readInternalBranch = async (req, res) => {
     return res.status(200).json({ data: readInternalBranch, count: count });
 }
 
-
-
 // read internal branch by id
 
 exports.readInternalBranchById = async (req, res) => {
@@ -150,6 +149,10 @@ exports.readInternalBranchById = async (req, res) => {
     let readInternalBranchById = await models.internalBranch.findOne({
         where: { id: internalBranchId, isActive: true },
         include: [
+            {
+                model: models.partner,
+                attributes: ['id', 'name', 'partnerId']
+            },
             {
                 model: models.user,
                 as: "Createdby",
@@ -192,37 +195,28 @@ exports.readInternalBranchById = async (req, res) => {
 exports.updateInternalBranch = async (req, res) => {
     const internalBranchId = req.params.id;
     const { name, cityId, stateId, pinCode, address, partnerId } = req.body;
-    let modifiedBy=req.userData.id;
-    let updateInternalBranch = await models.internalBranch.update({ name, cityId, stateId, pinCode, address,modifiedBy }, { where: { id: internalBranchId, isActive: true } });
-    if (!updateInternalBranch[0]) {
-        return res.status(404).json({ message: 'internal branch updated failed' });
-    }else{
-        let readInternalBranchData = await models.internalBranchPartner.findAll({where:{internalBranchId:internalBranchId},attributes:['partnerId']});
-        console.log(readInternalBranchData);
-        let oldPartnerId = await readInternalBranchData.map((data) => data.partnerId);
-        console.log(oldPartnerId);
-        let deleteValues=await _.difference(oldPartnerId,partnerId);
-        let addValues=await _.difference(partnerId,oldPartnerId);
-        addValues.map( async (partnerId)=>{
-        console.log(partnerId);
-         let data=await models.internalBranchPartner.create({internalBranchId:internalBranchId,partnerId:partnerId});
-         console.log(data);
+    let modifiedBy = req.userData.id;
+    // if (!updateInternalBranch[0]) {
+    //     return res.status(404).json({ message: 'internal branch updated failed' });
+    // } else {
+    await sequelize.transaction(async t => {
+
+        let updateInternalBranch = await models.internalBranch.update({ name, cityId, stateId, pinCode, address, modifiedBy }, { where: { id: internalBranchId, isActive: true }, transaction: t });
+        let readInternalBranchData = await models.internalBranchPartner.findAll({
+            where: { internalBranchId: internalBranchId },
+            attributes: ['partnerId']
         });
-        await models.internalBranchPartner.destroy({ where: { internalBranchId : internalBranchId, partnerId: deleteValues } });
+        let oldPartnerId = await readInternalBranchData.map((data) => data.partnerId);
+        let deleteValues = await _.difference(oldPartnerId, partnerId);
+        let addValues = await _.difference(partnerId, oldPartnerId);
+        addValues.map(async (partnerId) => {
+            let data = await models.internalBranchPartner.create({ internalBranchId: internalBranchId, partnerId: partnerId }, { transaction: t });
+        });
+        await models.internalBranchPartner.destroy({ where: { internalBranchId: internalBranchId, partnerId: deleteValues }, transaction: t });
+    })
 
-        // for (var i = 0; i < partnerId.length; i++) {
-        //     console.log(partnerId.length);
-        //     var data = await models.internalBranchPartner.create({
-        //         internalBranchId: addInternalBranch.id
-        //         partnerId: partnerId[i],
-
-        //     }, { transaction: t })
-            //  if (!updateInternalBranch[0]) {
-            //     return res.status(404).json({ message: 'internal branch updated failed' });
-            // }
-        
-        return res.status(200).json({ message: 'Updated' });
-    }
+    return res.status(200).json({ message: 'Updated' });
+    // }
 }
 
 // deactive internal branch

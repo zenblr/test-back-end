@@ -5,6 +5,7 @@ import { InternalUserBranchService } from "../../../../../core/user-management/i
 import { ToastrService } from 'ngx-toastr';
 import { map, catchError } from 'rxjs/operators';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
+import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
 
 @Component({
   selector: 'kt-add-internal-user-branch',
@@ -17,6 +18,8 @@ export class AddInternalUserBranchComponent implements OnInit {
   addInternalBranchForm: FormGroup;
   states:any[]=[]
   cities:any[]=[]
+  partners = [];
+  button: string;
 
   constructor(
     public dialogRef: MatDialogRef<AddInternalUserBranchComponent>,
@@ -25,6 +28,8 @@ export class AddInternalUserBranchComponent implements OnInit {
     private internalUserBranchService:InternalUserBranchService,
     public toast:ToastrService,
     public sharedService:SharedService,
+    private partnerService: PartnerService
+
   ) { }
 
   ngOnInit() {
@@ -32,13 +37,22 @@ export class AddInternalUserBranchComponent implements OnInit {
     this.getStates()
     this.initForm()
     this.setTitle()
+    this.getAllPartners()
+  }
+
+  getAllPartners() {
+    this.partnerService.getAllPartnerWithoutPagination().subscribe(res => {
+      this.partners = res.data;
+    })
   }
 
   setTitle() {
     if (this.data.action == 'add') {
       this.title = 'Add Internal User'
+      this.button = 'add'
     } else if (this.data.action == 'edit') {
       this.title = 'Edit Internal User'
+      this.button = 'update'
       this.addInternalBranchForm.patchValue(this.data.branch)
       this.getCites()
     } else {
@@ -56,6 +70,8 @@ export class AddInternalUserBranchComponent implements OnInit {
       stateId: ['', Validators.required],
       cityId: ['', Validators.required],
       pinCode: ['', Validators.required],
+      multiselect:[''],
+      partnerId:['']
     })
   }
 
@@ -92,6 +108,7 @@ export class AddInternalUserBranchComponent implements OnInit {
       this.addInternalBranchForm.markAllAsTouched()
       return
     }
+    this.controls.partnerId.patchValue(this.controls.multiselect.value.multiSelect)
     if(this.data.action == 'add'){
       this.internalUserBranchService.addInternalBranch(this.addInternalBranchForm.value).pipe(
         map(res => {

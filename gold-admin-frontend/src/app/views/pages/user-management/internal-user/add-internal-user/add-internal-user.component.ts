@@ -83,7 +83,7 @@ export class AddInternalUserComponent implements OnInit {
       email: ['', [Validators.email,Validators.required]],
       mobileNumber: ['', [Validators.required,Validators.minLength(10)]],
       roleId: ['', Validators.required],
-      userTypeId:['',Validators.required]
+      userTypeId:['',Validators.required],
     })
   }
 

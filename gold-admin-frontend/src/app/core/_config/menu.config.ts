@@ -5,7 +5,7 @@ export class MenuConfig {
 	public defaults: any;
 	permissionsArr = [];
 	modulesArr = [];
-	userType:number;
+	userType: number;
 	constructor(
 		private sharedService: SharedService,
 		public permissionsService: NgxPermissionsService
@@ -18,7 +18,7 @@ export class MenuConfig {
 				this.permissionsService.loadPermissions(this.permissionsArr);
 				// console.log(this.permissionsArr);
 			}
-			if(res.userDetails){
+			if (res.userDetails) {
 				this.userType = res.userDetails.userTypeId;
 			}
 
@@ -142,6 +142,12 @@ export class MenuConfig {
 										},
 									],
 								},
+								{
+									title: "Holidays",
+									root: true,
+									permission: false,
+									page: '/holidays'
+								},
 							],
 						},
 						{
@@ -149,16 +155,16 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
 							page: "/user-management",
-							permission: !(this.permissionsArr.includes('merchantView')||
-							this.permissionsArr.includes('brokerView') ||
-							this.permissionsArr.includes('storeView')||
-							this.permissionsArr.includes('partnerBannerView')||
-							this.permissionsArr.includes('partnerView')||
-							this.permissionsArr.includes('partnerBranchView')||
-							this.permissionsArr.includes('internalBranchView')||
-							this.permissionsArr.includes('internalUserView')||
-							this.permissionsArr.includes('assignAppraiserView') ||
-							this.userType ===4),
+							permission: !(this.permissionsArr.includes('merchantView') ||
+								this.permissionsArr.includes('brokerView') ||
+								this.permissionsArr.includes('storeView') ||
+								this.permissionsArr.includes('partnerBannerView') ||
+								this.permissionsArr.includes('partnerView') ||
+								this.permissionsArr.includes('partnerBranchView') ||
+								this.permissionsArr.includes('internalBranchView') ||
+								this.permissionsArr.includes('internalUserView') ||
+								this.permissionsArr.includes('assignAppraiserView') ||
+								this.userType === 4),
 						},
 						{
 							title: "Lead Management",
@@ -171,7 +177,7 @@ export class MenuConfig {
 							title: "Customer Setting",
 							root: true,
 							src: "assets/media/aside-icons/icons-06.svg",
-							permission: !(this.permissionsArr.includes('customerKycView')||
+							permission: !(this.permissionsArr.includes('customerKycView') ||
 								this.permissionsArr.includes('appliedKycView')),
 
 							submenu: [
@@ -342,7 +348,7 @@ export class MenuConfig {
 							root: true,
 							page: "/user-management/internal-user-branch",
 							src: "assets/media/aside-icons/icons-15.svg",
-							permission: !this.permissionsArr.includes('internalBranchView')					,
+							permission: !this.permissionsArr.includes('internalBranchView'),
 						},
 						{
 							title: "Assign Appraiser",
@@ -377,7 +383,7 @@ export class MenuConfig {
 							root: true,
 							page: "/user-management/roles",
 							src: "assets/media/aside-icons/icons-20.svg",
-							permission: !(this.userType ===4),
+							permission: !(this.userType === 4),
 						},
 						{
 							title: "Back",

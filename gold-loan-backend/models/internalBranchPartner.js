@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'internal_branch_id'
         },
         partnerId: {
-            type: DataTypes.ARRAY(DataTypes.INTEGER),
+            type: DataTypes.INTEGER,
             field: 'partner_id'
         },
 

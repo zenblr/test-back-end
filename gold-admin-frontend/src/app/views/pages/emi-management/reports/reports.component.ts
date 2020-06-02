@@ -28,6 +28,7 @@ export class ReportsComponent implements OnInit {
 	minDate = new Date();
 	merchantList = [];
 	orderStatusList = [];
+	clearData: boolean = false;
 	@Output() next: EventEmitter<any> = new EventEmitter<any>();
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
@@ -94,6 +95,8 @@ export class ReportsComponent implements OnInit {
 		this.setReportTypeValidators();
 
 		this.reportForm.valueChanges.subscribe((val) => console.log(val));
+
+		this.controls
 	}
 
 	get controls() {
@@ -135,12 +138,14 @@ export class ReportsComponent implements OnInit {
 			}
 			merchantIdControl.updateValueAndValidity();
 			statusIdControl.updateValueAndValidity();
-
+			this.clearData = true;
 			setTimeout(() => {
 				this.controls['startDate'].patchValue('');
 				this.controls['endDate'].patchValue('');
 				this.controls['merchantId'].patchValue('');
 				this.controls['statusId'].patchValue('');
+				this.clearData = false;
+
 			});
 		});
 	}
@@ -160,7 +165,7 @@ export class ReportsComponent implements OnInit {
 			endDate.getTime() - endDate.getTimezoneOffset() * 60000
 		).toISOString();
 		const reportData = {
-			merchantId: this.controls.merchantId.value,
+			merchantId: this.controls.merchantId.value.multiSelect.toString(),
 			statusId: this.controls.statusId.value,
 			startDate: sd,
 			endDate: ed,
