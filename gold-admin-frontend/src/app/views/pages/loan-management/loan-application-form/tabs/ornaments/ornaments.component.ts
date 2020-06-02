@@ -392,6 +392,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     }
     this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value,this.totalAmount,this.loanId).pipe(
       map(res=>{
+        let array = this.OrnamentsData.controls
+        for (let index = 0; index < array.length; index++) {
+        const controls = this.OrnamentsData.at(index) as FormGroup;
+        controls.controls.id.patchValue(res.ornaments[index].id)
+        }
         this.next.emit(3)
       })
     ).subscribe()

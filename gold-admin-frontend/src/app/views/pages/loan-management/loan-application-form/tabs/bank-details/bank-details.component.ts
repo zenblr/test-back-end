@@ -13,7 +13,7 @@ import { LoanApplicationFormService } from '../../../../../../core/loan-manageme
 export class BankDetailsComponent implements OnInit, OnChanges {
 
   @Input() loanId
-  @ViewChild('passbook',{static:false}) passbook
+  @ViewChild('passbook', { static: false }) passbook
   @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
   @Input() disable
@@ -26,8 +26,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     public toastr: ToastrService,
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
-    public sharedService:SharedService,
-    public loanFormService:LoanApplicationFormService,
+    public sharedService: SharedService,
+    public loanFormService: LoanApplicationFormService,
   ) {
     this.initForm()
   }
@@ -40,17 +40,17 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.details) {
-      if (changes.action.currentValue == 'add') {
-        this.bankForm.patchValue(changes.details.currentValue.customerKycBank[0])
-      } else if (changes.action.currentValue == 'edit') {
-        this.bankForm.patchValue(changes.details.currentValue.loanBankDetail)
-        this.ref.markForCheck()
+      if (changes.action.currentValue == 'edit') {
+        if (changes.details.currentValue && changes.details.currentValue.loanBankDetail) {
+          this.bankForm.patchValue(changes.details.currentValue.loanBankDetail)
+          this.ref.markForCheck()
+        }
       }
 
       this.bankFormEmit.emit(this.bankForm);
     }
-    if(changes.finalLoanAmt){
-      if(changes.finalLoanAmt.currentValue > '200000'){
+    if (changes.finalLoanAmt) {
+      if (changes.finalLoanAmt.currentValue > '200000') {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
       }
@@ -139,19 +139,19 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       return this.bankForm.controls
   }
 
-  nextAction(){
-    if(this.controls.paymentType.invalid){
+  nextAction() {
+    if (this.controls.paymentType.invalid) {
       this.controls.paymentType.markAsTouched();
       return
     }
-    if(this.controls.paymentType.value == "bank"){
-      if(this.bankForm.invalid){
+    if (this.controls.paymentType.value == "bank") {
+      if (this.bankForm.invalid) {
         this.bankForm.markAllAsTouched()
         return
       }
     }
-    this.loanFormService.submitBank(this.bankForm.value,this.loanId).pipe(
-      map(res=>{
+    this.loanFormService.submitBank(this.bankForm.value, this.loanId).pipe(
+      map(res => {
         this.next.emit(5)
       })).subscribe()
   }

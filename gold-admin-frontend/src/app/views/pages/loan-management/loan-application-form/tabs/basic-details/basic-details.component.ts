@@ -25,8 +25,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() laonId: EventEmitter<any> = new EventEmitter();
   @Output() totalEligibleAmt: EventEmitter<any> = new EventEmitter();
+  @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
-  
+
   currentDate: any = new Date();
 
   constructor(
@@ -46,7 +47,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       console.log(res)
       if (res.customerID) {
         this.controls.customerUniqueId.patchValue(res.customerID)
-        // this.apiHit.emit(this.basicForm)
+        this.getCustomerDetails()
       }
     })
 
@@ -78,13 +79,13 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.ref.detectChanges()
       }
     }
-    if (this.disable) {
+    if(changes.action && changes.action.currentValue == 'add'){
+      this.basicForm.controls.customerUniqueId.enable()
+    }
+    if (changes.disable && changes.disable.currentValue) {
       this.basicForm.disable()
+      this.ref.detectChanges()
     }
-    if (this.invalid) {
-      this.basicForm.markAllAsTouched()
-    }
-    this.ref.detectChanges()
   }
 
 
@@ -94,18 +95,22 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         map(res => {
           if (res.loanCurrentStage) {
             let stage = res.loanCurrentStage
+
             stage = Number(stage) - 1;
             this.next.emit(stage)
             this.laonId.emit(res.loanId)
-            if(res.totalEligibleAmt)
-            this.totalEligibleAmt.emit(res.totalEligibleAmt)
-            if(res.finalLoanAmount)
-            this.finalLoanAmount.emit(res.finalLoanAmount)
+            if (stage > 1) {
+              this.apiHit.emit(res.loanId)
+            }
+            if (res.totalEligibleAmt)
+              this.totalEligibleAmt.emit(res.totalEligibleAmt)
+            if (res.finalLoanAmount)
+              this.finalLoanAmount.emit(res.finalLoanAmount)
 
-          }else{
-          this.customerDetail = res.customerData
-          this.basicForm.patchValue(this.customerDetail)
-          this.basicForm.controls.customerId.patchValue(this.customerDetail.id)
+          } else {
+            this.customerDetail = res.customerData
+            this.basicForm.patchValue(this.customerDetail)
+            this.basicForm.controls.customerId.patchValue(this.customerDetail.id)
           }
         }),
         catchError(err => {

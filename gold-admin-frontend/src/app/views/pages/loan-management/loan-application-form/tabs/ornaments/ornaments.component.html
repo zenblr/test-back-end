@@ -18,8 +18,8 @@
                                     <select class="form-control" formControlName="ornamentType"
                                         [class.isError]="ornament.controls.ornamentType.touched && ornament.controls.ornamentType.invalid">
                                         <option value=null [disabled]="true" [selected]="true">Select Ornament</option>
-                                        <option [value]="karat.id" *ngFor="let karat of ornamentType">
-                                            {{karat.name | titlecase}}
+                                        <option [value]="ornament.name" *ngFor="let ornament of ornamentType">
+                                            {{ornament.name | titlecase}}
                                         </option>
                                     </select>
                                     <mat-error

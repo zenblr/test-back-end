@@ -2,9 +2,9 @@
     <kt-portlet-body>
         <div class="row">
             <div class="col-12">
-                <mat-tab-group [(selectedIndex)]="selected">
+                <mat-tab-group [(selectedIndex)]="selected" (selectedTabChange)="next($event)">
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
-                        <kt-basic-details  [action]="action"
+                        <kt-basic-details  [action]="action" (apiHit)="editId($event)"
                             [details]="customerDetail" [disable]="disabledForm" (finalLoanAmount)="finalLoanAmount($event)"
                             (laonId)="loan($event)" (next)="next($event)" (totalEligibleAmt)="totalEligibleAmt($event)"
                             >
@@ -13,12 +13,12 @@
                     <!-- <mat-tab label="KYC Details" [disabled]="disabled[1]">
                         <kt-kyc-details (kycEmit)="kycEmit($event)" [action]="action" [details]="customerDetail"  [disable]="disabledForm"></kt-kyc-details>
                     </mat-tab> -->
-                    <mat-tab label="Nominee Details">
+                    <mat-tab label="Nominee Details" [disabled]="disabled[1]">
                         <kt-nominee-details  [action]="action" (next)="next($event)"
                             [invalid]="invalid.nominee" [disable]="disabledForm" [details]="customerDetail" [loanId]="loanId">
                         </kt-nominee-details>
                     </mat-tab>
-                    <mat-tab label="Ornaments">
+                    <mat-tab label="Ornaments" [disabled]="disabled[2]">
                         <!-- <ng-template > -->
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
                             style="padding:0px !important">
@@ -29,17 +29,17 @@
                         </div>
                         <!-- </ng-template> -->
                     </mat-tab>
-                    <mat-tab label="Final Interest Calculator">
+                    <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">
                         <kt-interest-calculator  (next)="next($event)"
                             [invalid]="invalid.intreset" [disable]="disabledForm" [action]="action" (finalLoanAmount)="finalLoanAmount($event)"
                             [totalAmt]="totalAmount" [details]="customerDetail" [loanId]="loanId"></kt-interest-calculator>
                     </mat-tab>
-                    <mat-tab label="Bank Details">
+                    <mat-tab label="Bank Details" [disabled]="disabled[4]">
                         <kt-bank-details [action]="action" [loanId]="loanId"
                             [details]="customerDetail" [disable]="disabledForm" [finalLoanAmt]="finalLoanAmt" (next)="next($event)">
                         </kt-bank-details>
                     </mat-tab>
-                    <mat-tab label="Loan Status Approval">
+                    <mat-tab label="Loan Status Approval" [disabled]="disabled[5]">
                         <kt-approval (apply)="apply()" [action]="action"
                             [invalid]="invalid.approval" [disable]="disabledForm" [details]="customerDetail" [loanId]="loanId">
                         </kt-approval>

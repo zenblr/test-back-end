@@ -20,9 +20,9 @@ export class LoanApplicationFormComponent implements OnInit {
     ornaments: false,
     intreset: false,
   }
-  url:string
+  url: string
   id: number;
-  disabledForm: boolean ;
+  disabledForm: boolean;
   totalAmount: number = 0;
   basic: any;
   bank: any;
@@ -34,7 +34,7 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false,false, false, false, false];
+  disabled = [false, true, true, true, true, true];
   loanId: any;
   finalLoanAmt: any;
   constructor(
@@ -47,53 +47,73 @@ export class LoanApplicationFormComponent implements OnInit {
     this.url = this.router.url.split('/')[2]
     this.id = this.rout.snapshot.params.id
     if (this.id) {
-      for (let index = 0; index < this.disabled.length; index++) {
-        this.disabled[index] = false;
-      }
-      this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
-        this.loanId = res.data.id
-        this.action = 'edit'
-        this.customerDetail = res.data
-        // this.totalAmount = res.data.totalEligibleAmt
-        if (this.url == "package-image-upload") {
-          this.selected = 6;
-          this.disabledForm = true;
-        } else if(this.url == "view-loan"){
-          this.disabledForm = true;
-        }else {
-          this.disabledForm = false;
-          this.selected = 5;
-        }
-      })
+      // for (let index = 0; index < this.disabled.length; index++) {
+      //   this.disabled[index] = false;
+      // }
+      this.editApi()
 
     }
   }
 
-  ngOnInit() {
+  editId(event) {
+    this.id = event
+    this.editApi()
     setTimeout(() => {
-      
+      this.action = 'add'
+    }, 5000)
+  }
+
+
+
+  editApi() {
+    this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
+      this.loanId = res.data.id
+      this.action = 'edit'
+      this.customerDetail = res.data
+      // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "package-image-upload") {
         this.selected = 6;
         this.disabledForm = true;
-      } else if(this.url == "view-loan"){
+      } else if (this.url == "view-loan") {
         this.disabledForm = true;
-      }else {
+      } else {
+        this.disabledForm = false;
+        if (res.data.customerLoanCurrentStage) {
+          let stage = res.data.customerLoanCurrentStage
+          this.selected = Number(stage) - 1;
+        } else {
+          this.selected = 5;
+        }
+      }
+    })
+  }
+
+  ngOnInit() {
+    setTimeout(() => {
+
+      if (this.url == "package-image-upload") {
+        this.selected = 6;
+        this.disabledForm = true;
+      } else if (this.url == "view-loan") {
+        this.next(0)
+        this.disabledForm = true;
+      } else {
         this.disabledForm = false;
       }
     }, 1000)
   }
 
 
-  loan(event){
+  loan(event) {
     this.loanId = event
   }
 
-  totalEligibleAmt(event){
+  totalEligibleAmt(event) {
     this.totalAmount = event
   }
 
-  finalLoanAmount(event){
-    this.finalLoanAmt = event 
+  finalLoanAmount(event) {
+    this.finalLoanAmt = event
   }
 
   customerDetails(event) {
@@ -218,7 +238,7 @@ export class LoanApplicationFormComponent implements OnInit {
 
   // }
 
-  total(event){
+  total(event) {
     this.totalAmount = event
   }
 
@@ -272,8 +292,24 @@ export class LoanApplicationFormComponent implements OnInit {
     // }
   }
 
+
   next(event) {
-    this.selected = event;
+    if (event.index != undefined) {
+      this.selected = event.index;
+    } else {
+      this.selected = event;
+    }
+    for (let index = 0; index < this.disabled.length; index++) {
+      if (this.url != "view-loan") {
+        if (this.selected >= index) {
+          this.disabled[index] = false
+        } else {
+          this.disabled[index] = true
+        }
+      } else {
+        this.disabled[index] = false
+      }
+    }
     // window.scrollTo(0, 0)
     // this.disabled[5] = false;
   }
