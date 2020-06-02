@@ -28,6 +28,14 @@ export class PageConfig {
 				page: { title: "Karat", desc: "" },
 			},
 		},
+		"notification-setting": {
+			"email-alert": {
+				page: { title: "Email Alerts", desc: "" }
+			},
+			"sms-alert": {
+				page: { title: "SMS Alerts", desc: "" }
+			}
+		},
 		"upload-data": {
 			"upload-banner": {
 				page: { title: "Promotional Banner", desc: "" },
@@ -37,6 +45,9 @@ export class PageConfig {
 			},
 			"upload-lender-banner": {
 				page: { title: "Lender Partner Banner", desc: "" },
+			},
+			"gold-rate": {
+				page: { title: "Gold Rate", desc: "" },
 			},
 		},
 		"user-management": {
@@ -69,6 +80,9 @@ export class PageConfig {
 			},
 			roles: {
 				page: { title: "Roles", desc: "" },
+				id: {
+					page: { title: "Permissions", desc: "" }
+				}
 			},
 		},
 		"lead-management": {
@@ -87,7 +101,7 @@ export class PageConfig {
 		},
 		"emi-management": {
 			products: {
-				page: { title: "Show Poducts", desc: "" },
+				page: { title: "Show Products", desc: "" },
 			},
 			category: {
 				page: { title: "Category", desc: "" },
@@ -141,8 +155,8 @@ export class PageConfig {
 					},
 				},
 			},
-			users: {
-				page: { title: "Users", desc: "" },
+			customers: {
+				page: { title: "Customers", desc: "" },
 			},
 			reports: {
 				page: { title: "Reports", desc: "" },
@@ -167,6 +181,11 @@ export class PageConfig {
 			"loan-application-form": {
 				page: { title: "Loan Application Form", desc: "" },
 			},
+			'view-loan':{
+				id:{
+					page: { title: "View Loan Application Form", desc: "" },
+				}
+			},
 			packet: {
 				page: { title: "Packets", desc: "" },
 			},
@@ -175,6 +194,11 @@ export class PageConfig {
 			},
 			"applied-loan": {
 				page: { title: "Applied Loan", desc: "" },
+			},
+			"package-image-upload":{
+				id:{
+					page: { title: "PACKET IMAGE UPLOAD", desc: "" },
+				}
 			},
 		},
 	};

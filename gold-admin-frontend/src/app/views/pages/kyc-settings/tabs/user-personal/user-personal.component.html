@@ -16,7 +16,7 @@
                                     <div class="col align-self-center">
                                         <input type="file" accept="image/png, image/jpeg" #files class="d-none"
                                             (input)="getFileInfo($event,'profile')" />
-                                        <label (click)="files.click()" class="kt-pointer text-primary"
+                                        <label (click)="webcam();" class="kt-pointer text-primary"
                                             style="font-weight: 600;">Change Profile
                                             Picture</label>
                                     </div>
@@ -25,9 +25,10 @@
                             </div>
                         </div>
 
+
                         <!-- DOB & Gender -->
-                        <div class="row">
-                            <div class="col-6 kt-margin-t-20">
+                        <div class="row  kt-margin-t-20">
+                            <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
                                         <label class="mandatory">Date of Birth</label>
@@ -37,7 +38,8 @@
                                         <input type="text" class="form-control" [matDatepicker]="picker"
                                             (click)="picker.open()" formControlName="dateOfBirth"
                                             [class.isError]="controls.dateOfBirth.touched && controls.dateOfBirth.invalid"
-                                            readonly placeholder="4/5/2020" [max]="minDate">
+                                            readonly placeholder="4/5/2020" [max]="minDate"
+                                            (dateChange)="ageValidation()">
                                         <!-- <mat-datepicker-toggle matSuffix [for]="picker">
                                             <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
                                         </mat-datepicker-toggle> -->
@@ -48,16 +50,16 @@
                                         </mat-error>
                                     </div>
                                 </div>
-
                             </div>
 
-                            <div class="col-6 kt-margin-t-20">
+
+                            <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
                                         <label class="mandatory">Gender</label>
                                     </div>
                                     <div class="col-7">
-                                        <select formControlName="gender" class="form-control"
+                                        <select formControlName="gender" class="form-control" (change)="ageValidation()"
                                             [class.isError]="controls.gender.touched && controls.gender.invalid">
                                             <option value="" disabled selected> Select </option>
                                             <option value="m">Male</option>
@@ -70,33 +72,44 @@
                                     </div>
                                 </div>
                             </div>
+
+
+
                         </div>
 
                         <div class="row kt-margin-t-20">
+
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="offset-1 col-3 form-label">
-                                        <label class="mandatory">Alternate Mobile No.</label>
+                                    <div class="col-3 offset-1 form-label">
+                                        <label class="mandatory">Age</label>
                                     </div>
                                     <div class="col-7">
-                                        <input type="text" formControlName="alternateMobileNumber" class="form-control"
-                                            maxlength="10" numbersOnly placeholder="Mobile Number"
-                                            [class.isError]="controls.alternateMobileNumber.touched && controls.alternateMobileNumber.invalid" />
+                                        <input type="text" numbersOnly formControlName="age" class="form-control"
+                                            readonly>
+
                                         <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                            *ngIf="(controls.age.errors?.required && controls.age.touched) && controls.age.invalid">
                                             Required field
                                         </mat-error>
                                         <mat-error
-                                            *ngIf="controls.alternateMobileNumber.errors?.pattern && controls.alternateMobileNumber.touched">
-                                            Invalid Input
+                                            *ngIf="controls.age.errors?.pattern && controls.age.touched && controls.age.invalid">
+                                            <Small *ngIf="controls.gender.value == 'm'">Age should be greater than
+                                                20</Small>
+                                            <Small *ngIf="controls.gender.value != 'm'">Age should be greater than
+                                                17</Small>
                                         </mat-error>
                                     </div>
                                 </div>
                             </div>
+
+
+
+
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="mandatory">Martial Status</label>
+                                        <label class="mandatory">Marital Status</label>
                                     </div>
                                     <div class="col-7">
                                         <select name="" id="" formControlName="martialStatus" class="form-control"
@@ -139,7 +152,11 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="mandatory">Father / Spouse Name</label>
+                                        <label
+                                            *ngIf="controls.martialStatus.value == 'single' || controls.martialStatus.value == 'divorced' || controls.martialStatus.value == ''"
+                                            class="mandatory">Father's Name</label>
+                                        <label *ngIf="controls.martialStatus.value == 'married'" class="mandatory">
+                                            Spouse Name</label>
                                     </div>
                                     <div class="col-7">
                                         <input type="text" formControlName="spouseName" class="form-control"
@@ -157,7 +174,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="mandatory">Signature</label>
+                                        <label class="">Signature</label>
                                     </div>
                                     <div class="col-7">
                                         <div class="input-group mb-3">
@@ -176,27 +193,49 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row kt-margin-t-20 kt-margin-b-20">
                             <div class="col-6">
-                                <div class="col-8 offset-4">
-                                    <div class="img-container">
-                                        <!-- <div class=""> -->
-                                        <img *ngIf="!signatureJSON.isImage" class=""
-                                            src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                                        <img class="fetched-image" *ngIf="signatureJSON.isImage"
-                                            [src]="signatureJSON.url" style="border-radius: 15px;" alt="" />
-                                        <!-- </div> -->
+                                <div class="row">
+                                    <div class="offset-1 col-3 form-label">
+                                        <label class="mandatory">Alternate Mobile No.</label>
                                     </div>
-                                    <div class="kt-margin-t-20 text-color font-11">
-                                        (Please verify the detail before moving forward)
-                                    </div>
-                                    <div class="kt-margin-t-20">
-                                        <kt-button [value]="'Next'" [type]="'button'" (action)="submit()"></kt-button>
+                                    <div class="col-7">
+                                        <input type="text" formControlName="alternateMobileNumber" class="form-control"
+                                            maxlength="10" numbersOnly placeholder="Mobile Number"
+                                            [class.isError]="controls.alternateMobileNumber.touched && controls.alternateMobileNumber.invalid" />
+                                        <mat-error
+                                            *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.alternateMobileNumber.errors?.pattern && controls.alternateMobileNumber.touched">
+                                            Invalid Input
+                                        </mat-error>
                                     </div>
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div class="row kt-margin-t-20 kt-margin-b-20">
+                            <!-- <div class="col"> -->
+                            <div class="col offset-2">
+                                <div class="img-container">
+                                    <!-- <div class=""> -->
+                                    <img *ngIf="!signatureJSON.isImage" class=""
+                                        src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+                                    <img class="fetched-image" *ngIf="signatureJSON.isImage" [src]="signatureJSON.url"
+                                        style="border-radius: 15px;" alt="" />
+                                    <!-- </div> -->
+                                </div>
+                                <div class="kt-margin-t-20 text-color font-11">
+                                    (Please verify the detail before moving forward)
+                                </div>
+                                <div class="kt-margin-t-20">
+                                    <kt-button [value]="'Next'" [type]="'button'" (action)="submit()"></kt-button>
+                                </div>
+                            </div>
+                            <!-- </div> -->
                         </div>
                     </div>
                 </div>

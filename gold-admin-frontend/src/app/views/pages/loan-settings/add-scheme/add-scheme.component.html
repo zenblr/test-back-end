@@ -13,22 +13,6 @@
         <mat-tab-group #tabGroup>
             <mat-tab label="By Filling From">
                 <form [formGroup]="fillingForm">
-                    <div class="row kt-margin-t-15 kt-margin-b-15">
-                        <div class="col-3">
-                            <p class="text-color font-weight-bold mandatory">Select Partner Name</p>
-                        </div>
-                        <div class="col-9">
-                            <select name="" id="" class="form-control" formControlName="partnerId"
-                                [class.isError]="fillingForm.get('partnerId').touched && fillingForm.get('partnerId').invalid">
-                                <option value="" [selected]="true" [disabled]="true">Select Partner</option>
-                                <option [value]="partner.id" *ngFor="let partner of partnerData">
-                                    {{partner.name | titlecase}}
-                                </option>
-                            </select>
-
-                        </div>
-                    </div>
-
                     <div class="row kt-margin-b-15">
                         <div class="col-3">
                             <p class="text-color font-weight-bold mandatory">Partner Name</p>

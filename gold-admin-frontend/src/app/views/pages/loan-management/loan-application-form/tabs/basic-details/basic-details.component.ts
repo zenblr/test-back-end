@@ -18,6 +18,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges,AfterViewInit {
   @Input() details;
   @Input() invalid
   @Input() action;
+  @Output() next:EventEmitter<any> = new EventEmitter();
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   currentDate:any = new Date();
 
@@ -90,7 +91,8 @@ ngAfterViewInit(){
       mobileNumber: [''],
       panCardNumber: [''],
       startDate: [this.currentDate],
-      customerId:[]
+      customerId:[],
+      kycStatus:[],
     })
   }
 
@@ -98,6 +100,13 @@ ngAfterViewInit(){
     return this.basicForm.controls
   }
 
+  nextAction(){
+    if(this.basicForm.invalid){
+      this.basicForm.markAllAsTouched();
+      return
+    }
+    this.next.emit(1)
+  }
 
 
 }

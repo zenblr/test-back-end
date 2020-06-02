@@ -3,15 +3,20 @@
     ::ng-deep.mat-tab-header {
 		position: relative !important;
     }
+    ::ng-deep.mat-tab-label{
+        min-width: 130px !important;
+        padding: 0 !important;
+    }
+   
     // select{
     //     -webkit-appearance: none !important;
     //     -moz-appearance: none !important;
     //   }
     
     .addMore{
-        width: 30%;
+        width: 40%;
         position: absolute;
-		top: 10px;
+		top: 20px;
     }
 	.addMore button {
 		background: transparent;
@@ -29,6 +34,7 @@
 		border: thin solid #454D67 !important;
         border-radius: 5px !important;
         font-weight: bold !important;
+        margin-left: 20px !important;
     }
     .pacekts-label {
         font-size: 12px;
@@ -43,5 +49,9 @@
         position: absolute;
         top: 5px;
         right: 15px;
+    }
+    .save{
+        position: relative;
+        bottom: 75px;
     }
 }

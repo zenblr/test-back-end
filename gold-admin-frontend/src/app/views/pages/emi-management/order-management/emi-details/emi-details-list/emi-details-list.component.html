@@ -1,4 +1,5 @@
 <kt-toastr #toastr></kt-toastr>
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
 <kt-portlet>
     <!-- PORTLET LOADING | Binded to TABLE Datasource -->
     <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
@@ -78,8 +79,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiAmount">
-                    <mat-header-cell *matHeaderCellDef>EMI Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.emiAmount ? element?.emiAmount : '-'}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef class="align-right">EMI Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.emiAmount ? element?.emiAmount : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiPaidDate">
                     <mat-header-cell *matHeaderCellDef>EMI Paid Date</mat-header-cell>
@@ -111,13 +113,17 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element)" class="kt-pointer"> View | &nbsp;</div>
-                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="printCancellationReceipt(element)" class="kt-pointer">Print EMI Receipt</div>
+                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element.order.orderId)"
+                                class="kt-pointer"> View</div>
+                            <div *ngxPermissionsOnly="['EMIDetailsView']"
+                                [ngStyle]="{'display':element.orderemistatus.id == 4 ? 'block':'none'}"
+                                (click)="printCancellationReceipt(element)" class="kt-pointer">&nbsp;| Print EMI Receipt
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 150%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 150%;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 150%;"></mat-row>
             </mat-table>

@@ -363,12 +363,13 @@ mat-header-row {
 
 .mat-table__wrapper {
 	min-height: 70vh !important; //set table height
+	max-height: 74vh;
 }
 
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
 	background-color: transparent;
 }
-.ng-option{
+.ng-option {
 	line-height: 1 !important;
 }
 
@@ -515,7 +516,7 @@ mat-header-row {
 // 	border-color: #dc3545;
 // }
 
-.ng-select.ng-select-opened>.ng-select-container  {
+.ng-select.ng-select-opened > .ng-select-container {
 	background: #f2f3f7;
 }
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
@@ -539,13 +540,13 @@ mat-header-row {
 // image-action
 .pos-action {
 	position: absolute;
-	top     : 5px;
-	right   : 10px;
+	top: 5px;
+	right: 10px;
 }
 // action buttons
 .apply-kyc {
 	background: transparent;
-	border: thin solid #454D67;
+	border: thin solid #454d67;
 	border-radius: 5px;
 	padding: 5px;
 }
@@ -581,12 +582,66 @@ mat-header-row {
 
 // mat-form-field
 .mat-form-field-empty.mat-form-field-label {
-    color: gray !important;
+	color: gray !important;
 }
 .mat-form-field-underline {
-    background-color: gray !important;
+	background-color: gray !important;
 }
 
-.mat-input-element{
+.mat-input-element {
 	caret-color: black !important;
+}
+.image-text-truncate {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+// .align-right{
+// 	justify-content: flex-end !important;
+// 	text-align: end !important;
+// }
+
+// mat-table-header : sticky
+.mat-table__wrapper .mat-table .mat-header-row {
+	top: 0px;
+	position: sticky !important;
+	z-index: 1;
+}
+.table-div {
+	// table
+	table {
+		border-collapse: separate !important;
+		border: solid #dbdce0 1px;
+		border-radius: 10px;
+		-moz-border-radius: 10px;
+	}
+
+	td,
+	th {
+		border-left: solid #dbdce0 1px;
+		border-top: solid #dbdce0 1px;
+	}
+
+	th {
+		background-color: #eff0f1;
+		border-top: none;
+	}
+	th:first-child {
+		border-top-left-radius: 10px;
+	}
+	th:last-child {
+		border-top-right-radius: 10px;
+	}
+
+	td:first-child,
+	th:first-child {
+		border-left: none;
+	}
+}
+.currency {
+	font-family: sans-serif !important;
+}
+
+.cursor-not-allowed{
+	cursor: not-allowed !important;
 }

@@ -8,7 +8,7 @@
                 User ID
             </div>
             <div class="col-md-7">
-                {{orderData.order.customerDetails.customerUniqueId}}
+                {{orderData?.customerDetails.customerUniqueId}}
             </div>
         </div>
         <div class="row py-2">
@@ -16,7 +16,7 @@
                 Order ID
             </div>
             <div class="col-md-7">
-                {{orderData.order.orderUniqueId}}
+                {{orderData?.orderUniqueId}}
             </div>
         </div>
         <div class="row py-2">
@@ -24,7 +24,7 @@
                 Order Total Amount
             </div>
             <div class="col-md-7">
-                {{orderData.emiAmount}}
+                {{orderData?.orderdetails[0].finalOrderPrice}}
             </div>
         </div>
         <div class="row py-2">
@@ -32,23 +32,23 @@
                 Order Initial Amount
             </div>
             <div class="col-md-7">
-                {{orderData.emiAmount}}
+                {{orderData?.orderdetails[0].initialPayment}}
             </div>
         </div>
         <div class="row py-2">
             <div class="col-md-5 text-muted">
-                EMI Start Date
+                EMI Due Date
             </div>
             <div class="col-md-7">
-                {{orderData.dueDate | date:'medium'}}
+                {{orderData?.EmiStartDate | date:'medium'}}
             </div>
         </div>
         <div class="row py-2">
             <div class="col-md-5 text-muted">
-                EMI End Date
+                EMI Payment Date
             </div>
             <div class="col-md-7">
-                {{orderData.paymentRecievedDate | date:'medium'}}
+                {{orderData?.EmiEndDate | date:'medium'}}
             </div>
         </div>
     </div>

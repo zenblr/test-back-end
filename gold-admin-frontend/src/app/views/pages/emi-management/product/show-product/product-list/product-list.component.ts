@@ -21,7 +21,7 @@ import {
 	ProductService,
 	ProductModel,
 } from "../../../../../../core/emi-management/product";
-import { Subscription, merge, fromEvent, Subject } from "rxjs";
+import { Subscription, merge, fromEvent, Subject, Observable } from "rxjs";
 import {
 	tap,
 	debounceTime,
@@ -74,6 +74,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 		priceFrom: 0,
 		priceTo: 0,
 	};
+	filteredDataList = {};
 
 	constructor(
 		public dialog: MatDialog,
@@ -243,11 +244,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
 	applyFilter(data) {
 		console.log(data);
-		this.productData.categoryId = data.filterData.multiSelect1;
-		this.productData.subCategoryId = data.filterData.multiSelect2;
-		this.productData.priceFrom = data.filterData.priceFrom;
-		this.productData.priceTo = data.filterData.priceTo;
+		this.productData.categoryId = data.data.category;
+		this.productData.subCategoryId = data.data.subCategory;
+		this.productData.priceFrom = data.data.priceFrom;
+		this.productData.priceTo = data.data.priceTo;
 		this.dataSource.loadProducts(this.productData);
+		this.filteredDataList = data.list;
 	}
 
 	/*** On Destroy ***/

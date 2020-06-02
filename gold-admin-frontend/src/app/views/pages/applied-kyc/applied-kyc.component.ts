@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { SharedService } from '../../../core/shared/services/shared.service';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { AddAppraiserComponent } from '../user-management/assign-appraiser/add-appraiser/add-appraiser.component';
 
 @Component({
   selector: 'kt-applied-kyc',
@@ -18,7 +19,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class AppliedKycComponent implements OnInit {
 
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'mobile', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
+  displayedColumns = ['fullName', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser', 'appraiserName', 'customerId'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -26,7 +27,7 @@ export class AppliedKycComponent implements OnInit {
   private subscriptions: Subscription[] = [];
 
   private unsubscribeSearch$ = new Subject();
-  roles = '';
+  userType;
   private destroy$ = new Subject();
 
   constructor(
@@ -37,13 +38,8 @@ export class AppliedKycComponent implements OnInit {
     private sharedService: SharedService,
     private ngxPermissionsService: NgxPermissionsService
   ) {
-    this.sharedService.getRole().subscribe(res => {
-      this.roles = res;
-      if (this.roles == 'Customer Care Executive') {
-        var appraiserIndex = this.displayedColumns.indexOf('appraiser')
-        this.displayedColumns.splice(appraiserIndex, 1)
-      }
-    });
+    let res = this.sharedService.getDataFromStorage()
+    this.userType = res.userDetails.userTypeId;
   }
 
   ngOnInit() {
@@ -116,7 +112,22 @@ export class AppliedKycComponent implements OnInit {
   }
 
   assign() {
-    this.router.navigate(['/user-management/redirect-assign-appraiser'])
+    // this.router.navigate(['/user-management/redirect-assign-appraiser'])
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add' }, width: '500px' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
+  }
+
+  updateAppraiser(item) {
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'edit', appraiser: item.customer.customerAssignAppraiser }, width: '500px' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
   }
 
   viewKYC(data) {
