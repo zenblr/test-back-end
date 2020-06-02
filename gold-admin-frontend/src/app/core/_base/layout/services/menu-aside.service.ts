@@ -24,11 +24,11 @@ export class MenuAsideService {
 		private menuConfigService: MenuConfigService,
 		private router: Router,
 	) {
-		this.currentRouteUrl = this.router.url.split('/')[1]
+		this.currentRouteUrl = this.router.url.split('/')[2]
 		this.router.events
 			.pipe(filter(event => event instanceof NavigationEnd))
 			.subscribe(event => {
-				this.currentRouteUrl = this.router.url.split('/')[1];
+				this.currentRouteUrl = this.router.url.split('/')[2];
 				this.loadMenu();
 			});
 

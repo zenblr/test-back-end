@@ -7,9 +7,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { PartialsModule } from '../partials/partials.module';
 // Pages
 import { CoreModule } from '../../core/core.module';
-import { UserManagementModule } from './user-management/user-management.module';
+import { UserManagementModule } from './admin/user-management/user-management.module';
 import { MyPageComponent } from './my-page/my-page.component';
-import { EMIManagementModule } from './emi-management/emi-management.module';
+import { EMIManagementModule } from './admin/emi-management/emi-management.module';
 //	import { LogisticPartnerComponent } from './emi-maangement/logistic-partner/logistic-partner.component';
 
 @NgModule({
