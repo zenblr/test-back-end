@@ -30,7 +30,7 @@
                                         (input)="getFileInfo($event, 'profile')" />
                                     <label [class.mandatory]="viewOnly"
                                         [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
-                                        (click)="userType != 5 && profile.click()" class=" text-primary"
+                                        (click)="userType != 5 && webcam()" class=" text-primary"
                                         style="font-weight: 600;">Change Profile
                                         Picture</label>
                                 </div>

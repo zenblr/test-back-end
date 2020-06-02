@@ -100,7 +100,7 @@ exports.updateRating = async (req, res, next) => {
     if (user.userTypeId == 5) {
         let { kycStatusFromBm, reasonFromBm } = req.body
 
-        let checkCceVerified = await models.customerKyc.findOne({ customerId, isVerifiedByCce: true })
+        let checkCceVerified = await models.customerKyc.findOne({ where: { customerId, isVerifiedByCce: true } })
         if (check.isEmpty(checkCceVerified)) {
             return res.status(400).json({ message: `Cce rating not verified` })
         }
@@ -138,34 +138,34 @@ exports.updateRating = async (req, res, next) => {
 
 
         } else {
-                reasonFromBm = ""
-                let customerUniqueId = uniqid.time().toUpperCase();
-                await sequelize.transaction(async (t) => {
-                    await models.customer.update({ customerUniqueId,kycStatus: "approved"  }, { where: { id: customerId }, transaction: t })
-                    await models.customerKyc.update(
-                        { isVerifiedByBranchManager: true, branchManagerVerifiedBy: bmId },
-                        { where: { customerId: customerId }, transaction: t })
+            reasonFromBm = ""
+            let customerUniqueId = uniqid.time().toUpperCase();
+            await sequelize.transaction(async (t) => {
+                await models.customer.update({ customerUniqueId, kycStatus: "approved" }, { where: { id: customerId }, transaction: t })
+                await models.customerKyc.update(
+                    { isVerifiedByBranchManager: true, branchManagerVerifiedBy: bmId },
+                    { where: { customerId: customerId }, transaction: t })
 
-                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
-                });
+                await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
+            });
 
-                let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
-                let cusMobile = getMobileNumber.mobileNumber
-                //message for customer
-                request(
-                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
-                );
-                let getBm = await models.user.findOne({ where: { id: bmId } });
-                let bmMobile = getBm.mobileNumber
-                //message for BranchManager
-                request(
-                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
-                );
-                return res.status(200).json({ message: 'success' })
+            let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+            let cusMobile = getMobileNumber.mobileNumber
+            //message for customer
+            request(
+                `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
+            );
+            let getBm = await models.user.findOne({ where: { id: bmId } });
+            let bmMobile = getBm.mobileNumber
+            //message for BranchManager
+            request(
+                `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
+            );
+            return res.status(200).json({ message: 'success' })
 
 
 
-            
+
         }
     }
     return res.status(400).json({ message: `You do not have authority.` })

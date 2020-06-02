@@ -25,6 +25,7 @@ import { Subscription, ReplaySubject, Subject } from "rxjs";
 import { MatDatepickerInputEvent, MatSelect } from "@angular/material";
 import { SharedService } from "../../../../core/shared/services/shared.service";
 import { NgxPermissionsService } from "ngx-permissions";
+import { NgSelectComponent } from '@ng-select/ng-select';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -34,9 +35,10 @@ import { DatePipe } from '@angular/common';
 	providers: [DatePipe]
 })
 export class FilterComponent implements OnInit, OnChanges, OnDestroy {
-	@ViewChild('filterDropdown', { static: true }) dropdown: NgbDropdown;
-	@ViewChild('multiSelect', { static: true }) multiSelect: MatSelect;
-	@ViewChild('customerMulti', { static: true }) customerMulti: MatSelect;
+	@ViewChild(NgSelectComponent, { static: true }) cityRef: NgSelectComponent;
+	@ViewChild("filterDropdown", { static: true }) dropdown: NgbDropdown;
+	@ViewChild("multiSelect", { static: true }) multiSelect: MatSelect;
+	@ViewChild("customerMulti", { static: true }) customerMulti: MatSelect;
 	@Output() filterApplyEvent = new EventEmitter();
 	@Input() filterName = '';
 	@Input() listType = '';
@@ -56,6 +58,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	statusList = [];
 	merchantList = [];
 	states = [];
+	cities = [];
 	permissions: any;
 
 	constructor(
@@ -305,6 +308,18 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		});
 	}
 
+
+	getCities($event) {
+		if ($event) {
+			const stateId = $event.id;
+			this.sharedService.getCities(stateId).subscribe(res => {
+				this.cities = res.message;
+			});
+		} else {
+			this.cities = [];
+		}
+	}
+
 	getPaymentType() {
 		this.sharedService.getPaymentType().subscribe((res) => {
 			this.paymentTypeList = res;
@@ -328,13 +343,6 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			this.merchantList = res;
 		});
 	}
-
-	// getCities() {
-	//   const stateId = this.controls.stateId.value;
-	//   this.sharedService.getCities(stateId).subscribe(res => {
-	//     this.cities = res.message;
-	//   });
-	// }
 
 	clearFilterForm() {
 		if (this.filterForm) {

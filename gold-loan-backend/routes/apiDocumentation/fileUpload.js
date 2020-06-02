@@ -26,8 +26,8 @@
 *     consumes:
 *       - multipart/form-data
 *     parameters:
-*       - name: upfile
-*         in: body
+*       - name: avatar
+*         in: formData
 *         type: file
 *         schema:
 *           type: objectsearch your keyword

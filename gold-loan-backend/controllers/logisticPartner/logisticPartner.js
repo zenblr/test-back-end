@@ -72,7 +72,8 @@ exports.readLogisticPartnerById = async (req, res) => {
 exports.updateLogisticPartner = async (req, res) => {
     let logisticPartnerId = req.params.id;
     const { name } = req.body;
-    let updateLogisticPartner = await models.logisticPartner.update({ name }, { where: { id: logisticPartnerId, isActive: true } });
+    let modifiedBy=req.userData.id;
+    let updateLogisticPartner = await models.logisticPartner.update({ name,modifiedBy }, { where: { id: logisticPartnerId, isActive: true } });
     if (!updateLogisticPartner[0]) { return res.status(404).json({ message: 'logistic Partner update failed' }) }
     return res.status(200).json({ message: 'updated' })
 }

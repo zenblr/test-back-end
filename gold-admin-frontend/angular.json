@@ -37,12 +37,15 @@
               "src/assets/plugins/flaticon/flaticon.css",
               "src/assets/plugins/flaticon2/flaticon.css",
               "src/assets/sass/style.angular.scss",
-              "node_modules/ngx-toastr/toastr.css"
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/quill/dist/quill.core.css",
+              "node_modules/quill/dist/quill.snow.css"
             ],
             "scripts": [
               "node_modules/popper.js/dist/umd/popper.js",
               "node_modules/tooltip.js/dist/umd/tooltip.min.js",
-              "node_modules/perfect-scrollbar/dist/perfect-scrollbar.js"
+              "node_modules/perfect-scrollbar/dist/perfect-scrollbar.js",
+              "node_modules/quill/dist/quill.js"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [

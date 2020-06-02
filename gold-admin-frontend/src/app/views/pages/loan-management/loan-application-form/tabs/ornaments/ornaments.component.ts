@@ -25,9 +25,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() disable;
   @Input() details;
   @Input() action
-  @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
+  // @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output () totalAmt:EventEmitter<any> = new EventEmitter();
+  @Input() loanId
 
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
@@ -65,9 +66,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.getKarat()
     this.getOrnamentType()
     this.initForm()
-    this.ornamentsForm.valueChanges.subscribe(() => {
-      this.OrnamentsDataEmit.emit(this.OrnamentsData)
-    })
+    // this.ornamentsForm.valueChanges.subscribe(() => {
+    //   this.OrnamentsDataEmit.emit(this.OrnamentsData)
+    // })
   }
 
   getKarat() {
@@ -93,7 +94,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       ornamentData: this.fb.array([])
     })
     this.addmore();
-    this.OrnamentsDataEmit.emit(this.OrnamentsData)
+    // this.OrnamentsDataEmit.emit(this.OrnamentsData)
 
   }
 
@@ -105,6 +106,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           if (index > 0) {
             this.addmore()
           }
+        }
+        for (let index = 0; index < array.length; index++) {
           const group = this.OrnamentsData.at(index) as FormGroup
           group.patchValue(array[index])
           this.calcGoldDeductionWeight(index)
@@ -387,7 +390,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    this.next.emit(3)
+    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value,this.totalAmount,this.loanId).pipe(
+      map(res=>{
+        let array = this.OrnamentsData.controls
+        for (let index = 0; index < array.length; index++) {
+        const controls = this.OrnamentsData.at(index) as FormGroup;
+        controls.controls.id.patchValue(res.ornaments[index].id)
+        }
+        this.next.emit(3)
+      })
+    ).subscribe()
+    console.log(this.ornamentsForm.value,this.totalAmount)
+    
   }
 
 }
