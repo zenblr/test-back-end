@@ -276,7 +276,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-11">
+        <div class="col-11" *ngIf="!disable">
             <div class="kt-margin-t-20 kt-margin-b-30 text-right">
                 <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
             </div>

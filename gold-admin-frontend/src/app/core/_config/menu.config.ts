@@ -16,7 +16,7 @@ export class MenuConfig {
 					this.permissionsArr.push(item.description);
 				}
 				this.permissionsService.loadPermissions(this.permissionsArr);
-				console.log(this.permissionsArr);
+				// console.log(this.permissionsArr);
 			}
 			if(res.userDetails){
 				this.userType = res.userDetails.userTypeId;
@@ -26,7 +26,7 @@ export class MenuConfig {
 				for (const item of res.modules) {
 					this.modulesArr.push(item.module.id);
 				}
-				console.log(this.modulesArr);
+				// console.log(this.modulesArr);
 			}
 
 			this.defaults = {
