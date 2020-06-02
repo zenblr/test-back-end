@@ -1,7 +1,7 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body [class]="'kt-portlet__body--fit d-flex align-items-center justify-content-center'">
-        <div class="row row-no-padding row-col-separator-xl">
+        <div class="row row-no-padding row-col-separator-xl" style="width: 30%;">
             <div class="col-12">
                 <form [formGroup]="reportForm">
                     <div class="row kt-margin-t-15">
@@ -28,7 +28,8 @@
                     controls?.reportType?.value == '2' ||  controls?.reportType?.value == '3' || 
                     controls?.reportType?.value == '4' || controls?.reportType?.value == '5'">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '1'">Merchant</label>
+                            <label class="font-weight-500 text-color"
+                                *ngIf="controls?.reportType?.value == '1'">Merchant</label>
                             <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '2'">Deposit
                                 Funds Origin</label>
                             <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '3'">EMI
@@ -39,12 +40,16 @@
                                 Order From</label>
                         </div>
                         <div class="col-8">
-                            <select class="form-control" formControlName="merchantId"
+                            <!-- <select class="form-control" formControlName="merchantId"
                                 [class.isError]="controls.merchantId.touched && controls.merchantId.invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select Report</option>
                                 <option [value]="item.id" *ngFor="let item of merchantList">
                                     {{item?.merchantName | titlecase}}</option>
-                            </select>
+                            </select> -->
+                            <kt-multi-select-search [items]="merchantList" [multiple]="true" bindLabel="merchantName"
+                                bindValue="id" formControlName="merchantId" [isClear]="clearData">
+                            </kt-multi-select-search>
+
                             <div *ngIf="controls.merchantId.touched && controls.merchantId.invalid">
                                 <mat-error *ngIf="controls.merchantId.touched && controls.merchantId.errors?.required">
                                     Field is required</mat-error>

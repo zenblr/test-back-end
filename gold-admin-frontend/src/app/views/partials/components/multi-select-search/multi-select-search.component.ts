@@ -60,6 +60,7 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 		if (this.isClear) {
 			this.form.reset();
 		}
+		this.isClear = false;
 	}
 
 	ngOnDestroy() {
