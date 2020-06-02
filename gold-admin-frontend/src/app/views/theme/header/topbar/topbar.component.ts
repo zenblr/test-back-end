@@ -37,6 +37,7 @@ import { CustomerDetailsService } from "../../../../core/emi-management/customer
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
 import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
 import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
+import { HolidayService } from '../../../../core/holidays/services/holiday.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -110,7 +111,8 @@ export class TopbarComponent implements OnInit {
 		private customerDetailsService: CustomerDetailsService,
 		private leadService: LeadService,
 		private emailAlertService: EmailAlertService,
-		private smsAlertService: SmsAlertService
+		private smsAlertService: SmsAlertService,
+		private holidayService: HolidayService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -219,6 +221,13 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add New Scheme";
 			this.type2 = "button";
 			this.permissionType = "schemeAdd";
+		}
+		if (this.path == "holidays") {
+			this.rightButton = true;
+			this.value2 = "Add Holiday";
+			this.type2 = "button";
+			this.showInput = true;
+			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
@@ -456,6 +465,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "scheme") {
 			this.loanSettingService.openModal.next(true);
+		}
+		if (this.path == "holidays") {
+			this.holidayService.openModal.next(true);
 		}
 		if (this.path == "partner") {
 			this.partnerService.openModal.next(true);
