@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, BehaviorSubject, of } from "rxjs";
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 
 @Injectable({
 	providedIn: "root",
@@ -16,18 +15,9 @@ export class SharedService {
 	clearFilter = new BehaviorSubject<any>({});
 	clearFilter$ = this.clearFilter.asObservable();
 
-	fileForm: FormGroup = this.fb.group({
-		avatar: []
-	});
 
-
-	constructor(private http: HttpClient, private fb: FormBuilder) {
-		var token = localStorage.getItem("UserDetails");
-		if (token) {
-			var decodedValue = JSON.parse(atob(token.split(".")[1]));
-			this.role.next(decodedValue.roleName[0]);
-			console.log(this.role);
-		}
+	constructor(private http: HttpClient) {
+		
 	}
 
 	getStates(): Observable<any> {
@@ -44,10 +34,8 @@ export class SharedService {
 		return this.http.post<any>(`/api/upload-file`, fd);
 	}
 
-	uploadBase64File(files): Observable<any> {
-		// this.fileForm.addControl('avatar', new FormControl(files, Validators.required))
-		this.fileForm.controls.avatar.patchValue(files);
-		return this.http.post<any>(`/api/upload-file/base`, this.fileForm.value);
+	uploadBase64File(avatar): Observable<any> {
+		return this.http.post<any>(`/api/upload-file/base`, {avatar});
 	}
 
 	getRole(): Observable<any> {

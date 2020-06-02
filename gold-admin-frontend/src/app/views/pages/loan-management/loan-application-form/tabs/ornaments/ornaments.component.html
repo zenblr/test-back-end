@@ -404,7 +404,7 @@
         <mat-divider></mat-divider>
     </div>
 </div>
-<div class="row">
+<div class="row" *ngIf="!disable">
     <div class="text-right py-3 col-12">
         <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
     </div>
