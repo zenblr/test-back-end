@@ -61,8 +61,8 @@ export class InterceptService implements HttpInterceptor {
 					// console.log('----response----');
 					// console.error('status code:');
 					// tslint:disable-next-line:no-debugger
-					console.error(error.status);
-					console.error(error.message);
+					// console.error(error.status);
+					// console.error(error.message);
 					// console.log('--- end of response---');
 				}
 			),
