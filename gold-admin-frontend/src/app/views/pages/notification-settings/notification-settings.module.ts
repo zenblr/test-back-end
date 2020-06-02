@@ -15,6 +15,8 @@ import { SmsAlertAddComponent } from './sms-alert/sms-alert-add/sms-alert-add.co
 import { EmailAlertAddComponent } from './email-alert/email-alert-add/email-alert-add.component';
 import { EmailAlertListComponent } from './email-alert/email-alert-list/email-alert-list.component';
 
+import { QuillModule } from 'ngx-quill'
+
 const routes: Routes = [
   { path: 'email-alert', component: EmailAlertListComponent },
   { path: 'sms-alert', component: SmsAlertListComponent },
@@ -30,7 +32,8 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     AngularMaterialModule,
-    CoreModule
+    CoreModule,
+    QuillModule.forRoot()
   ],
   providers: [
     InterceptService,

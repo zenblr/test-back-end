@@ -199,7 +199,7 @@
                                     <td>{{date.key | date :'mediumDate'}}</td>
 
                                     <td [attr.rowspan]="colJoin" *ngIf="(idx%colJoin == 0 || colJoin == null)">
-                                        {{intrestAmount | currency : 'INR'}}</td>
+                                        <span class="currency">{{intrestAmount | currency : 'INR'}}</span></td>
 
                                 </tr>
                             </tbody>
@@ -209,9 +209,12 @@
                                     <!-- <td>{{idx%colJoin == 0}}{{colJoin == null}}{{dateOfPayment.length%colJoin < dateOfPayment.length-idx}} {{dateOfPayment.length%colJoin}}{{dateOfPayment.length-idx}}</td> -->
                                     <td [attr.rowspan]="colJoin"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
-                                        {{intrestAmount | currency : 'INR'}}</td>
-                                    <td [attr.rowspan]="colJoin" *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
-                                        {{(intrestAmount /colJoin) * (dateOfPayment.length%colJoin) | currency : 'INR'}}</td>
+                                        <span class="currency">{{intrestAmount | currency : 'INR'}}</span></td>
+                                    <td [attr.rowspan]="colJoin"
+                                        *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
+                                        <span
+                                            class="currency">{{(intrestAmount /colJoin) * (dateOfPayment.length%colJoin) | currency : 'INR'}}</span>
+                                    </td>
 
                                 </tr>
                             </tbody>
@@ -219,10 +222,12 @@
                                 <tr>
                                     <td><strong>Total Amount</strong></td>
                                     <td *ngIf="colJoin != null">
-                                        <strong>{{(intrestAmount/colJoin) * dateOfPayment.length | currency : 'INR'}}</strong>
+                                        <strong><span
+                                                class="currency">{{(intrestAmount/colJoin) * dateOfPayment.length | currency : 'INR'}}</span></strong>
                                     </td>
                                     <td *ngIf="colJoin == null">
-                                        <strong>{{(intrestAmount) * dateOfPayment.length | currency : 'INR'}}</strong>
+                                        <strong><span
+                                                class="currency">{{(intrestAmount) * dateOfPayment.length | currency : 'INR'}}</span></strong>
                                     </td>
                                 </tr>
                             </tfoot>

@@ -13,7 +13,7 @@
                         <mat-error *ngIf="controls.grossWeight.errors?.required && controls.grossWeight.touched">
                             Required field
                         </mat-error>
-                        
+
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
@@ -29,7 +29,7 @@
                             Required field
                         </mat-error>
                         <mat-error *ngIf="controls.deductionWeight.errors?.weight && controls.deductionWeight.touched">
-                            <small>Net  Weight should be lesser then Gross  Weight</small>
+                            <small>Net Weight should be lesser then Gross Weight</small>
                         </mat-error>
                     </div>
                 </div>
@@ -43,10 +43,10 @@
                         <mat-error *ngIf="controls.netWeight.errors?.required && controls.netWeight.touched">
                             Required field
                         </mat-error>
-                        
+
                     </div>
                 </div>
-               
+
                 <!-- <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
                         <label for="" class="mandatory text-color">Current LTV</label>
@@ -68,7 +68,9 @@
     <div class="row kt-margin-t-20">
         <div class="offset-4 col-6">
             <p class="text-gray font-weight-500 m-0">Total Amount</p>
-            <h3 class="text-color">{{loanAmount | currency :'INR'}}</h3>
+            <h3 class="text-color">
+                <span class="currency">{{loanAmount | currency:'INR':'symbol' : '1.0-0'}}</span>
+            </h3>
         </div>
     </div>
 </div>
