@@ -320,7 +320,6 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		}
 	}
 
-
 	getPaymentType() {
 		this.sharedService.getPaymentType().subscribe((res) => {
 			this.paymentTypeList = res;

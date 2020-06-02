@@ -147,7 +147,7 @@ import { WebcamDialogComponent } from '../pages/kyc-settings/webcam-dialog/webca
 		WebcamDialogComponent,
 
 		FilteredDataComponent,
-		
+
 		MultiSelectSearchComponent,
 
 		AddAppraiserComponent,
@@ -232,8 +232,7 @@ import { WebcamDialogComponent } from '../pages/kyc-settings/webcam-dialog/webca
 		NgbTooltipModule,
 		NgbModule,
 		NgSelectModule,
-		WebcamModule
-		// spinner
+		WebcamModule,
 	],
 	entryComponents: [ImagePreviewDialogComponent],
 })
