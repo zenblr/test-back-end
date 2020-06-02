@@ -28,7 +28,7 @@ export class OrdersService {
 		if (event && event.orderemistatus) {
 			reqParams.orderemistatus = event.orderemistatus;
 		}
-		return this.http.get<any>(`http://173.249.49.7:9120/api/emi-details`, {
+		return this.http.get<any>(`http://173.249.49.7:9120/api/order/merchant-order`, {
 			params: reqParams,
 		});
 	}

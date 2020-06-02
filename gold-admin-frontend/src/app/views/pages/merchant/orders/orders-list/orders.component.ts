@@ -30,8 +30,8 @@ export class OrdersComponent implements OnInit {
     "emiDate",
     "emiAmount",
     "emiPaidDate",
+    "quantity",
     "status",
-    "emiFrom",
     // "action",
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
