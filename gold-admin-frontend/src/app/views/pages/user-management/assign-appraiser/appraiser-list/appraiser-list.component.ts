@@ -126,7 +126,7 @@ export class AppraiserListComponent implements OnInit {
     // const _messageType = appraiser.id ? MessageType.Update : MessageType.Create;
     const dialogRef = this.dialog.open(AddAppraiserComponent,
       {
-        data: { appraiser: appraiser, action: action },
+        data: { appraiser: appraiser, customer: appraiser.customer, action: action },
         width: '450px'
       });
     dialogRef.afterClosed().subscribe(res => {

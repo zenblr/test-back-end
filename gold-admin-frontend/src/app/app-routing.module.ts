@@ -40,6 +40,10 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/notification-settings/notification-settings.module').then(m => m.NotificationSettingsModule)
 			},
 			{
+				path: 'holidays',
+				loadChildren: () => import('../app/views/pages/holidays/holidays.module').then(m => m.HolidaysModule)
+			},
+			{
 				path: 'loan-management',
 				loadChildren: () => import('../app/views/pages/loan-management/loan-management.module').then(m => m.LoanManagementModule)
 			},

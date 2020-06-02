@@ -1,7 +1,6 @@
 import { catchError, finalize } from 'rxjs/operators';
 // RxJS
 import { map } from 'rxjs/operators';
-// CRUD
 import { BaseDataSource } from '../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
 import { EmailAlertService } from '../services/email-alert.service';
