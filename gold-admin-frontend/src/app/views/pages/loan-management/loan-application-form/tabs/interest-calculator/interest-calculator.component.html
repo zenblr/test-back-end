@@ -96,7 +96,7 @@
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000" (blur)="amountValidation()"
+                            placeholder="0,00,000" (blur)="amountValidation();getIntrest()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
                         <mat-hint><small>Eligible Amount: <span class="currency">
                                     {{totalAmt | currency:'INR':'symbol' : '1.0-0'}}</span> </small></mat-hint>
@@ -236,18 +236,19 @@
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
                                     <td>{{date.key | date :'mediumDate'}}</td>
 
-                                    <td [attr.rowspan]="colJoin" class="text-center" *ngIf="(idx%colJoin == 0 || colJoin == null)">
-                                        {{intrestAmount | currency : 'INR'}}</td>
+                                    <td [attr.rowspan]="colJoin" class="text-center currency" *ngIf="(idx%colJoin == 0 || colJoin == null)">
+                                        
+                                            {{intrestAmount | currency:'INR'}}</td>
 
                                 </tr>
                             </tbody>
                             <tbody *ngIf="dateOfPayment.length%colJoin > 0 || colJoin != null">
                                 <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
                                     <td>{{date.key | date :'mediumDate'}}</td>
-                                    <td [attr.rowspan]="colJoin" class="text-center"
+                                    <td [attr.rowspan]="colJoin" class="text-center currency"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
-                                        {{intrestAmount | currency : 'INR'}}</td>
-                                    <td [attr.rowspan]="colJoin" class="text-center"
+                                            {{intrestAmount | currency:'INR' }}</td>
+                                    <td [attr.rowspan]="colJoin" class="text-center currency"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
                                         {{(intrestAmount /colJoin) * (dateOfPayment.length%colJoin) | currency : 'INR'}}
                                     </td>
@@ -257,21 +258,27 @@
                             <tfoot>
                                 <tr>
                                     <td><strong>Total Amount</strong></td>
-                                    <td *ngIf="colJoin != null">
-                                        <strong>{{(intrestAmount/colJoin) * dateOfPayment.length | currency : 'INR'}}</strong>
+                                    <td *ngIf="colJoin != null"  class="text-center">
+                                        <strong><span class="currency">
+                                            {{(intrestAmount/colJoin) * dateOfPayment.length | currency:'INR'}}</span>
+                                            </strong>
                                     </td>
-                                    <td *ngIf="colJoin == null">
-                                        <strong>{{(intrestAmount) * dateOfPayment.length | currency : 'INR'}}</strong>
+                                    <td *ngIf="colJoin == null" class="text-center">
+                                        <strong>
+                                            <span class="currency">
+                                                {{(intrestAmount) * dateOfPayment.length | currency : 'INR'}}
+                                            </span></strong>
                                     </td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
-
-                    <div class="kt-margin-t-20 kt-margin-b-30">
-                        <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
-                    </div>
                 </div>
+            </div>
+        </div>
+        <div class="col-11" *ngIf="!disable">
+            <div class="kt-margin-t-20 kt-margin-b-30 text-right">
+                <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
             </div>
         </div>
     </div>

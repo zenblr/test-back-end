@@ -39,7 +39,7 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	 * @param htmlClassService: HtmlClassService
 	 */
 	constructor(private layoutConfigService: LayoutConfigService, public htmlClassService: HtmlClassService,
-		private goldRateService: GoldRateService, private ref: ChangeDetectorRef) {
+		public goldRateService: GoldRateService, private ref: ChangeDetectorRef) {
 
 		this.goldRateService.getGoldRate().pipe(
 			tap(res => {
@@ -69,11 +69,11 @@ export class BrandComponent implements OnInit, AfterViewInit {
 		// var rate;
 
 
-		this.goldRateService.goldRate$.subscribe(res => {
-			// console.log(res);
-			this.goldRate = res
-			this.ref.detectChanges();
-		});
+		// this.goldRateService.goldRate$.subscribe(res => {
+		// 	// console.log(res);
+		// 	this.goldRate = res
+		// 	this.ref.detectChanges();
+		// });
 	}
 
 	/**

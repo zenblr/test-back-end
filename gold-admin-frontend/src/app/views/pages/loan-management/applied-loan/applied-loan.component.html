@@ -73,7 +73,7 @@
                             <div *ngIf="loan.loanStage.id == 1 ">
                                 <div class="kt-pointer" class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed':  !((loan.loanStatusForAppraiser == 'pending'
+                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed':  !(((loan.loanStatusForAppraiser != 'pending' || loan.loanStatusForAppraiser != 'rejected')
                                     && this.userType == 7) && edit)}"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
@@ -81,7 +81,7 @@
                             <div *ngIf="loan.loanStage.id == 2">
                                 <div class="kt-pointer" class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed': !(((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
+                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed': !(((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected' ||loan.loanStatusForBM == 'incomplete')
                                     && this.userType == 5 && loan.loanStatusForAppraiser == 'approved')&&edit)}"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>

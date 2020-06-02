@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, OnChanges, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PartnerService } from '../../../../../../core/user-management/partner/services/partner.service';
-import { map, last, takeLast, switchMap } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
-import { interval } from 'rxjs';
+import { LoanApplicationFormService } from '../../../../../../core/loan-management';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-interest-calculator',
@@ -29,9 +29,11 @@ export class InterestCalculatorComponent implements OnInit {
   finalInterestForm: FormGroup;
   @Input() invalid;
   @Input() totalAmt = 0;
-  @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
+  // @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Input() action;
+  @Input() loanId
+  @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('print', { static: false }) print: ElementRef
   editedDate: any;
@@ -41,11 +43,14 @@ export class InterestCalculatorComponent implements OnInit {
     private partnerService: PartnerService,
     public eleRef: ElementRef,
     public datePipe: DatePipe,
-    public ref: ChangeDetectorRef
-  ) { }
+    public ref: ChangeDetectorRef,
+    public loanFormService: LoanApplicationFormService
+  ) {
+    this.initForm();
+  }
 
   ngOnInit() {
-    this.initForm();
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -56,18 +61,23 @@ export class InterestCalculatorComponent implements OnInit {
     }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
-        this.finalInterestForm.patchValue(changes.details.currentValue.finalLoan)
-        // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(changes.details.currentValue.finalLoan.loanStartDate))
-        this.editedDate = changes.details.currentValue.finalLoan.loanStartDate;
-        this.currentDate = new Date(changes.details.currentValue.finalLoan.loanStartDate)
-        this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
-        this.finalInterestForm.controls.schemeId.patchValue(changes.details.currentValue.finalLoan.schemeId)
-        this.finalInterestForm.controls.interestRate.patchValue(changes.details.currentValue.finalLoan.interestRate)
-        this.calcInterestAmount()
-        this.ref.markForCheck()
+        if (changes.details.currentValue && changes.details.currentValue.finalLoan) {
+          this.finalInterestForm.patchValue(changes.details.currentValue.finalLoan)
+          // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(changes.details.currentValue.finalLoan.loanStartDate))
+          this.editedDate = changes.details.currentValue.finalLoan.loanStartDate;
+          this.currentDate = new Date(changes.details.currentValue.finalLoan.loanStartDate)
+          this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
+          this.finalInterestForm.controls.schemeId.patchValue(changes.details.currentValue.finalLoan.schemeId)
+          this.finalInterestForm.controls.interestRate.patchValue(changes.details.currentValue.finalLoan.interestRate)
+          this.returnScheme()
+          this.scheme()
+          this.calcInterestAmount()
+          this.ref.markForCheck()
+
+        }
       }
     }
-    if (this.disable) {
+    if (changes.disable && changes.disable.currentValue) {
       this.finalInterestForm.disable()
     }
     if (this.invalid) {
@@ -80,6 +90,8 @@ export class InterestCalculatorComponent implements OnInit {
       this.partnerList = res['data'];
       if (this.controls.schemeId.value) {
         this.returnScheme()
+        this.scheme()
+        this.calcInterestAmount()
       }
     })
   }
@@ -89,18 +101,19 @@ export class InterestCalculatorComponent implements OnInit {
     this.schemesList = []
     this.controls.schemeId.reset()
     this.controls.interestRate.reset()
-    this.controls.intresetAmt.reset()
+    this.controls.totalFinalInterestAmt.reset()
     this.controls.paymentFrequency.reset()
     this.controls.schemeId.patchValue('')
     this.controls.paymentFrequency.patchValue('')
     this.returnScheme()
-
   }
+
   returnScheme() {
     let temp = this.partnerList.filter(part => {
       return part.id == this.controls.partnerId.value
     })
-    this.schemesList = temp[0].schemes;
+    if (temp.length)
+      this.schemesList = temp[0].schemes;
   }
 
   initForm() {
@@ -112,18 +125,19 @@ export class InterestCalculatorComponent implements OnInit {
       loanStartDate: [this.currentDate],
       loanEndDate: [, [Validators.required]],
       paymentFrequency: [, [Validators.required]],
-      intresetAmt: [],
+      totalFinalInterestAmt: [],
       interestRate: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]], processingCharge: [],
       processingChargeFixed: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       processingChargePercent: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]]
     })
-    this.interestFormEmit.emit(this.finalInterestForm)
+
+    // this.interestFormEmit.emit(this.finalInterestForm)
   }
 
   ngAfterViewInit() {
-    this.finalInterestForm.valueChanges.subscribe(() => {
-      this.interestFormEmit.emit(this.finalInterestForm)
-    })
+    // this.finalInterestForm.valueChanges.subscribe(() => {
+    //   this.interestFormEmit.emit(this.finalInterestForm)
+    // })
   }
 
   setEndDate() {
@@ -131,7 +145,7 @@ export class InterestCalculatorComponent implements OnInit {
     if (this.controls.loanStartDate.valid && this.controls.tenure.valid) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      this.controls.loanEndDate.patchValue(new Date(date.setDate(startDate.getDate() + (Number(this.controls.tenure.value)) * 30)))
+      this.controls.loanEndDate.patchValue(new Date(date.setDate(date.getDate() + (Number(this.controls.tenure.value)) * 30)))
     } else {
       this.controls.loanStartDate.markAsTouched()
     }
@@ -141,7 +155,9 @@ export class InterestCalculatorComponent implements OnInit {
     this.selectedScheme = this.schemesList.filter(scheme => {
       return scheme.id == this.controls.schemeId.value
     })
+    this.getIntrest()
   }
+
   amountValidation() {
     this.scheme()
     this.dateOfPayment = []
@@ -205,7 +221,7 @@ export class InterestCalculatorComponent implements OnInit {
       (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
       / 360
     this.intrestAmount = intrest.toFixed(2);
-    this.controls.intresetAmt.patchValue(this.intrestAmount)
+    this.controls.totalFinalInterestAmt.patchValue(this.intrestAmount)
     this.CheckProcessingCharge()
     this.generateTable()
   }
@@ -225,7 +241,7 @@ export class InterestCalculatorComponent implements OnInit {
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      var data = { key: new Date(date.setDate(date.getDate() + (30 * index))) }
+      var data = { key: new Date(date.setDate(date.getDate() + (30 * (index + 1)))) }
       this.dateOfPayment.push(data)
     }
     console.log(this.dateOfPayment)
@@ -241,10 +257,18 @@ export class InterestCalculatorComponent implements OnInit {
       this.finalInterestForm.markAllAsTouched()
       return
     }
-    if (this.dateOfPayment.length) {
+    if (!this.dateOfPayment.length) {
       return
     }
-    this.next.emit(4)
+    this.loanFormService.submitFinalIntrest(this.finalInterestForm.value, this.loanId).pipe(
+      map(res => {
+        if (res.finalLoanAmount)
+          this.finalLoanAmount.emit(res.finalLoanAmount)
+        this.next.emit(4)
+      }), catchError(err => {
+        throw err;
+
+      })).subscribe()
   }
 
 }

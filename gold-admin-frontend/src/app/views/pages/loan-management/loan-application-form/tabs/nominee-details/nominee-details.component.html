@@ -114,7 +114,7 @@
             </span>
             
         </div>
-        <div class="text-right py-3 col-12">
+        <div class="text-right py-3 col-12" *ngIf="!disable">
             <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
         </div>
     </div>
