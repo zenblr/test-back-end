@@ -98,8 +98,8 @@
                         <input type="number" class="form-control" formControlName="finalLoanAmount"
                             placeholder="0,00,000" (blur)="amountValidation();getIntrest()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
-                        <mat-hint><small>Eligible Amount: <span class="currency">
-                                    {{totalAmt | currency:'INR':'symbol' : '1.0-0'}}</span> </small></mat-hint>
+                        <mat-hint><strong>Eligible Amount: <span class="currency">
+                                    {{totalAmt | currency:'INR':'symbol' : '1.0-0'}}</span> </strong></mat-hint>
                         <div>
                             <mat-error
                                 *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
