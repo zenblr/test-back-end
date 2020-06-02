@@ -220,7 +220,7 @@
                                 [class.isError]="controls.status.touched && controls.status.invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select Status</option>
                                 <option [value]="refundData?.nextStatus.statusId">
-                                    {{refundData?.nextStatus.statusName}}</option>
+                                    {{refundData?.nextStatus.statusName | titlecase}}</option>
                             </select>
                             <div *ngIf="controls.status.touched && controls.status.invalid">
                                 <mat-error *ngIf="controls.status.touched && controls.status.errors?.required">
