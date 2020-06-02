@@ -85,7 +85,7 @@ export class EmailAlertListComponent implements OnInit {
   addAlert() {
     const dialogRef = this.dialog.open(EmailAlertAddComponent, {
       data: { action: 'add' },
-      width: '500px'
+      width: '900px',
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

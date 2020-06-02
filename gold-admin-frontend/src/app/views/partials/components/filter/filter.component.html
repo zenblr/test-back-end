@@ -22,33 +22,13 @@
                   <div class="row pb-3" *ngxPermissionsOnly="['categoryView', 'subCategoryView']">
                     <div class="col-6" *ngxPermissionsOnly="['categoryView']">
                       <label>By Category</label>
-                      <ng-select [items]="categoryList" [multiple]="true" bindLabel="categoryName"
-                        [closeOnSelect]="false" bindValue="id" formControlName="multiSelect1">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.categoryName | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].categoryName | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <kt-multi-select-search [items]="categoryList" [multiple]="true" bindLabel="categoryName"
+                        formControlName="category" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-6" *ngxPermissionsOnly="['subCategoryView']">
                       <label>By Sub-Category</label>
-                      <ng-select [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
-                        [closeOnSelect]="false" bindValue="id" formControlName="multiSelect2">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.subCategoryName | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].subCategoryName | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <kt-multi-select-search [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
+                        formControlName="subCategory" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                   </div>
                   <div class="row">
@@ -83,17 +63,23 @@
             <div class="row">
               <div class="col">
                 <label>By Location</label>
-                <!-- <select class="form-control" name="multiSelect1">
+                <!-- <select class="form-control" name="category">
                   <option value="" [selected]="true">Select State</option>
                   <option *ngFor="let item of states" [value]="item?.id">
                     {{item?.name}}
                   </option>
                 </select> -->
-                <ng-select #select [items]="states" [dropdownPosition]="'bottom'" [multiple]="true" bindLabel="name"
+
+                <ng-select [items]="states" bindLabel="name" bindValue="id" placeholder="Select State"
+                  (change)="getCities($event)">
+
+                </ng-select>
+
+                <!-- <ng-select #select [items]="states" [dropdownPosition]="'bottom'" [multiple]="true" bindLabel="name"
                   bindValue="id" [closeOnSelect]="false" [searchable]="false">
                   <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
                     <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                      [ngModelOptions]="{ standalone : true }" /> {{item.gender | titlecase}}
+                      [ngModelOptions]="{ standalone : true }" /> {{item.name | titlecase}}
                   </ng-template>
                   <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
                     <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
@@ -106,7 +92,7 @@
                     <input style="width: 100%; line-height: 24px" type="text"
                       (input)="select.filter($event.target.value)" />
                   </ng-template>
-                </ng-select>
+                </ng-select> -->
                 <!-- <ng-select [items]="states" [multiple]="true" [dropdownPosition]="'bottom'" bindLabel="name" groupBy="gender" [selectableGroup]="true"
                   [closeOnSelect]="false" bindValue="id">
                   <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
@@ -120,16 +106,29 @@
               </div>
               <div class="col">
                 <label style="visibility: hidden;">nostatus</label>
-                <select class="form-control" name="multiSelect1">
+                <ng-select [items]="cities" [multiple]="true" bindLabel="name" placeholder="Select City"
+                  [closeOnSelect]="false" bindValue="id" #cityRef>
+
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                      [ngModelOptions]="{ standalone : true }" /> {{item.name | titlecase}}
+                  </ng-template>
+                  <ng-template ng-multi-label-tmp let-items="items">
+                    {{items[0].name | titlecase}}&nbsp;
+                    <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
+                  </ng-template>
+                </ng-select>
+
+                <!-- <select class="form-control" name="multiSelect1">
                   <option value="" [selected]="true">Select City</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
                     {{item?.categoryName | titlecase}}
                   </option>
-                </select>
+                </select> -->
               </div>
               <div class="col">
                 <label>By Status</label>
-                <select class="form-control" name="multiSelect1">
+                <select class="form-control" name="category">
                   <option value="" [selected]="true">Select Category</option>
                   <option *ngFor="let item of categoryList" [value]="item?.id">
                     {{item?.categoryName | titlecase}}
@@ -153,18 +152,8 @@
                   <div class="row">
                     <div class="col-8">
                       <label>By Status</label>
-                      <ng-select [items]="status" [multiple]="true" bindLabel="statusName" [closeOnSelect]="false"
-                        bindValue="statusId" formControlName="multiSelect1">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].statusName | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-4">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
@@ -187,38 +176,18 @@
                   <div class="row">
                     <div class="col-3">
                       <label>By Weight(gm)</label>
-                      <input class="form-control" placeholder="eg-100" formControlName="priceFrom" type="text"
+                      <input class="form-control" placeholder="eg-100" formControlName="weight" type="text"
                         numbersOnly />
                     </div>
                     <div class="col-3">
-                      <label>By Tenure(m)</label>
-                      <ng-select [items]="tenure" [multiple]="true" bindLabel="paymentType" [closeOnSelect]="false"
-                        bindValue="paymentTypeId" formControlName="multiSelect1">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.paymentType | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].paymentType | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <label>By Tenure(months)</label>
+                      <kt-multi-select-search [items]="paymentTypeList" [multiple]="true" bindLabel="paymentType"
+                        formControlName="paymentType" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-4">
                       <label>By Status</label>
-                      <ng-select [items]="status" [multiple]="true" bindLabel="statusName" [closeOnSelect]="false"
-                        bindValue="statusId" formControlName="multiSelect2">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].statusName | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-2">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
@@ -238,7 +207,7 @@
             <form [formGroup]="filterForm">
               <div class="form-group kt-form__group row">
                 <div class="col-12 kt-margin-bottom-20-mobile">
-                  <div class="row">
+                  <div class="row pb-3">
                     <div class="col-6">
                       <label>By Payment Recieved Date</label>
                       <input type="text" class="form-control" [matDatepicker]="pickerStartDate"
@@ -246,36 +215,16 @@
                       <mat-datepicker #pickerStartDate></mat-datepicker>
                     </div>
                     <div class="col-6">
-                      <label>By Payment Type</label>
-                      <ng-select [items]="tenure" [multiple]="true" bindLabel="paymentType" [closeOnSelect]="false"
-                        bindValue="paymentTypeId" formControlName="multiSelect1">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.paymentType | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].paymentType | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <label>By Tenure(months)</label>
+                      <kt-multi-select-search [items]="paymentTypeList" [multiple]="true" bindLabel="paymentType"
+                        formControlName="paymentType" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-6">
-                      <label>By Order Current Status</label>
-                      <ng-select [items]="status" [multiple]="true" bindLabel="statusName" [closeOnSelect]="false"
-                        bindValue="statusId" formControlName="multiSelect2">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.statusName | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].statusName | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <label>By Status</label>
+                      <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-6">
                       <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
@@ -297,19 +246,9 @@
                 <div class="col-12 kt-margin-bottom-20-mobile">
                   <div class="row">
                     <div class="col-5">
-                      <label>By Merchant Name</label>
-                      <ng-select [items]="name" [multiple]="true" bindLabel="merchantName" [closeOnSelect]="false"
-                        bindValue="id" formControlName="multiSelect1">
-
-                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                            [ngModelOptions]="{ standalone : true }" /> {{item.merchantName | titlecase}}
-                        </ng-template>
-                        <ng-template ng-multi-label-tmp let-items="items">
-                          {{items[0].merchantName | titlecase}}&nbsp;
-                          <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                        </ng-template>
-                      </ng-select>
+                      <label>By Merchant</label>
+                      <kt-multi-select-search [items]="merchantList" [multiple]="true" bindLabel="merchantName"
+                        formControlName="merchant" [isClear]="clearData"></kt-multi-select-search>
                     </div>
                     <div class="col-4">
                       <label>By Cancel Date</label>

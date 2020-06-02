@@ -85,5 +85,9 @@ export class WebcamDialogComponent implements OnInit {
       this.dialogRef.close();
     }
   }
+
+  close() {
+    this.dialogRef.close();
+  }
 }
 

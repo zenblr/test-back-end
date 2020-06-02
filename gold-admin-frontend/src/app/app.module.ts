@@ -108,7 +108,7 @@ export function hljsLanguages(): HighlightLanguage[] {
 		NgHttpLoaderModule.forRoot(),
 		NgSelectModule,
 		FormsModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
 	],
 	exports: [],
 	providers: [

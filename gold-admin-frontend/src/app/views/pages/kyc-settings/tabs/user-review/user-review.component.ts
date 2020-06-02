@@ -5,7 +5,8 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { map, filter, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { AppliedKycService } from '../../../../../core/applied-kyc/services/applied-kyc.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 
 @Component({
   selector: 'kt-user-review',
@@ -65,6 +66,7 @@ export class UserReviewComponent implements OnInit {
   //       "firstName": "bhushan",
   //       "lastName": "madaye",
   //       "dateOfBirth": "2020-04-08T18:30:00.000Z",
+  //       "age": "25",
   //       "alternateMobileNumber": "1232132132",
   //       "panCardNumber": "asass1234a",
   //       "gender": "f",
@@ -161,6 +163,7 @@ export class UserReviewComponent implements OnInit {
     private appliedKycService: AppliedKycService,
     public dialogRef: MatDialogRef<UserReviewComponent>,
     @Inject(MAT_DIALOG_DATA) public modalData: any,
+    private dialog: MatDialog,
     private ele: ElementRef
   ) {
     let res = this.sharedService.getDataFromStorage();
@@ -435,11 +438,7 @@ export class UserReviewComponent implements OnInit {
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       this.sharedService.uploadFile(this.file).pipe(
         map(res => {
-          if (type == "profile") {
-            this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
-            this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.URL })
-            this.ref.markForCheck();
-          }
+
           if (type == "identityProof" && this.data.customerKycReview.customerKycPersonal.identityProof.length < 2) {
             this.data.customerKycReview.customerKycPersonal.identityProof.push(res.uploadFile.URL)
             this.customerKycPersonal.patchValue({ identityProof: this.data.customerKycReview.customerKycPersonal.identityProof })
@@ -459,6 +458,11 @@ export class UserReviewComponent implements OnInit {
                   this.data.customerKycReview.customerKycPersonal.signatureProof = res.uploadFile.URL;
                   this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.URL })
                   this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
+                  this.ref.markForCheck();
+                }
+                else if (type == "profile") {
+                  this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
+                  this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.URL })
                   this.ref.markForCheck();
                 }
                 else {
@@ -495,5 +499,23 @@ export class UserReviewComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.appliedKycService.userData.next(undefined)
+  }
+
+  webcam() {
+    const dialogRef = this.dialog.open(WebcamDialogComponent,
+      {
+        data: {},
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+          console.log(res)
+          this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL
+          this.customerKycPersonal.get('profileImage').patchValue(this.data.customerKycReview.customerKycPersonal.profileImage);
+          this.ref.detectChanges()
+        })
+      }
+    });
   }
 }

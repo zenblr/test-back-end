@@ -77,6 +77,7 @@ export class OrderDetailsListComponent implements OnInit {
 		paymentType: 0,
 		orderCurrentStatus: 0,
 	};
+	filteredDataList = {};
 
 	constructor(
 		public dialog: MatDialog,
@@ -194,7 +195,7 @@ export class OrderDetailsListComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -270,10 +271,11 @@ export class OrderDetailsListComponent implements OnInit {
 
 	applyFilter(data) {
 		console.log(data);
-		this.orderData.paymentType = data.filterData.multiSelect1;
-		this.orderData.orderCurrentStatus = data.filterData.multiSelect2;
-		this.orderData.weight = data.filterData.priceFrom;
+		this.orderData.paymentType = data.data.paymentType;
+		this.orderData.orderCurrentStatus = data.data.status;
+		this.orderData.weight = data.data.weight;
 		this.dataSource.loadOrderDetails(this.orderData);
+		this.filteredDataList = data.list;
 	}
 
 	/**

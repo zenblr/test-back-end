@@ -41,7 +41,6 @@ const rout: Routes = [
     UserAddressComponent,
     UserPersonalComponent,
     UserBanksComponent,
-    WebcamDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -76,7 +75,7 @@ const rout: Routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
-  entryComponents:[
+  entryComponents: [
     WebcamDialogComponent
   ]
 })

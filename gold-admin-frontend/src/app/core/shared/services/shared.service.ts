@@ -13,6 +13,8 @@ export class SharedService {
 	role$ = this.role.asObservable();
 	closeFilter = new BehaviorSubject<any>(false);
 	closeFilter$ = this.closeFilter.asObservable();
+	clearFilter = new BehaviorSubject<any>({});
+	clearFilter$ = this.clearFilter.asObservable();
 
 	fileForm: FormGroup = this.fb.group({
 		avatar: []
@@ -74,7 +76,7 @@ export class SharedService {
 		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category/all-subcategory`);
 	}
 
-	getTenure(): Observable<any> {
+	getPaymentType(): Observable<any> {
 		return this.http.get<any>(`http://173.249.49.7:9120/api/payment-type`);
 	}
 
