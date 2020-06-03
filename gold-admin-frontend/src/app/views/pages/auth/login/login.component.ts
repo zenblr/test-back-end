@@ -154,7 +154,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 						localStorage.setItem('UserDetails', JSON.stringify(res));
 						// debugger
 						if (this.returnUrl === '/') {
-							this.router.navigate(['/dashboard']);
+							this.router.navigate(['/admin/dashboard']);
 						} else {
 							this.router.navigateByUrl(this.returnUrl); // Main page
 						}

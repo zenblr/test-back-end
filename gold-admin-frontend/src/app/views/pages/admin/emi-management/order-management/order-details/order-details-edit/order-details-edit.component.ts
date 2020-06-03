@@ -236,7 +236,7 @@ export class OrderDetailsEditComponent implements OnInit {
 						this.toastr.successToastr(
 							"Order Status Updated Sucessfully"
 						);
-						this.router.navigate(["/emi-management/order-details"]);
+						this.router.navigate(["/admin/emi-management/order-details"]);
 					}),
 					catchError((err) => {
 						this.toastr.errorToastr(err.error.message);

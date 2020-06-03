@@ -141,7 +141,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   applyForm() {
     this.loanFormService.applyForLoan(this.approvalForm.value,this.loanId).pipe(
       map(res=>{
-        this.router.navigate(['/loan-management/applied-loan'])
+        this.router.navigate(['/admin/loan-management/applied-loan'])
       })).subscribe()
   }
   cancel(){

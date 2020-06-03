@@ -268,7 +268,7 @@ export class LoanApplicationFormComponent implements OnInit {
     //   this.loanApplicationFormService.applyForLoan(data).pipe(
     //     map(res => {
     //       this.toast.success(res.message)
-    //       this.router.navigate(['/loan-management/applied-loan'])
+    //       this.router.navigate(['/admin/loan-management/applied-loan'])
     //     }),
     //     catchError(err => {
     //       this.toast.error(err.error.message)
@@ -282,7 +282,7 @@ export class LoanApplicationFormComponent implements OnInit {
     //   this.loanApplicationFormService.updateLoan(this.customerDetail.id, data).pipe(
     //     map(res => {
     //       this.toast.success(res.message)
-    //       this.router.navigate(['/loan-management/applied-loan'])
+    //       this.router.navigate(['/admin/loan-management/applied-loan'])
     //     }),
     //     catchError(err => {
     //       this.toast.error(err.error.message)

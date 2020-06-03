@@ -211,7 +211,7 @@ export class PartnerListComponent implements OnInit {
   }
 
   viewSchemes(id:number) {
-    this.router.navigate(['/user-management/partner/view-schemes/',id])
+    this.router.navigate(['/admin/user-management/partner/view-schemes/',id])
   }
 
 }

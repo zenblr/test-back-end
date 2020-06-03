@@ -165,7 +165,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
     this.packetService.uploadPackets(this.packets.value, this.loanId).pipe(
       map(res => {
         this.toast.success(res.message)
-        this.router.navigate(['/loan-management/applied-loan'])
+        this.router.navigate(['/admin/loan-management/applied-loan'])
       })
     ).subscribe()
   }

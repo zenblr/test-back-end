@@ -417,14 +417,14 @@ export class PermissionComponent implements OnInit, AfterViewInit {
       this.merchantService.addProduct(this.checkedProduct, isSelected, this.userId).pipe(
         map(res => {
           this.toastr.successToastr(res.message)
-          this.router.navigate(['/user-management/merchant'])
+          this.router.navigate(['/admin/user-management/merchant'])
         }),
         catchError(err => {
           this.toastr.errorToastr(err.error.message)
           throw err
         })).subscribe()
     } else {
-      this.router.navigate(['/user-management/merchant']);
+      this.router.navigate(['/admin/user-management/merchant']);
     }
   }
 

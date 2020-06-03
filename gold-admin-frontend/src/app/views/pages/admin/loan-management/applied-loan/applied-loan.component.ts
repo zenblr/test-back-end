@@ -121,16 +121,16 @@ export class AppliedLoanComponent implements OnInit {
       (loan.loanStatusForBM == 'pending'  || loan.loanStatusForBM == 'rejected' || loan.loanStatusForBM == 'incomplete')
       && this.userType == 5 && loan.loanStatusForAppraiser == 'approved' || loan.loanStatusForAppraiser == 'rejected') || (loan.loanStatusForAppraiser == 'pending'
         && this.userType == 7) && this.edit)) {
-      this.router.navigate(['/loan-management/loan-application-form', loan.id])
+      this.router.navigate(['/admin/loan-management/loan-application-form', loan.id])
     }
   }
 
   packageImageUpload(loan) {
-    this.router.navigate(['/loan-management/package-image-upload', loan.id])
+    this.router.navigate(['/admin/loan-management/package-image-upload', loan.id])
   }
 
   viewLoan(loan) {
-    this.router.navigate(['/loan-management/view-loan', loan.id])
+    this.router.navigate(['/admin/loan-management/view-loan', loan.id])
   }
 
 }

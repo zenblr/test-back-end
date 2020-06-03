@@ -116,6 +116,6 @@ export class CustomerGridComponent implements OnInit, OnChanges {
   }
 
   viewDetails(id: number) {
-    this.router.navigate(['/customer-management/customer-list/' + id])
+    this.router.navigate(['/admin/customer-management/customer-list/' + id])
   }
 }

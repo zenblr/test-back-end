@@ -134,7 +134,7 @@ export class MerchantListComponent implements OnInit {
 
   editMerchant(merchant) {
     console.log(merchant)
-    this.router.navigate(['user-management/edit-merchant/', merchant.userId])
+    this.router.navigate(['/admin/user-management/edit-merchant/', merchant.userId])
   }
 
   viewMerchant(merchant) {

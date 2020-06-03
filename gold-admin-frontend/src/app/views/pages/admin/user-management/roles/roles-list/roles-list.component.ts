@@ -153,7 +153,7 @@ export class RolesListComponent implements OnInit, OnDestroy {
 
 
 	permissions(role) {
-		this.router.navigate(['/user-management/roles/' + role.id])
+		this.router.navigate(['/admin/user-management/roles/' + role.id])
 	}
 
 	editRole(role: RolesModel, action) {

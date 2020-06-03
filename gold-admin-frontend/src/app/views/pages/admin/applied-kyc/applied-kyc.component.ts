@@ -106,13 +106,13 @@ export class AppliedKycComponent implements OnInit {
       map(res => {
         console.log(res);
         this.appliedKycService.editKyc.next({ editable: true });
-        this.router.navigate(['/kyc-setting/edit-kyc']);
+        this.router.navigate(['/admin/kyc-setting/edit-kyc']);
       })
     ).subscribe();
   }
 
   assign() {
-    // this.router.navigate(['/user-management/redirect-assign-appraiser'])
+    // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
     const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add' }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

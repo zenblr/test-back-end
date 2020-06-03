@@ -128,11 +128,11 @@ export class CustomerListComponent implements OnInit, OnChanges {
   }
 
   viewDetails(id: number) {
-    this.router.navigate(['/customer-management/customer-list/' + id])
+    this.router.navigate(['/admin/customer-management/customer-list/' + id])
   }
 
   newLoan(customer) {
-    this.router.navigate(['/loan-management/loan-application-form/'], { queryParams: { customerID: customer.customerUniqueId } })
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: customer.customerUniqueId } })
   }
 
 }
