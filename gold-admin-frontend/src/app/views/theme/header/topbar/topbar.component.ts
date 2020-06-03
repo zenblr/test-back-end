@@ -279,6 +279,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "applied-kyc") {
 			this.showInput = true;
 		}
+		if (this.path == "assigned-customers") {
+			this.showInput = true;
+		}
 		if (this.path == "monthly") {
 			this.dataSourceHeader();
 			this.value1 = "Add Payment";

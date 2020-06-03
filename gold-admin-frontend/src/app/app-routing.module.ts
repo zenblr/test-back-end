@@ -28,6 +28,10 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/admin-account/admin-account.module').then(m => m.AdminAccountModule)
 			},
 			{
+				path: 'global-settings',
+				loadChildren: () => import('../app/views/pages/settings/global-settings/global-settings.module').then(m => m.GlobalSettingsModule)
+			},
+			{
 				path: 'upload-data',
 				loadChildren: () => import('../app/views/pages/upload-data/upload-data.module').then(m => m.UploadDataModule)
 			},
@@ -62,6 +66,10 @@ const routes: Routes = [
 			{
 				path: 'applied-kyc',
 				loadChildren: () => import('../app/views/pages/applied-kyc/applied-kyc.module').then(m => m.AppliedKycModule)
+			},
+			{
+				path: 'assigned-customers',
+				loadChildren: () => import('../app/views/pages/assigned-customers/assigned-customers.module').then(m => m.AssignedCustomersModule)
 			},
 			{
 				path: 'lead-management',

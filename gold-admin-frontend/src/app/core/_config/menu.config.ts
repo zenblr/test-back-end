@@ -67,7 +67,7 @@ export class MenuConfig {
 							],
 						},
 						{
-							title: "Admin-Settings",
+							title: "Admin Settings",
 							root: true,
 							src: "assets/media/aside-icons/icons-03.svg",
 							permission: false,
@@ -151,6 +151,41 @@ export class MenuConfig {
 							],
 						},
 						{
+							title: "Settings",
+							root: true,
+							src: "assets/media/aside-icons/icons-03.svg",
+							permission: false,
+							submenu: [
+								{
+									title: "Global Settings",
+									page: "/global-settings",
+									permission: false,
+									// submenu: [
+									// 	{
+									// 		title: "LTV GOLD %",
+									// 		page: "/notification-setting/email-alert",
+									// 	},
+									// 	{
+									// 		title: "Minimum Loan Amount",
+									// 		page: "/notification-setting/email-alert",
+									// 	},
+									// 	{
+									// 		title: "Minimum Top-Up Amount",
+									// 		page: "/notification-setting/email-alert",
+									// 	},
+									// 	{
+									// 		title: "Grace Period Days",
+									// 		page: "/notification-setting/email-alert",
+									// 	},
+									// 	{
+									// 		title: "GST(%)",
+									// 		page: "/notification-setting/email-alert",
+									// 	},
+									// ]
+								},
+							]
+						},
+						{
 							title: "User Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
@@ -190,6 +225,11 @@ export class MenuConfig {
 									title: "Applied KYC",
 									page: "/applied-kyc",
 									permission: !this.permissionsArr.includes('appliedKycView'),
+								},
+								{
+									title: "Assigned customers",
+									page: "/assigned-customers",
+									// permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 							],
 						},
