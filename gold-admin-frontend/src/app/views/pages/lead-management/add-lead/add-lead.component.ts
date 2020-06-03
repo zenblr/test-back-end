@@ -101,6 +101,8 @@ export class AddLeadComponent implements OnInit {
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
       comment:[''],
+      lead:[''],
+      source:[''],
     });
     this.getCities()
   }

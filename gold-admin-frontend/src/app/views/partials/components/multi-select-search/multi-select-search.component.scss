@@ -9,4 +9,8 @@
         left: 5px !important;
         top: 1px !important;
     }
+    ::ng-deep.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-placeholder{
+        top: unset !important;
+        padding-bottom: 0 !important;
+    }
 }

@@ -80,6 +80,7 @@ export class TopbarComponent implements OnInit {
 	showDropdown = false;
 	isDisabled = false;
 	button: boolean = false;
+	clear: boolean;
 
 	constructor(
 		public sharedService: SharedService,
@@ -205,6 +206,10 @@ export class TopbarComponent implements OnInit {
 		this.showBackButton = false;
 		this.showDropdown = false;
 		this.permissionType = "";
+		this.filterName = "";
+		this.filterWidth = "";
+		this.listType="",
+		this.clear = false;
 	}
 
 	dataSourceHeader() {
@@ -221,6 +226,10 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add New Scheme";
 			this.type2 = "button";
 			this.permissionType = "schemeAdd";
+			this.showfilter = true;
+			this.filterName = 'scheme';
+			this.listType = 'scheme';
+			this.filterWidth = '400px';
 		}
 		if (this.path == "holidays") {
 			this.rightButton = true;
@@ -232,10 +241,11 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
 			this.value1 = "Add New Lead";
-			this.showfilter = false;
+			this.showfilter = true;
 			this.filterName = "leads";
 			this.filterWidth = "900px";
 			this.permissionType = "leadManagmentAdd";
+			this.listType = "state";
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
@@ -269,7 +279,9 @@ export class TopbarComponent implements OnInit {
 			this.toogle = true;
 		}
 		if (this.path == "applied-loan") {
-			this.showfilter = false;
+			this.showfilter = true;
+			this.filterWidth = "600px"
+			this.filterName="loan"
 			this.showInput = true;
 		}
 		if (this.path == "all-loan") {
@@ -278,6 +290,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-kyc") {
 			this.showInput = true;
+			this.showfilter = true;
+			this.filterName = "kyc";
+			this.filterWidth = "600px";
 		}
 		if (this.path == "monthly") {
 			this.dataSourceHeader();
@@ -360,6 +375,9 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.value1 = "Add Packets";
 			this.permissionType = "packetAdd";
+			this.showfilter = true;
+			this.filterName = 'packets';
+			this.filterWidth = '400px';
 		}
 		if (this.path == "store") {
 			this.dataSourceHeader();
@@ -581,6 +599,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "cancel-order-details") {
 			this.cancelOrderDetailsService.applyFilter.next(data);
+		}
+		if (this.path == "lead-management") {
+			this.leadService.applyFilter.next(data);
 		}
 	}
 

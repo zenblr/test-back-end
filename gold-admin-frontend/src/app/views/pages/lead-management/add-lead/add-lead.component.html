@@ -15,8 +15,48 @@
 
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
 
-                        <!-- Name -->
+                        <!-- Lead Drop Down -->
                         <div class="row">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Lead</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <select class="form-control" formControlName="lead"
+                                    [class.isError]="controls.lead.touched && controls.lead.invalid">
+                                    <option value="" [disabled]="true" [selected]="true"> Select Lead </option>
+                                    <option *ngFor="let branch of branches" [value]="branch.id">
+                                        {{branch.name | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.lead.touched && controls.lead.errors?.required">
+                                    Required field
+                                </mat-error>
+
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+
+                        <!-- Source -->
+
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Source</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <input class="form-control" formControlName="source">
+                                <mat-error
+                                    *ngIf="controls.source.touched && controls.source.errors?.required">
+                                    Required field
+                                </mat-error>
+
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+                        <!-- Name -->
+                        <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
                                 <mat-label class="mandatory">Full Name</mat-label>
                             </div>
@@ -290,7 +330,7 @@
                             </div>
 
                             <div class="col-8">
-                                <textarea name="" id="" cols="10" rows="5" formControlName="comment"
+                                <textarea name="" id="" cols="3" rows="3" formControlName="comment"
                                     class="form-control"
                                     [class.isError]="controls.comment.touched && controls.comment.invalid"></textarea>
                                 <mat-error *ngIf="controls.comment.errors?.required && controls.comment.touched">

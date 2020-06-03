@@ -59,7 +59,7 @@
 
         <!-- leads -->
         <div class="kt-portlet__body" *ngIf="filterName == 'leads'">
-          <div class="kt-form">
+          <form class="kt-form" [formGroup]="filterForm">
             <div class="row">
               <div class="col">
                 <label>By Location</label>
@@ -70,78 +70,115 @@
                   </option>
                 </select> -->
 
-                <ng-select [items]="states" bindLabel="name" bindValue="id" placeholder="Select State"
-                  (change)="getCities($event)">
+                <ng-select [items]="states" bindLabel="name" placeholder="Select State" (change)="getCities($event)"
+                  formControlName="states">
 
                 </ng-select>
 
-                <!-- <ng-select #select [items]="states" [dropdownPosition]="'bottom'" [multiple]="true" bindLabel="name"
-                  bindValue="id" [closeOnSelect]="false" [searchable]="false">
-                  <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
-                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                      [ngModelOptions]="{ standalone : true }" /> {{item.name | titlecase}}
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                      [ngModelOptions]="{ standalone : true }" /> {{item.name | titlecase}}
-                  </ng-template>
-                  <ng-template ng-label-tmp>
-                    <span style="display:block; color: #000;" class="ng-placeholder">Select items</span>
-                  </ng-template>
-                  <ng-template ng-header-tmp>
-                    <input style="width: 100%; line-height: 24px" type="text"
-                      (input)="select.filter($event.target.value)" />
-                  </ng-template>
-                </ng-select> -->
-                <!-- <ng-select [items]="states" [multiple]="true" [dropdownPosition]="'bottom'" bindLabel="name" groupBy="gender" [selectableGroup]="true"
-                  [closeOnSelect]="false" bindValue="id">
-                  <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
-                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" /> {{item.gender | uppercase}}
-                  </ng-template>
-                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected" /> {{item.name}}
-                  </ng-template>
-                </ng-select> -->
-
+               
               </div>
               <div class="col">
                 <label style="visibility: hidden;">nostatus</label>
-                <ng-select [items]="cities" [multiple]="true" bindLabel="name" placeholder="Select City"
-                  [closeOnSelect]="false" bindValue="id" #cityRef>
-
-                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                      [ngModelOptions]="{ standalone : true }" /> {{item.name | titlecase}}
-                  </ng-template>
-                  <ng-template ng-multi-label-tmp let-items="items">
-                    {{items[0].name | titlecase}}&nbsp;
-                    <span *ngIf="items.length > 1">(+{{items.length - 1}})</span>
-                  </ng-template>
-                </ng-select>
-
-                <!-- <select class="form-control" name="multiSelect1">
-                  <option value="" [selected]="true">Select City</option>
-                  <option *ngFor="let item of categoryList" [value]="item?.id">
-                    {{item?.categoryName | titlecase}}
-                  </option>
-                </select> -->
+                <kt-multi-select-search formControlName="cities" [items]="cities" [multiple]="true" [bindLabel]="'name'"
+                  [isClear]="clearData" [placeholder]="'Select City'"></kt-multi-select-search>
               </div>
               <div class="col">
                 <label>By Status</label>
-                <select class="form-control" name="category">
-                  <option value="" [selected]="true">Select Category</option>
-                  <option *ngFor="let item of categoryList" [value]="item?.id">
-                    {{item?.categoryName | titlecase}}
-                  </option>
-                </select>
+                <kt-multi-select-search formControlName="status" [items]="statusList" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData"></kt-multi-select-search>
               </div>
               <div class="col-2 d-flex align-items-end">
                 <label></label>
-                <kt-button [value]="'Apply'" [type]="'button'"></kt-button>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
+
+        <!-- kyc  && loan -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'kyc'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col" *ngIf="filterName == 'kyc'">
+                <label>By CCE Status</label>
+                <ng-select [items]="states" bindLabel="name" placeholder="CCE Status" (change)="getCities($event)"
+                  formControlName="ccStatus" >
+                </ng-select>
+              </div>
+              <div class="col" *ngIf="filterName == 'loan'">
+                <label>By Appraiser Status</label>
+                <ng-select [items]="states" bindLabel="name" placeholder="Select State" (change)="getCities($event)"
+                  formControlName="appraiserStatus">
+                </ng-select>
+              </div>
+              <div class="col">
+                <label>By KYC Status</label>
+                <kt-multi-select-search formControlName="BMStatus" [items]="statusList" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'KYC Status'"></kt-multi-select-search>
+              </div>
+              <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="kt-portlet__body" *ngIf="filterName == 'loan'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col">
+                <label>By Appraiser Status</label>
+                <ng-select [items]="states" bindLabel="name" placeholder="Select State" (change)="getCities($event)"
+                  formControlName="appraiserStatus">
+                </ng-select>
+              </div>
+              <div class="col">
+                <label>By Loan Status</label>
+                <kt-multi-select-search formControlName="BMStatus" [items]="statusList" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Loan Status'"></kt-multi-select-search>
+              </div>
+              <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+
+        <!-- packets -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'packets'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>By Packet Assigned</label>
+                <select placeholder="Packet Assigned" class="form-control"  formControlName="scheme">
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+<!-- scheme -->
+<div class="kt-portlet__body" *ngIf="filterName == 'scheme'">
+  <form class="kt-form" [formGroup]="filterForm">
+    <div class="row">
+      <div class="col-9">
+        <label>By Scheme Type</label>
+        <select placeholder="Scheme Type" class="form-control"  formControlName="scheme">
+        </select>
+      </div>
+      <div class="col-3 d-flex align-items-end">
+        <label></label>
+        <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+      </div>
+    </div>
+  </form>
+</div>
 
         <!-- EMI Details -->
         <div class="kt-portlet__body" *ngIf="filterName =='emiDetails'">

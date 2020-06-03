@@ -19,7 +19,7 @@ import { AddAppraiserComponent } from '../user-management/assign-appraiser/add-a
 export class AppliedKycComponent implements OnInit {
 
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser', 'appraiserName', 'customerId'];
+  displayedColumns = ['fullName', 'pan', 'customerId', 'appraiserName', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;

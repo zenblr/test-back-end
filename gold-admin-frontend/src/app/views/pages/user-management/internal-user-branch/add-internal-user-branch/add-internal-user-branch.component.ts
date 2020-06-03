@@ -34,10 +34,11 @@ export class AddInternalUserBranchComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.data)
+    this.getAllPartners()
     this.getStates()
     this.initForm()
     this.setTitle()
-    this.getAllPartners()
+
   }
 
   getAllPartners() {

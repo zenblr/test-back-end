@@ -7,23 +7,23 @@
 <kt-portlet *ngIf="schemes.length>0">
     <kt-portlet-body class="min-vh-60">
         <mat-tab-group #matTab>
-            <mat-tab label='{{scheme.name | titlecase}}' *ngFor="let scheme of schemes">
+            <mat-tab label='{{scheme.name | uppercase}}' *ngFor="let scheme of schemes">
                 <label class="text-color font-weight-bold h-v-text-center m-0" *ngIf="scheme.schemes.length==0">No
                     Schemes
                     Available</label>
                 <div class="row kt-padding-10" *ngFor="let schemeDeatils of scheme.schemes">
 
-                    <div class="col-2 from-style">
-                        <h4>{{ schemeDeatils.schemeName | titlecase}}</h4>
+                    <div class="col-3 from-style">
+                        <h5>{{ schemeDeatils.schemeName | uppercase}}</h5>
                         <span class="text-gray">From</span>
-                        <h3>
+                        <h4>
                             {{schemeDeatils.schemeAmountStart | schemeAmount }}
                             <!-- <span
                                 *ngIf="schemeDeatils.schemeAmountStart.length >= 6">{{schemeDeatils.schemeAmountStart | schemeAmount</span> -->
                             to
-                            {{schemeDeatils.schemeAmountEnd | schemeAmount}}</h3>
+                            {{schemeDeatils.schemeAmountEnd | schemeAmount}}</h4>
                     </div>
-                    <div class="col-10 border-radius">
+                    <div class="col-9 border-radius">
                         <div class="row border-bottom">
                             <div
                                 class="col-4 heading bg-secondary kt-padding-t-20 kt-padding-b-20 border-right border-left-radius">

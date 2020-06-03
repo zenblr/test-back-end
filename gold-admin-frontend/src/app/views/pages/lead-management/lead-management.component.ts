@@ -8,6 +8,7 @@ import { DataTableService } from '../../../core/shared/services/data-table.servi
 import { Router } from '@angular/router';
 import { LeadManagementDatasource } from '../../../core/lead-management/datasources/lead.datasources';
 import { LeadService } from '../../../core/lead-management/services/lead.service';
+import { SharedService } from '../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-lead-management',
@@ -20,11 +21,20 @@ export class LeadManagementComponent implements OnInit {
   displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kyc', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    stageName: 'lead',
+    stateId: '',
+    cityId: '',
+    statusId: '',
+  }
   // Filter fields
   // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
+  filter$ = new Subject();
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
@@ -32,12 +42,14 @@ export class LeadManagementComponent implements OnInit {
   stageName = 'lead'
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
+  filteredDataList = {};
 
   constructor(
     public dialog: MatDialog,
     private leadService: LeadService,
     private dataTableService: DataTableService,
-    private router: Router
+    private router: Router,
+    private sharedService:SharedService
   ) {
     this.leadService.openModal$.pipe(
       map(res => {
@@ -46,6 +58,14 @@ export class LeadManagementComponent implements OnInit {
         }
       }),
       takeUntil(this.destroy$)).subscribe();
+
+    this.leadService.applyFilter$
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
   }
 
   ngOnInit() {
@@ -58,7 +78,7 @@ export class LeadManagementComponent implements OnInit {
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
-        this.searchValue = res;
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadLeadsPage();
       });
@@ -73,7 +93,7 @@ export class LeadManagementComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.loadLeads(1, 25, this.searchValue, this.stageName);
+    this.dataSource.loadLeads(this.queryParamsData);
   }
 
   ngOnDestroy() {
@@ -82,6 +102,10 @@ export class LeadManagementComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.filter$.next();
+    this.filter$.complete();
+    this.leadService.applyFilter.next({});
+		this.sharedService.closeFilter.next(true);
   }
 
 
@@ -91,7 +115,16 @@ export class LeadManagementComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadLeads(from, to, this.searchValue, this.stageName);
+    this.dataSource.loadLeads(this.queryParamsData);
+  }
+
+  applyFilter(data) {
+    console.log(data);
+    this.queryParamsData.cityId = data.data.cities;
+    this.queryParamsData.stateId = data.data.states;
+    this.queryParamsData.statusId = data.data.status;
+    this.dataSource.loadLeads(this.queryParamsData);
+    this.filteredDataList = data.list;
   }
 
   addLead() {

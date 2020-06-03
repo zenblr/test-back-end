@@ -24,7 +24,8 @@
                         <!-- Partner Name -->
                         <div class="row">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color kt-padding-l-10">Branch Name</label>
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="text-color kt-padding-l-10">Branch Name</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="name" placeholder="Branch Name"
@@ -36,23 +37,29 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!='view'" class="kt-padding-l-10 text-color">Select Parnter</label>
+                                <label for="" *ngIf="data.action!='view'"
+                                    class="kt-padding-l-10 text-color mandatory">Select Parnter</label>
+                                    <label for="" *ngIf="data.action =='view'"
+                                    class="kt-padding-l-10 text-color">Parnter</label>
                             </div>
                             <div class="col-8">
-                                <kt-multi-select-search [items]="partners" [multiple]="true" formControlName="multiselect" [bindLabel]="'name'" [bindValue]="'id'"></kt-multi-select-search>
+                                <kt-multi-select-search *ngIf="data.action != 'view'" [items]="partners" [multiple]="true"
+                                    formControlName="multiselect" [bindLabel]="'name'" [bindValue]="'id'">
+                                </kt-multi-select-search >
                                 <!-- <select class="form-control" formControlName="partnerId" autocomplete="off"
                                     [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select</option>
                                     <option [value]="branch.id" *ngFor="let branch of branch">{{branch.name |titlecase}}</option>
                                 </select> -->
-                                <!-- <input type="text" value="{{partner}}"> -->
+                                <input type="text" readonly class="form-control" value="{{data.branch.partner.join(',')}}" *ngIf="data.action == 'view' && data">
                                 <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.errors?.required">
                                     Required field</mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4  form-label">
-                                <label for=""  [class.mandatory]="data.action!='view'" class="text-color kt-padding-l-10">Address</label>
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="text-color kt-padding-l-10">Address</label>
                             </div>
                             <div class="col-8">
                                 <textarea class="form-control" placeholder="Enter Address" formControlName="address"
@@ -66,7 +73,8 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color kt-padding-l-10">State</label>
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="text-color kt-padding-l-10">State</label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="stateId" autocomplete="off"
@@ -81,7 +89,8 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color kt-padding-l-10">City</label>
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="text-color kt-padding-l-10">City</label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="cityId" autocomplete="off"
@@ -96,7 +105,8 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label for="" [class.mandatory]="data.action!='view'"  class="text-color kt-padding-l-10">Pincode</label>
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="text-color kt-padding-l-10">Pincode</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" numbersOnly maxlength="6" formControlName="pinCode"
