@@ -14,8 +14,8 @@
             <mat-tab label="By Filling From">
                 <form [formGroup]="fillingForm">
                     <div class="row kt-margin-b-15">
-                        <div class="col-3">
-                            <p class="text-color form-label mandatory">Partner Name</p>
+                        <div class="col-3 form-label" >
+                            <label class="kt-padding-l-10 mandatory">Partner Name</label>
                         </div>
                         <div class="col-9">
                             <select name="" id="" class="form-control" formControlName="partnerId"
@@ -29,8 +29,8 @@
                         </div>
                     </div>
                     <div class="row kt-margin-b-15">
-                        <div class="col-3">
-                            <p class="text-color form-label mandatory"> Scheme Name</p>
+                        <div class="col-3 form-label" >
+                            <label class="kt-padding-l-10 mandatory"> Scheme Name</label>
                         </div>
                         <div class="col-9">
                             <input type="test" class="form-control" formControlName="schemeName"
@@ -40,8 +40,8 @@
                     </div>
 
                     <div class="row kt-margin-b-10">
-                        <div class="col-3">
-                            <p class="text-color form-label mandatory"> Enter Amount</p>
+                        <div class="col-3 form-label" >
+                            <label class="kt-padding-l-10 mandatory"> Enter Amount</label>
                         </div>
                         <div class="col-9">
                             <div class="row">
@@ -73,11 +73,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
-                            <p class="text-color form-label mandatory">
+                        <div class="col-3 form-label">
+                            <label class="kt-padding-l-10 mandatory">
                                 Rate of Interest <br>
                                 (% / Monthly)
-                            </p>
+                            </label>
                         </div>
                         <div class="col-3">
                             <input type="number" class="form-control" formControlName="interestRateThirtyDaysMonthly"
@@ -131,8 +131,8 @@
             <mat-tab label="By Uploading CSV">
                 <form [formGroup]="csvForm">
                     <div class="row kt-margin-t-20">
-                        <div class="col-3">
-                            <label class="text-color form-label mandatory">Partner Name</label>
+                        <div class="col-3  form-label" >
+                            <label class="kt-padding-l-10 mandatory">Partner Name</label>
                         </div>
                         <div class="col-9">
                             <select name="" id="" class="form-control" formControlName="partnerId"
@@ -146,8 +146,8 @@
                         </div>
                     </div>
                     <div class="row kt-margin-t-20">
-                        <div class="col-3">
-                            <label class="text-color form-label mandatory">Upload CSV</label>
+                        <div class="col-3 form-label" >
+                            <label class="kt-padding-l-10 mandatory">Upload CSV</label>
                         </div>
                         <div class="col-9">
                             <div class="input-group mb-3"

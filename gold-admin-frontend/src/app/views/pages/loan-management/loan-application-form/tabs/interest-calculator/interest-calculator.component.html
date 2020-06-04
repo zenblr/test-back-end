@@ -64,7 +64,10 @@
                         <select formControlName="tenure" class="form-control" (change)="setEndDate()"
                             [class.isError]="controls.tenure.touched && controls.tenure.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
-                            <option [value]="ten" *ngFor="let ten of tenure">{{ten}} Month</option>
+                            <option [value]="ten" *ngFor="let ten of tenure;index as i">
+                                <span *ngIf="i==0">{{ten}} Month</span>
+                                <span *ngIf="i > 0">{{ten}} Months</span>
+                            </option>
                         </select>
                         <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
                             Required field
@@ -99,7 +102,7 @@
                             placeholder="0,00,000" (blur)="amountValidation();getIntrest()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
                         <mat-hint><strong>Eligible Amount: <span class="currency">
-                                    {{totalAmt | currency:'INR':'symbol' : '1.0-0'}}</span> </strong></mat-hint>
+                                    {{totalAmt | indianCurrencyFormat}}</span> </strong></mat-hint>
                         <div>
                             <mat-error
                                 *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
@@ -238,7 +241,7 @@
 
                                     <td [attr.rowspan]="colJoin" class="text-center currency" *ngIf="(idx%colJoin == 0 || colJoin == null)">
                                         
-                                            {{intrestAmount | currency:'INR'}}</td>
+                                            {{intrestAmount | indianCurrencyFormat}}</td>
 
                                 </tr>
                             </tbody>
@@ -247,10 +250,10 @@
                                     <td>{{date.key | date :'mediumDate'}}</td>
                                     <td [attr.rowspan]="colJoin" class="text-center currency"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
-                                            {{intrestAmount | currency:'INR' }}</td>
+                                            {{intrestAmount | indianCurrencyFormat }}</td>
                                     <td [attr.rowspan]="colJoin" class="text-center currency"
                                         *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
-                                        {{(intrestAmount /colJoin) * (dateOfPayment.length%colJoin) | currency : 'INR'}}
+                                        {{(intrestAmount /colJoin) * (dateOfPayment.length%colJoin) | indianCurrencyFormat}}
                                     </td>
 
                                 </tr>
@@ -260,13 +263,13 @@
                                     <td><strong>Total Amount</strong></td>
                                     <td *ngIf="colJoin != null"  class="text-center">
                                         <strong><span class="currency">
-                                            {{(intrestAmount/colJoin) * dateOfPayment.length | currency:'INR'}}</span>
+                                            {{((intrestAmount/colJoin) * dateOfPayment.length).toFixed(2) | indianCurrencyFormat}}</span>
                                             </strong>
                                     </td>
                                     <td *ngIf="colJoin == null" class="text-center">
                                         <strong>
                                             <span class="currency">
-                                                {{(intrestAmount) * dateOfPayment.length | currency : 'INR'}}
+                                                {{((intrestAmount) * dateOfPayment.length).toFixed(2) | indianCurrencyFormat}}
                                             </span></strong>
                                     </td>
                                 </tr>

@@ -116,22 +116,22 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   statusAppraiser() {
+    this.controls.commentByAppraiser.reset()
     if (this.controls.loanStatusForAppraiser.value != 'approved') {
       this.controls.commentByAppraiser.setValidators(Validators.required);
       this.controls.commentByAppraiser.updateValueAndValidity()
     } else {
-      this.controls.commentByAppraiser.reset()
       this.controls.commentByAppraiser.clearValidators();
       this.controls.commentByAppraiser.updateValueAndValidity();
       this.controls.commentByAppraiser.markAsUntouched()
     }
   }
   statusBM() {
+    this.controls.commentByBM.reset();
     if (this.controls.loanStatusForBM.value != 'approved') {
       this.controls.commentByBM.setValidators(Validators.required);
       this.controls.commentByBM.updateValueAndValidity()
     } else {
-      this.controls.commentByBM.reset();
       this.controls.commentByBM.clearValidators();
       this.controls.commentByBM.updateValueAndValidity();
       this.controls.commentByBM.markAsUntouched()

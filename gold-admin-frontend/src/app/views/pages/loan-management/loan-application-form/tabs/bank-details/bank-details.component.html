@@ -26,10 +26,10 @@
                 <div class="col-6" *ngIf="controls.paymentType.value != 'cash'">
                     <div class="row">
                         <div class="col-4 offset-2 form-label">
-                            <label class="text-color kt-padding-l-10">IFSC</label>
+                            <label class="text-color mandatory kt-padding-l-10">IFSC</label>
                         </div>
                         <div class="col-6">
-                            <input type="text" class="form-control" placeholder="IFSC0000XXX" formControlName="ifscCode"
+                            <input type="text" class="form-control text-uppercase" placeholder="IFSC0000XXX" formControlName="ifscCode"
                                 maxlength="11" [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
                             <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
                                 Required field
@@ -46,7 +46,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4 form-label">
-                                <label class="text-color kt-padding-l-10">Bank Name</label>
+                                <label class="text-color  mandatory kt-padding-l-10">Bank Name</label>
                             </div>
                             <div class="col-6">
                                 <input type="text" class="form-control" placeholder="State Bank"
@@ -65,7 +65,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4 offset-2 form-label">
-                                <label class="text-color kt-padding-l-10">Bank Branch Name</label> </div>
+                                <label class="text-color mandatory kt-padding-l-10">Bank Branch Name</label> </div>
                             <div class="col-6">
                                 <input type="text" class="form-control" placeholder="Andheri"
                                     formControlName="bankBranchName"
@@ -82,7 +82,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4 form-label">
-                                <label class="text-color kt-padding-l-10">A/C holder</label>
+                                <label class="text-color mandatory kt-padding-l-10">A/C holder</label>
                             </div>
                             <div class="col-6">
                                 <input type="text" class="form-control" placeholder="John Doe"
@@ -98,7 +98,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4 offset-2 form-label">
-                                <label class="text-color kt-padding-l-10">Account No.</label>
+                                <label class="text-color mandatory kt-padding-l-10">Account No.</label>
                             </div>
                             <div class="col-6">
                                 <input type="text" class="form-control" placeholder="10234501203203"

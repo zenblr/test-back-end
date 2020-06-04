@@ -36,7 +36,8 @@ export class UserDetailsComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
     private sharedServices: SharedService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private toast:ToastrService) { }
 
   ngOnInit() {
     this.initForm();
@@ -151,6 +152,9 @@ export class UserDetailsComponent implements OnInit {
   }
 
   getFileInfo(event) {
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
     this.sharedServices.uploadFile(event.target.files[0]).pipe(
       map(res => {
         if (res) {
@@ -160,6 +164,9 @@ export class UserDetailsComponent implements OnInit {
       }), catchError(err => {
         throw err
       })).subscribe()
+    }else{
+      this.toast.error('Upload Valid File Format')
+    }
   }
 
   preview() {
