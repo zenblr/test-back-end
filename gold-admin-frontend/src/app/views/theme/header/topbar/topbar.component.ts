@@ -39,6 +39,7 @@ import { EmailAlertService } from '../../../../core/notification-setting/service
 import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
 import { HolidayService } from '../../../../core/holidays/services/holiday.service';
 import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
+import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -115,7 +116,8 @@ export class TopbarComponent implements OnInit {
 		private emailAlertService: EmailAlertService,
 		private smsAlertService: SmsAlertService,
 		private holidayService: HolidayService,
-		private packetLocation:PacketLocationService
+		private packetLocation:PacketLocationService,
+		private ornamentsService: OrnamentsService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -238,6 +240,12 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add Holiday";
 			this.type2 = "button";
 			this.showInput = true;
+			// this.permissionType = "schemeAdd";
+		}
+		if (this.path == "ornaments") {
+			this.value1 = "Add Ornaments";
+			this.showInput = true;
+			this.dataSourceHeader();
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "lead-management") {
@@ -492,6 +500,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "scheme") {
 			this.loanSettingService.openModal.next(true);
+		}
+		if (this.path == "ornaments") {
+			this.ornamentsService.openModal.next(true);
 		}
 		if (this.path == "holidays") {
 			this.holidayService.openModal.next(true);
