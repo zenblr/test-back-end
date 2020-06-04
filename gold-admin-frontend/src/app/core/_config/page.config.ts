@@ -17,6 +17,9 @@ export class PageConfig {
 				page: { title: "Show Feedback", desc: "" },
 			},
 		},
+		"global-settings": {
+			page: { title: "Global Settings", desc: "" },
+		},
 		"loan-setting": {
 			scheme: {
 				page: { title: "Schemes", desc: "" },
@@ -98,6 +101,9 @@ export class PageConfig {
 			"edit-kyc": {
 				page: { title: "Customer KYC", desc: "" },
 			},
+		},
+		"assigned-customers": {
+			page: { title: "Assigned Customers", desc: "" },
 		},
 		"emi-management": {
 			products: {

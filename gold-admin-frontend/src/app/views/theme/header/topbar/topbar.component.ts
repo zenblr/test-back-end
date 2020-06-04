@@ -294,6 +294,9 @@ export class TopbarComponent implements OnInit {
 			this.filterName = "kyc";
 			this.filterWidth = "600px";
 		}
+		if (this.path == "assigned-customers") {
+			this.showInput = true;
+		}
 		if (this.path == "monthly") {
 			this.dataSourceHeader();
 			this.value1 = "Add Payment";
