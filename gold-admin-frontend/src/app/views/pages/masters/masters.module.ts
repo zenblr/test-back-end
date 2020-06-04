@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReasonsComponent } from './reasons/reasons.component';
 import { PurposesComponent } from './purposes/purposes.component';
 import { PacketLocationListComponent } from './packet-location/packet-location-list/packet-location-list.component';
 import { Routes, RouterModule } from '@angular/router';
@@ -14,11 +13,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { AddPacketLocationComponent } from './packet-location/add-packet-location/add-packet-location.component';
 import { OrnamentsAddComponent } from './ornaments/ornaments-add/ornaments-add.component';
 import { OrnamentsListComponent } from './ornaments/ornaments-list/ornaments-list.component';
+import { ReasonListComponent } from './reasons/reason-list/reason-list.component';
+import { ReasonAddComponent } from './reasons/reason-add/reason-add.component';
 
 const routes: Routes = [
   {
     path: 'reasons',
-    component: ReasonsComponent
+    component: ReasonListComponent
   },
   {
     path: 'purposes',
@@ -36,40 +37,42 @@ const routes: Routes = [
 
 
 @NgModule({
-    declarations: [
-      ReasonsComponent,
-      PurposesComponent,
-      PacketLocationListComponent,
-      AddPacketLocationComponent,
-      OrnamentsAddComponent,
-      OrnamentsListComponent
-    ],
-    imports: [
-      CommonModule,
-      HttpClientModule,
-      PartialsModule,
-      RouterModule.forChild(routes),
-      FormsModule,
-      ReactiveFormsModule,
-      AngularMaterialModule,
-      CoreModule,
-    ],
-    providers: [
-      InterceptService,
-      {
-        provide: HTTP_INTERCEPTORS,
-        useClass: InterceptService,
-        multi: true
-      },
-      { provide: MAT_DIALOG_DATA, useValue: {} },
-      { provide: MatDialogRef, useValue: {} },
-      HttpUtilsService,
-      TypesUtilsService,
-      LayoutUtilsService
-    ],
-    entryComponents: [
-      AddPacketLocationComponent,
-      OrnamentsAddComponent
-    ]
-  })
+  declarations: [
+    PurposesComponent,
+    PacketLocationListComponent,
+    AddPacketLocationComponent,
+    OrnamentsAddComponent,
+    OrnamentsListComponent,
+    ReasonListComponent,
+    ReasonAddComponent
+  ],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    PartialsModule,
+    RouterModule.forChild(routes),
+    FormsModule,
+    ReactiveFormsModule,
+    AngularMaterialModule,
+    CoreModule,
+  ],
+  providers: [
+    InterceptService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptService,
+      multi: true
+    },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
+    HttpUtilsService,
+    TypesUtilsService,
+    LayoutUtilsService
+  ],
+  entryComponents: [
+    AddPacketLocationComponent,
+    OrnamentsAddComponent,
+    ReasonAddComponent
+  ]
+})
 export class MastersModule { }

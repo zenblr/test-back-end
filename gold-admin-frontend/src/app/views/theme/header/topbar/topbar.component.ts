@@ -40,6 +40,7 @@ import { SmsAlertService } from '../../../../core/notification-setting/services/
 import { HolidayService } from '../../../../core/holidays/services/holiday.service';
 import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
 import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
+import { ReasonsService } from '../../../../core/masters/reasons/services/reasons.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -116,8 +117,9 @@ export class TopbarComponent implements OnInit {
 		private emailAlertService: EmailAlertService,
 		private smsAlertService: SmsAlertService,
 		private holidayService: HolidayService,
-		private packetLocation:PacketLocationService,
-		private ornamentsService: OrnamentsService
+		private packetLocation: PacketLocationService,
+		private ornamentsService: OrnamentsService,
+		private reasonsService: ReasonsService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -212,8 +214,8 @@ export class TopbarComponent implements OnInit {
 		this.permissionType = "";
 		this.filterName = "";
 		this.filterWidth = "";
-		this.listType="",
-		this.clear = false;
+		this.listType = "",
+			this.clear = false;
 	}
 
 	dataSourceHeader() {
@@ -244,6 +246,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "ornaments") {
 			this.value1 = "Add Ornaments";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
+		}
+		if (this.path == "reasons") {
+			this.value1 = "Add Reason";
 			this.showInput = true;
 			this.dataSourceHeader();
 			// this.permissionType = "schemeAdd";
@@ -291,7 +299,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "applied-loan") {
 			this.showfilter = true;
 			this.filterWidth = "600px"
-			this.filterName="loan"
+			this.filterName = "loan"
 			this.showInput = true;
 		}
 		if (this.path == "all-loan") {
@@ -504,6 +512,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "ornaments") {
 			this.ornamentsService.openModal.next(true);
 		}
+		if (this.path == "reasons") {
+			this.reasonsService.openModal.next(true);
+		}
 		if (this.path == "holidays") {
 			this.holidayService.openModal.next(true);
 		}
@@ -582,7 +593,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "customers") {
 			this.customerDetailsService.exportExcel.next(true);
 		}
-		if(this.path == 'packet-location'){
+		if (this.path == 'packet-location') {
 			this.packetLocation.openModal.next(true)
 		}
 	}

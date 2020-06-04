@@ -22,7 +22,7 @@ export class PageConfig {
 				page: { title: "Reasons", desc: "" },
 			},
 			ornamnents: {
-				page: { title: "Ornamnents", desc: "" },
+				page: { title: "Ornaments", desc: "" },
 			},
 			purposes: {
 				page: { title: "Purposes", desc: "" },
