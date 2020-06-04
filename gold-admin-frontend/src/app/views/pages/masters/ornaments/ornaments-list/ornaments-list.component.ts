@@ -98,7 +98,7 @@ export class OrnamentsListComponent implements OnInit {
     });
   }
 
-  editPacket(role) {
+  editOrnament(role) {
     console.log(role)
     const dialogRef = this.dialog.open(OrnamentsAddComponent,
       {
@@ -112,7 +112,7 @@ export class OrnamentsListComponent implements OnInit {
     });
   }
 
-  deletePacket(_item) {
+  deleteOrnament(_item) {
     const role = _item;
     const _title = 'Delete Ornament';
     const _description = 'Are you sure to permanently delete this ornament?';
