@@ -43,4 +43,14 @@ export class OrnamentsService {
       })
     );
   }
+
+  deleteOrnament(id): Observable<any> {
+    return this.http.delete<any>(`/api/packet/${id}`).pipe(
+      map(res => res),
+      catchError(err => {
+        this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
 }

@@ -150,7 +150,7 @@ export class MenuConfig {
 									submenu: [
 										{
 											title: "Ornaments",
-											page: "/masters/ornamnents",
+											page: "/masters/ornaments",
 											permission: false,
 										},
 										{

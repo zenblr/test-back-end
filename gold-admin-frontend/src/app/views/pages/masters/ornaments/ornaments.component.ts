@@ -27,13 +27,7 @@ export class OrnamentsComponent implements OnInit {
     private ornamentsService: OrnamentsService,
     public dialog: MatDialog,
   ) {
-    this.ornamentsService.openModal$.pipe(
-      map(res => {
-        if (res) {
-          this.addHoliday();
-        }
-      }),
-      takeUntil(this.destroy$)).subscribe();
+
   }
 
   ngOnInit() {
@@ -78,19 +72,6 @@ export class OrnamentsComponent implements OnInit {
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
     this.dataSource.getHolidays(from, to, this.searchValue);
-  }
-
-  addHoliday() {
-    const dialogRef = this.dialog.open(HolidayAddComponent, {
-      data: { action: 'add' },
-      width: '600px',
-    });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadPage();
-      }
-      this.ornamentsService.openModal.next(false);
-    });
   }
 
 }
