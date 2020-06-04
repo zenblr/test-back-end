@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReasonsComponent } from './reasons/reasons.component';
-import { PurposesComponent } from './purposes/purposes.component';
+import { PurposesListComponent } from './purposes/purpose-list/purposes-list.component';
 import { PacketLocationListComponent } from './packet-location/packet-location-list/packet-location-list.component';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -14,6 +14,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { AddPacketLocationComponent } from './packet-location/add-packet-location/add-packet-location.component';
 import { OrnamentsAddComponent } from './ornaments/ornaments-add/ornaments-add.component';
 import { OrnamentsListComponent } from './ornaments/ornaments-list/ornaments-list.component';
+import { AddPurposeComponent } from './purposes/add-purpose/add-purpose.component';
 
 const routes: Routes = [
   {
@@ -22,7 +23,7 @@ const routes: Routes = [
   },
   {
     path: 'purposes',
-    component: PurposesComponent
+    component: PurposesListComponent
   },
   {
     path: 'ornaments',
@@ -38,11 +39,12 @@ const routes: Routes = [
 @NgModule({
     declarations: [
       ReasonsComponent,
-      PurposesComponent,
+      PurposesListComponent,
       PacketLocationListComponent,
       AddPacketLocationComponent,
       OrnamentsAddComponent,
-      OrnamentsListComponent
+      OrnamentsListComponent,
+      AddPurposeComponent
     ],
     imports: [
       CommonModule,
@@ -69,7 +71,8 @@ const routes: Routes = [
     ],
     entryComponents: [
       AddPacketLocationComponent,
-      OrnamentsAddComponent
+      OrnamentsAddComponent,
+      AddPurposeComponent
     ]
   })
 export class MastersModule { }

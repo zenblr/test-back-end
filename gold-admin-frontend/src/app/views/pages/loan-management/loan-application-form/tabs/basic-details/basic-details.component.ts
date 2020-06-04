@@ -125,11 +125,11 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   initForm() {
     this.basicForm = this.fb.group({
       customerUniqueId: [, [Validators.required, Validators.minLength(8)]],
-      mobileNumber: [''],
-      panCardNumber: [''],
+      mobileNumber: ['',Validators.required],
+      panCardNumber: ['',Validators.required],
       startDate: [this.currentDate],
-      customerId: [],
-      kycStatus: [],
+      customerId: [,Validators.required],
+      kycStatus: [,Validators.required],
       purpose:[""]
     })
   }

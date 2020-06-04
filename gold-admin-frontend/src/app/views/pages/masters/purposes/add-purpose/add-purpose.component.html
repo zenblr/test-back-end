@@ -6,7 +6,7 @@
     <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
     <div>
         <div class="kt-form">
-            <form [formGroup]="packetLocation">
+            <form [formGroup]="purposeForm">
                 <div class="kt-portlet__body">
 
                     <div class="kt-portlet__body-progress">
@@ -15,12 +15,12 @@
                     <div class="col-12">
                         <div class="row">
                             <div class="col-4 form-label">
-                                <label for="" class="mandatory">Location</label>
+                                <label for="" class="mandatory">Purpose Name</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" class="form-control" formControlName="location"
-                                    [class.isError]="controls.location.invalid &&  controls.location.touched">
-                                    <mat-error *ngIf="controls.location.touched && controls.location.errors?.required">
+                                <input type="text" class="form-control" formControlName="purposeName"
+                                    [class.isError]="controls.purposeName.invalid &&  controls.purposeName.touched">
+                                    <mat-error *ngIf="controls.purposeName.touched && controls.purposeName.errors?.required">
                                         Required field
                                     </mat-error>
                                 </div>

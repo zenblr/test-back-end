@@ -10,7 +10,9 @@
 
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div (click)="editLocation(item)">Edit</div>
+                    </mat-cell>
                 </ng-container>
 
 

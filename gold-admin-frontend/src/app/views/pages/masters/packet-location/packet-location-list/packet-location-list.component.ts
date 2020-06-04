@@ -82,13 +82,27 @@ export class PacketLocationListComponent implements OnInit {
   addLocation() {
     const dialogRef = this.dialog.open(AddPacketLocationComponent, {
       data: { action: 'add' },
-      width: '600px',
+      width: '400px',
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
       }
       this.packetLocationService.openModal.next(false);
+    });
+  }
+
+  editLocation(location) {
+    console.log(location)
+    const dialogRef = this.dialog.open(AddPacketLocationComponent,
+      {
+        data: { locationData: location, action: 'edit' },
+        width: '400px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
     });
   }
 

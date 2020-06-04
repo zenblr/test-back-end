@@ -40,6 +40,7 @@ import { SmsAlertService } from '../../../../core/notification-setting/services/
 import { HolidayService } from '../../../../core/holidays/services/holiday.service';
 import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
 import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
+import { PurposeService } from '../../../../core/masters/purposes/service/purpose.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -117,7 +118,8 @@ export class TopbarComponent implements OnInit {
 		private smsAlertService: SmsAlertService,
 		private holidayService: HolidayService,
 		private packetLocation:PacketLocationService,
-		private ornamentsService: OrnamentsService
+		private ornamentsService: OrnamentsService,
+		private purposeService:PurposeService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -328,7 +330,11 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "packet-location") {
 			this.dataSourceHeader();
-			this.value1 = "Add Location";
+			this.value1 = "Add Packet Location";
+		} 
+		if (this.path == "purposes") {
+			this.dataSourceHeader();
+			this.value1 = "Add Purpose";
 		}
 
 		if (this.path == "roles") {
@@ -584,6 +590,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if(this.path == 'packet-location'){
 			this.packetLocation.openModal.next(true)
+		}
+		if(this.path == 'purposes'){
+			this.purposeService.openModal.next(true)
 		}
 	}
 

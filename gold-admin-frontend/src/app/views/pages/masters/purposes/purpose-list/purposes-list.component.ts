@@ -1,20 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject, Subscription, merge } from 'rxjs';
 import { MatPaginator, MatDialog } from '@angular/material';
-import { DataTableService } from '../../../../core/shared/services/data-table.service';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
-import { OrnamentsDatasource } from '../../../../core/masters/ornaments/datasources/ornaments.datasource';
-import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
+import { PurposeDatasource } from '../../../../../core/masters/purposes/datasources/purpose.datasource';
+import { PurposeService } from '../../../../../core/masters/purposes/service/purpose.service';
+import { AddPurposeComponent } from '../add-purpose/add-purpose.component';
 
 @Component({
-  selector: 'kt-purposes',
-  templateUrl: './purposes.component.html',
-  styleUrls: ['./purposes.component.scss']
+  selector: 'kt-purposes-list',
+  templateUrl: './purposes-list.component.html',
+  styleUrls: ['./purposes-list.component.scss']
 })
-export class PurposesComponent implements OnInit {
+export class PurposesListComponent implements OnInit {
   
   dataSource;
-  displayedColumns = ['holidayDate', 'description'];
+  displayedColumns = ['purposeName', 'action'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -24,13 +25,13 @@ export class PurposesComponent implements OnInit {
 
   constructor(
     private dataTableService: DataTableService,
-    private ornamentsService: OrnamentsService,
+    private purposeService: PurposeService,
     public dialog: MatDialog,
   ) {
-    this.ornamentsService.openModal$.pipe(
+    this.purposeService.openModal$.pipe(
       map(res => {
         if (res) {
-          // this.addHoliday();
+          this.addpurpose();
         }
       }),
       takeUntil(this.destroy$)).subscribe();
@@ -50,7 +51,7 @@ export class PurposesComponent implements OnInit {
         this.loadPage();
       });
 
-    this.dataSource = new OrnamentsDatasource(this.ornamentsService);
+    this.dataSource = new PurposeDatasource(this.purposeService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -80,17 +81,31 @@ export class PurposesComponent implements OnInit {
     this.dataSource.getHolidays(from, to, this.searchValue);
   }
 
-  // addHoliday() {
-  //   const dialogRef = this.dialog.open(HolidayAddComponent, {
-  //     data: { action: 'add' },
-  //     width: '600px',
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.loadPage();
-  //     }
-  //     this.ornamentsService.openModal.next(false);
-  //   });
-  // }
+  addpurpose() {
+    const dialogRef = this.dialog.open(AddPurposeComponent, {
+      data: { action: 'add' },
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+      this.purposeService.openModal.next(false);
+    });
+  }
+
+  editPurpose(purpose) {
+    console.log(purpose)
+    const dialogRef = this.dialog.open(AddPurposeComponent,
+      {
+        data: { purposeData: purpose, action: 'edit' },
+        width: '400px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
+  }
 
 }

@@ -11,10 +11,11 @@
                         <div class="col-8">
                             <input type="text" class="form-control" formControlName="ornamentName"
                                 [class.isError]="ornamentForm.controls.ornamentName.invalid &&  ornamentForm.controls.ornamentName.touched">
-                        </div>
-                        <mat-error *ngIf="controls.ornamentName.touched && controls.ornamentName.errors?.required">
-                            Required field
-                        </mat-error>
+                                <mat-error *ngIf="controls.ornamentName.touched && controls.ornamentName.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                       
                     </div>
                 </div>
             </div>
