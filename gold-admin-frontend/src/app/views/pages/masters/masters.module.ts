@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReasonsComponent } from './reasons/reasons.component';
 import { PurposesListComponent } from './purposes/purpose-list/purposes-list.component';
 import { PacketLocationListComponent } from './packet-location/packet-location-list/packet-location-list.component';
 import { Routes, RouterModule } from '@angular/router';
@@ -15,11 +14,13 @@ import { AddPacketLocationComponent } from './packet-location/add-packet-locatio
 import { OrnamentsAddComponent } from './ornaments/ornaments-add/ornaments-add.component';
 import { OrnamentsListComponent } from './ornaments/ornaments-list/ornaments-list.component';
 import { AddPurposeComponent } from './purposes/add-purpose/add-purpose.component';
+import { ReasonListComponent } from './reasons/reason-list/reason-list.component';
+import { ReasonAddComponent } from './reasons/reason-add/reason-add.component';
 
 const routes: Routes = [
   {
     path: 'reasons',
-    component: ReasonsComponent
+    component: ReasonListComponent
   },
   {
     path: 'purposes',
@@ -38,13 +39,14 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [
-      ReasonsComponent,
       PurposesListComponent,
       PacketLocationListComponent,
       AddPacketLocationComponent,
       OrnamentsAddComponent,
       OrnamentsListComponent,
-      AddPurposeComponent
+      AddPurposeComponent,
+      ReasonListComponent,
+      ReasonAddComponent
     ],
     imports: [
       CommonModule,
@@ -72,7 +74,8 @@ const routes: Routes = [
     entryComponents: [
       AddPacketLocationComponent,
       OrnamentsAddComponent,
-      AddPurposeComponent
+      AddPurposeComponent,
+      ReasonAddComponent
     ]
-  })
+})
 export class MastersModule { }

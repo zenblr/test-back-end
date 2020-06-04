@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { HttpClient } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OrnamentsService {
+export class ReasonsService {
 
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  getOrnaments(from, to, search): Observable<any> {
+  getReasons(from, to, search): Observable<any> {
     return this.http.get(`/api/packet?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
@@ -24,7 +24,7 @@ export class OrnamentsService {
     )
   }
 
-  addOrnaments(data): Observable<any> {
+  addReason(data): Observable<any> {
     return this.http.post<any>(`/api/packet`, data).pipe(
       map(res => res),
       catchError(err => {
@@ -34,7 +34,7 @@ export class OrnamentsService {
     );
   }
 
-  updateOrnaments(id, data): Observable<any> {
+  updateReason(id, data): Observable<any> {
     return this.http.put<any>(`/api/packet/${id}`, data).pipe(
       map(res => res),
       catchError(err => {
@@ -44,7 +44,7 @@ export class OrnamentsService {
     );
   }
 
-  deleteOrnament(id): Observable<any> {
+  deleteReason(id): Observable<any> {
     return this.http.delete<any>(`/api/packet/${id}`).pipe(
       map(res => res),
       catchError(err => {
