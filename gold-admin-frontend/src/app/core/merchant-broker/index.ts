@@ -5,3 +5,5 @@ export { CustomersService } from './customers/services/customers.service';
 export { OrdersDatasource } from './orders/datasources/orders.datasource';
 export { OrdersModel } from './orders/models/orders.model';
 export { OrdersService } from './orders/services/orders.service';
+
+export { ProfileService } from './profile/services/profile.service';

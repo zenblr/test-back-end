@@ -552,6 +552,13 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-13.svg",
 							permission: !this.permissionsArr.includes('customerView'),
 						},
+						{
+							title: "Profile",
+							root: true,
+							page: "/merchant-broker/profile",
+							src: "assets/media/aside-icons/icons-13.svg",
+							permission: !this.permissionsArr.includes('customerView'),
+						},
 					],
 				},
 			};

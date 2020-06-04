@@ -39,6 +39,8 @@ import {
 import { MerchantComponent } from "./merchant.component";
 import { CustomersComponent } from './customers/customers-list/customers.component';
 import { OrdersComponent } from './orders/orders-list/orders.component';
+import { ProfileComponent } from './profile/profile.component';
+import { ProfileChangePassComponent } from './profile/profile-change-pass/profile-change-pass.component';
 
 const routes: Routes = [
   {
@@ -56,12 +58,16 @@ const routes: Routes = [
         path: "orders",
         component: OrdersComponent,
       },
+      {
+        path: "profile",
+        component: ProfileComponent,
+      },
     ],
   },
 ];
 
 @NgModule({
-  declarations: [MerchantComponent, CustomersComponent, OrdersComponent],
+  declarations: [MerchantComponent, CustomersComponent, OrdersComponent, ProfileComponent, ProfileChangePassComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -98,6 +104,9 @@ const routes: Routes = [
     HttpUtilsService,
     TypesUtilsService,
     LayoutUtilsService,
+  ],
+  entryComponents: [
+    ProfileChangePassComponent,
   ],
 })
 export class MerchantModule { }

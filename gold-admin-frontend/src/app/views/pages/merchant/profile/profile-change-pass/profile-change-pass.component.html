@@ -1,0 +1,77 @@
+<kt-toastr #toastr></kt-toastr>
+
+<div class="kt-portlet">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-form">
+            <form [formGroup]="passwordForm">
+                <div class="form-group kt-form__group row">
+                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+                        <div class="row">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Old Password</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="oldPassword" type="text"
+                                    [class.isError]="controls.oldPassword.touched && controls.oldPassword.invalid">
+                                <mat-error
+                                    *ngIf="controls.oldPassword.errors?.required && controls.oldPassword.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">New Password</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="newPassword" type="text"
+                                    [class.isError]="controls.newPassword.touched && controls.newPassword.invalid">
+                                <mat-error *ngIf="controls.newPassword.errors?.required">
+                                    <strong>Enter New Password</strong>
+                                </mat-error>
+                                <mat-error *ngIf="controls.newPassword.errors?.minlength">
+                                    <strong>Minimum field length 8</strong>
+                                </mat-error>
+                                <mat-error *ngIf="controls.newPassword.errors?.maxlength">
+                                    <strong>Maximum field length 100</strong>
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Confirm Password</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="confirmPassword" type="text"
+                                    [class.isError]="controls.confirmPassword.touched && controls.confirmPassword.invalid">
+                                <mat-error
+                                    *ngIf="controls.confirmPassword.errors?.required && controls.confirmPassword.touched">
+                                    <strong>Enter Confirm Password</strong>
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.confirmPassword.errors?.minlength && controls.confirmPassword.touched">
+                                    <strong>Minimum field length 8</strong>
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.confirmPassword.errors?.maxlength && controls.confirmPassword.touched">
+                                    <strong>Maximum field length 100</strong>
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="passwordForm.get('confirmPassword').errors && passwordForm.get('confirmPassword').errors.ConfirmPassword">
+                                    <strong>Passsword and ConfirmPassword didn't match.</strong>
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" value="Change Password">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>

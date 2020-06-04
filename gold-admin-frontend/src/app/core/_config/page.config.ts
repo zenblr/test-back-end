@@ -169,6 +169,9 @@ export class PageConfig {
 			"orders": {
 				page: { title: "Orders", desc: "" },
 			},
+			"profile": {
+				page: { title: "Profile", desc: "" },
+			},
 		},
 		"applied-kyc": {
 			page: { title: "Applied KYC", desc: "" },
