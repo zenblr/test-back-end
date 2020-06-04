@@ -6,21 +6,24 @@
     <kt-modal-header [title]="'Add Location'" (action)="action($event)"></kt-modal-header>
     <div>
         <div class="kt-form">
-            <form >
+            <form [formGroup]="leadForm">
                 <div class="kt-portlet__body">
 
                     <div class="kt-portlet__body-progress">
                         <mat-spinner [diameter]="20"></mat-spinner>
                     </div>
-
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-4 form-label">
+                                <label for="" class="mandatory"></label>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 
-
-
-
                 <div class="p-3">
-                    <kt-modal-footer (action)="action($event)" [value]="'Add'">
+                    <kt-modal-footer (action)="action($event)" [value]="data.action">
                     </kt-modal-footer>
                 </div>
             </form>

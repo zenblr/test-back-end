@@ -4,8 +4,8 @@ import { MatPaginator, MatDialog } from '@angular/material';
 import { Subject, Subscription, merge } from 'rxjs';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 import { map, takeUntil, distinctUntilChanged, skip, tap } from 'rxjs/operators';
-import { OrnamentsService } from '../../../../../core/masters/services/ornaments.service';
-import { OrnamentsDatasource } from '../../../../../core/masters/datasources/ornaments.datasource';
+import { OrnamentsService } from '../../../../../core/masters/ornaments/services/ornaments.service';
+import { OrnamentsDatasource } from '../../../../../core/masters/ornaments/datasources/ornaments.datasource';
 import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../../core/_base/crud';
 

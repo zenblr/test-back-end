@@ -25,7 +25,7 @@ const routes: Routes = [
     component: PurposesComponent
   },
   {
-    path: 'ornamnents',
+    path: 'ornaments',
     component: OrnamentsListComponent
   },
   {
