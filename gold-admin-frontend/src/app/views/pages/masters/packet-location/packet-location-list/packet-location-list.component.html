@@ -3,13 +3,13 @@
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
-                <ng-container matColumnDef="holidayDate">
-                    <mat-header-cell *matHeaderCellDef>Holiday Date</mat-header-cell>
+                <ng-container matColumnDef="location">
+                    <mat-header-cell *matHeaderCellDef>Location </mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.mobileNumber}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="description">
-                    <mat-header-cell *matHeaderCellDef>Event</mat-header-cell>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.mobileNumber}}</mat-cell>
                 </ng-container>
 

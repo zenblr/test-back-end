@@ -17,6 +17,20 @@ export class PageConfig {
 				page: { title: "Show Feedback", desc: "" },
 			},
 		},
+		masters: {
+			reasons: {
+				page: { title: "Reasons", desc: "" },
+			},
+			ornamnents: {
+				page: { title: "Ornamnents", desc: "" },
+			},
+			purposes: {
+				page: { title: "Purposes", desc: "" },
+			},
+			'packet-location': {
+				page: { title: "Packet Tracking", desc: "" },
+			},
+		},
 		"global-settings": {
 			page: { title: "Global Settings", desc: "" },
 		},

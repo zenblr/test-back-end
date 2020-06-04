@@ -1,20 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subject, Subscription, merge } from 'rxjs';
 import { MatPaginator, MatDialog } from '@angular/material';
-import { DataTableService } from '../../../../core/shared/services/data-table.service';
+import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
-import { OrnamentsDatasource } from '../../../../core/masters/ornaments/datasources/ornaments.datasource';
-import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
-
+import { PacketLocationDatasource } from '../../../../../core/masters/packet-location/datasources/packet-location.datasource'
+import { PacketLocationService } from '../../../../../core/masters/packet-location/service/packet-location.service';
+import { AddPacketLocationComponent } from '../add-packet-location/add-packet-location.component';
 @Component({
-  selector: 'kt-purposes',
-  templateUrl: './purposes.component.html',
-  styleUrls: ['./purposes.component.scss']
+  selector: 'kt-packet-location-list',
+  templateUrl: './packet-location-list.component.html',
+  styleUrls: ['./packet-location-list.component.scss']
 })
-export class PurposesComponent implements OnInit {
-  
+export class PacketLocationListComponent implements OnInit {
   dataSource;
-  displayedColumns = ['holidayDate', 'description'];
+  displayedColumns = ['location', 'action'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -24,13 +23,13 @@ export class PurposesComponent implements OnInit {
 
   constructor(
     private dataTableService: DataTableService,
-    private ornamentsService: OrnamentsService,
+    private packetLocationService: PacketLocationService,
     public dialog: MatDialog,
   ) {
-    this.ornamentsService.openModal$.pipe(
+    this.packetLocationService.openModal$.pipe(
       map(res => {
         if (res) {
-          // this.addHoliday();
+          this.addLocation();
         }
       }),
       takeUntil(this.destroy$)).subscribe();
@@ -50,7 +49,7 @@ export class PurposesComponent implements OnInit {
         this.loadPage();
       });
 
-    this.dataSource = new OrnamentsDatasource(this.ornamentsService);
+    this.dataSource = new PacketLocationDatasource(this.packetLocationService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -80,17 +79,18 @@ export class PurposesComponent implements OnInit {
     this.dataSource.getHolidays(from, to, this.searchValue);
   }
 
-  // addHoliday() {
-  //   const dialogRef = this.dialog.open(HolidayAddComponent, {
-  //     data: { action: 'add' },
-  //     width: '600px',
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.loadPage();
-  //     }
-  //     this.ornamentsService.openModal.next(false);
-  //   });
-  // }
+  addLocation() {
+    const dialogRef = this.dialog.open(AddPacketLocationComponent, {
+      data: { action: 'add' },
+      width: '600px',
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+      this.packetLocationService.openModal.next(false);
+    });
+  }
 
 }
+

@@ -130,6 +130,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       startDate: [this.currentDate],
       customerId: [],
       kycStatus: [],
+      purpose:[""]
     })
   }
 

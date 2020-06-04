@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReasonsComponent } from './reasons/reasons.component';
 import { PurposesComponent } from './purposes/purposes.component';
-import { PacketLocationComponent } from './packet-location/packet-location.component';
+import { PacketLocationListComponent } from './packet-location/packet-location-list/packet-location-list.component';
 import { OrnamentsComponent } from './ornaments/ornaments.component';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -12,16 +12,34 @@ import { AngularMaterialModule } from '../angular-material/angular-material.modu
 import { CoreModule } from '../../../core/core.module';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../core/_base/crud';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { AddPacketLocationComponent } from './packet-location/add-packet-location/add-packet-location.component';
 
 const routes: Routes = [
-  { path: 'reasons', component: ReasonsComponent },
-  { path: 'purposes', component: PurposesComponent },
-  { path: 'ornamnents', component: OrnamentsComponent },
-  { path: 'packet-location', component: PacketLocationComponent },
+  {
+    path: 'reasons',
+    component: ReasonsComponent
+  },
+  {
+    path: 'purposes',
+    component: PurposesComponent
+  },
+  {
+    path: 'ornamnents',
+    component: OrnamentsComponent
+  },
+  {
+    path: 'packet-location',
+    component: PacketLocationListComponent
+  },
 ]
 
 @NgModule({
-  declarations: [ReasonsComponent, PurposesComponent, PacketLocationComponent, OrnamentsComponent],
+  declarations: [
+    ReasonsComponent,
+    PurposesComponent,
+    PacketLocationListComponent,
+    OrnamentsComponent,
+    AddPacketLocationComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -45,5 +63,8 @@ const routes: Routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
+  entryComponents:[
+    AddPacketLocationComponent,
+  ]
 })
 export class MastersModule { }

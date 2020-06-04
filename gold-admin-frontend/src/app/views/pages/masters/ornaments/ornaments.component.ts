@@ -3,8 +3,8 @@ import { Subject, Subscription, merge } from 'rxjs';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
-import { OrnamentsDatasource } from '../../../../core/masters/datasources/ornaments.datasource';
-import { OrnamentsService } from '../../../../core/masters/services/ornaments.service';
+import { OrnamentsDatasource } from '../../../../core/masters/ornaments/datasources/ornaments.datasource';
+import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
 
 @Component({
   selector: 'kt-ornaments',
@@ -30,7 +30,7 @@ export class OrnamentsComponent implements OnInit {
     this.ornamentsService.openModal$.pipe(
       map(res => {
         if (res) {
-          this.addHoliday();
+          // this.addHoliday();
         }
       }),
       takeUntil(this.destroy$)).subscribe();
@@ -80,17 +80,17 @@ export class OrnamentsComponent implements OnInit {
     this.dataSource.getHolidays(from, to, this.searchValue);
   }
 
-  addHoliday() {
-    const dialogRef = this.dialog.open(HolidayAddComponent, {
-      data: { action: 'add' },
-      width: '600px',
-    });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadPage();
-      }
-      this.ornamentsService.openModal.next(false);
-    });
-  }
+  // addHoliday() {
+  //   const dialogRef = this.dialog.open(HolidayAddComponent, {
+  //     data: { action: 'add' },
+  //     width: '600px',
+  //   });
+  //   dialogRef.afterClosed().subscribe(res => {
+  //     if (res) {
+  //       this.loadPage();
+  //     }
+  //     this.ornamentsService.openModal.next(false);
+  //   });
+  // }
 
 }

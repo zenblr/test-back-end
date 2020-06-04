@@ -168,29 +168,18 @@ export class MenuConfig {
 											page: "/masters/packet-location",
 											permission: false,
 										},
+										{
+											title: "Holidays",
+											root: true,
+											permission: false,
+											page: '/holidays'
+										},
 									],
 								},
-								{
-									title: "Holidays",
-									root: true,
-									permission: false,
-									page: '/holidays'
-								},
+								
 							],
 						},
-						{
-							title: "Settings",
-							root: true,
-							src: "assets/media/aside-icons/icons-03.svg",
-							permission: false,
-							submenu: [
-								{
-									title: "Global Settings",
-									page: "/global-settings",
-									permission: false,
-								},
-							]
-						},
+						
 						{
 							title: "User Management",
 							root: true,
@@ -360,6 +349,19 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-24.svg",
 							page: "/emi-management",
 							permission: !this.modulesArr.includes(2),
+						},
+						{
+							title: "Settings",
+							root: true,
+							src: "assets/media/aside-icons/icons-03.svg",
+							permission: false,
+							submenu: [
+								{
+									title: "Global Settings",
+									page: "/global-settings",
+									permission: false,
+								},
+							]
 						},
 						{
 							title: "Log Out",

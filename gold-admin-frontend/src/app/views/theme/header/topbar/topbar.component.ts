@@ -38,6 +38,7 @@ import { LeadService } from "../../../../core/lead-management/services/lead.serv
 import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
 import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
 import { HolidayService } from '../../../../core/holidays/services/holiday.service';
+import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -113,7 +114,8 @@ export class TopbarComponent implements OnInit {
 		private leadService: LeadService,
 		private emailAlertService: EmailAlertService,
 		private smsAlertService: SmsAlertService,
-		private holidayService: HolidayService
+		private holidayService: HolidayService,
+		private packetLocation:PacketLocationService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -315,6 +317,10 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.value1 = "Assign Appraiser";
 			this.permissionType = "assignAppraiserAdd";
+		}
+		if (this.path == "packet-location") {
+			this.dataSourceHeader();
+			this.value1 = "Add Location";
 		}
 
 		if (this.path == "roles") {
@@ -564,6 +570,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "customers") {
 			this.customerDetailsService.exportExcel.next(true);
+		}
+		if(this.path == 'packet-location'){
+			this.packetLocation.openModal.next(true)
 		}
 	}
 
