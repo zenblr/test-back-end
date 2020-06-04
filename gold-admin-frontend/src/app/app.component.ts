@@ -45,7 +45,9 @@ export class AppComponent implements OnInit, OnDestroy {
 		private sharedService: SharedService,
 		private ref: ChangeDetectorRef
 	) {
-
+		// if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
+		// 	location.href = location.href.replace("http://", "https://");
+		//   }
 		// register translations
 		this.translationService.loadTranslations(enLang, chLang, esLang, jpLang, deLang, frLang);
 		// this.sharedService.loader$.subscribe(res => {

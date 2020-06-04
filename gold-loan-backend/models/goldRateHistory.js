@@ -6,6 +6,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'gold_rate',
             allowNull: false,
         },
+        previousGoldRate: {
+            type: DataTypes.INTEGER,
+            field: 'previous_gold_rate',
+            allowNull: false,
+        },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',

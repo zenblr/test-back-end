@@ -1,4 +1,5 @@
 <kt-toastr #toastr></kt-toastr>
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
 <kt-portlet>
     <!-- PORTLET LOADING | Binded to TABLE Datasource -->
     <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
@@ -31,7 +32,7 @@
 
                 <!-- Table with selection -->
                 <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
-                <!-- <ng-container matColumnDef="select">
+                <ng-container matColumnDef="select">
                     <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
                         <mat-checkbox (change)="$event ? masterToggle() : null"
                             [checked]="selection.hasValue() && isAllSelected()"
@@ -43,7 +44,7 @@
                             (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
                         </mat-checkbox>
                     </mat-cell>
-                </ng-container> -->
+                </ng-container>
 
                 <ng-container matColumnDef="storeId">
                     <mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
@@ -92,19 +93,22 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="weight">
-                    <mat-header-cell *matHeaderCellDef>Weight</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['product.weight'] ? element['product.weight'] : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="align-right">Weight</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element['product.weight'] ? element['product.weight'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderTotalAmount">
-                    <mat-header-cell *matHeaderCellDef>Order Total Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Order Total Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element['orderdetails.finalOrderPrice'] ? element['orderdetails.finalOrderPrice'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderInitialAmount">
-                    <mat-header-cell *matHeaderCellDef>Order Initial Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Order Initial Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
                         {{element['orderdetails.initialPayment'] ? element['orderdetails.initialPayment'] : '-'}}
                     </mat-cell>
                 </ng-container>
@@ -124,13 +128,15 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderQty">
-                    <mat-header-cell *matHeaderCellDef>Order Qty</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['quantity'] ? element['quantity'] : '-'}}
+                    <mat-header-cell *matHeaderCellDef class="align-right">Order Qty</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element['quantity'] ? element['quantity'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="invoiceNo">
                     <mat-header-cell *matHeaderCellDef>Invoice No</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element['invoiceNumber'] ? element['invoiceNumber'] : '-'}}
+                    <mat-cell *matCellDef="let element">
+                        {{element['invoiceNumber'] ? element['invoiceNumber'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderStatus">
@@ -161,7 +167,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" style="width: 240%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 240%;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 240%;"></mat-row>
             </mat-table>

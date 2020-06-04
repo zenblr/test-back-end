@@ -1,11 +1,11 @@
 <div class="container">
     <form [formGroup]="approvalForm">
-        <div class="row justify-content-center kt-margin-b-25">
+        <div class="row justify-content-center">
             <!-- <div class="col-8 bordered">
                 <div class="row head">
                     <div class="col-4">Field</div>
                     <div class="col-4 border text-center">Appraiser</div>
-                    <div class="col-4 text-center" *ngIf="viewBMForm">Branch Manager</div>
+                    <div class="col-4 text-center" *ngIf="viewBMForm || url == 'view-loan'">Branch Manager</div>
                 </div>
                 <div class="row body border-top-bottom">
                     <div class="col-4 form-label">
@@ -21,7 +21,7 @@
                             *ngIf="!controls.applicationFormForAppraiser.value"
                             (click)="approvalOfAppraiser(true,'form')">
                     </div>
-                    <div class="col-4 text-center" *ngIf="viewBMForm">
+                    <div class="col-4 text-center" *ngIf="viewBMForm || url == 'view-loan'">
                         <img src="../../../../../../../assets/media/icons/correct.svg"
                             [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
                             *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
@@ -45,7 +45,7 @@
                             (click)="approvalOfAppraiser(true,'gold')">
 
                     </div>
-                    <div class="col-4 text-center" *ngIf="viewBMForm">
+                    <div class="col-4 text-center" *ngIf="viewBMForm || url == 'view-loan'">
                         <img src="../../../../../../../assets/media/icons/correct.svg"
                             [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable )}"
                             *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')" disabled>
@@ -71,7 +71,7 @@
                             *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                             Field Required</mat-error>
                     </div>
-                    <div class="col-4 text-center select" *ngIf="viewBMForm">
+                    <div class="col-4 text-center select" *ngIf="viewBMForm || url == 'view-loan'">
                         <select class="form-control" formControlName="loanStatusForBM" (change)="statusBM()"
                             [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                             <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
@@ -85,18 +85,18 @@
             </div> -->
 
             <div class="table-div">
-                <table class="table table-bordered">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 40%" class="rating-title">Field</th>
-                            <th scope="col" style="width: 30%" class="rating-cce">Appraiser</th>
-                            <th scope="col" style="width: 30%" class="rating-bm text-center" *ngIf="viewBMForm">Branch Manager</th>
+                            <th scope="col" style="width: 40%" >Field</th>
+                            <th scope="col" style="width: 30%" class="text-center">Appraiser</th>
+                            <th scope="col" style="width: 30%" class="text-center" *ngIf="viewBMForm || url == 'view-loan'">Branch Manager</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td scope="row" class="rating-title">Loan Application Form</td>
-                            <td class="rating-cce">
+                            <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
                                     *ngIf="controls.applicationFormForAppraiser.value"
@@ -106,7 +106,7 @@
                                     *ngIf="!controls.applicationFormForAppraiser.value"
                                     (click)="approvalOfAppraiser(true,'form')">
                             </td>
-                            <td class="rating-bm text-center" *ngIf="viewBMForm">
+                            <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
                                     *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
@@ -118,7 +118,7 @@
                         <tr>
                             <td scope="row" class="rating-title">Gold Valuation
                             </td>
-                            <td class="rating-cce">
+                            <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
                                     *ngIf="controls.goldValuationForAppraiser.value"
@@ -128,7 +128,7 @@
                                     *ngIf="!controls.goldValuationForAppraiser.value"
                                     (click)="approvalOfAppraiser(true,'gold')">
                             </td>
-                            <td class="rating-bm text-center" *ngIf="viewBMForm">
+                            <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable )}"
                                     *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')"
@@ -156,7 +156,7 @@
                                     *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                                     Field Required</mat-error>
                             </td>
-                            <td class="rating-bm" *ngIf="viewBMForm">
+                            <td class="rating-bm" *ngIf="viewBMForm || url == 'view-loan'">
                                 <select class="form-control" formControlName="loanStatusForBM" (change)="statusBM()"
                                     [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                                     <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
@@ -172,7 +172,7 @@
                 </table>
             </div>
         </div>
-        <div class="row justify-content-center " *ngIf="controls.loanStatusForAppraiser.value == 'pending'">
+        <div class="row justify-content-center " *ngIf="controls.loanStatusForAppraiser.value && controls.loanStatusForAppraiser.value != 'approved'">
             <div class="col-8">
                 <mat-form-field class="w-100">
 
@@ -184,7 +184,7 @@
 
             </div>
         </div>
-        <div class="row justify-content-center " *ngIf="controls.loanStatusForBM.value == 'rejected'">
+        <div class="row justify-content-center " *ngIf="controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved'">
             <div class="col-8">
                 <mat-form-field class="w-100">
 
@@ -201,7 +201,7 @@
     </form>
 </div>
 <div class="row py-3" *ngIf="!disable">
-    <div class="col-12">
+    <div class="col-12 text-center">
         <kt-button [value]="'Apply'" [type]="'button'" (click)=" applyForm()"></kt-button>
         <span class="kt-padding-10"></span>
         <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>

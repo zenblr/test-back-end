@@ -1,5 +1,8 @@
 import { Component, OnInit, AfterViewInit, EventEmitter, Output, Input, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { LoanApplicationFormService } from '../../../../../../core/loan-management';
+import { map, catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-nominee-details',
@@ -8,17 +11,20 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class NomineeDetailsComponent implements OnInit, AfterViewInit {
 
+  @Input() loanId
   @Input() details;
   nominee: FormGroup;
   @Input() disable;
-  @Output() nomineeEmit: EventEmitter<any> = new EventEmitter()
+  // @Output() nomineeEmit: EventEmitter<any> = new EventEmitter()
   @Input() invalid;
   @Input() action;
+  @Output() next: EventEmitter<any> = new EventEmitter()
 
   constructor(
     public fb: FormBuilder,
-    public ref: ChangeDetectorRef
-
+    public ref: ChangeDetectorRef,
+    public loanApplicationService:LoanApplicationFormService,
+    public toast:ToastrService
   ) { }
 
   ngOnInit() {
@@ -42,9 +48,9 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
     }
   }
   ngAfterViewInit() {
-    this.nominee.valueChanges.subscribe(() => {
-      this.nomineeEmit.emit({ nominee: this.nominee })
-    })
+    // this.nominee.valueChanges.subscribe(() => {
+    //   this.nomineeEmit.emit({ nominee: this.nominee })
+    // })
   }
 
   initForm() {
@@ -58,7 +64,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
       guardianRelationship: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
     })
     this.checkForMinor()
-    this.nomineeEmit.emit({ nominee: this.nominee })
+    // this.nomineeEmit.emit({ nominee: this.nominee })
   }
 
   checkForMinor() {
@@ -83,11 +89,25 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
     return this.nominee.controls
   }
 
-  scrollToOrnaments() {
-    if (this.nominee.invalid) {
+  // scrollToOrnaments() {
+  //   if (this.nominee.invalid) {
+  //     this.nominee.markAllAsTouched();
+  //     return;
+  //   }
+  //   // this.nomineeEmit.emit({ nominee: this.nominee});
+  // }
+  nextAction(){
+    if(this.nominee.invalid){
       this.nominee.markAllAsTouched();
-      return;
+      return
     }
-    this.nomineeEmit.emit({ nominee: this.nominee, scroll: true });
+    this.loanApplicationService.nomineeSubmit(this.nominee.value,this.loanId).pipe(
+      map(res=>{
+        this.next.emit(2)
+      }),catchError(err=>{
+        this.toast.error(err.error.message)
+        throw err
+      })).subscribe()
   }
+
 }

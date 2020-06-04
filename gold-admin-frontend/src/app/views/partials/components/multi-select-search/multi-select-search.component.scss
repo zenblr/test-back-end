@@ -1,0 +1,12 @@
+:host{
+    .checkmark-custom{
+        top: 7px !important;
+        left: 5px !important;
+        height: 15px !important;
+        width: 15px !important;
+    }
+    .custom-checkbox .checkmark:after {
+        left: 5px !important;
+        top: 1px !important;
+    }
+}

@@ -17,7 +17,7 @@ export class AppliedLoanComponent implements OnInit {
 
   userType: any
   dataSource: AppliedLoanDatasource;
-  displayedColumns = ['fullName', 'customerID', 'mobile', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions', 'view'];
+  displayedColumns = ['fullName', 'customerID', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -37,12 +37,12 @@ export class AppliedLoanComponent implements OnInit {
     private dataTableService: DataTableService,
     private router: Router,
     private sharedService: SharedService,
-    private ngxPermission:NgxPermissionsService
+    private ngxPermission: NgxPermissionsService
   ) {
-    this.ngxPermission.permissions$.subscribe(res=>{
-      if(res.loanDetailsEdit){
+    this.ngxPermission.permissions$.subscribe(res => {
+      if (res.loanDetailsEdit) {
         this.edit = true
-      }else{
+      } else {
         this.edit = false
       }
     })
@@ -117,9 +117,10 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   editLoan(loan) {
-    if ((((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected')
-        && this.userType == 5 && loan.loanStatusForAppraiser == 'approved') || (loan.loanStatusForAppraiser == 'pending'
-          && this.userType == 7) && this.edit)) {
+    if (((
+      (loan.loanStatusForBM == 'pending'  || loan.loanStatusForBM == 'rejected' || loan.loanStatusForBM == 'incomplete')
+      && this.userType == 5 && loan.loanStatusForAppraiser == 'approved' || loan.loanStatusForAppraiser == 'rejected') || (loan.loanStatusForAppraiser == 'pending'
+        && this.userType == 7) && this.edit)) {
       this.router.navigate(['/loan-management/loan-application-form', loan.id])
     }
   }

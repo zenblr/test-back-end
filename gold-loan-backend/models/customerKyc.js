@@ -6,12 +6,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false,
         },
-        kycStatus: {
-            type: DataTypes.ENUM,
-            field: 'kyc_status',
-            defaultValue: "pending",
-            values: ['approved', 'pending', 'rejected']
-        },
         isKycSubmitted: {
             type: DataTypes.BOOLEAN,
             field: 'is_kyc_submitted',
@@ -53,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'created_by',
             allowNull: false,
         },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -72,6 +70,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKyc.hasOne(models.customerKycClassification, { foreignKey: 'customerKycId', as: 'customerKycClassification' });
 
         CustomerKyc.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerKyc.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     return CustomerKyc;

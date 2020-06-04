@@ -5,7 +5,7 @@ export class MenuConfig {
 	public defaults: any;
 	permissionsArr = [];
 	modulesArr = [];
-
+	userType: number;
 	constructor(
 		private sharedService: SharedService,
 		public permissionsService: NgxPermissionsService
@@ -16,14 +16,17 @@ export class MenuConfig {
 					this.permissionsArr.push(item.description);
 				}
 				this.permissionsService.loadPermissions(this.permissionsArr);
-				console.log(this.permissionsArr);
+				// console.log(this.permissionsArr);
+			}
+			if (res.userDetails) {
+				this.userType = res.userDetails.userTypeId;
 			}
 
 			if (res && res.modules.length) {
 				for (const item of res.modules) {
 					this.modulesArr.push(item.module.id);
 				}
-				console.log(this.modulesArr);
+				// console.log(this.modulesArr);
 			}
 
 			this.defaults = {
@@ -80,6 +83,11 @@ export class MenuConfig {
 
 									submenu: [
 										{
+											title: "Gold Rate",
+											page: "/upload-data/gold-rate",
+											permission: !this.permissionsArr.includes('goldRateView'),
+										},
+										{
 											title: "Promotional Banners",
 											page: "/upload-data/upload-banner",
 											permission: !this.permissionsArr.includes('promotionalBannerView'),
@@ -87,8 +95,7 @@ export class MenuConfig {
 										{
 											title: "Offer Banners",
 											page: "/upload-data/upload-offer",
-											permission: !(this.permissionsArr.includes('offerBannerView') ||
-												this.permissionsArr.includes('goldRateView')),
+											permission: !this.permissionsArr.includes('offerBannerView'),
 										},
 										{
 											title: "Partner Banners",
@@ -135,6 +142,12 @@ export class MenuConfig {
 										},
 									],
 								},
+								{
+									title: "Holidays",
+									root: true,
+									permission: false,
+									page: '/holidays'
+								},
 							],
 						},
 						{
@@ -142,15 +155,16 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
 							page: "/user-management",
-							permission: !(this.permissionsArr.includes('merchantView')||
-							this.permissionsArr.includes('brokerView') ||
-							this.permissionsArr.includes('storeView')||
-							this.permissionsArr.includes('partnerBannerView')||
-							this.permissionsArr.includes('partnerView')||
-							this.permissionsArr.includes('partnerBranchView')||
-							this.permissionsArr.includes('internalBranchView')||
-							this.permissionsArr.includes('internalUserView')||
-							this.permissionsArr.includes('assignAppraiserView')),
+							permission: !(this.permissionsArr.includes('merchantView') ||
+								this.permissionsArr.includes('brokerView') ||
+								this.permissionsArr.includes('storeView') ||
+								this.permissionsArr.includes('partnerBannerView') ||
+								this.permissionsArr.includes('partnerView') ||
+								this.permissionsArr.includes('partnerBranchView') ||
+								this.permissionsArr.includes('internalBranchView') ||
+								this.permissionsArr.includes('internalUserView') ||
+								this.permissionsArr.includes('assignAppraiserView') ||
+								this.userType === 4),
 						},
 						{
 							title: "Lead Management",
@@ -163,7 +177,7 @@ export class MenuConfig {
 							title: "Customer Setting",
 							root: true,
 							src: "assets/media/aside-icons/icons-06.svg",
-							permission: !(this.permissionsArr.includes('customerKycView')||
+							permission: !(this.permissionsArr.includes('customerKycView') ||
 								this.permissionsArr.includes('appliedKycView')),
 
 							submenu: [
@@ -334,7 +348,7 @@ export class MenuConfig {
 							root: true,
 							page: "/user-management/internal-user-branch",
 							src: "assets/media/aside-icons/icons-15.svg",
-							permission: !this.permissionsArr.includes('internalBranchView')					,
+							permission: !this.permissionsArr.includes('internalBranchView'),
 						},
 						{
 							title: "Assign Appraiser",
@@ -369,7 +383,7 @@ export class MenuConfig {
 							root: true,
 							page: "/user-management/roles",
 							src: "assets/media/aside-icons/icons-20.svg",
-							permission: false,
+							permission: !(this.userType === 4),
 						},
 						{
 							title: "Back",
@@ -494,10 +508,10 @@ export class MenuConfig {
 							],
 						},
 						{
-							title: 'User Details',
+							title: 'Customer Details',
 							root: true,
 							src: "assets/media/aside-icons/icons-26.svg",
-							page: "/emi-management/users",
+							page: "/emi-management/customers",
 							permission: !this.permissionsArr.includes('customerView'),
 						},
 						{

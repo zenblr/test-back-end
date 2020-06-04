@@ -62,7 +62,14 @@
 		top: 5px;
 		left: 5px;
 	}
-	::ng-deep.mat-toogle-button{
+	::ng-deep.mat-toogle-button {
 		background-color: #f2f3f7;
+	}
+
+	.btn-custom {
+		color: white;
+		background-color: #454d67 !important;
+		border-radius: 9px;
+		min-width: 85px;
 	}
 }

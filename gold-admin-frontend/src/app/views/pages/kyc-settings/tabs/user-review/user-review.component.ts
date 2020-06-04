@@ -5,7 +5,8 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { map, filter, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { AppliedKycService } from '../../../../../core/applied-kyc/services/applied-kyc.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 
 @Component({
   selector: 'kt-user-review',
@@ -65,6 +66,7 @@ export class UserReviewComponent implements OnInit {
   //       "firstName": "bhushan",
   //       "lastName": "madaye",
   //       "dateOfBirth": "2020-04-08T18:30:00.000Z",
+  //       "age": "25",
   //       "alternateMobileNumber": "1232132132",
   //       "panCardNumber": "asass1234a",
   //       "gender": "f",
@@ -147,6 +149,7 @@ export class UserReviewComponent implements OnInit {
 
   data: any = {};
   viewOnly = true;
+  userType: any;
 
 
   constructor(private userAddressService:
@@ -160,17 +163,21 @@ export class UserReviewComponent implements OnInit {
     private appliedKycService: AppliedKycService,
     public dialogRef: MatDialogRef<UserReviewComponent>,
     @Inject(MAT_DIALOG_DATA) public modalData: any,
+    private dialog: MatDialog,
     private ele: ElementRef
   ) {
+    let res = this.sharedService.getDataFromStorage();
+    this.userType = res.userDetails.userTypeId;
+
     if (this.modalData.action) {
-      console.log(this.data)
+      console.log(this.data);
       this.viewOnly = false;
     }
   }
 
   ngOnInit() {
-    if (this.userBankService.kycDetails) {
-      this.data = this.userBankService.kycDetails;
+    if (this.userPersonalService.kycDetails) {
+      this.data = this.userPersonalService.kycDetails;
     } else
       if (this.userDetailsService.userData) {
         this.data = this.userDetailsService.userData;
@@ -183,12 +190,11 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.initForm();
-    if (!this.viewOnly) {
+    if (!this.viewOnly || this.userType == 5) {
       this.reviewForm.disable();
       this.customerKycPersonal.disable();
       this.customerKycAddressOne.disable();
       this.customerKycAddressTwo.disable();
-      this.customerKycBank.disable();
 
     }
     this.getStates();
@@ -239,41 +245,68 @@ export class UserReviewComponent implements OnInit {
       addressProofFileName: [],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
-    }),
-      this.customerKycPersonal = this.fb.group({
-        profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
-        alternateMobileNumber: [this.data.customerKycReview.customerKycPersonal.alternateMobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-        gender: [this.data.customerKycReview.customerKycPersonal.gender, [Validators.required]],
-        spouseName: [this.data.customerKycReview.customerKycPersonal.spouseName, [Validators.required]],
-        martialStatus: [this.data.customerKycReview.customerKycPersonal.martialStatus, [Validators.required]],
-        signatureProof: [this.data.customerKycReview.customerKycPersonal.signatureProof, [Validators.required]],
-        signatureProofFileName: [],
-        occupationId: [],
-        dateOfBirth: [this.data.customerKycReview.customerKycPersonal.dateOfBirth, [Validators.required]],
-        identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
-        identityProof: [this.data.customerKycReview.customerKycPersonal.identityProof, [Validators.required]],
-        identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
-      }),
+    })
+    this.customerKycPersonal = this.fb.group({
+      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
+      alternateMobileNumber: [this.data.customerKycReview.customerKycPersonal.alternateMobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      gender: [this.data.customerKycReview.customerKycPersonal.gender, [Validators.required]],
+      spouseName: [this.data.customerKycReview.customerKycPersonal.spouseName, [Validators.required]],
+      martialStatus: [this.data.customerKycReview.customerKycPersonal.martialStatus, [Validators.required]],
+      signatureProof: [this.data.customerKycReview.customerKycPersonal.signatureProof],
+      signatureProofFileName: [],
+      occupationId: [],
+      dateOfBirth: [this.data.customerKycReview.customerKycPersonal.dateOfBirth, [Validators.required]],
+      age: [this.data.customerKycReview.customerKycPersonal.age, [Validators.required]],
+      identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
+      identityProof: [this.data.customerKycReview.customerKycPersonal.identityProof, [Validators.required]],
+      identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
 
-      this.customerKycBank = this.fb.group({
-        id: this.data.customerKycReview.customerKycBank[0].id,
-        customerKycId: this.data.customerKycReview.customerKycBank[0].customerKycId,
-        customerId: this.data.customerKycReview.customerKycBank[0].customerId,
-        bankName: [this.data.customerKycReview.customerKycBank[0].bankName, [Validators.required]],
-        bankBranchName: [this.data.customerKycReview.customerKycBank[0].bankBranchName, [Validators.required]],
-        accountType: [this.data.customerKycReview.customerKycBank[0].accountType, [Validators.required]],
-        accountHolderName: [this.data.customerKycReview.customerKycBank[0].accountHolderName, [Validators.required]],
-        accountNumber: [this.data.customerKycReview.customerKycBank[0].accountNumber, [Validators.required]],
-        ifscCode: [this.data.customerKycReview.customerKycBank[0].ifscCode, [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
-        passbookProof: [this.data.customerKycReview.customerKycBank[0].passbookProof, [Validators.required]],
-        passbookProofFileName: []
-      })
+    })
+
+    // this.customerKycBank = this.fb.group({
+    //   id: this.data.customerKycReview.customerKycBank[0].id,
+    //   customerKycId: this.data.customerKycReview.customerKycBank[0].customerKycId,
+    //   customerId: this.data.customerKycReview.customerKycBank[0].customerId,
+    //   bankName: [this.data.customerKycReview.customerKycBank[0].bankName, [Validators.required]],
+    //   bankBranchName: [this.data.customerKycReview.customerKycBank[0].bankBranchName, [Validators.required]],
+    //   accountType: [this.data.customerKycReview.customerKycBank[0].accountType, [Validators.required]],
+    //   accountHolderName: [this.data.customerKycReview.customerKycBank[0].accountHolderName, [Validators.required]],
+    //   accountNumber: [this.data.customerKycReview.customerKycBank[0].accountNumber, [Validators.required]],
+    //   ifscCode: [this.data.customerKycReview.customerKycBank[0].ifscCode, [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
+    //   passbookProof: [this.data.customerKycReview.customerKycBank[0].passbookProof, [Validators.required]],
+    //   passbookProofFileName: []
+    // })
 
     if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
       this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
     }
 
     this.ref.detectChanges()
+  }
+
+  public calculateAge(dateOfBirth: any) {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    this.customerKycPersonal.controls.age.patchValue(age)
+  }
+
+  ageValidation() {
+    if (this.customerKycPersonal.controls.gender.value) {
+      if (this.customerKycPersonal.controls.gender.value == 'm') {
+        this.customerKycPersonal.controls.age.setValidators(Validators.pattern('^0*(2[1-9]|[3-9][0-9]|100)$'))
+      } else {
+        this.customerKycPersonal.controls.age.setValidators(Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$'))
+      }
+      this.customerKycPersonal.controls.age.markAsTouched()
+      this.calculateAge(this.customerKycPersonal.controls.dateOfBirth.value)
+    }
   }
 
   submit() {
@@ -286,19 +319,19 @@ export class UserReviewComponent implements OnInit {
     let customerKycAddress = [];
     customerKycAddress.push(this.customerKycAddressOne.value, this.customerKycAddressTwo.value);
 
-    let customerKycBank = [];
-    customerKycBank.push(this.customerKycBank.value);
+    // let customerKycBank = [];
+    // customerKycBank.push(this.customerKycBank.value);
 
     const data = {
       customerId: this.data.customerId,
       customerKycId: this.data.customerKycId,
       customerKycPersonal: this.customerKycPersonal.value,
       customerKycAddress: customerKycAddress,
-      customerKycBank: customerKycBank
+      // customerKycBank: customerKycBank
     }
     console.log(data)
 
-    if (this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid || this.customerKycBank.invalid) {
+    if (this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid) {
       this.customerKycPersonal.markAllAsTouched();
       this.customerKycAddressOne.markAllAsTouched();
       this.customerKycAddressTwo.markAllAsTouched();
@@ -374,6 +407,9 @@ export class UserReviewComponent implements OnInit {
 
   removeImages(index, type) {
     // console.log(index, type)
+    if (this.userType == 5) {
+      return;
+    }
     if (type == 'identityProof') {
       this.data.customerKycReview.customerKycPersonal.identityProof.splice(index, 1)
       this.reviewForm.patchValue({ identityProofFileName: '' });
@@ -390,6 +426,9 @@ export class UserReviewComponent implements OnInit {
   }
 
   getFileInfo(event, type: any) {
+    if (this.userType == 5) {
+      return;
+    }
     this.file = event.target.files[0];
     // console.log(type);
     // console.log(this.addressControls)
@@ -399,11 +438,7 @@ export class UserReviewComponent implements OnInit {
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       this.sharedService.uploadFile(this.file).pipe(
         map(res => {
-          if (type == "profile") {
-            this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
-            this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.URL })
-            this.ref.markForCheck();
-          }
+
           if (type == "identityProof" && this.data.customerKycReview.customerKycPersonal.identityProof.length < 2) {
             this.data.customerKycReview.customerKycPersonal.identityProof.push(res.uploadFile.URL)
             this.customerKycPersonal.patchValue({ identityProof: this.data.customerKycReview.customerKycPersonal.identityProof })
@@ -419,19 +454,21 @@ export class UserReviewComponent implements OnInit {
                 this.customerKycAddressTwo.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[1].addressProof })
                 this.customerKycAddressTwo.patchValue({ addressProofFileName: event.target.files[0].name });
               } else
-                if (type == 'passbook' && this.data.customerKycReview.customerKycBank[0].passbookProof.length < 2) {
-                  this.data.customerKycReview.customerKycBank[0].passbookProof.push(res.uploadFile.URL)
-                  this.customerKycBank.patchValue({ passbookProof: this.data.customerKycReview.customerKycBank[0].passbookProof })
-                  this.customerKycBank.patchValue({ passbookProofFileName: event.target.files[0].name });
-                } else {
+                if (type == "signature") {
+                  this.data.customerKycReview.customerKycPersonal.signatureProof = res.uploadFile.URL;
+                  this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.URL })
+                  this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
+                  this.ref.markForCheck();
+                }
+                else if (type == "profile") {
+                  this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
+                  this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.URL })
+                  this.ref.markForCheck();
+                }
+                else {
                   this.toastr.error("Cannot upload more than two images")
                 }
-          if (type == "signature") {
-            this.data.customerKycReview.customerKycPersonal.signatureProof = res.uploadFile.URL;
-            this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.URL })
-            this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
-            this.ref.markForCheck();
-          }
+
 
           this.ref.detectChanges();
           // console.log(this.addressControls)
@@ -462,5 +499,23 @@ export class UserReviewComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.appliedKycService.userData.next(undefined)
+  }
+
+  webcam() {
+    const dialogRef = this.dialog.open(WebcamDialogComponent,
+      {
+        data: {},
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+          console.log(res)
+          this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL
+          this.customerKycPersonal.get('profileImage').patchValue(this.data.customerKycReview.customerKycPersonal.profileImage);
+          this.ref.detectChanges()
+        })
+      }
+    });
   }
 }

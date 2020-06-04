@@ -46,6 +46,9 @@ export class PageConfig {
 			"upload-lender-banner": {
 				page: { title: "Lender Partner Banner", desc: "" },
 			},
+			"gold-rate": {
+				page: { title: "Gold Rate", desc: "" },
+			},
 		},
 		"user-management": {
 			partner: {
@@ -77,6 +80,9 @@ export class PageConfig {
 			},
 			roles: {
 				page: { title: "Roles", desc: "" },
+				id: {
+					page: { title: "Permissions", desc: "" }
+				}
 			},
 		},
 		"lead-management": {
@@ -149,8 +155,8 @@ export class PageConfig {
 					},
 				},
 			},
-			users: {
-				page: { title: "Users", desc: "" },
+			customers: {
+				page: { title: "Customers", desc: "" },
 			},
 			reports: {
 				page: { title: "Reports", desc: "" },
@@ -158,6 +164,9 @@ export class PageConfig {
 		},
 		"applied-kyc": {
 			page: { title: "Applied KYC", desc: "" },
+		},
+		"holidays": {
+			page: { title: "Holidays", desc: "" },
 		},
 		"customer-management": {
 			"customer-list": {
@@ -174,6 +183,14 @@ export class PageConfig {
 			},
 			"loan-application-form": {
 				page: { title: "Loan Application Form", desc: "" },
+				id: {
+					page: { title: "Loan Application Form", desc: "" },
+				}
+			},
+			'view-loan': {
+				id: {
+					page: { title: "View Loan Application Form", desc: "" },
+				}
 			},
 			packet: {
 				page: { title: "Packets", desc: "" },
@@ -183,6 +200,11 @@ export class PageConfig {
 			},
 			"applied-loan": {
 				page: { title: "Applied Loan", desc: "" },
+			},
+			"package-image-upload": {
+				id: {
+					page: { title: "PACKET IMAGE UPLOAD", desc: "" },
+				}
 			},
 		},
 	};

@@ -22,11 +22,12 @@ import {
 	skip,
 	takeUntil,
 } from "rxjs/operators";
+import { SelectionModel } from "@angular/cdk/collections";
 import { ToastrComponent } from "../../../../../../views/partials/components/toastr/toastr.component";
 import { DataTableService } from "../../../../../../core/shared/services/data-table.service";
 import { OrderDetailsViewComponent } from "../order-details-view/order-details-view.component";
 import { Router } from "@angular/router";
-import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { SharedService } from "../../../../../../core/shared/services/shared.service";
 
 @Component({
 	selector: "kt-order-details-list",
@@ -38,6 +39,7 @@ export class OrderDetailsListComponent implements OnInit {
 	dataSource: OrderDetailsDatasource;
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 	displayedColumns = [
+		"select",
 		"storeId",
 		"centerCity",
 		"shippingAddress",
@@ -56,6 +58,7 @@ export class OrderDetailsListComponent implements OnInit {
 		"merchant",
 		"action",
 	];
+	selection = new SelectionModel<OrderDetailsModel>(true, []);
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild("sort1", { static: true }) sort: MatSort;
 	// Filter fields
@@ -74,6 +77,7 @@ export class OrderDetailsListComponent implements OnInit {
 		paymentType: 0,
 		orderCurrentStatus: 0,
 	};
+	filteredDataList = {};
 
 	constructor(
 		public dialog: MatDialog,
@@ -82,7 +86,7 @@ export class OrderDetailsListComponent implements OnInit {
 		private orderDetailsService: OrderDetailsService,
 		private dataTableService: DataTableService,
 		private router: Router,
-		private sharedService: SharedService,
+		private sharedService: SharedService
 	) {
 		this.orderDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -97,6 +101,14 @@ export class OrderDetailsListComponent implements OnInit {
 			.subscribe((res) => {
 				if (Object.entries(res).length) {
 					this.applyFilter(res);
+				}
+			});
+
+		this.orderDetailsService.dropdownValue$
+			.pipe(takeUntil(this.destroy$))
+			.subscribe((res) => {
+				if (Object.entries(res).length) {
+					this.selectedDropdown(res);
 				}
 			});
 	}
@@ -156,11 +168,34 @@ export class OrderDetailsListComponent implements OnInit {
 		this.dataSource.loadOrderDetails(this.orderData);
 	}
 
+	/**
+	 * Check all rows are selected
+	 */
+	isAllSelected(): boolean {
+		const numSelected = this.selection.selected.length;
+		const numRows = this.orderDetailsResult.length;
+		return numSelected === numRows;
+		console.log("isallselected");
+	}
+
+	/**
+	 * Toggle all selections
+	 */
+	masterToggle() {
+		if (this.selection.selected.length === this.orderDetailsResult.length) {
+			this.selection.clear();
+		} else {
+			this.orderDetailsResult.forEach((row) =>
+				this.selection.select(row)
+			);
+		}
+	}
+
 	loadOrderDetailsPage() {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -205,12 +240,42 @@ export class OrderDetailsListComponent implements OnInit {
 		this.orderDetailsService.exportExcel.next(false);
 	}
 
+	selectedDropdown(value) {
+		if (this.selection.selected.length) {
+			let selectedIds = [];
+			for (let i = 0; i < this.selection.selected.length; i++) {
+				selectedIds.push(this.selection.selected[i].id);
+			}
+
+			let params = {
+				orderId: selectedIds,
+			};
+
+			if (value == "label") {
+				this.orderDetailsService.getLabel(params).subscribe();
+			} else if (value == "mainfest") {
+				this.orderDetailsService.getMainfest(params).subscribe();
+			} else if (value == "deliMainfest") {
+				this.orderDetailsService.getDeliMainfest(params).subscribe();
+			} else if (value == "uninsuredMainfest") {
+				this.orderDetailsService
+					.getUninsuredMainfest(params)
+					.subscribe();
+			} else {
+				this.toastr.errorToastr("Something went Wrong");
+			}
+		} else {
+			this.toastr.errorToastr("Select atleast 1 Order");
+		}
+	}
+
 	applyFilter(data) {
 		console.log(data);
-		this.orderData.paymentType = data.filterData.multiSelect1;
-		this.orderData.orderCurrentStatus = data.filterData.multiSelect2;
-		this.orderData.weight = data.filterData.priceFrom;
+		this.orderData.paymentType = data.data.paymentType;
+		this.orderData.orderCurrentStatus = data.data.status;
+		this.orderData.weight = data.data.weight;
 		this.dataSource.loadOrderDetails(this.orderData);
+		this.filteredDataList = data.list;
 	}
 
 	/**
@@ -223,6 +288,7 @@ export class OrderDetailsListComponent implements OnInit {
 		this.unsubscribeSearch$.next();
 		this.unsubscribeSearch$.complete();
 		this.orderDetailsService.applyFilter.next({});
+		this.orderDetailsService.dropdownValue.next({});
 		this.sharedService.closeFilter.next(true);
 	}
 }

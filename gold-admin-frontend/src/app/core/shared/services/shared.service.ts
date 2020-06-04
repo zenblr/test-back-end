@@ -12,14 +12,12 @@ export class SharedService {
 	role$ = this.role.asObservable();
 	closeFilter = new BehaviorSubject<any>(false);
 	closeFilter$ = this.closeFilter.asObservable();
+	clearFilter = new BehaviorSubject<any>({});
+	clearFilter$ = this.clearFilter.asObservable();
+
 
 	constructor(private http: HttpClient) {
-		var token = localStorage.getItem("UserDetails");
-		if (token) {
-			var decodedValue = JSON.parse(atob(token.split(".")[1]));
-			this.role.next(decodedValue.roleName[0]);
-			console.log(this.role);
-		}
+		
 	}
 
 	getStates(): Observable<any> {
@@ -34,6 +32,10 @@ export class SharedService {
 		var fd = new FormData();
 		fd.append("avatar", files);
 		return this.http.post<any>(`/api/upload-file`, fd);
+	}
+
+	uploadBase64File(avatar): Observable<any> {
+		return this.http.post<any>(`/api/upload-file/base`, {avatar});
 	}
 
 	getRole(): Observable<any> {
@@ -59,10 +61,10 @@ export class SharedService {
 	}
 
 	getAllSubCategory(): Observable<any> {
-		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category`);
+		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category/all-subcategory`);
 	}
 
-	getTenure(): Observable<any> {
+	getPaymentType(): Observable<any> {
 		return this.http.get<any>(`http://173.249.49.7:9120/api/payment-type`);
 	}
 

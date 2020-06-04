@@ -1,8 +1,9 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { CustomerManagementService } from '../../../core/customer-management/services/customer-management.service';
 import { CustomerManagementDatasource } from '../../../core/customer-management';
-import { skip, distinctUntilChanged } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { skip, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Subscription, Subject } from 'rxjs';
+import { DataTableService } from '../../../core/shared/services/data-table.service';
 
 @Component({
   selector: 'kt-customer-management',
@@ -24,8 +25,11 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
   private subscriptions: Subscription[] = [];
   page = { from: 1, to: 20, search: '' }
   customerResult = [];
+  unsubscribeSearch$ = new Subject();
+  searchValue: any;
   constructor(
     private customerManagementService: CustomerManagementService,
+    private dataTableService: DataTableService
   ) {
     this.customerManagementService.toggle$.subscribe(res => {
       this.toogler = res;
@@ -33,6 +37,15 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+
+    // const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+    //   .subscribe(res => {
+    //     console.log(res)
+    //     this.searchValue = res;
+    //     this.paginator.pageIndex = 0;
+    //     this.loadLeadsPage();
+    //   });
+
     // Init DataSource
     this.dataSource = new CustomerManagementDatasource(this.customerManagementService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(

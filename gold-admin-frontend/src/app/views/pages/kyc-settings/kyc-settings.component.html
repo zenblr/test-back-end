@@ -48,26 +48,25 @@
         </ng-template>
     </ng-container>
 
-    <ng-container [ngbNavItem]="4" [disabled]="disabled[3]">
+    <!-- <ng-container [ngbNavItem]="4" [disabled]="disabled[3]">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
                     4
                 </div>
                 <p class="step-name">Bank Details</p>
-                <!-- <p class="step-details"> User's Bank Details</p> -->
             </div>
         </a>
 
         <ng-template ngbNavContent>
             <kt-user-banks (next)=next($event)></kt-user-banks>
         </ng-template>
-    </ng-container>
-    <ng-container [ngbNavItem]="5" [disabled]="disabled[4]">
+    </ng-container> -->
+    <ng-container [ngbNavItem]="4" [disabled]="disabled[3]">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
-                    5
+                    4
                 </div>
                 <p class="step-name">Review & Submit</p>
                 <!-- <p class="step-details"> User's Review & Submit</p> -->
@@ -77,11 +76,11 @@
             <kt-user-review (next)=next($event)></kt-user-review>
         </ng-template>
     </ng-container>
-    <ng-container [ngbNavItem]="6" [disabled]="disabled[5]">
+    <ng-container [ngbNavItem]="5" [disabled]="disabled[4]">
         <a ngbNavLink class="tab-link">
             <div>
                 <div class="step-number">
-                    6
+                    5
                 </div>
                 <p class="step-name">Customer Classification</p>
                 <!-- <p class="step-details"> User's Review & Submit</p> -->

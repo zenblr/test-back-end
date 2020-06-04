@@ -57,7 +57,8 @@ exports.userLogin = async (req, res, next) => {
             lastName: checkUser.dataValues.lastName,
             roleId: userRoleId,
             roleName: roleName,
-            userTypeId: checkUser.userTypeId
+            userTypeId: checkUser.userTypeId,
+            internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -164,7 +165,8 @@ exports.verifyLoginOtp = async (req, res, next) => {
             lastName: checkUser.dataValues.lastName,
             roleId: roleId,
             roleName: roleName,
-            userTypeId: checkUser.userTypeId
+            userTypeId: checkUser.userTypeId,
+            internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME

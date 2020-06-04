@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'start_date',
         },
+        kycStatus:{
+            type: DataTypes.STRING,
+            field: 'kyc_status',
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'

@@ -1,0 +1,15 @@
+:host {
+    .csv_pos {
+        position   : absolute;
+        top        : 20px;
+        right      : 30px;
+        font-weight: 500;
+        font-size  : 14px;
+        z-index: 100 !important; 
+        letter-spacing: 1.1px;
+    }
+
+    .mat-tab-body.mat-tab-body-active {
+        height: 130px !important;
+    }
+}

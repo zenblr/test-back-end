@@ -47,7 +47,7 @@
 
                 <ng-container matColumnDef="fileName">
                     <mat-header-cell *matHeaderCellDef>File Name</mat-header-cell>
-                    <mat-cell *matCellDef="let report">{{report?.originalname}}</mat-cell>
+                    <mat-cell *matCellDef="let report" class="image-text-truncate">{{report?.originalname}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="userName">
                     <mat-header-cell *matHeaderCellDef>Username</mat-header-cell>
@@ -64,7 +64,7 @@
                 </ng-container>
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-                    <mat-cell *matCellDef="let report">{{report?.status}}</mat-cell>
+                    <mat-cell *matCellDef="let report">{{report?.status | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
@@ -90,7 +90,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>

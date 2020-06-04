@@ -1,7 +1,7 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body [class]="'kt-portlet__body--fit d-flex align-items-center justify-content-center'">
-        <div class="row row-no-padding row-col-separator-xl">
+        <div class="row row-no-padding row-col-separator-xl" style="width: 40%;">
             <div class="col-12">
                 <form [formGroup]="reportForm">
                     <div class="row kt-margin-t-15">
@@ -14,7 +14,7 @@
                                 <option value="" [selected]="true" [disabled]="true">Select Report</option>
                                 <ng-container *ngFor="let item of reportTypes">
                                     <option *ngIf="item?.permission" [value]="item.id">
-                                        {{item.name | titlecase}}</option>
+                                        {{item.name}}</option>
                                 </ng-container>
                             </select>
                             <div *ngIf="controls.reportType.touched && controls.reportType.invalid">
@@ -28,8 +28,8 @@
                     controls?.reportType?.value == '2' ||  controls?.reportType?.value == '3' || 
                     controls?.reportType?.value == '4' || controls?.reportType?.value == '5'">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '1'">User
-                                From</label>
+                            <label class="font-weight-500 text-color"
+                                *ngIf="controls?.reportType?.value == '1'">Merchant</label>
                             <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '2'">Deposit
                                 Funds Origin</label>
                             <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '3'">EMI
@@ -40,12 +40,16 @@
                                 Order From</label>
                         </div>
                         <div class="col-8">
-                            <select class="form-control" formControlName="merchantId"
+                            <!-- <select class="form-control" formControlName="merchantId"
                                 [class.isError]="controls.merchantId.touched && controls.merchantId.invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select Report</option>
                                 <option [value]="item.id" *ngFor="let item of merchantList">
                                     {{item?.merchantName | titlecase}}</option>
-                            </select>
+                            </select> -->
+                            <kt-multi-select-search [items]="merchantList" [multiple]="true" bindLabel="merchantName"
+                                bindValue="id" formControlName="merchantId" [isClear]="clearData">
+                            </kt-multi-select-search>
+
                             <div *ngIf="controls.merchantId.touched && controls.merchantId.invalid">
                                 <mat-error *ngIf="controls.merchantId.touched && controls.merchantId.errors?.required">
                                     Field is required</mat-error>
@@ -60,7 +64,7 @@
                             <input type="text" class="form-control" [matDatepicker]="pickerStartDate"
                                 (click)="pickerStartDate.open()" formControlName="startDate"
                                 [class.isError]="controls.startDate.touched && controls.startDate.invalid" readonly
-                                placeholder="4/5/2020" [max]="minDate">
+                                placeholder="4/5/2020">
                             <mat-datepicker #pickerStartDate></mat-datepicker>
                             <mat-error *ngIf="controls.startDate.errors?.required && controls.startDate.touched">
                                 Field is required
@@ -75,7 +79,7 @@
                             <input type="text" class="form-control" [matDatepicker]="pickerEndDate"
                                 (click)="pickerEndDate.open()" formControlName="endDate"
                                 [class.isError]="controls.endDate.touched && controls.endDate.invalid" readonly
-                                placeholder="4/5/2020" [max]="minDate" [min]="controls.startDate.value"
+                                placeholder="4/5/2020" [min]="controls.startDate.value"
                                 [disabled]="!controls.startDate.value">
                             <mat-datepicker #pickerEndDate></mat-datepicker>
                             <mat-error *ngIf="controls.endDate.errors?.required && controls.endDate.touched">

@@ -18,9 +18,7 @@ export class UploadOfferComponent implements OnInit {
   @ViewChild("file", { static: false }) file;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
-  goldRate = new FormControl(null, Validators.required);
-
-  gold: any;
+ 
 
   constructor(
     private uploadOfferService: UploadOfferService,
@@ -29,7 +27,7 @@ export class UploadOfferComponent implements OnInit {
   ) { 
     this.ngxPermissions.permissions$.subscribe(permission=>{
       if(permission.goldRateView){
-        this.getGoldRate();
+        
       }
       if(permission.offerBannerView){
         this.getData();
@@ -52,37 +50,9 @@ export class UploadOfferComponent implements OnInit {
       })).subscribe()
   }
 
-  getGoldRate() {
-    this.uploadOfferService.getGoldRate().pipe(
-      map(res => {
-        this.gold = res;
-        this.goldRate.patchValue(res.goldRate)
-        this.uploadOfferService.goldRate.next(res.goldRate);
-      })).subscribe()
-  }
+  
 
-  updateGoldRate() {
-    if (this.goldRate.invalid) {
-      this.goldRate.markAsTouched()
-      return
-    }
-
-    this.uploadOfferService.updateGoldRate({ goldRate: this.goldRate.value }).pipe(
-      map(res => {
-        if (res) {
-          this.toastr.successToastr('Gold Rate Updated Sucessfully');
-          this.uploadOfferService.goldRate.next(this.goldRate.value);
-          this.getGoldRate();
-        }
-      }),
-      // catchError(err => {
-      // this.toastr.errorToastr('Please try Again');
-      //   throw err
-      // }),
-      finalize(() => {
-      })
-    ).subscribe();
-  }
+  
 
   save() {
 

@@ -5,6 +5,8 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { catchError, map, finalize } from 'rxjs/operators';
 import { UserDetailsService } from '../../../../../core/kyc-settings';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material';
+import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 
 @Component({
   selector: 'kt-user-personal',
@@ -28,7 +30,8 @@ export class UserPersonalComponent implements OnInit {
   constructor(private fb: FormBuilder, private userDetailsService: UserDetailsService,
     private userPersonalService: UserPersonalService,
     private sharedService: SharedService, private ref: ChangeDetectorRef,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     // console.log(this.signature)
@@ -45,10 +48,11 @@ export class UserPersonalComponent implements OnInit {
       gender: ['', [Validators.required]],
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
-      signatureProof: ['', [Validators.required]],
-      signatureProofFileName: ['', [Validators.required]],
+      signatureProof: [''],
+      signatureProofFileName: [''],
       occupationId: [null],
       dateOfBirth: ['', [Validators.required]],
+      age: []
     })
   }
 
@@ -58,6 +62,25 @@ export class UserPersonalComponent implements OnInit {
     }, err => {
       // console.log(err);
     })
+  }
+
+  webcam() {
+    const dialogRef = this.dialog.open(WebcamDialogComponent,
+      {
+        data: {},
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+          console.log(res)
+          this.profile = res.uploadFile.URL
+          this.personalForm.get('profileImage').patchValue(this.profile);
+          this.ref.detectChanges()
+        })
+        // this.controls.
+      }
+    });
   }
 
   getFileInfo(event, type: any) {
@@ -94,6 +117,32 @@ export class UserPersonalComponent implements OnInit {
       ).subscribe()
     } else {
       this.toastr.error('Upload Valid File Format');
+    }
+  }
+
+  public calculateAge(dateOfBirth: any) {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    this.controls.age.patchValue(age);
+    // this.ageValidation()
+  }
+
+  ageValidation() {
+    if (this.controls.gender.value) {
+      if (this.controls.gender.value == 'm') {
+        this.controls.age.setValidators(Validators.pattern('^0*(2[1-9]|[3-9][0-9]|100)$'))
+      } else {
+        this.controls.age.setValidators(Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$'))
+      }
+      this.controls.age.markAsTouched()
+      this.calculateAge(this.controls.dateOfBirth.value)
     }
   }
 

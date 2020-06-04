@@ -68,6 +68,7 @@ export class CancelOrderDetailsListComponent implements OnInit {
 		cancelDate: "",
 		merchantName: "",
 	};
+	filteredDataList = {};
 
 	constructor(
 		public dialog: MatDialog,
@@ -155,7 +156,7 @@ export class CancelOrderDetailsListComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -187,15 +188,10 @@ export class CancelOrderDetailsListComponent implements OnInit {
 
 	applyFilter(data) {
 		console.log(data);
-		this.cancelData.merchantName = data.filterData.multiSelect1;
-		if (data.filterData.startDate) {
-			let d = new Date(data.filterData.startDate);
-			let n = d.toISOString();
-			this.cancelData.cancelDate = n;
-		} else {
-			this.cancelData.cancelDate = "";
-		}
+		this.cancelData.merchantName = data.data.merchant;
+		this.cancelData.cancelDate = data.data.startDate;
 		this.dataSource.loadCancelOrderDetails(this.cancelData);
+		this.filteredDataList = data.list;
 	}
 
 	/**

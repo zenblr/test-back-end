@@ -216,7 +216,16 @@
                             <label class="font-weight-500 text-color">Status</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="status" class="form-control" disabled>
+                            <select class="form-control" formControlName="status"
+                                [class.isError]="controls.status.touched && controls.status.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                <option [value]="refundData?.nextStatus.statusId">
+                                    {{refundData?.nextStatus.statusName | titlecase}}</option>
+                            </select>
+                            <div *ngIf="controls.status.touched && controls.status.invalid">
+                                <mat-error *ngIf="controls.status.touched && controls.status.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15" *ngIf="hiddenFlag">

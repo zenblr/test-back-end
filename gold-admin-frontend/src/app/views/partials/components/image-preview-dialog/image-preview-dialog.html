@@ -16,7 +16,7 @@
 <div *ngIf="type == 'view'">
   <div class="row kt-padding-l-40 kt-padding-r-40">
     <div class="col-12">
-      <ngb-carousel *ngIf="viewImages.length">
+      <ngb-carousel *ngIf="viewImages.length" [showNavigationArrows]="viewImages?.length > 1">
         <ng-template ngbSlide *ngFor="let img of viewImages">
           <div class="picsum-img-wrapper">
             <img [src]="img?.url" alt="Random first slide" class="viewImage text-center">
