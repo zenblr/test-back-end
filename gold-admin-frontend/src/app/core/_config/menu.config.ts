@@ -143,6 +143,34 @@ export class MenuConfig {
 									],
 								},
 								{
+									title: "Masters",
+									root: true,
+									permission: false,
+
+									submenu: [
+										{
+											title: "Ornaments",
+											page: "/masters/ornamnents",
+											permission: false,
+										},
+										{
+											title: "Unapproval Reasons",
+											page: "/masters/reasons",
+											permission: false,
+										},
+										{
+											title: "Purposes",
+											page: "/masters/purposes",
+											permission: false,
+										},
+										{
+											title: "Packet Location",
+											page: "/masters/packet-location",
+											permission: false,
+										},
+									],
+								},
+								{
 									title: "Holidays",
 									root: true,
 									permission: false,
@@ -160,28 +188,6 @@ export class MenuConfig {
 									title: "Global Settings",
 									page: "/global-settings",
 									permission: false,
-									// submenu: [
-									// 	{
-									// 		title: "LTV GOLD %",
-									// 		page: "/notification-setting/email-alert",
-									// 	},
-									// 	{
-									// 		title: "Minimum Loan Amount",
-									// 		page: "/notification-setting/email-alert",
-									// 	},
-									// 	{
-									// 		title: "Minimum Top-Up Amount",
-									// 		page: "/notification-setting/email-alert",
-									// 	},
-									// 	{
-									// 		title: "Grace Period Days",
-									// 		page: "/notification-setting/email-alert",
-									// 	},
-									// 	{
-									// 		title: "GST(%)",
-									// 		page: "/notification-setting/email-alert",
-									// 	},
-									// ]
 								},
 							]
 						},

@@ -32,6 +32,10 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/settings/global-settings/global-settings.module').then(m => m.GlobalSettingsModule)
 			},
 			{
+				path: 'masters',
+				loadChildren: () => import('../app/views/pages/masters/masters.module').then(m => m.MastersModule)
+			},
+			{
 				path: 'upload-data',
 				loadChildren: () => import('../app/views/pages/upload-data/upload-data.module').then(m => m.UploadDataModule)
 			},
