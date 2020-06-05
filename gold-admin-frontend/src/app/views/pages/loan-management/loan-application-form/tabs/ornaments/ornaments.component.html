@@ -238,24 +238,33 @@
                                 <div class="col-4 form-label">
                                     <label class="my-auto text-color mandatory ">Purity Test</label>
                                 </div>
-                                <div class="col-4 form-label">
-                                    <label *ngIf="ornament.controls.purityTest.value.length > 0"
+                                <div class="col-4 form-label" *ngIf="ornament.controls.purityTest.touched && ornament.controls.purityTest.invalid">
+                                   
+                                    <!-- <label *ngIf="ornament.controls.purityTest.value.length > 0"
                                         class="my-auto text-primary text-center kt-padding-l-15 kt-pointer"
-                                        (click)="preview(ornament.controls.purityTest.value,idx)">View Image</label>
-                                    <mat-error class="kt-padding-l-10"
-                                        *ngIf="ornament.controls.purityTest.touched && ornament.controls.purityTest.invalid">
+                                        (click)="preview(ornament.controls.purityTest.value,idx)">View Image</label> -->
+                                    <mat-error class="kt-padding-l-10">
                                         <span *ngIf="ornament.controls.purityTest.errors?.required">Upload Image</span>
                                     </mat-error>
                                 </div>
-                                <div class="col-4 text-right min-height-attach">
+                                <div class="col-7">
+                                    <span class="my-auto kt-padding-l-5 kt-pointer" *ngFor="let img of ornament.controls.purityTest.value;index as purityIndex">
+                                        <img [src]="img" class="" height="35" width="35" 
+                                        (click)="preview(img,idx)">
+                                        <span class="pos" (click)="removeImage('purityTest',idx,purityIndex)">x</span>
+                                    </span>
+                                </div>
+                                <div class="col-1 text-right min-height-attach">
                                     <input type="file" #purity class="d-none"
                                         (change)="uploadFile(idx,$event,'purityTest')">
                                     <kt-button *ngIf="ornament.controls.purityTest.value.length == 0" [type]="'button'"
                                         [value]="'Attach'" (click)="purity.click()"></kt-button>
                                     <div class="form-label">
-                                        <label *ngIf="ornament.controls.purityTest.value.length > 0 && !disable"
-                                            class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
-                                            (click)="removeImage('purity',idx,ornament.controls.purityTest.value)">Remove</label>
+                                        <button *ngIf="ornament.controls.purityTest.value.length > 0 && !disable"
+                                            class="my-auto img-add kt-pointer"
+                                            (click)="purity.click()">
+                                            <img src="../../../../../assets/media/icons/add.svg" height="25" width="25" alt="">
+                                        </button>
                                     </div>
                                 </div>
                             </div>

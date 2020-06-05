@@ -14,18 +14,8 @@ export class OrnamentsService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  getOrnaments(from, to, search): Observable<any> {
-    return this.http.get(`/api/packet?search=${search}&from=${from}&to=${to}`).pipe(
-      map(res => res),
-      catchError(err => {
-        this.toastr.error(err.error.message);
-        throw (err);
-      })
-    )
-  }
-
-  addOrnaments(data): Observable<any> {
-    return this.http.post<any>(`/api/packet`, data).pipe(
+  getOrnamentType(from, to, search): Observable<any> {
+    return this.http.get(`/api/ornament-type?from=${from}&to=${to}&search=${search}`).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);
@@ -34,8 +24,18 @@ export class OrnamentsService {
     );
   }
 
-  updateOrnaments(id, data): Observable<any> {
-    return this.http.put<any>(`/api/packet/${id}`, data).pipe(
+  addOrnaments(name): Observable<any> {
+    return this.http.post<any>(`/api/ornament-type`, {name}).pipe(
+      map(res => res),
+      catchError(err => {
+        this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  updateOrnaments(id, name): Observable<any> {
+    return this.http.put<any>(`/api/ornament-type/${id}`, {name}).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);
@@ -45,7 +45,7 @@ export class OrnamentsService {
   }
 
   deleteOrnament(id): Observable<any> {
-    return this.http.delete<any>(`/api/packet/${id}`).pipe(
+    return this.http.delete<any>(`/api/ornament-type?id=${id}&isActive=false`).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);

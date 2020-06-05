@@ -15,12 +15,12 @@ export class PurposeDatasource extends BaseDataSource {
         super();
     }
 
-    getOrnaments(from, to, search) {
+    getAllPurpose(from, to, search) {
         this.loadingSubject.next(true);
 
         // this.entitySubject.next(this.leads); // delete this
 
-        this.purposeService.getpacketsTrackingDetails(from, to, search)
+        this.purposeService.getAllPurpose(from, to, search)
             .pipe(
                 map(
                     report => {

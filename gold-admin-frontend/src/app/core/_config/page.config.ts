@@ -21,7 +21,7 @@ export class PageConfig {
 			reasons: {
 				page: { title: "Reasons", desc: "" },
 			},
-			ornamnents: {
+			ornaments: {
 				page: { title: "Ornaments", desc: "" },
 			},
 			purposes: {

@@ -24,7 +24,6 @@ export class AddPurposeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.data)
     this.initForm()
     this.setTitle()
   }
@@ -42,6 +41,8 @@ export class AddPurposeComponent implements OnInit {
     } else {
       this.button = "Update";
       this.title = "Edit Purpose"
+      this.controls.purposeName.patchValue(this.data.purposeData.name)
+      console.log(this.data)
     }
   }
 
@@ -64,22 +65,22 @@ export class AddPurposeComponent implements OnInit {
       }
       
       if (this.data.action == 'edit') {
-        // this.purposeService.updatePurpose(id, data).subscribe(res => {
-        //   if (res) {
-        //     const msg = 'Purpose Updated Sucessfully';
-        //     this.toastr.success(msg);
-        //     this.dialogRef.close(true);
-        //   }
-        // });
+        this.purposeService.updatePurpose(this.data.purposeData.id, this.controls.purposeName.value).subscribe(res => {
+          if (res) {
+            const msg = 'Purpose Updated Sucessfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }
+        });
   
       } else {
-        // this.purposeService.addPurpose(data).subscribe(res => {
-        //   if (res) {
-        //     const msg = 'Purpose Added Successfully';
-        //     this.toastr.success(msg);
-        //     this.dialogRef.close(true);
-        //   }
-        // });
+        this.purposeService.addPurpose(this.controls.purposeName.value).subscribe(res => {
+          if (res) {
+            const msg = 'Purpose Added Successfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }
+        });
       }
 
     }

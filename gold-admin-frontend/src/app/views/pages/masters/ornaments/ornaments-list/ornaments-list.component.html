@@ -5,7 +5,7 @@
 
                 <ng-container matColumnDef="ornamentType">
                     <mat-header-cell *matHeaderCellDef>Ornament Type</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="action">

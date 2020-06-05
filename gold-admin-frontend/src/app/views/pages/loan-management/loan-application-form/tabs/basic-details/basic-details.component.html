@@ -76,10 +76,16 @@
                             <label class="text-color kt-padding-l-10">Loan Purpose</label>
                         </div>
                         <div class="col-6">
-                            <select formControlName="purpose" class="form-control">
+                            <select formControlName="purpose" class="form-control" 
+                            [class.isError]="controls.purpose.touched && controls.purpose.invalid">
                                 <option value="" selected disabled>Select Purpose</option>
-                                <option value="">Select</option>
+                                <option [value]="purpose.name" *ngFor="let purpose of purpose">{{purpose.name | titlecase}}</option>
                             </select>
+                            <div *ngIf="controls.purpose.touched && controls.purpose.invalid">
+                            <mat-error *ngIf="controls.purpose.errors?.required">
+                                Field is Required
+                            </mat-error>
+                            </div>
                         </div>
                     </div>
                 </div>

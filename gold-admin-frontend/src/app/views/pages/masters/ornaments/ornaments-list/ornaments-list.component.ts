@@ -64,7 +64,7 @@ export class OrnamentsListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getOrnaments(1, 25, this.searchValue);
+    this.dataSource.getOrnaments(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -98,11 +98,10 @@ export class OrnamentsListComponent implements OnInit {
     });
   }
 
-  editOrnament(role) {
-    console.log(role)
+  editOrnament(item) {
     const dialogRef = this.dialog.open(OrnamentsAddComponent,
       {
-        data: { packetData: role, action: 'edit' },
+        data: { ornamentData: item, action: 'edit' },
         width: '400px'
       });
     dialogRef.afterClosed().subscribe(res => {

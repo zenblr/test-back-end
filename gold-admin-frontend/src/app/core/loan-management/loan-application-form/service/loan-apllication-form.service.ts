@@ -16,40 +16,40 @@ export class LoanApplicationFormService {
     )
   }
 
-  basicSubmit(details):Observable<any>{
-    return this.http.post(`/api/loan-process/basic-details`,details).pipe(
+  basicSubmit(details): Observable<any> {
+    return this.http.post(`/api/loan-process/basic-details`, details).pipe(
       map(res => res)
     )
   }
 
-  nomineeSubmit(details,loanId):Observable<any>{
+  nomineeSubmit(details, loanId): Observable<any> {
     details.loanId = loanId
-    return this.http.post(`/api/loan-process/nominee-details`,details).pipe(
+    return this.http.post(`/api/loan-process/nominee-details`, details).pipe(
       map(res => res)
     )
   }
 
-  submitOrnaments(loanOrnaments,totalEligibleAmt,loanId,):Observable<any>{
-    return this.http.post(`/api/loan-process/ornaments-details`,{loanOrnaments,totalEligibleAmt,loanId,}).pipe(
+  submitOrnaments(loanOrnaments, totalEligibleAmt, loanId, ): Observable<any> {
+    return this.http.post(`/api/loan-process/ornaments-details`, { loanOrnaments, totalEligibleAmt, loanId, }).pipe(
       map(res => res)
     )
   }
 
-  submitFinalIntrest(loanFinalCalculator,loanId):Observable<any>{
-    return this.http.post(`/api/loan-process/final-loan-details`,{loanFinalCalculator,loanId}).pipe(
+  submitFinalIntrest(loanFinalCalculator, loanId): Observable<any> {
+    return this.http.post(`/api/loan-process/final-loan-details`, { loanFinalCalculator, loanId }).pipe(
       map(res => res)
     )
   }
 
-  submitBank(details,loanId):Observable<any>{
+  submitBank(details, loanId): Observable<any> {
     details.loanId = loanId
-    return this.http.post(`/api/loan-process/bank-details`,details).pipe(
+    return this.http.post(`/api/loan-process/bank-details`, details).pipe(
       map(res => res)
     )
   }
 
 
-  applyForLoan(data,loanId): Observable<any> {
+  applyForLoan(data, loanId): Observable<any> {
     data.loanId = loanId
     return this.http.post(`/api/loan-process/appraiser-rating`, data).pipe(
       map(res => res)
@@ -68,10 +68,6 @@ export class LoanApplicationFormService {
     )
   }
 
-  getOrnamentType(): Observable<any> {
-    return this.http.get(`/api/loan-process/ornament`).pipe(
-      map(res => res)
-    )
-  }
+  
 
 }

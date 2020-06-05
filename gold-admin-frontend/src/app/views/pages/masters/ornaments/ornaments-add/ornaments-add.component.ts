@@ -27,6 +27,7 @@ export class OrnamentsAddComponent implements OnInit {
   }
 
   setForm() {
+    console.log(this.data)
     if (this.data.action == 'add') {
       this.title = 'Add Ornament'
     } else if (this.data.action == 'edit') {
@@ -38,7 +39,7 @@ export class OrnamentsAddComponent implements OnInit {
   initForm() {
     this.ornamentForm = this.fb.group({
       id: [],
-      ornamentName: ['', [Validators.required]]
+      name: ['', [Validators.required]]
     })
   }
 
@@ -59,7 +60,7 @@ export class OrnamentsAddComponent implements OnInit {
     const id = this.controls.id.value;
 
     if (this.data.action == 'edit') {
-      this.ornamentsService.updateOrnaments(id, data).subscribe(res => {
+      this.ornamentsService.updateOrnaments(id, data.name).subscribe(res => {
         if (res) {
           const msg = 'Ornament Updated Sucessfully';
           this.toastr.success(msg);
@@ -68,7 +69,7 @@ export class OrnamentsAddComponent implements OnInit {
       });
 
     } else {
-      this.ornamentsService.addOrnaments(data).subscribe(res => {
+      this.ornamentsService.addOrnaments(data.name).subscribe(res => {
         if (res) {
           const msg = 'Ornament Added Successfully';
           this.toastr.success(msg);

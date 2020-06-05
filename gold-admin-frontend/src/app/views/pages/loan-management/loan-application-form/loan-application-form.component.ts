@@ -310,8 +310,6 @@ export class LoanApplicationFormComponent implements OnInit {
         this.disabled[index] = false
       }
     }
-    window.scrollTo(0, 0)
-    this.disabled[5] = false;
   }
 
 }

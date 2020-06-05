@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChildren, QueryList, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
@@ -10,6 +10,7 @@ import { KaratDetailsService } from '../../../../../../core/loan-setting/karat-d
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../core/loan-management';
 import { GoldRateService } from '../../../../../../core/upload-data/gold-rate/gold-rate.service';
+import { OrnamentsService } from '../../../../../../core/masters/ornaments/services/ornaments.service';
 
 
 @Component({
@@ -56,7 +57,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public goldRateService: GoldRateService,
     public karatService: KaratDetailsService,
     public router: Router,
-    public loanApplicationFormService: LoanApplicationFormService
+    public loanApplicationFormService: LoanApplicationFormService,
+    public ornamentTypeService:OrnamentsService,
   ) {
 
   }
@@ -81,7 +83,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   getOrnamentType() {
-    this.loanApplicationFormService.getOrnamentType().pipe(
+    this.ornamentTypeService.getOrnamentType(1,-1,'').pipe(
       map(res => {
         console.log(res);
         this.ornamentType = res.data;
@@ -289,18 +291,17 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         break;
       case 'purityTest':
         let temp = []
-        // if (controls.controls.purityTest.value.length > 0)
-        //   temp = controls.controls.purityTest.value
+        if (controls.controls.purityTest.value.length > 0)
+          temp = controls.controls.purityTest.value
         temp.push(url)
-        if (typeof url == "object") {
-          this.images[index].purity = url[0]
-        } else {
-          this.images[index].purity = url
-        }
-        controls.controls.purityTest.patchValue([this.images[index].purity])
+        // if (typeof url == "object") {
+        //   this.images[index].purity = url[0]
+        // } else {
+          // this.images[index].purity = url
+        // }
+        this.images[index].purity = temp
+        controls.controls.purityTest.patchValue(this.images[index].purity)
         this.purity.nativeElement.value = ''
-
-
         break;
 
       case 'ornamentImage':
@@ -314,7 +315,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-  removeImage(key, index, value) {
+  removeImage(key, index, purityIndex) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
     switch (key) {
       case 'withOrnamentWeight':
@@ -337,9 +338,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.images[index].stoneTouch = ''
 
         break;
-      case 'purity':
-        controls.controls.purityTest.patchValue([])
-        this.images[index].purityTest = ''
+      case 'purityTest':
+        let temp = controls.controls.purityTest.value
+        temp.splice(purityIndex,1)
+        controls.controls.purityTest.patchValue(temp)
+        this.images[index].purity = temp
 
         break;
       case 'ornamentImage':
@@ -353,10 +356,22 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   preview(value, formIndex) {
     let filterImage = []
     filterImage = Object.values(this.images[formIndex])
+
     var temp = []
+    let indexof = filterImage.findIndex(idx =>{
+      return typeof idx == 'object'
+    })
+    temp = filterImage[indexof]
+    filterImage.splice(indexof,1)
+    Array.prototype.push.apply(filterImage,temp)
+    
+
     temp = filterImage.filter(el => {
       return el != ''
     })
+    if(typeof value == 'object'){
+      value = value[0]
+    }
     let index = temp.indexOf(value)
     this.dilaog.open(ImagePreviewDialogComponent, {
       data: {

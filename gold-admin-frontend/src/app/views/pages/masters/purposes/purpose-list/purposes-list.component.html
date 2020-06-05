@@ -5,13 +5,15 @@
 
                 <ng-container matColumnDef="purposeName">
                     <mat-header-cell *matHeaderCellDef>Purpose Name</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
                     <mat-cell *matCellDef="let item" >
                         <div class="kt-pointer" (click)="editPurpose(item)">Edit</div>
+                        <div class="px-3">|</div>
+                        <div class="kt-pointer text-danger" (click)="deletePurpose(item)">Delete</div>
                     </mat-cell>
                 </ng-container>
 

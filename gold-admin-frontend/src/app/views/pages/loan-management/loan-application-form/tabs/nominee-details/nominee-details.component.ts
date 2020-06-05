@@ -33,7 +33,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
 
   ngOnChanges(changes:SimpleChanges) {
     if(changes.details){
-    if(changes.action.currentValue == 'edit'){
+    if(changes.action.currentValue == 'edit' && changes.details.currentValue.loanNomineeDetail.length){
       this.nominee.patchValue(changes.details.currentValue.loanNomineeDetail[0])
       this.ref.markForCheck()
 
@@ -60,7 +60,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
       relationship: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
       nomineeType: ["major"],
       guardianName: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      guardianAge: ['', [Validators.required, Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$')]],
+      guardianAge: [, [Validators.required, Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$')]],
       guardianRelationship: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
     })
     this.checkForMinor()

@@ -6,6 +6,8 @@ import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators'
 import { PurposeDatasource } from '../../../../../core/masters/purposes/datasources/purpose.datasource';
 import { PurposeService } from '../../../../../core/masters/purposes/service/purpose.service';
 import { AddPurposeComponent } from '../add-purpose/add-purpose.component';
+import { LayoutUtilsService } from '../../../../../core/_base/crud/utils/layout-utils.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-purposes-list',
@@ -13,7 +15,7 @@ import { AddPurposeComponent } from '../add-purpose/add-purpose.component';
   styleUrls: ['./purposes-list.component.scss']
 })
 export class PurposesListComponent implements OnInit {
-  
+
   dataSource;
   displayedColumns = ['purposeName', 'action'];
   result = []
@@ -27,6 +29,8 @@ export class PurposesListComponent implements OnInit {
     private dataTableService: DataTableService,
     private purposeService: PurposeService,
     public dialog: MatDialog,
+    private layoutUtilsService: LayoutUtilsService,
+    private toastr:ToastrService
   ) {
     this.purposeService.openModal$.pipe(
       map(res => {
@@ -60,7 +64,7 @@ export class PurposesListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getHolidays(1, 25, this.searchValue);
+    this.dataSource.getAllPurpose(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -78,7 +82,7 @@ export class PurposesListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.getHolidays(from, to, this.searchValue);
+    this.dataSource.getAllPurpose(from, to, this.searchValue);
   }
 
   addpurpose() {
@@ -108,4 +112,23 @@ export class PurposesListComponent implements OnInit {
     });
   }
 
+  deletePurpose(item) {
+    const role = item;
+    const _title = 'Delete Purpose';
+    const _description = 'Are you sure to permanently delete this purpose?';
+    const _waitDesciption = 'Purpose is deleting...';
+    const _deleteMessage = `Purpose has been deleted`;
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.purposeService.deletePurpose(item.id).subscribe(res => {
+          this.toastr.success(_deleteMessage);
+          this.loadPage();
+        },
+          errorDelete => {
+            this.toastr.error(errorDelete.error.message);
+          });
+      }
+    });
+  }
 }

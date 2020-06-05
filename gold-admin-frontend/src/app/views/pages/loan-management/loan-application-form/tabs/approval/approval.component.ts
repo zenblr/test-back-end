@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, AfterViewInit, OnChanges,ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, AfterViewInit, OnChanges, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
@@ -18,8 +18,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() invalid;
   @Input() details;
   // @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
-  appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' },{ value: 'rejected', name: 'rejected' }];
-  branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' },{ value: 'incomplete', name: 'incomplete' }];
+  appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
+  branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }, { value: 'incomplete', name: 'incomplete' }];
   userType: any = ''
   @Input() action;
   // @Output() apply: EventEmitter<any> = new EventEmitter<any>();
@@ -34,8 +34,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     private sharedSerive: SharedService,
     private ref: ChangeDetectorRef,
     public router: Router,
-    public loanFormService:LoanApplicationFormService,
-    public location:Location
+    public loanFormService: LoanApplicationFormService,
+    public location: Location,
   ) { }
 
   ngOnInit() {
@@ -45,15 +45,15 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
   getRoles() {
     let res = this.sharedSerive.getDataFromStorage()
-      this.userType = res.userDetails.userTypeId
-      if (this.userType == 7) {
-        this.controls.loanStatusForBM.disable()
-        this.viewBMForm = false;
-      } else if (this.userType == 5) {
-        this.controls.loanStatusForAppraiser.disable()
-      } else {
-        this.approvalForm.disable()
-      }
+    this.userType = res.userDetails.userTypeId
+    if (this.userType == 7) {
+      this.controls.loanStatusForBM.disable()
+      this.viewBMForm = false;
+    } else if (this.userType == 5) {
+      this.controls.loanStatusForAppraiser.disable()
+    } else {
+      this.approvalForm.disable()
+    }
   }
 
   initForm() {
@@ -92,6 +92,10 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit() {
+    let user = this.sharedSerive.getDataFromStorage()
+    if(user.userDetails.userTypeId == 7){
+      this.controls.commentByBM.disable()
+    }
     // this.approvalForm.valueChanges.subscribe(() => {
     //   this.approvalFormEmit.emit(this.approvalForm)
     // })
@@ -116,22 +120,22 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   statusAppraiser() {
-    this.controls.commentByAppraiser.reset()
     if (this.controls.loanStatusForAppraiser.value != 'approved') {
       this.controls.commentByAppraiser.setValidators(Validators.required);
       this.controls.commentByAppraiser.updateValueAndValidity()
     } else {
+      this.controls.commentByAppraiser.reset()
       this.controls.commentByAppraiser.clearValidators();
       this.controls.commentByAppraiser.updateValueAndValidity();
       this.controls.commentByAppraiser.markAsUntouched()
     }
   }
   statusBM() {
-    this.controls.commentByBM.reset();
     if (this.controls.loanStatusForBM.value != 'approved') {
       this.controls.commentByBM.setValidators(Validators.required);
       this.controls.commentByBM.updateValueAndValidity()
     } else {
+      this.controls.commentByBM.reset();
       this.controls.commentByBM.clearValidators();
       this.controls.commentByBM.updateValueAndValidity();
       this.controls.commentByBM.markAsUntouched()
@@ -139,12 +143,12 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   applyForm() {
-    this.loanFormService.applyForLoan(this.approvalForm.value,this.loanId).pipe(
-      map(res=>{
+    this.loanFormService.applyForLoan(this.approvalForm.value, this.loanId).pipe(
+      map(res => {
         this.router.navigate(['/loan-management/applied-loan'])
       })).subscribe()
   }
-  cancel(){
+  cancel() {
     this.location.back()
   }
 

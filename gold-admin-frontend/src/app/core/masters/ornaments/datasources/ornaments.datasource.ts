@@ -20,7 +20,7 @@ export class OrnamentsDatasource extends BaseDataSource {
 
         // this.entitySubject.next(this.leads); // delete this
 
-        this.ornamentsService.getOrnaments(from, to, search)
+        this.ornamentsService.getOrnamentType(from, to, search)
             .pipe(
                 map(
                     report => {

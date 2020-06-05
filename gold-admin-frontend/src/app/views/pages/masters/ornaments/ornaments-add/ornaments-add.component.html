@@ -9,9 +9,9 @@
                             <label class="kt-padding-l-10 mandatory">Ornament Type</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control" formControlName="ornamentName"
-                                [class.isError]="ornamentForm.controls.ornamentName.invalid &&  ornamentForm.controls.ornamentName.touched">
-                                <mat-error *ngIf="controls.ornamentName.touched && controls.ornamentName.errors?.required">
+                            <input type="text" class="form-control text-capitalize" formControlName="name"
+                                [class.isError]="ornamentForm.controls.name.invalid &&  ornamentForm.controls.name.touched">
+                                <mat-error *ngIf="controls.name.touched && controls.name.errors?.required">
                                     Required field
                                 </mat-error>
                             </div>
