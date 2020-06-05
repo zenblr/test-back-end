@@ -175,17 +175,18 @@
                         <div class="col-8">
                             <select class="form-control" formControlName="reasonForOther"
                                 placeholder="reason for Incomplete" (change)="patchReason()">
-                                <option value='' selected disabled>Choose a reason </option>
+                                <option value=null selected disabled>Choose a reason </option>
                                 <option [value]="reason.description" *ngFor="let reason of reasons">
                                     {{reason.description}}
                                 </option>
                             </select>
 
                             <mat-form-field class="w-100 kt-margin-t-20"
-                                *ngIf="cceControls.reasonForOther.value == 'other'">
+                                *ngIf="cceControls.reasonForOther.value == 'Other'">
                                 <textarea matInput formControlName="reasonFromCce"
-                                    placeholder="Reason for Pending"></textarea>
+                                    placeholder="Reason for {{ cceControls.kycStatusFromCce.value }}"></textarea>
                                 <mat-error>Field Required</mat-error>
+
                             </mat-form-field>
                         </div>
                     </div>
