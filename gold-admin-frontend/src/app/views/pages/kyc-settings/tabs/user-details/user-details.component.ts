@@ -5,6 +5,9 @@ import { UserDetailsService } from '../../../../../core/kyc-settings';
 import { map, finalize, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
+import { MatDialog } from '@angular/material';
+import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 
 @Component({
   selector: 'kt-user-details',
@@ -26,9 +29,15 @@ export class UserDetailsComponent implements OnInit {
   showVerifyPAN = false;
 
 
-  constructor(public fb: FormBuilder, private userDetailsService: UserDetailsService,
-    private toastr: ToastrService, private ref: ChangeDetectorRef,
-    private route: ActivatedRoute) { }
+  constructor(
+    public fb: FormBuilder,
+    private userDetailsService: UserDetailsService,
+    private toastr: ToastrService,
+    private ref: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private sharedServices: SharedService,
+    private dialog: MatDialog,
+    private toast:ToastrService) { }
 
   ngOnInit() {
     this.initForm();
@@ -85,6 +94,9 @@ export class UserDetailsComponent implements OnInit {
       mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       otp: [, [, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [],
+      panType: ['', Validators.required],
+      form60: [''],
+      form60Img: [''],
       panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
     })
   }
@@ -101,6 +113,7 @@ export class UserDetailsComponent implements OnInit {
         this.userBasicForm.patchValue(res.customerInfo);
         if (res.customerInfo.panCardNumber !== null) {
           this.controls.panCardNumber.disable();
+          this.controls.panType.patchValue('pan')
         } else {
           this.showVerifyPAN = true;
         }
@@ -137,6 +150,36 @@ export class UserDetailsComponent implements OnInit {
       }
     });
   }
+
+  getFileInfo(event) {
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+    this.sharedServices.uploadFile(event.target.files[0]).pipe(
+      map(res => {
+        if (res) {
+          this.controls.form60.patchValue(event.target.files[0].name)
+          this.controls.form60Img.patchValue(res.uploadFile.URL)
+        }
+      }), catchError(err => {
+        throw err
+      })).subscribe()
+    }else{
+      this.toast.error('Upload Valid File Format')
+    }
+  }
+
+  preview() {
+    let img = [this.controls.form60Img.value]
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: img,
+        index: 0
+      },
+      width: "auto"
+    })
+  }
+
 
   verifyPAN() {
     // const panCardNumber = this.controls.panCardNumber.value;

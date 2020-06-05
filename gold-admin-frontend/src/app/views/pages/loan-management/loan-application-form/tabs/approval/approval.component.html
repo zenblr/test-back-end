@@ -145,9 +145,9 @@
                             </td>
                             <td class="rating-cce">
                                 <select class="form-control " formControlName="loanStatusForAppraiser"
-                                    (change)="statusAppraiser()"
+                                    (change)="resetAppraiser();statusAppraiser()"
                                     [class.isError]="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
-                                    <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option value=null [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" *ngFor="let status of appraiser">
                                         {{status.name | titlecase}}
                                     </option>
@@ -157,7 +157,7 @@
                                     Field Required</mat-error>
                             </td>
                             <td class="rating-bm" *ngIf="viewBMForm || url == 'view-loan'">
-                                <select class="form-control" formControlName="loanStatusForBM" (change)="statusBM()"
+                                <select class="form-control" formControlName="loanStatusForBM" (change)="resetBM();statusBM()"
                                     [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                                     <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" *ngFor="let status of branchManager">
@@ -177,7 +177,7 @@
                 <mat-form-field class="w-100">
 
                     <textarea cols="4" rows="3" matInput formControlName="commentByAppraiser"
-                        placeholder="Reason for Pending"></textarea>
+                        placeholder="Reason By Appraiser"></textarea>
                     <mat-error>Field
                         Required</mat-error>
                 </mat-form-field>
@@ -189,7 +189,7 @@
                 <mat-form-field class="w-100">
 
                     <textarea cols="4" rows="3" matInput formControlName="commentByBM"
-                        placeholder="Reason for Rejection"></textarea>
+                        placeholder="Reason By Branch Manager"></textarea>
                     <mat-error>Field Required
                     </mat-error>
                 </mat-form-field>

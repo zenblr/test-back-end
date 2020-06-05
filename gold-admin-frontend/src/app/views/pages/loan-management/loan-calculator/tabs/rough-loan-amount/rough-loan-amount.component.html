@@ -62,15 +62,16 @@
                         <kt-button [value]="'Calculate'" [type]="'button'" (click)="calculate()"></kt-button>
                     </div>
                 </div>
+                <div class="row kt-margin-t-20">
+                    <div class="offset-4 col-6">
+                        <p class="text-gray font-weight-500 m-0">Total Amount</p>
+                        <h3 class="text-color">
+                            <span class="currency">{{loanAmount | indianCurrencyFormat}}</span>
+                        </h3>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
-    <div class="row kt-margin-t-20">
-        <div class="offset-4 col-6">
-            <p class="text-gray font-weight-500 m-0">Total Amount</p>
-            <h3 class="text-color">
-                <span class="currency">{{loanAmount | currency:'INR':'symbol' : '1.0-0'}}</span>
-            </h3>
-        </div>
-    </div>
+    
 </div>

@@ -5,7 +5,7 @@
                 <div class="col-6">
                     <div class="row">
                         <div class="col-4 form-label">
-                            <label class="text-color kt-padding-l-10">Customer ID</label>
+                            <label class="text-color kt-padding-l-10 mandatory">Customer ID</label>
                         </div>
                         <div class="col-6">
                             <input type="text" class="form-control" placeholder="10234501203203"
@@ -26,7 +26,7 @@
                 <div class="col-6">
                     <div class="row">
                         <div class="col-4 offset-2 form-label">
-                            <label class="text-color kt-padding-l-10">Mobile Number</label>
+                            <label class="text-color kt-padding-l-10 ">Mobile Number</label>
                         </div>
                         <div class="col-6">
                             <input type="text" class="form-control" placeholder="9845678991"
@@ -67,6 +67,25 @@
                         </div>
                         <div class="col-6">
                             <input type="text" class="form-control" formControlName="kycStatus" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-4 offset-2 form-label">
+                            <label class="text-color kt-padding-l-10">Loan Purpose</label>
+                        </div>
+                        <div class="col-6">
+                            <select formControlName="purpose" class="form-control" 
+                            [class.isError]="controls.purpose.touched && controls.purpose.invalid">
+                                <option value="" selected disabled>Select Purpose</option>
+                                <option [value]="purpose.name" *ngFor="let purpose of purpose">{{purpose.name | titlecase}}</option>
+                            </select>
+                            <div *ngIf="controls.purpose.touched && controls.purpose.invalid">
+                            <mat-error *ngIf="controls.purpose.errors?.required">
+                                Field is Required
+                            </mat-error>
+                            </div>
                         </div>
                     </div>
                 </div>
