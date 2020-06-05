@@ -165,7 +165,18 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div *ngIf="showTextBoxBM && userType == 6">
+                        <div class="row kt-padding-l-10">
+                            <div class="col-3 form-label">
+                                <label for="" class="kt-padding-l-10">Reason by B.M -</label> 
+                            </div>
+                            <div class="col-8 form-label">
+                                {{cceControls.reasonFromBm.value}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
                 <div *ngIf="showTextBoxCce  && userType == 6" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <div class="row">
@@ -182,10 +193,11 @@
                             </select>
 
                             <mat-form-field class="w-100 kt-margin-t-20"
-                                *ngIf="cceControls.reasonForOther.value == 'other'">
+                                *ngIf="cceControls.reasonForOther.value == 'Other'">
                                 <textarea matInput formControlName="reasonFromCce"
-                                    placeholder="Reason for Pending"></textarea>
+                                    placeholder="Reason for {{ cceControls.kycStatusFromCce.value }}"></textarea>
                                 <mat-error>Field Required</mat-error>
+
                             </mat-form-field>
                         </div>
                     </div>

@@ -101,9 +101,6 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		if (this.clear == true) {
 			this.closeDropdown();
 		}
-		if (this.filterName == 'leads') {
-			this.getStates();
-		}
 	}
 
 	ngOnChanges(change: SimpleChanges) { }
@@ -137,6 +134,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 						case 'merchantName':
 							this.getMerchant();
 							break;
+						case 'state':
+							this.getStates();
+							break;
 					}
 				}
 			}
@@ -155,7 +155,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			status: [''],
 			weight: [''],
 			paymentType: [''],
-			merchant: ['']
+			merchant: [''],
+			states: [''],
+			cities: [''],
+			appraiserStatus: [''],
+			BMStatus: [''],
+			ccStatus:[''],
+			packets:[''],
+			scheme:['']
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -216,6 +223,30 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.merchant = controls['merchant'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.merchant = controls['merchant'].value.multiSelect;
 			}
+			if (controls['states'].value) {
+				this.filterObject.data.states = controls['states'].value.id;
+				this.filterObject.list.states = controls['states'].value;
+			}
+			if (controls['cities'].value && (controls['cities'].value.multiSelect && controls['cities'].value.multiSelect.length)) {
+				this.filterObject.data.cities = controls['cities'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.cities = controls['cities'].value.multiSelect;
+			}
+			if (controls['status'].value && (controls['status'].value.multiSelect && controls['status'].value.multiSelect.length)) {
+				this.filterObject.data.status = controls['status'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.status = controls['status'].value.multiSelect;
+			}
+			if (controls['appraiserStatus'].value && (controls['appraiserStatus'].value.multiSelect && controls['appraiserStatus'].value.multiSelect.length)) {
+				this.filterObject.data.appraiserStatus = controls['appraiserStatus'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.appraiserStatus = controls['appraiserStatus'].value.multiSelect;
+			}
+			if (controls['ccStatus'].value && (controls['ccStatus'].value.multiSelect && controls['ccStatus'].value.multiSelect.length)) {
+				this.filterObject.data.ccStatus = controls['ccStatus'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.ccStatus = controls['ccStatus'].value.multiSelect;
+			}
+			if (controls['BMStatus'].value && (controls['BMStatus'].value.multiSelect && controls['BMStatus'].value.multiSelect.length)) {
+				this.filterObject.data.BMStatus = controls['BMStatus'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.BMStatus = controls['BMStatus'].value.multiSelect;
+			}
 			return this.filterObject;
 		}
 	}
@@ -264,6 +295,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'merchant':
 				this.controls['merchant'].value.multiSelect.splice(index, 1);
 				break;
+			case 'states':
+				this.controls['states'].patchValue('');
+				break;
+			case 'cities':
+				this.controls['cities'].value.multiSelect.splice(index, 1);
+				break;
 			default:
 				break;
 		}
@@ -309,9 +346,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	}
 
 
-	getCities($event) {
-		if ($event) {
-			const stateId = $event.id;
+	getCities(event) {
+		if (event) {
+			const stateId = event.id;
 			this.sharedService.getCities(stateId).subscribe(res => {
 				this.cities = res.message;
 			});

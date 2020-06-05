@@ -58,12 +58,12 @@ export class LeadManagementDatasource extends BaseDataSource {
 
 
 
-    loadLeads(from, to, search, stageName) {
+    loadLeads(data) {
         this.loadingSubject.next(true);
 
         // this.entitySubject.next(this.leads); // delete this
 
-        this.leadService.getAllLeads(from, to, search, stageName)
+        this.leadService.getAllLeads(data)
             .pipe(
                 map(
                     report => {

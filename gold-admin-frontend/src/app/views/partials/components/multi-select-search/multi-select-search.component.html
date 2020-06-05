@@ -1,13 +1,13 @@
 <div [formGroup]="form">
     <ng-select [items]="items" [multiple]="multiple" [bindLabel]="bindLabel" [closeOnSelect]="false"
-        [bindValue]="bindValue" formControlName="multiSelect">
+        [bindValue]="bindValue" formControlName="multiSelect" [placeholder]="placeholder">
         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-            <label class="custom-checkbox">
+            <div class="custom-checkbox">
                 <span class="label-checkbox">{{item[bindLabel] | titlecase}}</span>
                 <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
                 [ngModelOptions]="{ standalone : true }" /> 
                 <span class="checkmark checkmark-custom"></span>
-            </label>
+            </div>
             <!-- <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
                 [ngModelOptions]="{ standalone : true }" /> {{item[bindLabel] | titlecase}} -->
         </ng-template>

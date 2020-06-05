@@ -67,7 +67,7 @@ export class MenuConfig {
 							],
 						},
 						{
-							title: "Admin-Settings",
+							title: "Admin Settings",
 							root: true,
 							src: "assets/media/aside-icons/icons-03.svg",
 							permission: false,
@@ -143,13 +143,43 @@ export class MenuConfig {
 									],
 								},
 								{
-									title: "Holidays",
+									title: "Masters",
 									root: true,
 									permission: false,
-									page: '/holidays'
+
+									submenu: [
+										{
+											title: "Ornaments",
+											page: "/masters/ornaments",
+											permission: false,
+										},
+										{
+											title: "Unapproval Reasons",
+											page: "/masters/reasons",
+											permission: false,
+										},
+										{
+											title: "Purposes",
+											page: "/masters/purposes",
+											permission: false,
+										},
+										{
+											title: "Packet Location",
+											page: "/masters/packet-location",
+											permission: false,
+										},
+										{
+											title: "Holidays",
+											root: true,
+											permission: false,
+											page: '/holidays'
+										},
+									],
 								},
+								
 							],
 						},
+						
 						{
 							title: "User Management",
 							root: true,
@@ -190,6 +220,11 @@ export class MenuConfig {
 									title: "Applied KYC",
 									page: "/applied-kyc",
 									permission: !this.permissionsArr.includes('appliedKycView'),
+								},
+								{
+									title: "Assigned customers",
+									page: "/assigned-customers",
+									// permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 							],
 						},
@@ -314,6 +349,19 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-24.svg",
 							page: "/emi-management",
 							permission: !this.modulesArr.includes(2),
+						},
+						{
+							title: "Settings",
+							root: true,
+							src: "assets/media/aside-icons/icons-03.svg",
+							permission: false,
+							submenu: [
+								{
+									title: "Global Settings",
+									page: "/global-settings",
+									permission: false,
+								},
+							]
 						},
 						{
 							title: "Log Out",

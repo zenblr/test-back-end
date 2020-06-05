@@ -33,7 +33,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
 
   ngOnChanges(changes:SimpleChanges) {
     if(changes.details){
-    if(changes.action.currentValue == 'edit'){
+    if(changes.action.currentValue == 'edit' && changes.details.currentValue.loanNomineeDetail.length){
       this.nominee.patchValue(changes.details.currentValue.loanNomineeDetail[0])
       this.ref.markForCheck()
 
@@ -60,7 +60,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
       relationship: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
       nomineeType: ["major"],
       guardianName: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      guardianAge: [, [Validators.required, Validators.pattern('^(?:1[01][0-9]|120|1[7-9]|[2-9][0-9])$')]],
+      guardianAge: [, [Validators.required, Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$')]],
       guardianRelationship: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
     })
     this.checkForMinor()
@@ -76,8 +76,11 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
     }
     else if (this.controls.nomineeAge.value < 18) {
       this.controls.guardianAge.setValidators(Validators.required);
-      this.controls.guardianName.setValidators(Validators.required);
       this.controls.guardianRelationship.setValidators(Validators.required);
+      this.controls.guardianName.setValidators(Validators.required);
+      this.controls.guardianAge.setValidators(Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$'));
+      this.controls.guardianRelationship.setValidators(Validators.pattern('^[a-zA-Z ]*$'));
+      this.controls.guardianName.setValidators(Validators.pattern('^[a-zA-Z ]*$'));
       this.controls.nomineeType.patchValue("minor")
     }
     this.controls.guardianAge.updateValueAndValidity()

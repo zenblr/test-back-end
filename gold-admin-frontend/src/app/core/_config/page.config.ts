@@ -17,6 +17,23 @@ export class PageConfig {
 				page: { title: "Show Feedback", desc: "" },
 			},
 		},
+		masters: {
+			reasons: {
+				page: { title: "Reasons", desc: "" },
+			},
+			ornaments: {
+				page: { title: "Ornaments", desc: "" },
+			},
+			purposes: {
+				page: { title: "Purposes", desc: "" },
+			},
+			'packet-location': {
+				page: { title: "Packet Tracking", desc: "" },
+			},
+		},
+		"global-settings": {
+			page: { title: "Global Settings", desc: "" },
+		},
 		"loan-setting": {
 			scheme: {
 				page: { title: "Schemes", desc: "" },
@@ -98,6 +115,9 @@ export class PageConfig {
 			"edit-kyc": {
 				page: { title: "Customer KYC", desc: "" },
 			},
+		},
+		"assigned-customers": {
+			page: { title: "Assigned Customers", desc: "" },
 		},
 		"emi-management": {
 			products: {

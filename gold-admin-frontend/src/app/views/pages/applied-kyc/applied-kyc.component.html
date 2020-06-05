@@ -33,6 +33,9 @@
                         <span class="text-warning" *ngIf="role.customerKycClassification.kycStatusFromCce == 'pending'">
                             {{role.customerKycClassification.kycStatusFromCce | titlecase}}
                         </span>
+                        <span class="text-danger" *ngIf="role.customerKycClassification.kycStatusFromCce == 'rejected'">
+                            {{role.customerKycClassification.kycStatusFromCce | titlecase}}
+                        </span>
                     </mat-cell>
                 </ng-container>
 
@@ -83,7 +86,7 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role" class="kt-pointer">
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
-                            <button style="width: 120px;" class="apply-kyc" (click)="assign()"
+                            <button style="width: 120px;" class="apply-kyc" (click)="assign(role)"
                                 *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved' && !role.customer.customerAssignAppraiser">Assign
                                 Appraiser</button>
                         </div>
@@ -108,9 +111,7 @@
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Cutomer ID</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngIf="role.customer.customerAssignAppraiser">
-                            {{role.customer.customerAssignAppraiser.customerUniqueId | uppercase}}
-                        </span>
+                            {{role.customer.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
 

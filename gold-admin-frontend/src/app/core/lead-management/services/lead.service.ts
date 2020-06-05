@@ -12,15 +12,36 @@ export class LeadService {
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
-  toggle = new BehaviorSubject<any>('list');
-  toggle$ = this.toggle.asObservable();
-
+  applyFilter = new BehaviorSubject<any>({});
+  applyFilter$ = this.applyFilter.asObservable();
   // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
-  getAllLeads(from, to, search, stageName): Observable<any> {
-    return this.http.get<any>(`/api/customer?search=${search}&from=${from}&to=${to}&stageName=${stageName}`); // stageName=lead in queryParams
+  getAllLeads(data): Observable<any> {
+    const reqParams: any = {};
+    if (data && data.from) {
+      reqParams.from = data.from;
+    }
+    if (data && data.to) {
+      reqParams.to = data.to;
+    }
+    if (data && data.search) {
+      reqParams.search = data.search;
+    }
+    if (data && data.stageName) {
+      reqParams.stageName = data.stageName;
+    }
+    if (data && data.cityId) {
+      reqParams.cityId = data.cityId;
+    }
+    if (data && data.stateId) {
+      reqParams.stateId = data.stateId;
+    }
+    if (data && data.statusId) {
+      reqParams.statusId = data.statusId;
+    }
+    return this.http.get<any>(`/api/customer`, { params: reqParams })
   }
 
   addLead(data): Observable<any> {

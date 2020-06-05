@@ -8,11 +8,11 @@
 	// ::ng-deep.mat-tab-body-content{
 	// 	padding-top: 0em !important;
 	// }
-	::ng-deep.mat-tab-label{
-        min-width: 130px !important;
+	::ng-deep.mat-tab-label {
+		min-width: 130px !important;
 		padding: 0 !important;
-        // height: 30px !important;
-    }
+		// height: 30px !important;
+	}
 	.addmore {
 		position: absolute;
 		top: 30px;
@@ -31,4 +31,17 @@
 		align-items: center;
 		justify-content: flex-end;
 	}
+	.pos {
+		position: relative;
+		top: -18px;
+	}
+	.img-add {
+        background   : #efefef;
+        height       : 35px;
+        width        : 35px;
+        border       : transparent;
+        border-radius: 8px;
+        margin       : auto;
+        display      : block;
+    }
 }

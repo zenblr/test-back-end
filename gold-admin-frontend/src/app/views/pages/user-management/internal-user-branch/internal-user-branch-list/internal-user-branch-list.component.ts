@@ -196,8 +196,10 @@ export class InternalUserBranchListComponent implements OnInit {
 
   createData(internalBranch){
    let partner = []
+   let partnersName = []
     internalBranch.partners.forEach(element => {
       partner.push(element.id)
+      partnersName.push(element.name)
     });
     var  data = {
       name:internalBranch.name,
@@ -207,7 +209,8 @@ export class InternalUserBranchListComponent implements OnInit {
       pinCode:internalBranch.pinCode,
       userId:internalBranch.id,
       partnerId:partner,
-      multiselect:{multiSelect:partner}
+      multiselect:{multiSelect:partner},
+      partner:partnersName
     }
     return data
   }

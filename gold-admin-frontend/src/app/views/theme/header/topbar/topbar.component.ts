@@ -38,6 +38,10 @@ import { LeadService } from "../../../../core/lead-management/services/lead.serv
 import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
 import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
 import { HolidayService } from '../../../../core/holidays/services/holiday.service';
+import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
+import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
+import { PurposeService } from '../../../../core/masters/purposes/service/purpose.service';
+import { ReasonsService } from '../../../../core/masters/reasons/services/reasons.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -80,6 +84,7 @@ export class TopbarComponent implements OnInit {
 	showDropdown = false;
 	isDisabled = false;
 	button: boolean = false;
+	clear: boolean;
 
 	constructor(
 		public sharedService: SharedService,
@@ -112,7 +117,11 @@ export class TopbarComponent implements OnInit {
 		private leadService: LeadService,
 		private emailAlertService: EmailAlertService,
 		private smsAlertService: SmsAlertService,
-		private holidayService: HolidayService
+		private holidayService: HolidayService,
+		private packetLocation:PacketLocationService,
+		private ornamentsService: OrnamentsService,
+		private purposeService:PurposeService,
+		private reasonsService: ReasonsService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -205,6 +214,10 @@ export class TopbarComponent implements OnInit {
 		this.showBackButton = false;
 		this.showDropdown = false;
 		this.permissionType = "";
+		this.filterName = "";
+		this.filterWidth = "";
+		this.listType = "",
+			this.clear = false;
 	}
 
 	dataSourceHeader() {
@@ -221,6 +234,10 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add New Scheme";
 			this.type2 = "button";
 			this.permissionType = "schemeAdd";
+			this.showfilter = true;
+			this.filterName = 'scheme';
+			this.listType = 'scheme';
+			this.filterWidth = '400px';
 		}
 		if (this.path == "holidays") {
 			this.rightButton = true;
@@ -229,13 +246,26 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			// this.permissionType = "schemeAdd";
 		}
+		if (this.path == "ornaments") {
+			this.value1 = "Add Ornaments";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
+		}
+		if (this.path == "reasons") {
+			this.value1 = "Add Reason";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
+		}
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
 			this.value1 = "Add New Lead";
-			this.showfilter = false;
+			this.showfilter = true;
 			this.filterName = "leads";
 			this.filterWidth = "900px";
 			this.permissionType = "leadManagmentAdd";
+			this.listType = "state";
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
@@ -269,7 +299,9 @@ export class TopbarComponent implements OnInit {
 			this.toogle = true;
 		}
 		if (this.path == "applied-loan") {
-			this.showfilter = false;
+			this.showfilter = true;
+			this.filterWidth = "600px"
+			this.filterName = "loan"
 			this.showInput = true;
 		}
 		if (this.path == "all-loan") {
@@ -277,6 +309,12 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 		}
 		if (this.path == "applied-kyc") {
+			this.showInput = true;
+			this.showfilter = true;
+			this.filterName = "kyc";
+			this.filterWidth = "600px";
+		}
+		if (this.path == "assigned-customers") {
 			this.showInput = true;
 		}
 		if (this.path == "monthly") {
@@ -297,6 +335,14 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.value1 = "Assign Appraiser";
 			this.permissionType = "assignAppraiserAdd";
+		}
+		if (this.path == "packet-location") {
+			this.dataSourceHeader();
+			this.value1 = "Add Packet Location";
+		} 
+		if (this.path == "purposes") {
+			this.dataSourceHeader();
+			this.value1 = "Add Purpose";
 		}
 
 		if (this.path == "roles") {
@@ -360,6 +406,9 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.value1 = "Add Packets";
 			this.permissionType = "packetAdd";
+			this.showfilter = true;
+			this.filterName = 'packets';
+			this.filterWidth = '400px';
 		}
 		if (this.path == "store") {
 			this.dataSourceHeader();
@@ -466,6 +515,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "scheme") {
 			this.loanSettingService.openModal.next(true);
 		}
+		if (this.path == "ornaments") {
+			this.ornamentsService.openModal.next(true);
+		}
+		if (this.path == "reasons") {
+			this.reasonsService.openModal.next(true);
+		}
 		if (this.path == "holidays") {
 			this.holidayService.openModal.next(true);
 		}
@@ -544,6 +599,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "customers") {
 			this.customerDetailsService.exportExcel.next(true);
 		}
+		if (this.path == 'packet-location') {
+			this.packetLocation.openModal.next(true)
+		}
+		if(this.path == 'purposes'){
+			this.purposeService.openModal.next(true)
+		}
 	}
 
 	download() {
@@ -581,6 +642,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "cancel-order-details") {
 			this.cancelOrderDetailsService.applyFilter.next(data);
+		}
+		if (this.path == "lead-management") {
+			this.leadService.applyFilter.next(data);
 		}
 	}
 

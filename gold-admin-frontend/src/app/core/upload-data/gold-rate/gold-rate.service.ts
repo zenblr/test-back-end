@@ -21,7 +21,7 @@ export class GoldRateService {
     return this.http.get(`/api/gold-rate/log`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.messgage);
+        this.toastr.error(err.error.message);
         throw (err);
       })
     )
@@ -31,7 +31,7 @@ export class GoldRateService {
     return this.http.get(`/api/gold-rate`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.messgage);
+        this.toastr.error(err.error.message);
         throw (err);
       })
     )
@@ -41,7 +41,7 @@ export class GoldRateService {
     return this.http.post(`/api/gold-rate`, data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        this.toastr.error(err.error.messages);
         throw (err);
       })
     )

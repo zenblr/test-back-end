@@ -34,9 +34,9 @@
                                 </select> -->
                                 <!-- <kt-select-with-search [options]="customer"></kt-select-with-search> -->
                                 <input class="form-control" formControlName="customerUniqueId" autocomplete="off"
-                                    *ngIf="data.action !='add'" readonly>
+                                    *ngIf="controls.customerUniqueId.value" readonly>
                                 <ng-select formControlName="customerId" [items]="customers" bindLabel="customerUniqueId"
-                                    bindValue="id" *ngIf="data.action =='add'" (change)="bindCustomerName($event)"
+                                    bindValue="id" *ngIf="!controls.customerUniqueId.value" (change)="bindCustomerName($event)"
                                     placeholder="Select Customer ID"
                                     [class.isError]="controls.customerId.touched && controls.customerId.invalid">
                                     <!-- <ng-template ng-multi-label-tmp>
