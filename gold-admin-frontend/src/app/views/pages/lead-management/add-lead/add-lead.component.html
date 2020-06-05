@@ -7,7 +7,7 @@
     <div>
         <div class="kt-form">
             <form [formGroup]="leadForm">
-                <div class="kt-portlet__body">
+                <div class="kt-portlet__body lead-form">
 
                     <div class="kt-portlet__body-progress">
                         <mat-spinner [diameter]="20"></mat-spinner>
@@ -29,8 +29,7 @@
                                         {{branch.name | titlecase}}
                                     </option>
                                 </select>
-                                <mat-error
-                                    *ngIf="controls.lead.touched && controls.lead.errors?.required">
+                                <mat-error *ngIf="controls.lead.touched && controls.lead.errors?.required">
                                     Required field
                                 </mat-error>
 
@@ -47,8 +46,7 @@
 
                             <div class="col-8">
                                 <input class="form-control" formControlName="source">
-                                <mat-error
-                                    *ngIf="controls.source.touched && controls.source.errors?.required">
+                                <mat-error *ngIf="controls.source.touched && controls.source.errors?.required">
                                     Required field
                                 </mat-error>
 
@@ -324,14 +322,13 @@
                                 <!-- </mat-form-field> -->
                             </div>
                         </div>
-                        <div class="row kt-padding-t-15" *ngIf="controls.statusId.value == 5">
+                        <div class="row kt-padding-t-15" *ngIf="controls.statusId.value != 1 && showCommentBox">
                             <div class="col-4 form-label">
-                                <mat-label [ngClass]="{'mandatory':controls.statusId.value == 5}">Comment</mat-label>
+                                <mat-label class="mandatory">Comment</mat-label>
                             </div>
 
                             <div class="col-8">
-                                <textarea name="" id="" cols="3" rows="3" formControlName="comment"
-                                    class="form-control"
+                                <textarea name="" id="" cols="3" rows="3" formControlName="comment" class="form-control"
                                     [class.isError]="controls.comment.touched && controls.comment.invalid"></textarea>
                                 <mat-error *ngIf="controls.comment.errors?.required && controls.comment.touched">
                                     Required field</mat-error>
