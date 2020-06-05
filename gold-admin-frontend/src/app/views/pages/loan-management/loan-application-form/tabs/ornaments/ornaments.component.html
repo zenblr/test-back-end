@@ -251,7 +251,7 @@
                                     <span class="my-auto kt-padding-l-5 kt-pointer" *ngFor="let img of ornament.controls.purityTest.value;index as purityIndex">
                                         <img [src]="img" class="" height="35" width="35" 
                                         (click)="preview(img,idx)">
-                                        <span class="pos" (click)="removeImage('purityTest',idx,purityIndex)">x</span>
+                                        <span *ngIf="!disable" class="pos" (click)="removeImage('purityTest',idx,purityIndex)">x</span>
                                     </span>
                                 </div>
                                 <div class="col-1 text-right min-height-attach">
