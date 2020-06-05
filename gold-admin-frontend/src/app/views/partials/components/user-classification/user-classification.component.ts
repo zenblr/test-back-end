@@ -73,6 +73,9 @@ export class UserClassificationComponent implements OnInit {
   ) {
     let res = this.sharedService.getDataFromStorage()
     this.userType = res.userDetails.userTypeId;
+
+    this.getRating();
+    this.getReasonsList();
   }
 
   ngOnInit() {
@@ -82,11 +85,13 @@ export class UserClassificationComponent implements OnInit {
     } else {
       this.customerDetails = this.userDetailsService.userData;
     }
-    this.getRating();
-    this.getReasonsList();
+
     this.initForm();
-    this.dataBindingEdit();
     this.conditionalValidation();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataBindingEdit();
   }
 
   dataBindingEdit() {
@@ -100,7 +105,7 @@ export class UserClassificationComponent implements OnInit {
         return res.description == this.customerDetails.reasonFromCce
       })
       if (!temp.length) {
-        this.cceControls.reasonForOther.patchValue('other')
+        this.cceControls.reasonForOther.patchValue('Other')
       }
     }
   }
@@ -149,9 +154,9 @@ export class UserClassificationComponent implements OnInit {
     // this.custClassificationForm.get('kycRatingFromCce').valueChanges.subscribe(res => {
     if ((this.custClassificationForm.controls.kycRatingFromCce.value == '5' || this.custClassificationForm.controls.kycRatingFromCce.value == '4') && this.custClassificationForm.controls.kycStatusFromCce.value == 'approved') {
       this.custClassificationForm.get('reasonFromCce').clearValidators();
-      if (!this.editRating) {
-        this.custClassificationForm.get('reasonFromCce').patchValue('');
-      }
+      // if (!this.editRating) {
+      this.custClassificationForm.get('reasonFromCce').patchValue('');
+      // }
       this.showTextBoxCce = false;
     } else {
       this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
@@ -179,6 +184,7 @@ export class UserClassificationComponent implements OnInit {
         this.custClassificationForm.get('reasonFromBm').patchValue('');
         this.showTextBoxBM = false;
       } else {
+        this.custClassificationForm.get('reasonFromBm').reset();
         this.custClassificationForm.get('reasonFromBm').setValidators(Validators.required);
         this.showTextBoxBM = true;
       }
@@ -264,16 +270,11 @@ export class UserClassificationComponent implements OnInit {
   }
 
   patchReason() {
-    if (this.cceControls.reasonForOther.value != "other") {
-      // let arr = this.reasons.filter(res => {
-      //   return res.id == this.cceControls.reasonForOther.value;
-      // })
-      // console.log(arr[0].description)
+    if (this.cceControls.reasonForOther.value != "Other") {
       this.cceControls.reasonFromCce.patchValue(this.cceControls.reasonForOther.value)
 
     } else {
       this.cceControls.reasonFromCce.reset()
-      this.cceControls.reasonFromCce.patchValue('')
     }
   }
 }
