@@ -399,6 +399,8 @@ export class MenuConfig {
 							title: "Product",
 							root: true,
 							icon: "flaticon2-open-box",
+							bullet: 'dot',
+
 							permission: !(this.permissionsArr.includes('productView') ||
 								this.permissionsArr.includes('categoryView') ||
 								this.permissionsArr.includes('subCategoryView') ||
@@ -455,6 +457,8 @@ export class MenuConfig {
 							title: "Config Details",
 							root: true,
 							icon: "flaticon2-console",
+							bullet: 'dot',
+
 							permission: !(this.permissionsArr.includes('walletView') || this.permissionsArr.includes('adminLogView')),
 
 							submenu: [
@@ -474,6 +478,7 @@ export class MenuConfig {
 							title: "Order Management",
 							root: true,
 							icon: "flaticon2-shopping-cart",
+							bullet: 'dot',
 							permission: !(this.permissionsArr.includes('orderView') ||
 								this.permissionsArr.includes('EMIDetailsView') ||
 								this.permissionsArr.includes('refundDetailsView') ||

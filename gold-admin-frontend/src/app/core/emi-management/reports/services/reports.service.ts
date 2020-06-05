@@ -136,7 +136,7 @@ export class ReportsService {
 	getProductReport(event?: any): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/products/merchant-product-price-report`,
+				`http://173.249.49.7:9120/api/products/get-product-report`,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(

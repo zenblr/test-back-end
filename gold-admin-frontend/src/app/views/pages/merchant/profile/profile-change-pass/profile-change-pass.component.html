@@ -27,7 +27,8 @@
                             <div class="col-7">
                                 <input class="form-control" formControlName="newPassword" type="text"
                                     [class.isError]="controls.newPassword.touched && controls.newPassword.invalid">
-                                <mat-error *ngIf="controls.newPassword.errors?.required">
+                                <mat-error
+                                    *ngIf="controls.newPassword.errors?.required && controls.newPassword.touched">
                                     <strong>Enter New Password</strong>
                                 </mat-error>
                                 <mat-error *ngIf="controls.newPassword.errors?.minlength">
