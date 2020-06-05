@@ -111,9 +111,9 @@ export class AppliedKycComponent implements OnInit {
     ).subscribe();
   }
 
-  assign() {
+  assign(item) {
     // this.router.navigate(['/user-management/redirect-assign-appraiser'])
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add' }, width: '500px' });
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', customer: item.customer }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

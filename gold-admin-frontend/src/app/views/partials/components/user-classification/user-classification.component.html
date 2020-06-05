@@ -165,7 +165,18 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div *ngIf="showTextBoxBM && userType == 6">
+                        <div class="row kt-padding-l-10">
+                            <div class="col-3 form-label">
+                                <label for="" class="kt-padding-l-10">Reason by B.M -</label> 
+                            </div>
+                            <div class="col-8 form-label">
+                                {{cceControls.reasonFromBm.value}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
                 <div *ngIf="showTextBoxCce  && userType == 6" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <div class="row">
@@ -175,7 +186,7 @@
                         <div class="col-8">
                             <select class="form-control" formControlName="reasonForOther"
                                 placeholder="reason for Incomplete" (change)="patchReason()">
-                                <option value=null selected disabled>Choose a reason </option>
+                                <option value='' selected disabled>Choose a reason </option>
                                 <option [value]="reason.description" *ngFor="let reason of reasons">
                                     {{reason.description}}
                                 </option>

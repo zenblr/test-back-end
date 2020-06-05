@@ -53,7 +53,7 @@ export class AssignedCustomersComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getHolidays(1, 25, this.searchValue);
+    this.dataSource.getCustomerList(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -75,8 +75,7 @@ export class AssignedCustomersComponent implements OnInit {
   }
 
   applyLoan(loan) {
-    this.router.navigate(['/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
-
+    this.router.navigate(['/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customerUniqueId } })
   }
 
 }

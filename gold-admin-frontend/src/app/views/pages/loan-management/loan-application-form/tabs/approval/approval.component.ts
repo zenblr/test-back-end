@@ -60,7 +60,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.approvalForm = this.fb.group({
       applicationFormForAppraiser: [false],
       goldValuationForAppraiser: [false],
-      loanStatusForAppraiser: ['', Validators.required],
+      loanStatusForAppraiser: [, Validators.required],
       commentByAppraiser: [''],
       applicationFormForBM: [false],
       goldValuationForBM: [false],
@@ -120,15 +120,25 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   statusAppraiser() {
+
     if (this.controls.loanStatusForAppraiser.value != 'approved') {
       this.controls.commentByAppraiser.setValidators(Validators.required);
       this.controls.commentByAppraiser.updateValueAndValidity()
     } else {
-      this.controls.commentByAppraiser.reset()
       this.controls.commentByAppraiser.clearValidators();
       this.controls.commentByAppraiser.updateValueAndValidity();
       this.controls.commentByAppraiser.markAsUntouched()
     }
+  }
+
+  resetAppraiser(){
+    this.controls.commentByAppraiser.reset()
+
+  }
+
+  resetBM(){
+    this.controls.commentByBM.reset()
+
   }
   statusBM() {
     if (this.controls.loanStatusForBM.value != 'approved') {

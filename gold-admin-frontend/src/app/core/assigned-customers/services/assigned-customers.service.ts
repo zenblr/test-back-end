@@ -14,6 +14,6 @@ export class AssignedCustomersService {
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getCustomerList(from, to, search): Observable<any> {
-    return this.http.get<any>(`/api/customer?search=${search}&from=${from}&to=${to}`);
+    return this.http.get<any>(`/api/loan-process/assign-appraiser-customer?search=${search}&from=${from}&to=${to}`);
   }
 }

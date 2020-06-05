@@ -5,12 +5,12 @@
 
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.customerUniqueId}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerName">
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.customer.firstName | titlecase}}{{item.customer.lastName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="newLoan">

@@ -44,7 +44,11 @@ export class AddAppraiserComponent implements OnInit {
   setForm() {
     console.log(this.data)
     if (this.data.action == 'add') {
-      this.title = 'Add Appraiser'
+      this.title = 'Assign Appraiser'
+      if (this.data.customer) {
+        this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
+        this.appraiserForm.controls.customerUniqueId.patchValue(this.data.customer.customerUniqueId)
+      }
     } else if (this.data.action == 'edit') {
       this.title = 'Edit Appraiser'
 
