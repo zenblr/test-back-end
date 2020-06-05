@@ -3,6 +3,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
 import { ExcelService, PdfService } from "../../../../_base/crud";
+import { API_ENDPOINT } from '../../../../../app.constant';
 
 @Injectable({
 	providedIn: "root",
@@ -254,5 +255,13 @@ export class OrderDetailsService {
 					return null;
 				})
 			);
+	}
+
+	getCancelOrderPrice(orderId): Observable<any> {
+		return this.http.get(API_ENDPOINT + 'api/cancel-order/admin-cancel-order-price/' + orderId)
+	}
+
+	updateCancelOrder(id, data): Observable<any> {
+		return this.http.put(API_ENDPOINT + 'api/cancel-order/admin-cancel-order/' + id, data)
 	}
 }

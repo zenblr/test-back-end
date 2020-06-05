@@ -20,11 +20,13 @@ import {
 	RefundDetailsModel,
 	RefundDetailsService,
 } from "../../../../../../core/emi-management/order-management";
+import { DatePipe } from '@angular/common';
 
 @Component({
 	selector: "kt-refund-details-edit",
 	templateUrl: "./refund-details-edit.component.html",
 	styleUrls: ["./refund-details-edit.component.scss"],
+	providers: [DatePipe]
 })
 export class RefundDetailsEditComponent implements OnInit {
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -46,7 +48,8 @@ export class RefundDetailsEditComponent implements OnInit {
 		private sharedService: SharedService,
 		private route: ActivatedRoute,
 		private toast: ToastrService,
-		private router: Router
+		private router: Router,
+		private datePipe: DatePipe
 	) { }
 
 	ngOnInit() {
@@ -114,7 +117,7 @@ export class RefundDetailsEditComponent implements OnInit {
 			cancelFees: this.refundData.cancelOrder.cancelationFees,
 			totalCancelCharge: this.refundData.cancelOrder.cancellationCharges,
 			amtPayable: this.refundData.cancelOrder.payableToCustomer,
-			cancelDate: this.refundData.cancelOrder.cancelDate,
+			cancelDate: this.datePipe.transform(new Date(this.refundData.cancelOrder.cancelDate), 'MMM d, y hh:mm a'),
 			bankName: this.refundData.customerBankName,
 			acNumber: this.refundData.customerAccountNo,
 			ifscCode: this.refundData.ifscCode,
