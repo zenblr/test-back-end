@@ -75,7 +75,7 @@
 
                 </ng-select>
 
-               
+
               </div>
               <div class="col">
                 <label style="visibility: hidden;">nostatus</label>
@@ -95,25 +95,20 @@
           </form>
         </div>
 
-        <!-- kyc  && loan -->
+        <!-- kyc  -->
         <div class="kt-portlet__body" *ngIf="filterName == 'kyc'">
           <form class="kt-form" [formGroup]="filterForm">
             <div class="row">
-              <div class="col" *ngIf="filterName == 'kyc'">
+              <div class="col">
                 <label>By CCE Status</label>
-                <ng-select [items]="states" bindLabel="name" placeholder="CCE Status" (change)="getCities($event)"
-                  formControlName="ccStatus" >
-                </ng-select>
+                <kt-multi-select-search formControlName="cceStatus" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'CCE Status'">
+                </kt-multi-select-search>
               </div>
-              <div class="col" *ngIf="filterName == 'loan'">
-                <label>By Appraiser Status</label>
-                <ng-select [items]="states" bindLabel="name" placeholder="Select State" (change)="getCities($event)"
-                  formControlName="appraiserStatus">
-                </ng-select>
-              </div>
+
               <div class="col">
                 <label>By KYC Status</label>
-                <kt-multi-select-search formControlName="BMStatus" [items]="statusList" [multiple]="true"
+                <kt-multi-select-search formControlName="kycStatus" [items]="approvalStatus.bm" [multiple]="true"
                   [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'KYC Status'"></kt-multi-select-search>
               </div>
               <div class="col-2 d-flex align-items-end">
@@ -123,18 +118,20 @@
             </div>
           </form>
         </div>
+
+        <!-- loan -->
         <div class="kt-portlet__body" *ngIf="filterName == 'loan'">
           <form class="kt-form" [formGroup]="filterForm">
             <div class="row">
               <div class="col">
                 <label>By Appraiser Status</label>
-                <ng-select [items]="states" bindLabel="name" placeholder="Select State" (change)="getCities($event)"
-                  formControlName="appraiserStatus">
-                </ng-select>
+                <kt-multi-select-search formControlName="appraiserStatus" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Appraiser Status'">
+                </kt-multi-select-search>
               </div>
               <div class="col">
                 <label>By Loan Status</label>
-                <kt-multi-select-search formControlName="BMStatus" [items]="statusList" [multiple]="true"
+                <kt-multi-select-search formControlName="loanStatus" [items]="approvalStatus.bm" [multiple]="true"
                   [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Loan Status'"></kt-multi-select-search>
               </div>
               <div class="col-2 d-flex align-items-end">
@@ -152,7 +149,7 @@
             <div class="row">
               <div class="col-9">
                 <label>By Packet Assigned</label>
-                <select placeholder="Packet Assigned" class="form-control"  formControlName="scheme">
+                <select placeholder="Packet Assigned" class="form-control" formControlName="scheme">
                 </select>
               </div>
               <div class="col-3 d-flex align-items-end">
@@ -163,22 +160,24 @@
           </form>
         </div>
 
-<!-- scheme -->
-<div class="kt-portlet__body" *ngIf="filterName == 'scheme'">
-  <form class="kt-form" [formGroup]="filterForm">
-    <div class="row">
-      <div class="col-9">
-        <label>By Scheme Type</label>
-        <select placeholder="Scheme Type" class="form-control"  formControlName="scheme">
-        </select>
-      </div>
-      <div class="col-3 d-flex align-items-end">
-        <label></label>
-        <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
-      </div>
-    </div>
-  </form>
-</div>
+        <!-- scheme -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'scheme'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>By Scheme Type</label>
+                <select placeholder="Scheme Type" class="form-control" formControlName="scheme">
+                  <option value="active">Active</option>
+                  <option value="inaAtive">InActive</option>
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
 
         <!-- EMI Details -->
         <div class="kt-portlet__body" *ngIf="filterName =='emiDetails'">

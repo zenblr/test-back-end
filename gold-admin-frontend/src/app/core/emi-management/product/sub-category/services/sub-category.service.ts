@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { API_ENDPOINT } from '../../../../../app.constant';
 @Injectable({
 	providedIn: 'root'
 })
@@ -14,30 +14,30 @@ export class SubCategoryService {
 	constructor(private http: HttpClient) { }
 
 	getAllSubCategories(from?, to?, search?): Observable<any> {
-		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category?search=${search}&from=${from}&to=${to}`);
+		return this.http.get<any>(API_ENDPOINT + `api/sub-category?search=${search}&from=${from}&to=${to}`);
 	}
 
 	addSubCategory(data): Observable<any> {
-		return this.http.post<any>(`http://173.249.49.7:9120/api/sub-category`, data);
+		return this.http.post<any>(API_ENDPOINT + `api/sub-category`, data);
 	}
 
 	editSubCategory(id, data): Observable<any> {
-		return this.http.put<any>(`http://173.249.49.7:9120/api/sub-category/` + id, data);
+		return this.http.put<any>(API_ENDPOINT + `api/sub-category/` + id, data);
 	}
 
 	deleteSubCategory(id): Observable<any> {
-		return this.http.delete<any>(`http://173.249.49.7:9120/api/sub-category/` + id)
+		return this.http.delete<any>(API_ENDPOINT + `api/sub-category/` + id)
 	}
 
 	getSingleSubCategory(id): Observable<any> {
-		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category/` + id);
+		return this.http.get<any>(API_ENDPOINT + `api/sub-category/` + id);
 	}
 
 	getAllCategory(): Observable<any> {
-		return this.http.get<any>(`http://173.249.49.7:9120/api/category/all-category`);
+		return this.http.get<any>(API_ENDPOINT + `api/category/all-category`);
 	}
 
 	getAllSubCategory(): Observable<any> {
-		return this.http.get<any>(`http://173.249.49.7:9120/api/sub-category/all-subcategory`);
+		return this.http.get<any>(API_ENDPOINT + `api/sub-category/all-subcategory`);
 	}
 }

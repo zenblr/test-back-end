@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AppliedKycService } from '../../../../../core/applied-kyc/services/applied-kyc.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
+import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 
 @Component({
   selector: 'kt-user-review',
@@ -74,7 +75,7 @@ export class UserReviewComponent implements OnInit {
   //       "occupation": { id: 1, name: 'Business' }, // occupation.name
   //       "identityType": { id: 1, name: "passport" },  //identityType.name
   //       "identityProof": [
-  //         "http://173.249.49.7:8000/uploads/images/1588052018310.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
+  //         "http://173.249.49.7:8000/uploads/images/1588052173393.png", "http://173.249.49.7:8000/uploads/images/1588052018310.png"
   //       ],
   //       "identityProofNumber": "asd432asd",
   //       "spouseName": "asd",
@@ -517,5 +518,25 @@ export class UserReviewComponent implements OnInit {
         })
       }
     });
+  }
+
+  previewImage(value) {
+    // let concatArray = [];
+    // concatArray
+    // .push(this.data.customerKycReview.customerKycPersonal.profileImage, 
+    //   this.data.customerKycReview.customerKycPersonal.signatureProof)
+    // const temp = concatArray
+    // .concat(this.data.customerKycReview.customerKycPersonal.identityProof,
+    //   this.data.customerKycReview.customerKycAddress[0].addressProof,
+    //   this.data.customerKycReview.customerKycAddress[1].addressProof)
+
+    // let index = temp.indexOf(value)
+    // this.dialog.open(ImagePreviewDialogComponent, {
+    //   data: {
+    //     images: temp,
+    //     index: index
+    //   },
+    //   width: "auto"
+    // })
   }
 }

@@ -59,6 +59,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	merchantList = [];
 	states = [];
 	cities = [];
+	approvalStatus: any = [];
 	permissions: any;
 
 	constructor(
@@ -137,6 +138,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 						case 'state':
 							this.getStates();
 							break;
+						case 'approval':
+							this.status();
+							break;
 					}
 				}
 			}
@@ -159,10 +163,11 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			states: [''],
 			cities: [''],
 			appraiserStatus: [''],
-			BMStatus: [''],
-			ccStatus:[''],
-			packets:[''],
-			scheme:['']
+			loanStatus: [''],
+			kycStatus: [''],
+			cceStatus: [''],
+			packets: [''],
+			scheme: ['']
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -239,13 +244,25 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.appraiserStatus = controls['appraiserStatus'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.appraiserStatus = controls['appraiserStatus'].value.multiSelect;
 			}
-			if (controls['ccStatus'].value && (controls['ccStatus'].value.multiSelect && controls['ccStatus'].value.multiSelect.length)) {
-				this.filterObject.data.ccStatus = controls['ccStatus'].value.multiSelect.map(e => e.id).toString();
-				this.filterObject.list.ccStatus = controls['ccStatus'].value.multiSelect;
+			if (controls['cceStatus'].value && (controls['cceStatus'].value.multiSelect && controls['cceStatus'].value.multiSelect.length)) {
+				this.filterObject.data.cceStatus = controls['cceStatus'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.list.cceStatus = controls['cceStatus'].value.multiSelect;
 			}
-			if (controls['BMStatus'].value && (controls['BMStatus'].value.multiSelect && controls['BMStatus'].value.multiSelect.length)) {
-				this.filterObject.data.BMStatus = controls['BMStatus'].value.multiSelect.map(e => e.id).toString();
-				this.filterObject.list.BMStatus = controls['BMStatus'].value.multiSelect;
+			if (controls['kycStatus'].value && (controls['kycStatus'].value.multiSelect && controls['kycStatus'].value.multiSelect.length)) {
+				this.filterObject.data.kycStatus = controls['kycStatus'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.list.kycStatus = controls['kycStatus'].value.multiSelect;
+			}
+			if (controls['appraiserStatus'].value && (controls['appraiserStatus'].value.multiSelect && controls['appraiserStatus'].value.multiSelect.length)) {
+				this.filterObject.data.appraiserStatus = controls['appraiserStatus'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.list.appraiserStatus = controls['appraiserStatus'].value.multiSelect;
+			}
+			if (controls['loanStatus'].value && (controls['loanStatus'].value.multiSelect && controls['loanStatus'].value.multiSelect.length)) {
+				this.filterObject.data.loanStatus = controls['loanStatus'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.list.loanStatus = controls['loanStatus'].value.multiSelect;
+			}
+			if (controls['scheme'].value) {
+				this.filterObject.data.scheme = controls['scheme'].value
+				this.filterObject.list.scheme = controls['scheme'].value;
 			}
 			return this.filterObject;
 		}
@@ -301,6 +318,18 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'cities':
 				this.controls['cities'].value.multiSelect.splice(index, 1);
 				break;
+			case 'cceStatus':
+				this.controls['cceStatus'].value.multiSelect.splice(index, 1);
+				break;
+			case 'kycStatus':
+				this.controls['kycStatus'].value.multiSelect.splice(index, 1);
+				break;
+			case 'appraiserStatus':
+				this.controls['appraiserStatus'].value.multiSelect.splice(index, 1);
+				break;
+			case 'loanStatus':
+				this.controls['loanStatus'].value.multiSelect.splice(index, 1);
+				break;
 			default:
 				break;
 		}
@@ -310,6 +339,11 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			status: this.filterForm.controls['status'].value,
 			paymentType: this.filterForm.controls['paymentType'].value,
 			merchant: this.filterForm.controls['merchant'].value,
+			cities: this.filterForm.controls['cities'].value,
+			appraiserStatus: this.filterForm.controls['appraiserStatus'].value,
+			loanStatus: this.filterForm.controls['loanStatus'].value,
+			kycStatus: this.filterForm.controls['kycStatus'].value,
+			cceStatus: this.filterForm.controls['cceStatus'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
@@ -342,6 +376,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	getStates() {
 		this.sharedService.getStates().subscribe((res) => {
 			this.states = res.message;
+		});
+	}
+
+	status() {
+		this.sharedService.getStatus().subscribe((res) => {
+			this.approvalStatus = res;
 		});
 	}
 

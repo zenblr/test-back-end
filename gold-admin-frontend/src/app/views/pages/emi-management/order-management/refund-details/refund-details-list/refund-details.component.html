@@ -114,13 +114,24 @@
 						}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="totalCancelCharge">
-                    <mat-header-cell *matHeaderCellDef class="align-right">Total Cancellation Charges
+                <ng-container matColumnDef="cancelCharge">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Cancellation Charges
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
                         {{
 							element?.cancelOrder?.cancellationCharges
 								? element?.cancelOrder?.cancellationCharges
+								: "-"
+						}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="totalCancelCharge">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Total Cancellation Charges
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{
+							element?.cancelOrder?.totalCancelationCharges
+								? element?.cancelOrder?.totalCancelationCharges
 								: "-"
 						}}
                     </mat-cell>

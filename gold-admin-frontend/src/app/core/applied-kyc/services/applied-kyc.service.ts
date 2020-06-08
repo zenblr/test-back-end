@@ -13,10 +13,30 @@ export class AppliedKycService {
   userData = new BehaviorSubject(undefined);
   userData$ = this.userData.asObservable();
 
+  applyFilter = new BehaviorSubject<any>({});
+  applyFilter$ = this.applyFilter.asObservable();
+
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
-  getAllKyc(from, to, search, kycStatus, cceRating, bmRating): Observable<any> {
-    return this.http.get<any>(`/api/kyc/applied-kyc?search=${search}&from=${from}&to=${to}&kycStatus=${kycStatus}&cceRating=${cceRating}&bmRating=${bmRating}`).pipe(
+  getAllKyc(data): Observable<any> {
+    const reqParams: any = {};
+    if (data && data.from) {
+      reqParams.from = data.from;
+    }
+    if (data && data.to) {
+      reqParams.to = data.to;
+    }
+    if (data && data.search) {
+      reqParams.search = data.search;
+    }
+    if (data && data.kycStatus) {
+      reqParams.kycStatus = data.kycStatus;
+    }
+    if (data && data.cceStatus) {
+      reqParams.cceStatus = data.cceStatus;
+    }
+
+    return this.http.get<any>(`/api/kyc/applied-kyc`, { params: reqParams }).pipe(
       map(res => res),
       catchError(err => {
         this.toastr.error(err.error.message);

@@ -34,7 +34,7 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false, true, true, true, true, true];
+  disabled = [false, true, true, true, true, false];
   loanId: any;
   finalLoanAmt: any;
   constructor(

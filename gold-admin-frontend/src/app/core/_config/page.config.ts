@@ -18,6 +18,9 @@ export class PageConfig {
 			},
 		},
 		masters: {
+			"lead-source": {
+				page: { title: "Lead Source", desc: "" },
+			},
 			reasons: {
 				page: { title: "Reasons", desc: "" },
 			},
@@ -155,6 +158,11 @@ export class PageConfig {
 				'edit-order-details': {
 					id: {
 						page: { title: "Order Details", desc: "" },
+					},
+				},
+				'cancel-order': {
+					id: {
+						page: { title: "Cancel Order", desc: "" },
 					},
 				},
 			},
