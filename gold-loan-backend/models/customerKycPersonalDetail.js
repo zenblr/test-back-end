@@ -48,6 +48,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_card_number',
             allowNull: false
         },
+        age:{
+            type: DataTypes.STRING,
+            field: 'age'
+        },
         gender: {
             type: DataTypes.ENUM,
             field: 'gender',

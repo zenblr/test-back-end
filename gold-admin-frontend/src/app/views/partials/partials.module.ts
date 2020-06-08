@@ -71,7 +71,6 @@ import { UplodDataImageComponent } from "./components/uplod-data-image/uplod-dat
 import { ImagePreviewDialogComponent } from "./components/image-preview-dialog/image-preview-dialog.component";
 import { UserClassificationComponent } from "./components/user-classification/user-classification.component";
 import { UplodPreviewImageComponent } from "./components/uplod-preview-image/uplod-preview-image.component";
-import { SelectWithSearchComponent } from "./components/select-with-search/select-with-search.component";
 
 import { NgSelectModule } from "@ng-select/ng-select";
 import { UserReviewComponent } from "../pages/admin/kyc-settings/tabs/user-review/user-review.component";
@@ -140,8 +139,6 @@ import { WebcamDialogComponent } from '../pages/admin/kyc-settings/webcam-dialog
 
 		UplodPreviewImageComponent,
 
-		SelectWithSearchComponent,
-
 		UserReviewComponent,
 		AddAppraiserComponent,
 		WebcamDialogComponent,
@@ -201,7 +198,6 @@ import { WebcamDialogComponent } from '../pages/admin/kyc-settings/webcam-dialog
 		LoanSchemeComponent,
 		UserClassificationComponent,
 		UplodPreviewImageComponent,
-		SelectWithSearchComponent,
 		UserReviewComponent,
 		FilteredDataComponent,
 		AddAppraiserComponent,

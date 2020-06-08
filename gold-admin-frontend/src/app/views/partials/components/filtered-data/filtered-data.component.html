@@ -103,6 +103,36 @@
                             </div>
                         </div>
                     </div>
+                    <div class="filtered-data" *ngIf="filteredList?.states">
+                        <div class="filtered-title">By State</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span>{{filteredList?.states?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('states')">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filtered-data" *ngIf="filteredList?.cities?.length">
+                        <div class="filtered-title">By City</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.cities; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('cities', i)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filtered-data" *ngIf="filteredList?.status?.length">
+                        <div class="filtered-title">By City</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.status; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('status', i)">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </kt-portlet-body>

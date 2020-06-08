@@ -2,9 +2,10 @@ import { Component, OnInit, EventEmitter, Output, OnChanges, Input, ChangeDetect
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map } from 'rxjs/operators';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
+import { catchError, map, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { PurposeService } from '../../../../../../../core/masters/purposes/service/purpose.service';
 
 @Component({
   selector: 'kt-basic-details',
@@ -17,6 +18,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
 
   customerDetail;
   basicForm: FormGroup;
+  purpose: any[] = []
   // @Output() basicFormEmit: EventEmitter<any> = new EventEmitter();
   @Input() disable
   @Input() details;
@@ -37,9 +39,10 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     private rout: ActivatedRoute,
     public loanApplicationFormService: LoanApplicationFormService,
     public toast: ToastrService,
+    public purposeService: PurposeService,
   ) {
     this.initForm()
-
+    this.getPurposeInfo()
   }
 
   ngAfterViewInit() {
@@ -68,6 +71,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.basicForm.controls.mobileNumber.patchValue(this.details.mobileNumber)
         this.basicForm.controls.panCardNumber.patchValue(this.details.panCardNumber)
         this.basicForm.controls.customerId.patchValue(this.details.id)
+        this.basicForm.controls.customerUniqueId.enable()
       } else if (changes.action.currentValue == 'edit') {
 
         this.controls.customerId.patchValue(changes.details.currentValue.customerId)
@@ -75,17 +79,27 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.currentDate = new Date(changes.details.currentValue.loanPersonalDetail.startDate)
         this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
         // this.basicFormEmit.emit(this.basicForm)
+        this.basicForm.controls.loanId.patchValue(changes.details.currentValue.id)
         this.basicForm.disable()
+        this.basicForm.controls.purpose.enable()
+
         this.ref.detectChanges()
       }
-    }
-    if(changes.action && changes.action.currentValue == 'add'){
-      this.basicForm.controls.customerUniqueId.enable()
     }
     if (changes.disable && changes.disable.currentValue) {
       this.basicForm.disable()
       this.ref.detectChanges()
     }
+  }
+
+
+  getPurposeInfo() {
+    this.purposeService.getAllPurpose(1, -1, '').subscribe(
+      res => {
+        this.purpose = res.data;
+        this.ref.detectChanges()
+      }
+    )
   }
 
 
@@ -99,7 +113,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             stage = Number(stage) - 1;
             this.next.emit(stage)
             this.laonId.emit(res.loanId)
-            if (stage > 1) {
+            if (stage >= 1) {
               this.apiHit.emit(res.loanId)
             }
             if (res.totalEligibleAmt)
@@ -125,11 +139,13 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   initForm() {
     this.basicForm = this.fb.group({
       customerUniqueId: [, [Validators.required, Validators.minLength(8)]],
-      mobileNumber: [''],
-      panCardNumber: [''],
+      mobileNumber: ['', Validators.required],
+      panCardNumber: ['', Validators.required],
       startDate: [this.currentDate],
-      customerId: [],
-      kycStatus: [],
+      customerId: [, Validators.required],
+      kycStatus: [, Validators.required],
+      purpose: ["", Validators.required],
+      loanId: []
     })
   }
 
@@ -142,6 +158,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.markAllAsTouched();
       return
     }
+    this.basicForm.enable()
     this.loanApplicationFormService.basicSubmit(this.basicForm.value).pipe(
       map(res => {
         let stage = res.loanCurrentStage
@@ -151,6 +168,11 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       }), catchError(err => {
         this.toast.error(err.error.message)
         throw err
+      }), finalize(() => {
+        if (this.action == 'edit') {
+          this.basicForm.disable()
+          this.basicForm.controls.purpose.enable()
+        }
       })).subscribe()
   }
 

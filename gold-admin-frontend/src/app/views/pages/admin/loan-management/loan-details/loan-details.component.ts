@@ -100,6 +100,7 @@ export class LoanDetailsComponent implements OnInit {
   new(loan) {
     this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
   }
+  
   packageImageUpload(loan) {
     this.router.navigate(['/admin/loan-management/package-image-upload', loan.id])
   }

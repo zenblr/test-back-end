@@ -19,7 +19,7 @@ import { AddAppraiserComponent } from '../user-management/assign-appraiser/add-a
 export class AppliedKycComponent implements OnInit {
 
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'pan', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser', 'appraiserName', 'customerId'];
+  displayedColumns = ['fullName', 'pan', 'customerId', 'appraiserName', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -111,9 +111,9 @@ export class AppliedKycComponent implements OnInit {
     ).subscribe();
   }
 
-  assign() {
+  assign(item) {
     // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add' }, width: '500px' });
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', customer: item.customer }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -122,7 +122,7 @@ export class AppliedKycComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'edit', appraiser: item.customer.customerAssignAppraiser }, width: '500px' });
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'edit', appraiser: item.customer.customerAssignAppraiser, customer: item.customer }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

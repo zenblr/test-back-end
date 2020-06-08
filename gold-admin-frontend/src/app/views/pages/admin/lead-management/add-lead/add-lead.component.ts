@@ -38,6 +38,7 @@ export class AddLeadComponent implements OnInit {
   title: string;
   branches = []
   details: any;
+  showCommentBox = false;
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -100,7 +101,9 @@ export class AddLeadComponent implements OnInit {
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
-      comment:[''],
+      comment: [''],
+      lead: [''],
+      source: [''],
     });
     this.getCities()
   }
@@ -110,11 +113,11 @@ export class AddLeadComponent implements OnInit {
       this.getLeadById(this.data['id']);
       this.modalTitle = 'Edit Lead'
       this.viewOnly = true;
-    }  else if (this.data.action == 'view'){
+    } else if (this.data.action == 'view') {
       this.getLeadById(this.data['id']);
       this.modalTitle = 'View Lead'
       this.leadForm.disable()
-    }else {
+    } else {
       this.modalTitle = 'Add New Lead'
     }
   }
@@ -175,7 +178,7 @@ export class AddLeadComponent implements OnInit {
     });
   }
 
-  
+
 
   verifyOTP() {
     const params = {
@@ -277,14 +280,16 @@ export class AddLeadComponent implements OnInit {
 
   }
 
-  commentBox(){
-    if(this.controls.statusId.value == 5){
+  commentBox() {
+    if (this.controls.statusId.value == 5 || this.controls.statusId.value == 2) {
       this.controls.comment.setValidators(Validators.required)
       this.controls.comment.updateValueAndValidity()
-    }else{
+      this.showCommentBox = true
+    } else {
       this.controls.comment.clearValidators()
       this.controls.comment.markAsUntouched()
       this.controls.comment.updateValueAndValidity()
+      this.showCommentBox = false
     }
   }
 

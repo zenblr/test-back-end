@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChildren, QueryList, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../../core/shared/services/shared.service';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
@@ -10,6 +10,7 @@ import { KaratDetailsService } from '../../../../../../../core/loan-setting/kara
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
+import { OrnamentsService } from '../../../../../../../core/masters/ornaments/services/ornaments.service';
 
 
 @Component({
@@ -27,7 +28,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() action
   // @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
-  @Output () totalAmt:EventEmitter<any> = new EventEmitter();
+  @Output() totalAmt: EventEmitter<any> = new EventEmitter();
   @Input() loanId
 
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
@@ -56,7 +57,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public goldRateService: GoldRateService,
     public karatService: KaratDetailsService,
     public router: Router,
-    public loanApplicationFormService: LoanApplicationFormService
+    public loanApplicationFormService: LoanApplicationFormService,
+    public ornamentTypeService: OrnamentsService,
   ) {
 
   }
@@ -81,7 +83,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   getOrnamentType() {
-    this.loanApplicationFormService.getOrnamentType().pipe(
+    this.ornamentTypeService.getOrnamentType(1, -1, '').pipe(
       map(res => {
         console.log(res);
         this.ornamentType = res.data;
@@ -136,7 +138,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       group.controls.currentLtvAmount.patchValue(this.goldRate)
     })
 
-    this.ornamentsForm.valueChanges.subscribe(()=>{
+    this.ornamentsForm.valueChanges.subscribe(() => {
       if (this.ornamentsForm.valid) {
         this.totalAmount = 0;
         this.OrnamentsData.value.forEach(element => {
@@ -146,7 +148,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.totalAmt.emit(this.totalAmount)
       }
     })
-    
+
   }
   get OrnamentsData() {
     if (this.ornamentsForm)
@@ -289,18 +291,19 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         break;
       case 'purityTest':
         let temp = []
-        // if (controls.controls.purityTest.value.length > 0)
-        //   temp = controls.controls.purityTest.value
-        temp.push(url)
+        if (controls.controls.purityTest.value.length > 0)
+          temp = controls.controls.purityTest.value
+
+        if (!temp.includes(url))
+          
         if (typeof url == "object") {
-          this.images[index].purity = url[0]
+          temp = url
         } else {
-          this.images[index].purity = url
+          temp.push(url)
         }
-        controls.controls.purityTest.patchValue([this.images[index].purity])
+        this.images[index].purity = temp
+        controls.controls.purityTest.patchValue(this.images[index].purity)
         this.purity.nativeElement.value = ''
-
-
         break;
 
       case 'ornamentImage':
@@ -314,7 +317,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-  removeImage(key, index, value) {
+  removeImage(key, index, purityIndex) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
     switch (key) {
       case 'withOrnamentWeight':
@@ -337,9 +340,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.images[index].stoneTouch = ''
 
         break;
-      case 'purity':
-        controls.controls.purityTest.patchValue([])
-        this.images[index].purityTest = ''
+      case 'purityTest':
+        let temp = controls.controls.purityTest.value
+        temp.splice(purityIndex, 1)
+        controls.controls.purityTest.patchValue(temp)
+        this.images[index].purity = temp
 
         break;
       case 'ornamentImage':
@@ -353,10 +358,22 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   preview(value, formIndex) {
     let filterImage = []
     filterImage = Object.values(this.images[formIndex])
+
     var temp = []
+    let indexof = filterImage.findIndex(idx => {
+      return typeof idx == 'object'
+    })
+    temp = filterImage[indexof]
+    filterImage.splice(indexof, 1)
+    Array.prototype.push.apply(filterImage, temp)
+
+
     temp = filterImage.filter(el => {
       return el != ''
     })
+    if (typeof value == 'object') {
+      value = value[0]
+    }
     let index = temp.indexOf(value)
     this.dilaog.open(ImagePreviewDialogComponent, {
       data: {
@@ -390,18 +407,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value,this.totalAmount,this.loanId).pipe(
-      map(res=>{
+    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.loanId).pipe(
+      map(res => {
         let array = this.OrnamentsData.controls
         for (let index = 0; index < array.length; index++) {
-        const controls = this.OrnamentsData.at(index) as FormGroup;
-        controls.controls.id.patchValue(res.ornaments[index].id)
+          const controls = this.OrnamentsData.at(index) as FormGroup;
+          controls.controls.id.patchValue(res.ornaments[index].id)
         }
         this.next.emit(3)
       })
     ).subscribe()
-    console.log(this.ornamentsForm.value,this.totalAmount)
-    
+    console.log(this.ornamentsForm.value, this.totalAmount)
+
   }
 
 }

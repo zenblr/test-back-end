@@ -87,16 +87,14 @@ export class ReportsComponent implements OnInit {
 	formInitialize() {
 		this.reportForm = this.fb.group({
 			reportType: ["", Validators.required],
-			startDate: ["", Validators.required],
-			endDate: ["", Validators.required],
+			startDate: [""],
+			endDate: [""],
 			merchantId: [""],
 			statusId: [""],
 		});
 		this.setReportTypeValidators();
 
-		this.reportForm.valueChanges.subscribe((val) => console.log(val));
-
-		this.controls
+		// this.reportForm.valueChanges.subscribe((val) => console.log(val));
 	}
 
 	get controls() {
@@ -118,6 +116,8 @@ export class ReportsComponent implements OnInit {
 	setReportTypeValidators() {
 		const merchantIdControl = this.reportForm.get("merchantId");
 		const statusIdControl = this.reportForm.get("statusId");
+		const startDateControl = this.reportForm.get("startDate");
+		const endDateControl = this.reportForm.get("endDate");
 
 		this.reportForm.get("reportType").valueChanges.subscribe((val) => {
 			if (
@@ -130,6 +130,13 @@ export class ReportsComponent implements OnInit {
 				merchantIdControl.setValidators([Validators.required]);
 			} else {
 				merchantIdControl.setValidators([]);
+			}
+			if (val == "7") {
+				startDateControl.setValidators([]);
+				endDateControl.setValidators([]);
+			} else {
+				startDateControl.setValidators([Validators.required]);
+				endDateControl.setValidators([Validators.required]);
 			}
 			if (val == "4") {
 				statusIdControl.setValidators([Validators.required]);
@@ -155,17 +162,29 @@ export class ReportsComponent implements OnInit {
 			this.reportForm.markAllAsTouched();
 			return;
 		}
-		let startDate = new Date(this.controls.startDate.value);
-		let sd = new Date(
-			startDate.getTime() - startDate.getTimezoneOffset() * 60000
-		).toISOString();
+		let startDate, sd, endDate, ed;
+		if (this.controls.startDate.value && this.controls.endDate.value) {
+			startDate = new Date(this.controls.startDate.value);
+			sd = new Date(
+				startDate.getTime() - startDate.getTimezoneOffset() * 60000
+			).toISOString();
 
-		let endDate = new Date(this.controls.endDate.value);
-		let ed = new Date(
-			endDate.getTime() - endDate.getTimezoneOffset() * 60000
-		).toISOString();
+			endDate = new Date(this.controls.endDate.value);
+			ed = new Date(
+				endDate.getTime() - endDate.getTimezoneOffset() * 60000
+			).toISOString();
+		}
+
+		let merchantId;
+
+		if (this.controls.merchantId.value.multiSelect) {
+			merchantId = this.controls.merchantId.value.multiSelect.toString();
+		} else {
+			merchantId = '';
+		}
+
 		const reportData = {
-			merchantId: this.controls.merchantId.value.multiSelect.toString(),
+			merchantId: merchantId,
 			statusId: this.controls.statusId.value,
 			startDate: sd,
 			endDate: ed,

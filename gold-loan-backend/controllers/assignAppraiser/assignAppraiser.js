@@ -44,7 +44,7 @@ exports.editAssignAppraiser = async (req, res, next) => {
     if (getAssignCustomer.appraiserId != appraiserId) {
         let { mobileNumber } = await models.user.findOne({ where: { id: appraiserId } })
 
-        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message= customer unique Id ${customerUniqueId} is assign for you`);
+        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message= customer unique Id ${getAssignCustomer.customerUniqueId} is assign for you`);
     }
 
     return res.status(200).json({ message: 'success' })
@@ -60,6 +60,10 @@ exports.getSingleAssign = async (req, res) => {
         include: [{
             model: models.user,
             as: "appraiser",
+            attributes: ['id', 'firstName', 'lastName']
+        }, {
+            model: models.customer,
+            as: "customer",
             attributes: ['id', 'firstName', 'lastName']
         }]
     })
@@ -93,6 +97,11 @@ exports.getListAssignAppraiser = async (req, res) => {
         {
             model: models.user,
             as: "appraiser",
+            attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.customer,
+            as: "customer",
             attributes: ['id', 'firstName', 'lastName']
         }
     ]

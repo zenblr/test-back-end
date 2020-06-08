@@ -47,6 +47,12 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
+        kycStatus: {
+            type: DataTypes.ENUM,
+            field: 'kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'pending', 'rejected']
+        },
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',
@@ -58,6 +64,10 @@ module.exports = (sequelize, DataTypes) => {
         statusId: {
             type: DataTypes.INTEGER,
             field: 'status_id',
+        },
+        comment: {
+            type: DataTypes.TEXT,
+            field: 'comment',
         },
         stateId: {
             type: DataTypes.INTEGER,
@@ -98,6 +108,7 @@ module.exports = (sequelize, DataTypes) => {
     Customer.associate = function (models) {
         Customer.belongsTo(models.internalBranch, { foreignKey: 'internalBranchId', as: 'internalBranch' })
 
+        Customer.hasOne(models.customerAssignAppraiser, { foreignKey: 'customerId', as: 'customerAssignAppraiser' });
         Customer.hasOne(models.customerKyc, { foreignKey: 'customerId', as: 'customerKyc' });
         Customer.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerId', as: 'customerKycPersonal' });
         Customer.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });
@@ -108,7 +119,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.hasMany(models.customerLoan, { foreignKey: 'customerId', as: 'customerLoan' });
 
-        
+
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
         Customer.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });

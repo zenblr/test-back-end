@@ -50,7 +50,7 @@
                         <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                     </div>
                     <img class="packets position-relative" [src]="packet.controls.packetWithSealing.value"
-                        *ngIf="packet.controls.packetWithSealing.value" (click)="packetWithSealing.click()">
+                        *ngIf="packet.controls.packetWithSealing.value">
                     <img *ngIf="packet.controls.packetWithSealing.value && url != 'view-loan'" src="../../../../../assets/media/icons/edit.svg"
                         alt="" class="kt-pointer edit-icon" (click)="packetWithSealing.click()">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with

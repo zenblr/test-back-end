@@ -6,9 +6,16 @@ const check = require('../../lib/checkLib');
 
 // add scheme
 exports.addScheme = async (req, res, next) => {
-    const { schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
+    let { schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
         interestRateOneHundredEightyDaysMonthly, partnerId } = req.body;
-    let schemeNameExist = await models.scheme.findOne({ where: { schemeName } })
+    schemeName = schemeName.toLowerCase();
+    let schemeNameExist = await models.scheme.findOne({
+        where: { schemeName },
+        include: [{
+            model: models.partner,
+            where: { id: partnerId[0] }
+        }]
+    })
 
     if (!check.isEmpty(schemeNameExist)) {
         return res.status(404).json({ message: 'This Scheme Name is already Exist' });
@@ -100,7 +107,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
             where: {
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
-                    schemeAmountEnd: { [Op.gte]: amount },
+                    // schemeAmountEnd: { [Op.gte]: amount },
                 }
             }
         }]

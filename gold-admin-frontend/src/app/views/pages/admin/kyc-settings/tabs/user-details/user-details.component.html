@@ -121,9 +121,39 @@
 						</div>
 					</div>
 
-
-
 					<div class="row kt-padding-t-15">
+						<div class="col-4 align-self-center form-label">
+							<label class="mandatory  text-color font-weight-500">PAN Type</label>
+						</div>
+						<div class="col-8">
+							<select class="form-control" formControlName="panType">
+								<option value="" selected disabled>Select PAN Type</option>
+								<option value="pan">PAN</option>
+								<option value="60">FORM 60</option>
+							</select>
+						</div>
+					</div>
+					<div class="row kt-padding-t-15" *ngIf="controls.panType.value == '60'">
+						<div class="offset-4 col-6">
+							<div class="input-group mb-3">
+								<input type="text" class="form-control" placeholder="Select File"
+									aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+									formControlName="form60"
+									[class.isError]="controls.form60.touched && controls.form60.invalid" />
+								<div class="input-group-append">
+									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+										(click)="form60.click()">Attach</span>
+								</div>
+								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+									(input)="getFileInfo($event)">
+							</div>
+						</div>
+						<div class="col-2 form-label" *ngIf="controls.form60.value">
+							<label class="text-primary text-center kt-pointer" (click)="preview()">View Images</label>
+						</div>
+					</div>
+
+					<div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
 						<!-- PAN -->
 						<div class="col-4 align-self-center form-label">
 							<label class="mandatory  text-color font-weight-500">PAN</label>

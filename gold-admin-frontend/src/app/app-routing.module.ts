@@ -13,7 +13,6 @@ const routes: Routes = [
 		path: 'auth', loadChildren: () => import('../app/views/pages/auth/auth.module').then(m => m.AuthModule),
 		canActivate: [ReverseAuthGuard]
 	},
-
 	{
 		path: '',
 		component: BaseComponent,
@@ -22,6 +21,22 @@ const routes: Routes = [
 			{
 				path: 'admin',
 				loadChildren: () => import('./views/pages/admin/admin.module').then(m => m.AdminModule)
+			},
+			{
+				path: 'global-settings',
+				loadChildren: () => import('../app/views/pages/settings/global-settings/global-settings.module').then(m => m.GlobalSettingsModule)
+			},
+			{
+				path: 'masters',
+				loadChildren: () => import('../app/views/pages/masters/masters.module').then(m => m.MastersModule)
+			},
+			{
+				path: 'holidays',
+				loadChildren: () => import('../app/views/pages/holidays/holidays.module').then(m => m.HolidaysModule)
+			},
+			{
+				path: 'assigned-customers',
+				loadChildren: () => import('../app/views/pages/assigned-customers/assigned-customers.module').then(m => m.AssignedCustomersModule)
 			},
 			{
 				path: 'wizard',

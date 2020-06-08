@@ -82,7 +82,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]);
       this.controls.accountHolderName.setValidators([Validators.required]);
       this.controls.bankBranchName.setValidators([Validators.required]);
-      this.controls.passbookProofImage.setValidators([Validators.required]);
+      this.controls.passbookProof.setValidators([Validators.required]);
     } else if (event.target.value == 'cash') {
       Object.keys(this.bankForm.controls).forEach(key => {
         if (key != 'paymentType') {

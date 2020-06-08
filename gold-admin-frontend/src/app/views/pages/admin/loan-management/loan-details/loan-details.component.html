@@ -36,7 +36,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="interestRestDays">
-                    <mat-header-cell *matHeaderCellDef>Interest Rest Days</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Payment Frequency</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <span *ngIf="loan.finalLoan.paymentFrequency == '30'">Monthly</span>
                         <span *ngIf="loan.finalLoan.paymentFrequency == '90'">Quarterly</span>
