@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, tap, catchError } from 'rxjs/operators';
 import { ExcelService } from '../../../_base/crud/services/excel.service';
-
+import { API_ENDPOINT } from '../../../../app.constant';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,18 +14,18 @@ export class CustomerDetailsService {
   constructor(private http: HttpClient, private excelService: ExcelService) { }
 
   getAllCustomerDetails(from?, to?, search?): Observable<any> {
-    return this.http.get<any>(`http://173.249.49.7:9120/api/customer?search=${search}&from=${from}&to=${to}`);
+    return this.http.get<any>(API_ENDPOINT + `api/customer?search=${search}&from=${from}&to=${to}`);
   }
 
   reportExport(): Observable<any> {
-    return this.http.get(`http://173.249.49.7:9120/api/customer/customer-report`, { responseType: 'arraybuffer' })
+    return this.http.get(API_ENDPOINT + `api/customer/customer-report`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
           return res;
         }),
         tap(
           data => {
-            this.excelService.saveAsExcelFile(data, 'CustomerReport_'+ Date.now());
+            this.excelService.saveAsExcelFile(data, 'CustomerReport_' + Date.now());
           },
           error => console.log(error),
         ),

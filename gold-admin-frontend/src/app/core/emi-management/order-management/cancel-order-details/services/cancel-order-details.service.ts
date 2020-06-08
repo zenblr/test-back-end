@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
 import { ExcelService } from "../../../../_base/crud/services/excel.service";
 import { PdfService } from "../../../../_base/crud/services/pdf.service";
-
+import { API_ENDPOINT } from "../../../../../app.constant";
 @Injectable({
 	providedIn: "root",
 })
@@ -19,7 +19,7 @@ export class CancelOrderDetailsService {
 		private http: HttpClient,
 		private excelService: ExcelService,
 		private pdfService: PdfService
-	) {}
+	) { }
 
 	getAllCancelOrderDetails(event?: any): Observable<any> {
 		const reqParams: any = {};
@@ -38,7 +38,7 @@ export class CancelOrderDetailsService {
 		if (event && event.merchantName) {
 			reqParams.merchantName = event.merchantName;
 		}
-		return this.http.get<any>(`http://173.249.49.7:9120/api/cancel-order`, {
+		return this.http.get<any>(API_ENDPOINT + `api/cancel-order`, {
 			params: reqParams,
 		});
 	}
@@ -46,7 +46,7 @@ export class CancelOrderDetailsService {
 	reportExport(): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/cancel-order/cancel-order-report`,
+				API_ENDPOINT + `api/cancel-order/cancel-order-report`,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -71,7 +71,7 @@ export class CancelOrderDetailsService {
 	getReceipt(id): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/cancel-order/cancel-receipt/${id}`,
+				API_ENDPOINT + `api/cancel-order/cancel-receipt/${id}`,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(

@@ -148,6 +148,15 @@
                         {{element['orderCurrentStatus.statusName'] ? (element['orderCurrentStatus.statusName'] | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="cancelOrder">
+                    <mat-header-cell *matHeaderCellDef>Cancel Order</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span
+                            *ngIf="element['orderCurrentStatus.id'] == 2 || element['orderCurrentStatus.id'] == 3 || element['orderCurrentStatus.id'] == 11">
+                            <kt-button [value]="'Cancel'" [type]="'submit'" (click)="cancelOrder(element)"></kt-button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="merchant">
                     <mat-header-cell *matHeaderCellDef>Merchant</mat-header-cell>
                     <mat-cell *matCellDef="let element">

@@ -157,6 +157,11 @@ export class PageConfig {
 						page: { title: "Order Details", desc: "" },
 					},
 				},
+				'cancel-order': {
+					id: {
+						page: { title: "Cancel Order", desc: "" },
+					},
+				},
 			},
 			"emi-details": {
 				page: { title: "EMI Details", desc: "" },

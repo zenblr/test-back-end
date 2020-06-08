@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, tap, catchError } from 'rxjs/operators';
 import { ExcelService } from '../../../../_base/crud/services/excel.service';
-
+import { API_ENDPOINT } from '../../../../../app.constant';
 @Injectable({
   providedIn: 'root'
 })
@@ -20,19 +20,19 @@ export class WalletPriceService {
   constructor(private http: HttpClient, private excelService: ExcelService) { }
 
   getWalletPrice(): Observable<any> {
-    return this.http.get<any>(`http://173.249.49.7:9120/api/wallet`);
+    return this.http.get<any>(API_ENDPOINT + `api/wallet`);
   }
 
   addWalletPrice(data): Observable<any> {
-    return this.http.post<any>(`http://173.249.49.7:9120/api/wallet`, data);
+    return this.http.post<any>(API_ENDPOINT + `api/wallet`, data);
   }
 
   updateWalletPrice(id, data): Observable<any> {
-    return this.http.put<any>(`http://173.249.49.7:9120/api/wallet/${id}`, data);
+    return this.http.put<any>(API_ENDPOINT + `api/wallet/${id}`, data);
   }
 
   report(): Observable<any> {
-    return this.http.get(`http://173.249.49.7:9120/api/wallet/wallet-update-report`, { responseType: 'arraybuffer' })
+    return this.http.get(API_ENDPOINT + `api/wallet/wallet-update-report`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
           return res;

@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
 import { ExcelService, PdfService } from "../../../../_base/crud";
-
+import { API_ENDPOINT } from "../../../../../app.constant";
 @Injectable({
 	providedIn: "root",
 })
@@ -34,19 +34,19 @@ export class EmiDetailsService {
 		if (event && event.orderemistatus) {
 			reqParams.orderemistatus = event.orderemistatus;
 		}
-		return this.http.get<any>(`http://173.249.49.7:9120/api/emi-details`, {
+		return this.http.get<any>(API_ENDPOINT + `api/emi-details`, {
 			params: reqParams,
 		});
 	}
 
 	getEmiDetails(id): Observable<any> {
 		return this.http
-			.get(`http://173.249.49.7:9120/api/emi-details/${id}`);
+			.get(API_ENDPOINT + `api/emi-details/${id}`);
 	}
 
 	reportExport(): Observable<any> {
 		return this.http
-			.get(`http://173.249.49.7:9120/api/emi-details/emi-report`, {
+			.get(API_ENDPOINT + `api/emi-details/emi-report`, {
 				responseType: "arraybuffer",
 			})
 			.pipe(
@@ -70,7 +70,7 @@ export class EmiDetailsService {
 
 	emiReceipt(id): Observable<any> {
 		return this.http
-			.get(`http://173.249.49.7:9120/api/order/emi-receipt/${id}`, {
+			.get(API_ENDPOINT + `api/order/emi-receipt/${id}`, {
 				responseType: "arraybuffer",
 			})
 			.pipe(
