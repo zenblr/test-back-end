@@ -6,6 +6,7 @@ import { map, takeUntil, catchError } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { PartnerService } from '../../../../core/user-management/partner/services/partner.service';
+import { SharedService } from '../../../..//core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-loan-scheme',
@@ -18,6 +19,7 @@ export class LoanSchemeComponent implements OnInit {
   loader: boolean = true;
   viewLoading: boolean = false;
   destroy$ = new Subject();
+  filter$ = new Subject();
   @ViewChild('matTab', { static: false }) matTab: ElementRef
   noResults: any[]=[];
 
@@ -27,13 +29,22 @@ export class LoanSchemeComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private rout: ActivatedRoute,
     private parnterServices: PartnerService,
-    private eleref: ElementRef
+    private eleref: ElementRef,
+    private sharedService:SharedService
   ) {
     this.loanSettingService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
         this.addScheme()
       }
     })
+
+    this.loanSettingService.applyFilter$
+    .pipe(takeUntil(this.filter$))
+    .subscribe((res) => {
+      if (Object.entries(res).length) {
+        this.applyFilter(res);
+      }
+    });
   }
 
   ngOnInit() {
@@ -80,6 +91,10 @@ export class LoanSchemeComponent implements OnInit {
       })).subscribe()
   }
 
+  applyFilter(data){
+    console.log(data)
+  }
+
   addScheme() {
     const dialogRef = this.dialog.open(AddSchemeComponent, {
       width: '600px'
@@ -94,6 +109,10 @@ export class LoanSchemeComponent implements OnInit {
   ngOnDestroy() {
     this.destroy$.next()
     this.destroy$.complete()
+    this.filter$.next();
+    this.filter$.complete();
+    this.loanSettingService.applyFilter.next({});
+		this.sharedService.closeFilter.next(true);
   }
 
 }

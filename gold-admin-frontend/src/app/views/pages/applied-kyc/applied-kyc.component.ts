@@ -18,6 +18,7 @@ import { AddAppraiserComponent } from '../user-management/assign-appraiser/add-a
 })
 export class AppliedKycComponent implements OnInit {
 
+  filteredDataList:any = {};
   dataSource: AppliedKycDatasource;
   displayedColumns = ['fullName', 'pan', 'customerId', 'appraiserName', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
   leadsResult = []
@@ -25,10 +26,17 @@ export class AppliedKycComponent implements OnInit {
   @ViewChild('sort1', { static: true }) sort: MatSort;
   searchValue = '';
   private subscriptions: Subscription[] = [];
-
   private unsubscribeSearch$ = new Subject();
   userType;
   private destroy$ = new Subject();
+  private filter$ = new Subject();
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    cceStatus: '',
+    kycStatus: '',
+  }
 
   constructor(
     private appliedKycService: AppliedKycService,
@@ -40,6 +48,14 @@ export class AppliedKycComponent implements OnInit {
   ) {
     let res = this.sharedService.getDataFromStorage()
     this.userType = res.userDetails.userTypeId;
+
+    this.appliedKycService.applyFilter$
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
   }
 
   ngOnInit() {
@@ -79,7 +95,7 @@ export class AppliedKycComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadKyc(1, 25, this.searchValue, '', '', '');
+    this.dataSource.loadKyc(this.queryParamsData);
   }
 
   loadPage() {
@@ -88,7 +104,15 @@ export class AppliedKycComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadKyc(from, to, this.searchValue, '', '', '');
+    this.dataSource.loadKyc(this.queryParamsData);
+  }
+
+  applyFilter(data) {
+    console.log(data);
+    this.queryParamsData.cceStatus = data.data.cceStatus;
+    this.queryParamsData.kycStatus = data.data.kycStatus;
+    this.dataSource.loadKyc(this.queryParamsData);
+    this.filteredDataList = data.list;
   }
 
   ngOnDestroy(): void {
@@ -97,6 +121,10 @@ export class AppliedKycComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.filter$.next();
+    this.filter$.complete();
+    this.appliedKycService.applyFilter.next({});
+		this.sharedService.closeFilter.next(true);
   }
 
   editKyc(data) {
@@ -113,7 +141,7 @@ export class AppliedKycComponent implements OnInit {
 
   assign(item) {
     // this.router.navigate(['/user-management/redirect-assign-appraiser'])
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', customer: item.customer }, width: '500px' });
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', customer: item.customer,id:item.customerId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

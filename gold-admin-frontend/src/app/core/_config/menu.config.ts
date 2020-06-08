@@ -52,16 +52,19 @@ export class MenuConfig {
 								{
 									title: "Change Password",
 									page: "/admin-account/change-password",
+									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Show Queries",
 									page: "/admin-account/show-queries",
+									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Show Feedback",
 									page: "/admin-account/show-feedback",
+									bullet:'dot',
 									permission: false,
 								},
 							],
@@ -76,6 +79,7 @@ export class MenuConfig {
 								{
 									title: "Upload Data",
 									root: true,
+									bullet:'dot',
 									permission: !(this.permissionsArr.includes('promotionalBannerView') ||
 										this.permissionsArr.includes('offerBannerView') ||
 										this.permissionsArr.includes('goldRateView') ||
@@ -85,21 +89,25 @@ export class MenuConfig {
 										{
 											title: "Gold Rate",
 											page: "/upload-data/gold-rate",
+											bullet:'dot',
 											permission: !this.permissionsArr.includes('goldRateView'),
 										},
 										{
 											title: "Promotional Banners",
 											page: "/upload-data/upload-banner",
+											bullet:'dot',
 											permission: !this.permissionsArr.includes('promotionalBannerView'),
 										},
 										{
 											title: "Offer Banners",
 											page: "/upload-data/upload-offer",
+											bullet:'dot',
 											permission: !this.permissionsArr.includes('offerBannerView'),
 										},
 										{
 											title: "Partner Banners",
 											page: "/upload-data/upload-lender-banner",
+											bullet:'dot',
 											permission: !this.permissionsArr.includes('partnerBannerView'),
 										},
 
@@ -108,6 +116,7 @@ export class MenuConfig {
 								{
 									title: "Loan Settings",
 									root: true,
+									bullet:'dot',
 									permission: !(this.permissionsArr.includes('schemeView') ||
 										this.permissionsArr.includes('karatDetailsView')),
 
@@ -115,11 +124,13 @@ export class MenuConfig {
 										{
 											title: "Scheme",
 											page: "/loan-setting/scheme",
+											bullet:'dot',
 											permission: !this.permissionsArr.includes('schemeView'),
 										},
 										{
 											title: "Karat details",
 											page: "/loan-setting/karat-details",
+											bullet:'dot',
 											permission: !this.permissionsArr.includes('karatDetailsView'),
 										},
 									],
@@ -127,17 +138,20 @@ export class MenuConfig {
 								{
 									title: "Notification Settings",
 									root: true,
+									bullet:'dot',
 									permission: false,
 
 									submenu: [
 										{
 											title: "Email Alert",
 											page: "/notification-setting/email-alert",
+											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "SMS Alert",
 											page: "/notification-setting/sms-alert",
+											bullet:'dot',
 											permission: false,
 										},
 									],
@@ -145,32 +159,38 @@ export class MenuConfig {
 								{
 									title: "Masters",
 									root: true,
+									bullet:'dot',
 									permission: false,
 
 									submenu: [
 										{
 											title: "Ornaments",
 											page: "/masters/ornaments",
+											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "Unapproval Reasons",
 											page: "/masters/reasons",
+											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "Purposes",
 											page: "/masters/purposes",
+											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "Packet Location",
 											page: "/masters/packet-location",
+											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "Holidays",
 											root: true,
+											bullet:'dot',
 											permission: false,
 											page: '/holidays'
 										},
@@ -214,16 +234,19 @@ export class MenuConfig {
 								{
 									title: "KYC Setting",
 									page: "/kyc-setting",
+									bullet:'dot',
 									permission: !this.permissionsArr.includes('customerKycAdd'),
 								},
 								{
 									title: "Applied KYC",
 									page: "/applied-kyc",
+									bullet:'dot',
 									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 								{
 									title: "Assigned customers",
 									page: "/assigned-customers",
+									bullet:'dot',
 									// permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 							],
@@ -238,11 +261,13 @@ export class MenuConfig {
 								{
 									title: "Loan Calculator",
 									page: "/loan-management/loan-calculator",
+									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Application Form",
 									page: "/loan-management/loan-application-form",
+									bullet:'dot',
 									permission: !this.permissionsArr.includes('loanApplicationAdd'),
 								},
 								{
@@ -281,6 +306,7 @@ export class MenuConfig {
 								{
 									title: "Monthly Payment",
 									page: "/repayment/monthly",
+									bullet:'dot',
 									permission: false,
 								},
 								// {
@@ -300,11 +326,13 @@ export class MenuConfig {
 								{
 									title: "Loan Disbursed Details",
 									path: "/Loan-disbursed-detail",
+									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Repayment Details",
 									path: "/Loan-repayment-detail",
+									bullet:'dot',
 									permission: false,
 								},
 							],
@@ -319,26 +347,31 @@ export class MenuConfig {
 								{
 									title: "KYC",
 									path: "/kyc",
+									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Status Report",
 									path: "/loan-status",
+									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Branch Report",
 									path: "/branch",
+									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Type Reports",
 									path: "/loan-type",
+									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Margin Reports",
 									path: "/marign",
+									bullet:'dot',
 									permission: false,
 								},
 							],

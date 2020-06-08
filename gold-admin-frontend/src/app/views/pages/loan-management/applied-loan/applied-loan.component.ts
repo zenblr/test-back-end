@@ -15,14 +15,19 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class AppliedLoanComponent implements OnInit {
 
+  filteredDataList:any = {};
   userType: any
   dataSource: AppliedLoanDatasource;
   displayedColumns = ['fullName', 'customerID', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  // Filter fields
-  // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    cceStatus: '',
+    kycStatus: '',
+  }
   destroy$ = new Subject();
 
   // Subscriptions
@@ -30,7 +35,7 @@ export class AppliedLoanComponent implements OnInit {
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
   edit: boolean;
-
+  filter$ = new Subject();
   constructor(
     public dialog: MatDialog,
     private AppliedLoanService: AppliedLoanService,
@@ -46,6 +51,14 @@ export class AppliedLoanComponent implements OnInit {
         this.edit = false
       }
     })
+
+    this.AppliedLoanService.applyFilter$
+    .pipe(takeUntil(this.filter$))
+    .subscribe((res) => {
+      if (Object.entries(res).length) {
+        this.applyFilter(res);
+      }
+    });
   }
 
   ngOnInit() {
@@ -90,6 +103,10 @@ export class AppliedLoanComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.filter$.next();
+    this.filter$.complete();
+    this.AppliedLoanService.applyFilter.next({});
+		this.sharedService.closeFilter.next(true);
   }
 
 
@@ -101,6 +118,11 @@ export class AppliedLoanComponent implements OnInit {
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
     this.dataSource.loadAppliedLoans(this.searchValue, from, to);
+  }
+
+  applyFilter(data){
+    console.log(data)
+    this.filteredDataList = data.list
   }
 
   disburse(loan) {

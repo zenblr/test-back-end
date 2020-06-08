@@ -22,7 +22,7 @@ import { Subject, Subscription, from } from "rxjs";
 import { SharedService } from "../../../../core/shared/services/shared.service";
 import { SubheaderService } from "../../../../core/_base/layout";
 import { takeUntil } from "rxjs/operators";
-import { PacketsService } from "../../../../core/loan-management";
+import { PacketsService, AppliedLoanService } from "../../../../core/loan-management";
 import { StoreService } from "../../../../core/user-management/store/service/store.service";
 import { LogisticPartnerService } from "../../../../core/emi-management/logistic-partner/service/logistic-partner.service";
 import { KaratDetailsService } from "../../../../core/loan-setting/karat-details/services/karat-details.service";
@@ -42,6 +42,7 @@ import { PacketLocationService } from '../../../../core/masters/packet-location/
 import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
 import { PurposeService } from '../../../../core/masters/purposes/service/purpose.service';
 import { ReasonsService } from '../../../../core/masters/reasons/services/reasons.service';
+import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -121,7 +122,9 @@ export class TopbarComponent implements OnInit {
 		private packetLocation:PacketLocationService,
 		private ornamentsService: OrnamentsService,
 		private purposeService:PurposeService,
-		private reasonsService: ReasonsService
+		private reasonsService: ReasonsService,
+		private appliedKycService:AppliedKycService,
+		private appliedLoan:AppliedLoanService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -303,6 +306,7 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = "600px"
 			this.filterName = "loan"
 			this.showInput = true;
+			this.listType = "approval";
 		}
 		if (this.path == "all-loan") {
 			this.showfilter = false;
@@ -313,6 +317,7 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = true;
 			this.filterName = "kyc";
 			this.filterWidth = "600px";
+			this.listType = "approval";
 		}
 		if (this.path == "assigned-customers") {
 			this.showInput = true;
@@ -645,6 +650,15 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "lead-management") {
 			this.leadService.applyFilter.next(data);
+		}
+		if(this.path == "applied-kyc"){
+			this.appliedKycService.applyFilter.next(data)
+		}
+		if(this.path == "scheme"){
+			this.loanSettingService.applyFilter.next(data)
+		}
+		if(this.path == "applied-loan"){
+			this.appliedLoan.applyFilter.next(data)
 		}
 	}
 

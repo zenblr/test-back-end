@@ -17,6 +17,8 @@ export class CustomerManagementService {
   customer = new BehaviorSubject<any>({});
   customer$ = this.customer.asObservable()
   // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
+  applyFilter = new BehaviorSubject<any>({});
+  applyFilter$ = this.applyFilter.asObservable();
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 

@@ -49,7 +49,7 @@ export class LeadManagementComponent implements OnInit {
     private leadService: LeadService,
     private dataTableService: DataTableService,
     private router: Router,
-    private sharedService:SharedService
+    private sharedService: SharedService
   ) {
     this.leadService.openModal$.pipe(
       map(res => {
@@ -105,15 +105,15 @@ export class LeadManagementComponent implements OnInit {
     this.filter$.next();
     this.filter$.complete();
     this.leadService.applyFilter.next({});
-		this.sharedService.closeFilter.next(true);
+    this.sharedService.closeFilter.next(true);
   }
 
 
   loadLeadsPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
     this.dataSource.loadLeads(this.queryParamsData);
   }
