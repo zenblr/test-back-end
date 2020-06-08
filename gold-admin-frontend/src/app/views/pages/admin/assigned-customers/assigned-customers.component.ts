@@ -75,7 +75,7 @@ export class AssignedCustomersComponent implements OnInit {
   }
 
   applyLoan(loan) {
-    this.router.navigate(['/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customerUniqueId } })
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customerUniqueId } })
   }
 
 }
