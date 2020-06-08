@@ -45,6 +45,7 @@ export class MenuConfig {
 							title: "Admin Account",
 							root: true,
 							src: "assets/media/aside-icons/icons-02.svg",
+							bullet:'dot',
 							page: "/dashboard",
 							permission: false,
 
@@ -52,19 +53,16 @@ export class MenuConfig {
 								{
 									title: "Change Password",
 									page: "/admin-account/change-password",
-									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Show Queries",
 									page: "/admin-account/show-queries",
-									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Show Feedback",
 									page: "/admin-account/show-feedback",
-									bullet:'dot',
 									permission: false,
 								},
 							],
@@ -73,6 +71,7 @@ export class MenuConfig {
 							title: "Admin Settings",
 							root: true,
 							src: "assets/media/aside-icons/icons-03.svg",
+							bullet:'dot',
 							permission: false,
 
 							submenu: [
@@ -89,25 +88,21 @@ export class MenuConfig {
 										{
 											title: "Gold Rate",
 											page: "/upload-data/gold-rate",
-											bullet:'dot',
 											permission: !this.permissionsArr.includes('goldRateView'),
 										},
 										{
 											title: "Promotional Banners",
 											page: "/upload-data/upload-banner",
-											bullet:'dot',
 											permission: !this.permissionsArr.includes('promotionalBannerView'),
 										},
 										{
 											title: "Offer Banners",
 											page: "/upload-data/upload-offer",
-											bullet:'dot',
 											permission: !this.permissionsArr.includes('offerBannerView'),
 										},
 										{
 											title: "Partner Banners",
 											page: "/upload-data/upload-lender-banner",
-											bullet:'dot',
 											permission: !this.permissionsArr.includes('partnerBannerView'),
 										},
 
@@ -145,13 +140,11 @@ export class MenuConfig {
 										{
 											title: "Email Alert",
 											page: "/notification-setting/email-alert",
-											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "SMS Alert",
 											page: "/notification-setting/sms-alert",
-											bullet:'dot',
 											permission: false,
 										},
 									],
@@ -166,31 +159,26 @@ export class MenuConfig {
 										{
 											title: "Ornaments",
 											page: "/masters/ornaments",
-											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "Unapproval Reasons",
 											page: "/masters/reasons",
-											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "Purposes",
 											page: "/masters/purposes",
-											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "Packet Location",
 											page: "/masters/packet-location",
-											bullet:'dot',
 											permission: false,
 										},
 										{
 											title: "Holidays",
 											root: true,
-											bullet:'dot',
 											permission: false,
 											page: '/holidays'
 										},
@@ -226,6 +214,7 @@ export class MenuConfig {
 						{
 							title: "Customer Setting",
 							root: true,
+							bullet:'dot',
 							src: "assets/media/aside-icons/icons-06.svg",
 							permission: !(this.permissionsArr.includes('customerKycView') ||
 								this.permissionsArr.includes('appliedKycView')),
@@ -234,19 +223,16 @@ export class MenuConfig {
 								{
 									title: "KYC Setting",
 									page: "/kyc-setting",
-									bullet:'dot',
 									permission: !this.permissionsArr.includes('customerKycAdd'),
 								},
 								{
 									title: "Applied KYC",
 									page: "/applied-kyc",
-									bullet:'dot',
 									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 								{
 									title: "Assigned customers",
 									page: "/assigned-customers",
-									bullet:'dot',
 									// permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 							],
@@ -254,6 +240,7 @@ export class MenuConfig {
 						{
 							title: "Loan Management",
 							root: true,
+							bullet:'dot',
 							src: "assets/media/aside-icons/icons-07.svg",
 							permission: false,
 
@@ -273,6 +260,7 @@ export class MenuConfig {
 								{
 									title: "Packet",
 									page: "/loan-management/packet",
+									bullet:'dot',
 									permission: !(this.permissionsArr.includes('packetEdit') ||
 										this.permissionsArr.includes('packetAdd') ||
 										this.permissionsArr.includes('packetView')),
@@ -280,11 +268,13 @@ export class MenuConfig {
 								{
 									title: "Applied Loan",
 									page: "/loan-management/applied-loan",
+									bullet:'dot',
 									permission: !this.permissionsArr.includes('appliedLoanView'),
 								},
 								{
 									title: "Loan Details",
 									page: "/loan-management/all-loan",
+									bullet:'dot',
 									permission: !this.permissionsArr.includes('loanDetailsView'),
 								},
 							],
@@ -299,6 +289,7 @@ export class MenuConfig {
 						{
 							title: "Repayment Structure",
 							root: true,
+							bullet:'dot',
 							src: "assets/media/aside-icons/icons-09.svg",
 							permission: false,
 
@@ -320,19 +311,18 @@ export class MenuConfig {
 							title: "Account",
 							root: true,
 							src: "assets/media/aside-icons/icons-12.svg",
+							bullet:'dot',
 							permission: false,
 
 							submenu: [
 								{
 									title: "Loan Disbursed Details",
 									path: "/Loan-disbursed-detail",
-									bullet:'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Repayment Details",
 									path: "/Loan-repayment-detail",
-									bullet:'dot',
 									permission: false,
 								},
 							],
@@ -340,6 +330,7 @@ export class MenuConfig {
 						{
 							title: "Report",
 							root: true,
+							bullet:'dot',
 							src: "assets/media/aside-icons/icons-11.svg",
 							permission: false,
 
@@ -371,7 +362,6 @@ export class MenuConfig {
 								{
 									title: "Margin Reports",
 									path: "/marign",
-									bullet:'dot',
 									permission: false,
 								},
 							],
@@ -386,6 +376,7 @@ export class MenuConfig {
 						{
 							title: "Settings",
 							root: true,
+							bullet:'dot',
 							src: "assets/media/aside-icons/icons-03.svg",
 							permission: false,
 							submenu: [
@@ -479,7 +470,6 @@ export class MenuConfig {
 							title: "Product",
 							root: true,
 							icon: "flaticon2-open-box",
-							bullet: 'dot',
 							permission: !(this.permissionsArr.includes('productView') ||
 								this.permissionsArr.includes('categoryView') ||
 								this.permissionsArr.includes('subCategoryView') ||
@@ -536,7 +526,6 @@ export class MenuConfig {
 							title: "Config Details",
 							root: true,
 							icon: "flaticon2-console",
-							bullet: 'dot',
 							permission: !(this.permissionsArr.includes('walletView') || this.permissionsArr.includes('adminLogView')),
 
 							submenu: [
@@ -556,7 +545,6 @@ export class MenuConfig {
 							title: "Order Management",
 							root: true,
 							icon: "flaticon2-shopping-cart",
-							bullet: 'dot',
 							permission: !(this.permissionsArr.includes('orderView') ||
 								this.permissionsArr.includes('EMIDetailsView') ||
 								this.permissionsArr.includes('refundDetailsView') ||
