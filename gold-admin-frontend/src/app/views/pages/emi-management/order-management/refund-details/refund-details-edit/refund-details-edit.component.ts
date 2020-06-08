@@ -63,10 +63,6 @@ export class RefundDetailsEditComponent implements OnInit {
 						this.refundData = res;
 						this.editRefund();
 					})
-					// catchError(err => {
-					//   this.toast.error(err.error.error);
-					//   throw err;
-					// })
 				)
 				.subscribe();
 		}
@@ -91,7 +87,7 @@ export class RefundDetailsEditComponent implements OnInit {
 			acNumber: [""],
 			ifscCode: [""],
 			cancelOrder: [""],
-			utrNumber: [""],
+			utrNumber: ["", Validators.required],
 			status: ["", Validators.required],
 			passbookCopy: [""],
 			checkCopy: [""],
@@ -124,7 +120,6 @@ export class RefundDetailsEditComponent implements OnInit {
 			cancelOrder: this.refundData.order.orderBy.broker.merchant
 				.merchantName,
 			utrNumber: this.refundData.transactionId,
-			status: this.refundData.refundStatus.id,
 		};
 		this.refundForm.patchValue(data);
 
@@ -138,11 +133,9 @@ export class RefundDetailsEditComponent implements OnInit {
 
 		if (this.refundData.refundStatus.id == 14) {
 			this.refundForm.controls["utrNumber"].disable();
-			this.refundForm.controls["status"].disable();
 			this.hiddenFlag = false;
 		} else {
 			this.refundForm.controls["utrNumber"].enable();
-			this.refundForm.controls["status"].enable();
 			this.hiddenFlag = true;
 		}
 		this.ref.detectChanges();

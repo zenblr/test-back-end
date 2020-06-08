@@ -6,24 +6,24 @@
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Store ID:</div>
+                    <div class="col-6 text-muted">Store ID :</div>
                     <div class="col-6">{{
                         refundData?.order?.orderBy?.broker?.store
                             ?.storeUniqueId
                             ? refundData?.order?.orderBy?.broker?.store
                                     ?.storeUniqueId
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">User ID:</div>
+                    <div class="col-6 text-muted">User ID :</div>
                     <div class="col-6"> {{
                         refundData?.order?.customerDetails?.customerUniqueId
                             ? refundData?.order?.customerDetails
                                     ?.customerUniqueId
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -31,26 +31,26 @@
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Customer Name:</div>
+                    <div class="col-6 text-muted">Customer Name :</div>
                     <div class="col-6"> {{
                         refundData?.order?.customerDetails?.firstName
                             ? refundData?.order?.customerDetails?.firstName
-                            : "-"
+                             : "-"
                     }}&nbsp;
                         {{
                         refundData?.order?.customerDetails?.lastName
                             ? refundData?.order?.customerDetails?.lastName
-                            : " "
+                             : " "
                     }}</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Mobile Number:</div>
+                    <div class="col-6 text-muted">Mobile Number :</div>
                     <div class="col-6"> {{
                         refundData?.order?.customerDetails?.mobileNumber
                             ? refundData?.order?.customerDetails?.mobileNumber
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -58,21 +58,21 @@
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Order Id:</div>
+                    <div class="col-6 text-muted">Order Id :</div>
                     <div class="col-6"> {{
                         refundData?.order?.orderUniqueId
                             ? refundData?.order?.orderUniqueId
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Booking Price:</div>
+                    <div class="col-6 text-muted">Booking Price :</div>
                     <div class="col-6"> {{
                         refundData?.cancelOrder?.totalPrice
                             ? refundData?.cancelOrder?.totalPrice
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -80,21 +80,21 @@
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Total Amount Paid:</div>
+                    <div class="col-6 text-muted">Total Amount Paid :</div>
                     <div class="col-6">{{
 						refundData?.cancelOrder?.totalAmountPaid
 							? refundData?.cancelOrder?.totalAmountPaid
-							: "-"   
+							 : "-"   
 					}}</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Cancellation Price of Order:</div>
+                    <div class="col-6 text-muted">Cancellation Price of Order :</div>
                     <div class="col-6"> {{
                         refundData?.cancelOrder?.productUpdatedPrice
                             ? refundData?.cancelOrder?.productUpdatedPrice
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -102,11 +102,11 @@
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Difference Amount:</div>
+                    <div class="col-6 text-muted">Difference Amount :</div>
                     <div class="col-6">{{
                         refundData?.cancelOrder?.diffrenceAmount
                             ? refundData?.cancelOrder?.diffrenceAmount
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -116,7 +116,7 @@
                     <div class="col-6"> {{
                         refundData?.cancelOrder?.cancelationFees
                             ? refundData?.cancelOrder?.cancelationFees
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -124,11 +124,11 @@
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Total Cancellation Charges:</div>
+                    <div class="col-6 text-muted">Total Cancellation Charges :</div>
                     <div class="col-6"> {{
                         refundData?.cancelOrder?.cancellationCharges
                             ? refundData?.cancelOrder?.cancellationCharges
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -138,8 +138,8 @@
                     <div class="col-6"> {{
                         refundData?.cancelOrder?.cancelDate
                             ? (refundData?.cancelOrder?.cancelDate
-                              | date: "MMM d, y")
-                            : "-"
+                              | date : "MMM d, y")
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -147,11 +147,11 @@
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Customer Bank Name:</div>
+                    <div class="col-6 text-muted">Customer Bank Name :</div>
                     <div class="col-6"> {{
                         refundData?.customerBankName
                             ? refundData?.customerBankName
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -161,7 +161,7 @@
                     <div class="col-6"> {{
                         refundData?.customerAccountNo
                             ? refundData?.customerAccountNo
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>
@@ -181,7 +181,7 @@
         <div class="row py-2">
             <div class="col-12">
                 <div class="row">
-                    <div class="col-3 text-muted">Check Copy:</div>
+                    <div class="col-3 text-muted">Check Copy :</div>
                     <div class="col image-text-truncate">{{refundData?.checkCopy?.originalname}}&nbsp;&nbsp;<a
                             href="{{refundData?.checkCopy?.url}}" target="_blank"
                             download="{{refundData?.passbookCopy?.originalname}}"><img
@@ -192,23 +192,23 @@
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">IFSC Code:</div>
-                    <div class="col-6"> {{ refundData?.ifscCode ? refundData?.ifscCode : "-" }}</div>
+                    <div class="col-6 text-muted">IFSC Code :</div>
+                    <div class="col-6"> {{ refundData?.ifscCode ? refundData?.ifscCode  : "-" }}</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="row">
                     <div class="col-6 text-muted">UTR Number :</div>
-                    <div class="col-6"> {{refundData?.transactionId ? refundData?.transactionId : "-"}}</div>
+                    <div class="col-6"> {{refundData?.transactionId ? refundData?.transactionId  : "-"}}</div>
                 </div>
             </div>
         </div>
         <div class="row py-2">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">Cancel order from:</div>
+                    <div class="col-6 text-muted">Cancel order from :</div>
                     <div class="col-6">
-                        {{refundData?.order?.orderBy?.broker?.merchant?.merchantName ? refundData?.order?.orderBy?.broker?.merchant?.merchantName : "-"}}
+                        {{refundData?.order?.orderBy?.broker?.merchant?.merchantName ? refundData?.order?.orderBy?.broker?.merchant?.merchantName  : "-"}}
                     </div>
                 </div>
             </div>
@@ -218,7 +218,7 @@
                     <div class="col-6">{{
                         refundData?.refundStatus?.statusName
                             ? (refundData?.refundStatus?.statusName | titlecase)
-                            : "-"
+                             : "-"
                     }}</div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
 import { ActivatedRoute, Router } from "@angular/router";
@@ -22,6 +22,7 @@ export class OrderCancelDialogComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private orderService: OrderDetailsService,
+    private chRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -31,6 +32,7 @@ export class OrderCancelDialogComponent implements OnInit {
       this.cancelData = res;
       this.bindValue(res);
     });
+    this.chRef.detectChanges();
   }
   formInitialize() {
     this.cancelForm = this.fb.group({
