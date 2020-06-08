@@ -80,7 +80,13 @@
                         <label class="font-weight-500 text-color">Pan Card</label>
                     </div>
                     <div class="col-8">
-                        {{profileDetails?.brokerData?.broker?.panCard ? profileDetails?.brokerData?.broker?.panCard:'-'}}
+                        <a class="text-body" *ngIf="profileDetails?.brokerData.broker.panCard;else elseBlock"
+                            [href]="profileDetails.brokerData.broker.panCard" download target="_blank">
+                            <span>Click here to View</span>
+                            <!-- <span class="pl-2">
+                                    <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
+                                </span> -->
+                        </a>
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
@@ -95,3 +101,7 @@
         </div>
     </kt-portlet-body>
 </kt-portlet>
+
+<ng-template #elseBlock>
+    -
+</ng-template>

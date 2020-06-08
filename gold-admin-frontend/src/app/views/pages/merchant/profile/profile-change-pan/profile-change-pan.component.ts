@@ -13,6 +13,7 @@ export class ProfileChangePanComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   panForm: FormGroup;
   title: string = 'Pancard Update';
+  isMandatory: boolean = true;
   constructor(
     public dialogRef: MatDialogRef<ProfileChangePanComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -47,8 +48,12 @@ export class ProfileChangePanComponent implements OnInit {
 
   uploadImage(data) {
     this.panForm.controls["pancard"].patchValue(
-      data.uploadData.id
+      data.uploadData.URL
     );
+  }
+
+  removeImage(data) {
+    this.panForm.controls["pancard"].patchValue("");
   }
 
   onSubmit() {
@@ -64,9 +69,8 @@ export class ProfileChangePanComponent implements OnInit {
         this.toastr.successToastr(
           "Pancard Updated Sucessfully"
         );
-        this.dialogRef.close();
+        this.dialogRef.close('reload');
       }
     });
-
   }
 }

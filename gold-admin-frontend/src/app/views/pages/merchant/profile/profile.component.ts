@@ -27,7 +27,7 @@ export class ProfileComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
-        console.log(res);
+        this.ngOnInit()
       }
     });
   }
@@ -38,10 +38,9 @@ export class ProfileComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
-        console.log(res);
+        this.ngOnInit()
       }
     });
-
   }
 
 }
