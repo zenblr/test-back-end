@@ -13,7 +13,7 @@ import { EMIManagementModule } from './admin/emi-management/emi-management.modul
 //	import { LogisticPartnerComponent } from './emi-maangement/logistic-partner/logistic-partner.component';
 
 @NgModule({
-	declarations: [MyPageComponent],
+	declarations: [MyPageComponent,],
 	exports: [],
 	imports: [
 		CommonModule,

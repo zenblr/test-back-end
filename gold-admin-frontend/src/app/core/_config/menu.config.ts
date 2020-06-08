@@ -356,6 +356,13 @@ export class MenuConfig {
 							]
 						},
 						{
+							title: "Merchant Broker",
+							root: true,
+							src: "assets/media/aside-icons/icons-24.svg",
+							page: "/merchant-broker",
+							permission: !this.modulesArr.includes(2),
+						},
+						{
 							title: "Log Out",
 							src: "assets/media/aside-icons/icons-12.svg",
 							permission: false,
@@ -438,6 +445,8 @@ export class MenuConfig {
 							title: "Product",
 							root: true,
 							icon: "flaticon2-open-box",
+							bullet: 'dot',
+
 							permission: !(this.permissionsArr.includes('productView') ||
 								this.permissionsArr.includes('categoryView') ||
 								this.permissionsArr.includes('subCategoryView') ||
@@ -494,6 +503,8 @@ export class MenuConfig {
 							title: "Config Details",
 							root: true,
 							icon: "flaticon2-console",
+							bullet: 'dot',
+
 							permission: !(this.permissionsArr.includes('walletView') || this.permissionsArr.includes('adminLogView')),
 
 							submenu: [
@@ -513,6 +524,7 @@ export class MenuConfig {
 							title: "Order Management",
 							root: true,
 							icon: "flaticon2-shopping-cart",
+							bullet: 'dot',
 							permission: !(this.permissionsArr.includes('orderView') ||
 								this.permissionsArr.includes('EMIDetailsView') ||
 								this.permissionsArr.includes('refundDetailsView') ||
@@ -574,6 +586,29 @@ export class MenuConfig {
 							root: true,
 							page: "/admin/dashboard",
 							permission: false,
+						},
+					],
+					itemsFour: [
+						{
+							title: "Customers",
+							root: true,
+							page: "/merchant-broker/customers",
+							src: "assets/media/aside-icons/icons-06.svg",
+							permission: !this.permissionsArr.includes('customerView'),
+						},
+						{
+							title: "Orders",
+							root: true,
+							page: "/merchant-broker/orders",
+							src: "assets/media/aside-icons/icons-13.svg",
+							permission: !this.permissionsArr.includes('customerView'),
+						},
+						{
+							title: "Profile",
+							root: true,
+							page: "/merchant-broker/profile",
+							src: "assets/media/aside-icons/icons-13.svg",
+							permission: !this.permissionsArr.includes('customerView'),
 						},
 					],
 				},

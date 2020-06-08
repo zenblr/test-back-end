@@ -23,6 +23,10 @@ const routes: Routes = [
 				loadChildren: () => import('./views/pages/admin/admin.module').then(m => m.AdminModule)
 			},
 			{
+				path: 'merchant-broker',
+				loadChildren: () => import('../app/views/pages/merchant/merchant.module').then(m => m.MerchantModule)
+			},
+			{
 				path: 'wizard',
 				loadChildren: () => import('../app/views/pages/wizard/wizard.module').then(m => m.WizardModule)
 			},
@@ -41,7 +45,6 @@ const routes: Routes = [
 			{ path: '**', redirectTo: 'admin', pathMatch: 'full' }
 		]
 	},
-
 	{ path: '**', redirectTo: 'error/403', pathMatch: 'full' },
 ];
 
