@@ -24,7 +24,7 @@ export class KycSettingsComponent implements OnInit {
     // this.next();
     // console.log(this.appliedKycService.editKyc.getValue());
     // this.active = 1;
-    console.log(this.route);
+    // console.log(this.route);
     if (this.route.snapshot.queryParams.mob) {
       this.active = 1;
     } else {
@@ -51,7 +51,7 @@ export class KycSettingsComponent implements OnInit {
     console.log(event);
 
     if (event !== true) {
-      console.log(event);
+      // console.log(event);
       for (let i = 0; i < this.disabled.length; i++) {
         this.disabled[i] = true;
         this.active = +(event);

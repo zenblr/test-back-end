@@ -18,6 +18,9 @@ export class PageConfig {
 			},
 		},
 		masters: {
+			"lead-source": {
+				page: { title: "Lead Source", desc: "" },
+			},
 			reasons: {
 				page: { title: "Reasons", desc: "" },
 			},

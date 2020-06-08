@@ -16,8 +16,14 @@ import { OrnamentsListComponent } from './ornaments/ornaments-list/ornaments-lis
 import { AddPurposeComponent } from './purposes/add-purpose/add-purpose.component';
 import { ReasonListComponent } from './reasons/reason-list/reason-list.component';
 import { ReasonAddComponent } from './reasons/reason-add/reason-add.component';
+import { LeadSourceListComponent } from './lead-source/lead-source-list/lead-source-list.component';
+import { LeadSourceAddComponent } from './lead-source/lead-source-add/lead-source-add.component';
 
 const routes: Routes = [
+  {
+    path: 'lead-source',
+    component: LeadSourceListComponent
+  },
   {
     path: 'reasons',
     component: ReasonListComponent
@@ -38,44 +44,47 @@ const routes: Routes = [
 
 
 @NgModule({
-    declarations: [
-      PurposesListComponent,
-      PacketLocationListComponent,
-      AddPacketLocationComponent,
-      OrnamentsAddComponent,
-      OrnamentsListComponent,
-      AddPurposeComponent,
-      ReasonListComponent,
-      ReasonAddComponent
-    ],
-    imports: [
-      CommonModule,
-      HttpClientModule,
-      PartialsModule,
-      RouterModule.forChild(routes),
-      FormsModule,
-      ReactiveFormsModule,
-      AngularMaterialModule,
-      CoreModule,
-    ],
-    providers: [
-      InterceptService,
-      {
-        provide: HTTP_INTERCEPTORS,
-        useClass: InterceptService,
-        multi: true
-      },
-      { provide: MAT_DIALOG_DATA, useValue: {} },
-      { provide: MatDialogRef, useValue: {} },
-      HttpUtilsService,
-      TypesUtilsService,
-      LayoutUtilsService
-    ],
-    entryComponents: [
-      AddPacketLocationComponent,
-      OrnamentsAddComponent,
-      AddPurposeComponent,
-      ReasonAddComponent
-    ]
+  declarations: [
+    PurposesListComponent,
+    PacketLocationListComponent,
+    AddPacketLocationComponent,
+    OrnamentsAddComponent,
+    OrnamentsListComponent,
+    AddPurposeComponent,
+    ReasonListComponent,
+    ReasonAddComponent,
+    LeadSourceListComponent,
+    LeadSourceAddComponent
+  ],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    PartialsModule,
+    RouterModule.forChild(routes),
+    FormsModule,
+    ReactiveFormsModule,
+    AngularMaterialModule,
+    CoreModule,
+  ],
+  providers: [
+    InterceptService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptService,
+      multi: true
+    },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
+    HttpUtilsService,
+    TypesUtilsService,
+    LayoutUtilsService
+  ],
+  entryComponents: [
+    AddPacketLocationComponent,
+    OrnamentsAddComponent,
+    AddPurposeComponent,
+    ReasonAddComponent,
+    LeadSourceAddComponent
+  ]
 })
 export class MastersModule { }

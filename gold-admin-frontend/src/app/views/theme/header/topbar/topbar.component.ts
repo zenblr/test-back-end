@@ -42,6 +42,7 @@ import { PacketLocationService } from '../../../../core/masters/packet-location/
 import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
 import { PurposeService } from '../../../../core/masters/purposes/service/purpose.service';
 import { ReasonsService } from '../../../../core/masters/reasons/services/reasons.service';
+import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -118,10 +119,11 @@ export class TopbarComponent implements OnInit {
 		private emailAlertService: EmailAlertService,
 		private smsAlertService: SmsAlertService,
 		private holidayService: HolidayService,
-		private packetLocation:PacketLocationService,
+		private packetLocation: PacketLocationService,
 		private ornamentsService: OrnamentsService,
-		private purposeService:PurposeService,
-		private reasonsService: ReasonsService
+		private purposeService: PurposeService,
+		private reasonsService: ReasonsService,
+		private leadSourceService: LeadSourceService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -339,10 +341,16 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "packet-location") {
 			this.dataSourceHeader();
 			this.value1 = "Add Packet Location";
-		} 
+		}
 		if (this.path == "purposes") {
 			this.dataSourceHeader();
 			this.value1 = "Add Purpose";
+		}
+		if (this.path == "lead-source") {
+			this.value1 = "Add Lead Source";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
 		}
 
 		if (this.path == "roles") {
@@ -602,8 +610,11 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'packet-location') {
 			this.packetLocation.openModal.next(true)
 		}
-		if(this.path == 'purposes'){
+		if (this.path == 'purposes') {
 			this.purposeService.openModal.next(true)
+		}
+		if (this.path == 'lead-source') {
+			this.leadSourceService.openModal.next(true)
 		}
 	}
 
