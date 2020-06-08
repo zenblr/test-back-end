@@ -95,6 +95,14 @@ export class OrderCancelDialogComponent implements OnInit {
     }
   }
 
+  removeImage(data) {
+    if (data.fieldName == "passbookCopy") {
+      this.cancelForm.controls["passbookId"].patchValue("");
+    } else if (data.fieldName == "checkCopy") {
+      this.cancelForm.controls["checkCopyId"].patchValue("");
+    }
+  }
+
   onSubmit() {
     if (this.cancelForm.invalid) {
       this.cancelForm.markAllAsTouched();
