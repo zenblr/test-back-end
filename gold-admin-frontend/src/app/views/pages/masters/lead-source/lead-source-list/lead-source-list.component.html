@@ -3,23 +3,28 @@
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
-                <ng-container matColumnDef="customerId">
-                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.customerUniqueId}}</mat-cell>
+                <ng-container matColumnDef="lead">
+                    <mat-header-cell *matHeaderCellDef>Lead</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.leadName | titlecase}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="customerName">
-                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
-                    <mat-cell *matCellDef="let item">
-                        {{item.customer.firstName | titlecase}}&nbsp;{{item.customer.lastName | titlecase}}</mat-cell>
+                <ng-container matColumnDef="source">
+                    <mat-header-cell *matHeaderCellDef>Source</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.sourceName | titlecase}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="newLoan">
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <button style="width: 120px;" class="apply-kyc" (click)="applyLoan(item)">Add New Loan</button>
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <span class="kt-pointer" (click)="editLeadSource(item)">Edit</span>
+                            <div class="px-2">|</div>
+                            <span class="kt-pointer text-danger" (click)="deleteLeadSource(item)">Delete</span>
+                        </div>
                     </mat-cell>
                 </ng-container>
+
+
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

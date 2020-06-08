@@ -157,6 +157,11 @@ export class MenuConfig {
 
 									submenu: [
 										{
+											title: "Lead Source",
+											page: "/masters/lead-source",
+											permission: false,
+										},
+										{
 											title: "Ornaments",
 											page: "/masters/ornaments",
 											permission: false,
@@ -184,10 +189,10 @@ export class MenuConfig {
 										},
 									],
 								},
-								
+
 							],
 						},
-						
+
 						{
 							title: "User Management",
 							root: true,
@@ -231,7 +236,7 @@ export class MenuConfig {
 									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 								{
-									title: "Assigned customers",
+									title: "Assigned Customers",
 									page: "/assigned-customers",
 									// permission: !this.permissionsArr.includes('appliedKycView'),
 								},
