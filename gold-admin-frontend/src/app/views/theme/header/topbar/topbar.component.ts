@@ -448,6 +448,9 @@ export class TopbarComponent implements OnInit {
 		) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/order-details/cancel-order/')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
