@@ -17,7 +17,7 @@ export class SharedService {
 
 
 	constructor(private http: HttpClient) {
-		
+
 	}
 
 	getStates(): Observable<any> {
@@ -35,7 +35,7 @@ export class SharedService {
 	}
 
 	uploadBase64File(avatar): Observable<any> {
-		return this.http.post<any>(`/api/upload-file/base`, {avatar});
+		return this.http.post<any>(`/api/upload-file/base`, { avatar });
 	}
 
 	getRole(): Observable<any> {

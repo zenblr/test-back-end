@@ -32,7 +32,7 @@ export class MenuConfig {
 			this.defaults = {
 				aside: {
 					self: {},
-					itemsOne: [
+					adminItems: [
 						{
 							title: "Dashboard",
 							root: true,
@@ -359,8 +359,8 @@ export class MenuConfig {
 							title: "Merchant Broker",
 							root: true,
 							src: "assets/media/aside-icons/icons-24.svg",
-							page: "/merchant-broker",
-							permission: !this.modulesArr.includes(2),
+							page: "/broker",
+							permission: !(this.userType === 2 || this.userType === 3 || this.userType === 4),
 						},
 						{
 							title: "Log Out",
@@ -368,7 +368,7 @@ export class MenuConfig {
 							permission: false,
 						},
 					],
-					itemsTwo: [
+					userMgmtItems: [
 						{
 							title: "Partner",
 							root: true,
@@ -440,7 +440,7 @@ export class MenuConfig {
 							permission: false,
 						},
 					],
-					itemsThree: [
+					emiMgmtItems: [
 						{
 							title: "Product",
 							root: true,
@@ -588,25 +588,25 @@ export class MenuConfig {
 							permission: false,
 						},
 					],
-					itemsFour: [
+					brokerItems: [
 						{
 							title: "Customers",
 							root: true,
-							page: "/merchant-broker/customers",
+							page: "/broker/customers",
 							src: "assets/media/aside-icons/icons-06.svg",
 							permission: !this.permissionsArr.includes('customerView'),
 						},
 						{
 							title: "Orders",
 							root: true,
-							page: "/merchant-broker/orders",
+							page: "/broker/orders",
 							src: "assets/media/aside-icons/icons-13.svg",
 							permission: !this.permissionsArr.includes('customerView'),
 						},
 						{
 							title: "Profile",
 							root: true,
-							page: "/merchant-broker/profile",
+							page: "/broker/profile",
 							src: "assets/media/aside-icons/icons-13.svg",
 							permission: !this.permissionsArr.includes('customerView'),
 						},

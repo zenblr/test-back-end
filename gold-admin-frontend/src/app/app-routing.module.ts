@@ -23,7 +23,7 @@ const routes: Routes = [
 				loadChildren: () => import('./views/pages/admin/admin.module').then(m => m.AdminModule)
 			},
 			{
-				path: 'merchant-broker',
+				path: 'broker',
 				loadChildren: () => import('../app/views/pages/merchant/merchant.module').then(m => m.MerchantModule)
 			},
 			{

@@ -333,16 +333,14 @@ export class PageConfig {
 			}
 		},
 		'broker': {
-			"merchant-broker": {
-				"customers": {
-					page: { title: "Customers", desc: "" },
-				},
-				"orders": {
-					page: { title: "Orders", desc: "" },
-				},
-				"profile": {
-					page: { title: "Profile", desc: "" },
-				},
+			"customers": {
+				page: { title: "Customers", desc: "" },
+			},
+			"orders": {
+				page: { title: "Orders", desc: "" },
+			},
+			"profile": {
+				page: { title: "Profile", desc: "" },
 			},
 		}
 	};
