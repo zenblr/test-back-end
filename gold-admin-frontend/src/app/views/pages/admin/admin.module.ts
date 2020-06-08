@@ -73,6 +73,22 @@ import { AdminComponent } from './admin.component';
 						path: 'repayment',
 						loadChildren: () => import('./repayment/repayment.module').then(m => m.RepaymentModule)
 					},
+					{
+						path: 'global-settings',
+						loadChildren: () => import('./settings/global-settings/global-settings.module').then(m => m.GlobalSettingsModule)
+					},
+					{
+						path: 'masters',
+						loadChildren: () => import('./masters/masters.module').then(m => m.MastersModule)
+					},
+					{
+						path: 'holidays',
+						loadChildren: () => import('./holidays/holidays.module').then(m => m.HolidaysModule)
+					},
+					{
+						path: 'assigned-customers',
+						loadChildren: () => import('./assigned-customers/assigned-customers.module').then(m => m.AssignedCustomersModule)
+					},
 					{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 					{ path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
 				]

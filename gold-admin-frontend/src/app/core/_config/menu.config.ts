@@ -47,7 +47,6 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-02.svg",
 							page: "/admin/dashboard",
 							permission: false,
-
 							submenu: [
 								{
 									title: "Change Password",
@@ -71,7 +70,6 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-03.svg",
 							permission: false,
-
 							submenu: [
 								{
 									title: "Upload Data",
@@ -150,36 +148,35 @@ export class MenuConfig {
 									submenu: [
 										{
 											title: "Ornaments",
-											page: "/masters/ornaments",
+											page: "/admin/masters/ornaments",
 											permission: false,
 										},
 										{
 											title: "Unapproval Reasons",
-											page: "/masters/reasons",
+											page: "/admin/masters/reasons",
 											permission: false,
 										},
 										{
 											title: "Purposes",
-											page: "/masters/purposes",
+											page: "/admin/masters/purposes",
 											permission: false,
 										},
 										{
 											title: "Packet Location",
-											page: "/masters/packet-location",
+											page: "/admin/masters/packet-location",
 											permission: false,
 										},
 										{
 											title: "Holidays",
 											root: true,
 											permission: false,
-											page: '/holidays'
+											page: "/admin/holidays"
 										},
 									],
 								},
 
 							],
 						},
-
 						{
 							title: "User Management",
 							root: true,
@@ -209,7 +206,6 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-06.svg",
 							permission: !(this.permissionsArr.includes('customerKycView') ||
 								this.permissionsArr.includes('appliedKycView')),
-
 							submenu: [
 								{
 									title: "KYC Setting",
@@ -223,7 +219,7 @@ export class MenuConfig {
 								},
 								{
 									title: "Assigned customers",
-									page: "/assigned-customers",
+									page: "/admin/assigned-customers",
 									// permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 							],
@@ -233,7 +229,6 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-07.svg",
 							permission: false,
-
 							submenu: [
 								{
 									title: "Loan Calculator",
@@ -276,7 +271,6 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-09.svg",
 							permission: false,
-
 							submenu: [
 								{
 									title: "Monthly Payment",
@@ -295,7 +289,6 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-12.svg",
 							permission: false,
-
 							submenu: [
 								{
 									title: "Loan Disbursed Details",
@@ -314,7 +307,6 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-11.svg",
 							permission: false,
-
 							submenu: [
 								{
 									title: "KYC",
@@ -358,7 +350,7 @@ export class MenuConfig {
 							submenu: [
 								{
 									title: "Global Settings",
-									page: "/global-settings",
+									page: "/admin/global-settings",
 									permission: false,
 								},
 							]
