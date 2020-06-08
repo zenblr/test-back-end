@@ -18,6 +18,7 @@ export class MenuConfig {
 				this.permissionsService.loadPermissions(this.permissionsArr);
 				// console.log(this.permissionsArr);
 			}
+			
 			if (res.userDetails) {
 				this.userType = res.userDetails.userTypeId;
 			}
@@ -356,7 +357,7 @@ export class MenuConfig {
 							]
 						},
 						{
-							title: "Merchant Broker",
+							title: "Broker",
 							root: true,
 							src: "assets/media/aside-icons/icons-24.svg",
 							page: "/broker",
@@ -590,6 +591,14 @@ export class MenuConfig {
 					],
 					brokerItems: [
 						{
+							title: "Dashboard",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/broker/dashboard",
+							translate: "MENU.DASHBOARD",
+							permission: false,
+						},
+						{
 							title: "Customers",
 							root: true,
 							page: "/broker/customers",
@@ -609,6 +618,18 @@ export class MenuConfig {
 							page: "/broker/profile",
 							src: "assets/media/aside-icons/icons-13.svg",
 							permission: !this.permissionsArr.includes('customerView'),
+						},
+						{
+							title: 'Back',
+							icon: 'flaticon-logout',
+							root: true,
+							page: "/admin/dashboard",
+							permission: !(this.userType === 4),
+						},
+						{
+							title: "Log Out",
+							src: "assets/media/aside-icons/icons-12.svg",
+							permission: !(this.userType === 2 || this.userType === 3),
 						},
 					],
 				},

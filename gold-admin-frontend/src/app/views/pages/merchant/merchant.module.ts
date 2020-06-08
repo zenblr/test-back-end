@@ -37,6 +37,7 @@ import {
 //Components
 
 import { MerchantComponent } from "./merchant.component";
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { CustomersComponent } from './customers/customers-list/customers.component';
 import { OrdersComponent } from './orders/orders-list/orders.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -49,7 +50,11 @@ const routes: Routes = [
     component: MerchantComponent,
 
     children: [
-      { path: "", redirectTo: "customers", pathMatch: "full" },
+      { path: "", redirectTo: "dashboard", pathMatch: "full" },
+      {
+        path: "dashboard",
+        component: DashboardComponent,
+      },
       {
         path: "customers",
         component: CustomersComponent,
@@ -67,7 +72,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MerchantComponent, CustomersComponent, OrdersComponent, ProfileComponent, ProfileChangePassComponent],
+  declarations: [
+    MerchantComponent,
+    DashboardComponent,
+    CustomersComponent,
+    OrdersComponent,
+    ProfileComponent,
+    ProfileChangePassComponent],
   imports: [
     CommonModule,
     HttpClientModule,

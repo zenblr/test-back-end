@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 
 // Auth
-import { AuthNoticeService,} from '../../../../core/auth';
+import { AuthNoticeService } from '../../../../core/auth';
 
 // services
 import { AuthService } from '../../../../core/auth/_services/auth.service';
@@ -64,7 +64,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 		private auth: AuthService,
 		private authNoticeService: AuthNoticeService,
 		private translate: TranslateService,
-		
 		private fb: FormBuilder,
 		private cdr: ChangeDetectorRef,
 		private route: ActivatedRoute,
@@ -153,12 +152,16 @@ export class LoginComponent implements OnInit, OnDestroy {
 						// this.store.dispatch(new Login({ authToken: user.accessToken }));
 						localStorage.setItem('UserDetails', JSON.stringify(res));
 						// debugger
-						if (this.returnUrl === '/') {
-							this.router.navigate(['/admin/dashboard']);
+						if (res.userDetails.userTypeId === 2 || res.userDetails.userTypeId === 3) {
+							this.router.navigate(['/broker']);
 						} else {
-							this.router.navigateByUrl(this.returnUrl); // Main page
+							this.router.navigate(['/admin']);
 						}
-						// this.router.navigateByUrl(this.returnUrl); // Main page
+						// if (this.returnUrl === '/') {
+						// 	this.router.navigate(['/admin/dashboard']);
+						// } else {
+						// 	this.router.navigateByUrl(this.returnUrl); // Main page
+						// }
 					} else {
 						this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.INVALID_LOGIN'), 'danger');
 					}

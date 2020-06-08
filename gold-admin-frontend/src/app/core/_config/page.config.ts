@@ -333,6 +333,9 @@ export class PageConfig {
 			}
 		},
 		'broker': {
+			'dashboard': {
+				page: { title: "Dashboard", desc: "" },
+			},
 			"customers": {
 				page: { title: "Customers", desc: "" },
 			},

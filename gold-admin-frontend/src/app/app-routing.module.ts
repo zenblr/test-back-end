@@ -7,6 +7,8 @@ import { ErrorPageComponent } from './views/theme/content/error-page/error-page.
 // Auth
 import { AuthGuard } from './core/auth';
 import { ReverseAuthGuard } from './core/auth/_guards/reverse-auth.guard';
+import { RoleGuard } from './core/auth/_guards/role.guard';
+import { RedirectGuard } from './core/auth/_guards/redirect.guard';
 
 const routes: Routes = [
 	{
@@ -24,7 +26,11 @@ const routes: Routes = [
 			},
 			{
 				path: 'broker',
-				loadChildren: () => import('../app/views/pages/merchant/merchant.module').then(m => m.MerchantModule)
+				loadChildren: () => import('../app/views/pages/merchant/merchant.module').then(m => m.MerchantModule),
+				// canActivate: [RoleGuard],
+				// data: {
+				// 	expectedRole: 'Broker'
+				// }
 			},
 			{
 				path: 'wizard',
@@ -41,8 +47,8 @@ const routes: Routes = [
 				}
 			},
 			{ path: 'error/:type', component: ErrorPageComponent },
-			{ path: '', redirectTo: 'admin', pathMatch: 'full' },
-			{ path: '**', redirectTo: 'admin', pathMatch: 'full' }
+			{ path: '', redirectTo: '', pathMatch: 'full', canActivate: [RedirectGuard] },
+			{ path: '**', redirectTo: '', pathMatch: 'full', canActivate: [RedirectGuard] }
 		]
 	},
 	{ path: '**', redirectTo: 'error/403', pathMatch: 'full' },
