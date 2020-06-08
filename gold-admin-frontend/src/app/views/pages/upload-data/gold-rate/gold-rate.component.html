@@ -1,9 +1,10 @@
 <kt-portlet>
     <kt-portlet-body>
         <div class="row kt-padding-t-20 ">
-            <div class="col-3 font-weight-bold text-color d-flex align-items-center" placeholder="">Upload Gold Rate
+            <div class="col-3 form-label" placeholder="">
+                <label for="" class="mandatory kt-padding-l-10">Upload Gold Rate</label>
             </div>
-            <div class="col-3 per-gram d-flex align-items-center">
+            <div class="col-3 per-gram align-items-center">
                 <input type="text" class="form-control" numbersOnly [formControl]="goldRate"
                     [class.isError]="goldRate.invalid && goldRate.touched">
                 <mat-error *ngIf="goldRate.invalid && goldRate.touched">Field required</mat-error>

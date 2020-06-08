@@ -16,6 +16,9 @@ export class LoanSettingsService {
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
+  applyFilter = new BehaviorSubject<any>({});
+  applyFilter$ = this.applyFilter.asObservable();
+
   getScheme(): Observable<any> {
     return this.http.get('api/scheme').pipe(
       map(res => res),

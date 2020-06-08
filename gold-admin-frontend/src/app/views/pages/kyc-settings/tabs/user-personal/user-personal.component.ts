@@ -7,6 +7,7 @@ import { UserDetailsService } from '../../../../../core/kyc-settings';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
 import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
+import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 
 @Component({
   selector: 'kt-user-personal',
@@ -44,7 +45,7 @@ export class UserPersonalComponent implements OnInit {
       customerId: [this.customerDetails.customerId],
       customerKycId: [this.customerDetails.customerKycId],
       profileImage: ['', [Validators.required]],
-      alternateMobileNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      alternateMobileNumber: ['', [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       gender: ['', [Validators.required]],
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
@@ -178,4 +179,18 @@ export class UserPersonalComponent implements OnInit {
       return this.personalForm.controls;
   }
 
+  previewImage(value) {
+    // let temp = [];
+    // temp.push(this.controls.profileImage.value, this.controls.signatureProof.value);
+    // var filteredArray = temp.filter(value => value != '');
+
+    // let index = temp.indexOf(value);
+    // this.dialog.open(ImagePreviewDialogComponent, {
+    //   data: {
+    //     images: filteredArray,
+    //     index: index
+    //   },
+    //   width: "auto"
+    // })
+  }
 }

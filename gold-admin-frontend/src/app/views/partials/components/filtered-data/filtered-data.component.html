@@ -103,6 +103,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- lead -->
                     <div class="filtered-data" *ngIf="filteredList?.states">
                         <div class="filtered-title">By State</div>
                         <div class="d-flex">
@@ -130,6 +131,49 @@
                                 <span>{{item?.name | titlecase}}</span>
                                 <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
                                     (click)="clearFilter('status', i)">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- appliedkyc -->
+                    <div class="filtered-data" *ngIf="filteredList?.cceStatus">
+                        <div class="filtered-title">By CCE Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.cceStatus; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('cceStatus',i)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filtered-data" *ngIf="filteredList?.kycStatus">
+                        <div class="filtered-title">By B.M Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.kycStatus; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('kycStatus',i)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- appliedLoan -->
+                    <div class="filtered-data" *ngIf="filteredList?.appraiserStatus">
+                        <div class="filtered-title">By CCE Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.appraiserStatus; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('appraiserStatus',i)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filtered-data" *ngIf="filteredList?.loanStatus">
+                        <div class="filtered-title">By B.M Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.loanStatus; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('loanStatus',i)">
                             </div>
                         </div>
                     </div>

@@ -35,6 +35,7 @@ export class RefundDetailsComponent implements OnInit {
 		"cancelPrice",
 		"diffAmt",
 		"cancelFees",
+		"cancelCharge",
 		"totalCancelCharge",
 		"amtPayable",
 		"cancelDate",

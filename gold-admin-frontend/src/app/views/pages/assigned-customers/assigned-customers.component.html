@@ -10,7 +10,8 @@
 
                 <ng-container matColumnDef="customerName">
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.customer.firstName | titlecase}}{{item.customer.lastName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item.customer.firstName | titlecase}}&nbsp;{{item.customer.lastName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="newLoan">

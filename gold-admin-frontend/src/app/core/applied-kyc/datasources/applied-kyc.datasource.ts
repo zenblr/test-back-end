@@ -22,12 +22,12 @@ export class AppliedKycDatasource extends BaseDataSource {
 
 
 
-    loadKyc(from, to, search, kycStatus, cceRating, bmRating) {
+    loadKyc(deatils) {
         this.loadingSubject.next(true);
 
         // this.entitySubject.next(this.leads); // delete this
 
-        this.appliedKycService.getAllKyc(from, to, search, kycStatus, cceRating, bmRating)
+        this.appliedKycService.getAllKyc(deatils)
             .pipe(
                 map(
                     report => {
