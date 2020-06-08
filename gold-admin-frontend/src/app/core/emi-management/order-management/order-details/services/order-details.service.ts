@@ -50,39 +50,39 @@ export class OrderDetailsService {
 		if (event && event.orderCurrentStatus) {
 			reqParams.orderCurrentStatus = event.orderCurrentStatus;
 		}
-		return this.http.get<any>(`http://173.249.49.7:9120/api/order`, {
+		return this.http.get<any>(API_ENDPOINT + `api/order`, {
 			params: reqParams,
 		});
 	}
 
 	getOrderTrackingLog(id): Observable<any> {
 		return this.http.get<any>(
-			`http://173.249.49.7:9120/api/order/order-tracking-log/${id}`
+			API_ENDPOINT + `api/order/order-tracking-log/${id}`
 		);
 	}
 
 	getOrderDetails(id): Observable<any> {
 		return this.http.get<any>(
-			`http://173.249.49.7:9120/api/order/details/${id}`
+			API_ENDPOINT + `api/order/details/${id}`
 		);
 	}
 
 	getOrderLogistic(): Observable<any> {
 		return this.http.get<any>(
-			`http://173.249.49.7:9120/api/order/logistic`
+			API_ENDPOINT + `api/order/logistic`
 		);
 	}
 
 	editOrderStatus(data, id): Observable<any> {
 		return this.http.put<any>(
-			`http://173.249.49.7:9120/api/order/order-status/${id}`,
+			API_ENDPOINT + `api/order/order-status/${id}`,
 			data
 		);
 	}
 
 	reportExport(): Observable<any> {
 		return this.http
-			.get(`http://173.249.49.7:9120/api/order/order-report`, {
+			.get(API_ENDPOINT + `api/order/order-report`, {
 				responseType: "arraybuffer",
 			})
 			.pipe(
@@ -107,7 +107,7 @@ export class OrderDetailsService {
 	getProforma(id): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/order/order-proforma-invoice/${id}`,
+				API_ENDPOINT + `api/order/order-proforma-invoice/${id}`,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -131,7 +131,7 @@ export class OrderDetailsService {
 
 	getContract(id): Observable<any> {
 		return this.http
-			.get(`http://173.249.49.7:9120/api/order/order-contract/${id}`, {
+			.get(API_ENDPOINT + `api/order/order-contract/${id}`, {
 				responseType: "arraybuffer",
 			})
 			.pipe(
