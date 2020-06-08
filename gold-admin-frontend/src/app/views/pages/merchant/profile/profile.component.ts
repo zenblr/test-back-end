@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrComponent } from "../../../partials/components/toastr/toastr.component";
 import { ProfileService } from '../../../../core/merchant-broker';
 import { ProfileChangePassComponent } from './profile-change-pass/profile-change-pass.component';
+import { ProfileChangePanComponent } from './profile-change-pan/profile-change-pan.component';
 import { MatDialog } from "@angular/material";
 
 @Component({
@@ -32,6 +33,14 @@ export class ProfileComponent implements OnInit {
   }
 
   updatePan() {
+    const dialogRef = this.dialog.open(ProfileChangePanComponent, {
+      width: "500px", disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        console.log(res);
+      }
+    });
 
   }
 

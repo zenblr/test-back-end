@@ -19,4 +19,8 @@ export class ProfileService {
         return this.http.post('http://173.249.49.7:9120/api/Broker/broker-detail', data)
     }
 
+    updatePanDetails(data): Observable<any> {
+        return this.http.put('http://173.249.49.7:9120/api/Broker/update-broker-pandetails', data)
+    }
+
 }
