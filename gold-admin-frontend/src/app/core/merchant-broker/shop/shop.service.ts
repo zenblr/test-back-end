@@ -17,7 +17,22 @@ export class ShopService {
         return this.http.get('http://173.249.49.7:9120/api/category/shop-category')
     }
 
-    getProduct(id?): Observable<any> {
-        return this.http.get('http://173.249.49.7:9120/api/products/product-by-subcategory?' + id)
+    getProduct(event?): Observable<any> {
+        const reqParams: any = {};
+        if (event && event.from) {
+            reqParams.from = event.from;
+        }
+        if (event && event.to) {
+            reqParams.to = event.to;
+        }
+        if (event && event.search) {
+            reqParams.search = event.search;
+        }
+        if (event && event.subCategoryId) {
+            reqParams.subCategoryId = event.subCategoryId;
+        }
+        return this.http.get('http://173.249.49.7:9120/api/products/product-by-subcategory', {
+            params: reqParams,
+        })
     }
 }

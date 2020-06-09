@@ -1,14 +1,38 @@
-.subStyle{
-    min-height: 50px;
-    justify-content: center;
-    background-color: white;
-    color: #454d67;
-    border-radius: 10px;
-    font-weight: 600;
-    padding: 25px;
-}
-
-.subStyle:hover{
-    background-color: #454d67;
-    color: white;
+:host {
+    .subStyle{
+        min-height: 50px;
+        justify-content: center;
+        background-color: white;
+        color: #454d67;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 25px;
+    }
+    
+    .subStyle:hover{
+        background-color: #454d67;
+        color: white;
+    }
+    .card-container {
+        margin: 0 -5px;
+    }
+    .customer-id {
+        margin-bottom: 0.5rem;
+        min-height: 3rem;
+    }
+    .card {
+        position     : relative;
+        width        : 18%;
+        padding      : 10px;
+        margin       : 10px;
+        border-radius: 15px;
+    }
+    .list-card {
+        position     : relative;
+        width        : 100%;
+        padding      : 10px;
+        margin       : 10px;
+        border-radius: 15px;
+        border: 1px solid #ebedf2;
+    }        
 }

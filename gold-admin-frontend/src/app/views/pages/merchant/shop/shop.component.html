@@ -1,7 +1,75 @@
-<div *ngIf="subCategory">
+<div *ngIf="subCategory" class="mb-3">
     <mat-chip-list>
-        <mat-chip *ngFor="let sub of subCategory" class="subStyle">
+        <mat-chip *ngFor="let sub of subCategory" class="subStyle kt-pointer" (click)="selectedSubCategory(sub.id)">
             {{sub.subCategoryName}}&nbsp;({{sub.count}})
         </mat-chip>
     </mat-chip-list>
 </div>
+<kt-portlet>
+    <kt-portlet-body [class]="'kt-portlet__body--fit'">
+        <div class="row card-container" *ngIf="products && toogler == 'grid'">
+            <div class="card" *ngFor="let product of products;index as i">
+                <div class="bg-white text-center">
+                    <img [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
+                        alt="test" width="150px" height="150px">
+                    <p class="text-color customer-id font-weight-bold mt-2">{{product.productName}}</p>
+                    <p>Weight: {{product.weight}} GMS</p>
+                    <p class="text-color font-weight-bold">₹ {{product.productPrice[0].finalProductPrice}}
+                    </p>
+                    <kt-button [value]='"Order Now"' [type]='"button"' (click)="action($event)"
+                        (action)="buttonValue($event)" class="kt-padding-r-5"></kt-button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row card-container" *ngIf="products && toogler == 'list'">
+            <div class="list-card bg-white" *ngFor="let product of products;index as i">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
+                                    alt="test" width="100px" height="100px">
+                            </div>
+                            <div class="col-md-8">
+                                <p class="text-color customer-id font-weight-bold">{{product.productName | titlecase}}
+                                </p>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <p>SKU Code &nbsp;<span
+                                                class="text-color font-weight-bold">{{product.sku}}</span></p>
+                                        <p>Karet &nbsp;<span class="text-color font-weight-bold">{{product.sku}}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p>Jewellery Type &nbsp;<span
+                                                class="text-color font-weight-bold">{{product.subCategory.subCategoryName}}</span>
+                                        </p>
+                                        <p>Purity &nbsp;<span class="text-color font-weight-bold">{{product.sku}}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p>Weight &nbsp;<span class="text-color font-weight-bold">{{product.weight}}
+                                                Gram</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <h5 class="text-color font-weight-bold pt-4">₹
+                                    {{product.productPrice[0].finalProductPrice}}
+                                </h5>
+                                <kt-button [value]='"Order Now"' [type]='"button"' (click)="action($event)"
+                                    (action)="buttonValue($event)" class="py-3"></kt-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <mat-paginator [length]="count" [pageSize]="25" [pageSizeOptions]="[5, 10, 25]"
+            (page)="pageEvent = getServerData($event)">
+        </mat-paginator>
+    </kt-portlet-body>
+</kt-portlet>
