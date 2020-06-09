@@ -6,18 +6,34 @@ import { Observable, BehaviorSubject, of } from "rxjs";
 	providedIn: "root",
 })
 export class SharedService {
+
 	totalCount = new BehaviorSubject(0);
 	totalCount$ = this.totalCount.asObservable()
+
 	role = new BehaviorSubject(null)
 	role$ = this.role.asObservable();
+
 	closeFilter = new BehaviorSubject<any>(false);
 	closeFilter$ = this.closeFilter.asObservable();
+
 	clearFilter = new BehaviorSubject<any>({});
 	clearFilter$ = this.clearFilter.asObservable();
 
+	appraiserOrCCE = [
+		{ value: 'approved', name: 'approved' },
+		{ value: 'pending', name: 'pending' },
+		{ value: 'rejected', name: 'rejected' }
+	];
+	branchManager = [
+		{ value: 'approved', name: 'approved' },
+		{ value: 'rejected', name: 'rejected' },
+		{ value: 'incomplete', name: 'incomplete' }
+	];
 
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient) { }
 
+	getStatus() {
+		return of({ apprsiserOrCCE: this.appraiserOrCCE, bm: this.branchManager })
 	}
 
 	getStates(): Observable<any> {

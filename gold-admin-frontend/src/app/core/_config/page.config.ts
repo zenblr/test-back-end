@@ -200,6 +200,11 @@ export class PageConfig {
 				reports: {
 					page: { title: "Reports", desc: "" },
 				},
+				'cancel-order': {
+					id: {
+						page: { title: "Cancel Order", desc: "" },
+					},
+				},
 			},
 			"applied-kyc": {
 				page: { title: "Applied KYC", desc: "" },

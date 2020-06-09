@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { tap, catchError, map } from 'rxjs/operators';
-
+import { API_ENDPOINT } from '../../../../../app.constant';
 @Injectable({
 	providedIn: 'root'
 })
@@ -32,22 +32,22 @@ export class ProductService {
 		if (event && event.priceTo) {
 			reqParams.priceTo = event.priceTo;
 		}
-		return this.http.get<any[]>(`http://173.249.49.7:9120/api/products`, { params: reqParams });
+		return this.http.get<any[]>(API_ENDPOINT + `api/products`, { params: reqParams });
 	}
 
 	editProduct(id, data): Observable<any> {
-		return this.http.put<any>(`http://173.249.49.7:9120/api/products/` + id, data);
+		return this.http.put<any>(API_ENDPOINT + `api/products/` + id, data);
 	}
 
 	deleteProduct(id): Observable<any> {
-		return this.http.delete<any>(`http://173.249.49.7:9120/api/products/` + id);
+		return this.http.delete<any>(API_ENDPOINT + `api/products/` + id);
 	}
 
 	getSingleProduct(id): Observable<any> {
-		return this.http.get<any>(`http://173.249.49.7:9120/api/products/` + id);
+		return this.http.get<any>(API_ENDPOINT + `api/products/` + id);
 	}
 
 	deleteProductImage(id): Observable<any> {
-		return this.http.delete<any>(`http://173.249.49.7:9120/api/products/image/` + id);
+		return this.http.delete<any>(API_ENDPOINT + `api/products/image/` + id);
 	}
 }

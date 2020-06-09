@@ -18,8 +18,10 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() invalid;
   @Input() details;
   // @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
-  appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
-  branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }, { value: 'incomplete', name: 'incomplete' }];
+  // appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
+  // branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }, { value: 'incomplete', name: 'incomplete' }];
+  appraiser:any;
+  branchManager:any;
   userType: any = ''
   @Input() action;
   // @Output() apply: EventEmitter<any> = new EventEmitter<any>();
@@ -39,6 +41,12 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   ) { }
 
   ngOnInit() {
+
+    this.sharedSerive.getStatus().subscribe(res => {
+      this.appraiser = res.apprsiserOrCCE
+      this.branchManager = res.bm
+    })
+
     this.url = this.router.url.split('/')[2]
     this.initForm();
     this.getRoles()
@@ -93,7 +101,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngAfterViewInit() {
     let user = this.sharedSerive.getDataFromStorage()
-    if(user.userDetails.userTypeId == 7){
+    if (user.userDetails.userTypeId == 7) {
       this.controls.commentByBM.disable()
     }
     // this.approvalForm.valueChanges.subscribe(() => {
@@ -131,12 +139,12 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  resetAppraiser(){
+  resetAppraiser() {
     this.controls.commentByAppraiser.reset()
 
   }
 
-  resetBM(){
+  resetBM() {
     this.controls.commentByBM.reset()
 
   }

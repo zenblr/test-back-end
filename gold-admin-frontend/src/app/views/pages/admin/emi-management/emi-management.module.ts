@@ -63,6 +63,7 @@ import { RefundDetailsEditComponent } from "./order-management/refund-details/re
 import { CustomerDetailsListComponent } from "./customer-details/customer-details-list/customer-details-list.component";
 import { ReportsComponent } from "./reports/reports.component";
 import { RefundDetailsViewComponent } from "./order-management/refund-details/refund-details-view/refund-details-view.component";
+import { OrderCancelDialogComponent } from './order-management/order-details/order-cancel-dialog/order-cancel-dialog.component';
 
 const routes: Routes = [
 	{
@@ -119,6 +120,10 @@ const routes: Routes = [
 			{
 				path: "order-details/edit-order-details/:id",
 				component: OrderDetailsEditComponent,
+			},
+			{
+				path: "order-details/cancel-order/:id",
+				component: OrderCancelDialogComponent,
 			},
 			{
 				path: "cancel-order-details",
@@ -200,7 +205,7 @@ const routes: Routes = [
 		AddLogisticPartnerComponent,
 		OrderDetailsViewComponent,
 		EmiDetailsViewComponent,
-		RefundDetailsViewComponent,
+		RefundDetailsViewComponent
 	],
 	declarations: [
 		EMIManagementComponent,
@@ -231,6 +236,7 @@ const routes: Routes = [
 		CustomerDetailsListComponent,
 		ReportsComponent,
 		RefundDetailsViewComponent,
+		OrderCancelDialogComponent,
 	],
 })
-export class EMIManagementModule {}
+export class EMIManagementModule { }

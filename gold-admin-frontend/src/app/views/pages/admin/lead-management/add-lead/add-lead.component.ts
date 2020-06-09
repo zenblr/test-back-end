@@ -92,7 +92,7 @@ export class AddLeadComponent implements OnInit {
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       internalBranchId: [this.details.userDetails.internalBranchId, Validators.required],
-      mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
+      mobileNumber: ['', [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],
       panCardNumber: ['', [Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],

@@ -21,7 +21,8 @@
                                 <div class="profile-div">
                                     <!-- <img class="" src="../../../../../../assets/media/icons/user.png" alt="" /> -->
                                     <img *ngIf="data" class="profile-pic"
-                                        [src]="data.customerKycReview.customerKycPersonal.profileImage" alt="" />
+                                        [src]="data.customerKycReview.customerKycPersonal.profileImage" alt=""
+                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.profileImage)" />
                                 </div>
                             </div>
                             <div class="col-7 d-flex" *ngIf="viewOnly">
@@ -217,7 +218,8 @@
                         <div class="col-4"
                             *ngFor="let pass of data.customerKycReview.customerKycPersonal.identityProof, index as idx">
                             <div class="img-container">
-                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
+                                    (click)="previewImage(pass)" />
                                 <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
                                     class="kt-pointer remove-icon" (click)="removeImages(idx, 'identityProof');">
                             </div>
@@ -403,7 +405,8 @@
                         <div class="col-4"
                             *ngFor="let pass of data.customerKycReview.customerKycAddress[0].addressProof, index as idx">
                             <div class="img-container">
-                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
+                                    (click)="previewImage(pass)" />
                                 <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
                                     class="kt-pointer remove-icon" (click)="removeImages(idx, 'permanent');">
                             </div>
@@ -604,7 +607,8 @@
                         <div class="col-4"
                             *ngFor="let pass of data.customerKycReview.customerKycAddress[1].addressProof, index as idx">
                             <div class="img-container">
-                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
+                                    (click)="previewImage(pass)" />
                                 <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
                                     class="kt-pointer remove-icon" (click)="removeImages(idx, 'residential');">
                             </div>
@@ -757,7 +761,13 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
-                                <label [class.mandatory]="viewOnly" class="">Father/Spouse Name</label>
+                                <label
+                                    *ngIf="customerKycPersonal.controls.martialStatus.value == 'single' || customerKycPersonal.controls.martialStatus.value == 'divorced' || customerKycPersonal.controls.martialStatus.value == ''"
+                                    [class.mandatory]="viewOnly">Father's Name</label>
+                                <label *ngIf="customerKycPersonal.controls.martialStatus.value == 'married'"
+                                    [class.mandatory]="viewOnly">
+                                    Spouse Name</label>
+                                <!-- <label [class.mandatory]="viewOnly" class="">Father/Spouse Name</label> -->
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="" formControlName="spouseName"
@@ -827,7 +837,8 @@
                                 <ng-container>
                                     <img class="fetched-image"
                                         [src]="data.customerKycReview.customerKycPersonal.signatureProof"
-                                        style="border-radius: 15px;" alt="" />
+                                        style="border-radius: 15px;" alt=""
+                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.signatureProof)" />
                                 </ng-container>
                             </div>
                         </div>

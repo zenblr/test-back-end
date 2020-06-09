@@ -20,11 +20,13 @@ import {
 	RefundDetailsModel,
 	RefundDetailsService,
 } from "../../../../../../../core/emi-management/order-management";
+import { DatePipe } from '@angular/common';
 
 @Component({
 	selector: "kt-refund-details-edit",
 	templateUrl: "./refund-details-edit.component.html",
 	styleUrls: ["./refund-details-edit.component.scss"],
+	providers: [DatePipe]
 })
 export class RefundDetailsEditComponent implements OnInit {
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -46,7 +48,8 @@ export class RefundDetailsEditComponent implements OnInit {
 		private sharedService: SharedService,
 		private route: ActivatedRoute,
 		private toast: ToastrService,
-		private router: Router
+		private router: Router,
+		private datePipe: DatePipe
 	) { }
 
 	ngOnInit() {
@@ -60,10 +63,6 @@ export class RefundDetailsEditComponent implements OnInit {
 						this.refundData = res;
 						this.editRefund();
 					})
-					// catchError(err => {
-					//   this.toast.error(err.error.error);
-					//   throw err;
-					// })
 				)
 				.subscribe();
 		}
@@ -88,7 +87,7 @@ export class RefundDetailsEditComponent implements OnInit {
 			acNumber: [""],
 			ifscCode: [""],
 			cancelOrder: [""],
-			utrNumber: [""],
+			utrNumber: ["", Validators.required],
 			status: ["", Validators.required],
 			passbookCopy: [""],
 			checkCopy: [""],
@@ -114,14 +113,13 @@ export class RefundDetailsEditComponent implements OnInit {
 			cancelFees: this.refundData.cancelOrder.cancelationFees,
 			totalCancelCharge: this.refundData.cancelOrder.cancellationCharges,
 			amtPayable: this.refundData.cancelOrder.payableToCustomer,
-			cancelDate: this.refundData.cancelOrder.cancelDate,
+			cancelDate: this.datePipe.transform(new Date(this.refundData.cancelOrder.cancelDate), 'MMM d, y hh:mm a'),
 			bankName: this.refundData.customerBankName,
 			acNumber: this.refundData.customerAccountNo,
 			ifscCode: this.refundData.ifscCode,
 			cancelOrder: this.refundData.order.orderBy.broker.merchant
 				.merchantName,
 			utrNumber: this.refundData.transactionId,
-			status: this.refundData.refundStatus.id,
 		};
 		this.refundForm.patchValue(data);
 
@@ -135,11 +133,9 @@ export class RefundDetailsEditComponent implements OnInit {
 
 		if (this.refundData.refundStatus.id == 14) {
 			this.refundForm.controls["utrNumber"].disable();
-			this.refundForm.controls["status"].disable();
 			this.hiddenFlag = false;
 		} else {
 			this.refundForm.controls["utrNumber"].enable();
-			this.refundForm.controls["status"].enable();
 			this.hiddenFlag = true;
 		}
 		this.ref.detectChanges();

@@ -10,7 +10,8 @@
                                     <div class="offset-1 kt-margin-r-25 profile-div">
                                         <img *ngIf="profile == ''" class=""
                                             src="../../../../../../assets/media/icons/user.png" alt="" />
-                                        <img *ngIf="profile !== ''" class="profile-pic" [src]="profile" alt="" />
+                                        <img *ngIf="profile !== ''" class="profile-pic" [src]="profile" alt=""
+                                            (click)="previewImage(profile)" />
                                     </div>
 
                                     <div class="col align-self-center">
@@ -86,7 +87,7 @@
                                     </div>
                                     <div class="col-7">
                                         <input type="text" numbersOnly formControlName="age" class="form-control"
-                                            readonly>
+                                            placeholder="24" readonly>
 
                                         <mat-error
                                             *ngIf="(controls.age.errors?.required && controls.age.touched) && controls.age.invalid">
@@ -225,7 +226,7 @@
                                     <img *ngIf="!signatureJSON.isImage" class=""
                                         src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
                                     <img class="fetched-image" *ngIf="signatureJSON.isImage" [src]="signatureJSON.url"
-                                        style="border-radius: 15px;" alt="" />
+                                        style="border-radius: 15px;" alt="" (click)="previewImage(signatureJSON.url)" />
                                     <!-- </div> -->
                                 </div>
                                 <div class="kt-margin-t-20 text-color font-11">

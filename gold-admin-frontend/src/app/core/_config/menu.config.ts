@@ -18,7 +18,7 @@ export class MenuConfig {
 				this.permissionsService.loadPermissions(this.permissionsArr);
 				// console.log(this.permissionsArr);
 			}
-			
+
 			if (res.userDetails) {
 				this.userType = res.userDetails.userTypeId;
 			}
@@ -47,6 +47,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-02.svg",
 							page: "/admin/dashboard",
+							bullet: 'dot',
 							permission: false,
 							submenu: [
 								{
@@ -70,11 +71,13 @@ export class MenuConfig {
 							title: "Admin Settings",
 							root: true,
 							src: "assets/media/aside-icons/icons-03.svg",
+							bullet: 'dot',
 							permission: false,
 							submenu: [
 								{
 									title: "Upload Data",
 									root: true,
+									bullet: 'dot',
 									permission: !(this.permissionsArr.includes('promotionalBannerView') ||
 										this.permissionsArr.includes('offerBannerView') ||
 										this.permissionsArr.includes('goldRateView') ||
@@ -107,6 +110,7 @@ export class MenuConfig {
 								{
 									title: "Loan Settings",
 									root: true,
+									bullet: 'dot',
 									permission: !(this.permissionsArr.includes('schemeView') ||
 										this.permissionsArr.includes('karatDetailsView')),
 
@@ -114,11 +118,13 @@ export class MenuConfig {
 										{
 											title: "Scheme",
 											page: "/admin/loan-setting/scheme",
+											bullet: 'dot',
 											permission: !this.permissionsArr.includes('schemeView'),
 										},
 										{
 											title: "Karat details",
 											page: "/admin/loan-setting/karat-details",
+											bullet: 'dot',
 											permission: !this.permissionsArr.includes('karatDetailsView'),
 										},
 									],
@@ -126,6 +132,7 @@ export class MenuConfig {
 								{
 									title: "Notification Settings",
 									root: true,
+									bullet: 'dot',
 									permission: false,
 
 									submenu: [
@@ -144,9 +151,15 @@ export class MenuConfig {
 								{
 									title: "Masters",
 									root: true,
+									bullet: 'dot',
 									permission: false,
 
 									submenu: [
+										{
+											title: "Lead Source",
+											page: "/masters/lead-source",
+											permission: false,
+										},
 										{
 											title: "Ornaments",
 											page: "/admin/masters/ornaments",
@@ -204,6 +217,7 @@ export class MenuConfig {
 						{
 							title: "Customer Setting",
 							root: true,
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-06.svg",
 							permission: !(this.permissionsArr.includes('customerKycView') ||
 								this.permissionsArr.includes('appliedKycView')),
@@ -219,7 +233,7 @@ export class MenuConfig {
 									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 								{
-									title: "Assigned customers",
+									title: "Assigned Customers",
 									page: "/admin/assigned-customers",
 									// permission: !this.permissionsArr.includes('appliedKycView'),
 								},
@@ -228,22 +242,26 @@ export class MenuConfig {
 						{
 							title: "Loan Management",
 							root: true,
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-07.svg",
 							permission: false,
 							submenu: [
 								{
 									title: "Loan Calculator",
 									page: "/admin/loan-management/loan-calculator",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Application Form",
 									page: "/admin/loan-management/loan-application-form",
+									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanApplicationAdd'),
 								},
 								{
 									title: "Packet",
 									page: "/admin/loan-management/packet",
+									bullet: 'dot',
 									permission: !(this.permissionsArr.includes('packetEdit') ||
 										this.permissionsArr.includes('packetAdd') ||
 										this.permissionsArr.includes('packetView')),
@@ -251,11 +269,13 @@ export class MenuConfig {
 								{
 									title: "Applied Loan",
 									page: "/admin/loan-management/applied-loan",
+									bullet: 'dot',
 									permission: !this.permissionsArr.includes('appliedLoanView'),
 								},
 								{
 									title: "Loan Details",
 									page: "/admin/loan-management/all-loan",
+									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanDetailsView'),
 								},
 							],
@@ -270,12 +290,14 @@ export class MenuConfig {
 						{
 							title: "Repayment Structure",
 							root: true,
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-09.svg",
 							permission: false,
 							submenu: [
 								{
 									title: "Monthly Payment",
 									page: "/admin/repayment/monthly",
+									bullet: 'dot',
 									permission: false,
 								},
 								// {
@@ -289,6 +311,7 @@ export class MenuConfig {
 							title: "Account",
 							root: true,
 							src: "assets/media/aside-icons/icons-12.svg",
+							bullet: 'dot',
 							permission: false,
 							submenu: [
 								{
@@ -306,27 +329,32 @@ export class MenuConfig {
 						{
 							title: "Report",
 							root: true,
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-11.svg",
 							permission: false,
 							submenu: [
 								{
 									title: "KYC",
 									page: "/admin/kyc",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Status Report",
 									page: "/admin/loan-status",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
 									title: "Branch Report",
 									page: "/admin/branch",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Type Reports",
 									page: "/admin/loan-type",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
@@ -346,6 +374,7 @@ export class MenuConfig {
 						{
 							title: "Settings",
 							root: true,
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-03.svg",
 							permission: false,
 							submenu: [

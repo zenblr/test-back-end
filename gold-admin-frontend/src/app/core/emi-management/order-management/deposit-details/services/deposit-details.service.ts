@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
 import { ExcelService } from "../../../../_base/crud/services/excel.service";
-
+import { API_ENDPOINT } from "../../../../../app.constant";
 @Injectable({
 	providedIn: "root",
 })
@@ -37,7 +37,7 @@ export class DepositDetailsService {
 			reqParams.orderCurrentStatus = event.orderCurrentStatus;
 		}
 		return this.http.get<any>(
-			`http://173.249.49.7:9120/api/deposit-details`,
+			API_ENDPOINT + `api/deposit-details`,
 			{
 				params: reqParams,
 			}
@@ -47,7 +47,7 @@ export class DepositDetailsService {
 	reportExport(): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/deposit-details/deposit-details-report`,
+				API_ENDPOINT + `api/deposit-details/deposit-details-report`,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(

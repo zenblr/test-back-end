@@ -3,6 +3,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
 import { ExcelService } from "../../../_base/crud/services/excel.service";
+import { API_ENDPOINT } from '../../../../app.constant';
 
 @Injectable({
 	providedIn: "root",
@@ -13,7 +14,7 @@ export class ReportsService {
 	getUserReport(event?: any): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/customer/customer-by-merchant-id/` +
+				API_ENDPOINT + `api/customer/customer-by-merchant-id/` +
 				event.merchantId +
 				"/" +
 				event.startDate +
@@ -37,7 +38,7 @@ export class ReportsService {
 	getDepositReport(event?: any): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/deposit-details/merchant-deposit-report/` +
+				API_ENDPOINT + `api/deposit-details/merchant-deposit-report/` +
 				event.merchantId +
 				"/" +
 				event.startDate +
@@ -63,7 +64,7 @@ export class ReportsService {
 	getEmiReport(event?: any): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/emi-details/emi-report-by-merchant/` +
+				API_ENDPOINT + `api/emi-details/emi-report-by-merchant/` +
 				event.merchantId +
 				"/" +
 				event.startDate +
@@ -86,7 +87,7 @@ export class ReportsService {
 	getOrderReport(event?: any): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/order/order-report-by-merchant/` +
+				API_ENDPOINT + `api/order/order-report-by-merchant/` +
 				event.merchantId +
 				"/" +
 				event.statusId +
@@ -111,7 +112,7 @@ export class ReportsService {
 	getCancelReport(event?: any): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/cancel-order/cancel-report-by-Merchantid/` +
+				API_ENDPOINT + `api/cancel-order/cancel-report-by-Merchantid/` +
 				event.merchantId +
 				"/" +
 				event.startDate +
@@ -136,7 +137,7 @@ export class ReportsService {
 	getProductReport(event?: any): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/products/get-product-report`,
+				API_ENDPOINT + `api/products/get-product-report`,
 				{ responseType: "arraybuffer" }
 			)
 			.pipe(
@@ -156,7 +157,7 @@ export class ReportsService {
 	getFranchiseReport(event?: any): Observable<any> {
 		return this.http
 			.get(
-				`http://173.249.49.7:9120/api/store/franchise-report/` +
+				API_ENDPOINT + `api/store/franchise-report/` +
 				event.startDate +
 				"/" +
 				event.endDate,
