@@ -30,12 +30,10 @@ export class SharedService {
 		{ value: 'incomplete', name: 'incomplete' }
 	];
 
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient) { }
 
-	}
-
-	getStatus(){
-		return of({apprsiserOrCCE:this.appraiserOrCCE,bm:this.branchManager})
+	getStatus() {
+		return of({ apprsiserOrCCE: this.appraiserOrCCE, bm: this.branchManager })
 	}
 
 	getStates(): Observable<any> {

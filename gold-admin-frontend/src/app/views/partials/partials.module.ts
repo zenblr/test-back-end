@@ -63,7 +63,7 @@ import { FilterComponent } from "./components/filter/filter.component";
 import { SearchComponent } from "./components/search/search.component";
 import { ModalHeaderComponent } from "./components/modal/modal-header/modal-header.component";
 import { ModalFooterComponent } from "./components/modal/modal-footer/modal-footer.component";
-import { LoanSchemeComponent } from "../../views/pages/loan-settings/loan-scheme/loan-scheme.component";
+import { LoanSchemeComponent } from "../pages/admin/loan-settings/loan-scheme/loan-scheme.component";
 import { FilteredDataComponent } from './components/filtered-data/filtered-data.component';
 
 // spinner
@@ -73,13 +73,13 @@ import { UserClassificationComponent } from "./components/user-classification/us
 import { UplodPreviewImageComponent } from "./components/uplod-preview-image/uplod-preview-image.component";
 
 import { NgSelectModule } from "@ng-select/ng-select";
-import { UserReviewComponent } from "../pages/kyc-settings/tabs/user-review/user-review.component";
+import { UserReviewComponent } from "../pages/admin/kyc-settings/tabs/user-review/user-review.component";
 import { NgxPermissionsModule } from "ngx-permissions";
 import { MultiSelectSearchComponent } from "./components/multi-select-search/multi-select-search.component";
-import { AddAppraiserComponent } from '../pages/user-management/assign-appraiser/add-appraiser/add-appraiser.component';
+import { AddAppraiserComponent } from '../pages/admin/user-management/assign-appraiser/add-appraiser/add-appraiser.component';
 
 import { WebcamModule } from "ngx-webcam";
-import { WebcamDialogComponent } from '../pages/kyc-settings/webcam-dialog/webcam-dialog.component';
+import { WebcamDialogComponent } from '../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
 
 @NgModule({
 	declarations: [

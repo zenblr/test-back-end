@@ -122,10 +122,10 @@ export class TopbarComponent implements OnInit {
 		private holidayService: HolidayService,
 		private packetLocation: PacketLocationService,
 		private ornamentsService: OrnamentsService,
-		private purposeService:PurposeService,
+		private purposeService: PurposeService,
 		private reasonsService: ReasonsService,
-		private appliedKycService:AppliedKycService,
-		private appliedLoan:AppliedLoanService,
+		private appliedKycService: AppliedKycService,
+		private appliedLoan: AppliedLoanService,
 		private leadSourceService: LeadSourceService
 
 	) {
@@ -167,7 +167,7 @@ export class TopbarComponent implements OnInit {
 			this.sharedService.totalCount$
 				.pipe(takeUntil(this.destroy$))
 				.subscribe((ct) => {
-					if (ct) {
+					if (ct != null) {
 						Promise.resolve(null).then(() => {
 							this.totalRecords = ct;
 						});
@@ -246,10 +246,9 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = '400px';
 		}
 		if (this.path == "holidays") {
-			this.rightButton = true;
-			this.value2 = "Add Holiday";
-			this.type2 = "button";
+			this.value1 = "Add Holiday";
 			this.showInput = true;
+			this.dataSourceHeader();
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "ornaments") {
@@ -566,7 +565,7 @@ export class TopbarComponent implements OnInit {
 			this.appraiserService.openModal.next(true);
 		}
 		if (this.path == "merchant") {
-			this.router.navigate(["/user-management/add-merchant"]);
+			this.router.navigate(["/admin/user-management/add-merchant"]);
 		}
 		if (this.path == "wallet-price") {
 			this.walletPriceService.openModal.next(true);
@@ -587,7 +586,7 @@ export class TopbarComponent implements OnInit {
 			this.storeService.openModal.next(true);
 		}
 		if (this.path == "bulk-upload-product") {
-			this.router.navigate(["/emi-management/bulk-upload-report"]);
+			this.router.navigate(["/admin/emi-management/bulk-upload-report"]);
 		}
 		if (this.path == "logistic-partner") {
 			this.logisticPartnerService.openModal.next(true);
@@ -666,13 +665,13 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "lead-management") {
 			this.leadService.applyFilter.next(data);
 		}
-		if(this.path == "applied-kyc"){
+		if (this.path == "applied-kyc") {
 			this.appliedKycService.applyFilter.next(data)
 		}
-		if(this.path == "scheme"){
+		if (this.path == "scheme") {
 			this.loanSettingService.applyFilter.next(data)
 		}
-		if(this.path == "applied-loan"){
+		if (this.path == "applied-loan") {
 			this.appliedLoan.applyFilter.next(data)
 		}
 	}

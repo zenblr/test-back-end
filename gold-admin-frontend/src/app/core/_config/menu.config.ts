@@ -18,6 +18,7 @@ export class MenuConfig {
 				this.permissionsService.loadPermissions(this.permissionsArr);
 				// console.log(this.permissionsArr);
 			}
+
 			if (res.userDetails) {
 				this.userType = res.userDetails.userTypeId;
 			}
@@ -32,12 +33,12 @@ export class MenuConfig {
 			this.defaults = {
 				aside: {
 					self: {},
-					itemsOne: [
+					adminItems: [
 						{
 							title: "Dashboard",
 							root: true,
 							src: "assets/media/aside-icons/icons-01.svg",
-							page: "/dashboard",
+							page: "/admin/dashboard",
 							translate: "MENU.DASHBOARD",
 							permission: false,
 						},
@@ -45,24 +46,23 @@ export class MenuConfig {
 							title: "Admin Account",
 							root: true,
 							src: "assets/media/aside-icons/icons-02.svg",
-							bullet:'dot',
-							page: "/dashboard",
+							page: "/admin/dashboard",
+							bullet: 'dot',
 							permission: false,
-
 							submenu: [
 								{
 									title: "Change Password",
-									page: "/admin-account/change-password",
+									page: "/admin/admin-account/change-password",
 									permission: false,
 								},
 								{
 									title: "Show Queries",
-									page: "/admin-account/show-queries",
+									page: "/admin/admin-account/show-queries",
 									permission: false,
 								},
 								{
 									title: "Show Feedback",
-									page: "/admin-account/show-feedback",
+									page: "/admin/admin-account/show-feedback",
 									permission: false,
 								},
 							],
@@ -71,14 +71,13 @@ export class MenuConfig {
 							title: "Admin Settings",
 							root: true,
 							src: "assets/media/aside-icons/icons-03.svg",
-							bullet:'dot',
+							bullet: 'dot',
 							permission: false,
-
 							submenu: [
 								{
 									title: "Upload Data",
 									root: true,
-									bullet:'dot',
+									bullet: 'dot',
 									permission: !(this.permissionsArr.includes('promotionalBannerView') ||
 										this.permissionsArr.includes('offerBannerView') ||
 										this.permissionsArr.includes('goldRateView') ||
@@ -87,22 +86,22 @@ export class MenuConfig {
 									submenu: [
 										{
 											title: "Gold Rate",
-											page: "/upload-data/gold-rate",
+											page: "/admin/upload-data/gold-rate",
 											permission: !this.permissionsArr.includes('goldRateView'),
 										},
 										{
 											title: "Promotional Banners",
-											page: "/upload-data/upload-banner",
+											page: "/admin/upload-data/upload-banner",
 											permission: !this.permissionsArr.includes('promotionalBannerView'),
 										},
 										{
 											title: "Offer Banners",
-											page: "/upload-data/upload-offer",
+											page: "/admin/upload-data/upload-offer",
 											permission: !this.permissionsArr.includes('offerBannerView'),
 										},
 										{
 											title: "Partner Banners",
-											page: "/upload-data/upload-lender-banner",
+											page: "/admin/upload-data/upload-lender-banner",
 											permission: !this.permissionsArr.includes('partnerBannerView'),
 										},
 
@@ -111,21 +110,21 @@ export class MenuConfig {
 								{
 									title: "Loan Settings",
 									root: true,
-									bullet:'dot',
+									bullet: 'dot',
 									permission: !(this.permissionsArr.includes('schemeView') ||
 										this.permissionsArr.includes('karatDetailsView')),
 
 									submenu: [
 										{
 											title: "Scheme",
-											page: "/loan-setting/scheme",
-											bullet:'dot',
+											page: "/admin/loan-setting/scheme",
+											bullet: 'dot',
 											permission: !this.permissionsArr.includes('schemeView'),
 										},
 										{
 											title: "Karat details",
-											page: "/loan-setting/karat-details",
-											bullet:'dot',
+											page: "/admin/loan-setting/karat-details",
+											bullet: 'dot',
 											permission: !this.permissionsArr.includes('karatDetailsView'),
 										},
 									],
@@ -133,18 +132,18 @@ export class MenuConfig {
 								{
 									title: "Notification Settings",
 									root: true,
-									bullet:'dot',
+									bullet: 'dot',
 									permission: false,
 
 									submenu: [
 										{
 											title: "Email Alert",
-											page: "/notification-setting/email-alert",
+											page: "/admin/notification-setting/email-alert",
 											permission: false,
 										},
 										{
 											title: "SMS Alert",
-											page: "/notification-setting/sms-alert",
+											page: "/admin/notification-setting/sms-alert",
 											permission: false,
 										},
 									],
@@ -152,52 +151,51 @@ export class MenuConfig {
 								{
 									title: "Masters",
 									root: true,
-									bullet:'dot',
+									bullet: 'dot',
 									permission: false,
 
 									submenu: [
 										{
 											title: "Lead Source",
-											page: "/masters/lead-source",
+											page: "/admin/masters/lead-source",
 											permission: false,
 										},
 										{
 											title: "Ornaments",
-											page: "/masters/ornaments",
+											page: "/admin/masters/ornaments",
 											permission: false,
 										},
 										{
-											title: "Unapproval Reasons",
-											page: "/masters/reasons",
+											title: "Unapproved Reasons",
+											page: "/admin/masters/reasons",
 											permission: false,
 										},
 										{
 											title: "Purposes",
-											page: "/masters/purposes",
+											page: "/admin/masters/purposes",
 											permission: false,
 										},
 										{
 											title: "Packet Location",
-											page: "/masters/packet-location",
+											page: "/admin/masters/packet-location",
 											permission: false,
 										},
 										{
 											title: "Holidays",
 											root: true,
 											permission: false,
-											page: '/holidays'
+											page: "/admin/holidays"
 										},
 									],
 								},
 
 							],
 						},
-
 						{
 							title: "User Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
-							page: "/user-management",
+							page: "/admin/user-management",
 							permission: !(this.permissionsArr.includes('merchantView') ||
 								this.permissionsArr.includes('brokerView') ||
 								this.permissionsArr.includes('storeView') ||
@@ -213,31 +211,30 @@ export class MenuConfig {
 							title: "Lead Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-05.svg",
-							page: "/lead-management",
+							page: "/admin/lead-management",
 							permission: !(this.permissionsArr.includes('leadManagmentView')),
 						},
 						{
 							title: "Customer Setting",
 							root: true,
-							bullet:'dot',
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-06.svg",
 							permission: !(this.permissionsArr.includes('customerKycView') ||
 								this.permissionsArr.includes('appliedKycView')),
-
 							submenu: [
 								{
 									title: "KYC Setting",
-									page: "/kyc-setting",
+									page: "/admin/kyc-setting",
 									permission: !this.permissionsArr.includes('customerKycAdd'),
 								},
 								{
 									title: "Applied KYC",
-									page: "/applied-kyc",
+									page: "/admin/applied-kyc",
 									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 								{
 									title: "Assigned Customers",
-									page: "/assigned-customers",
+									page: "/admin/assigned-customers",
 									// permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 							],
@@ -245,41 +242,40 @@ export class MenuConfig {
 						{
 							title: "Loan Management",
 							root: true,
-							bullet:'dot',
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-07.svg",
 							permission: false,
-
 							submenu: [
 								{
 									title: "Loan Calculator",
-									page: "/loan-management/loan-calculator",
-									bullet:'dot',
+									page: "/admin/loan-management/loan-calculator",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Application Form",
-									page: "/loan-management/loan-application-form",
-									bullet:'dot',
+									page: "/admin/loan-management/loan-application-form",
+									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanApplicationAdd'),
 								},
 								{
 									title: "Packet",
-									page: "/loan-management/packet",
-									bullet:'dot',
+									page: "/admin/loan-management/packet",
+									bullet: 'dot',
 									permission: !(this.permissionsArr.includes('packetEdit') ||
 										this.permissionsArr.includes('packetAdd') ||
 										this.permissionsArr.includes('packetView')),
 								},
 								{
 									title: "Applied Loan",
-									page: "/loan-management/applied-loan",
-									bullet:'dot',
+									page: "/admin/loan-management/applied-loan",
+									bullet: 'dot',
 									permission: !this.permissionsArr.includes('appliedLoanView'),
 								},
 								{
 									title: "Loan Details",
-									page: "/loan-management/all-loan",
-									bullet:'dot',
+									page: "/admin/loan-management/all-loan",
+									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanDetailsView'),
 								},
 							],
@@ -288,21 +284,20 @@ export class MenuConfig {
 							title: "Customer Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-08.svg",
-							page: "/customer-management/customer-list",
+							page: "/admin/customer-management/customer-list",
 							permission: !this.permissionsArr.includes('customerManagementView'),
 						},
 						{
 							title: "Repayment Structure",
 							root: true,
-							bullet:'dot',
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-09.svg",
 							permission: false,
-
 							submenu: [
 								{
 									title: "Monthly Payment",
-									page: "/repayment/monthly",
-									bullet:'dot',
+									page: "/admin/repayment/monthly",
+									bullet: 'dot',
 									permission: false,
 								},
 								// {
@@ -316,18 +311,17 @@ export class MenuConfig {
 							title: "Account",
 							root: true,
 							src: "assets/media/aside-icons/icons-12.svg",
-							bullet:'dot',
+							bullet: 'dot',
 							permission: false,
-
 							submenu: [
 								{
 									title: "Loan Disbursed Details",
-									path: "/Loan-disbursed-detail",
+									page: "/admin/Loan-disbursed-detail",
 									permission: false,
 								},
 								{
 									title: "Loan Repayment Details",
-									path: "/Loan-repayment-detail",
+									page: "/admin/Loan-repayment-detail",
 									permission: false,
 								},
 							],
@@ -335,38 +329,37 @@ export class MenuConfig {
 						{
 							title: "Report",
 							root: true,
-							bullet:'dot',
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-11.svg",
 							permission: false,
-
 							submenu: [
 								{
 									title: "KYC",
-									path: "/kyc",
-									bullet:'dot',
+									page: "/admin/kyc",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Status Report",
-									path: "/loan-status",
-									bullet:'dot',
+									page: "/admin/loan-status",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
 									title: "Branch Report",
-									path: "/branch",
-									bullet:'dot',
+									page: "/admin/branch",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
 									title: "Loan Type Reports",
-									path: "/loan-type",
-									bullet:'dot',
+									page: "/admin/loan-type",
+									bullet: 'dot',
 									permission: false,
 								},
 								{
 									title: "Margin Reports",
-									path: "/marign",
+									page: "/admin/marign",
 									permission: false,
 								},
 							],
@@ -375,22 +368,29 @@ export class MenuConfig {
 							title: "EMI Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-24.svg",
-							page: "/emi-management",
+							page: "/admin/emi-management",
 							permission: !this.modulesArr.includes(2),
 						},
 						{
 							title: "Settings",
 							root: true,
-							bullet:'dot',
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-03.svg",
 							permission: false,
 							submenu: [
 								{
 									title: "Global Settings",
-									page: "/global-settings",
+									page: "/admin/global-settings",
 									permission: false,
 								},
 							]
+						},
+						{
+							title: "Broker",
+							root: true,
+							src: "assets/media/aside-icons/icons-24.svg",
+							page: "/broker",
+							permission: !(this.userType === 2 || this.userType === 3 || this.userType === 4),
 						},
 						{
 							title: "Log Out",
@@ -398,67 +398,67 @@ export class MenuConfig {
 							permission: false,
 						},
 					],
-					itemsTwo: [
+					userMgmtItems: [
 						{
 							title: "Partner",
 							root: true,
-							page: "/user-management/partner",
+							page: "/admin/user-management/partner",
 							src: "assets/media/aside-icons/icons-06.svg",
 							permission: !this.permissionsArr.includes('partnerView'),
 						},
 						{
 							title: "Partner Branch ",
 							root: true,
-							page: "/user-management/branch",
+							page: "/admin/user-management/branch",
 							src: "assets/media/aside-icons/icons-13.svg",
 							permission: !this.permissionsArr.includes('partnerBranchView'),
 						},
 						{
 							title: "Internal User",
 							root: true,
-							page: "/user-management/internal-user",
+							page: "/admin/user-management/internal-user",
 							src: "assets/media/aside-icons/icons-14.svg",
 							permission: !this.permissionsArr.includes('internalUserView'),
 						},
 						{
 							title: "Internal User Branch",
 							root: true,
-							page: "/user-management/internal-user-branch",
+							page: "/admin/user-management/internal-user-branch",
 							src: "assets/media/aside-icons/icons-15.svg",
 							permission: !this.permissionsArr.includes('internalBranchView'),
 						},
 						{
 							title: "Assign Appraiser",
 							root: true,
-							page: "/user-management/assign-appraiser",
+							page: "/admin/user-management/assign-appraiser",
 							src: "assets/media/aside-icons/icons-16.svg",
 							permission: !this.permissionsArr.includes('assignAppraiserView'),
 						},
 						{
 							title: "Merchant",
 							root: true,
-							page: "/user-management/merchant",
+							page: "/admin/user-management/merchant",
 							src: "assets/media/aside-icons/icons-17.svg",
 							permission: !this.permissionsArr.includes('merchantView')
 						},
 						{
 							title: "Broker",
 							root: true,
-							page: "/user-management/broker",
+							page: "/admin/user-management/broker",
 							src: "assets/media/aside-icons/icons-18.svg",
 							permission: !this.permissionsArr.includes('brokerView'),
 						},
 						{
 							title: "Store",
 							root: true,
-							page: "/user-management/store",
+							page: "/admin/user-management/store",
 							src: "assets/media/aside-icons/icons-19.svg",
 							permission: !this.permissionsArr.includes('storeView')
 						},
 						{
 							title: "Roles and permissions",
 							root: true,
-							page: "/user-management/roles",
+							page: "/admin/user-management/roles",
 							src: "assets/media/aside-icons/icons-20.svg",
 							permission: !(this.userType === 4),
 						},
@@ -466,15 +466,17 @@ export class MenuConfig {
 							title: "Back",
 							src: "assets/media/aside-icons/icons-21.svg",
 							root: true,
-							page: "/dashboard",
+							page: "/admin/dashboard",
 							permission: false,
 						},
 					],
-					itemsThree: [
+					emiMgmtItems: [
 						{
 							title: "Product",
 							root: true,
 							icon: "flaticon2-open-box",
+							bullet: 'dot',
+
 							permission: !(this.permissionsArr.includes('productView') ||
 								this.permissionsArr.includes('categoryView') ||
 								this.permissionsArr.includes('subCategoryView') ||
@@ -484,32 +486,32 @@ export class MenuConfig {
 							submenu: [
 								{
 									title: "Show Product",
-									page: "/emi-management/products",
+									page: "/admin/emi-management/products",
 									permission: !this.permissionsArr.includes('productView'),
 								},
 								{
 									title: "Category",
-									page: "/emi-management/category",
+									page: "/admin/emi-management/category",
 									permission: !this.permissionsArr.includes('categoryView'),
 								},
 								{
 									title: "Sub-Category",
-									page: "/emi-management/sub-category",
+									page: "/admin/emi-management/sub-category",
 									permission: !this.permissionsArr.includes('subCategoryView'),
 								},
 								{
 									title: "Bulk Upload Product",
-									page: "/emi-management/bulk-upload-product",
+									page: "/admin/emi-management/bulk-upload-product",
 									permission: !this.permissionsArr.includes('productAdd'),
 								},
 								{
 									title: "Bulk Edit Product",
-									page: "/emi-management/bulk-edit-product",
+									page: "/admin/emi-management/bulk-edit-product",
 									permission: !this.permissionsArr.includes('productEdit'),
 								},
 								{
 									title: "Upload Design",
-									page: "/emi-management/upload-design",
+									page: "/admin/emi-management/upload-design",
 									permission: !(this.permissionsArr.includes('productAdd') || this.permissionsArr.includes('productEdit')),
 								},
 							],
@@ -517,31 +519,33 @@ export class MenuConfig {
 						{
 							title: "Logistic Partner",
 							src: "assets/media/aside-icons/icons-25.svg",
-							page: "/emi-management/logistic-partner",
+							page: "/admin/emi-management/logistic-partner",
 							permission: !this.permissionsArr.includes('logisticPartnerView'),
 						},
 						{
 							title: "Bulk Upload Report",
 							root: true,
 							icon: "flaticon2-download-2",
-							page: "/emi-management/bulk-upload-report",
+							page: "/admin/emi-management/bulk-upload-report",
 							permission: !this.permissionsArr.includes('bulkReportView'),
 						},
 						{
 							title: "Config Details",
 							root: true,
 							icon: "flaticon2-console",
+							bullet: 'dot',
+
 							permission: !(this.permissionsArr.includes('walletView') || this.permissionsArr.includes('adminLogView')),
 
 							submenu: [
 								{
 									title: "Wallet Price",
-									page: "/emi-management/wallet-price",
+									page: "/admin/emi-management/wallet-price",
 									permission: !this.permissionsArr.includes('walletView'),
 								},
 								{
 									title: "Admin Log",
-									page: "/emi-management/admin-log",
+									page: "/admin/emi-management/admin-log",
 									permission: !this.permissionsArr.includes('adminLogView'),
 								},
 							],
@@ -550,6 +554,7 @@ export class MenuConfig {
 							title: "Order Management",
 							root: true,
 							icon: "flaticon2-shopping-cart",
+							bullet: 'dot',
 							permission: !(this.permissionsArr.includes('orderView') ||
 								this.permissionsArr.includes('EMIDetailsView') ||
 								this.permissionsArr.includes('refundDetailsView') ||
@@ -559,27 +564,27 @@ export class MenuConfig {
 							submenu: [
 								{
 									title: "Order Details",
-									page: "/emi-management/order-details",
+									page: "/admin/emi-management/order-details",
 									permission: !this.permissionsArr.includes('orderView'),
 								},
 								{
 									title: "EMI Details",
-									page: "/emi-management/emi-details",
+									page: "/admin/emi-management/emi-details",
 									permission: !this.permissionsArr.includes('EMIDetailsView'),
 								},
 								{
 									title: "Deposit Details",
-									page: "/emi-management/deposit-details",
+									page: "/admin/emi-management/deposit-details",
 									permission: !this.permissionsArr.includes('depositDetailsView'),
 								},
 								{
 									title: "Cancel Order Details",
-									page: "/emi-management/cancel-order-details",
+									page: "/admin/emi-management/cancel-order-details",
 									permission: !this.permissionsArr.includes('cancelOrderView'),
 								},
 								{
 									title: "Refund Details",
-									page: "/emi-management/refund-details",
+									page: "/admin/emi-management/refund-details",
 									permission: !this.permissionsArr.includes('refundDetailsView'),
 								},
 							],
@@ -588,14 +593,14 @@ export class MenuConfig {
 							title: 'Customer Details',
 							root: true,
 							src: "assets/media/aside-icons/icons-26.svg",
-							page: "/emi-management/customers",
+							page: "/admin/emi-management/customers",
 							permission: !this.permissionsArr.includes('customerView'),
 						},
 						{
 							title: 'Reports',
 							root: true,
 							src: "assets/media/aside-icons/icons-27.svg",
-							page: '/emi-management/reports',
+							page: "/admin/emi-management/reports",
 							permission: !(this.permissionsArr.includes('userReport') ||
 								this.permissionsArr.includes('depositReport') ||
 								this.permissionsArr.includes('EMIReport') ||
@@ -609,8 +614,51 @@ export class MenuConfig {
 							title: 'Back',
 							icon: 'flaticon-logout',
 							root: true,
-							page: "/dashboard",
+							page: "/admin/dashboard",
 							permission: false,
+						},
+					],
+					brokerItems: [
+						{
+							title: "Dashboard",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/broker/dashboard",
+							translate: "MENU.DASHBOARD",
+							permission: false,
+						},
+						{
+							title: "Customers",
+							root: true,
+							page: "/broker/customers",
+							src: "assets/media/aside-icons/icons-06.svg",
+							permission: !this.permissionsArr.includes('customerView'),
+						},
+						{
+							title: "Orders",
+							root: true,
+							page: "/broker/orders",
+							src: "assets/media/aside-icons/icons-13.svg",
+							permission: !this.permissionsArr.includes('customerView'),
+						},
+						{
+							title: "Profile",
+							root: true,
+							page: "/broker/profile",
+							src: "assets/media/aside-icons/icons-13.svg",
+							permission: !this.permissionsArr.includes('customerView'),
+						},
+						{
+							title: 'Back',
+							icon: 'flaticon-logout',
+							root: true,
+							page: "/admin/dashboard",
+							permission: !(this.userType === 4),
+						},
+						{
+							title: "Log Out",
+							src: "assets/media/aside-icons/icons-12.svg",
+							permission: !(this.userType === 2 || this.userType === 3),
 						},
 					],
 				},

@@ -4,7 +4,8 @@ export { AuthNoticeService } from './auth-notice/auth-notice.service';
 
 // GUARDS
 export { AuthGuard } from './_guards/auth.guard';
-// export { ModuleGuard } from './_guards/module.guard';
+export { RoleGuard } from './_guards/role.guard';
+export { RedirectGuard } from './_guards/redirect.guard';
 
 // MODELS
 export { User } from './_models/user.model';

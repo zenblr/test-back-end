@@ -7,89 +7,30 @@ import { ErrorPageComponent } from './views/theme/content/error-page/error-page.
 // Auth
 import { AuthGuard } from './core/auth';
 import { ReverseAuthGuard } from './core/auth/_guards/reverse-auth.guard';
+import { RoleGuard } from './core/auth/_guards/role.guard';
+import { RedirectGuard } from './core/auth/_guards/redirect.guard';
 
 const routes: Routes = [
 	{
 		path: 'auth', loadChildren: () => import('../app/views/pages/auth/auth.module').then(m => m.AuthModule),
 		canActivate: [ReverseAuthGuard]
 	},
-
 	{
 		path: '',
 		component: BaseComponent,
 		canActivate: [AuthGuard],
 		children: [
 			{
-				path: 'dashboard',
-				loadChildren: () => import('../app/views/pages/dashboard/dashboard.module').then(m => m.DashboardModule)
+				path: 'admin',
+				loadChildren: () => import('./views/pages/admin/admin.module').then(m => m.AdminModule)
 			},
 			{
-				path: 'admin-account',
-				loadChildren: () => import('../app/views/pages/admin-account/admin-account.module').then(m => m.AdminAccountModule)
-			},
-			{
-				path: 'global-settings',
-				loadChildren: () => import('../app/views/pages/settings/global-settings/global-settings.module').then(m => m.GlobalSettingsModule)
-			},
-			{
-				path: 'masters',
-				loadChildren: () => import('../app/views/pages/masters/masters.module').then(m => m.MastersModule)
-			},
-			{
-				path: 'upload-data',
-				loadChildren: () => import('../app/views/pages/upload-data/upload-data.module').then(m => m.UploadDataModule)
-			},
-			{
-				path: 'loan-setting',
-				loadChildren: () => import('../app/views/pages/loan-settings/loan-settings.module').then(m => m.LoanSettingsModule)
-			},
-			{
-				path: 'notification-setting',
-				loadChildren: () => import('../app/views/pages/notification-settings/notification-settings.module').then(m => m.NotificationSettingsModule)
-			},
-			{
-				path: 'holidays',
-				loadChildren: () => import('../app/views/pages/holidays/holidays.module').then(m => m.HolidaysModule)
-			},
-			{
-				path: 'loan-management',
-				loadChildren: () => import('../app/views/pages/loan-management/loan-management.module').then(m => m.LoanManagementModule)
-			},
-			{
-				path: 'upload-data',
-				loadChildren: () => import('../app/views/pages/upload-data/upload-data.module').then(m => m.UploadDataModule),
-			},
-			{
-				path: 'customer-management',
-				loadChildren: () => import('../app/views/pages/customer-management/customer-management.module').then(m => m.CustomerManagementModule)
-			},
-			{
-				path: 'kyc-setting',
-				loadChildren: () => import('../app/views/pages/kyc-settings/kyc-settings.module').then(m => m.KycSettingsModule)
-			},
-			{
-				path: 'applied-kyc',
-				loadChildren: () => import('../app/views/pages/applied-kyc/applied-kyc.module').then(m => m.AppliedKycModule)
-			},
-			{
-				path: 'assigned-customers',
-				loadChildren: () => import('../app/views/pages/assigned-customers/assigned-customers.module').then(m => m.AssignedCustomersModule)
-			},
-			{
-				path: 'lead-management',
-				loadChildren: () => import('../app/views/pages/lead-management/lead-management.module').then(m => m.LeadManagementModule)
-			},
-			{
-				path: 'user-management',
-				loadChildren: () => import('../app/views/pages/user-management/user-management.module').then(m => m.UserManagementModule)
-			},
-			{
-				path: 'emi-management',
-				loadChildren: () => import('../app/views/pages/emi-management/emi-management.module').then(m => m.EMIManagementModule)
-			},
-			{
-				path: 'repayment',
-				loadChildren: () => import('../app/views/pages/repayment/repayment.module').then(m => m.RepaymentModule)
+				path: 'broker',
+				loadChildren: () => import('./views/pages/broker/broker.module').then(m => m.MerchantModule),
+				// canActivate: [RoleGuard],
+				// data: {
+				// 	expectedRole: 2
+				// }
 			},
 			{
 				path: 'wizard',
@@ -106,17 +47,19 @@ const routes: Routes = [
 				}
 			},
 			{ path: 'error/:type', component: ErrorPageComponent },
-			{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-			{ path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
+			{ path: '', redirectTo: '', pathMatch: 'full', canActivate: [RedirectGuard] },
+			{ path: '**', redirectTo: '', pathMatch: 'full', canActivate: [RedirectGuard] }
 		]
 	},
-
 	{ path: '**', redirectTo: 'error/403', pathMatch: 'full' },
 ];
 
 @NgModule({
 	imports: [
 		RouterModule.forRoot(routes)
+	],
+	providers: [
+		RoleGuard
 	],
 	exports: [RouterModule]
 })

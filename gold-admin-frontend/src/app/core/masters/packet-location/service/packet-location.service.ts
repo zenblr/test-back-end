@@ -21,6 +21,7 @@ export class PacketLocationService {
     return this.http.get(`/api/?search=${search}&from=${from}&to=${to}`).pipe(
       map(res=>res),
       catchError(err => {
+        if (err.error.message)
         this.toastr.error(err.error.message);
         throw (err);
       }))

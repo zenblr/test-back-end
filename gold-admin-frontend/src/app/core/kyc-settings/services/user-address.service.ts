@@ -17,7 +17,8 @@ export class UserAddressService {
     return this.http.get(`/api/identity-type`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err)
       }))
   }
@@ -26,7 +27,8 @@ export class UserAddressService {
     return this.http.get(`/api/address-proof-type`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err)
       }))
   }
@@ -35,7 +37,8 @@ export class UserAddressService {
     return this.http.post(`/api/kyc/customer-kyc-address`, data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err)
       }))
   }

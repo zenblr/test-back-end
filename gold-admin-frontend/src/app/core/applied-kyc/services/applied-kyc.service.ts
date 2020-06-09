@@ -39,7 +39,8 @@ export class AppliedKycService {
     return this.http.get<any>(`/api/kyc/applied-kyc`, { params: reqParams }).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     );
@@ -49,7 +50,8 @@ export class AppliedKycService {
     return this.http.get<any>(`api/kyc/kyc-form-review?customerId=${params.customerId}&customerKycId=${params.customerKycId}`).pipe(
       tap(res => this.userData.next(res)),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     );
