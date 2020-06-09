@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
 import { ProfileService } from '../../../../../core/merchant-broker';
-import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
+import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
 
 @Component({
   selector: 'kt-profile-change-pan',

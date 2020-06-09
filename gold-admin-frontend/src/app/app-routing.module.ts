@@ -26,7 +26,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'broker',
-				loadChildren: () => import('../app/views/pages/merchant/merchant.module').then(m => m.MerchantModule),
+				loadChildren: () => import('./views/pages/broker/broker.module').then(m => m.MerchantModule),
 				// canActivate: [RoleGuard],
 				// data: {
 				// 	expectedRole: 2

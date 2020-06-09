@@ -36,7 +36,7 @@ import {
 
 //Components
 
-import { MerchantComponent } from "./merchant.component";
+import { BrokerComponent } from "./broker.component";
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CustomersComponent } from './customers/customers-list/customers.component';
 import { OrdersComponent } from './orders/orders-list/orders.component';
@@ -48,7 +48,7 @@ const routes: Routes = [
   {
     path: "",
 
-    component: MerchantComponent,
+    component: BrokerComponent,
 
     children: [
       { path: "", redirectTo: "dashboard", pathMatch: "full" },
@@ -74,7 +74,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    MerchantComponent,
+    BrokerComponent,
     DashboardComponent,
     CustomersComponent,
     OrdersComponent,
