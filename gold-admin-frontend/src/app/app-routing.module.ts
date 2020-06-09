@@ -29,7 +29,7 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/merchant/merchant.module').then(m => m.MerchantModule),
 				// canActivate: [RoleGuard],
 				// data: {
-				// 	expectedRole: 'Broker'
+				// 	expectedRole: '2'
 				// }
 			},
 			{

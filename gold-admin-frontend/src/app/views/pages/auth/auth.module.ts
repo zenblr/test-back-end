@@ -7,7 +7,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule ,MatProgressSpinnerModule} from '@angular/material';
 // Translate
 import { TranslateModule } from '@ngx-translate/core';
-// NGRX
 
 // Module components
 import { AuthComponent } from './auth.component';
@@ -21,7 +20,6 @@ import { CoreModule } from '../../../core/core.module';
 import { AuthGuard, AuthService } from '../../../core/auth';
 import { PartialsModule } from '../../partials/partials.module';
 import { SignInWithOtpComponent } from './sign-in-with-otp/sign-in-with-otp.component';
-
 
 const routes: Routes = [
 	{
