@@ -149,7 +149,7 @@ export class SignInWithOtpComponent implements OnInit {
             localStorage.setItem('UserDetails', JSON.stringify(user));
             // debugger
             if (this.returnUrl === '/') {
-              this.router.navigate(['/dashboard']);
+              this.router.navigate(['/admin/dashboard']);
             } else {
               this.router.navigateByUrl(this.returnUrl); // Main page
             }

@@ -1,0 +1,107 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row justify-content-center scroll kt-padding-t-10 kt-padding-b-10">
+            <div class="col-6">
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">Full Name</label>
+                    </div>
+                    <div class="col-8">
+                        {{profileDetails?.brokerData?.firstName ? profileDetails?.brokerData?.firstName:'-'}}&nbsp;{{profileDetails?.brokerData?.lastName ? profileDetails?.brokerData?.lastName:'-'}}
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">Email</label>
+                    </div>
+                    <div class="col-8">
+                        {{profileDetails?.brokerData?.email ? profileDetails?.brokerData?.email:'-'}}
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">Mobile No.</label>
+                    </div>
+                    <div class="col-8">
+                        {{profileDetails?.brokerData?.mobileNumber ? profileDetails?.brokerData?.mobileNumber:'-'}}
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">Permanent Address</label>
+                    </div>
+                    <div class="col-8">
+                        {{profileDetails?.brokerData?.address[0]?.address ? profileDetails?.brokerData?.address[0]?.address:'-'}}
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">City</label>
+                    </div>
+                    <div class="col-8">
+                        {{profileDetails?.brokerData?.address[0]?.city.name ? profileDetails?.brokerData?.address[0]?.city.name:'-'}}
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">State</label>
+                    </div>
+                    <div class="col-8">
+                        {{profileDetails?.brokerData?.address[0]?.state.name ? profileDetails?.brokerData?.address[0]?.state.name:'-'}}
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">Pincode</label>
+                    </div>
+                    <div class="col-8">
+                        {{profileDetails?.brokerData?.address[0]?.postalCode ? profileDetails?.brokerData?.address[0]?.postalCode:'-'}}
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">Pan Card No</label>
+                    </div>
+                    <div class="col-8">
+                        {{profileDetails?.brokerData?.panCardNumber ? profileDetails?.brokerData?.panCardNumber:'-'}}
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">Name on Pan Card</label>
+                    </div>
+                    <div class="col-8">
+                        {{profileDetails?.brokerData?.broker?.nameOnPanCard ? profileDetails?.brokerData?.broker?.nameOnPanCard:'-'}}
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">Pan Card</label>
+                    </div>
+                    <div class="col-8">
+                        <a class="text-body" *ngIf="profileDetails?.brokerData.broker.panCard;else elseBlock"
+                            [href]="profileDetails.brokerData.broker.panCard" download target="_blank">
+                            <span>Click here to View</span>
+                            <!-- <span class="pl-2">
+                                    <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
+                                </span> -->
+                        </a>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-12 text-right">
+                        <kt-button [value]="'Change Password'" [type]="'submit'" (click)="changePassword()"></kt-button>
+                        &nbsp;
+                        <kt-button [value]="'Update Pancard details'" [type]="'submit'" (click)="updatePan()">
+                        </kt-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>
+
+<ng-template #elseBlock>
+    -
+</ng-template>

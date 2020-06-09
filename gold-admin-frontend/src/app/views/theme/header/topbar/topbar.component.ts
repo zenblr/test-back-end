@@ -565,7 +565,7 @@ export class TopbarComponent implements OnInit {
 			this.appraiserService.openModal.next(true);
 		}
 		if (this.path == "merchant") {
-			this.router.navigate(["/user-management/add-merchant"]);
+			this.router.navigate(["/admin/user-management/add-merchant"]);
 		}
 		if (this.path == "wallet-price") {
 			this.walletPriceService.openModal.next(true);
@@ -586,7 +586,7 @@ export class TopbarComponent implements OnInit {
 			this.storeService.openModal.next(true);
 		}
 		if (this.path == "bulk-upload-product") {
-			this.router.navigate(["/emi-management/bulk-upload-report"]);
+			this.router.navigate(["/admin/emi-management/bulk-upload-report"]);
 		}
 		if (this.path == "logistic-partner") {
 			this.logisticPartnerService.openModal.next(true);
