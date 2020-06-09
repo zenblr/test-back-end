@@ -32,9 +32,8 @@ exports.customerDetails = async (req, res, next) => {
     }
 
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId, isActive: true },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus'],
-        where: { kycStatus: 'approved' },
+        where: { customerUniqueId, isActive: true ,kycStatus: 'approved'},
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus']
     })
 
     let customerLoanStage = await models.customerLoan.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false } })
