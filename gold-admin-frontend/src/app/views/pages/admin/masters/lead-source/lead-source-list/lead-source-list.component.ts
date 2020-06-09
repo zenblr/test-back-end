@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { Subject, Subscription, merge } from 'rxjs';
-import { DataTableService } from '../../../../../core/shared/services/data-table.service';
+import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { ToastrService } from 'ngx-toastr';
-import { LayoutUtilsService } from '../../../../../core/_base/crud';
+import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
-import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
-import { LeadSourceDatasource } from '../../../../../core/masters/lead-source/datasources/lead-source.datasource';
+import { LeadSourceService } from '../../../../../../core/masters/lead-source/services/lead-source.service';
+import { LeadSourceDatasource } from '../../../../../../core/masters/lead-source/datasources/lead-source.datasource';
 import { LeadSourceAddComponent } from '../lead-source-add/lead-source-add.component';
 
 @Component({

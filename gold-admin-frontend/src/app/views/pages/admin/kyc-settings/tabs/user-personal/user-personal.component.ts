@@ -7,7 +7,7 @@ import { UserDetailsService } from '../../../../../../core/kyc-settings';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
 import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
-import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 
 @Component({
   selector: 'kt-user-personal',

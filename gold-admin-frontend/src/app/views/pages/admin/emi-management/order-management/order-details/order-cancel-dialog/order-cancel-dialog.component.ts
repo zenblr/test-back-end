@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { ToastrComponent } from '../../../../../../views/partials/components/toastr/toastr.component';
+import { ToastrComponent } from '../../../../../../partials/components/toastr/toastr.component';
 import { ActivatedRoute, Router } from "@angular/router";
-import { OrderDetailsService } from '../../../../../../core/emi-management/order-management';
+import { OrderDetailsService } from '../../../../../../../core/emi-management/order-management';
 
 @Component({
   selector: 'kt-order-cancel-dialog',
