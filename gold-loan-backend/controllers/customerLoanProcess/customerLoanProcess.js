@@ -32,9 +32,8 @@ exports.customerDetails = async (req, res, next) => {
     }
 
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId, isActive: true },
+        where: { customerUniqueId: customerUniqueId, isActive: true, kycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus'],
-        where: { kycStatus: 'approved' },
     })
 
     let customerLoanStage = await models.customerLoan.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false } })
@@ -662,7 +661,7 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
     if (data.length === 0) {
         return res.status(200).json([]);
     } else {
-        return res.status(200).json({ message: 'success', data: data , count: count.length})
+        return res.status(200).json({ message: 'success', data: data, count: count.length })
     }
 }
 
