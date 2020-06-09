@@ -661,7 +661,7 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
     if (data.length === 0) {
         return res.status(200).json([]);
     } else {
-        return res.status(200).json({ message: 'success', data: data , count: count.length})
+        return res.status(200).json({ message: 'success', data: data, count: count.length })
     }
 }
 
