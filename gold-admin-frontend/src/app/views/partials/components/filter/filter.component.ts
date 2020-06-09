@@ -237,7 +237,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.list.cities = controls['cities'].value.multiSelect;
 			}
 			if (controls['status'].value && (controls['status'].value.multiSelect && controls['status'].value.multiSelect.length)) {
-				this.filterObject.data.status = controls['status'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.data.status = controls['status'].value.multiSelect.map(e => e.statusId).toString();
 				this.filterObject.list.status = controls['status'].value.multiSelect;
 			}
 			if (controls['appraiserStatus'].value && (controls['appraiserStatus'].value.multiSelect && controls['appraiserStatus'].value.multiSelect.length)) {

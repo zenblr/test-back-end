@@ -147,7 +147,7 @@ export class MerchantListComponent implements OnInit {
   apiKey(merchant) {
     const dialog = this.dialog.open(ApiKeyComponent, {
       data: { userId: merchant.userId },
-      width: '420px'
+      width: '470px'
     })
   }
 

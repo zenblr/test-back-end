@@ -167,7 +167,7 @@ export class MenuConfig {
 											permission: false,
 										},
 										{
-											title: "Unapproval Reasons",
+											title: "Unapproved Reasons",
 											page: "/masters/reasons",
 											permission: false,
 										},

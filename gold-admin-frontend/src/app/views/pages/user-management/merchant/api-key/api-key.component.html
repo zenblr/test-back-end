@@ -3,16 +3,21 @@
         <div class="kt-padding-20 pos-relative">
             <img src="../../../../../../assets/media/icons/cancel.svg" alt="" class="kt-pointer right-0" (click)="closeModal()">
             <div class="row">
-                <div class="col-6">
+                <div class="col-3">
                     <label class="text-color font-weight-500">API Key</label>
                 </div>
-                <div class="col-6">
-                    <label class="text-color font-weight-500" *ngIf="apiDetails.apiKey">{{apiDetails.apiKey}}</label>
+                <div class="col-8">
+                    <label class="text-color font-weight-500" *ngIf="apiDetails.apiKey" #copy>{{apiDetails.apiKey}}</label>
                     <label class="text-color font-weight-500" *ngIf="!apiDetails.apiKey">No API Key Found</label>
+                </div>
+                <div class="col-1 p-0" (click)="copy(apiDetails.apiKey)" *ngIf="apiDetails.apiKey">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="kt-pointer" matTooltip="Copy">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
                 </div>
             </div>
             <div class="row kt-margin-t-15">
-                <div class="col-6">
+                <div class="col-3">
                     <label class="text-color font-weight-500">API Status</label>
                 </div>
                 <div class="col-6">

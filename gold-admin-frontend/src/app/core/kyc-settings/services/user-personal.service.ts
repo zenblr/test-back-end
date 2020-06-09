@@ -17,7 +17,8 @@ export class UserPersonalService {
     return this.http.get(`/api/occupation`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err)
       }))
   }
@@ -29,7 +30,8 @@ export class UserPersonalService {
         return res;
       }),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err)
       }))
   }

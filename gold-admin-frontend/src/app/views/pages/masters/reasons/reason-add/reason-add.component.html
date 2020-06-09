@@ -9,10 +9,10 @@
                             <label class="kt-padding-l-10 mandatory"> Reason</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control" formControlName="reason"
-                                [class.isError]="reasonForm.controls.reason.invalid &&  reasonForm.controls.reason.touched">
+                            <input type="text" class="form-control" formControlName="description"
+                                [class.isError]="reasonForm.controls.description.invalid &&  reasonForm.controls.description.touched">
                         </div>
-                        <mat-error *ngIf="controls.reason.touched && controls.reason.errors?.required">
+                        <mat-error *ngIf="controls.description.touched && controls.description.errors?.required">
                             Required field
                         </mat-error>
                     </div>

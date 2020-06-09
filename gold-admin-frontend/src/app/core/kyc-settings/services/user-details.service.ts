@@ -21,7 +21,8 @@ export class UserDetailsService {
       map(res => res),
       catchError(err => {
         console.log(err);
-        this._toastr.error(err.error.message);
+        if (err.error.message)
+          this._toastr.error(err.error.message);
         throw (err);
       })
     ); // mobile
@@ -31,7 +32,8 @@ export class UserDetailsService {
     return this.http.post<any>(`/api/customer/verify-otp`, data).pipe(
       map(res => res),
       catchError(err => {
-        this._toastr.error(err.error.message);
+        if (err.error.message)
+          this._toastr.error(err.error.message);
         throw (err);
       })
     ); // ref,otp
@@ -41,7 +43,8 @@ export class UserDetailsService {
     return this.http.post<any>(`/api/customer/resend-otp`, data).pipe(
       map(res => res),
       catchError(err => {
-        this._toastr.error(err.error.message);
+        if (err.error.message)
+          this._toastr.error(err.error.message);
         throw (err);
       })
     );
@@ -51,7 +54,8 @@ export class UserDetailsService {
     return this.http.post<any>(`/api/customer/verify-pan`, data).pipe(
       map(res => res),
       catchError(err => {
-        this._toastr.error(err.error.message);
+        if (err.error.message)
+          this._toastr.error(err.error.message);
         throw (err);
       })
     );
@@ -62,7 +66,8 @@ export class UserDetailsService {
     return this.http.post<any>(`/api/kyc/customer-info`, data).pipe(
       tap(res => this.userData = res),
       catchError(err => {
-        this._toastr.error(err.error.message);
+        if (err.error.message)
+          this._toastr.error(err.error.message);
         throw (err);
       })
     );
