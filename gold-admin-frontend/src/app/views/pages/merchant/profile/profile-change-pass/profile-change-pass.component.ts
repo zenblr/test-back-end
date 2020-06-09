@@ -14,6 +14,7 @@ export class ProfileChangePassComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   passwordForm: FormGroup;
   title: string = 'Change Password';
+  isMandatory: boolean = true;
   constructor(
     public dialogRef: MatDialogRef<ProfileChangePassComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -63,7 +64,13 @@ export class ProfileChangePassComponent implements OnInit {
 
     const passwordData = this.passwordForm.value;
 
-    this.profileService.changePassword(passwordData).subscribe();
-
+    this.profileService.changePassword(passwordData).subscribe(res => {
+      if (res) {
+        this.toastr.successToastr(
+          "Pancard Updated Sucessfully"
+        );
+        this.dialogRef.close('reload');
+      }
+    });
   }
 }

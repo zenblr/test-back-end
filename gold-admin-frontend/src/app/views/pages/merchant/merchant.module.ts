@@ -42,6 +42,7 @@ import { CustomersComponent } from './customers/customers-list/customers.compone
 import { OrdersComponent } from './orders/orders-list/orders.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileChangePassComponent } from './profile/profile-change-pass/profile-change-pass.component';
+import { ProfileChangePanComponent } from './profile/profile-change-pan/profile-change-pan.component';
 
 const routes: Routes = [
   {
@@ -78,7 +79,9 @@ const routes: Routes = [
     CustomersComponent,
     OrdersComponent,
     ProfileComponent,
-    ProfileChangePassComponent],
+    ProfileChangePassComponent,
+    ProfileChangePanComponent
+  ],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -118,6 +121,7 @@ const routes: Routes = [
   ],
   entryComponents: [
     ProfileChangePassComponent,
+    ProfileChangePanComponent,
   ],
 })
 export class MerchantModule { }
