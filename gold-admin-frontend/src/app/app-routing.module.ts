@@ -29,7 +29,7 @@ const routes: Routes = [
 				loadChildren: () => import('../app/views/pages/merchant/merchant.module').then(m => m.MerchantModule),
 				// canActivate: [RoleGuard],
 				// data: {
-				// 	expectedRole: '2'
+				// 	expectedRole: 2
 				// }
 			},
 			{
@@ -57,6 +57,9 @@ const routes: Routes = [
 @NgModule({
 	imports: [
 		RouterModule.forRoot(routes)
+	],
+	providers: [
+		RoleGuard
 	],
 	exports: [RouterModule]
 })

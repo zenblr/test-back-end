@@ -152,11 +152,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 						// this.store.dispatch(new Login({ authToken: user.accessToken }));
 						localStorage.setItem('UserDetails', JSON.stringify(res));
 						// debugger
-						if (res.userDetails.userTypeId === 2 || res.userDetails.userTypeId === 3) {
-							this.router.navigate(['/broker']);
-						} else {
-							this.router.navigate(['/admin']);
-						}
+						// if (res.userDetails.userTypeId === 2 || res.userDetails.userTypeId === 3) {
+						// 	this.router.navigate(['/broker']);
+						// } else {
+						// 	this.router.navigate(['/admin']);
+						// }
+						this.router.navigate(['/']);
 						// if (this.returnUrl === '/') {
 						// 	this.router.navigate(['/admin/dashboard']);
 						// } else {
