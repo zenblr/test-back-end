@@ -5,15 +5,22 @@
 
                 <ng-container matColumnDef="holidayDate">
                     <mat-header-cell *matHeaderCellDef>Holiday Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.holidayDate}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="description">
                     <mat-header-cell *matHeaderCellDef>Event</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.description | titlecase}}</mat-cell>
                 </ng-container>
 
-
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div class="kt-pointer" (click)="editHoliday(item)">Edit</div>
+                        <div class="px-3">|</div>
+                        <div class="kt-pointer text-danger" (click)="deleteHoliday(item)">Delete</div>
+                    </mat-cell>
+                </ng-container>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

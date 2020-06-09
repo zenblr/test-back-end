@@ -17,7 +17,9 @@ export class GlobalSettingService {
     return this.http.post(`/api/gold-rate`, params.data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message) {
+          this.toastr.error(err.error.message);
+        }
         throw (err);
       })
     )
