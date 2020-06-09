@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angula
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { HolidayService } from '../../../../core/holidays/services/holiday.service';
+import { HolidayService } from '../../../../../core/holidays/services/holiday.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 
 @Component({

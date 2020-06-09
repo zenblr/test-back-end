@@ -36,7 +36,7 @@ export class UserDetailsComponent implements OnInit {
     private brokerService:BrokerService,
     public router:Router
   ) {
-    this.url = this.router.url.split('/')[2]
+    this.url = this.router.url.split('/')[3]
     this.merchantService.userId$.subscribe();
   }
 

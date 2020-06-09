@@ -47,7 +47,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.branchManager = res.bm
     })
 
-    this.url = this.router.url.split('/')[2]
+    this.url = this.router.url.split('/')[3]
     this.initForm();
     this.getRoles()
   }

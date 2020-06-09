@@ -47,7 +47,7 @@ export class UplodDataImageComponent implements OnInit {
       this.getPermission(res)
     })
     const currentPage = this.router.url;
-    if (currentPage == '/upload-data/upload-banner') {
+    if (currentPage == '/admin/upload-data/upload-banner') {
       this.promotionPage = true;
     }
   }
