@@ -14,6 +14,7 @@ export class GlobalSettingsComponent implements OnInit {
   gstForm: FormGroup;
   minimumTopUpAmountForm: FormGroup;
   gracePeriodForm: FormGroup;
+  cashTransactionLimitForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -35,6 +36,10 @@ export class GlobalSettingsComponent implements OnInit {
 
     this.gstForm = this.fb.group({
       gst: []
+    })
+
+    this.cashTransactionLimitForm = this.fb.group({
+      cashTransactionLimit: []
     })
 
     this.minimumTopUpAmountForm = this.fb.group({
@@ -63,6 +68,10 @@ export class GlobalSettingsComponent implements OnInit {
 
       case 'gracePeriod':
         formData = { data: this.gracePeriodForm.value, method: type }
+        break;
+
+      case 'cashTransactionLimit':
+        formData = { data: this.cashTransactionLimitForm.value, method: type }
         break;
 
       case 'gst':
