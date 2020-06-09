@@ -52,7 +52,8 @@ export class LeadService {
     return this.http.get<any>(`/api/status`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     );
@@ -62,7 +63,8 @@ export class LeadService {
     return this.http.get<any>(`/api/customer/${id}`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message)
+        if (err.error.message)
+          this.toastr.error(err.error.message)
         throw (err)
       })
     );
@@ -72,7 +74,8 @@ export class LeadService {
     return this.http.put<any>(`/api/customer/${id}`, data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message)
+        if (err.error.message)
+          this.toastr.error(err.error.message)
         throw (err)
       })
     );
@@ -86,7 +89,8 @@ export class LeadService {
     return this.http.post<any>(`/api/customer/verify-otp`, data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message)
+        if (err.error.message)
+          this.toastr.error(err.error.message)
         throw (err)
       })
     ); // ref,otp

@@ -15,40 +15,44 @@ export class ReasonsService {
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   getReasons(from, to, search): Observable<any> {
-    return this.http.get(`/api/packet?search=${search}&from=${from}&to=${to}`).pipe(
+    return this.http.get(`/api/rating-reason?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     )
   }
 
-  addReason(data): Observable<any> {
-    return this.http.post<any>(`/api/packet`, data).pipe(
+  addReason(description): Observable<any> {
+    return this.http.post<any>(`/api/rating-reason`, { description }).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     );
   }
 
-  updateReason(id, data): Observable<any> {
-    return this.http.put<any>(`/api/packet/${id}`, data).pipe(
+  updateReason(id, description): Observable<any> {
+    return this.http.put<any>(`/api/rating-reason/${id}`, {description}).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     );
   }
 
   deleteReason(id): Observable<any> {
-    return this.http.delete<any>(`/api/packet/${id}`).pipe(
+    return this.http.delete<any>(`/api/rating-reason?id=${id}&isActive=false`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     );

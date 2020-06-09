@@ -157,7 +157,7 @@ export class MenuConfig {
 									submenu: [
 										{
 											title: "Lead Source",
-											page: "/masters/lead-source",
+											page: "/admin/masters/lead-source",
 											permission: false,
 										},
 										{
@@ -166,7 +166,7 @@ export class MenuConfig {
 											permission: false,
 										},
 										{
-											title: "Unapproval Reasons",
+											title: "Unapproved Reasons",
 											page: "/admin/masters/reasons",
 											permission: false,
 										},

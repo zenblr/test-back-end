@@ -18,6 +18,7 @@ export class OrnamentsService {
     return this.http.get(`/api/ornament-type?from=${from}&to=${to}&search=${search}`).pipe(
       map(res => res),
       catchError(err => {
+        if (err.error.message)
         this.toastr.error(err.error.message);
         throw (err);
       })
@@ -28,6 +29,7 @@ export class OrnamentsService {
     return this.http.post<any>(`/api/ornament-type`, {name}).pipe(
       map(res => res),
       catchError(err => {
+        if (err.error.message)
         this.toastr.error(err.error.message);
         throw (err);
       })
@@ -38,6 +40,7 @@ export class OrnamentsService {
     return this.http.put<any>(`/api/ornament-type/${id}`, {name}).pipe(
       map(res => res),
       catchError(err => {
+        if (err.error.message)
         this.toastr.error(err.error.message);
         throw (err);
       })
@@ -48,6 +51,7 @@ export class OrnamentsService {
     return this.http.delete<any>(`/api/ornament-type?id=${id}&isActive=false`).pipe(
       map(res => res),
       catchError(err => {
+        if (err.error.message)
         this.toastr.error(err.error.message);
         throw (err);
       })

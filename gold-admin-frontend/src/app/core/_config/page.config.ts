@@ -90,36 +90,15 @@ export class PageConfig {
 				merchant: {
 					page: { title: "All Merchants", desc: "" },
 				},
-				"admin-account": {
-					"change-password": {
-						page: { title: "Change Password", desc: "" },
-					},
-					"show-queries": {
-						page: { title: "Show Queries", desc: "" },
-					},
-					"show-feedback": {
-						page: { title: "Show Feedback", desc: "" },
-					},
+				store: {
+					page: { title: "Store", desc: "" },
 				},
-				"loan-setting": {
-					scheme: {
-						page: { title: "Schemes", desc: "" },
-					},
-					packet: {
-						page: { title: "Packets", desc: "" },
-					},
-					"karat-details": {
-						page: { title: "Karat", desc: "" },
-					},
-				},
-				"notification-setting": {
-					"email-alert": {
-						page: { title: "Email Alerts", desc: "" }
-					},
-					"sms-alert": {
-						page: { title: "SMS Alerts", desc: "" }
+				role: {
+					page: { title: "Roles", desc: "" },
+					id: {
+						page: { title: "Roles", desc: "" },
 					}
-				},
+				}
 			},
 			"lead-management": {
 				page: { title: "All Leads", desc: "" },

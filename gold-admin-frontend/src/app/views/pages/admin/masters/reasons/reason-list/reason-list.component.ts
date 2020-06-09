@@ -64,7 +64,7 @@ export class ReasonListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getReasons(1, 25, this.searchValue);
+    this.dataSource.getReasons(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {

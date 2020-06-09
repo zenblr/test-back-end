@@ -14,15 +14,15 @@ export class PacketsService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  uploadPackets(packageImageData,loanId):Observable<any>{
-    return this.http.post(`/api/loan-process/add-packet-images/`,{packageImageData,loanId}).pipe(
-      map(res=>res)
+  uploadPackets(packageImageData, loanId): Observable<any> {
+    return this.http.post(`/api/loan-process/add-packet-images/`, { packageImageData, loanId }).pipe(
+      map(res => res)
     )
   }
 
-  getPacketsAvailable():Observable<any>{
+  getPacketsAvailable(): Observable<any> {
     return this.http.get(`/api/packet/available-packet`).pipe(
-      map(res=>res)
+      map(res => res)
     )
   }
 
@@ -30,7 +30,8 @@ export class PacketsService {
     return this.http.get(`/api/packet?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     )
@@ -40,7 +41,8 @@ export class PacketsService {
     return this.http.post<any>(`/api/packet`, data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     );
@@ -50,7 +52,8 @@ export class PacketsService {
     return this.http.put<any>(`/api/packet/${id}`, data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     );
@@ -60,7 +63,8 @@ export class PacketsService {
     return this.http.delete<any>(`/api/packet?id=${id}&isActive=${false}`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err);
       })
     );

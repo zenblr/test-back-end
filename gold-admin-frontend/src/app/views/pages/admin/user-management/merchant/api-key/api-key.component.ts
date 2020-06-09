@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MerchantService } from '../../../../../../core/user-management/merchant';
 import { ToastrService } from 'ngx-toastr';
@@ -11,6 +11,7 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class ApiKeyComponent implements OnInit {
 
+  @ViewChild('copy',{static:false}) copyText : ElementRef
   apiDetails:any ={}
   constructor(
     public dialogRef: MatDialogRef<ApiKeyComponent>,
@@ -62,6 +63,21 @@ export class ApiKeyComponent implements OnInit {
         throw err
       })).subscribe()
   }
+
+  copy(val:string){
+    let selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
 
   closeModal(){
     this.dialogRef.close()

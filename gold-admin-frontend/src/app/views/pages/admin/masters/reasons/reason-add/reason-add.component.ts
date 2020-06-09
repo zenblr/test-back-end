@@ -38,7 +38,7 @@ export class ReasonAddComponent implements OnInit {
   initForm() {
     this.reasonForm = this.fb.group({
       id: [],
-      reason: ['', [Validators.required]]
+      description: ['', [Validators.required]]
     })
   }
 
@@ -59,7 +59,7 @@ export class ReasonAddComponent implements OnInit {
     const id = this.controls.id.value;
 
     if (this.data.action == 'edit') {
-      this.reasonsService.updateReason(id, data).subscribe(res => {
+      this.reasonsService.updateReason(id, data.description).subscribe(res => {
         if (res) {
           const msg = 'Reason Updated Sucessfully';
           this.toastr.success(msg);
@@ -68,7 +68,7 @@ export class ReasonAddComponent implements OnInit {
       });
 
     } else {
-      this.reasonsService.addReason(data).subscribe(res => {
+      this.reasonsService.addReason(data.description).subscribe(res => {
         if (res) {
           const msg = 'Reason Added Successfully';
           this.toastr.success(msg);

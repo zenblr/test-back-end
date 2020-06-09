@@ -124,16 +124,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="filtered-data" *ngIf="filteredList?.status?.length">
-                        <div class="filtered-title">By City</div>
-                        <div class="d-flex">
-                            <div class="filtered-value" *ngFor="let item of filteredList?.status; let i = index;">
-                                <span>{{item?.name | titlecase}}</span>
-                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
-                                    (click)="clearFilter('status', i)">
-                            </div>
-                        </div>
-                    </div>
                     <!-- appliedkyc -->
                     <div class="filtered-data" *ngIf="filteredList?.cceStatus">
                         <div class="filtered-title">By CCE Status</div>

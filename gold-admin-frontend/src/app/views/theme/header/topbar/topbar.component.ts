@@ -246,10 +246,9 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = '400px';
 		}
 		if (this.path == "holidays") {
-			this.rightButton = true;
-			this.value2 = "Add Holiday";
-			this.type2 = "button";
+			this.value1 = "Add Holiday";
 			this.showInput = true;
+			this.dataSourceHeader();
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "ornaments") {

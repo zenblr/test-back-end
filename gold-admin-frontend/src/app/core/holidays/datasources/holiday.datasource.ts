@@ -15,7 +15,7 @@ export class HolidayDatasource extends BaseDataSource {
         super();
     }
 
-    getHolidays(from, to, search, stageName) {
+    getHolidays(from, to, search) {
         this.loadingSubject.next(true);
 
         // this.entitySubject.next(this.leads); // delete this

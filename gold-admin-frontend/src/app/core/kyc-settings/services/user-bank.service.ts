@@ -19,6 +19,7 @@ export class UserBankService {
         this.kycDetails = res;
       }),
       catchError(err => {
+        if (err.error.message)
         this.toastr.error(err.error.message);
         throw (err)
       }))

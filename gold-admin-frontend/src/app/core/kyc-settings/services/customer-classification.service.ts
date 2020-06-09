@@ -15,7 +15,8 @@ export class CustomerClassificationService {
     return this.http.get(`/api/rating`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err)
       }))
   }
@@ -24,7 +25,8 @@ export class CustomerClassificationService {
     return this.http.get(`/api/rating-reason`).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err)
       }))
   }
@@ -33,7 +35,8 @@ export class CustomerClassificationService {
     return this.http.post(`/api/classification/cce`, data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err)
       }))
   }
@@ -42,7 +45,8 @@ export class CustomerClassificationService {
     return this.http.put(`/api/classification`, data).pipe(
       map(res => res),
       catchError(err => {
-        this.toastr.error(err.error.message);
+        if (err.error.message)
+          this.toastr.error(err.error.message);
         throw (err)
       }))
   }
