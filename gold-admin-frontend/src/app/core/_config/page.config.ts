@@ -157,126 +157,40 @@ export class PageConfig {
 				"upload-design": {
 					page: { title: "Upload Design", desc: "" },
 				},
-				"user-management": {
-					partner: {
-						page: { title: "All Partners", desc: "" },
-					},
-					branch: {
-						page: { title: "All Partner Branches", desc: "" },
-					},
-					"internal-user": {
-						page: { title: "Internal User", desc: "" },
-					},
-					"internal-user-branch": {
-						page: { title: "Internal User Branch", desc: "" },
-					},
-					"assign-appraiser": {
-						page: { title: "Assigned Appraiser", desc: "" },
-					},
-					'redirect-assign-appraiser': {
-						page: { title: "Assigned Appraiser", desc: "" },
-					},
-					merchant: {
-						page: { title: "All Merchants", desc: "" },
-					},
-					broker: {
-						page: { title: "All Brokers", desc: "" },
-					},
-					store: {
-						page: { title: "All Stores", desc: "" },
-					},
-					roles: {
-						page: { title: "Roles", desc: "" },
+				"bulk-upload-report": {
+					page: { title: "Bulk Upload Report", desc: "" },
+				},
+				"logistic-partner": {
+					page: { title: "Logistic Partner", desc: "" },
+				},
+				"wallet-price": {
+					page: { title: "Wallet Price", desc: "" },
+				},
+				"admin-log": {
+					page: { title: "Admin Log", desc: "" },
+				},
+				"order-details": {
+					page: { title: "Order Details", desc: "" },
+					'edit-order-details': {
 						id: {
-							page: { title: "Permissions", desc: "" }
-						}
-					},
-				},
-				"lead-management": {
-					page: { title: "All Leads", desc: "" },
-				},
-				"repayment": {
-					monthly: {
-						page: { title: "Monthly Repayment", desc: "" },
-					},
-				},
-				"kyc-setting": {
-					page: { title: "Customer KYC", desc: "" },
-					"edit-kyc": {
-						page: { title: "Customer KYC", desc: "" },
-					},
-				},
-				"emi-management": {
-					products: {
-						page: { title: "Show Products", desc: "" },
-					},
-					category: {
-						page: { title: "Category", desc: "" },
-					},
-					"sub-category": {
-						page: { title: "Sub-Category", desc: "" },
-					},
-					"bulk-upload-product": {
-						page: { title: "Bulk Upload Product", desc: "" },
-					},
-					"bulk-edit-product": {
-						page: { title: "Bulk Edit Product", desc: "" },
-					},
-					"upload-design": {
-						page: { title: "Upload Design", desc: "" },
-					},
-					"bulk-upload-report": {
-						page: { title: "Bulk Upload Report", desc: "" },
-					},
-					"logistic-partner": {
-						page: { title: "Logistic Partner", desc: "" },
-					},
-					"wallet-price": {
-						page: { title: "Wallet Price", desc: "" },
-					},
-					"admin-log": {
-						page: { title: "Admin Log", desc: "" },
-					},
-					"order-details": {
-						page: { title: "Order Details", desc: "" },
-						'edit-order-details': {
-							id: {
-								page: { title: "Order Details", desc: "" },
-							},
+							page: { title: "Order Details", desc: "" },
 						},
 					},
-					"emi-details": {
-						page: { title: "EMI Details", desc: "" },
-					},
-					"cancel-order-details": {
-						page: { title: "Cancel Order Details", desc: "" },
-					},
-					"deposit-details": {
-						page: { title: "Deposit Details", desc: "" },
-					},
-					"refund-details": {
-						page: { title: "Refund Details", desc: "" },
-						'edit-refund-details': {
-							id: {
-								page: { title: "Refund Details", desc: "" },
-							},
-						},
-					},
-					customers: {
-						page: { title: "Customers", desc: "" },
-					},
-					reports: {
-						page: { title: "Reports", desc: "" },
-					},
 				},
-				"applied-kyc": {
-					page: { title: "Applied KYC", desc: "" },
+				"emi-details": {
+					page: { title: "EMI Details", desc: "" },
 				},
-				"customer-management": {
-					"customer-list": {
-						page: { title: "My Customer", desc: "" },
+				"cancel-order-details": {
+					page: { title: "Cancel Order Details", desc: "" },
+				},
+				"deposit-details": {
+					page: { title: "Deposit Details", desc: "" },
+				},
+				"refund-details": {
+					page: { title: "Refund Details", desc: "" },
+					'edit-refund-details': {
 						id: {
-							page: { title: "Customer Details", desc: "" },
+							page: { title: "Refund Details", desc: "" },
 						},
 					},
 				},
@@ -345,6 +259,9 @@ export class PageConfig {
 			"profile": {
 				page: { title: "Profile", desc: "" },
 			},
+			"checkout-customer": {
+				page: { title: "Customer Details", desc: "" },
+			}
 		}
 	};
 
