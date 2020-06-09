@@ -6,6 +6,8 @@ import { DataTableService } from '../../../../core/shared/services/data-table.se
 import { HolidayAddComponent } from '../holiday-add/holiday-add.component';
 import { HolidayDatasource } from '../../../../core/holidays/datasources/holiday.datasource';
 import { HolidayService } from '../../../../core/holidays/services/holiday.service';
+import { LayoutUtilsService } from '../../../../core/_base/crud';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-holiday-list',
@@ -15,7 +17,7 @@ import { HolidayService } from '../../../../core/holidays/services/holiday.servi
 export class HolidayListComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['holidayDate', 'description'];
+  displayedColumns = ['holidayDate', 'description', 'action'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -27,6 +29,8 @@ export class HolidayListComponent implements OnInit {
     private dataTableService: DataTableService,
     private holidayService: HolidayService,
     public dialog: MatDialog,
+    private layoutUtilsService: LayoutUtilsService,
+    private toastr: ToastrService
   ) {
     this.holidayService.openModal$.pipe(
       map(res => {
@@ -60,7 +64,7 @@ export class HolidayListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getHolidays(1, 25, this.searchValue);
+    this.dataSource.getHolidays(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -91,6 +95,39 @@ export class HolidayListComponent implements OnInit {
         this.loadPage();
       }
       this.holidayService.openModal.next(false);
+    });
+  }
+
+  editHoliday(holiday) {
+    console.log(holiday)
+    const dialogRef = this.dialog.open(HolidayAddComponent,
+      {
+        data: { holidayData: holiday, action: 'edit' },
+        width: '600px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
+  }
+
+  deleteHoliday(item) {
+    const _title = 'Delete Holiday';
+    const _description = 'Are you sure to permanently delete this holiday?';
+    const _waitDesciption = 'Holiday is deleting...';
+    const _deleteMessage = `Holiday has been deleted`;
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.holidayService.deleteHoliday(item.id).subscribe(res => {
+          this.toastr.success(_deleteMessage);
+          this.loadPage();
+        },
+          errorDelete => {
+            this.toastr.error(errorDelete.error.message);
+          });
+      }
     });
   }
 

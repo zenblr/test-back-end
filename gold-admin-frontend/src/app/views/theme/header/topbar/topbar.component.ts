@@ -122,10 +122,10 @@ export class TopbarComponent implements OnInit {
 		private holidayService: HolidayService,
 		private packetLocation: PacketLocationService,
 		private ornamentsService: OrnamentsService,
-		private purposeService:PurposeService,
+		private purposeService: PurposeService,
 		private reasonsService: ReasonsService,
-		private appliedKycService:AppliedKycService,
-		private appliedLoan:AppliedLoanService,
+		private appliedKycService: AppliedKycService,
+		private appliedLoan: AppliedLoanService,
 		private leadSourceService: LeadSourceService
 
 	) {
@@ -246,10 +246,9 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = '400px';
 		}
 		if (this.path == "holidays") {
-			this.rightButton = true;
-			this.value2 = "Add Holiday";
-			this.type2 = "button";
+			this.value1 = "Add Holiday";
 			this.showInput = true;
+			this.dataSourceHeader();
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "ornaments") {
@@ -666,13 +665,13 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "lead-management") {
 			this.leadService.applyFilter.next(data);
 		}
-		if(this.path == "applied-kyc"){
+		if (this.path == "applied-kyc") {
 			this.appliedKycService.applyFilter.next(data)
 		}
-		if(this.path == "scheme"){
+		if (this.path == "scheme") {
 			this.loanSettingService.applyFilter.next(data)
 		}
-		if(this.path == "applied-loan"){
+		if (this.path == "applied-loan") {
 			this.appliedLoan.applyFilter.next(data)
 		}
 	}
