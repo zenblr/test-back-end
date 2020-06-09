@@ -345,6 +345,9 @@ export class PageConfig {
 			"profile": {
 				page: { title: "Profile", desc: "" },
 			},
+			"shop": {
+				page: { title: "Gold Jewellery", desc: "" },
+			},
 		}
 	};
 

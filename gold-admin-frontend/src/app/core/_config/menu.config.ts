@@ -18,7 +18,7 @@ export class MenuConfig {
 				this.permissionsService.loadPermissions(this.permissionsArr);
 				// console.log(this.permissionsArr);
 			}
-			
+
 			if (res.userDetails) {
 				this.userType = res.userDetails.userTypeId;
 			}
@@ -616,6 +616,13 @@ export class MenuConfig {
 							title: "Profile",
 							root: true,
 							page: "/broker/profile",
+							src: "assets/media/aside-icons/icons-13.svg",
+							permission: !this.permissionsArr.includes('customerView'),
+						},
+						{
+							title: "Shop",
+							root: true,
+							page: "/broker/shop",
 							src: "assets/media/aside-icons/icons-13.svg",
 							permission: !this.permissionsArr.includes('customerView'),
 						},

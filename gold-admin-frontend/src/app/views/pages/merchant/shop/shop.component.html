@@ -1,0 +1,7 @@
+<div *ngIf="subCategory">
+    <mat-chip-list>
+        <mat-chip *ngFor="let sub of subCategory" class="subStyle">
+            {{sub.subCategoryName}}&nbsp;({{sub.count}})
+        </mat-chip>
+    </mat-chip-list>
+</div>

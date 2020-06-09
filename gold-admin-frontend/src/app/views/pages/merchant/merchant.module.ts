@@ -43,6 +43,7 @@ import { OrdersComponent } from './orders/orders-list/orders.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileChangePassComponent } from './profile/profile-change-pass/profile-change-pass.component';
 import { ProfileChangePanComponent } from './profile/profile-change-pan/profile-change-pan.component';
+import { ShopComponent } from './shop/shop.component';
 
 const routes: Routes = [
   {
@@ -68,6 +69,10 @@ const routes: Routes = [
         path: "profile",
         component: ProfileComponent,
       },
+      {
+        path: "shop",
+        component: ShopComponent,
+      },
     ],
   },
 ];
@@ -80,7 +85,8 @@ const routes: Routes = [
     OrdersComponent,
     ProfileComponent,
     ProfileChangePassComponent,
-    ProfileChangePanComponent
+    ProfileChangePanComponent,
+    ShopComponent
   ],
   imports: [
     CommonModule,
