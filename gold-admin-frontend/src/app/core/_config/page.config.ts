@@ -240,6 +240,9 @@ export class PageConfig {
 			"orders": {
 				page: { title: "Orders", desc: "" },
 			},
+			"shop": {
+				page: { title: "Gold Jewellery", desc: "" },
+			},
 			"cart": {
 				page: { title: "Shopping Cart", desc: "" },
 			},
@@ -248,7 +251,7 @@ export class PageConfig {
 			},
 			"checkout-customer": {
 				page: { title: "Customer Details", desc: "" },
-			}
+			},
 		}
 	};
 

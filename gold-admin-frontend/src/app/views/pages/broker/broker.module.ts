@@ -45,6 +45,7 @@ import { ProfileChangePassComponent } from './profile/profile-change-pass/profil
 import { ProfileChangePanComponent } from './profile/profile-change-pan/profile-change-pan.component';
 import { CheckoutCustomerComponent } from './checkout-customer/checkout-customer.component';
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
+import { ShopComponent } from './shop/shop.component';
 
 const routes: Routes = [
   {
@@ -78,6 +79,10 @@ const routes: Routes = [
         path: "cart",
         component: ShoppingCartComponent,
       },
+      {
+        path: "shop",
+        component: ShopComponent,
+      },
     ],
   },
 ];
@@ -92,7 +97,8 @@ const routes: Routes = [
     ProfileChangePassComponent,
     ProfileChangePanComponent,
     CheckoutCustomerComponent,
-    ShoppingCartComponent
+    ShoppingCartComponent,
+    ShopComponent
   ],
   imports: [
     CommonModule,
