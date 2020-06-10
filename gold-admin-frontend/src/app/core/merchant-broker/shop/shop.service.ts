@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
+import { API_ENDPOINT } from '../../../app.constant';
 
 @Injectable({
     providedIn: "root",
@@ -31,8 +32,12 @@ export class ShopService {
         if (event && event.subCategoryId) {
             reqParams.subCategoryId = event.subCategoryId;
         }
-        return this.http.get('http://173.249.49.7:9120/api/products/product-by-subcategory', {
+        return this.http.get(API_ENDPOINT + 'api/products/product-by-subcategory', {
             params: reqParams,
         })
+    }
+
+    getSingleProduct(id): Observable<any> {
+        return this.http.get(API_ENDPOINT + 'api/products/' + id)
     }
 }
