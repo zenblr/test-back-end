@@ -88,7 +88,7 @@
                 <ng-container matColumnDef="productWeight">
                     <mat-header-cell *matHeaderCellDef class="align-right">Product Weight(in gm)</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.order?.product?.weight ? element?.order?.product?.weight : '-'}}</mat-cell>
+                        {{element?.order?.weight ? element?.order?.weight : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="sku">
                     <mat-header-cell *matHeaderCellDef>SKU Code</mat-header-cell>

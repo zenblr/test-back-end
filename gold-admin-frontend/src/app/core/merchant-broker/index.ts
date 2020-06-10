@@ -11,3 +11,5 @@ export { ProfileService } from './profile/services/profile.service';
 export { CheckoutCustomerService } from './checkout-customer/services/checkout-customer.service'
 
 export { ShopService } from './shop/shop.service';
+
+export { ShoppingCartService } from './shopping-cart/services/shopping-cart.service';
