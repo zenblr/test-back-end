@@ -77,16 +77,21 @@
                         </div>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="totalPrice">
-                    <mat-header-cell *matHeaderCellDef class="align-right">Total Price</mat-header-cell>
+                <ng-container matColumnDef="bookingPrice">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Booking Price</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
                         {{element?.totalPrice ? element?.totalPrice : '-'}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="cancellationCharges">
-                    <mat-header-cell *matHeaderCellDef class="align-right">Cancellation Charges
+                <ng-container matColumnDef="totalAmt">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Total Amount Paid</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.totalAmountPaid ? element?.totalAmountPaid : '-'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="cancelPrice">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Cancellation Price Of Order
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.cancellationCharges ? element?.cancellationCharges : '-'}}</mat-cell>
+                        {{element?.productUpdatedPrice ? element?.productUpdatedPrice : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="differenceAmount">
                     <mat-header-cell *matHeaderCellDef class="align-right">Difference Amount
@@ -95,18 +100,43 @@
                         {{element?.diffrenceAmount ? element?.diffrenceAmount : '-'}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="cancelFees">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Cancellation Fees (%)
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.cancelationFees ? element?.cancelationFees : '-'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="cancelCharge">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Cancellation Charges
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.cancellationCharges ? element?.cancellationCharges : '-'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="totalCancelCharge">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Total Cancellation Charges
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.totalCancelationCharges ? element?.totalCancelationCharges : '-'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="amtPayable">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Amt. Payable To Customer
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.payableToCustomer ? element?.payableToCustomer : '-'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="tenure">
+                    <mat-header-cell *matHeaderCellDef>Tenure (months)</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.order?.paymentType?.paymentType ? element?.order?.paymentType?.paymentType : '-'}}
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="emiAmount">
                     <mat-header-cell *matHeaderCellDef class="align-right">EMI Amount</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
                         {{element?.order?.orderdetails[0]?.emiAmount ? element?.order?.orderdetails[0]?.emiAmount : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="tenure">
-                    <mat-header-cell *matHeaderCellDef>Tenure(months)</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        {{element?.order?.paymentType?.paymentType ? element?.order?.paymentType?.paymentType : '-'}}
-                    </mat-cell>
-                </ng-container>
+
                 <ng-container matColumnDef="lastEmiNumber">
                     <mat-header-cell *matHeaderCellDef>Last EMI No</mat-header-cell>
                     <mat-cell *matCellDef="let element">{{element?.lastEmiNumber ? element?.lastEmiNumber : '-'}}
@@ -138,9 +168,9 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 240%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 250%;"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 240%;"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 250%;"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

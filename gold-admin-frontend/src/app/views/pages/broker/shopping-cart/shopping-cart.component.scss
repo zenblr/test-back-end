@@ -1,0 +1,16 @@
+:host {
+    .kt-portlet__body {
+        padding: 20px !important;
+    }
+    .cart-height {
+        min-height: 70vh;
+        max-height: 72vh;
+    }
+    .cart-list-item {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        font-weight: 500;
+    }
+}

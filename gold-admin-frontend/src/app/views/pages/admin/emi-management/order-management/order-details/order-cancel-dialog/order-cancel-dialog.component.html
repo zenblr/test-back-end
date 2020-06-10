@@ -118,6 +118,10 @@
                                 *ngIf="controls.customerBankName.errors?.required && controls.customerBankName.touched">
                                 Required field
                             </mat-error>
+                            <mat-error
+                                *ngIf="controls.customerBankName.errors?.pattern && controls.customerBankName.touched">
+                                Alphabets Only
+                            </mat-error>
                         </div>
                     </div>
                     <div class="row kt-padding-t-15">
@@ -127,10 +131,19 @@
                         </div>
                         <div class="col-7">
                             <input class="form-control" formControlName="customerAccountNo" type="text" numbersOnly
+                                maxlength="18" minlength="8"
                                 [class.isError]="controls.customerAccountNo.touched && controls.customerAccountNo.invalid">
                             <mat-error
                                 *ngIf="controls.customerAccountNo.errors?.required && controls.customerAccountNo.touched">
                                 Required field
+                            </mat-error>
+                            <mat-error
+                                *ngIf="controls.customerAccountNo.errors?.minlength && controls.customerAccountNo.touched">
+                                Maximum 8 digits Only
+                            </mat-error>
+                            <mat-error
+                                *ngIf="controls.customerAccountNo.errors?.maxlength && controls.customerAccountNo.touched">
+                                Maximum 18 digits Only
                             </mat-error>
                         </div>
                     </div>
@@ -143,6 +156,9 @@
                                 [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
                             <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
                                 Required field
+                            </mat-error>
+                            <mat-error *ngIf="controls.ifscCode.errors?.pattern && controls.ifscCode.touched">
+                                Please Input Valid Code
                             </mat-error>
                         </div>
                     </div>
