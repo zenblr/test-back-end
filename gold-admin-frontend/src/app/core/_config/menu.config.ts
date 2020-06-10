@@ -642,6 +642,13 @@ export class MenuConfig {
 							permission: !this.permissionsArr.includes('customerView'),
 						},
 						{
+							title: "Cart",
+							root: true,
+							page: "/broker/cart",
+							src: "assets/media/aside-icons/icons-13.svg",
+							permission: false,
+						},
+						{
 							title: "Profile",
 							root: true,
 							page: "/broker/profile",

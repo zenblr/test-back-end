@@ -240,6 +240,9 @@ export class PageConfig {
 			"orders": {
 				page: { title: "Orders", desc: "" },
 			},
+			"cart": {
+				page: { title: "Shopping Cart", desc: "" },
+			},
 			"profile": {
 				page: { title: "Profile", desc: "" },
 			},
