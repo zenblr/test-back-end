@@ -4,6 +4,7 @@ import { PageEvent, MatPaginator } from '@angular/material';
 import { DataTableService } from "../../../../core/shared/services/data-table.service";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { Subject } from 'rxjs';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'kt-shop',
@@ -31,6 +32,7 @@ export class ShopComponent implements OnInit {
   constructor(
     private shopService: ShopService,
     private dataTableService: DataTableService,
+    private router: Router,
 
   ) {
     this.shopService.toggle$.subscribe(res => {
@@ -84,7 +86,10 @@ export class ShopComponent implements OnInit {
     this.getProducts();
   }
 
-  action(event) {
-
+  action(id) {
+    this.router.navigate([
+      "/broker/shop/product/",
+      id,
+    ]);
   }
 }

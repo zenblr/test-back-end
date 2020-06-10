@@ -46,6 +46,7 @@ import { ProfileChangePanComponent } from './profile/profile-change-pan/profile-
 import { CheckoutCustomerComponent } from './checkout-customer/checkout-customer.component';
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import { ShopComponent } from './shop/shop.component';
+import { ProductComponent } from './shop/product/product.component';
 
 const routes: Routes = [
   {
@@ -83,6 +84,10 @@ const routes: Routes = [
         path: "shop",
         component: ShopComponent,
       },
+      {
+        path: "shop/product/:id",
+        component: ProductComponent,
+      },
     ],
   },
 ];
@@ -98,7 +103,8 @@ const routes: Routes = [
     ProfileChangePanComponent,
     CheckoutCustomerComponent,
     ShoppingCartComponent,
-    ShopComponent
+    ShopComponent,
+    ProductComponent
   ],
   imports: [
     CommonModule,

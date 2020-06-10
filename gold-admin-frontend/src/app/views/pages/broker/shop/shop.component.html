@@ -16,8 +16,8 @@
                     <p>Weight: {{product.weight}} GMS</p>
                     <p class="text-color font-weight-bold">₹ {{product.productPrice[0].finalProductPrice}}
                     </p>
-                    <kt-button [value]='"Order Now"' [type]='"button"' (click)="action($event)"
-                        (action)="buttonValue($event)" class="kt-padding-r-5"></kt-button>
+                    <kt-button [value]='"Order Now"' [type]='"button"' (action)="action(product.id)"
+                        class="kt-padding-r-5"></kt-button>
                 </div>
             </div>
         </div>
@@ -38,14 +38,16 @@
                                     <div class="col-md-4">
                                         <p>SKU Code &nbsp;<span
                                                 class="text-color font-weight-bold">{{product.sku}}</span></p>
-                                        <p>Karet &nbsp;<span class="text-color font-weight-bold">{{product.sku}}</span>
+                                        <p>Metal Type &nbsp;<span
+                                                class="text-color font-weight-bold">{{product.subCategory.category.metalType.metalType}}</span>
                                         </p>
                                     </div>
                                     <div class="col-md-4">
                                         <p>Jewellery Type &nbsp;<span
                                                 class="text-color font-weight-bold">{{product.subCategory.subCategoryName}}</span>
                                         </p>
-                                        <p>Purity &nbsp;<span class="text-color font-weight-bold">{{product.sku}}</span>
+                                        <p>Conversion Factor &nbsp;<span
+                                                class="text-color font-weight-bold">{{product.subCategory.category.conversionFactor}}</span>
                                         </p>
                                     </div>
                                     <div class="col-md-4">
@@ -59,8 +61,8 @@
                                 <h5 class="text-color font-weight-bold pt-4">₹
                                     {{product.productPrice[0].finalProductPrice}}
                                 </h5>
-                                <kt-button [value]='"Order Now"' [type]='"button"' (click)="action($event)"
-                                    (action)="buttonValue($event)" class="py-3"></kt-button>
+                                <kt-button [value]='"Order Now"' [type]='"button"' (action)="action(product.id)"
+                                    class="py-3"></kt-button>
                             </div>
                         </div>
                     </div>
@@ -68,8 +70,7 @@
             </div>
         </div>
 
-        <mat-paginator [length]="count" [pageSize]="25" [pageSizeOptions]="[5, 10, 25]"
-            (page)="getServerData($event)">
+        <mat-paginator [length]="count" [pageSize]="25" [pageSizeOptions]="[5, 10, 25]" (page)="getServerData($event)">
         </mat-paginator>
     </kt-portlet-body>
 </kt-portlet>
