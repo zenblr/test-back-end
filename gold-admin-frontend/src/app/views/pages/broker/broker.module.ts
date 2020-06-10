@@ -43,7 +43,9 @@ import { OrdersComponent } from './orders/orders-list/orders.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileChangePassComponent } from './profile/profile-change-pass/profile-change-pass.component';
 import { ProfileChangePanComponent } from './profile/profile-change-pan/profile-change-pan.component';
-import { CheckoutCustomerComponent} from './checkout-customer/checkout-customer.component';
+import { CheckoutCustomerComponent } from './checkout-customer/checkout-customer.component';
+import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
+import { ShopComponent } from './shop/shop.component';
 
 const routes: Routes = [
   {
@@ -73,6 +75,14 @@ const routes: Routes = [
         path: "checkout-customer",
         component: CheckoutCustomerComponent,
       },
+      {
+        path: "cart",
+        component: ShoppingCartComponent,
+      },
+      {
+        path: "shop",
+        component: ShopComponent,
+      },
     ],
   },
 ];
@@ -86,7 +96,9 @@ const routes: Routes = [
     ProfileComponent,
     ProfileChangePassComponent,
     ProfileChangePanComponent,
-    CheckoutCustomerComponent
+    CheckoutCustomerComponent,
+    ShoppingCartComponent,
+    ShopComponent
   ],
   imports: [
     CommonModule,
@@ -109,18 +121,6 @@ const routes: Routes = [
       useClass: InterceptService,
       multi: true,
     },
-    {
-      provide: MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue: {
-        hasBackdrop: true,
-        panelClass: "kt-mat-dialog-container__wrapper",
-        height: "auto",
-        width: "600px",
-      },
-    },
-    { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatDialogRef, useValue: {} },
-
     HttpUtilsService,
     TypesUtilsService,
     LayoutUtilsService,

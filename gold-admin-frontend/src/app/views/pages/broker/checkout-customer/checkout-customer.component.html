@@ -3,7 +3,8 @@
     <kt-portlet-body>
         <div class="row py-4">
             <div class="col-12">
-                <kt-button [value]="'Existing Customer'" [type]="'button'" (click)="checkCustomerType('exist')"></kt-button>
+                <kt-button [value]="'Existing Customer'" [type]="'button'" (click)="checkCustomerType('exist')">
+                </kt-button>
                 <span class="px-4 font-weight-500">Or</span>
                 <kt-button [value]="'New Customer'" [type]="'reset'" (click)="checkCustomerType('new')"></kt-button>
             </div>
@@ -21,7 +22,7 @@
                     </div>
                 </div>
                 <div class="col-6 pl-4">
-                    <kt-button [value]="'Done'" [type]="'submit'"></kt-button>
+                    <kt-button [value]="'Done'" [type]="'submit'" (click)="getExistingCustomer()"></kt-button>
                 </div>
             </div>
             <div class="row py-3">
@@ -75,7 +76,7 @@
                             <label class="font-weight-500 text-color">Address</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="address" class="form-control">
+                            <textarea type="text" formControlName="address" rows="3" class="form-control"></textarea>
                         </div>
                     </div>
                 </div>
@@ -85,7 +86,17 @@
                             <label class="font-weight-500 text-color">State</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="stateName" class="form-control">
+                            <select class="form-control" formControlName="stateName"
+                                [class.isError]="controls.stateName.touched && controls.stateName.invalid"
+                                (change)="getCities()">
+                                <option value="" [selected]="true" [disabled]="true">Select State</option>
+                                <option [value]="state.id" *ngFor="let state of stateList">{{state.name}}
+                                </option>
+                            </select>
+                            <div *ngIf="controls.stateName.touched && controls.stateName.invalid">
+                                <mat-error *ngIf="controls.stateName.touched && controls.stateName.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -97,7 +108,15 @@
                             <label class="font-weight-500 text-color">City</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="cityName" class="form-control">
+                            <select class="form-control" formControlName="cityName"
+                                [class.isError]="controls.cityName.touched && controls.cityName.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select City</option>
+                                <option [value]="city.id" *ngFor="let city of cityList">{{city.name}}</option>
+                            </select>
+                            <div *ngIf="controls.cityName.touched && controls.cityName.invalid">
+                                <mat-error *ngIf="controls.cityName.touched && controls.cityName.errors?.required">Field
+                                    is required</mat-error>
+                            </div>
                         </div>
                     </div>
                 </div>
