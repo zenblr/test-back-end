@@ -30,4 +30,8 @@ export class ShoppingCartComponent implements OnInit {
   getCart() {
     this.shoppingCartService.getCart().subscribe(res => this.cartList = res.allCartData);
   }
+
+  redirectToShop() {
+    this.router.navigate(['/broker/shop']);
+  }
 }

@@ -1,15 +1,131 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body>
-        <div class="row">
-            <div class="col-8">
-                <div class="cart-list" *ngFor="let item of cartList">
-
+        <div class="row" *ngIf="cartList?.length;else noCartItems">
+            <div class="col-8 cart-height">
+                <div class="cart-list-item" *ngFor="let item of cartList"></div>
+                <div class="cart-list-item">
+                    <div class="row">
+                        <div class="col-2 d-flex align-items-center justify-content-center">
+                            <img [src]="'assets/media/icons/image-placeholder.png'" alt="test">
+                        </div>
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="col-10 font-weight-bold">Augmont 100Gm Shree Lakshmi Ganesh Silver Coin (999
+                                    Purity)</div>
+                                <div class="col-2 text-danger">Remove</div>
+                            </div>
+                            <hr>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">SKU Code</div>
+                                <div class="col-3">AU999SC100SLG</div>
+                                <div class="col-2 text-muted">Price</div>
+                                <div class="col-2 text-muted">Quantity</div>
+                                <div class="col-2 text-muted">SubTotal</div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">Installments</div>
+                                <div class="col-3">3</div>
+                                <div class="col-2">Rs.3500</div>
+                                <div class="col-2">2</div>
+                                <div class="col-2">Rs.7000</div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">Initial Payment</div>
+                                <div class="col-3">700</div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">EMI Amount</div>
+                                <div class="col-3">400</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cart-list-item">
+                    <div class="row">
+                        <div class="col-2 d-flex align-items-center justify-content-center">
+                            <img [src]="'assets/media/icons/image-placeholder.png'" alt="test">
+                        </div>
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="col-10 font-weight-bold">Augmont 100Gm Shree Lakshmi Ganesh Silver Coin (999
+                                    Purity)</div>
+                                <div class="col-2 text-danger">Remove</div>
+                            </div>
+                            <hr>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">SKU Code</div>
+                                <div class="col-3">AU999SC100SLG</div>
+                                <div class="col-2 text-muted">Price</div>
+                                <div class="col-2 text-muted">Quantity</div>
+                                <div class="col-2 text-muted">SubTotal</div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">Installments</div>
+                                <div class="col-3">3</div>
+                                <div class="col-2">Rs.3500</div>
+                                <div class="col-2">2</div>
+                                <div class="col-2">Rs.7000</div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">Initial Payment</div>
+                                <div class="col-3">700</div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">EMI Amount</div>
+                                <div class="col-3">400</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-4">
-
+                <div class="cart-list-item">
+                    <div class="text-center">
+                        <div>Grand Total</div>
+                        <hr>
+                        <h3 class="pt-3">Rs.35000.00</h3>
+                    </div>
+                    <div>
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">Grand Total</div>
+                            <div class="col-4 text-right">35000</div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">Now Payable Amount</div>
+                            <div class="col-4 text-right">700</div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">Initial Amount</div>
+                            <div class="col-4 text-right">500</div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">EMI Scheme</div>
+                            <div class="col-4 text-right">3 Months</div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">EMI Amount(Per Month)</div>
+                            <div class="col-4 text-right">900</div>
+                        </div>
+                    </div>
+                    <div class="text-center pt-3">
+                        <kt-button [value]="'Proceed to Checkout'" [type]="'button'"></kt-button>
+                    </div>
+                </div>
             </div>
+            <kt-button [value]="'Continue Shopping'" [type]="'button'" (click)="redirectToShop()"></kt-button>
         </div>
+        <ng-template #noCartItems>
+            <div class="row cart-height align-items-center">
+                <div class="col-12 text-center">
+                    <h3 class="pb-3">SHOPPING CART IS EMPTY</h3>
+                    <div class="font-weight-normal">You have no items in your shopping cart.</div>
+                    <div class="font-weight-normal">
+                        <span class="font-weight-bold kt-pointer" (click)="redirectToShop()">Click here </span>
+                        <span> to continue shopping.</span>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
     </kt-portlet-body>
 </kt-portlet>
