@@ -238,7 +238,7 @@ export class OrderDetailsListComponent implements OnInit {
 
 	cancelOrder(order) {
 		this.router.navigate([
-			"emi-management/order-details/cancel-order/",
+			"/admin/emi-management/order-details/cancel-order/",
 			order.id,
 		]);
 	}
