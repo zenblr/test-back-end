@@ -23,6 +23,10 @@ export class LoanSchemeComponent implements OnInit {
   filter$ = new Subject();
   @ViewChild('matTab', { static: false }) matTab: ElementRef
   noResults: any[] = [];
+  queryParamsData = {
+    isActive: null
+  };
+  filteredDataList = {};
 
   constructor(
     private loanSettingService: LoanSettingsService,
@@ -81,7 +85,7 @@ export class LoanSchemeComponent implements OnInit {
 
   getScheme() {
     this.viewLoading = true;
-    this.loanSettingService.getScheme().pipe(
+    this.loanSettingService.getScheme(this.queryParamsData).pipe(
       map(res => {
         this.schemes = res.data;
         this.ref.detectChanges();
@@ -94,7 +98,10 @@ export class LoanSchemeComponent implements OnInit {
   }
 
   applyFilter(data) {
-    console.log(data)
+    console.log(data);
+    this.queryParamsData.isActive = data.data.scheme;
+    this.getScheme();
+    this.filteredDataList = data.list;
   }
 
   addScheme() {

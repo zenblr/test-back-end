@@ -167,8 +167,10 @@
               <div class="col-9">
                 <label>By Scheme Type</label>
                 <select placeholder="Scheme Type" class="form-control" formControlName="scheme">
-                  <option value="active">Active</option>
-                  <option value="inaAtive">InActive</option>
+                  <option selected disabled> Scheme Type </option>
+                  <option value=''>All</option>
+                  <option value=true>Active</option>
+                  <option value=false>Inactive</option>
                 </select>
               </div>
               <div class="col-3 d-flex align-items-end">
