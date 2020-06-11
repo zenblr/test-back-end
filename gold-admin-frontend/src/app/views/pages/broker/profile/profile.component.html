@@ -1,8 +1,8 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body>
-        <div class="row justify-content-center scroll kt-padding-t-10 kt-padding-b-10">
-            <div class="col-6">
+        <div class="row justify-content-left scroll kt-padding-t-10 kt-padding-b-10">
+            <div class="col-8">
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
                         <label class="font-weight-500 text-color">Full Name</label>
@@ -79,20 +79,29 @@
                     <div class="col-4 align-self-center">
                         <label class="font-weight-500 text-color">Pan Card</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-2">
+                        pancard.jpg
+                    </div>
+                    <div class="col">
                         <a class="text-body" *ngIf="profileDetails?.brokerData.broker.panCard;else elseBlock"
                             [href]="profileDetails.brokerData.broker.panCard" download target="_blank">
-                            <span>Click here to View</span>
-                            <!-- <span class="pl-2">
-                                    <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
-                                </span> -->
+                            <span class="text-primary">View Attachment</span>
                         </a>
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
-                    <div class="col-12 text-right">
-                        <kt-button [value]="'Change Password'" [type]="'submit'" (click)="changePassword()"></kt-button>
-                        &nbsp;
+                    <div class="col-4 align-self-center">
+                        <label class="font-weight-500 text-color">Password</label>
+                    </div>
+                    <div class="col-2">
+                        *********
+                    </div>
+                    <div class="col">
+                        <span class="text-primary kt-pointer" (click)="changePassword()">Change Password</span>
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="col-12 text-left">
                         <kt-button [value]="'Update Pancard details'" [type]="'submit'" (click)="updatePan()">
                         </kt-button>
                     </div>

@@ -148,6 +148,12 @@
                         {{element['orderCurrentStatus.statusName'] ? (element['orderCurrentStatus.statusName'] | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="trackingId">
+                    <mat-header-cell *matHeaderCellDef>Tracking ID</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element['ordertracking.trackingId'] ? element['ordertracking.trackingId'] : '-'}}
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="cancelOrder">
                     <mat-header-cell *matHeaderCellDef>Cancel Order</mat-header-cell>
                     <mat-cell *matCellDef="let element">
