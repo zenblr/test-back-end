@@ -527,6 +527,9 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.toogle = true;
 		}
+		if (location.href.includes('/shop/product/')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {

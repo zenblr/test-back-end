@@ -15,13 +15,12 @@ export class ShopComponent implements OnInit {
   toogler: string;
   subCategory: any;
   products: any;
-  selectedSubCategoryId: any;
   count: number;
   productsData = {
     from: 1,
     to: 25,
     search: "",
-    orderemistatus: "",
+    subCategoryId: "",
   };
   searchValue = "";
 
@@ -48,7 +47,7 @@ export class ShopComponent implements OnInit {
       .subscribe((res) => {
         this.searchValue = res;
         this.paginator.pageIndex = 0;
-        this.getProducts();
+        this.getServerData();
       });
   }
 
@@ -66,12 +65,11 @@ export class ShopComponent implements OnInit {
   }
 
   selectedSubCategory(id) {
-    this.selectedSubCategoryId = id;
+    this.productsData.subCategoryId = id;
     this.getProducts();
   }
 
   getServerData(event?: PageEvent) {
-    console.log(event);
     if (
       this.paginator.pageIndex < 0 ||
       this.paginator.pageIndex >
@@ -87,9 +85,12 @@ export class ShopComponent implements OnInit {
   }
 
   action(id) {
-    this.router.navigate([
-      "/broker/shop/product/",
-      id,
-    ]);
+    this.router.navigate(["/broker/shop/product/", id]);
+  }
+
+  ngOnDestroy() {
+    this.shopService.toggle.next('list');
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 }

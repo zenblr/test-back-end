@@ -1,3 +1,5 @@
+<kt-toastr #toastr></kt-toastr>
+
 <kt-portlet>
     <kt-portlet-body [class]="'kt-portlet__body--fit'">
         <div class="row card-container mt-4" *ngIf="product">
@@ -14,28 +16,30 @@
                 <hr>
                 <div class="row">
                     <div class="col-md-4">
-                        <p>SKU Code &nbsp;<span class="text-color font-weight-bold">{{product.sku}}</span></p>
+                        <p>SKU Code &nbsp;<span class="text-color font-weight-500">{{product.sku}}</span>
+                        </p>
                         <p>Metal Type &nbsp;<span
-                                class="text-color font-weight-bold">{{product.subCategory.category.metalType.metalType}}</span>
+                                class="text-color font-weight-500">{{product.subCategory.category.metalType.metalType}}</span>
                         </p>
                     </div>
                     <div class="col-md-4">
                         <p>Jewellery Type &nbsp;<span
-                                class="text-color font-weight-bold">{{product.subCategory.subCategoryName}}</span>
+                                class="text-color font-weight-500">{{product.subCategory.subCategoryName}}</span>
                         </p>
                         <p>Conversion Factor &nbsp;<span
-                                class="text-color font-weight-bold">{{product.subCategory.category.conversionFactor}}</span>
+                                class="text-color font-weight-500">{{product.subCategory.category.conversionFactor}}</span>
                         </p>
                     </div>
                     <div class="col-md-4">
-                        <p>Weight &nbsp;<span class="text-color font-weight-bold">{{product.weight}}
+                        <p>Weight &nbsp;<span class="text-color font-weight-500">{{product.weight}}
                                 Gram</span>
                         </p>
                     </div>
                 </div>
-                <table class="table border rounded mt-4">
+                <table class="table border mt-4">
                     <thead>
                         <tr>
+                            <th scope="col"></th>
                             <th scope="col" class="text-color">Particular</th>
                             <th scope="col" class="text-color">Price (Rs.)</th>
                             <th scope="col" class="text-color">Initial Payment</th>
@@ -45,6 +49,8 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td><input type="radio" name="particular" [value]="product.paymentData[0].paymentTypeId"
+                                    (change)="selectedPayment($event)"></td>
                             <td>Spot</td>
                             <td>{{product.productPrice[0].finalProductPrice}}</td>
                             <td>NA</td>
@@ -52,6 +58,9 @@
                             <td>NA</td>
                         </tr>
                         <tr>
+                            <td><input type="radio" name="particular" [value]="product.paymentData[1].paymentTypeId"
+                                    (change)="selectedPayment($event)"></td>
+
                             <td>3 Months</td>
                             <td>{{product.productPrice[0].forwordCostForThreeMonth}}</td>
                             <td>{{product.productPrice[0].initialPaymentThree}}</td>
@@ -59,6 +68,9 @@
                             <td>{{product.productPrice[0].paymentAmountPerMonthThree}}</td>
                         </tr>
                         <tr>
+                            <td><input type="radio" name="particular" [value]="product.paymentData[2].paymentTypeId"
+                                    (change)="selectedPayment($event)"></td>
+
                             <td>6 Months</td>
                             <td>{{product.productPrice[0].forwordCostForSixMonth}}</td>
                             <td>{{product.productPrice[0].initialPaymentSix}}</td>
@@ -66,6 +78,9 @@
                             <td>{{product.productPrice[0].paymentAmountPerMonthSix}}</td>
                         </tr>
                         <tr>
+                            <td><input type="radio" name="particular" [value]="product.paymentData[3].paymentTypeId"
+                                    (change)="selectedPayment($event)"></td>
+
                             <td>9 Months</td>
                             <td>{{product.productPrice[0].forwordCostForNineMonth}}</td>
                             <td>{{product.productPrice[0].initialPaymentNine}}</td>
