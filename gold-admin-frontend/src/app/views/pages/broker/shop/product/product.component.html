@@ -57,7 +57,7 @@
                             <td>NA</td>
                             <td>NA</td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="product.isEmiAvailable">
                             <td><input type="radio" name="particular" [value]="product.paymentData[1].paymentTypeId"
                                     (change)="selectedPayment($event)"></td>
 
@@ -67,7 +67,7 @@
                             <td>{{product.productPrice[0].balancePaymentThree}}</td>
                             <td>{{product.productPrice[0].paymentAmountPerMonthThree}}</td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="product.isEmiAvailable">
                             <td><input type="radio" name="particular" [value]="product.paymentData[2].paymentTypeId"
                                     (change)="selectedPayment($event)"></td>
 
@@ -77,7 +77,7 @@
                             <td>{{product.productPrice[0].balancePaymentSix}}</td>
                             <td>{{product.productPrice[0].paymentAmountPerMonthSix}}</td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="product.isEmiAvailable">
                             <td><input type="radio" name="particular" [value]="product.paymentData[3].paymentTypeId"
                                     (change)="selectedPayment($event)"></td>
 
