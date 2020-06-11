@@ -60,15 +60,11 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-5">
-                                <label [class.mandatory]="isMandatory">Product Name</label>
+                                <label>Product Name</label>
                             </div>
                             <div class="col-7">
-                                <input class="form-control" formControlName="productName" type="text"
-                                    [class.isError]="controls.productName.touched && controls.productName.invalid">
-                                <mat-error
-                                    *ngIf="controls.productName.errors?.required && controls.productName.touched">
-                                    Required field
-                                </mat-error>
+                                <textarea class="form-control" formControlName="productName" type="text"
+                                    disabled></textarea>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">

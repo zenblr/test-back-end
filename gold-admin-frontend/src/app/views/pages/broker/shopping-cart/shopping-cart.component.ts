@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ShoppingCartService } from '../../../../core/merchant-broker';
+import { LayoutUtilsService } from '../../../../core/_base/crud';
 
 @Component({
   selector: 'kt-shopping-cart',
@@ -12,7 +13,7 @@ import { ShoppingCartService } from '../../../../core/merchant-broker';
 })
 export class ShoppingCartComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  cartList = [];
+  cartData: any;
 
   constructor(
     private fb: FormBuilder,
@@ -20,7 +21,8 @@ export class ShoppingCartComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
-    private shoppingCartService: ShoppingCartService
+    private shoppingCartService: ShoppingCartService,
+    private layoutUtilsService: LayoutUtilsService,
   ) { }
 
   ngOnInit() {
@@ -28,6 +30,31 @@ export class ShoppingCartComponent implements OnInit {
   }
 
   getCart() {
-    this.shoppingCartService.getCart().subscribe(res => this.cartList = res.allCartData);
+    this.shoppingCartService.getCart().subscribe(res => this.cartData = res);
+  }
+
+  removeCartItem(cartId) {
+    const _title = 'Delete Cart Item';
+    const _description = 'Are you sure you want to delete this cart item?';
+    const _waitDesciption = 'Cart Item is deleting...';
+    const _deleteMessage = `Cart Item has been deleted`;
+
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+        this.shoppingCartService.deleteCartItem(cartId).subscribe(successDelete => {
+          this.toastr.successToastr(_deleteMessage);
+          this.getCart();
+        },
+          errorDelete => {
+            this.toastr.errorToastr(errorDelete.error.message);
+          });
+      }
+    });
+  }
+
+  redirectToShop() {
+    this.router.navigate(['/broker/shop']);
   }
 }
