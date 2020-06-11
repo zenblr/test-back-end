@@ -1,4 +1,13 @@
 :host {
+    .type{
+        min-height: 50px;
+        justify-content: center;
+        background-color: white;
+        color: #454d67;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 25px;
+    }
     .subStyle{
         min-height: 50px;
         justify-content: center;
@@ -8,8 +17,7 @@
         font-weight: 600;
         padding: 25px;
     }
-    
-    .subStyle:hover{
+    .selected,.subStyle:hover{
         background-color: #454d67;
         color: white;
     }
@@ -34,5 +42,9 @@
         margin       : 10px;
         border-radius: 15px;
         border: 1px solid #ebedf2;
-    }        
+    }
+    mat-paginator.mat-paginator.paginator--centered {
+        display: flex;
+        justify-content: center;
+      }         
 }

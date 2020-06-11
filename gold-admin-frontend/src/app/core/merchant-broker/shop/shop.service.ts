@@ -40,4 +40,8 @@ export class ShopService {
     getSingleProduct(id): Observable<any> {
         return this.http.get(API_ENDPOINT + 'api/products/' + id)
     }
+
+    addToCart(data): Observable<any> {
+        return this.http.post(API_ENDPOINT + 'api/cart', data)
+    }
 }
