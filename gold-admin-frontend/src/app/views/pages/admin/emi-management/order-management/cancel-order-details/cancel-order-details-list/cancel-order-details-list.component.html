@@ -53,9 +53,17 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="userId">
-                    <mat-header-cell *matHeaderCellDef>User ID</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.order?.customerDetails?.id ? element?.order?.customerDetails?.id : '-'}}</mat-cell>
+                        {{element?.order?.customerDetails?.customerUniqueId ? element?.order?.customerDetails?.customerUniqueId : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.order?.customerDetails?.firstName ? element?.order?.customerDetails?.firstName : '-'}}&nbsp;
+                        {{element?.order?.customerDetails?.lastName}}
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>

@@ -27,6 +27,7 @@ export class EmiDetailsListComponent implements OnInit {
 	displayedColumns = [
 		"storeId",
 		"userId",
+		"customerName",
 		"mobileNumber",
 		"orderId",
 		"emiDate",

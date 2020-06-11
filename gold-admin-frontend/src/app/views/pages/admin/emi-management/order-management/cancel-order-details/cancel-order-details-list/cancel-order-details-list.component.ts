@@ -38,6 +38,7 @@ export class CancelOrderDetailsListComponent implements OnInit {
 	displayedColumns = [
 		"storeId",
 		"userId",
+		"customerName",
 		"mobileNumber",
 		"orderId",
 		"overdueDate",

@@ -16,7 +16,7 @@ export class AdminLogListComponent implements OnInit {
   // Table fields
   dataSource: AdminLogDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  displayedColumns = ['adminId', 'email', 'date', 'action'];
+  displayedColumns = ['adminName', 'email', 'date', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
