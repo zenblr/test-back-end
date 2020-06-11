@@ -17,4 +17,12 @@ export class ShoppingCartService {
     deleteCartItem(cartId): Observable<any> {
         return this.http.delete<any>(API_ENDPOINT + `api/cart/` + cartId);
     }
+
+    getCheckoutCart(): Observable<any> {
+        return this.http.get<any>(API_ENDPOINT + `api/cart/check-out-cart`);
+    }
+
+    orderVerifyBlock(data): Observable<any> {
+        return this.http.post<any>(API_ENDPOINT + `api/order/verify-block`, data);
+    }
 }
