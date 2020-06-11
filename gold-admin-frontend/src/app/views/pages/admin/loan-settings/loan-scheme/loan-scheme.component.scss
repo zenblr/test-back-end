@@ -41,6 +41,9 @@
         border-top-right-radius: 20px;
     }
 
+    .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: #454d67 !important;
+    }
     
 
 }
