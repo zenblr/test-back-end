@@ -2,40 +2,43 @@
 // Aside Brand
 //
 
-
-
 .kt-aside__brand {
-	display         : flex;
-	justify-content : space-between;
-	align-items     : center;
-	flex-direction  : row;
-	padding         : 15px 15px 0;
-	height          : 130px;
-	background-color: kt-get($kt-header-config, base, desktop, default, bg-color);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: row;
+	padding: 15px 15px 0;
+	height: 130px;
+	background-color: kt-get(
+		$kt-header-config,
+		base,
+		desktop,
+		default,
+		bg-color
+	);
 
 	.kt-aside__brand-logo {
-		display        : flex;
-		justify-content: flex-begin;
-
+		display: flex;
+		justify-content: flex-start;
 		img {
+			transform: translate(50%, 0px);
 			.kt-aside--minimize & {
-				display: none;
-				transition: kt-get($kt-aside-config, base, minimize, transition);
-
+				transform: translate(25%, 0px) !important;
+				height: 50px;
+				transition: kt-get(
+					$kt-aside-config,
+					base,
+					minimize,
+					transition
+				);
 			}
 		}
-
 	}
 
-	.kt-aside__gold-rate {
-		.kt-aside--minimize {
-			display: none;
-				transition: kt-get($kt-aside-config, base, minimize, transition);
-		}
-	}
+	
 
 	.kt-aside__brand-tools {
-		display        : flex;
+		display: flex;
 		justify-content: flex-end;
 
 		.kt-aside__brand-aside-toggler {
@@ -43,7 +46,7 @@
 			padding: 0;
 			@include kt-input-reset();
 
-			>span {
+			> span {
 				display: inline-block;
 
 				&:nth-child(2) {
@@ -52,11 +55,33 @@
 			}
 
 			svg {
-				height      : 26px;
-				width       : 26px;
+				height: 26px;
+				width: 26px;
 				margin-right: -2px;
 			}
 		}
+	}
+}
+
+.kt-aside__gold-rate {
+	font-weight: 600;
+	color: #ffde9c;
+	 background-color: #454D67; 
+	 padding: 15px 0;
+	span {
+		.kt-aside--minimize & {
+			display: none;
+			transition: kt-get(
+				$kt-aside-config,
+				base,
+				minimize,
+				transition
+			);
+		}
+	}
+	.kt-aside--minimize &{
+		font-size: 10px;
+		padding: 5px 0;
 	}
 }
 
@@ -67,27 +92,27 @@
 		// Header fixed & aside static mode
 		.kt-header--fixed.kt-aside--static & {
 			position: fixed;
-			top     : 0;
-			left    : 0;
-			width   : kt-get($kt-aside-config, base, default, width);
-			z-index : kt-get($kt-header-config, base, desktop, fixed, zindex);
+			top: 0;
+			left: 0;
+			width: kt-get($kt-aside-config, base, default, width);
+			z-index: kt-get($kt-header-config, base, desktop, fixed, zindex);
 		}
 
 		// Aside minimize mode
 		.kt-header--fixed.kt-aside--minimize & {
 			justify-content: center;
-
+			height: 75px;
 			.kt-aside__brand-tools {
 				justify-content: center;
 
 				.kt-aside__brand-aside-toggler {
-					>span {
+					> span {
 						&:nth-child(1) {
 							display: none;
 						}
 
 						&:nth-child(2) {
-							display: inline-block;
+							display: block;
 						}
 					}
 				}
@@ -97,7 +122,7 @@
 		// Aside minimize, header fixed & aside static mode
 		.kt-header--fixed.kt-aside--static.kt-aside--minimize & {
 			transition: kt-get($kt-aside-config, base, minimize, transition);
-			width     : kt-get($kt-aside-config, base, minimize, width);
+			width: kt-get($kt-aside-config, base, minimize, width);
 		}
 	}
 }
