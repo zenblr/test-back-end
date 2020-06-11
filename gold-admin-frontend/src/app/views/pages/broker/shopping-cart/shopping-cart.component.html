@@ -104,7 +104,7 @@
                         <hr>
                         <h3 class="pt-3">{{cartData?.invoicePrice | number}}</h3>
                     </div>
-                    <div *ngIf="cartData?.emiScheme?.length ||cartData?.emiAmount?.length">
+                    <div *ngIf="cartData?.emiScheme?.length || cartData?.emiAmount?.length">
                         <div class="row py-2">
                             <div class="col-8 text-muted">Grand Total</div>
                             <div class="col-4 text-right">{{cartData?.invoicePrice | number}}</div>
