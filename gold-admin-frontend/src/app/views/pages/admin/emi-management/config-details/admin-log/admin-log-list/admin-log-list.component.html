@@ -45,9 +45,10 @@
                     </mat-cell>
                 </ng-container> -->
 
-                <ng-container matColumnDef="adminId">
-                    <mat-header-cell *matHeaderCellDef>Admin ID</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.userId}}</mat-cell>
+                <ng-container matColumnDef="adminName">
+                    <mat-header-cell *matHeaderCellDef>Admin Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.user.firstName}}&nbsp;{{element?.user.lastName}}
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="email">
                     <mat-header-cell *matHeaderCellDef>Email ID</mat-header-cell>

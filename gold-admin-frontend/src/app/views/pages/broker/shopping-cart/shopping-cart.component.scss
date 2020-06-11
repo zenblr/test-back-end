@@ -1,6 +1,6 @@
 :host {
     .kt-portlet__body {
-        padding: 20px !important;
+        padding: 10px !important;
     }
     .cart-height {
         min-height: 70vh;
@@ -12,5 +12,17 @@
         border: 1px solid #dee2e6;
         border-radius: 10px;
         font-weight: 500;
+    }
+    .productImage {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .productQtyInput {
+        height: 75%;
+        width: 75%;
+        margin: auto;
+        border-radius: 4px !important;
+        padding: 0.2rem !important;
+        text-align: center;
     }
 }

@@ -54,6 +54,34 @@ export class ShoppingCartComponent implements OnInit {
     });
   }
 
+  updateQuantity(cartItem) {
+    if (cartItem.quantity) {
+      const qtydata = {
+        quantity: parseInt(cartItem.quantity)
+      }
+      this.shoppingCartService.updateCartItemQuantity(cartItem.cartId, qtydata).subscribe(res => {
+        if (res) {
+          this.getCart();
+        }
+      });
+    }
+  }
+
+  checkoutCart() {
+    this.shoppingCartService.getCheckoutCart().subscribe(res => {
+      if (res && res.blockId) {
+        const blockData = {
+          blockId: res.blockId
+        }
+        this.shoppingCartService.orderVerifyBlock(blockData).subscribe(res => {
+          if (res) {
+            this.router.navigate(['/broker/checkout-customer']);
+          }
+        });
+      }
+    });
+  }
+
   redirectToShop() {
     this.router.navigate(['/broker/shop']);
   }

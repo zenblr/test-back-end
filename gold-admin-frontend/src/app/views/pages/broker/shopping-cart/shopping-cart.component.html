@@ -1,13 +1,13 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
-    <kt-portlet-body>
-        <div class="row" *ngIf="cartData;else noCartItems">
+    <kt-portlet-body *ngIf="cartData">
+        <div class="row" *ngIf="cartData?.allCartData?.length;else noCartItems">
             <div class="col-8 cart-height overflow-auto">
                 <div class="cart-list-item" *ngFor="let item of cartData?.allCartData">
                     <div class="row">
                         <div class="col-2 d-flex align-items-center justify-content-center">
                             <img [src]="item?.product.productImage != '0' ? item?.product?.productImage: 'assets/media/icons/image-placeholder.png'"
-                                alt="test">
+                                alt="test" class="productImage">
                         </div>
                         <div class="col-10">
                             <div class="row">
@@ -16,7 +16,7 @@
                                 </div>
                             </div>
                             <hr>
-                            <div class="row py-1">
+                            <!-- <div class="row py-1">
                                 <div class="col-3 text-muted">SKU Code</div>
                                 <div class="col-3">{{item?.product?.sku}}</div>
                                 <div class="col-2 text-muted">Price</div>
@@ -27,18 +27,71 @@
                                 <div class="col-3 text-muted">Installments</div>
                                 <div class="col-3">{{item?.paymentTypeId != 4 ? item?.paymentType?.paymentType : 'N/A'}}
                                 </div>
-                                <div class="col-2">{{item?.finalPrice | number}}</div>
-                                <div class="col-2">{{item?.quantity}}</div>
+                                <div class="col-2">{{item?.price | number}}</div>
+                                <div class="col-2" *ngIf="item?.paymentTypeId != 4;else elseBlock">{{item?.quantity}}
+                                </div>
+                                <ng-template #elseBlock>
+                                    <div class="col-2">
+                                        <input type="text" value="{{item?.quantity}}"
+                                            class="form-control h-75 w-75 productQtyInput">
+                                    </div>
+                                </ng-template>
                                 <div class="col-2">{{item?.finalPrice | number}}</div>
                             </div>
                             <div class="row py-1">
                                 <div class="col-3 text-muted">Initial Payment</div>
                                 <div class="col-3">
                                     {{item?.paymentTypeId != 4 ? (item?.initialPayment | number) : 'N/A'}}</div>
+                                <div class="col-2 offset-2" *ngIf="item?.paymentTypeId == 4">
+                                    <kt-button [myClass]="'updateQty'" [value]="'Update'" [type]="'button'"
+                                        (click)="updateQuantity(item)"></kt-button>
+                                </div>
                             </div>
                             <div class="row py-1" *ngIf="item?.paymentTypeId != 4">
                                 <div class="col-3 text-muted">EMI Amount</div>
                                 <div class="col-3">{{item?.emiAmount | number}}</div>
+                            </div> -->
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="text-muted py-1">SKU Code:</div>
+                                    <div class="text-muted py-1">Installments:</div>
+                                    <div class="text-muted py-1">Initial Payment:</div>
+                                    <div class="text-muted py-1" *ngIf="item?.paymentTypeId != 4">EMI Amount:</div>
+                                </div>
+                                <div class="col">
+                                    <div class="py-1">{{item?.product?.sku}}</div>
+                                    <div class="py-1">
+                                        {{item?.paymentTypeId != 4 ? item?.paymentType?.paymentType : 'N/A'}}</div>
+                                    <div [ngClass]="item?.paymentTypeId != 4 ? 'py-1' :'pt-3'">
+                                        {{item?.paymentTypeId != 4 ? (item?.initialPayment | number) : 'N/A'}}</div>
+                                    <div class="py-1" *ngIf="item?.paymentTypeId != 4">{{item?.emiAmount | number}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="text-muted py-1">Price</div>
+                                    <div class="py-1">{{item?.price | number}}</div>
+                                </div>
+                                <div class="col text-center" *ngIf="item?.paymentTypeId == 4">
+                                    <div class="text-muted py-1">Quantity</div>
+                                    <div class="py-1" *ngIf="item?.paymentTypeId != 4;else elseBlock">
+                                        {{item?.quantity}}
+                                    </div>
+                                    <ng-template #elseBlock>
+                                        <div>
+                                            <input #qtyInput type="text" class="form-control productQtyInput"
+                                                name="cart-item-{{item.cartId}}" [(ngModel)]="item.quantity" numbersOnly>
+                                        </div>
+                                        <div class="pt-3">
+                                            <kt-button [myClass]="'updateQty'" [value]="'Update'" [type]="'button'"
+                                                (click)="updateQuantity(item)"></kt-button>
+                                        </div>
+                                    </ng-template>
+                                </div>
+                                <div class="col">
+                                    <div class="text-muted py-1">SubTotal</div>
+                                    <div class="py-1">{{item?.finalPrice | number}}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -51,7 +104,7 @@
                         <hr>
                         <h3 class="pt-3">{{cartData?.invoicePrice | number}}</h3>
                     </div>
-                    <div *ngIf="cartData?.emiScheme?.length ||cartData?.emiAmount?.length">
+                    <div *ngIf="cartData?.emiScheme?.length || cartData?.emiAmount?.length">
                         <div class="row py-2">
                             <div class="col-8 text-muted">Grand Total</div>
                             <div class="col-4 text-right">{{cartData?.invoicePrice | number}}</div>
@@ -83,7 +136,8 @@
                         </div>
                     </div>
                     <div class="text-center pt-3">
-                        <kt-button [value]="'Proceed to Checkout'" [type]="'button'"></kt-button>
+                        <kt-button [value]="'Proceed to Checkout'" [type]="'button'" (click)="checkoutCart()">
+                        </kt-button>
                     </div>
                 </div>
             </div>

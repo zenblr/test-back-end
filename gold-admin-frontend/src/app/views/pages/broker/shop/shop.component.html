@@ -1,6 +1,10 @@
 <div *ngIf="subCategory" class="mb-3">
     <mat-chip-list>
-        <mat-chip *ngFor="let sub of subCategory" class="subStyle kt-pointer" (click)="selectedSubCategory(sub.id)">
+        <mat-chip class="type">Sub Category</mat-chip>
+        <mat-chip class="subStyle kt-pointer" [class.selected]="productsData.subCategoryId == ''"
+            (click)="selectedSubCategory('')">All ({{count}})</mat-chip>
+        <mat-chip *ngFor="let sub of subCategory" class="subStyle kt-pointer"
+            [class.selected]="productsData.subCategoryId == sub.id" (click)="selectedSubCategory(sub.id)">
             {{sub.subCategoryName}}&nbsp;({{sub.count}})
         </mat-chip>
     </mat-chip-list>
@@ -37,21 +41,21 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <p>SKU Code &nbsp;<span
-                                                class="text-color font-weight-bold">{{product.sku}}</span></p>
+                                                class="text-color font-weight-500">{{product.sku}}</span></p>
                                         <p>Metal Type &nbsp;<span
-                                                class="text-color font-weight-bold">{{product.subCategory.category.metalType.metalType}}</span>
+                                                class="text-color font-weight-500">{{product.subCategory.category.metalType.metalType}}</span>
                                         </p>
                                     </div>
                                     <div class="col-md-4">
                                         <p>Jewellery Type &nbsp;<span
-                                                class="text-color font-weight-bold">{{product.subCategory.subCategoryName}}</span>
+                                                class="text-color font-weight-500">{{product.subCategory.subCategoryName}}</span>
                                         </p>
                                         <p>Conversion Factor &nbsp;<span
-                                                class="text-color font-weight-bold">{{product.subCategory.category.conversionFactor}}</span>
+                                                class="text-color font-weight-500">{{product.subCategory.category.conversionFactor}}</span>
                                         </p>
                                     </div>
                                     <div class="col-md-4">
-                                        <p>Weight &nbsp;<span class="text-color font-weight-bold">{{product.weight}}
+                                        <p>Weight &nbsp;<span class="text-color font-weight-500">{{product.weight}}
                                                 Gram</span>
                                         </p>
                                     </div>
@@ -70,7 +74,8 @@
             </div>
         </div>
 
-        <mat-paginator [length]="count" [pageSize]="25" [pageSizeOptions]="[5, 10, 25]" (page)="getServerData($event)">
+        <mat-paginator class="paginator--centered" [length]="count" [pageSize]="25" [pageSizeOptions]="[5, 10, 25]"
+            (page)="getServerData($event)">
         </mat-paginator>
     </kt-portlet-body>
 </kt-portlet>

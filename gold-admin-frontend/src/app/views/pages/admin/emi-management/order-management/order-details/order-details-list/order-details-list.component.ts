@@ -55,6 +55,7 @@ export class OrderDetailsListComponent implements OnInit {
 		"orderQty",
 		"invoiceNo",
 		"orderStatus",
+		"trackingId",
 		"cancelOrder",
 		"merchant",
 		"action",
