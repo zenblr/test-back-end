@@ -11,10 +11,11 @@
                 <label class="text-color font-weight-bold h-v-text-center m-0" *ngIf="scheme.schemes.length==0">No
                     Schemes
                     Available</label>
-                <div class="row kt-padding-10" *ngFor="let schemeDeatils of scheme.schemes">
+                <div class="row kt-padding-10 kt-margin-b-15"
+                    *ngFor="let schemeDeatils of scheme.schemes, index as idx">
 
-                    <div class="col-3 from-style">
-                        <h5>{{ schemeDeatils.schemeName | uppercase}}</h5>
+                    <div class="col-2 from-style">
+                        <!-- <h5>{{ schemeDeatils.schemeName | uppercase}}</h5> -->
                         <span class="text-gray">From</span>
                         <h4>
                             {{schemeDeatils.schemeAmountStart | schemeAmount }}
@@ -23,34 +24,59 @@
                             to
                             {{schemeDeatils.schemeAmountEnd | schemeAmount}}</h4>
                     </div>
-                    <div class="col-9 border-radius">
-                        <div class="row border-bottom">
-                            <div
-                                class="col-4 heading bg-secondary kt-padding-t-20 kt-padding-b-20 border-right border-left-radius">
-                                Payment Frequency
-                            </div>
-                            <div
-                                class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                30 Days</div>
-                            <div
-                                class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                90 Days</div>
-                            <div
-                                class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right-radius">
-                                180 Days
+                    <div class="col-10">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col">
+                                    <h5>{{ schemeDeatils.schemeName | uppercase}}</h5>
+                                </div>
+                                <div class="col offset-4">
+                                    <div class="row pb-2">
+                                        <div class="col">
+                                            <mat-slide-toggle
+                                                (change)="changeDefault($event.checked, idx, schemeDeatils)">
+                                                <strong>Default</strong>
+                                            </mat-slide-toggle>
+                                        </div>
+                                        <div class="col">
+                                            <mat-slide-toggle [checked]="schemeDeatils.isActive"
+                                                (change)="changeStatus($event.checked, idx,schemeDeatils)">
+                                                <strong>Status</strong>
+                                            </mat-slide-toggle>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-4 heading kt-padding-t-20 kt-padding-b-20 border-right">Rate of Interest(% /
-                                Monthly)</div>
-                            <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                {{schemeDeatils.interestRateThirtyDaysMonthly}}</div>
-                            <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                {{schemeDeatils.interestRateNinetyDaysMonthly}}</div>
-                            <div class="col text-center kt-padding-t-20 kt-padding-b-20">
-                                {{schemeDeatils.interestRateOneHundredEightyDaysMonthly}}</div>
-                        </div>
-                        <!-- <div class="row ">
+                        <div class="col-12 border-radius">
+                            <div class="row border-bottom">
+                                <div
+                                    class="col-4 heading bg-secondary kt-padding-t-20 kt-padding-b-20 border-right border-left-radius">
+                                    Payment Frequency
+                                </div>
+                                <div
+                                    class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right">
+                                    30 Days</div>
+                                <div
+                                    class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right">
+                                    90 Days</div>
+                                <div
+                                    class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right-radius">
+                                    180 Days
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 heading kt-padding-t-20 kt-padding-b-20 border-right">Rate of
+                                    Interest(% /
+                                    Monthly)</div>
+                                <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
+                                    {{schemeDeatils.interestRateThirtyDaysMonthly}}</div>
+                                <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
+                                    {{schemeDeatils.interestRateNinetyDaysMonthly}}</div>
+                                <div class="col text-center kt-padding-t-20 kt-padding-b-20">
+                                    {{schemeDeatils.interestRateOneHundredEightyDaysMonthly}}</div>
+                            </div>
+                            <!-- <div class="row ">
                             <div class="col-4 heading kt-padding-t-20 kt-padding-b-20 border-right">Rate of Interest(% /
                                 Annually)</div>
                             <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
@@ -60,6 +86,24 @@
                             <div class="col text-center kt-padding-t-20 kt-padding-b-20">
                                 {{schemeDeatils.interestRateOneHundredEightyDaysAnnually}}</div>
                         </div> -->
+                        </div>
+
+                        <div class="col-12">
+                            <div class="row kt-margin-t-10">
+                                <div class="col form-label justify-content-center">
+                                    <label>Scheme Type - Secured</label>
+                                </div>
+                                <div class="col form-label justify-content-center">
+                                    <label>Preocessing Charges - 500</label>
+                                </div>
+                                <div class="col form-label justify-content-center">
+                                    <label>Maximum % Allowed - 67%</label>
+                                </div>
+                                <div class="col form-label justify-content-center">
+                                    <label>Penal Interest - 10%</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </mat-tab>

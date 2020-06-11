@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, ObservedValueOf } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
@@ -24,7 +24,7 @@ export class LoanSettingsService {
       map(res => res),
       catchError(err => {
         if (err.error.message)
-        this._toastr.error(err.error.message)
+          this._toastr.error(err.error.message)
         throw (err)
       }))
   }
@@ -33,7 +33,7 @@ export class LoanSettingsService {
       map(res => res),
       catchError(err => {
         if (err.error.message)
-        this._toastr.error(err.error.message)
+          this._toastr.error(err.error.message)
         throw (err)
       }))
   }
@@ -42,7 +42,17 @@ export class LoanSettingsService {
       map(res => res),
       catchError(err => {
         if (err.error.message)
-        this._toastr.error(err.error.message)
+          this._toastr.error(err.error.message)
+        throw (err)
+      }))
+  }
+
+  changeSchemeStatus(id, status): Observable<any> {
+    return this.http.delete(`api/scheme?id=${id}&isActive=${status.isActive}`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this._toastr.error(err.error.message)
         throw (err)
       }))
   }
