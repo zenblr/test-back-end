@@ -22,6 +22,10 @@ export class ShoppingCartService {
         return this.http.get<any>(API_ENDPOINT + `api/cart/check-out-cart`);
     }
 
+    updateCartItemQuantity(id, data): Observable<any> {
+        return this.http.put<any>(API_ENDPOINT + `api/cart/` + id, data);
+    }
+
     orderVerifyBlock(data): Observable<any> {
         return this.http.post<any>(API_ENDPOINT + `api/order/verify-block`, data);
     }

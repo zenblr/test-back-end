@@ -63,7 +63,7 @@
                                     <div class="py-1">{{item?.product?.sku}}</div>
                                     <div class="py-1">
                                         {{item?.paymentTypeId != 4 ? item?.paymentType?.paymentType : 'N/A'}}</div>
-                                    <div class="py-1">
+                                    <div [ngClass]="item?.paymentTypeId != 4 ? 'py-1' :'pt-3'">
                                         {{item?.paymentTypeId != 4 ? (item?.initialPayment | number) : 'N/A'}}</div>
                                     <div class="py-1" *ngIf="item?.paymentTypeId != 4">{{item?.emiAmount | number}}
                                     </div>
@@ -72,15 +72,19 @@
                                     <div class="text-muted py-1">Price</div>
                                     <div class="py-1">{{item?.price | number}}</div>
                                 </div>
-                                <div class="col" *ngIf="item?.paymentTypeId == 4">
+                                <div class="col text-center" *ngIf="item?.paymentTypeId == 4">
                                     <div class="text-muted py-1">Quantity</div>
-                                    <div class="py-1" *ngIf="item?.paymentTypeId != 4;else elseBlock1">
+                                    <div class="py-1" *ngIf="item?.paymentTypeId != 4;else elseBlock">
                                         {{item?.quantity}}
                                     </div>
-                                    <ng-template #elseBlock1>
+                                    <ng-template #elseBlock>
                                         <div>
-                                            <input type="text" value="{{item?.quantity}}"
-                                                class="form-control h-75 w-75 productQtyInput">
+                                            <input #qtyInput type="text" class="form-control productQtyInput"
+                                                name="cart-item-{{item.cartId}}" [(ngModel)]="item.quantity" numbersOnly>
+                                        </div>
+                                        <div class="pt-3">
+                                            <kt-button [myClass]="'updateQty'" [value]="'Update'" [type]="'button'"
+                                                (click)="updateQuantity(item)"></kt-button>
                                         </div>
                                     </ng-template>
                                 </div>

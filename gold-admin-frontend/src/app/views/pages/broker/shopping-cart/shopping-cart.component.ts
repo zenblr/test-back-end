@@ -55,7 +55,16 @@ export class ShoppingCartComponent implements OnInit {
   }
 
   updateQuantity(cartItem) {
-    
+    if (cartItem.quantity) {
+      const qtydata = {
+        quantity: parseInt(cartItem.quantity)
+      }
+      this.shoppingCartService.updateCartItemQuantity(cartItem.cartId, qtydata).subscribe(res => {
+        if (res) {
+          this.getCart();
+        }
+      });
+    }
   }
 
   checkoutCart() {

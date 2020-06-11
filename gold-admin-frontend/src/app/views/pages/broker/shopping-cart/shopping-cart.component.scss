@@ -18,8 +18,11 @@
         max-height: 100%;
     }
     .productQtyInput {
+        height: 75%;
+        width: 75%;
+        margin: auto;
         border-radius: 4px !important;
-        padding: 0.3rem !important;
+        padding: 0.2rem !important;
         text-align: center;
     }
 }
