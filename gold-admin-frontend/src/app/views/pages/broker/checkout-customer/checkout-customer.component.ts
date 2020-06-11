@@ -39,9 +39,9 @@ export class CheckoutCustomerComponent implements OnInit {
   formInitialize() {
     this.checkoutCustomerForm = this.fb.group({
       firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      lastName: [''],
       mobileNumber: ['', Validators.required],
-      email: ['', Validators.required],
+      email: [''],
       address: ['', Validators.required],
       landMark: ['', Validators.required],
       postalCode: ['', Validators.required],
@@ -59,7 +59,15 @@ export class CheckoutCustomerComponent implements OnInit {
   }
 
   getCheckoutCart() {
-    this.shoppingCartService.getCheckoutCart().subscribe(res => this.checkoutData = res);
+    this.shoppingCartService.getCheckoutCart().subscribe(res => {
+      if (res && res.blockId) {
+        const blockData = {
+          blockId: res.blockId
+        }
+        this.checkoutData = res
+        this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
+      }
+    });
   }
 
   checkCustomerType(type) {
@@ -131,5 +139,10 @@ export class CheckoutCustomerComponent implements OnInit {
       blockId: this.checkoutData.blockId
     }
     console.log(generateOTPData)
+    this.checkoutCustomerService.generateOTP(generateOTPData).subscribe(res => {
+      if(res) {
+        console.log(res);
+      }
+    });
   }
 }
