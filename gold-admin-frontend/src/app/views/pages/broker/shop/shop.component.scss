@@ -1,25 +1,30 @@
-:host {
-    .type{
-        min-height: 50px;
-        justify-content: center;
-        background-color: white;
-        color: #454d67;
-        border-radius: 10px;
-        font-weight: 600;
-        padding: 25px;
-    }
-    .subStyle{
-        min-height: 50px;
-        justify-content: center;
-        background-color: white;
-        color: #454d67;
-        border-radius: 10px;
-        font-weight: 600;
-        padding: 25px;
-    }
-    .selected,.subStyle:hover{
-        background-color: #454d67;
-        color: white;
+.shopDiv {
+    .mat-chip-list-wrapper {
+        display: inline-block;
+        margin: auto;
+        white-space: nowrap;
+        .type{
+            min-height: 45px;
+            justify-content: center;
+            background-color: white;
+            color: #454d67;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 15px;
+        }
+        .subStyle{
+            min-height: 45px;
+            justify-content: center;
+            background-color: white;
+            color: #454d67;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 15px;
+        }
+        .selected,.subStyle:hover{
+            background-color: #454d67;
+            color: white;
+        }
     }
     .card-container {
         margin: 0 -5px;
@@ -46,5 +51,5 @@
     mat-paginator.mat-paginator.paginator--centered {
         display: flex;
         justify-content: center;
-      }         
+    } 
 }

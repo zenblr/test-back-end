@@ -1,81 +1,86 @@
-<div *ngIf="subCategory" class="mb-3">
-    <mat-chip-list>
-        <mat-chip class="type">Sub Category</mat-chip>
-        <mat-chip class="subStyle kt-pointer" [class.selected]="productsData.subCategoryId == ''"
-            (click)="selectedSubCategory('')">All ({{count}})</mat-chip>
-        <mat-chip *ngFor="let sub of subCategory" class="subStyle kt-pointer"
-            [class.selected]="productsData.subCategoryId == sub.id" (click)="selectedSubCategory(sub.id)">
-            {{sub.subCategoryName}}&nbsp;({{sub.count}})
-        </mat-chip>
-    </mat-chip-list>
-</div>
-<kt-portlet>
-    <kt-portlet-body [class]="'kt-portlet__body--fit'">
-        <div class="row card-container" *ngIf="products && toogler == 'grid'">
-            <div class="card" *ngFor="let product of products;index as i">
-                <div class="bg-white text-center">
-                    <img [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
-                        alt="test" width="150px" height="150px">
-                    <p class="text-color customer-id font-weight-bold mt-2">{{product.productName}}</p>
-                    <p>Weight: {{product.weight}} GMS</p>
-                    <p class="text-color font-weight-bold">₹ {{product.productPrice[0].finalProductPrice}}
-                    </p>
-                    <kt-button [value]='"Order Now"' [type]='"button"' (action)="action(product.id)"
-                        class="kt-padding-r-5"></kt-button>
+<div class="shopDiv">
+    <div *ngIf="subCategory" class="mb-3 d-flex">
+        <mat-chip-list>
+            <mat-chip class="type">Sub Category</mat-chip>
+        </mat-chip-list>
+        <mat-chip-list class="d-flex overflow-auto">
+            <mat-chip class="subStyle kt-pointer" [class.selected]="productsData.subCategoryId == ''"
+                (click)="selectedSubCategory('')">All ({{count}})</mat-chip>
+            <mat-chip *ngFor="let sub of subCategory" class="subStyle kt-pointer"
+                [class.selected]="productsData.subCategoryId == sub.id" (click)="selectedSubCategory(sub.id)">
+                {{sub.subCategoryName}}&nbsp;({{sub.count}})
+            </mat-chip>
+        </mat-chip-list>
+    </div>
+    <kt-portlet>
+        <kt-portlet-body [class]="'kt-portlet__body--fit'">
+            <div class="row card-container" *ngIf="products && toogler == 'grid'">
+                <div class="card" *ngFor="let product of products;index as i">
+                    <div class="bg-white text-center">
+                        <img [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
+                            alt="test" width="150px" height="150px">
+                        <p class="text-color customer-id font-weight-bold mt-2">{{product.productName}}</p>
+                        <p>Weight: {{product.weight}} GMS</p>
+                        <p class="text-color font-weight-bold">₹ {{product.productPrice[0].finalProductPrice}}
+                        </p>
+                        <kt-button [value]='"Order Now"' [type]='"button"' (action)="action(product.id)"
+                            class="kt-padding-r-5"></kt-button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row card-container" *ngIf="products && toogler == 'list'">
-            <div class="list-card bg-white" *ngFor="let product of products;index as i">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <img [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
-                                    alt="test" width="100px" height="100px">
-                            </div>
-                            <div class="col-md-8">
-                                <p class="text-color customer-id font-weight-bold">{{product.productName | titlecase}}
-                                </p>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <p>SKU Code &nbsp;<span
-                                                class="text-color font-weight-500">{{product.sku}}</span></p>
-                                        <p>Metal Type &nbsp;<span
-                                                class="text-color font-weight-500">{{product.subCategory.category.metalType.metalType}}</span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p>Jewellery Type &nbsp;<span
-                                                class="text-color font-weight-500">{{product.subCategory.subCategoryName}}</span>
-                                        </p>
-                                        <p>Conversion Factor &nbsp;<span
-                                                class="text-color font-weight-500">{{product.subCategory.category.conversionFactor}}</span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p>Weight &nbsp;<span class="text-color font-weight-500">{{product.weight}}
-                                                Gram</span>
-                                        </p>
+            <div class="row card-container" *ngIf="products && toogler == 'list'">
+                <div class="list-card bg-white" *ngFor="let product of products;index as i">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <img [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
+                                        alt="test" width="100px" height="100px">
+                                </div>
+                                <div class="col-md-8">
+                                    <p class="text-color customer-id font-weight-bold">
+                                        {{product.productName | titlecase}}
+                                    </p>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p>SKU Code &nbsp;<span
+                                                    class="text-color font-weight-500">{{product.sku}}</span></p>
+                                            <p>Metal Type &nbsp;<span
+                                                    class="text-color font-weight-500">{{product.subCategory.category.metalType.metalType}}</span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Jewellery Type &nbsp;<span
+                                                    class="text-color font-weight-500">{{product.subCategory.subCategoryName}}</span>
+                                            </p>
+                                            <p>Conversion Factor &nbsp;<span
+                                                    class="text-color font-weight-500">{{product.subCategory.category.conversionFactor}}</span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p>Weight &nbsp;<span class="text-color font-weight-500">{{product.weight}}
+                                                    Gram</span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <h5 class="text-color font-weight-bold pt-4">₹
-                                    {{product.productPrice[0].finalProductPrice}}
-                                </h5>
-                                <kt-button [value]='"Order Now"' [type]='"button"' (action)="action(product.id)"
-                                    class="py-3"></kt-button>
+                                <div class="col-md-2 text-center">
+                                    <h5 class="text-color font-weight-bold pt-4">₹
+                                        {{product.productPrice[0].finalProductPrice}}
+                                    </h5>
+                                    <kt-button [value]='"Order Now"' [type]='"button"' (action)="action(product.id)"
+                                        class="py-3"></kt-button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <mat-paginator class="paginator--centered" [length]="count" [pageSize]="25" [pageSizeOptions]="[5, 10, 25]"
-            (page)="getServerData($event)">
-        </mat-paginator>
-    </kt-portlet-body>
-</kt-portlet>
+            <mat-paginator class="paginator--centered" [length]="count" [pageSize]="25" [pageSizeOptions]="[5, 10, 25]"
+                (page)="getServerData($event)">
+            </mat-paginator>
+        </kt-portlet-body>
+    </kt-portlet>
+</div>
