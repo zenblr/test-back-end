@@ -112,7 +112,8 @@ const rout: Routes = [
   entryComponents: [
     AssignPacketsComponent,
     DisburseDialogComponent,
-    DeleteEntityDialogComponent
+    DeleteEntityDialogComponent,
+    UnSecuredSchemeComponent
   ]
 })
 export class LoanManagementModule { }

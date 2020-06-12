@@ -9,6 +9,15 @@
                     <mat-cell *matCellDef="let role">{{role.packetUniqueId | uppercase}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="internalBranch">
+                    <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.customer">
+                            <!-- {{role.customer.customerUniqueId}} -->
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="customerID">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let role">
@@ -30,9 +39,11 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <span class="kt-pointer" (click)="editPacket(role)" *ngxPermissionsOnly="['packetEdit']">Edit</span>
+                            <span class="kt-pointer" (click)="editPacket(role)"
+                                *ngxPermissionsOnly="['packetEdit']">Edit</span>
                             <div class="px-2" *ngxPermissionsOnly="['packetDelete'] || ['packetEdit']">|</div>
-                            <span class="kt-pointer text-danger" (click)="deletePacket(role)" *ngxPermissionsOnly="['packetDelete']">Delete</span>
+                            <span class="kt-pointer text-danger" (click)="deletePacket(role)"
+                                *ngxPermissionsOnly="['packetDelete']">Delete</span>
                         </div>
                     </mat-cell>
                 </ng-container>

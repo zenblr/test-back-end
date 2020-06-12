@@ -19,8 +19,13 @@ export class LoanSettingsService {
   applyFilter = new BehaviorSubject<any>({});
   applyFilter$ = this.applyFilter.asObservable();
 
-  getScheme(): Observable<any> {
-    return this.http.get('api/scheme').pipe(
+  getScheme(data): Observable<any> {
+    const reqParams: any = {};
+    if (data && data.isActive) {
+      reqParams.isActive = data.isActive;
+    }
+
+    return this.http.get('api/scheme', { params: reqParams }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

@@ -69,4 +69,8 @@ export class PacketsService {
       })
     );
   }
+
+  getInternalBranhces(): Observable<any> {
+    return this.http.get<any>(`api/internal-branch`);
+  }
 }

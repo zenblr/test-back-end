@@ -4,6 +4,8 @@ import { PartnerService } from '../../../../../../../core/user-management/partne
 import { DatePipe } from '@angular/common';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { catchError, map } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
+import { UnSecuredSchemeComponent } from '../../un-secured-scheme/un-secured-scheme.component';
 
 @Component({
   selector: 'kt-interest-calculator',
@@ -48,7 +50,8 @@ export class InterestCalculatorComponent implements OnInit {
     public eleRef: ElementRef,
     public datePipe: DatePipe,
     public ref: ChangeDetectorRef,
-    public loanFormService: LoanApplicationFormService
+    public loanFormService: LoanApplicationFormService,
+    private dialog: MatDialog
   ) {
     this.initForm();
   }
@@ -192,7 +195,7 @@ export class InterestCalculatorComponent implements OnInit {
           this.isUnSecuredSchemeApplied = true
         } else {
           this.controls.finalLoanAmount.setErrors({ maximunAllowed: true })
-          
+
           return
         }
       } else {
@@ -359,7 +362,10 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   changeUnSecuredScheme() {
-
+    console.log('modal')
+    const dialogRef = this.dialog.open(UnSecuredSchemeComponent, {
+      width: '500px'
+    });
   }
 
 }
