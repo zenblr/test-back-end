@@ -8,7 +8,7 @@
                 User ID
             </div>
             <div class="col-md-7">
-                {{orderData?.customerDetails.customerUniqueId}}
+                {{orderData?.order?.customerDetails.customerUniqueId ? orderData?.order?.customerDetails.customerUniqueId : '-'}}
             </div>
         </div>
         <div class="row py-2">
@@ -16,7 +16,7 @@
                 Order ID
             </div>
             <div class="col-md-7">
-                {{orderData?.orderUniqueId}}
+                {{orderData?.order?.orderUniqueId ? orderData?.order?.orderUniqueId : '-'}}
             </div>
         </div>
         <div class="row py-2">
@@ -24,7 +24,7 @@
                 Order Total Amount
             </div>
             <div class="col-md-7">
-                {{orderData?.orderdetails[0].finalOrderPrice}}
+                {{orderData?.finalOrderPrice ? orderData?.finalOrderPrice : '-'}}
             </div>
         </div>
         <div class="row py-2">
@@ -32,7 +32,7 @@
                 Order Initial Amount
             </div>
             <div class="col-md-7">
-                {{orderData?.orderdetails[0].initialPayment}}
+                {{orderData?.initialPayment ? orderData?.initialPayment : '-'}}
             </div>
         </div>
         <div class="row py-2">
@@ -40,7 +40,7 @@
                 EMI Due Date
             </div>
             <div class="col-md-7">
-                {{orderData?.EmiStartDate | date:'medium'}}
+                {{orderData?.dueDate ? (orderData?.dueDate | date:'medium') : '-'}}
             </div>
         </div>
         <div class="row py-2">
@@ -48,7 +48,7 @@
                 EMI Payment Date
             </div>
             <div class="col-md-7">
-                {{orderData?.EmiEndDate | date:'medium'}}
+                {{orderData?.paymentRecievedDate ? (orderData?.paymentRecievedDate | date:'medium') : '-'}}
             </div>
         </div>
     </div>
