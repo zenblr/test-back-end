@@ -46,12 +46,12 @@ export class FinalLoanAmountComponent implements OnInit {
       goldNetWeight: [, Validators.required],
       goldDeductionWeight: [, Validators.required],
       karat: ['', [Validators.required]],
-      purity: [, [Validators.required]],
-      finalNetWeight: [, [Validators.required]],
+      purity: [],
+      finalNetWeight: [],
       ltvAmount: [, [Validators.required]],
       ltvPercent: ['', [Validators.required]],
-      currentLtvAmount: [, [Validators.required]],
-      loanAmount: [, [Validators.required]]
+      currentLtvAmount: [],
+      loanAmount: []
     })
   }
 
@@ -114,44 +114,48 @@ export class FinalLoanAmountComponent implements OnInit {
     }
   }
   // calFinalNetWeight() {
-    // Current Net Weight = Net Weight - Purity %
-    //                        = 10 - 1 / 100
-    //                        = 0.099
-    // Current Net Wt = Previous net weight - Current Net Weight
-    //   = 10 - 0.99
-    // Final Net Weight = 9.90
+  // Current Net Weight = Net Weight - Purity %
+  //                        = 10 - 1 / 100
+  //                        = 0.099
+  // Current Net Wt = Previous net weight - Current Net Weight
+  //   = 10 - 0.99
+  // Final Net Weight = 9.90
 
 
 
 
-    // let purity = this.controls.purity.value;
-    // purity = (purity / 100);
+  // let purity = this.controls.purity.value;
+  // purity = (purity / 100);
 
-    // current weight
-    // let goldNetWeight = +(this.controls.goldNetWeight.value);
+  // current weight
+  // let goldNetWeight = +(this.controls.goldNetWeight.value);
 
-    // const currentNetWeight = goldNetWeight - Number(this.controls.ltvPercent.value / 100);
-    // console.log(currentNetWeight);
+  // const currentNetWeight = goldNetWeight - Number(this.controls.ltvPercent.value / 100);
+  // console.log(currentNetWeight);
 
-    // final weight
-    // const finalNetWeight = goldNetWeight - currentNetWeight;
-    // console.log(finalNetWeight);
+  // final weight
+  // const finalNetWeight = goldNetWeight - currentNetWeight;
+  // console.log(finalNetWeight);
 
-    // this.controls.finalNetWeight.patchValue(currentNetWeight);
+  // this.controls.finalNetWeight.patchValue(currentNetWeight);
 
-    // current LTV amount
-    // this.controls.ltvPercent.patchValue(+(this.controls.purity.value));
+  // current LTV amount
+  // this.controls.ltvPercent.patchValue(+(this.controls.purity.value));
 
-    // let purity = +(this.controls.ltvPercent.value);
+  // let purity = +(this.controls.ltvPercent.value);
 
-    // const ltvAmount = this.currentLtvAmount * purity / 100;
-    // console.log(currentLtvAmount)
-    // this.controls.ltvAmount.patchValue(ltvAmount);
+  // const ltvAmount = this.currentLtvAmount * purity / 100;
+  // console.log(currentLtvAmount)
+  // this.controls.ltvAmount.patchValue(ltvAmount);
   // }
 
   calcLoanAmount() {
     // Loan Amount = Final Net Weight *  Ltv
     //   = 9.90 * 1270
+    if (this.finalLoanForm.invalid) {
+      this.finalLoanForm.markAllAsTouched();
+      return
+    }
 
     const loanAmount = (+(this.controls.goldNetWeight.value) * +(this.controls.ltvAmount.value));
     // console.log('final: ', loanAmount);
@@ -181,6 +185,15 @@ export class FinalLoanAmountComponent implements OnInit {
         console.log(res)
       })
     ).subscribe()
+  }
+
+  rejectNegativeNumber(val) {
+    let keyCode = val.keyCode;
+    if (!((keyCode > 95 && keyCode < 106)
+      || (keyCode > 47 && keyCode < 58)
+      || keyCode == 8)) {
+      return false;
+    }
   }
 
 }
