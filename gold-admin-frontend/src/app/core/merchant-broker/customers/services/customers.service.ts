@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
 import { ExcelService, PdfService } from "../../../_base/crud";
-
+import { API_ENDPOINT } from "../../../../app.constant";
 @Injectable({
 	providedIn: "root",
 })
@@ -25,10 +25,7 @@ export class CustomersService {
 		if (event && event.search) {
 			reqParams.search = event.search;
 		}
-		if (event && event.orderemistatus) {
-			reqParams.orderemistatus = event.orderemistatus;
-		}
-		return this.http.get<any>(`http://173.249.49.7:9120/api/emi-details`, {
+		return this.http.get<any>(API_ENDPOINT + `api/customer`, {
 			params: reqParams,
 		});
 	}
