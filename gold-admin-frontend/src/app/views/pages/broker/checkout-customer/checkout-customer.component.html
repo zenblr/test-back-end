@@ -63,8 +63,21 @@
                             <div class="col-4 align-self-center">
                                 <label class="font-weight-500 text-color">Customer Name</label>
                             </div>
-                            <div class="col-8">
-                                <input type="text" formControlName="firstName" class="form-control">
+                            <div class="col-4">
+                                <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
+                                    class="form-control" formControlName="firstName"
+                                    [class.isError]="controls.firstName.touched && controls.firstName.invalid">
+                                <mat-error *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
+                                    Field is required
+                                </mat-error>
+                            </div>
+                            <div class="col-4">
+                                <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
+                                    class="form-control" formControlName="lastName"
+                                    [class.isError]="controls.lastName.touched && controls.lastName.invalid">
+                                <mat-error *ngIf=" controls.lastName.errors?.required && controls.lastName.touched">
+                                    Field is required
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -74,7 +87,14 @@
                                 <label class="font-weight-500 text-color">Mobile Number</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" formControlName="mobileNumber" class="form-control" numbersOnly>
+                                <input type="text" aria-label="Mobile Number" placeholder="Mobile Number"
+                                    class="form-control" formControlName="mobileNumber"
+                                    [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid"
+                                    numbersOnly>
+                                <mat-error
+                                    *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
+                                    Field is required
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -86,7 +106,12 @@
                                 <label class="font-weight-500 text-color">Email ID</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" formControlName="email" class="form-control">
+                                <input type="text" aria-label="Email ID" placeholder="Email ID" ktAlphabets
+                                    class="form-control" formControlName="email"
+                                    [class.isError]="controls.email.touched && controls.email.invalid">
+                                <mat-error *ngIf="controls.email.errors?.email && controls.email.touched">
+                                    Invalid Email ID
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -96,7 +121,12 @@
                                 <label class="font-weight-500 text-color">Landmark</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" formControlName="landMark" class="form-control">
+                                <input type="text" aria-label="Landmark" placeholder="Landmark" class="form-control"
+                                    formControlName="landMark"
+                                    [class.isError]="controls.landMark.touched && controls.landMark.invalid">
+                                <mat-error *ngIf=" controls.landMark.errors?.required && controls.landMark.touched">
+                                    Field is required
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -108,8 +138,12 @@
                                 <label class="font-weight-500 text-color">Address</label>
                             </div>
                             <div class="col-8">
-                                <textarea type="text" formControlName="address" rows="3"
-                                    class="form-control"></textarea>
+                                <textarea type="text" aria-label="Address" placeholder="Address" class="form-control"
+                                    formControlName="address"
+                                    [class.isError]="controls.address.touched && controls.address.invalid"></textarea>
+                                <mat-error *ngIf=" controls.address.errors?.required && controls.address.touched">
+                                    Field is required
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -161,7 +195,12 @@
                                 <label class="font-weight-500 text-color">Pincode</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" formControlName="postalCode" class="form-control">
+                                <input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
+                                    formControlName="postalCode"
+                                    [class.isError]="controls.postalCode.touched && controls.postalCode.invalid">
+                                <mat-error *ngIf=" controls.postalCode.errors?.required && controls.postalCode.touched">
+                                    Field is required
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -202,7 +241,8 @@
                                 </div>
                             </div>
                             <div class="col-4">
-                                <kt-button [value]="'Generate OTP'" [type]="'normalButton'" (click)="generateOTP()"></kt-button>
+                                <kt-button [value]="'Generate OTP'" [type]="'normalButton'" (click)="generateOTP()">
+                                </kt-button>
                             </div>
                         </div>
                     </div>

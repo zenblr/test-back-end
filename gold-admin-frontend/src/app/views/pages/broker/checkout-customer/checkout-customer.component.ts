@@ -39,9 +39,9 @@ export class CheckoutCustomerComponent implements OnInit {
   formInitialize() {
     this.checkoutCustomerForm = this.fb.group({
       firstName: ['', Validators.required],
-      lastName: [''],
+      lastName: ['', Validators.required],
       mobileNumber: ['', Validators.required],
-      email: [''],
+      email: ['', Validators.email],
       address: ['', Validators.required],
       landMark: ['', Validators.required],
       postalCode: ['', Validators.required],
