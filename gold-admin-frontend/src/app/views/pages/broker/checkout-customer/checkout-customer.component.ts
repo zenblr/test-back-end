@@ -12,16 +12,16 @@ import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/m
 })
 export class CheckoutCustomerComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  viewLoading = false;
   checkoutCustomerForm: FormGroup;
   otpForm: FormGroup;
-  checkoutData: any;
   stateList = [];
   cityList = [];
   showformFlag = false;
   showPlaceOrder = false;
+  checkoutData: any;
   existingCustomerData: any;
   finalOrderData: any;
+  isMandatory = true;
 
   constructor(
     private fb: FormBuilder,
@@ -54,10 +54,6 @@ export class CheckoutCustomerComponent implements OnInit {
     this.otpForm = this.fb.group({
       otp: ['', Validators.required],
     });
-
-    this.checkoutCustomerForm.valueChanges.subscribe((val) => {
-      console.log(val);
-    });
   }
 
   get controls() {
@@ -73,7 +69,12 @@ export class CheckoutCustomerComponent implements OnInit {
         this.checkoutData = res
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
       }
-    });
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 
   checkCustomerType(type) {
@@ -86,38 +87,42 @@ export class CheckoutCustomerComponent implements OnInit {
       this.showPlaceOrder = false
     }
     this.existingCustomerData = null;
+    this.finalOrderData = null;
     this.checkoutCustomerForm.reset();
+    this.otpForm.reset();
   }
 
   getExistingCustomer() {
-    if (this.controls.mobileNumber.value) {
-      console.log(this.controls.mobileNumber.value)
-      this.checkoutCustomerService.getExistingCustomer(this.controls.mobileNumber.value).subscribe(res => {
-        if (res) {
-          this.existingCustomerData = res;
-          this.checkoutCustomerForm.patchValue({
-            firstName: res.customerDetails.firstName,
-            lastName: res.customerDetails.lastName,
-            mobileNumber: res.customerDetails.mobileNumber,
-            email: res.customerDetails.email,
-            address: res.customerDetails.customeraddress[0].address,
-            landMark: res.customerDetails.customeraddress[0].landMark,
-            postalCode: res.customerDetails.pinCode,
-            countryName: [''],
-            stateName: res.customerDetails.customeraddress[0].state,
-            cityName: res.customerDetails.customeraddress[0].city,
-            blockId: [''],
-          });
-          this.getCities();
-          this.showPlaceOrder = true
-        }
-      },
-        error => {
-          console.log(error.error.message);
-          const msg = error.error.message;
-          this.toastr.errorToastr(msg);
-        });
+    if (this.controls.mobileNumber.invalid) {
+      this.checkoutCustomerForm.markAllAsTouched();
+      return;
     }
+    this.checkoutCustomerService.getExistingCustomer(this.controls.mobileNumber.value).subscribe(res => {
+      if (res) {
+        this.existingCustomerData = res;
+        this.checkoutCustomerForm.patchValue({
+          firstName: res.customerDetails.firstName,
+          lastName: res.customerDetails.lastName,
+          mobileNumber: res.customerDetails.mobileNumber,
+          email: res.customerDetails.email,
+          address: res.customerDetails.customeraddress[0].address,
+          landMark: res.customerDetails.customeraddress[0].landMark,
+          postalCode: res.customerDetails.pinCode,
+          countryName: [''],
+          stateName: res.customerDetails.customeraddress[0].state,
+          cityName: res.customerDetails.customeraddress[0].city,
+          blockId: [''],
+        });
+        this.getCities();
+        this.showPlaceOrder = true;
+        this.finalOrderData = null;
+      }
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 
   getStates() {
@@ -154,8 +159,15 @@ export class CheckoutCustomerComponent implements OnInit {
       if (res) {
         console.log(res);
         this.finalOrderData = res;
+        const msg = 'OTP successfully has been sent.';
+        this.toastr.successToastr(msg);
       }
-    });
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 
   placeOrder() {
@@ -175,8 +187,13 @@ export class CheckoutCustomerComponent implements OnInit {
         console.log(res);
         const msg = 'Order successfully has been placed.';
         this.toastr.successToastr(msg);
-        this.router.navigate(['/broker/order-received']);
+        this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
       }
-    });
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 }

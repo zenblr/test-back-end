@@ -64,13 +64,14 @@
                                     <div class="py-1">
                                         {{item?.paymentTypeId != 4 ? item?.paymentType?.paymentType : 'N/A'}}</div>
                                     <div [ngClass]="item?.paymentTypeId != 4 ? 'py-1' :'pt-3'">
-                                        {{item?.paymentTypeId != 4 ? (item?.initialPayment | number) : 'N/A'}}</div>
-                                    <div class="py-1" *ngIf="item?.paymentTypeId != 4">{{item?.emiAmount | number}}
+                                        {{item?.paymentTypeId != 4 ? '₹ ' + (item?.initialPayment | number) : 'N/A'}}
+                                    </div>
+                                    <div class="py-1" *ngIf="item?.paymentTypeId != 4">₹ {{item?.emiAmount | number}}
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="text-muted py-1">Price</div>
-                                    <div class="py-1">{{item?.price | number}}</div>
+                                    <div class="py-1">₹ {{item?.price | number}}</div>
                                 </div>
                                 <div class="col text-center" *ngIf="item?.paymentTypeId == 4">
                                     <div class="text-muted py-1">Quantity</div>
@@ -80,7 +81,8 @@
                                     <ng-template #elseBlock>
                                         <div>
                                             <input #qtyInput type="text" class="form-control productQtyInput"
-                                                name="cart-item-{{item.cartId}}" [(ngModel)]="item.quantity" numbersOnly>
+                                                name="cart-item-{{item.cartId}}" [(ngModel)]="item.quantity"
+                                                numbersOnly>
                                         </div>
                                         <div class="pt-3">
                                             <kt-button [myClass]="'updateQty'" [value]="'Update'" [type]="'button'"
@@ -90,7 +92,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="text-muted py-1">SubTotal</div>
-                                    <div class="py-1">{{item?.finalPrice | number}}</div>
+                                    <div class="py-1">₹ {{item?.finalPrice | number}}</div>
                                 </div>
                             </div>
                         </div>
@@ -102,20 +104,20 @@
                     <div *ngIf="!(cartData?.emiScheme?.length ||cartData?.emiAmount?.length)" class="text-center">
                         <div>Grand Total</div>
                         <hr>
-                        <h3 class="pt-3">{{cartData?.invoicePrice | number}}</h3>
+                        <h3 class="pt-3">₹ {{cartData?.invoicePrice | number}}</h3>
                     </div>
                     <div *ngIf="cartData?.emiScheme?.length || cartData?.emiAmount?.length">
                         <div class="row py-2">
                             <div class="col-8 text-muted">Grand Total</div>
-                            <div class="col-4 text-right">{{cartData?.invoicePrice | number}}</div>
+                            <div class="col-4 text-right">₹ {{cartData?.invoicePrice | number}}</div>
                         </div>
                         <div class="row py-2">
                             <div class="col-8 text-muted">Now Payable Amount</div>
-                            <div class="col-4 text-right">{{cartData?.nowPayableAmount | number}}</div>
+                            <div class="col-4 text-right">₹ {{cartData?.nowPayableAmount | number}}</div>
                         </div>
                         <div class="row py-2">
                             <div class="col-8 text-muted">Initial Amount</div>
-                            <div class="col-4 text-right">{{cartData?.initialPaymentTotal | number}}</div>
+                            <div class="col-4 text-right">₹ {{cartData?.initialPaymentTotal | number}}</div>
                         </div>
                         <div class="row py-2">
                             <div class="col-8 text-muted">EMI Scheme</div>
@@ -129,9 +131,9 @@
                         <div class="row py-2">
                             <div class="col-8 text-muted">EMI Amount(Per Month)</div>
                             <div class="col-4 text-right" *ngIf="cartData?.emiAmount?.length">
-                                <span class="content" *ngFor="let amt of cartData?.emiAmount; let isLast=last">
-                                    {{amt}}{{isLast ? '' : ', '}}
-                                </span>
+                                <div class="content" *ngFor="let amt of cartData?.emiAmount; let isLast=last">
+                                    ₹ {{amt}}{{isLast ? '' : ', '}}
+                                </div>
                             </div>
                         </div>
                     </div>

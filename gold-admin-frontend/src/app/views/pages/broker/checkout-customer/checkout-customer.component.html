@@ -3,26 +3,33 @@
     <kt-portlet-body class="checkout-height">
         <div class="row py-4">
             <div class="col-12">
-                <kt-button [value]="'Existing Customer'" [type]="'button'" (click)="checkCustomerType('exist')">
+                <kt-button [value]="'Existing Customer'" [type]="'button'" (action)="checkCustomerType('exist')">
                 </kt-button>
                 <span class="px-4 font-weight-500">Or</span>
-                <kt-button [value]="'New Customer'" [type]="'reset'" (click)="checkCustomerType('new')"></kt-button>
+                <kt-button [value]="'New Customer'" [type]="'reset'" (action)="checkCustomerType('new')"></kt-button>
             </div>
         </div>
         <form [formGroup]="checkoutCustomerForm">
             <div class="row py-3" *ngIf="!showformFlag">
-                <div class="col-6 pr-4">
+                <div class="col-5">
                     <div class="row">
-                        <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color">Enter Mobile Number</label>
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Enter Mobile
+                                Number</label>
                         </div>
-                        <div class="col-8">
-                            <input type="text" formControlName="mobileNumber" class="form-control" numbersOnly>
+                        <div class="col-7">
+                            <input type="text" aria-label="Mobile Number" placeholder="Mobile Number"
+                                class="form-control" formControlName="mobileNumber"
+                                [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid"
+                                numbersOnly>
+                            <mat-error *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
+                                Field is required
+                            </mat-error>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 pl-4">
-                    <kt-button [value]="'Done'" [type]="'submit'" (click)="getExistingCustomer()"></kt-button>
+                <div class="col">
+                    <kt-button [value]="'Done'" [type]="'submit'" (action)="getExistingCustomer()"></kt-button>
                 </div>
             </div>
             <div *ngIf="existingCustomerData" class="font-weight-500">
@@ -61,7 +68,8 @@
                     <div class="col-6 pr-4">
                         <div class="row">
                             <div class="col-4 align-self-center">
-                                <label class="font-weight-500 text-color">Customer Name</label>
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Customer
+                                    Name</label>
                             </div>
                             <div class="col-4">
                                 <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
@@ -84,7 +92,8 @@
                     <div class="col-6 pl-4">
                         <div class="row">
                             <div class="col-4 align-self-center">
-                                <label class="font-weight-500 text-color">Mobile Number</label>
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Mobile
+                                    Number</label>
                             </div>
                             <div class="col-8">
                                 <input type="text" aria-label="Mobile Number" placeholder="Mobile Number"
@@ -118,7 +127,8 @@
                     <div class="col-6 pl-4">
                         <div class="row">
                             <div class="col-4 align-self-center">
-                                <label class="font-weight-500 text-color">Landmark</label>
+                                <label class="font-weight-500 text-color"
+                                    [class.mandatory]="isMandatory">Landmark</label>
                             </div>
                             <div class="col-8">
                                 <input type="text" aria-label="Landmark" placeholder="Landmark" class="form-control"
@@ -135,7 +145,8 @@
                     <div class="col-6 pr-4">
                         <div class="row">
                             <div class="col-4 align-self-center">
-                                <label class="font-weight-500 text-color">Address</label>
+                                <label class="font-weight-500 text-color"
+                                    [class.mandatory]="isMandatory">Address</label>
                             </div>
                             <div class="col-8">
                                 <textarea type="text" aria-label="Address" placeholder="Address" class="form-control"
@@ -150,7 +161,7 @@
                     <div class="col-6 pl-4">
                         <div class="row">
                             <div class="col-4 align-self-center">
-                                <label class="font-weight-500 text-color">State</label>
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">State</label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="stateName"
@@ -173,7 +184,7 @@
                     <div class="col-6 pr-4">
                         <div class="row">
                             <div class="col-4 align-self-center">
-                                <label class="font-weight-500 text-color">City</label>
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">City</label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="cityName"
@@ -192,7 +203,8 @@
                     <div class="col-6 pl-4">
                         <div class="row">
                             <div class="col-4 align-self-center">
-                                <label class="font-weight-500 text-color">Pincode</label>
+                                <label class="font-weight-500 text-color"
+                                    [class.mandatory]="isMandatory">Pincode</label>
                             </div>
                             <div class="col-8">
                                 <input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
@@ -215,12 +227,12 @@
                         <div class="col-8 font-weight-500">
                             <div class="row">
                                 <div class="col-6 text-muted pb-2">Invoice Price:</div>
-                                <div class="col-6">₹{{checkoutData?.invoiceAmount | number}}</div>
+                                <div class="col-6">₹ {{checkoutData?.invoiceAmount | number}}</div>
                                 <div class="col-6 text-muted pb-2">Now Payable Amount:</div>
-                                <div class="col-6">₹{{checkoutData?.nowPayableAmount | number}}</div>
+                                <div class="col-6">₹ {{checkoutData?.nowPayableAmount | number}}</div>
                                 <ng-container *ngIf="checkoutData?.emiScheme?.length ||checkoutData?.emiAmount?.length">
                                     <div class="col-6 text-muted pb-2">Initial Payment:</div>
-                                    <div class="col-6">₹{{checkoutData?.initialPayment | number}}</div>
+                                    <div class="col-6">₹ {{checkoutData?.initialPayment | number}}</div>
                                     <div class="col-6 text-muted pb-2">EMI Scheme:</div>
                                     <div class="col-6" *ngIf="checkoutData?.emiScheme?.length">
                                         <span class="content"
@@ -231,17 +243,17 @@
                                     </div>
                                     <div class="col-6 text-muted">EMI Amount:</div>
                                     <div class="col-6" *ngIf="checkoutData?.emiAmount?.length">
-                                        <span class="content"
+                                        <div class="content"
                                             *ngFor="let amt of checkoutData?.emiAmount; let isLast=last">
-                                            {{amt | number}}{{isLast ? '' : ', '}}
-                                        </span>
+                                            ₹ {{amt | number}}{{isLast ? '' : ', '}}
+                                        </div>
                                     </div>
                                     <div class="col-6 offset-6">(Per Month)</div>
                                 </ng-container>
                             </div>
                         </div>
                         <div class="col-4">
-                            <kt-button [value]="'Generate OTP'" [type]="'normalButton'" (click)="generateOTP()">
+                            <kt-button [value]="'Generate OTP'" [type]="'normalButton'" (action)="generateOTP()">
                             </kt-button>
                         </div>
                     </div>
@@ -250,8 +262,10 @@
                     <form [formGroup]="otpForm">
                         <div class="row">
                             <div class="col-6">
-                                <input type="text" aria-label="Enter OTP" placeholder="Enter OTP" class="form-control"
-                                    formControlName="otp"
+                                <input *ngIf="!finalOrderData" type="text" aria-label="Enter OTP"
+                                    placeholder="Enter OTP" class="form-control" formControlName="otp" disabled>
+                                <input *ngIf="finalOrderData" type="text" aria-label="Enter OTP" placeholder="Enter OTP"
+                                    class="form-control" formControlName="otp"
                                     [class.isError]="otpForm.controls.otp.touched && otpForm.controls.otp.invalid"
                                     numbersOnly>
                                 <mat-error
@@ -260,7 +274,8 @@
                                 </mat-error>
                             </div>
                             <div class="col-6">
-                                <kt-button [value]="'Place Order'" [type]="'submit'" (click)="placeOrder()"></kt-button>
+                                <kt-button [value]="'Place Order'" [type]="'submit'" (action)="placeOrder()"
+                                    [isDisabled]="!finalOrderData"></kt-button>
                             </div>
                         </div>
                     </form>

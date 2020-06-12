@@ -3,7 +3,7 @@ import { ToastrComponent } from '../../../partials/components/toastr/toastr.comp
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/merchant-broker';
+import { OrderReceivedService } from '../../../../core/merchant-broker';
 
 @Component({
   selector: 'kt-order-received',
@@ -12,102 +12,23 @@ import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/m
 })
 export class OrderReceivedComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  orderedData = [];
+  blockId: any;
+  orderDetail: any;
 
   constructor(
-    private fb: FormBuilder,
-    private sharedService: SharedService,
     private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
-    private checkoutCustomerService: CheckoutCustomerService,
-    private shoppingCartService: ShoppingCartService
+    private orderReceivedService: OrderReceivedService
   ) { }
 
   ngOnInit() {
-    this.orderedData = [
-      {
-        "orderUniqueId": 693602,
-        "quantity": 1,
-        "numberOfPendingEmi": 3,
-        "product": {
-          "productName": "Augmont 10GM Raja Rani Embossed Coin",
-          "sku": "AU999G010RREC",
-          "weight": 10
-        },
-        "paymentType": {
-          "paymentType": "3"
-        },
-        "customerDetails": {
-          "customerUniqueId": "KBBZR957",
-          "firstName": "Pratik ",
-          "lastName": "Bhayade",
-          "mobileNumber": "7276808761",
-          "email": "pratik@nimapinfotech.com"
-        },
-        "orderdetails": [
-          {
-            "finalOrderPrice": 48826.46,
-            "initialPayment": 9765.29,
-            "forwordCost": 48826.46
-          }
-        ]
-      },
-      {
-        "orderUniqueId": 107477,
-        "quantity": 1,
-        "numberOfPendingEmi": 3,
-        "product": {
-          "productName": "Augmont 20Gm Silver Coin (999 Purity)",
-          "sku": "AU999SC20G",
-          "weight": 20
-        },
-        "paymentType": {
-          "paymentType": "3"
-        },
-        "customerDetails": {
-          "customerUniqueId": "KBBZR957",
-          "firstName": "Pratik ",
-          "lastName": "Bhayade",
-          "mobileNumber": "7276808761",
-          "email": "pratik@nimapinfotech.com"
-        },
-        "orderdetails": [
-          {
-            "finalOrderPrice": 97446.04,
-            "initialPayment": 19489.21,
-            "forwordCost": 97446.04
-          }
-        ]
-      },
-      {
-        "orderUniqueId": 185927,
-        "quantity": 1,
-        "numberOfPendingEmi": 0,
-        "product": {
-          "productName": "Augmont Classic Om Pendant",
-          "sku": "AP916G001CO",
-          "weight": 1
-        },
-        "paymentType": {
-          "paymentType": "spot"
-        },
-        "customerDetails": {
-          "customerUniqueId": "KBBZR957",
-          "firstName": "Pratik ",
-          "lastName": "Bhayade",
-          "mobileNumber": "7276808761",
-          "email": "pratik@nimapinfotech.com"
-        },
-        "orderdetails": [
-          {
-            "finalOrderPrice": 4954.39,
-            "initialPayment": null,
-            "forwordCost": null
-          }
-        ]
-      }
-    ]
+    this.blockId = this.route.snapshot.params.id;
+    this.getOrderDetailByBlockid();
+  }
+
+  getOrderDetailByBlockid() {
+    this.orderReceivedService.getOrderDetailByBlockid(this.blockId).subscribe(res => this.orderDetail = res);
   }
 
   printProforma() {

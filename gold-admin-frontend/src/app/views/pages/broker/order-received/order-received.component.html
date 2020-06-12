@@ -1,7 +1,7 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body class="checkout-height">
-        <div class="font-weight-500">
+        <div class="font-weight-500" *ngIf="orderDetail">
             <div class="row py-2">
                 <div class="col-12">
                     <h3>Your Order Request has been received</h3>
@@ -11,11 +11,23 @@
             <div class="row">
                 <div class="col-4">
                     <div class="text-muted pb-2">Billing Address: </div>
-                    <div>Near Post Office Roha - Raigad Roha Ashtami Maharashtra 402109</div>
+                    <div>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.landMark}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.address}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.city?.name}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.state?.name}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.postalCode}}.</span>
+                    </div>
                 </div>
                 <div class="col-4 offset-2">
                     <div class="text-muted pb-2">Shipping Address: </div>
-                    <div>Near Post Office Roha - Raigad Roha Ashtami Maharashtra 402109</div>
+                    <div>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.landMark}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.address}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.city?.name}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.state?.name}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.postalCode}}.</span>
+                    </div>
                 </div>
             </div>
             <div class="row pt-4">
@@ -30,7 +42,7 @@
                             </tr>
                         </thead>
                         <tbody class="text-muted">
-                            <tr *ngFor="let prod of orderedData">
+                            <tr *ngFor="let prod of orderDetail?.orderData">
                                 <td class="w-50">
                                     {{prod?.product?.productName ? prod?.product?.productName : '-'}}
                                 </td>
@@ -38,7 +50,7 @@
                                     {{prod?.product?.sku ? prod?.product?.sku : '-'}}
                                 </td>
                                 <td>
-                                    {{prod?.orderdetails[0]?.finalOrderPrice ? prod?.orderdetails[0]?.finalOrderPrice : '-'}}
+                                    {{prod?.orderdetails[0]?.finalOrderPrice ? '₹ ' + (prod?.orderdetails[0]?.finalOrderPrice | number) : '-'}}
                                 </td>
                                 <td>
                                     {{prod?.quantity ? prod?.quantity : '-'}}
@@ -50,7 +62,7 @@
             </div>
             <div class="row text-center py-4">
                 <div class="col-12">
-                    <h3>Invoice Price - Rs. 21,000</h3>
+                    <h3>Invoice Price - ₹ {{orderDetail?.invoiceAmount | number}}</h3>
                 </div>
             </div>
             <div class="row text-center py-2">

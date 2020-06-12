@@ -258,7 +258,9 @@ export class PageConfig {
 				page: { title: "Customer Details", desc: "" },
 			},
 			"order-received": {
-				page: { title: "Order Received", desc: "" },
+				id: {
+					page: { title: "Order Received", desc: "" },
+				}
 			},
 		}
 	};

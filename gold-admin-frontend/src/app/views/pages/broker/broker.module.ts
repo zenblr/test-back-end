@@ -90,7 +90,7 @@ const routes: Routes = [
         component: ProductComponent,
       },
       {
-        path: "order-received",
+        path: "order-received/:id",
         component: OrderReceivedComponent,
       },
     ],
