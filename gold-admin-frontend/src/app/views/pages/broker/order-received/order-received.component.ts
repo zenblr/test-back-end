@@ -12,14 +12,7 @@ import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/m
 })
 export class OrderReceivedComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  viewLoading = false;
-  checkoutCustomerForm: FormGroup;
-  checkoutData: any;
-  stateList = [];
-  cityList = [];
-  showformFlag = false;
-  showPlaceOrder = false;
-  existingCustomerData: any;
+  orderedData = [];
 
   constructor(
     private fb: FormBuilder,
@@ -32,5 +25,96 @@ export class OrderReceivedComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.orderedData = [
+      {
+        "orderUniqueId": 693602,
+        "quantity": 1,
+        "numberOfPendingEmi": 3,
+        "product": {
+          "productName": "Augmont 10GM Raja Rani Embossed Coin",
+          "sku": "AU999G010RREC",
+          "weight": 10
+        },
+        "paymentType": {
+          "paymentType": "3"
+        },
+        "customerDetails": {
+          "customerUniqueId": "KBBZR957",
+          "firstName": "Pratik ",
+          "lastName": "Bhayade",
+          "mobileNumber": "7276808761",
+          "email": "pratik@nimapinfotech.com"
+        },
+        "orderdetails": [
+          {
+            "finalOrderPrice": 48826.46,
+            "initialPayment": 9765.29,
+            "forwordCost": 48826.46
+          }
+        ]
+      },
+      {
+        "orderUniqueId": 107477,
+        "quantity": 1,
+        "numberOfPendingEmi": 3,
+        "product": {
+          "productName": "Augmont 20Gm Silver Coin (999 Purity)",
+          "sku": "AU999SC20G",
+          "weight": 20
+        },
+        "paymentType": {
+          "paymentType": "3"
+        },
+        "customerDetails": {
+          "customerUniqueId": "KBBZR957",
+          "firstName": "Pratik ",
+          "lastName": "Bhayade",
+          "mobileNumber": "7276808761",
+          "email": "pratik@nimapinfotech.com"
+        },
+        "orderdetails": [
+          {
+            "finalOrderPrice": 97446.04,
+            "initialPayment": 19489.21,
+            "forwordCost": 97446.04
+          }
+        ]
+      },
+      {
+        "orderUniqueId": 185927,
+        "quantity": 1,
+        "numberOfPendingEmi": 0,
+        "product": {
+          "productName": "Augmont Classic Om Pendant",
+          "sku": "AP916G001CO",
+          "weight": 1
+        },
+        "paymentType": {
+          "paymentType": "spot"
+        },
+        "customerDetails": {
+          "customerUniqueId": "KBBZR957",
+          "firstName": "Pratik ",
+          "lastName": "Bhayade",
+          "mobileNumber": "7276808761",
+          "email": "pratik@nimapinfotech.com"
+        },
+        "orderdetails": [
+          {
+            "finalOrderPrice": 4954.39,
+            "initialPayment": null,
+            "forwordCost": null
+          }
+        ]
+      }
+    ]
+  }
+
+  printProforma() {
+
+  }
+
+  printContract() {
+
   }
 }

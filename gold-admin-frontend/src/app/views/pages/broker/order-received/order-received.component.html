@@ -1,6 +1,67 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body class="checkout-height">
-        
+        <div class="font-weight-500">
+            <div class="row py-2">
+                <div class="col-12">
+                    <h3>Your Order Request has been received</h3>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-4">
+                    <div class="text-muted pb-2">Billing Address: </div>
+                    <div>Near Post Office Roha - Raigad Roha Ashtami Maharashtra 402109</div>
+                </div>
+                <div class="col-4 offset-2">
+                    <div class="text-muted pb-2">Shipping Address: </div>
+                    <div>Near Post Office Roha - Raigad Roha Ashtami Maharashtra 402109</div>
+                </div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="w-50">Product Name</th>
+                                <th scope="col">SKU Code</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-muted">
+                            <tr *ngFor="let prod of orderedData">
+                                <td class="w-50">
+                                    {{prod?.product?.productName ? prod?.product?.productName : '-'}}
+                                </td>
+                                <td>
+                                    {{prod?.product?.sku ? prod?.product?.sku : '-'}}
+                                </td>
+                                <td>
+                                    {{prod?.orderdetails[0]?.finalOrderPrice ? prod?.orderdetails[0]?.finalOrderPrice : '-'}}
+                                </td>
+                                <td>
+                                    {{prod?.quantity ? prod?.quantity : '-'}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row text-center py-4">
+                <div class="col-12">
+                    <h3>Invoice Price - Rs. 21,000</h3>
+                </div>
+            </div>
+            <div class="row text-center py-2">
+                <div class="col-12">
+                    <kt-button [value]="'Print Proforma'" [type]="'button'" (click)="printProforma()">
+                    </kt-button>
+                    <span class="px-4"></span>
+                    <kt-button [value]="'Print Contract'" [type]="'button'" (click)="printContract()">
+                    </kt-button>
+                </div>
+            </div>
+        </div>
     </kt-portlet-body>
 </kt-portlet>
