@@ -1,0 +1,110 @@
+<div class="kt-portlet">
+
+    <kt-modal-header [title]='"Change Unsecured Scheme"' (action)="action($event)"></kt-modal-header>
+    <div class="kt-form">
+        <form [formGroup]="unsecuredSchemeForm">
+            <div class="kt-portlet__body">
+                <div class="row kt-margin-b-15 kt-margin-t-15">
+                    <div class="col-6 form-label">
+                        <label class="mandatory"> Select Unsecured Scheme</label>
+                    </div>
+                    <div class="col-6">
+                        <select class="form-control" formControlName="unsecuredSchemeName"
+                            [class.isError]="controls.unsecuredSchemeName.touched && controls.unsecuredSchemeName.invalid">
+                            <option selected disabled value="">Select Status</option>
+                            <option *ngFor="let scheme of unsecuredSchemes" [value]="scheme.id">
+                                {{scheme.name | titlecase}}
+                            </option>
+                        </select>
+                        <mat-error
+                            *ngIf="controls.unsecuredSchemeName.errors?.required && controls.unsecuredSchemeName.touched">
+                            Required field</mat-error>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-b-15">
+                    <div class="col-6 form-label">
+                        <label class="mandatory"> Unsecured Loan Amount</label>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" formControlName="unsecuredSchemeAmount" placeholder="5000"
+                            [class.isError]="controls.unsecuredSchemeAmount.touched && controls.unsecuredSchemeAmount.invalid">
+
+                        <mat-error
+                            *ngIf="controls.unsecuredSchemeAmount.errors?.required && controls.unsecuredSchemeAmount.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-b-15">
+                    <div class="col-6 form-label">
+                        <label class="mandatory"> Interest Rate (%)</label>
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" formControlName="unsecuredSchemeInterest" placeholder="2%"
+                            [class.isError]="controls.unsecuredSchemeInterest.touched && controls.unsecuredSchemeInterest.invalid">
+
+                        <mat-error
+                            *ngIf="controls.unsecuredSchemeInterest.errors?.required && controls.unsecuredSchemeInterest.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+
+                <div class="row mx-auto">
+                    <kt-button [value]="'Calculate'" [type]="'button'" (click)="calculate()"></kt-button>
+                </div>
+            </div>
+        </form>
+
+        <div class="col">
+            <div class="table-div" id="print">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class=" text-left">EMI Due Date</th>
+                            <th scope="col" class=" text-center">
+                                Interest Amount
+                            </th>
+                        </tr>
+                    </thead>
+                    <!-- <tbody>
+                        <tr *ngFor="let data of dateOfPayment;index as idx; last as last">
+                            <td *ngIf="approved">{{data.date | date :'mediumDate'}}</td>
+                            <td *ngIf="!approved">{{data.paymentType | uppercase}}&nbsp;{{idx+1}}</td>
+
+                            <td class="text-center currency">
+                                {{data.securedInterestAmount | indianCurrencyFormat}}
+                            </td>
+
+                            <td class="text-center currency" *ngIf="isUnSecuredSchemeApplied">
+                                {{data.unSecuredInterestAmount | indianCurrencyFormat}}
+                            </td>
+
+                            <td class="text-center currency" *ngIf="isUnSecuredSchemeApplied">
+                                {{data.totalAmt.toFixed(2) | indianCurrencyFormat}}
+                            </td>
+
+                        </tr>
+                    </tbody> -->
+
+                    <!-- <tfoot>
+                                <tr>
+                                    <td><strong>Total Amount</strong></td>
+                                    <td class="text-center">
+                                        <strong><span class="currency">
+                                                {{totalinterestAmount.toFixed(2) | indianCurrencyFormat}}</span>
+                                        </strong>
+                                    </td>
+
+                            </tfoot> -->
+                </table>
+            </div>
+        </div>
+
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="'Add'"></kt-modal-footer>
+        </div>
+    </div>
+</div>

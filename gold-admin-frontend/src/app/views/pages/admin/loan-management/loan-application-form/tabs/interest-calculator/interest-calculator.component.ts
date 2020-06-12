@@ -4,6 +4,8 @@ import { PartnerService } from '../../../../../../../core/user-management/partne
 import { DatePipe } from '@angular/common';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { catchError, map } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
+import { UnSecuredSchemeComponent } from '../../un-secured-scheme/un-secured-scheme.component';
 
 @Component({
   selector: 'kt-interest-calculator',
@@ -15,9 +17,12 @@ export class InterestCalculatorComponent implements OnInit {
 
   @Input() details;
   @Input() disable
-  currentDate = new Date()
+  currentDate = new Date();
+  isUnSecuredSchemeApplied: boolean = false;
   colJoin: any;
-  intrestAmount: any = 0;
+  securedInterestAmount: any = 0;
+  unSecuredInterestAmount: any = 0;
+  totalinterestAmount: any = 0;
   dateOfPayment: any[] = []
   partnerList: any[] = [];
   schemesList: any = [];
@@ -37,14 +42,16 @@ export class InterestCalculatorComponent implements OnInit {
 
   @ViewChild('print', { static: false }) print: ElementRef
   editedDate: any;
-
+  paymentType: string;
+  approved: boolean = false
   constructor(
     private fb: FormBuilder,
     private partnerService: PartnerService,
     public eleRef: ElementRef,
     public datePipe: DatePipe,
     public ref: ChangeDetectorRef,
-    public loanFormService: LoanApplicationFormService
+    public loanFormService: LoanApplicationFormService,
+    private dialog: MatDialog
   ) {
     this.initForm();
   }
@@ -62,13 +69,19 @@ export class InterestCalculatorComponent implements OnInit {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         if (changes.details.currentValue && changes.details.currentValue.finalLoan) {
+
           this.finalInterestForm.patchValue(changes.details.currentValue.finalLoan)
+
+          if (changes.details.currentValue.loanStatusForBM == "approved")
+            this.approved = true;
+
           // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(changes.details.currentValue.finalLoan.loanStartDate))
           this.editedDate = changes.details.currentValue.finalLoan.loanStartDate;
           this.currentDate = new Date(changes.details.currentValue.finalLoan.loanStartDate)
           this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
           this.finalInterestForm.controls.schemeId.patchValue(changes.details.currentValue.finalLoan.schemeId)
           this.finalInterestForm.controls.interestRate.patchValue(changes.details.currentValue.finalLoan.interestRate)
+
           this.returnScheme()
           this.scheme()
           this.calcInterestAmount()
@@ -89,6 +102,7 @@ export class InterestCalculatorComponent implements OnInit {
     this.partnerService.getPartnerBySchemeAmount(Math.floor(this.totalAmt)).subscribe(res => {
       this.partnerList = res['data'];
       if (this.controls.schemeId.value) {
+        this.amountValidation()
         this.returnScheme()
         this.scheme()
         this.calcInterestAmount()
@@ -128,7 +142,6 @@ export class InterestCalculatorComponent implements OnInit {
       totalFinalInterestAmt: [],
       interestRate: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]], processingCharge: [],
       processingChargeFixed: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      processingChargePercent: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]]
     })
 
     // this.interestFormEmit.emit(this.finalInterestForm)
@@ -155,27 +168,52 @@ export class InterestCalculatorComponent implements OnInit {
     this.selectedScheme = this.schemesList.filter(scheme => {
       return scheme.id == this.controls.schemeId.value
     })
+    this.selectedScheme[0].maximumPercentageAllowed = 67 // remove
+    this.amountValidation()
     this.getIntrest()
   }
 
   amountValidation() {
-    this.scheme()
     this.dateOfPayment = []
-    if (this.controls.partnerId.valid) {
+    const scheme = this.selectedScheme[0]
+
+    if (this.controls.partnerId.valid && this.controls.finalLoanAmount.value && this.selectedScheme.length) {
       let amt = this.controls.finalLoanAmount.value;
-      if (amt <= this.selectedScheme[0].schemeAmountEnd && amt >= this.selectedScheme[0].schemeAmountStart) {
+
+      if (amt <= scheme.schemeAmountEnd && amt >= scheme.schemeAmountStart) {
         this.controls.finalLoanAmount.setErrors(null)
       } else {
         this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
         return
       }
-      if (amt > this.totalAmt) {
-        this.controls.finalLoanAmount.setErrors({ eligibleAmt: true })
+
+      let maximumAmtAllowed = (scheme.maximumPercentageAllowed / 100)
+      console.log(this.totalAmt * maximumAmtAllowed)
+      if (amt > this.totalAmt * maximumAmtAllowed) {
+        scheme.unSecured = true // remove
+        if (scheme.unSecured) {
+          this.isUnSecuredSchemeApplied = true
+        } else {
+          this.controls.finalLoanAmount.setErrors({ maximunAllowed: true })
+
+          return
+        }
+      } else {
+        this.isUnSecuredSchemeApplied = false
+        this.controls.finalLoanAmount.setErrors(null)
+      }
+
+      let rbiLoanPercent = (scheme.rbiLoanPercent / 100)
+      if (amt > this.totalAmt * rbiLoanPercent) {
+        this.controls.finalLoanAmount.setErrors({ rbi: true })
       } else {
         this.controls.finalLoanAmount.setErrors(null)
 
         return
       }
+
+
+
     } else {
       this.controls.schemeId.markAsTouched()
       this.controls.partnerId.markAsTouched()
@@ -190,21 +228,21 @@ export class InterestCalculatorComponent implements OnInit {
         case "30":
           if (this.schemesList.length > 0)
             this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateThirtyDaysMonthly)
-
-          this.colJoin = null
+          this.paymentType = "Month"
+          this.colJoin = 1
 
           break;
         case "90":
           if (this.schemesList.length > 0)
             this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateNinetyDaysMonthly)
-
+          this.paymentType = "Quater"
           this.colJoin = 3
 
           break;
         case "180":
           if (this.schemesList.length > 0)
             this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateOneHundredEightyDaysMonthly)
-
+          this.paymentType = "Half Yearly"
           this.colJoin = 6
 
           break;
@@ -217,34 +255,86 @@ export class InterestCalculatorComponent implements OnInit {
       this.finalInterestForm.markAllAsTouched();
       return;
     }
-    let intrest = (this.controls.finalLoanAmount.value *
-      (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
-      / 360
-    this.intrestAmount = intrest.toFixed(2);
-    this.controls.totalFinalInterestAmt.patchValue(this.intrestAmount)
+
+    if (this.isUnSecuredSchemeApplied) {
+
+      let maximumAmtAllowed = (this.totalAmt * (this.selectedScheme[0].maximumPercentageAllowed / 100))
+
+      this.securedInterestAmount = (maximumAmtAllowed *
+        (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
+        / 360
+
+      let amt = Number(this.controls.finalLoanAmount.value) - maximumAmtAllowed
+
+      this.unSecuredInterestAmount = (amt *
+        (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
+        / 360
+
+      this.unSecuredInterestAmount = this.unSecuredInterestAmount.toFixed(2)
+
+    } else {
+
+      this.securedInterestAmount = (this.controls.finalLoanAmount.value *
+        (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
+        / 360
+
+    }
+
+    this.securedInterestAmount = this.securedInterestAmount.toFixed(2);
+    this.controls.totalFinalInterestAmt.patchValue(this.securedInterestAmount)
     this.CheckProcessingCharge()
     this.generateTable()
   }
 
   CheckProcessingCharge() {
-    let processingChargePercent = (this.controls.finalLoanAmount.value * this.controls.processingChargePercent.value) / 100
-    if (processingChargePercent > parseFloat(this.controls.processingChargeFixed.value)) {
-      this.controls.processingCharge.patchValue(processingChargePercent)
-    } else {
-      this.controls.processingCharge.patchValue(this.controls.processingChargeFixed.value)
-    }
+    // let processingChargePercent = (this.controls.finalLoanAmount.value * this.controls.processingChargePercent.value) / 100
+    // if (processingChargePercent > parseFloat(this.controls.processingChargeFixed.value)) {
+    //   this.controls.processingCharge.patchValue(processingChargePercent)
+    // } else {
+    //   this.controls.processingCharge.patchValue(this.controls.processingChargeFixed.value)
+    // }
   }
 
   generateTable() {
     this.dateOfPayment = []
     let length = Number(this.controls.tenure.value)
     for (let index = 0; index < length; index++) {
+
       let startDate = this.controls.loanStartDate.value;
-      let date = new Date(startDate)
-      var data = { key: new Date(date.setDate(date.getDate() + (30 * (index + 1)))) }
-      this.dateOfPayment.push(data)
+      if (typeof startDate == "string")
+        startDate = new Date(startDate)
+      let date = new Date()
+
+      var data = {
+        date: new Date(date.setDate(startDate.getDate() + (30 * (index + 1)))),
+        paymentType: this.paymentType,
+        securedInterestAmount: this.securedInterestAmount,
+        unSecuredInterestAmount: this.unSecuredInterestAmount,
+        totalAmt: Number(this.securedInterestAmount) + Number(this.unSecuredInterestAmount)
+      }
+
+      if ((index + 1) % this.colJoin == 0) {
+        this.dateOfPayment.push(data)
+      }
+      else if (index + 1 == length) {
+        data.securedInterestAmount = ((this.securedInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
+        data.unSecuredInterestAmount = ((this.unSecuredInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
+        this.dateOfPayment.push(data)
+      }
     }
+    this.calculateTotainterestAmount()
     console.log(this.dateOfPayment)
+  }
+
+  calculateTotainterestAmount() {
+    this.totalinterestAmount = 0;
+    this.dateOfPayment.forEach(amt => {
+
+      this.totalinterestAmount += Number(amt.securedInterestAmount)
+
+      if (amt.unSecuredInterestAmount)
+        this.totalinterestAmount += Number(amt.unSecuredInterestAmount)
+    })
   }
 
   get controls() {
@@ -269,6 +359,13 @@ export class InterestCalculatorComponent implements OnInit {
         throw err;
 
       })).subscribe()
+  }
+
+  changeUnSecuredScheme() {
+    console.log('modal')
+    const dialogRef = this.dialog.open(UnSecuredSchemeComponent, {
+      width: '500px'
+    });
   }
 
 }

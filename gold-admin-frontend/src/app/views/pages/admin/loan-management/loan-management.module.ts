@@ -28,6 +28,7 @@ import { DeleteEntityDialogComponent } from '../../../partials/content/crud';
 import { LoanDetailsComponent } from './loan-details/loan-details.component';
 import { DisburseDialogComponent } from './disburse-dialog/disburse-dialog.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { UnSecuredSchemeComponent } from './loan-application-form/un-secured-scheme/un-secured-scheme.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -83,6 +84,7 @@ const rout: Routes = [
     InterestCalculatorComponent,
     LoanDetailsComponent,
     DisburseDialogComponent,
+    UnSecuredSchemeComponent,
   ],
   imports: [
     CommonModule,
@@ -110,7 +112,8 @@ const rout: Routes = [
   entryComponents: [
     AssignPacketsComponent,
     DisburseDialogComponent,
-    DeleteEntityDialogComponent
+    DeleteEntityDialogComponent,
+    UnSecuredSchemeComponent
   ]
 })
 export class LoanManagementModule { }
