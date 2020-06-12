@@ -79,6 +79,12 @@ export class AddBrokerComponent implements OnInit {
       panCard: [''],
       imgName: [''],
       userId: [],
+      ifscCode: [],
+      bankName: [],
+      bankBranch: [],
+      accountHolderName: [],
+      accountNumber: [],
+      passbookStatementChequeId: []
     })
 
     // this.controls.imgName.disable()
