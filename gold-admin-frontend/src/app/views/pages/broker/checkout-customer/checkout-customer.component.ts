@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/merchant-broker';
@@ -14,12 +14,14 @@ export class CheckoutCustomerComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   viewLoading = false;
   checkoutCustomerForm: FormGroup;
+  otpForm: FormGroup;
   checkoutData: any;
   stateList = [];
   cityList = [];
   showformFlag = false;
   showPlaceOrder = false;
   existingCustomerData: any;
+  finalOrderData: any;
 
   constructor(
     private fb: FormBuilder,
@@ -47,6 +49,10 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: ['', Validators.required],
       stateName: ['', Validators.required],
       cityName: ['', Validators.required],
+    });
+
+    this.otpForm = this.fb.group({
+      otp: ['', Validators.required],
     });
 
     this.checkoutCustomerForm.valueChanges.subscribe((val) => {
@@ -98,14 +104,19 @@ export class CheckoutCustomerComponent implements OnInit {
             landMark: res.customerDetails.customeraddress[0].landMark,
             postalCode: res.customerDetails.pinCode,
             countryName: [''],
-            stateName: res.customerDetails.customeraddress[0].stateId,
-            cityName: res.customerDetails.customeraddress[0].cityId,
+            stateName: res.customerDetails.customeraddress[0].state,
+            cityName: res.customerDetails.customeraddress[0].city,
             blockId: [''],
           });
           this.getCities();
           this.showPlaceOrder = true
         }
-      });
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
     }
   }
 
@@ -140,8 +151,31 @@ export class CheckoutCustomerComponent implements OnInit {
     }
     console.log(generateOTPData)
     this.checkoutCustomerService.generateOTP(generateOTPData).subscribe(res => {
-      if(res) {
+      if (res) {
         console.log(res);
+        this.finalOrderData = res;
+      }
+    });
+  }
+
+  placeOrder() {
+    if (this.otpForm.invalid) {
+      this.otpForm.markAllAsTouched();
+      return;
+    }
+    const placeOrderData = {
+      customerId: this.finalOrderData.customerId,
+      otp: this.otpForm.controls.otp.value,
+      blockId: this.finalOrderData.blockId,
+      transactionId: 'TRA' + Date.now(),
+      totalInitialAmount: this.checkoutData.nowPayableAmount
+    }
+    this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
+      if (res) {
+        console.log(res);
+        const msg = 'Order successfully has been placed.';
+        this.toastr.successToastr(msg);
+        this.router.navigate(['/broker/order-received']);
       }
     });
   }

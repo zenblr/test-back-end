@@ -257,6 +257,9 @@ export class PageConfig {
 			"checkout-customer": {
 				page: { title: "Customer Details", desc: "" },
 			},
+			"order-received": {
+				page: { title: "Order Received", desc: "" },
+			},
 		}
 	};
 

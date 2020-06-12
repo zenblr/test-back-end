@@ -106,8 +106,8 @@
                                 <label class="font-weight-500 text-color">Email ID</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" aria-label="Email ID" placeholder="Email ID" ktAlphabets
-                                    class="form-control" formControlName="email"
+                                <input type="text" aria-label="Email ID" placeholder="Email ID" class="form-control"
+                                    formControlName="email"
                                     [class.isError]="controls.email.touched && controls.email.invalid">
                                 <mat-error *ngIf="controls.email.errors?.email && controls.email.touched">
                                     Invalid Email ID
@@ -206,58 +206,66 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="showPlaceOrder">
-                <hr>
-                <div class="row py-3">
-                    <div class="col-6 pr-4">
-                        <div class="row">
-                            <div class="col-8 font-weight-500">
-                                <div class="row">
-                                    <div class="col-6 text-muted pb-2">Invoice Price:</div>
-                                    <div class="col-6">₹{{checkoutData?.invoiceAmount | number}}</div>
-                                    <div class="col-6 text-muted pb-2">Now Payable Amount:</div>
-                                    <div class="col-6">₹{{checkoutData?.nowPayableAmount | number}}</div>
-                                    <ng-container
-                                        *ngIf="checkoutData?.emiScheme?.length ||checkoutData?.emiAmount?.length">
-                                        <div class="col-6 text-muted pb-2">Initial Payment:</div>
-                                        <div class="col-6">₹{{checkoutData?.initialPayment | number}}</div>
-                                        <div class="col-6 text-muted pb-2">EMI Scheme:</div>
-                                        <div class="col-6" *ngIf="checkoutData?.emiScheme?.length">
-                                            <span class="content"
-                                                *ngFor="let scheme of checkoutData?.emiScheme; let isLast=last">
-                                                {{scheme}}{{isLast ? '' : ', '}}
-                                            </span>
-                                            <span>Months</span>
-                                        </div>
-                                        <div class="col-6 text-muted">EMI Amount:</div>
-                                        <div class="col-6" *ngIf="checkoutData?.emiAmount?.length">
-                                            <span class="content"
-                                                *ngFor="let amt of checkoutData?.emiAmount; let isLast=last">
-                                                {{amt | number}}{{isLast ? '' : ', '}}
-                                            </span>
-                                        </div>
-                                        <div class="col-6 offset-6">(Per Month)</div>
-                                    </ng-container>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <kt-button [value]="'Generate OTP'" [type]="'normalButton'" (click)="generateOTP()">
-                                </kt-button>
+        </form>
+        <div *ngIf="showPlaceOrder">
+            <hr>
+            <div class="row py-3">
+                <div class="col-6 pr-4">
+                    <div class="row">
+                        <div class="col-8 font-weight-500">
+                            <div class="row">
+                                <div class="col-6 text-muted pb-2">Invoice Price:</div>
+                                <div class="col-6">₹{{checkoutData?.invoiceAmount | number}}</div>
+                                <div class="col-6 text-muted pb-2">Now Payable Amount:</div>
+                                <div class="col-6">₹{{checkoutData?.nowPayableAmount | number}}</div>
+                                <ng-container *ngIf="checkoutData?.emiScheme?.length ||checkoutData?.emiAmount?.length">
+                                    <div class="col-6 text-muted pb-2">Initial Payment:</div>
+                                    <div class="col-6">₹{{checkoutData?.initialPayment | number}}</div>
+                                    <div class="col-6 text-muted pb-2">EMI Scheme:</div>
+                                    <div class="col-6" *ngIf="checkoutData?.emiScheme?.length">
+                                        <span class="content"
+                                            *ngFor="let scheme of checkoutData?.emiScheme; let isLast=last">
+                                            {{scheme}}{{isLast ? '' : ', '}}
+                                        </span>
+                                        <span>Months</span>
+                                    </div>
+                                    <div class="col-6 text-muted">EMI Amount:</div>
+                                    <div class="col-6" *ngIf="checkoutData?.emiAmount?.length">
+                                        <span class="content"
+                                            *ngFor="let amt of checkoutData?.emiAmount; let isLast=last">
+                                            {{amt | number}}{{isLast ? '' : ', '}}
+                                        </span>
+                                    </div>
+                                    <div class="col-6 offset-6">(Per Month)</div>
+                                </ng-container>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-6 pl-4">
-                        <div class="row">
-                            <div class="col-6">
-                                <input type="text" formControlName="postalCode" class="form-control">
-                            </div>
-                            <div class="col-6">
-                                <kt-button [value]="'Place Order'" [type]="'submit'"></kt-button>
-                            </div>
+                        <div class="col-4">
+                            <kt-button [value]="'Generate OTP'" [type]="'normalButton'" (click)="generateOTP()">
+                            </kt-button>
                         </div>
                     </div>
                 </div>
+                <div class="col-6 pl-4">
+                    <form [formGroup]="otpForm">
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="text" aria-label="Enter OTP" placeholder="Enter OTP" class="form-control"
+                                    formControlName="otp"
+                                    [class.isError]="otpForm.controls.otp.touched && otpForm.controls.otp.invalid"
+                                    numbersOnly>
+                                <mat-error
+                                    *ngIf=" otpForm.controls.otp.errors?.required && otpForm.controls.otp.touched">
+                                    Field is required
+                                </mat-error>
+                            </div>
+                            <div class="col-6">
+                                <kt-button [value]="'Place Order'" [type]="'submit'" (click)="placeOrder()"></kt-button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </kt-portlet-body>
 </kt-portlet>

@@ -47,6 +47,7 @@ import { CheckoutCustomerComponent } from './checkout-customer/checkout-customer
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import { ShopComponent } from './shop/shop.component';
 import { ProductComponent } from './shop/product/product.component';
+import { OrderReceivedComponent } from './order-received/order-received.component';
 
 const routes: Routes = [
   {
@@ -88,6 +89,10 @@ const routes: Routes = [
         path: "shop/product/:id",
         component: ProductComponent,
       },
+      {
+        path: "order-received",
+        component: OrderReceivedComponent,
+      },
     ],
   },
 ];
@@ -104,7 +109,8 @@ const routes: Routes = [
     CheckoutCustomerComponent,
     ShoppingCartComponent,
     ShopComponent,
-    ProductComponent
+    ProductComponent,
+    OrderReceivedComponent
   ],
   imports: [
     CommonModule,
