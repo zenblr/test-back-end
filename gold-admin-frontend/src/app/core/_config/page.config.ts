@@ -241,7 +241,12 @@ export class PageConfig {
 				page: { title: "Orders", desc: "" },
 			},
 			"shop": {
-				page: { title: "Gold Jewellery", desc: "" },
+				page: { title: "Shop", desc: "" },
+				'product': {
+					id: {
+						page: { title: "Product Details", desc: "" },
+					},
+				},
 			},
 			"cart": {
 				page: { title: "Shopping Cart", desc: "" },

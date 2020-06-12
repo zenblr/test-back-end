@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { ShopService } from '../../../../core/merchant-broker/shop/shop.service';
 import { PageEvent, MatPaginator } from '@angular/material';
 import { DataTableService } from "../../../../core/shared/services/data-table.service";
@@ -9,7 +9,8 @@ import { Router } from "@angular/router";
 @Component({
   selector: 'kt-shop',
   templateUrl: './shop.component.html',
-  styleUrls: ['./shop.component.scss']
+  styleUrls: ['./shop.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ShopComponent implements OnInit {
   toogler: string;
