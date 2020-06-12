@@ -82,7 +82,7 @@
                                         <div>
                                             <input #qtyInput type="text" class="form-control productQtyInput"
                                                 name="cart-item-{{item.cartId}}" [(ngModel)]="item.quantity"
-                                                numbersOnly>
+                                                (input)="updateInput($event)" numbersOnly>
                                         </div>
                                         <div class="pt-3">
                                             <kt-button [myClass]="'updateQty'" [value]="'Update'" [type]="'button'"

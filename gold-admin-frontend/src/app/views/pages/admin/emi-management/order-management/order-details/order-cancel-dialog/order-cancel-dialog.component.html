@@ -197,7 +197,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15">
+                    <div class="row kt-margin-t-15" *ngIf="cancelData?.nextStatus">
                         <div class="col-5 align-self-center">
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Status</label>
                         </div>
@@ -205,8 +205,8 @@
                             <select class="form-control" formControlName="status"
                                 [class.isError]="controls.status.touched && controls.status.invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select Status</option>
-                                <option [value]="cancelData?.nextStatus.statusId">
-                                    {{cancelData?.nextStatus.statusName | titlecase}}</option>
+                                <option [value]="cancelData.nextStatus.statusId">
+                                    {{cancelData.nextStatus.statusName | titlecase}}</option>
                             </select>
                             <div *ngIf="controls.status.touched && controls.status.invalid">
                                 <mat-error *ngIf="controls.status.touched && controls.status.errors?.required">

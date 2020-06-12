@@ -23,18 +23,8 @@ import { SharedService } from "../../../../../core/shared/services/shared.servic
 })
 export class CustomersComponent implements OnInit {
   dataSource: CustomersDatasource;
-  displayedColumns = [
-    "storeId",
-    "userId",
-    "mobileNumber",
-    "orderId",
-    "emiDate",
-    "emiAmount",
-    "emiPaidDate",
-    "status",
-    "emiFrom",
-    // "action",
-  ];
+  displayedColumns = ['customerId', 'customerEmail',
+    'fullName', 'mobileNumber', 'state', 'city', 'pincode', 'panCardNumber'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("sort1", { static: true }) sort: MatSort;
   // Filter fields
@@ -49,7 +39,6 @@ export class CustomersComponent implements OnInit {
     from: 1,
     to: 25,
     search: "",
-    orderemistatus: "",
   };
   filteredDataList = {};
 

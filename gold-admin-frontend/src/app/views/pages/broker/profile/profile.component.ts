@@ -4,6 +4,7 @@ import { ProfileService } from '../../../../core/merchant-broker';
 import { ProfileChangePassComponent } from './profile-change-pass/profile-change-pass.component';
 import { ProfileChangePanComponent } from './profile-change-pan/profile-change-pan.component';
 import { MatDialog } from "@angular/material";
+import { ImagePreviewDialogComponent } from '../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 
 @Component({
   selector: 'kt-profile',
@@ -15,7 +16,7 @@ export class ProfileComponent implements OnInit {
 
   profileDetails: any;
   constructor(private profileService: ProfileService,
-    public dialog: MatDialog, ) { }
+    public dialog: MatDialog,) { }
 
   ngOnInit() {
     this.profileService.getProfileDetails().subscribe(res => this.profileDetails = res);
@@ -41,6 +42,18 @@ export class ProfileComponent implements OnInit {
         this.ngOnInit()
       }
     });
+  }
+
+  open(image) {
+    let images = [];
+    images.push(image)
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: images,
+        index: 0
+      },
+      width: "auto"
+    })
   }
 
 }

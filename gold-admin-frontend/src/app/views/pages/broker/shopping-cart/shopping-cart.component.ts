@@ -86,4 +86,9 @@ export class ShoppingCartComponent implements OnInit {
   redirectToShop() {
     this.router.navigate(['/broker/shop']);
   }
+
+  updateInput(event) {
+    console.log(event);
+
+  }
 }
