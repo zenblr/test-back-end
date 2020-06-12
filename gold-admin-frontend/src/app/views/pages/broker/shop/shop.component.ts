@@ -77,7 +77,8 @@ export class ShopComponent implements OnInit {
 
   selectedSubCategory(id) {
     this.productsData.subCategoryId = id;
-    this.getProducts();
+    this.paginator.pageIndex = 0;
+    this.getServerData();
   }
 
   getServerData(event?: PageEvent) {

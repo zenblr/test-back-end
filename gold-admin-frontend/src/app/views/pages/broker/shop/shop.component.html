@@ -77,6 +77,10 @@
                     </div>
                 </div>
             </div>
+            <div class="card-container mt-4 text-color font-weight-bold" [ngStyle]="{'min-height':'60vh'}"
+                *ngIf="products?.length == 0">
+                <p class="text-center">No Records Found</p>
+            </div>
 
             <mat-paginator class="paginator--centered" [length]="count" [pageSize]="25" [pageSizeOptions]="[5, 10, 25]"
                 (page)="getServerData($event)">
