@@ -16,7 +16,7 @@ export class ProductComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private shopService: ShopService,
-
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -39,6 +39,7 @@ export class ProductComponent implements OnInit {
 
       this.shopService.addToCart(params).subscribe(res => {
         this.toastr.successToastr("Added to Cart");
+        this.router.navigate(['/broker/cart']);
       })
 
     } else {
