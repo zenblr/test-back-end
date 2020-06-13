@@ -79,22 +79,21 @@
                     <div class="col-4 align-self-center">
                         <label class="font-weight-500 text-color">Pan Card</label>
                     </div>
-                    <div class="col-2">
-                        pancard.jpg
+                    <div class="col-3">
+                        {{profileDetails?.brokerData?.broker?.panCardDetails?.originalname ? profileDetails?.brokerData?.broker?.panCardDetails?.originalname :'-'}}
                     </div>
                     <div class="col">
-                        <a class="text-body" *ngIf="profileDetails?.brokerData.broker.panCard;else elseBlock"
-                            [href]="profileDetails.brokerData.broker.panCard" download target="_blank">
-                            <span class="text-primary">View Attachment</span>
-                        </a>
+                        <span class="text-primary kt-pointer"
+                            *ngIf="profileDetails?.brokerData.broker.panCardDetails.url;else elseBlock"
+                            (click)="open(profileDetails.brokerData.broker.panCardDetails.url)">View Attachment</span>
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
                         <label class="font-weight-500 text-color">Password</label>
                     </div>
-                    <div class="col-2">
-                        *********
+                    <div class="col-3">
+                        ***********
                     </div>
                     <div class="col">
                         <span class="text-primary kt-pointer" (click)="changePassword()">Change Password</span>
@@ -112,5 +111,5 @@
 </kt-portlet>
 
 <ng-template #elseBlock>
-    -
+
 </ng-template>

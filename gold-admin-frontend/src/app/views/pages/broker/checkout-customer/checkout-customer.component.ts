@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/merchant-broker';
@@ -12,14 +12,16 @@ import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/m
 })
 export class CheckoutCustomerComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-  viewLoading = false;
   checkoutCustomerForm: FormGroup;
-  checkoutData: any;
+  otpForm: FormGroup;
   stateList = [];
   cityList = [];
   showformFlag = false;
   showPlaceOrder = false;
+  checkoutData: any;
   existingCustomerData: any;
+  finalOrderData: any;
+  isMandatory = true;
 
   constructor(
     private fb: FormBuilder,
@@ -49,8 +51,8 @@ export class CheckoutCustomerComponent implements OnInit {
       cityName: ['', Validators.required],
     });
 
-    this.checkoutCustomerForm.valueChanges.subscribe((val) => {
-      console.log(val);
+    this.otpForm = this.fb.group({
+      otp: ['', Validators.required],
     });
   }
 
@@ -67,7 +69,12 @@ export class CheckoutCustomerComponent implements OnInit {
         this.checkoutData = res
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
       }
-    });
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 
   checkCustomerType(type) {
@@ -80,33 +87,42 @@ export class CheckoutCustomerComponent implements OnInit {
       this.showPlaceOrder = false
     }
     this.existingCustomerData = null;
+    this.finalOrderData = null;
     this.checkoutCustomerForm.reset();
+    this.otpForm.reset();
   }
 
   getExistingCustomer() {
-    if (this.controls.mobileNumber.value) {
-      console.log(this.controls.mobileNumber.value)
-      this.checkoutCustomerService.getExistingCustomer(this.controls.mobileNumber.value).subscribe(res => {
-        if (res) {
-          this.existingCustomerData = res;
-          this.checkoutCustomerForm.patchValue({
-            firstName: res.customerDetails.firstName,
-            lastName: res.customerDetails.lastName,
-            mobileNumber: res.customerDetails.mobileNumber,
-            email: res.customerDetails.email,
-            address: res.customerDetails.customeraddress[0].address,
-            landMark: res.customerDetails.customeraddress[0].landMark,
-            postalCode: res.customerDetails.pinCode,
-            countryName: [''],
-            stateName: res.customerDetails.customeraddress[0].stateId,
-            cityName: res.customerDetails.customeraddress[0].cityId,
-            blockId: [''],
-          });
-          this.getCities();
-          this.showPlaceOrder = true
-        }
-      });
+    if (this.controls.mobileNumber.invalid) {
+      this.checkoutCustomerForm.markAllAsTouched();
+      return;
     }
+    this.checkoutCustomerService.getExistingCustomer(this.controls.mobileNumber.value).subscribe(res => {
+      if (res) {
+        this.existingCustomerData = res;
+        this.checkoutCustomerForm.patchValue({
+          firstName: res.customerDetails.firstName,
+          lastName: res.customerDetails.lastName,
+          mobileNumber: res.customerDetails.mobileNumber,
+          email: res.customerDetails.email,
+          address: res.customerDetails.customeraddress[0].address,
+          landMark: res.customerDetails.customeraddress[0].landMark,
+          postalCode: res.customerDetails.pinCode,
+          countryName: [''],
+          stateName: res.customerDetails.customeraddress[0].state,
+          cityName: res.customerDetails.customeraddress[0].city,
+          blockId: [''],
+        });
+        this.getCities();
+        this.showPlaceOrder = true;
+        this.finalOrderData = null;
+      }
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 
   getStates() {
@@ -140,9 +156,44 @@ export class CheckoutCustomerComponent implements OnInit {
     }
     console.log(generateOTPData)
     this.checkoutCustomerService.generateOTP(generateOTPData).subscribe(res => {
-      if(res) {
+      if (res) {
         console.log(res);
+        this.finalOrderData = res;
+        const msg = 'OTP successfully has been sent.';
+        this.toastr.successToastr(msg);
       }
-    });
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
+  }
+
+  placeOrder() {
+    if (this.otpForm.invalid) {
+      this.otpForm.markAllAsTouched();
+      return;
+    }
+    const placeOrderData = {
+      customerId: this.finalOrderData.customerId,
+      otp: this.otpForm.controls.otp.value,
+      blockId: this.finalOrderData.blockId,
+      transactionId: 'TRA' + Date.now(),
+      totalInitialAmount: this.checkoutData.nowPayableAmount
+    }
+    this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
+      if (res) {
+        console.log(res);
+        const msg = 'Order successfully has been placed.';
+        this.toastr.successToastr(msg);
+        this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
+      }
+    },
+      error => {
+        console.log(error.error.message);
+        const msg = error.error.message;
+        this.toastr.errorToastr(msg);
+      });
   }
 }

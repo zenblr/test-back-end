@@ -28,6 +28,7 @@ export class ShopComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("searchInput", { static: true }) searchInput: ElementRef;
   private unsubscribeSearch$ = new Subject();
+  subCategoryCount: any;
 
   constructor(
     private shopService: ShopService,
@@ -55,7 +56,16 @@ export class ShopComponent implements OnInit {
   getSubCategory() {
     this.shopService.getSubCategory().subscribe(res => {
       this.subCategory = res;
+      this.totalCount()
     })
+  }
+
+  totalCount() {
+    let count = 0;
+    for (let i = 0; i < this.subCategory.length; i++) {
+      count = count + Number(this.subCategory[i].count);
+    }
+    this.subCategoryCount = count;
   }
 
   getProducts() {
@@ -67,7 +77,8 @@ export class ShopComponent implements OnInit {
 
   selectedSubCategory(id) {
     this.productsData.subCategoryId = id;
-    this.getProducts();
+    this.paginator.pageIndex = 0;
+    this.getServerData();
   }
 
   getServerData(event?: PageEvent) {
