@@ -141,7 +141,7 @@ input[type="number"] {
 }
 
 .kt-pointer {
-	cursor: pointer;
+	cursor: pointer !important;
 }
 
 .mat-button-toggle-label-content {
@@ -605,6 +605,7 @@ mat-header-row {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
+	display: inline-block;
 }
 // .align-right{
 // 	justify-content: flex-end !important;

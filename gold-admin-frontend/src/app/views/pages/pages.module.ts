@@ -8,12 +8,10 @@ import { PartialsModule } from '../partials/partials.module';
 // Pages
 import { CoreModule } from '../../core/core.module';
 import { UserManagementModule } from './admin/user-management/user-management.module';
-import { MyPageComponent } from './my-page/my-page.component';
 import { EMIManagementModule } from './admin/emi-management/emi-management.module';
-//	import { LogisticPartnerComponent } from './emi-maangement/logistic-partner/logistic-partner.component';
 
 @NgModule({
-	declarations: [MyPageComponent,],
+	declarations: [],
 	exports: [],
 	imports: [
 		CommonModule,

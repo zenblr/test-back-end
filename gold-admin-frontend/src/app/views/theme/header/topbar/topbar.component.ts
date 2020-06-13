@@ -44,6 +44,7 @@ import { PurposeService } from '../../../../core/masters/purposes/service/purpos
 import { ReasonsService } from '../../../../core/masters/reasons/services/reasons.service';
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
+import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
 
 @Component({
 	selector: "kt-topbar",
@@ -126,8 +127,8 @@ export class TopbarComponent implements OnInit {
 		private reasonsService: ReasonsService,
 		private appliedKycService: AppliedKycService,
 		private appliedLoan: AppliedLoanService,
-		private leadSourceService: LeadSourceService
-
+		private leadSourceService: LeadSourceService,
+		private shopService: ShopService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -167,7 +168,7 @@ export class TopbarComponent implements OnInit {
 			this.sharedService.totalCount$
 				.pipe(takeUntil(this.destroy$))
 				.subscribe((ct) => {
-					if (ct) {
+					if (ct != null) {
 						Promise.resolve(null).then(() => {
 							this.totalRecords = ct;
 						});
@@ -522,6 +523,16 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/order-details/cancel-order/')) {
 			this.showBackButton = true;
 		}
+		if (this.path == "shop") {
+			this.showInput = true;
+			this.toogle = true;
+		}
+		if (location.href.includes('/shop/product/')) {
+			this.showBackButton = true;
+		}
+		if (this.path == "checkout-customer-address") {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
@@ -633,7 +644,12 @@ export class TopbarComponent implements OnInit {
 	}
 
 	check(val) {
-		this.customerManagementServiceCustomer.toggle.next(val);
+		if (this.path == "customer-list") {
+			this.customerManagementServiceCustomer.toggle.next(val);
+		}
+		if (this.path == "shop") {
+			this.shopService.toggle.next(val);
+		}
 	}
 
 	selectedValue(value: string) {

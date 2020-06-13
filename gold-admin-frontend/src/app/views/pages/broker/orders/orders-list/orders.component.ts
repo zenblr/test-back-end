@@ -31,6 +31,8 @@ export class OrdersComponent implements OnInit {
     "emiAmount",
     "emiPaidDate",
     "quantity",
+    "emiStart",
+    "emiEnd",
     "status",
     // "action",
   ];

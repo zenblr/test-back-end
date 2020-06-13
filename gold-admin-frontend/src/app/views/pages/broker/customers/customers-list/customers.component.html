@@ -7,86 +7,57 @@
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
-                <ng-container matColumnDef="storeId">
-                    <mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.order?.orderBy?.broker?.store?.storeUniqueId ? element?.order?.orderBy?.broker?.store?.storeUniqueId : '-'}}
+                        {{element?.customerUniqueId ? element?.customerUniqueId : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="userId">
-                    <mat-header-cell *matHeaderCellDef>User ID</mat-header-cell>
+                <ng-container matColumnDef="customerEmail">
+                    <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.order?.customerDetails?.customerUniqueId ? element?.order?.customerDetails?.customerUniqueId : '-'}}
+                        {{element?.email ? element?.email : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="fullName">
+                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.firstName || element?.lastName  ? element?.firstName + ' ' +element?.lastName : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.order?.customerDetails?.mobileNumber ? element?.order?.customerDetails?.mobileNumber : '-'}}
+                        {{element?.mobileNumber ? element?.mobileNumber : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="orderId">
-                    <mat-header-cell *matHeaderCellDef>Order ID</mat-header-cell>
+                <ng-container matColumnDef="state">
+                    <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.order?.orderUniqueId ? element?.order?.orderUniqueId : '-'}}</mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="emiDate">
-                    <mat-header-cell *matHeaderCellDef>EMI Date</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <div class="d-block">
-                            <div>{{element?.dueDate ? (element?.dueDate | date:'MMM d, y') : '-'}}</div>
-                            <div>{{element?.dueDate ? (element?.dueDate | date:'h:mm a') : ''}}</div>
-                        </div>
+                        {{element?.state?.name ? element?.state?.name : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="emiAmount">
-                    <mat-header-cell *matHeaderCellDef class="align-right">EMI Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.emiAmount ? element?.emiAmount : '-'}}</mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="emiPaidDate">
-                    <mat-header-cell *matHeaderCellDef>EMI Paid Date</mat-header-cell>
+                <ng-container matColumnDef="city">
+                    <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <div class="d-block">
-                            <div>
-                                {{element?.paymentRecievedDate ? (element?.paymentRecievedDate | date:'MMM d, y') : '-'}}
-                            </div>
-                            <div>{{element?.paymentRecievedDate ? (element?.paymentRecievedDate | date:'h:mm a') : ''}}
-                            </div>
-                        </div>
+                        {{element?.city?.name ? element?.city?.name : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="status">
-                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element?.orderemistatus?.id == 1 || element?.orderemistatus?.id == 5,
-                    'text-red' : element?.orderemistatus?.id == 9 || element?.orderemistatus?.id == 13,
-                    'text-green' : element?.orderemistatus?.id != 1 || element?.orderemistatus?.id != 5 ||
-                    element?.orderemistatus?.id != 9 || element?.orderemistatus?.id != 13}">
-                        {{element?.orderemistatus?.statusName ? (element?.orderemistatus?.statusName | titlecase) : '-'}}
+                <ng-container matColumnDef="pincode">
+                    <mat-header-cell *matHeaderCellDef>Pincode</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.pinCode ? element?.pinCode : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="emiFrom">
-                    <mat-header-cell *matHeaderCellDef>Emi From</mat-header-cell>
+                <ng-container matColumnDef="panCardNumber">
+                    <mat-header-cell *matHeaderCellDef>Pan Card No.</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.receivedBy?.firstName ? element?.receivedBy?.firstName : '-'}}</mat-cell>
-                </ng-container>
-                <!-- <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element.order.orderId)"
-                                class="kt-pointer"> View</div>
-                            <div *ngxPermissionsOnly="['EMIDetailsView']"
-                                [ngStyle]="{'display':element.orderemistatus.id == 4 ? 'block':'none'}"
-                                (click)="printCancellationReceipt(element)" class="kt-pointer">&nbsp;| Print EMI Receipt
-                            </div>
-                        </div>
+                        {{element?.panCardNumber ? element?.panCardNumber : '-'}}
                     </mat-cell>
-                </ng-container> -->
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 140%;"></mat-header-row>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 150%;"></mat-header-row>
-
-                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 150%;"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 140%;"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

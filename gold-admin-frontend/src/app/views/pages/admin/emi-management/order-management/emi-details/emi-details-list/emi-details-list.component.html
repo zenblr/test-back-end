@@ -53,9 +53,16 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="userId">
-                    <mat-header-cell *matHeaderCellDef>User ID</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element?.order?.customerDetails?.customerUniqueId ? element?.order?.customerDetails?.customerUniqueId : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.order?.customerDetails?.firstName ? element?.order?.customerDetails?.firstName : '-'}}&nbsp;
+                        {{element?.order?.customerDetails?.lastName}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
@@ -113,7 +120,7 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element.order.orderId)"
+                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element.id)"
                                 class="kt-pointer"> View</div>
                             <div *ngxPermissionsOnly="['EMIDetailsView']"
                                 [ngStyle]="{'display':element.orderemistatus.id == 4 ? 'block':'none'}"
@@ -123,9 +130,9 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 150%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 180%;"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 150%;"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 180%;"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

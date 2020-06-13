@@ -43,7 +43,11 @@ import { OrdersComponent } from './orders/orders-list/orders.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileChangePassComponent } from './profile/profile-change-pass/profile-change-pass.component';
 import { ProfileChangePanComponent } from './profile/profile-change-pan/profile-change-pan.component';
-import { CheckoutCustomerComponent} from './checkout-customer/checkout-customer.component';
+import { CheckoutCustomerComponent } from './checkout-customer/checkout-customer.component';
+import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
+import { ShopComponent } from './shop/shop.component';
+import { ProductComponent } from './shop/product/product.component';
+import { OrderReceivedComponent } from './order-received/order-received.component';
 
 const routes: Routes = [
   {
@@ -70,8 +74,24 @@ const routes: Routes = [
         component: ProfileComponent,
       },
       {
-        path: "checkout-customer",
+        path: "checkout-customer-address",
         component: CheckoutCustomerComponent,
+      },
+      {
+        path: "cart",
+        component: ShoppingCartComponent,
+      },
+      {
+        path: "shop",
+        component: ShopComponent,
+      },
+      {
+        path: "shop/product/:id",
+        component: ProductComponent,
+      },
+      {
+        path: "order-received/:id",
+        component: OrderReceivedComponent,
       },
     ],
   },
@@ -86,7 +106,11 @@ const routes: Routes = [
     ProfileComponent,
     ProfileChangePassComponent,
     ProfileChangePanComponent,
-    CheckoutCustomerComponent
+    CheckoutCustomerComponent,
+    ShoppingCartComponent,
+    ShopComponent,
+    ProductComponent,
+    OrderReceivedComponent
   ],
   imports: [
     CommonModule,
@@ -109,18 +133,6 @@ const routes: Routes = [
       useClass: InterceptService,
       multi: true,
     },
-    {
-      provide: MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue: {
-        hasBackdrop: true,
-        panelClass: "kt-mat-dialog-container__wrapper",
-        height: "auto",
-        width: "600px",
-      },
-    },
-    { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatDialogRef, useValue: {} },
-
     HttpUtilsService,
     TypesUtilsService,
     LayoutUtilsService,
