@@ -48,6 +48,7 @@ import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import { ShopComponent } from './shop/shop.component';
 import { ProductComponent } from './shop/product/product.component';
 import { OrderReceivedComponent } from './order-received/order-received.component';
+import { ViewPayComponent } from './orders/view-pay/view-pay.component';
 
 const routes: Routes = [
   {
@@ -68,6 +69,10 @@ const routes: Routes = [
       {
         path: "orders",
         component: OrdersComponent,
+      },
+      {
+        path: "orders/view-pay/:id",
+        component: ViewPayComponent,
       },
       {
         path: "profile",
@@ -110,7 +115,8 @@ const routes: Routes = [
     ShoppingCartComponent,
     ShopComponent,
     ProductComponent,
-    OrderReceivedComponent
+    OrderReceivedComponent,
+    ViewPayComponent
   ],
   imports: [
     CommonModule,
