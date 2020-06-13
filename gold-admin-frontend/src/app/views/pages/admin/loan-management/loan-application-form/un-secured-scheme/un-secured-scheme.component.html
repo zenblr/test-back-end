@@ -1,10 +1,10 @@
 <div class="kt-portlet">
 
     <kt-modal-header [title]='"Change Unsecured Scheme"' (action)="action($event)"></kt-modal-header>
-    <div class="kt-form">
-        <form [formGroup]="unsecuredSchemeForm">
-            <div class="kt-portlet__body">
-                <div class="row kt-margin-b-15 kt-margin-t-15">
+    <div class="kt-portlet__body">
+        <div class="kt-form">
+            <form [formGroup]="unsecuredSchemeForm">
+                <div class="row kt-margin-b-10">
                     <div class="col-6 form-label">
                         <label class="mandatory"> Select Unsecured Scheme</label>
                     </div>
@@ -22,7 +22,7 @@
                     </div>
                 </div>
 
-                <div class="row kt-margin-b-15">
+                <div class="row kt-margin-b-10">
                     <div class="col-6 form-label">
                         <label class="mandatory"> Unsecured Loan Amount</label>
                     </div>
@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="row kt-margin-b-15">
+                <div class="row kt-margin-b-10">
                     <div class="col-6 form-label">
                         <label class="mandatory"> Interest Rate (%)</label>
                     </div>
@@ -52,25 +52,27 @@
                     </div>
                 </div>
 
-                <div class="row mx-auto">
-                    <kt-button [value]="'Calculate'" [type]="'button'" (click)="calculate()"></kt-button>
+                <div class="row">
+                    <div class="col text-center kt-margin-b-10">
+                        <kt-button [value]="'Calculate'" [type]="'button'" (click)="calculate()"></kt-button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
 
-        <div class="col">
+        <div class="col" *ngIf="details.calculation.length">
             <div class="table-div" id="print">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" class=" text-left">EMI Due Date</th>
-                            <th scope="col" class=" text-center">
+                            <th scope="col" class=" text-left" style="width:50%">EMI Due Date</th>
+                            <th scope="col" class=" text-center" style="width:50%">
                                 Interest Amount
                             </th>
                         </tr>
                     </thead>
-                    <!-- <tbody>
-                        <tr *ngFor="let data of dateOfPayment;index as idx; last as last">
+                    <tbody>
+                        <tr *ngFor="let data of details.calculation;index as idx; last as last">
                             <td *ngIf="approved">{{data.date | date :'mediumDate'}}</td>
                             <td *ngIf="!approved">{{data.paymentType | uppercase}}&nbsp;{{idx+1}}</td>
 
@@ -78,16 +80,8 @@
                                 {{data.securedInterestAmount | indianCurrencyFormat}}
                             </td>
 
-                            <td class="text-center currency" *ngIf="isUnSecuredSchemeApplied">
-                                {{data.unSecuredInterestAmount | indianCurrencyFormat}}
-                            </td>
-
-                            <td class="text-center currency" *ngIf="isUnSecuredSchemeApplied">
-                                {{data.totalAmt.toFixed(2) | indianCurrencyFormat}}
-                            </td>
-
                         </tr>
-                    </tbody> -->
+                    </tbody>
 
                     <!-- <tfoot>
                                 <tr>
@@ -102,9 +96,10 @@
                 </table>
             </div>
         </div>
-
+    </div>
+    <kt-portlet-footer>
         <div class="p-3">
             <kt-modal-footer (action)="action($event)" [value]="'Add'"></kt-modal-footer>
         </div>
-    </div>
+    </kt-portlet-footer>
 </div>

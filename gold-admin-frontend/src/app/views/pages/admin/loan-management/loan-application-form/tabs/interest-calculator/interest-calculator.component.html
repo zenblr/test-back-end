@@ -90,8 +90,11 @@
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.maximunAllowed">
                                 <small>Enter Amount less then Maximum % Allowed</small>
                             </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible">
+                                <small>Enter  Amount less Eligible Amount</small>
+                            </mat-error>
                         </div>
-
+                        
 
                     </div>
                 </div>
