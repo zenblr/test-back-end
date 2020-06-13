@@ -113,4 +113,15 @@ export class OrdersComponent implements OnInit {
     this.ordersData.search = this.searchValue;
     this.dataSource.loadOrdersDetails(this.ordersData);
   }
+
+  /**
+ * On Destroy
+ */
+  ngOnDestroy() {
+    this.subscriptions.forEach(el => el.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
+  }
 }

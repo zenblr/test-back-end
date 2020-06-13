@@ -192,7 +192,8 @@
             <div class="col-12">
                 <div class="row">
                     <div class="col-3 text-muted">Passbook Copy :</div>
-                    <div class="col image-text-truncate">{{refundData?.passbookCopy?.originalname}}&nbsp;&nbsp;<a
+                    <div class="col image-text-truncate" *ngIf="refundData?.passbookCopy?.originalname">
+                        {{refundData?.passbookCopy?.originalname}}&nbsp;&nbsp;<a
                             href="{{refundData?.passbookCopy?.url}}" target="_blank"
                             download="{{refundData?.passbookCopy?.originalname}}"><img
                                 src="assets/media/icons/_download.svg" alt="" width="16px"></a></div>
@@ -204,9 +205,9 @@
             <div class="col-12">
                 <div class="row">
                     <div class="col-3 text-muted">Check Copy :</div>
-                    <div class="col image-text-truncate">{{refundData?.checkCopy?.originalname}}&nbsp;&nbsp;<a
-                            href="{{refundData?.checkCopy?.url}}" target="_blank"
-                            download="{{refundData?.passbookCopy?.originalname}}"><img
+                    <div class="col image-text-truncate" *ngIf="refundData?.checkCopy?.originalname">
+                        {{refundData?.checkCopy?.originalname}}&nbsp;&nbsp;<a href="{{refundData?.checkCopy?.url}}"
+                            target="_blank" download="{{refundData?.passbookCopy?.originalname}}"><img
                                 src="assets/media/icons/_download.svg" alt="" width="16px"></a></div>
                 </div>
             </div>
