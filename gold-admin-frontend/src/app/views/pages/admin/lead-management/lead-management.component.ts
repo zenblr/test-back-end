@@ -18,7 +18,7 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kyc', 'actions', 'view'];
+  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
