@@ -23,26 +23,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6" *ngIf="controls.paymentType.value != 'cash'">
-                    <div class="row">
-                        <div class="col-4 offset-2 form-label">
-                            <label class="text-color mandatory kt-padding-l-10">IFSC</label>
-                        </div>
-                        <div class="col-6">
-                            <input type="text" class="form-control text-uppercase" placeholder="IFSC0000XXX" formControlName="ifscCode"
-                                maxlength="11" [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
-                            <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
-                                Required field
-                            </mat-error>
-                            <mat-error *ngIf="controls.ifscCode.errors?.pattern && controls.ifscCode.touched">
-                                Invalid Input
-                            </mat-error>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <span *ngIf="controls.paymentType.value != 'cash'">
                 <div class="row kt-margin-t-15">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4 form-label">
+                                <label class="text-color mandatory kt-padding-l-10">IFSC</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control text-uppercase" placeholder="IFSC0000XXX"
+                                    formControlName="ifscCode" maxlength="11"
+                                    [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
+                                <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error *ngIf="controls.ifscCode.errors?.pattern && controls.ifscCode.touched">
+                                    Invalid Input
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4 form-label">
@@ -62,9 +64,11 @@
 
                         </div>
                     </div>
+                </div>
+                <div class="row kt-margin-t-15">
                     <div class="col-6">
                         <div class="row">
-                            <div class="col-4 offset-2 form-label">
+                            <div class="col-4 form-label">
                                 <label class="text-color mandatory kt-padding-l-10">Bank Branch Name</label> </div>
                             <div class="col-6">
                                 <input type="text" class="form-control" placeholder="Andheri"
@@ -77,8 +81,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row kt-margin-t-15">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4 form-label">
@@ -95,9 +97,12 @@
                             </div>
                         </div>
                     </div>
+
+                </div>
+                <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
-                            <div class="col-4 offset-2 form-label">
+                            <div class="col-4 form-label">
                                 <label class="text-color mandatory kt-padding-l-10">Account No.</label>
                             </div>
                             <div class="col-6">
@@ -111,8 +116,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4 form-label">
@@ -134,32 +137,33 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row kt-margin-b-20">
-                    <div class="col">
-                        <div class="row offset-2">
-                            <div *ngIf="!controls.passbookProof.value.length" class="img-container"
-                                style="width: 250px;">
-                                <img *ngIf="!controls.passbookProof.value.length"
-                                    src="../../../../../../../assets/media/icons/image-placeholder.png"
-                                    class="placeholder-image">
-                            </div>
-
-                            <div *ngIf="controls.passbookProof.value.length" class="">
-                                <div class="d-inline-block img-container kt-margin-r-15"
-                                    *ngFor="let proof of controls.passbookProof.value; index as idx;">
-                                    <img class="fetched-image" [src]="proof">
-                                    <img src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                        class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                        <div class="row kt-margin-b-20">
+                            <div class="col kt-padding-l-20 offset-4">
+                                <div class="row">
+                                    <div *ngIf="!controls.passbookProof.value.length" class="img-container"
+                                        style="width: 250px;">
+                                        <img *ngIf="!controls.passbookProof.value.length"
+                                            src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                            class="placeholder-image">
+                                    </div>
+        
+                                    <div *ngIf="controls.passbookProof.value.length" class="">
+                                        <div class="d-inline-block img-container kt-margin-r-15"
+                                            *ngFor="let proof of controls.passbookProof.value; index as idx;">
+                                            <img class="fetched-image" [src]="proof">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=" kt-margin-t-20 text-color font-11">
+                                    (Please verify the detail before moving forward)
                                 </div>
                             </div>
                         </div>
-                        <div class=" offset-2 kt-margin-t-20 text-color font-11">
-                            (Please verify the detail before moving forward)
-                        </div>
                     </div>
                 </div>
+               
             </span>
 
 
@@ -169,63 +173,4 @@
         </div>
     </div>
 </form>
-<!-- <div class="row justify-content-center" [formGroup]="bankForm">
-    <div class="col-6">
-        <div class="row ">
-            <div class="col-4 form-label">
-                <label class="text-color kt-padding-l-10">Name</label>
-            </div>
-            <div class="col-6">
-                <input type="text" class="form-control" placeholder="vishwas shetty" formControlName="bankName">
-            </div>
-        </div>
-        <div class="row kt-margin-t-15">
-            <div class="col-4 form-label">
-                <label class="text-color kt-padding-l-10">Account No.</label>
-            </div>
-            <div class="col-6">
-                <input type="text" class="form-control" placeholder="10234501203203" formControlName="accountNumber">
-            </div>
-        </div>
-        <div class="row kt-margin-t-15">
-            <div class="col-4 form-label">
-                <label class="text-color kt-padding-l-10">IFSC Code</label>
-            </div>
-            <div class="col-6">
-                <input type="text" class="form-control" placeholder="IFSC0000XXX" formControlName="ifscCode">
-            </div>
-        </div>
-
-        
-    </div>
-    <div class="col-6">
-        <div class="row ">
-            <div class="col-4 form-label">
-                <label class="text-color kt-padding-l-10">Bank Branch</label>
-            </div>
-            <div class="col-6">
-                <input type="text" class="form-control" placeholder="Andheri" formControlName="bankBranchName">
-            </div>
-        </div>
-        <div class="row kt-margin-t-15">
-            <div class="col-4 form-label">
-                <label class="text-color kt-padding-l-10">A/C holder</label>
-            </div>
-            <div class="col-6">
-                <input type="text" class="form-control" placeholder="John Doe" formControlName="accountHolderName">
-            </div>
-        </div>
-        <div class="row kt-margin-t-15">
-            <div class="col-4 form-label">
-                <label class="text-color kt-padding-l-10">A/C Type</label>
-            </div>
-            <div class="col-6">
-
-                <input type="text" class="form-control" placeholder="10234501203203" formControlName="accountType">
-            </div>
-        </div>
-
-
-
-    </div>
-</div> -->
+   

@@ -656,3 +656,13 @@ mat-header-row {
 .cursor-not-allowed{
 	cursor: not-allowed !important;
 }
+
+// mat-slide-toggle
+.mat-slide-toggle.mat-checked {
+	.mat-slide-toggle-thumb {
+		background-color: #454d67 !important;
+	}
+	.mat-slide-toggle-bar {
+		background-color: rgba(69, 77, 103, 0.54) !important;
+	}
+}

@@ -17,7 +17,7 @@ import { LeadSourceAddComponent } from '../lead-source-add/lead-source-add.compo
 export class LeadSourceListComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['lead', 'source', 'action'];
+  displayedColumns = ['lead', 'action'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();

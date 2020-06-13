@@ -20,6 +20,7 @@ export class AddSchemeComponent implements OnInit {
   fillingForm: FormGroup;
   partnerData: [] = []
   file: any;
+  schemeType = [{ value: 'secured', name: 'secured' }, { value: 'unsecured', name: 'unsecured' }]
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddSchemeComponent>,
@@ -61,7 +62,12 @@ export class AddSchemeComponent implements OnInit {
       // interestRateThirtyDaysAnnually: [''],
       // interestRateNinetyDaysAnnually: [''],
       // interestRateOneHundredEightyDaysAnnually: [''],
-      partnerId: ['', Validators.required]
+      partnerId: ['', Validators.required],
+      schemeType: [],
+      processingChargeFixed: [],
+      processingChargePercent: [],
+      maxPercentAllowed: [],
+      penalInterest: []
     })
 
     this.csvForm = this.fb.group({
@@ -72,12 +78,12 @@ export class AddSchemeComponent implements OnInit {
     // this.csvForm.get('csv').re()
   }
 
-  fromAndToValidation(){
+  fromAndToValidation() {
     const controls = this.fillingForm.controls
-    if(controls.schemeAmountEnd.valid && controls.schemeAmountStart.valid){
-      if(controls.schemeAmountStart.value > controls.schemeAmountEnd.value){
-        controls.schemeAmountStart.setErrors({amt:true})
-      }else{
+    if (controls.schemeAmountEnd.valid && controls.schemeAmountStart.valid) {
+      if (controls.schemeAmountStart.value > controls.schemeAmountEnd.value) {
+        controls.schemeAmountStart.setErrors({ amt: true })
+      } else {
         controls.schemeAmountStart.setErrors(null)
 
       }

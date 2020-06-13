@@ -155,7 +155,7 @@ export class OrderDetailsService {
 
 	getLabel(params): Observable<any> {
 		return this.http
-			.post("http://173.249.49.7:9120/api/order/label", params, {
+			.post(API_ENDPOINT + `api/order/label`, params, {
 				responseType: "arraybuffer",
 			})
 			.pipe(
@@ -179,7 +179,7 @@ export class OrderDetailsService {
 
 	getMainfest(params): Observable<any> {
 		return this.http
-			.post("http://173.249.49.7:9120/api/mainfest", params, {
+			.post(API_ENDPOINT + `api/mainfest`, params, {
 				responseType: "arraybuffer",
 			})
 			.pipe(
@@ -204,7 +204,7 @@ export class OrderDetailsService {
 	getDeliMainfest(params): Observable<any> {
 		return this.http
 			.post(
-				"http://173.249.49.7:9120/api/mainfest/deli-mainfest",
+				API_ENDPOINT + `api/mainfest/deli-mainfest`,
 				params,
 				{
 					responseType: "arraybuffer",
@@ -232,7 +232,7 @@ export class OrderDetailsService {
 	getUninsuredMainfest(params): Observable<any> {
 		return this.http
 			.post(
-				"http://173.249.49.7:9120/api/mainfest/uninsured-mainfest",
+				API_ENDPOINT + `api/mainfest/uninsured-mainfest`,
 				params,
 				{
 					responseType: "arraybuffer",

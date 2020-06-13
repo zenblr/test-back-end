@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
 import { SharedService } from '../../../../..//core/shared/services/shared.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-loan-scheme',
@@ -15,13 +16,17 @@ import { SharedService } from '../../../../..//core/shared/services/shared.servi
 })
 export class LoanSchemeComponent implements OnInit {
 
-  schemes:any[] =[];
+  schemes: any[] = [];
   loader: boolean = true;
   viewLoading: boolean = false;
   destroy$ = new Subject();
   filter$ = new Subject();
   @ViewChild('matTab', { static: false }) matTab: ElementRef
-  noResults: any[]=[];
+  noResults: any[] = [];
+  queryParamsData = {
+    isActive: null
+  };
+  filteredDataList = {};
 
   constructor(
     private loanSettingService: LoanSettingsService,
@@ -30,7 +35,8 @@ export class LoanSchemeComponent implements OnInit {
     private rout: ActivatedRoute,
     private parnterServices: PartnerService,
     private eleref: ElementRef,
-    private sharedService:SharedService
+    private sharedService: SharedService,
+    private toastr: ToastrService
   ) {
     this.loanSettingService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
@@ -39,12 +45,12 @@ export class LoanSchemeComponent implements OnInit {
     })
 
     this.loanSettingService.applyFilter$
-    .pipe(takeUntil(this.filter$))
-    .subscribe((res) => {
-      if (Object.entries(res).length) {
-        this.applyFilter(res);
-      }
-    });
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
   }
 
   ngOnInit() {
@@ -61,13 +67,13 @@ export class LoanSchemeComponent implements OnInit {
     this.parnterServices.getSchemesByParnter(id).pipe(
       map(
         res => {
-          if(Object.keys(res.data).length > 0){
+          if (Object.keys(res.data).length > 0) {
             this.schemes.push(res.data)
-          
-          console.log(this.schemes)
-          this.ref.detectChanges();
-          this.eleref.nativeElement.querySelector('.mat-tab-labels').style.display = 'none';
-          this.eleref.nativeElement.querySelector('.mat-tab-header').style.display = 'none';
+
+            console.log(this.schemes)
+            this.ref.detectChanges();
+            this.eleref.nativeElement.querySelector('.mat-tab-labels').style.display = 'none';
+            this.eleref.nativeElement.querySelector('.mat-tab-header').style.display = 'none';
           }
         }),
       catchError(err => {
@@ -79,25 +85,28 @@ export class LoanSchemeComponent implements OnInit {
 
   getScheme() {
     this.viewLoading = true;
-    this.loanSettingService.getScheme().pipe(
+    this.loanSettingService.getScheme(this.queryParamsData).pipe(
       map(res => {
         this.schemes = res.data;
         this.ref.detectChanges();
       }),
       catchError(err => {
-        
+
         this.ref.detectChanges();
         throw (err)
       })).subscribe()
   }
 
-  applyFilter(data){
-    console.log(data)
+  applyFilter(data) {
+    console.log(data);
+    this.queryParamsData.isActive = data.data.scheme;
+    this.getScheme();
+    this.filteredDataList = data.list;
   }
 
   addScheme() {
     const dialogRef = this.dialog.open(AddSchemeComponent, {
-      width: '600px'
+      width: '650px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -112,7 +121,25 @@ export class LoanSchemeComponent implements OnInit {
     this.filter$.next();
     this.filter$.complete();
     this.loanSettingService.applyFilter.next({});
-		this.sharedService.closeFilter.next(true);
+    this.sharedService.closeFilter.next(true);
+  }
+
+  changeDefault(event, index, item) {
+    console.log(event, index)
+  }
+
+  changeStatus(event, index, item) {
+    // console.log(event, index, item);
+    let params = { isActive: event }
+    // this.loanSettingService.changeSchemeStatus(item.id, params)
+    //   .pipe(map(() => {
+    //     if (event) {
+    //       this.toastr.success('Scheme Activated');
+    //     } else {
+    //       this.toastr.success('Scheme Deactivated');
+    //     }
+    //     this.getScheme()
+    //   })).subscribe()
   }
 
 }

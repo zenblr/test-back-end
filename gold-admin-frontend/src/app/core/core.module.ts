@@ -27,6 +27,7 @@ import { DecimalOnlyDirective } from "./_base/layout/directives/decimal-only.dir
 import { SchemeAmountPipe } from "./_base/layout/pipes/scheme-amount.pipe";
 import { ExcelService, PdfService } from "./_base/crud";
 import { IndianCurrencyFormatPipe } from './_base/layout/pipes/indian-currency-format.pipe';
+import { TruncatePipe } from './_base/layout/pipes/truncate-text.pipe';
 
 @NgModule({
 	imports: [CommonModule],
@@ -52,6 +53,7 @@ import { IndianCurrencyFormatPipe } from './_base/layout/pipes/indian-currency-f
 		DecimalOnlyDirective,
 		SchemeAmountPipe,
 		IndianCurrencyFormatPipe,
+		TruncatePipe,
 	],
 	exports: [
 		// directives
@@ -74,7 +76,8 @@ import { IndianCurrencyFormatPipe } from './_base/layout/pipes/indian-currency-f
 		FirstLetterPipe,
 		AlphabetsDirective,
 		DecimalOnlyDirective,
-		IndianCurrencyFormatPipe
+		IndianCurrencyFormatPipe,
+		TruncatePipe
 	],
 	providers: [AuthService, ExcelService, PdfService],
 })

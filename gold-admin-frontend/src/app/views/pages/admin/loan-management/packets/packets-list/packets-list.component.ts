@@ -15,7 +15,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class PacketsListComponent implements OnInit {
   dataSource: PacketsDatasource;
-  displayedColumns = ['packetUniqueId', 'customerID', 'loanId', 'actions'];
+  displayedColumns = ['packetUniqueId', 'internalBranch', 'customerID', 'loanId', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields

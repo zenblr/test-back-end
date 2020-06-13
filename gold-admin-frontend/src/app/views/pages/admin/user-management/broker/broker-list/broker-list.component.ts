@@ -29,7 +29,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
   dataSource: BrokerDatasource;
   displayedColumns = ['merchantName', 'storeId', 'email', 'mobileNumber', 'address', 'state', 'city', 'pincode', 'approvalStatus', 'status', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
- 
+
 
   brokerResult: any[] = [];
 
@@ -38,7 +38,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private destroy$: Subject<any> = new Subject()
-  status: any []=[];
+  status: any[] = [];
 
   /**
    * Component constructor
@@ -75,10 +75,10 @@ export class BrokerListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getStatus()
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
-			tap(() => this.loadBrokerList())
-		)
-			.subscribe();
-		this.subscriptions.push(paginatorSubscriptions);
+      tap(() => this.loadBrokerList())
+    )
+      .subscribe();
+    this.subscriptions.push(paginatorSubscriptions);
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(
       takeUntil(this.unsubscribeSearch$))
@@ -87,7 +87,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
         this.paginator.pageIndex = 0;
         this.loadBrokerList();
       });
-      this.subscriptions.push(searchSubscription);
+    this.subscriptions.push(searchSubscription);
     // Init DataSource
     this.dataSource = new BrokerDatasource(this.brokerService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
@@ -116,7 +116,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
     this.unsubscribeSearch$.complete();
   }
 
-  
+
 
   /**
    * Load Roles List
@@ -185,7 +185,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
 
   addBroker(action) {
     const dialogRef = this.dialog.open(AddBrokerComponent, {
-      data: { action: action , status:this.status},
+      data: { action: action, status: this.status },
       width: '450px'
     });
     dialogRef.afterClosed().subscribe(res => {
@@ -205,7 +205,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
       data: {
         action: action,
         broker: data,
-        status:this.status
+        status: this.status
       },
       width: '450px'
     });
@@ -242,9 +242,19 @@ export class BrokerListComponent implements OnInit, OnDestroy {
       address: broker.user.address[0].address,
       approvalStatusId: broker.approvalStatus.id,
       userId: broker.userId,
-      nameOnPanCard:broker.nameOnPanCard,
-      panCard:broker.panCard,
-      panCardNumber:broker.user.panCardNumber
+      nameOnPanCard: broker.nameOnPanCard,
+      panCard: broker.panCard,
+      imgName:broker.panCardDetails.originalname,
+      panCardImg:broker.panCardDetails.url,
+      panCardNumber: broker.user.panCardNumber,
+      ifscCode: broker.ifscCode,
+      bankName: broker.bankName,
+      bankBranch: broker.bankBranch,
+      accountHolderName: broker.accountHolderName,
+      accountNumber: broker.accountNumber,
+      passbookStatementChequeId:broker.passbookStatementCheque,
+      passbookImg:broker.passbookStatementChequeDetails.url,
+      passbookImgName:broker.passbookStatementChequeDetails.originalname
     }
     return data
   }

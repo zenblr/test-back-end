@@ -95,8 +95,8 @@ export class LayoutConfig {
 				display: true,
 				fixed: true,
 				minimize: {
-					toggle: true,
-					default: false,
+					toggle: false,
+					default: true,
 				},
 			},
 			footer: {

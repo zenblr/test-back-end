@@ -15,7 +15,7 @@ export class ShopService {
     ) { }
 
     getSubCategory(): Observable<any> {
-        return this.http.get('http://173.249.49.7:9120/api/category/shop-category')
+        return this.http.get(API_ENDPOINT + `api/category/shop-category`);
     }
 
     getProduct(event?): Observable<any> {
@@ -32,7 +32,7 @@ export class ShopService {
         if (event && event.subCategoryId) {
             reqParams.subCategoryId = event.subCategoryId;
         }
-        return this.http.get(API_ENDPOINT + 'api/products/product-by-subcategory', {
+        return this.http.get(API_ENDPOINT + `api/products/product-by-subcategory`, {
             params: reqParams,
         })
     }
