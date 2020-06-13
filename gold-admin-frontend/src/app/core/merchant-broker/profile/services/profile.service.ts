@@ -17,7 +17,7 @@ export class ProfileService {
     }
 
     changePassword(data): Observable<any> {
-        return this.http.post(API_ENDPOINT + `api/auth/change-password`, data)
+        return this.http.post(`api/user/change-password`, data)
     }
 
     updatePanDetails(data): Observable<any> {
