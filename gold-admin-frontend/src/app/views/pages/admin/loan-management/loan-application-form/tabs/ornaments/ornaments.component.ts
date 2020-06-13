@@ -30,14 +30,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
   @Input() loanId
-
+  @Input() ornamentType
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
   @ViewChild('acidTest', { static: false }) acidTest: ElementRef
   @ViewChild('purity', { static: false }) purity: ElementRef
   @ViewChild('ornamentImage', { static: false }) ornamentImage: ElementRef
-  left: number = 150
+  left: number = 0
   width: number = 0
   ornamentsForm: FormGroup;
   images: any = [];
@@ -45,8 +45,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   purityBasedDeduction: number;
   ltvPercent = [];
   url: string
-  ornamentType = [];
   totalAmount = 0;
+  addmoreMinus: any;
   constructor(
     public fb: FormBuilder,
     public sharedService: SharedService,
@@ -66,7 +66,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit() {
     this.url = this.router.url.split('/')[2]
     this.getKarat()
-    this.getOrnamentType()
     this.initForm()
     // this.ornamentsForm.valueChanges.subscribe(() => {
     //   this.OrnamentsDataEmit.emit(this.OrnamentsData)
@@ -82,14 +81,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     ).subscribe()
   }
 
-  getOrnamentType() {
-    this.ornamentTypeService.getOrnamentType(1, -1, '').pipe(
-      map(res => {
-        console.log(res);
-        this.ornamentType = res.data;
-      })
-    ).subscribe();
-  }
+
 
   initForm() {
     this.ornamentsForm = this.fb.group({
@@ -101,6 +93,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.ornamentType) {
+      this.ornamentType = changes.ornamentType.currentValue
+    }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         let array = changes.details.currentValue.loanOrnamentsDetail
@@ -187,17 +182,26 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   addmore() {
-    if (this.left < 900) {
-      this.width = this.width + 130
-      if (this.width > 130)
-        this.left = this.left + 130
-      const left = (this.left).toString() + 'px'
-      const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-      width.style.maxWidth = left
+    if (this.left < 71) {
+      if (this.OrnamentsData.length == 0) {
+        this.left = 12
+        var left = '12rem'
+      } else {
+        this.left = this.left + 10
+      }
+      left = (this.left).toString() + 'rem'
       const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
       addmore.style.left = left
-
+      this.addmoreMinus = false
+    } else {
+      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
+      addmore.style.left = 'unset'
+      addmore.style.right = '0px'
+      this.addmoreMinus = true
     }
+
+
+
     this.OrnamentsData.push(this.fb.group({
       ornamentType: [, Validators.required],
       quantity: [, Validators.required],
@@ -234,22 +238,28 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   removeOrnaments(idx) {
-    
-    if (this.left > 150) {
-      let tempWidth = (this.OrnamentsData.length * 130) - 130
-      if (this.width >= 130 && tempWidth < 910) {
-        this.left = this.left - 130
-        this.width = tempWidth;
-      }
-      const left = (this.left).toString() + 'px'
-      const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-      width.style.maxWidth = left
-      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
-      addmore.style.left =  (this.width).toString() + 'px'
-
-    }
     this.images.splice(idx, 1)
     this.OrnamentsData.removeAt(idx)
+    this.ref.markForCheck()
+    const pagination = (this.ele.nativeElement.querySelector('.mat-tab-header-pagination-controls-enabled') as HTMLElement);
+    if (!pagination) {
+      if(this.addmoreMinus){
+        this.addmoreMinus = false
+      }else{
+        this.left = this.left - 10;
+      }
+      var left = (this.left).toString() + 'rem'
+      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
+      addmore.style.left = left
+      addmore.style.right = 'unset'
+
+    }
+    setTimeout(() => {
+      const translate = (this.ele.nativeElement.querySelector('.mat-tab-list') as HTMLElement);
+      if (translate)
+        translate.style.transform = 'translateX(0px)'
+    })
+    this.ref.markForCheck()
   }
 
   selectKarat(index) {

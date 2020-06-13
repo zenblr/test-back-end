@@ -1,8 +1,43 @@
-
-<div class="">
-    <mat-tab-group [formGroup]="packetsForm">
-        <mat-tab formArrayName="packetsArray" label="{{packet.controls.packetsName.value | uppercase}}"
-            *ngFor="let packet of packets.controls;index as idx">
+<div  *ngIf="url != 'view-loan' ">
+    <form class="row pl-5" action="" [formGroup]="packetInfo" (submit)="addmore()" #form="ngForm">
+        <div class="col-3">
+            <select class="form-control packet-dropdown" formControlName="packetId"
+                [class.isError]="packetInfo.controls.packetId.invalid && packetInfo.controls.packetId.touched">
+                <option value="" [selected]="true">Select Packet</option>
+                <option [value]="packet.id" *ngFor="let packet of packetsDetails; index as idx">
+                    {{packet.packetUniqueId | uppercase}}</option>
+            </select>
+            <mat-error *ngIf="packetInfo.controls.packetId.invalid && packetInfo.controls.packetId.touched">
+                <small>
+                    Field Required
+                </small>
+            </mat-error>
+        </div>
+        <div class="col-3">
+            <select class="form-control packet-dropdown" formControlName="ornamentType"
+                [class.isError]="packetInfo.controls.ornamentType.touched && packetInfo.controls.ornamentType.invalid">
+                <option value="null" [disabled]="true" [selected]="true">Select Ornament</option>
+                <option [value]="ornament.name" *ngFor="let ornament of ornamentType">
+                    {{ornament.name | titlecase}}
+                </option>
+            </select>
+            <mat-error *ngIf="packetInfo.controls.ornamentType.touched && packetInfo.controls.ornamentType.invalid">
+                <span *ngIf="packetInfo.controls.ornamentType.errors?.required">Field Required</span>
+            </mat-error>
+        </div>
+        <div class="col-4">
+            <kt-button [value]="'ADD'" [type]="'submit'"></kt-button>
+        </div>
+    </form>
+</div>
+<div class="pl-5">
+    <mat-tab-group [formGroup]="packetImg" >
+        <mat-tab formArrayName="packetsArray" label="" *ngFor="let packet of packets.controls;index as idx">
+            <ng-template mat-tab-label>
+                {{packet.controls.packetsName.value | uppercase}}
+                <img *ngIf="packets.length > 1" class="removeImageSize kt-padding-l-5 kt-pointer"
+                    [src]="'assets/media/icons/cancel.png'" (click)="removePacketsTab(idx)" />
+            </ng-template>
             <div class="row" [formGroupName]="idx">
                 <div class="col-3 ">
                     <div class="img-container packets" *ngIf="!packet.controls.emptyPacketWithNoOrnament.value"
@@ -51,8 +86,9 @@
                     </div>
                     <img class="packets position-relative" [src]="packet.controls.packetWithSealing.value"
                         *ngIf="packet.controls.packetWithSealing.value">
-                    <img *ngIf="packet.controls.packetWithSealing.value && url != 'view-loan'" src="../../../../../assets/media/icons/edit.svg"
-                        alt="" class="kt-pointer edit-icon" (click)="packetWithSealing.click()">
+                    <img *ngIf="packet.controls.packetWithSealing.value && url != 'view-loan'"
+                        src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
+                        (click)="packetWithSealing.click()">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with
                         Sealing</label>
                     <div>
@@ -73,8 +109,9 @@
                     <img class="packets position-relative" [src]="packet.controls.packetWithWeight.value"
                         *ngIf="packet.controls.packetWithWeight.value">
                     <!-- </span> -->
-                    <img *ngIf="packet.controls.packetWithWeight.value && url != 'view-loan'" src="../../../../../assets/media/icons/edit.svg"
-                        alt="" class="kt-pointer edit-icon" (click)="packetWithWeight.click()">
+                    <img *ngIf="packet.controls.packetWithWeight.value && url != 'view-loan'"
+                        src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
+                        (click)="packetWithWeight.click()">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with
                         Weight</label>
                     <div>
@@ -89,27 +126,7 @@
             </div>
         </mat-tab>
     </mat-tab-group>
-    <div class="addMore">
-        <div class="row" *ngIf="url != 'view-loan'">
-            <div class="col-7">
-                <select class="packet-dropdown" class="form-control packet-dropdown" [formControl]="packetId"
-                    [class.isError]="packetId.invalid && packetId.touched" >
-                    <option value="" [selected]="true">Select Packet</option>
-                    <option [value]="packet.id" *ngFor="let packet of packetsDetais; index as idx">
-                        {{packet.packetUniqueId | uppercase}}</option>
-                </select>
-                <mat-error *ngIf="packetId.invalid && packetId.touched">
-                    <small>
-                        Field Required
-                    </small>
-                </mat-error>
-            </div>
-            <div class="col-4  offset-1">
-                <kt-button [value]="'ADD'" [type]="'button'" (click)="addmore()"></kt-button>
-            </div>
-        </div>
-    </div>
-    <div class="text-center save" *ngIf="packets.length > 0">
-        <kt-button [type]="'button'" [value]="'Save'" (click)="save()" *ngIf="url != 'view-loan'"></kt-button>
-    </div>
+</div>
+<div class="text-center save" *ngIf="packets.length > 0">
+    <kt-button [type]="'button'" [value]="'Save'" (click)="save()" *ngIf="url != 'view-loan'"></kt-button>
 </div>

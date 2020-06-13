@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { map } from 'rxjs/operators';
 import { Location } from '@angular/common'
+import { CustomerClassificationService } from '../../../../../../../core/kyc-settings/services/customer-classification.service';
 
 @Component({
   selector: 'kt-approval',
@@ -30,6 +31,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   approvalForm: FormGroup;
   url: string;
   viewBMForm = true;
+  reasons: any []= [];
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -38,6 +40,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     public router: Router,
     public loanFormService: LoanApplicationFormService,
     public location: Location,
+    private custClassificationService: CustomerClassificationService,
+
   ) { }
 
   ngOnInit() {
@@ -49,7 +53,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.url = this.router.url.split('/')[3]
     this.initForm();
-    this.getRoles()
+    this.getRoles();
+    this.getReasonsList();
   }
   getRoles() {
     let res = this.sharedSerive.getDataFromStorage()
@@ -127,6 +132,16 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
+
+  getReasonsList() {
+    this.custClassificationService.getReasonsList().pipe(
+      map(res => {
+        console.log(res)
+        this.reasons = res.data;
+      })
+    ).subscribe()
+  }
+
   statusAppraiser() {
 
     if (this.controls.loanStatusForAppraiser.value != 'approved') {

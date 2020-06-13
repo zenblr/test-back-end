@@ -4,8 +4,11 @@
             *ngFor="let ornament of OrnamentsData.controls;index as idx">
             <ng-template mat-tab-label>
                 Ornaments {{idx+1}}
-                <img *ngIf="idx > 0" class="removeImageSize kt-padding-l-5 kt-pointer" [src]="'assets/media/icons/cancel.png'"
+                <img *ngIf="OrnamentsData.length > 1" class="removeImageSize kt-padding-l-5 kt-pointer" [src]="'assets/media/icons/cancel.png'"
                 (click)="removeOrnaments(idx)" />
+            </ng-template>
+            <ng-template mat-tab-body>
+
             </ng-template>
             <div class="row justify-content-around" [formGroupName]="idx">
                 <div class="col-9 kt-padding-l-45">
