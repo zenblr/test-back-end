@@ -84,8 +84,9 @@
               </div>
               <div class="col">
                 <label>By Status</label>
-                <kt-multi-select-search formControlName="status" [items]="statusList" [multiple]="true"
-                  [bindLabel]="'name'" [isClear]="clearData"></kt-multi-select-search>
+                <kt-multi-select-search formControlName="leadStatus" [items]="statusList" [multiple]="true"
+                  [bindLabel]="'statusName'" [placeholder]="'Select Status'" [isClear]="clearData">
+                </kt-multi-select-search>
               </div>
               <div class="col-2 d-flex align-items-end">
                 <label></label>
@@ -167,8 +168,10 @@
               <div class="col-9">
                 <label>By Scheme Type</label>
                 <select placeholder="Scheme Type" class="form-control" formControlName="scheme">
-                  <option value="active">Active</option>
-                  <option value="inaAtive">InActive</option>
+                  <option selected disabled> Scheme Type </option>
+                  <option value=''>All</option>
+                  <option value=true>Active</option>
+                  <option value=false>Inactive</option>
                 </select>
               </div>
               <div class="col-3 d-flex align-items-end">

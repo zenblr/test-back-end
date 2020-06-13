@@ -34,7 +34,7 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false, true, true, true, true, false];
+  disabled = [false, false, false, false, false, false];
   loanId: any;
   finalLoanAmt: any;
   constructor(
@@ -294,22 +294,22 @@ export class LoanApplicationFormComponent implements OnInit {
 
 
   next(event) {
-    if (event.index != undefined) {
-      this.selected = event.index;
-    } else {
-      this.selected = event;
-    }
-    for (let index = 0; index < this.disabled.length; index++) {
-      if (this.url != "view-loan") {
-        if (this.selected >= index) {
-          this.disabled[index] = false
-        } else {
-          this.disabled[index] = true
-        }
-      } else {
-        this.disabled[index] = false
-      }
-    }
+  //   if (event.index != undefined) {
+  //     this.selected = event.index;
+  //   } else {
+  //     this.selected = event;
+  //   }
+  //   for (let index = 0; index < this.disabled.length; index++) {
+  //     if (this.url != "view-loan") {
+  //       if (this.selected >= index) {
+  //         this.disabled[index] = false
+  //       } else {
+  //         this.disabled[index] = true
+  //       }
+  //     } else {
+  //       this.disabled[index] = false
+  //     }
+  //   }
+  // }
   }
-
 }

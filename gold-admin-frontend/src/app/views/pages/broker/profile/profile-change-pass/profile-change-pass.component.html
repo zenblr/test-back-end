@@ -29,13 +29,13 @@
                                     [class.isError]="controls.newPassword.touched && controls.newPassword.invalid">
                                 <mat-error
                                     *ngIf="controls.newPassword.errors?.required && controls.newPassword.touched">
-                                    <strong>Enter New Password</strong>
+                                    Enter New Password
                                 </mat-error>
                                 <mat-error *ngIf="controls.newPassword.errors?.minlength">
-                                    <strong>Minimum field length 8</strong>
+                                    Minimum field length 8
                                 </mat-error>
                                 <mat-error *ngIf="controls.newPassword.errors?.maxlength">
-                                    <strong>Maximum field length 100</strong>
+                                    Maximum field length 100
                                 </mat-error>
                             </div>
                         </div>
@@ -48,19 +48,19 @@
                                     [class.isError]="controls.confirmPassword.touched && controls.confirmPassword.invalid">
                                 <mat-error
                                     *ngIf="controls.confirmPassword.errors?.required && controls.confirmPassword.touched">
-                                    <strong>Enter Confirm Password</strong>
+                                    Enter Confirm Password
                                 </mat-error>
                                 <mat-error
                                     *ngIf="controls.confirmPassword.errors?.minlength && controls.confirmPassword.touched">
-                                    <strong>Minimum field length 8</strong>
+                                    Minimum field length 8
                                 </mat-error>
                                 <mat-error
                                     *ngIf="controls.confirmPassword.errors?.maxlength && controls.confirmPassword.touched">
-                                    <strong>Maximum field length 100</strong>
+                                    Maximum field length 100
                                 </mat-error>
                                 <mat-error
                                     *ngIf="passwordForm.get('confirmPassword').errors && passwordForm.get('confirmPassword').errors.ConfirmPassword">
-                                    <strong>Passsword and ConfirmPassword didn't match.</strong>
+                                    Passsword and ConfirmPassword didn't match.
                                 </mat-error>
                             </div>
                         </div>
