@@ -254,8 +254,13 @@ export class PageConfig {
 			"profile": {
 				page: { title: "Profile", desc: "" },
 			},
-			"checkout-customer": {
-				page: { title: "Customer Details", desc: "" },
+			"checkout-customer-address": {
+				page: { title: "Customer Address", desc: "" },
+			},
+			"order-received": {
+				id: {
+					page: { title: "Order Received", desc: "" },
+				}
 			},
 		}
 	};

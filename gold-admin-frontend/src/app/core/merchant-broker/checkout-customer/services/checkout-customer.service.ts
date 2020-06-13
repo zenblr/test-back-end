@@ -17,4 +17,8 @@ export class CheckoutCustomerService {
     generateOTP(data): Observable<any> {
         return this.http.post<any>(API_ENDPOINT + `api/order/send-otp`, data);
     }
+
+    placeOrder(data): Observable<any> {
+        return this.http.post<any>(API_ENDPOINT + `api/order`, data);
+    }
 }

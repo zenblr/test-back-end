@@ -29,10 +29,8 @@ export class OrderCancelDialogComponent implements OnInit {
     this.orderId = this.route.snapshot.params.id;
     this.formInitialize();
     this.orderService.getCancelOrderPrice(this.orderId).subscribe(res => {
-      this.cancelData = res;
       this.bindValue(res);
     });
-    this.chRef.detectChanges();
   }
   formInitialize() {
     this.cancelForm = this.fb.group({
@@ -81,6 +79,8 @@ export class OrderCancelDialogComponent implements OnInit {
     }
 
     this.cancelForm.patchValue(data);
+    this.cancelData = value;
+    this.chRef.detectChanges();
   }
 
   uploadImage(data) {
