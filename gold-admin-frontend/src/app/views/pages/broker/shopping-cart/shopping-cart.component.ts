@@ -30,7 +30,12 @@ export class ShoppingCartComponent implements OnInit {
   }
 
   getCart() {
-    this.shoppingCartService.getCart().subscribe(res => this.cartData = res);
+    this.shoppingCartService.getCart().subscribe(res => {
+      if (res) {
+        this.cartData = res;
+        this.shoppingCartService.cartCount.next(res.allCartData.length);
+      }
+    });
   }
 
   removeCartItem(cartId) {
@@ -68,18 +73,6 @@ export class ShoppingCartComponent implements OnInit {
   }
 
   checkoutCart() {
-    // this.shoppingCartService.getCheckoutCart().subscribe(res => {
-    //   if (res && res.blockId) {
-    //     const blockData = {
-    //       blockId: res.blockId
-    //     }
-    //     this.shoppingCartService.orderVerifyBlock(blockData).subscribe(res => {
-    //       if (res) {
-    //         this.router.navigate(['/broker/checkout-customer-address']);
-    //       }
-    //     });
-    //   }
-    // });
     this.router.navigate(['/broker/checkout-customer-address']);
   }
 

@@ -1,5 +1,5 @@
 <!-- BEGIN: Left Aside -->
-<div ktOffcanvas [options]="menuCanvasOptions" 
+<div ktOffcanvas [options]="menuCanvasOptions"
 	class="kt-aside kt-aside--fixed kt-grid__item kt-grid kt-grid--desktop kt-grid--hor-desktop" id="kt_aside">
 	<!-- begin:: Brand -->
 	<kt-brand></kt-brand>
@@ -12,7 +12,7 @@
 			[ngStyle]="{'max-height': '90vh', 'position': 'relative','background':'#454D67','padding-bottom':'120px'}"
 			id="kt_aside_menu" class="kt-aside-menu" [ngClass]="htmlClassService.getClasses('aside_menu', true)"
 			(mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)">
-			<ul class="kt-menu__nav" [ngClass]="htmlClassService.getClasses('aside_menu_nav', true)" >
+			<ul class="kt-menu__nav" [ngClass]="htmlClassService.getClasses('aside_menu_nav', true)">
 				<ng-container [ngTemplateOutlet]="menuListTemplate"></ng-container>
 			</ul>
 		</div>
@@ -104,7 +104,7 @@
 	</i>
 
 	<!-- menu item title text -->
-	<span class="kt-menu__link-text" [translate]="item.translate"
+	<span [ngClass]="item.count ? 'kt-menu__link-count' : 'kt-menu__link-text'" [translate]="item.translate"
 		(click)="item.title == 'Log Out' ? logout() : ''">{{item.title}}</span>
 	<!-- menu item with badge -->
 	<span *ngIf="item.badge" class="kt-menu__link-badge">
@@ -113,6 +113,9 @@
 
 	<!-- if menu item has submenu child then put arrow icon -->
 	<i *ngIf="item.submenu" class="kt-menu__ver-arrow la la-angle-right"></i>
+
+	<!-- if menu item is cart then put cart count -->
+	<span *ngIf="item.count" class="kt-menu__link-count pl-1"> ({{cartTotalCount}})</span>
 </ng-template>
 
 <ng-template #menuItemSeparatorTemplate let-item="item" let-parentItem="parentItem">
