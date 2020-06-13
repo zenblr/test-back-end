@@ -270,7 +270,7 @@ export class TopbarComponent implements OnInit {
 			this.filterName = "leads";
 			this.filterWidth = "900px";
 			this.permissionType = "leadManagmentAdd";
-			this.listType = "state";
+			this.listType = "state,leadStatus";
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();

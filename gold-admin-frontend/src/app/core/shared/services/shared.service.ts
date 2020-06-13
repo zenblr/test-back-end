@@ -96,6 +96,12 @@ export class SharedService {
 		);
 	}
 
+	getLeadStatus(): Observable<any> {
+		return this.http.get<any>(
+			`/api/status`
+		);
+	}
+
 	getMerchant(): Observable<any> {
 		return this.http.get<any>(
 			`http://173.249.49.7:9120/api/merchant/all-merchant`
