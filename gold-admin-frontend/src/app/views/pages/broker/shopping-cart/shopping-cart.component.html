@@ -108,19 +108,19 @@
                     </div>
                     <div *ngIf="cartData?.emiScheme?.length || cartData?.emiAmount?.length">
                         <div class="row py-2">
-                            <div class="col-8 text-muted">Grand Total</div>
+                            <div class="col-8 text-muted">Grand Total:</div>
                             <div class="col-4 text-right">₹ {{cartData?.invoicePrice | number}}</div>
                         </div>
                         <div class="row py-2">
-                            <div class="col-8 text-muted">Now Payable Amount</div>
+                            <div class="col-8 text-muted">Now Payable Amount:</div>
                             <div class="col-4 text-right">₹ {{cartData?.nowPayableAmount | number}}</div>
                         </div>
                         <div class="row py-2">
-                            <div class="col-8 text-muted">Initial Amount</div>
+                            <div class="col-8 text-muted">Initial Amount:</div>
                             <div class="col-4 text-right">₹ {{cartData?.initialPaymentTotal | number}}</div>
                         </div>
                         <div class="row py-2">
-                            <div class="col-8 text-muted">EMI Scheme</div>
+                            <div class="col-8 text-muted">EMI Scheme:</div>
                             <div class="col-4 text-right" *ngIf="cartData?.emiScheme?.length">
                                 <span class="content" *ngFor="let scheme of cartData?.emiScheme; let isLast=last">
                                     {{scheme}}{{isLast ? '' : ', '}}
@@ -129,7 +129,7 @@
                             </div>
                         </div>
                         <div class="row py-2">
-                            <div class="col-8 text-muted">EMI Amount(Per Month)</div>
+                            <div class="col-8 text-muted">EMI Amount(Per Month):</div>
                             <div class="col-4 text-right" *ngIf="cartData?.emiAmount?.length">
                                 <div class="content" *ngFor="let amt of cartData?.emiAmount; let isLast=last">
                                     ₹ {{amt}}{{isLast ? '' : ', '}}

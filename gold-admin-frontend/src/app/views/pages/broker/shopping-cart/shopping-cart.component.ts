@@ -75,12 +75,12 @@ export class ShoppingCartComponent implements OnInit {
     //     }
     //     this.shoppingCartService.orderVerifyBlock(blockData).subscribe(res => {
     //       if (res) {
-    //         this.router.navigate(['/broker/checkout-customer']);
+    //         this.router.navigate(['/broker/checkout-customer-address']);
     //       }
     //     });
     //   }
     // });
-    this.router.navigate(['/broker/checkout-customer']);
+    this.router.navigate(['/broker/checkout-customer-address']);
   }
 
   redirectToShop() {
