@@ -11,10 +11,10 @@
                         <div class="col-8">
                             <input type="text" class="form-control" formControlName="description"
                                 [class.isError]="reasonForm.controls.description.invalid &&  reasonForm.controls.description.touched">
+                            <mat-error *ngIf="controls.description.touched && controls.description.errors?.required">
+                                Required field
+                            </mat-error>
                         </div>
-                        <mat-error *ngIf="controls.description.touched && controls.description.errors?.required">
-                            Required field
-                        </mat-error>
                     </div>
                 </div>
             </div>

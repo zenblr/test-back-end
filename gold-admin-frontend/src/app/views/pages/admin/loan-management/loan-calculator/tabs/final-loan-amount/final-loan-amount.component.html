@@ -7,8 +7,9 @@
                         <label for="" class="mandatory text-color">Gold Gross Weight </label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="goldGrossWeight"
-                            placeholder="0.00 gram" (blur)="weightCheck();calcGoldDeductionWeight()"
+                        <input type="number" class="form-control" formControlName="goldGrossWeight" min="0"
+                            (keypress)="rejectNegativeNumber($event)" placeholder="0.00 gram"
+                            (blur)="weightCheck();calcGoldDeductionWeight()"
                             [class.isError]="controls.goldGrossWeight.touched && controls.goldGrossWeight.invalid">
                         <mat-error
                             *ngIf="controls.goldGrossWeight.errors?.required && controls.goldGrossWeight.touched">
@@ -21,8 +22,9 @@
                         <label for="" class="mandatory text-color">Gold Deduction Weight </label>
                     </div>
                     <div class="col-6">
-                        <input type="text" class="form-control" formControlName="goldDeductionWeight"
-                            placeholder="0.00 gram" (blur)="weightCheck();calcGoldDeductionWeight()"
+                        <input type="text" class="form-control" formControlName="goldDeductionWeight" min="0"
+                            (keypress)="rejectNegativeNumber($event)" placeholder="0.00 gram"
+                            (blur)="weightCheck();calcGoldDeductionWeight()"
                             [class.isError]="controls.goldDeductionWeight.touched && controls.goldDeductionWeight.invalid">
                         <mat-error
                             *ngIf="controls.goldDeductionWeight.errors?.required && controls.goldDeductionWeight.touched">
@@ -30,7 +32,7 @@
                         </mat-error>
                         <mat-error
                             *ngIf="controls.goldDeductionWeight.errors?.weight && controls.goldDeductionWeight.touched">
-                            <small>Net Weight should be lesser then Gross Weight</small>
+                            <small>Deduction Weight should be lesser then Gross Weight</small>
                         </mat-error>
                     </div>
                 </div>

@@ -66,4 +66,13 @@ export class RoughLoanAmountComponent implements OnInit {
       // console.log(goldDeductionWeight)
     }
   }
+
+  rejectNegativeNumber(val) {
+    let keyCode = val.keyCode;
+    if (!((keyCode > 95 && keyCode < 106)
+      || (keyCode > 47 && keyCode < 58)
+      || keyCode == 8)) {
+      return false;
+    }
+  }
 }

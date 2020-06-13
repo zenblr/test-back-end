@@ -141,6 +141,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 						case 'approval':
 							this.status();
 							break;
+						case 'leadStatus':
+							this.getLeadStatus();
 					}
 				}
 			}
@@ -167,7 +169,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			kycStatus: [''],
 			cceStatus: [''],
 			packets: [''],
-			scheme: ['']
+			scheme: [''],
+			leadStatus: ['']
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -243,6 +246,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			if (controls['appraiserStatus'].value && (controls['appraiserStatus'].value.multiSelect && controls['appraiserStatus'].value.multiSelect.length)) {
 				this.filterObject.data.appraiserStatus = controls['appraiserStatus'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.appraiserStatus = controls['appraiserStatus'].value.multiSelect;
+			}
+			if (controls['leadStatus'].value && (controls['leadStatus'].value.multiSelect && controls['leadStatus'].value.multiSelect.length)) {
+				this.filterObject.data.leadStatus = controls['leadStatus'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.leadStatus = controls['leadStatus'].value.multiSelect;
 			}
 			if (controls['cceStatus'].value && (controls['cceStatus'].value.multiSelect && controls['cceStatus'].value.multiSelect.length)) {
 				this.filterObject.data.cceStatus = controls['cceStatus'].value.multiSelect.map(e => e.value).toString();
@@ -330,6 +337,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'loanStatus':
 				this.controls['loanStatus'].value.multiSelect.splice(index, 1);
 				break;
+			case 'leadStatus':
+				this.controls['leadStatus'].value.multiSelect.splice(index, 1);
+				break;
 			default:
 				break;
 		}
@@ -344,6 +354,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			loanStatus: this.filterForm.controls['loanStatus'].value,
 			kycStatus: this.filterForm.controls['kycStatus'].value,
 			cceStatus: this.filterForm.controls['cceStatus'].value,
+			leadStatus: this.filterForm.controls['leadStatus'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
@@ -377,6 +388,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		this.sharedService.getStates().subscribe((res) => {
 			this.states = res.message;
 		});
+	}
+
+	getLeadStatus() {
+		this.sharedService.getLeadStatus().subscribe((res) => {
+			this.statusList = res;
+		})
 	}
 
 	status() {
