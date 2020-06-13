@@ -103,4 +103,14 @@ export class CustomersComponent implements OnInit {
     this.dataSource.loadCustomersDetails(this.customersData);
   }
 
+  /**
+ * On Destroy
+ */
+  ngOnDestroy() {
+    this.subscriptions.forEach(el => el.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
+  }
 }
