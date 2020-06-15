@@ -118,6 +118,23 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit {
 
   }
 
+  removeOrnaments(idx) {
+    
+    if (this.left > 150) {
+      this.width = (this.packets.length * 130) - 130
+      if (this.width >= 130 && this.width < 910) {
+        this.left = this.left - 130
+      }
+      const left = (this.left).toString() + 'px'
+      const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
+      width.style.maxWidth = left
+      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
+      addmore.style.left = left
+
+    }
+    this.packets.removeAt(idx)
+  }
+
   clear() {
     this.packetWithAllOrnaments.nativeElement.value = '';
     this.emptyPacketWithNoOrnament.nativeElement.value = '';

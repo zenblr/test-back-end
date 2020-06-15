@@ -1,6 +1,26 @@
-<div class="kt-padding-l-45 minHeight">
-    <form [formGroup]="finalInterestForm">
+<div class="minHeight">
+    <form class="kt-padding-l-45" [formGroup]="finalInterestForm">
         <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Tenure</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="tenure" class="form-control" (change)="setEndDate()"
+                            [class.isError]="controls.tenure.touched && controls.tenure.invalid">
+                            <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
+                            <option [value]="ten" *ngFor="let ten of tenure;index as i">
+                                <span *ngIf="i==0">{{ten}} Month</span>
+                                <span *ngIf="i > 0">{{ten}} Months</span>
+                            </option>
+                        </select>
+                        <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
@@ -19,6 +39,10 @@
                     </div>
                 </div>
             </div>
+
+        </div>
+
+        <div class="row kt-margin-b-20">
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
@@ -38,6 +62,44 @@
                     </div>
                 </div>
             </div>
+            <div class="col-6">
+
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Loan Amount</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="number" class="form-control" formControlName="finalLoanAmount"
+                            placeholder="0,00,000" (blur)="amountValidation();getIntrest()"
+                            [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
+                        <div>
+                            <mat-error
+                                *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
+                                Required field
+                            </mat-error>
+                            <mat-error
+                                *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
+                                Invalid
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">
+                                <small>Enter Loan Amount as Per Scheme</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.rbi">
+                                <small>Entered Amount Violates RBI Guidelines</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.maximunAllowed">
+                                <small>Enter Amount less then Maximum % Allowed</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible">
+                                <small>Enter  Amount less Eligible Amount</small>
+                            </mat-error>
+                        </div>
+                        
+
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="row kt-margin-b-20">
@@ -58,30 +120,6 @@
 
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Tenure</label>
-                    </div>
-                    <div class="col-7">
-                        <select formControlName="tenure" class="form-control" (change)="setEndDate()"
-                            [class.isError]="controls.tenure.touched && controls.tenure.invalid">
-                            <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
-                            <option [value]="ten" *ngFor="let ten of tenure;index as i">
-                                <span *ngIf="i==0">{{ten}} Month</span>
-                                <span *ngIf="i > 0">{{ten}} Months</span>
-                            </option>
-                        </select>
-                        <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
-                            Required field
-                        </mat-error>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row kt-margin-b-20">
-            <div class="col-6">
-
-                <div class="row">
-                    <div class="col-4 form-label">
                         <label class="mandatory">Loan End Date</label>
                     </div>
                     <div class="col-7">
@@ -91,39 +129,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
 
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class="mandatory">Loan Amount</label>
-                    </div>
-                    <div class="col-7">
-                        <input type="number" class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000" (blur)="amountValidation();getIntrest()"
-                            [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
-                        <mat-hint><strong>Eligible Amount: <span class="currency">
-                                    {{totalAmt | indianCurrencyFormat}}</span> </strong></mat-hint>
-                        <div>
-                            <mat-error
-                                *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
-                                Required field
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
-                                Invalid
-                            </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">
-                                <small>Enter Loan Amount as Per Scheme</small>
-                            </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.eligibleAmt">
-                                <small>Amount should be less then Eligible Amount</small>
-                            </mat-error>
-                        </div>
-
-
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="row kt-margin-b-20">
@@ -168,11 +174,8 @@
         <div class="row kt-margin-b-20">
             <div class="col-6">
                 <div class="row">
-                    <div class="col-4 kt-padding-0">
-                        <div class="form-label">
-                            <label class="mandatory">Processing Charges</label>
-                        </div>
-                        <i>(fixed)</i>
+                    <div class="col-4 form-label ">
+                        <label class="mandatory">Processing Charges</label>
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="processingChargeFixed"
@@ -189,40 +192,38 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 kt-padding-0">
-                        <div class="form-label">
-                            <label class="mandatory">Processing Charges</label>
-                        </div>
-                        <i>(% of Loan Amount)</i>
-                    </div>
-                    <div class="col-7">
-                        <input type="number" class="form-control" formControlName="processingChargePercent"
-                            placeholder="00%"
-                            [class.isError]="controls.processingChargePercent.touched && controls.processingChargePercent.invalid" />
-                        <mat-error
-                            *ngIf="controls.processingChargePercent.errors?.pattern && controls.processingChargePercent.touched">
-                            Invalid Input
-                        </mat-error>
-                        <mat-error
-                            *ngIf="controls.processingChargePercent.errors?.required && controls.processingChargePercent.touched">
-                            Required field
-                        </mat-error>
-                    </div>
-                </div>
-            </div>
         </div>
-        <div class="row" *ngIf="!disable">
-            <div class="col-12 kt-margin-t-30 kt-margin-b-30 m-n4 text-center">
-                <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcInterestAmount()"></kt-button>
-            </div>
-        </div>
+
     </form>
+    <div class="row kt-margin-t-10">
+        <div class="col-12">
+            <mat-divider></mat-divider>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-12 py-2">
+            <h3 class="text-center my-3">
+                <b>
+                    Total Eligible Amount - <span class="currency">
+                        {{totalAmt | indianCurrencyFormat}}</span>
+                </b>
+            </h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 kt-margin-b-10">
+            <mat-divider></mat-divider>
+        </div>
+    </div>
+    <div class="row" *ngIf="!disable">
+        <div class="col-12 kt-margin-t-30 kt-margin-b-30 m-n4 text-center">
+            <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcInterestAmount()"></kt-button>
+        </div>
+    </div>
     <div class="row justify-content-center kt-margin-b-20" *ngIf="dateOfPayment.length > 0">
-        <div class="col-6">
+        <div class="col-8">
             <div class="row justify-content-center">
-                <div class="col-7">
+                <div [ngClass]="isUnSecuredSchemeApplied?'col-12':'col-9'">
                     <div>
                         <label for="" class="text-color font-weight-500">Processing Charges -
                             {{controls.processingCharge.value}}</label>
@@ -231,58 +232,116 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col" style="width: 50%" class="rating-title text-left">Date</th>
-                                    <th scope="col" style="width: 50%" class="rating-cce text-center">Amount</th>
+                                    <th scope="col" class=" text-left">Date</th>
+                                    <th scope="col" class=" text-center"
+                                        [ngStyle]="{'width':isUnSecuredSchemeApplied?'auto':'50%'}">
+                                        Interest Amount <br>
+                                        (Secured Scheme)
+                                    </th>
+                                    <th scope="col" class=" text-center" *ngIf="isUnSecuredSchemeApplied">
+                                        Interest Amount <br>
+                                        (UnSecured Scheme)
+                                    </th>
+                                    <th scope="col" class=" text-center" *ngIf="isUnSecuredSchemeApplied">
+                                        Total Interest Amount
+                                    </th>
                                 </tr>
                             </thead>
-                            <tbody *ngIf="colJoin == null">
-                                <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
-                                    <td>{{date.key | date :'mediumDate'}}</td>
+                            <tbody>
+                                <tr *ngFor="let data of dateOfPayment;index as idx; last as last">
+                                    <td *ngIf="approved">{{data.date | date :'mediumDate'}}</td>
+                                    <td *ngIf="!approved">{{data.paymentType | uppercase}}&nbsp;{{idx+1}}</td>
 
-                                    <td [attr.rowspan]="colJoin" class="text-center currency" *ngIf="(idx%colJoin == 0 || colJoin == null)">
-                                        
-                                            {{intrestAmount | indianCurrencyFormat}}</td>
+                                    <td class="text-center currency">
+                                        {{data.securedInterestAmount | indianCurrencyFormat}}
+                                    </td>
 
-                                </tr>
-                            </tbody>
-                            <tbody *ngIf="dateOfPayment.length%colJoin > 0 || colJoin != null">
-                                <tr *ngFor="let date of dateOfPayment;index as idx; last as last">
-                                    <td>{{date.key | date :'mediumDate'}}</td>
-                                    <td [attr.rowspan]="colJoin" class="text-center currency"
-                                        *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin < dateOfPayment.length-idx)">
-                                            {{intrestAmount | indianCurrencyFormat }}</td>
-                                    <td [attr.rowspan]="colJoin" class="text-center currency"
-                                        *ngIf="(idx%colJoin == 0 || colJoin == null) && (dateOfPayment.length%colJoin >= dateOfPayment.length-idx)">
-                                        {{(intrestAmount /colJoin) * (dateOfPayment.length%colJoin) | indianCurrencyFormat}}
+                                    <td class="text-center currency" *ngIf="isUnSecuredSchemeApplied">
+                                        {{data.unSecuredInterestAmount | indianCurrencyFormat}}
+                                    </td>
+
+                                    <td class="text-center currency" *ngIf="isUnSecuredSchemeApplied">
+                                        {{data.totalAmt.toFixed(2) | indianCurrencyFormat}}
                                     </td>
 
                                 </tr>
                             </tbody>
-                            <tfoot>
+
+                            <!-- <tfoot>
                                 <tr>
                                     <td><strong>Total Amount</strong></td>
-                                    <td *ngIf="colJoin != null"  class="text-center">
+                                    <td class="text-center">
                                         <strong><span class="currency">
-                                            {{((intrestAmount/colJoin) * dateOfPayment.length).toFixed(2) | indianCurrencyFormat}}</span>
-                                            </strong>
+                                                {{totalinterestAmount.toFixed(2) | indianCurrencyFormat}}</span>
+                                        </strong>
                                     </td>
-                                    <td *ngIf="colJoin == null" class="text-center">
-                                        <strong>
-                                            <span class="currency">
-                                                {{((intrestAmount) * dateOfPayment.length).toFixed(2) | indianCurrencyFormat}}
-                                            </span></strong>
-                                    </td>
-                                </tr>
-                            </tfoot>
+
+                            </tfoot> -->
                         </table>
                     </div>
                 </div>
             </div>
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col-8">
+                            <label for="" class="form-label">
+                                Principal Amount
+                            </label>
+                        </div>
+                        <div class="col-4">
+                            <label class="font-weight-bold currency">
+                                {{controls.finalLoanAmount.value | indianCurrencyFormat}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <label for="" class="form-label">
+                                Total Interest Amount
+                            </label>
+                        </div>
+                        <div class="col-4">
+                            <label class="font-weight-bold currency">
+                                {{totalinterestAmount.toFixed(2) | indianCurrencyFormat}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <label for="" class="form-label">
+                                Unsecured Scheme
+                            </label>
+                        </div>
+                        <div class="col-4">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <label for="" class="form-label">
+                                Interest Rate(Unsecured Scheme)
+                            </label>
+                        </div>
+                        <div class="col-4">
+
+                        </div>
+                    </div>
+                    <div class="row " *ngIf="isUnSecuredSchemeApplied">
+                        <div class="col-12">
+                            <div class="kt-margin-t-20 text-center">
+                                <kt-button [value]="'Change Unsecured Scheme'" [type]="'button'"
+                                    (click)="changeUnSecuredScheme()"></kt-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="col-11" *ngIf="!disable">
             <div class="kt-margin-t-20 kt-margin-b-30 text-right">
                 <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
             </div>
         </div>
     </div>
+    <button (click)="changeUnSecuredScheme()">Open Modal</button>
 </div>

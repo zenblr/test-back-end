@@ -13,6 +13,12 @@
                         {{element["customerDetails.customerUniqueId"] ? element["customerDetails.customerUniqueId"] : '-'}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element["customerDetails.firstName"] || element["customerDetails.lastName"] ? (element["customerDetails.firstName"] + ' ' + element["customerDetails.lastName"] | titlecase) : '-'}}
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="userId">
                     <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
                     <mat-cell *matCellDef="let element">

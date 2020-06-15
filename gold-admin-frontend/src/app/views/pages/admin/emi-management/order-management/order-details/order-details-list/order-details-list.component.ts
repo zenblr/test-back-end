@@ -44,6 +44,7 @@ export class OrderDetailsListComponent implements OnInit {
 		"centerCity",
 		"shippingAddress",
 		"memberId",
+		"customerName",
 		"mobileNumber",
 		"orderId",
 		"productName",

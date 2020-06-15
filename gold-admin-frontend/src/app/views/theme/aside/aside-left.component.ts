@@ -16,6 +16,7 @@ import { LayoutConfigService, MenuAsideService, MenuOptions, OffcanvasOptions } 
 import { HtmlClassService } from '../html-class.service';
 import { AuthService } from '../../../core/auth';
 import { SharedService } from '../../../core/shared/services/shared.service';
+import { ShoppingCartService } from '../../../core/merchant-broker';
 
 @Component({
 	selector: 'kt-aside-left',
@@ -27,10 +28,11 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 
 	@ViewChild('asideMenu', { static: true }) asideMenu: ElementRef;
 
-    private returnUrl: string;
+	private returnUrl: string;
 	currentRouteUrl = '';
 	insideTm: any;
 	outsideTm: any;
+	cartTotalCount = 0;
 
 	menuCanvasOptions: OffcanvasOptions = {
 		baseClass: 'kt-aside',
@@ -80,17 +82,29 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		private render: Renderer2,
 		private cdr: ChangeDetectorRef,
 		private auth: AuthService,
-		private sharedService: SharedService
+		private sharedService: SharedService,
+		private shoppingCartService: ShoppingCartService,
+		private ref: ChangeDetectorRef
 	) {
 		this.router.events.subscribe(event => {
-            if (event instanceof NavigationEnd) {
-                if (event.url != '/logout' && event.url != '/auth' && event.url != '/login')
-                    this.returnUrl = event.url;
-            }
-        });
+			if (event instanceof NavigationEnd) {
+				if (event.url != '/logout' && event.url != '/auth' && event.url != '/login')
+					this.returnUrl = event.url;
+			}
+		});
 	}
 
 	ngAfterViewInit(): void {
+		this.shoppingCartService.cartCount$
+			.subscribe((ct) => {
+				if (ct != null) {
+					Promise.resolve(null).then(() => {
+						this.cartTotalCount = ct;
+						console.log(this.cartTotalCount);
+						this.ref.detectChanges();
+					});
+				}
+			});
 	}
 
 	ngOnInit() {
@@ -148,46 +162,46 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 	 * Use for fixed left aside menu, to show menu on mouseenter event.
 	 * @param e Event
 	 */
-	// mouseEnter(e: Event) {
-	// 	// check if the left aside menu is fixed
-	// 	if (document.body.classList.contains('kt-aside--fixed')) {
-	// 		if (this.outsideTm) {
-	// 			clearTimeout(this.outsideTm);
-	// 			this.outsideTm = null;
-	// 		}
+	mouseEnter(e: Event) {
+		// check if the left aside menu is fixed
+		if (document.body.classList.contains('kt-aside--fixed')) {
+			if (this.outsideTm) {
+				clearTimeout(this.outsideTm);
+				this.outsideTm = null;
+			}
 
-	// 		this.insideTm = setTimeout(() => {
-	// 			// if the left aside menu is minimized
-	// 			if (document.body.classList.contains('kt-aside--minimize') && KTUtil.isInResponsiveRange('desktop')) {
-	// 				// show the left aside menu
-	// 				this.render.removeClass(document.body, 'kt-aside--minimize');
-	// 				this.render.addClass(document.body, 'kt-aside--minimize-hover');
-	// 			}
-	// 		}, 50);
-	// 	}
-	// }
+			this.insideTm = setTimeout(() => {
+				// if the left aside menu is minimized
+				if (document.body.classList.contains('kt-aside--minimize') && KTUtil.isInResponsiveRange('desktop')) {
+					// show the left aside menu
+					this.render.removeClass(document.body, 'kt-aside--minimize');
+					this.render.addClass(document.body, 'kt-aside--minimize-hover');
+				}
+			}, 50);
+		}
+	}
 
 	/**
 	 * Use for fixed left aside menu, to show menu on mouseenter event.
 	 * @param e Event
 	 */
-	// mouseLeave(e: Event) {
-	// 	if (document.body.classList.contains('kt-aside--fixed')) {
-	// 		if (this.insideTm) {
-	// 			clearTimeout(this.insideTm);
-	// 			this.insideTm = null;
-	// 		}
+	mouseLeave(e: Event) {
+		if (document.body.classList.contains('kt-aside--fixed')) {
+			if (this.insideTm) {
+				clearTimeout(this.insideTm);
+				this.insideTm = null;
+			}
 
-	// 		this.outsideTm = setTimeout(() => {
-	// 			// if the left aside menu is expand
-	// 			if (document.body.classList.contains('kt-aside--minimize-hover') && KTUtil.isInResponsiveRange('desktop')) {
-	// 				// hide back the left aside menu
-	// 				this.render.removeClass(document.body, 'kt-aside--minimize-hover');
-	// 				this.render.addClass(document.body, 'kt-aside--minimize');
-	// 			}
-	// 		}, 100);
-	// 	}
-	// }
+			this.outsideTm = setTimeout(() => {
+				// if the left aside menu is expand
+				if (document.body.classList.contains('kt-aside--minimize-hover') && KTUtil.isInResponsiveRange('desktop')) {
+					// hide back the left aside menu
+					this.render.removeClass(document.body, 'kt-aside--minimize-hover');
+					this.render.addClass(document.body, 'kt-aside--minimize');
+				}
+			}, 100);
+		}
+	}
 
 	/**
 	 * Returns Submenu CSS Class Name
@@ -238,8 +252,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			res => {
 				localStorage.clear();
 				this.sharedService.role.next(null);
-				this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl }});
-
+				this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl } });
 			}
 		), catchError(err => {
 			throw err

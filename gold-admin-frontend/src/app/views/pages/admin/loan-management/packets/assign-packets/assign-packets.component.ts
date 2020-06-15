@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { PacketsService } from '../../../../../../core/loan-management';
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-assign-packets',
@@ -12,15 +13,22 @@ import { PacketsService } from '../../../../../../core/loan-management';
 export class AssignPacketsComponent implements OnInit {
   packetForm: FormGroup;
   title: string;
+  branches = [];
+  details: any;
+
   constructor(
     public dialogRef: MatDialogRef<AssignPacketsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private toastr: ToastrService,
-    private packetsService: PacketsService
-  ) { }
+    private packetsService: PacketsService,
+    private sharedService: SharedService
+  ) {
+    this.details = this.sharedService.getDataFromStorage()
+  }
 
   ngOnInit() {
+    this.getInternalBranhces();
     this.initForm();
     this.setForm();
   }
@@ -41,7 +49,8 @@ export class AssignPacketsComponent implements OnInit {
   initForm() {
     this.packetForm = this.fb.group({
       id: [],
-      packetUniqueId: ['', [Validators.required]]
+      packetUniqueId: ['', [Validators.required]],
+      internalBranchId: ['', [Validators.required]],
     })
   }
 
@@ -89,5 +98,11 @@ export class AssignPacketsComponent implements OnInit {
 
   get controls() {
     return this.packetForm.controls;
+  }
+
+  getInternalBranhces() {
+    this.packetsService.getInternalBranhces().subscribe(res => {
+      this.branches = res.data;
+    });
   }
 }

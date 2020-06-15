@@ -66,6 +66,20 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="kycStatus">
+                    <mat-header-cell *matHeaderCellDef>KYC Status</mat-header-cell>
+                    <mat-cell *matCellDef="let lead">
+                        <span class="text-success" *ngIf="lead.kycStatus == 'approved'">
+                            {{lead.kycStatus | titlecase}} </span>
+                        <span class="text-warning" *ngIf="lead.kycStatus == 'pending'">
+                            {{lead.kycStatus | titlecase}}
+                        </span>
+                        <span class="text-danger" *ngIf="lead.kycStatus == 'rejected'">
+                            {{lead.kycStatus | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="kyc">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let lead">
@@ -81,6 +95,7 @@
                                     *ngxPermissionsOnly="['customerKycAdd']">Apply KYC</button>
                             </div>
                         </ng-container>
+
                     </mat-cell>
                 </ng-container>
 

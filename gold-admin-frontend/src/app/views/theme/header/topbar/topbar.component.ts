@@ -45,6 +45,7 @@ import { ReasonsService } from '../../../../core/masters/reasons/services/reason
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
 import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
+import { ShoppingCartService } from '../../../../core/merchant-broker';
 
 @Component({
 	selector: "kt-topbar",
@@ -128,7 +129,8 @@ export class TopbarComponent implements OnInit {
 		private appliedKycService: AppliedKycService,
 		private appliedLoan: AppliedLoanService,
 		private leadSourceService: LeadSourceService,
-		private shopService: ShopService
+		private shopService: ShopService,
+		private shoppingCartService: ShoppingCartService,
 	) {
 
 		this.router.events.subscribe(val => {
@@ -193,6 +195,17 @@ export class TopbarComponent implements OnInit {
 					this.breadcrumbs = bc;
 				});
 			})
+		);
+		this.subscriptions.push(
+			this.shoppingCartService.cartCount$
+				.pipe(takeUntil(this.destroy$))
+				.subscribe((ct) => {
+					if (ct != null) {
+						Promise.resolve(null).then(() => {
+							this.totalRecords = ct;
+						});
+					}
+				})
 		);
 	}
 
@@ -271,7 +284,7 @@ export class TopbarComponent implements OnInit {
 			this.filterName = "leads";
 			this.filterWidth = "900px";
 			this.permissionType = "leadManagmentAdd";
-			this.listType = "state";
+			this.listType = "state,leadStatus";
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();

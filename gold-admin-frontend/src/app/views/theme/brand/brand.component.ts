@@ -10,10 +10,7 @@ import { GoldRateService } from '../../../core/upload-data/gold-rate/gold-rate.s
 @Component({
 	selector: 'kt-brand',
 	styles: [`.gold-rate{
-		font-weight: 600;
-		color: #ffde9c;
-		 background-color: #454D67; 
-		 padding: 15px 0; 
+		 
 		 /* padding-left: 62px ; */
 	}`],
 	templateUrl: './brand.component.html',

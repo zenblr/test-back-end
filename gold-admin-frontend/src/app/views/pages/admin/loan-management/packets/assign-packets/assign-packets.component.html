@@ -10,11 +10,34 @@
                         </div>
                         <div class="col-8">
                             <input type="text" class="form-control" formControlName="packetUniqueId"
+                                placeholder="PAC-01"
                                 [class.isError]="packetForm.controls.packetUniqueId.invalid &&  packetForm.controls.packetUniqueId.touched">
+                            <mat-error
+                                *ngIf="controls.packetUniqueId.touched && controls.packetUniqueId.errors?.required">
+                                Required field
+                            </mat-error>
                         </div>
-                        <mat-error *ngIf="controls.packetUniqueId.touched && controls.packetUniqueId.errors?.required">
-                            Required field
-                        </mat-error>
+                    </div>
+
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Branch</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="internalBranchId"
+                                [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
+                                <option value="" [disabled]="true" [selected]="true"> Select Branch
+                                </option>
+                                <option *ngFor="let branch of branches" [value]="branch.id">
+                                    {{branch.name | titlecase}}
+                                </option>
+                            </select>
+                            <mat-error
+                                *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+
                     </div>
                 </div>
             </div>

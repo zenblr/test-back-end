@@ -88,6 +88,12 @@ export class SharedService {
 		return this.http.get<any>(API_ENDPOINT + `api/emi-details/all-emi-status`);
 	}
 
+	getLeadStatus(): Observable<any> {
+		return this.http.get<any>(
+			`/api/status`
+		);
+	}
+
 	getMerchant(): Observable<any> {
 		return this.http.get<any>(API_ENDPOINT + `api/merchant/all-merchant`);
 	}

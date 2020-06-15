@@ -31,6 +31,9 @@ export class PageConfig {
 				'packet-location': {
 					page: { title: "Packet Tracking", desc: "" },
 				},
+				'lead-source': {
+					page: { title: "Lead Source", desc: "" },
+				}
 			},
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
@@ -90,13 +93,16 @@ export class PageConfig {
 				merchant: {
 					page: { title: "All Merchants", desc: "" },
 				},
+				broker: {
+					page: { title: "Brokers", desc: "" },
+				},
 				store: {
 					page: { title: "Store", desc: "" },
 				},
-				role: {
+				roles: {
 					page: { title: "Roles", desc: "" },
 					id: {
-						page: { title: "Roles", desc: "" },
+						page: { title: "Permissions", desc: "" },
 					}
 				}
 			},

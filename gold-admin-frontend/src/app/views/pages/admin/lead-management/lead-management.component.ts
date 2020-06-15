@@ -18,7 +18,7 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kyc', 'actions', 'view'];
+  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -122,7 +122,7 @@ export class LeadManagementComponent implements OnInit {
     console.log(data);
     this.queryParamsData.cityId = data.data.cities;
     this.queryParamsData.stateId = data.data.states;
-    this.queryParamsData.statusId = data.data.status;
+    this.queryParamsData.statusId = data.data.leadStatus;
     this.dataSource.loadLeads(this.queryParamsData);
     this.filteredDataList = data.list;
   }

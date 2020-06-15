@@ -7,6 +7,8 @@ import { API_ENDPOINT } from '../../../../app.constant';
     providedIn: "root",
 })
 export class ShoppingCartService {
+    cartCount = new BehaviorSubject(0);
+    cartCount$ = this.cartCount.asObservable();
 
     constructor(private http: HttpClient) { }
 

@@ -28,6 +28,7 @@ export class OrdersComponent implements OnInit {
   dataSource: OrdersDatasource;
   displayedColumns = [
     "storeId",
+    "customerName",
     "userId",
     "mobileNumber",
     "orderId",
@@ -61,6 +62,7 @@ export class OrdersComponent implements OnInit {
     orderemistatus: "",
   };
   filteredDataList = {};
+
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
@@ -71,7 +73,6 @@ export class OrdersComponent implements OnInit {
     private orderDetailsService: OrderDetailsService,
     private cancelOrderDetailsService: CancelOrderDetailsService,
     private router: Router,
-
   ) { }
 
   ngOnInit() {
@@ -144,5 +145,12 @@ export class OrdersComponent implements OnInit {
 
   cancelOrder(element) {
     this.router.navigate(["/broker/orders/cancel-order/", element.id]);
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach(el => el.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
   }
 }

@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
 import { OrnamentsService } from '../../../../../../../core/masters/ornaments/services/ornaments.service';
+import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
 
 
 @Component({
@@ -139,14 +140,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     })
 
     this.ornamentsForm.valueChanges.subscribe(() => {
-      if (this.ornamentsForm.valid) {
-        this.totalAmount = 0;
-        this.OrnamentsData.value.forEach(element => {
-          this.totalAmount += Number(element.loanAmount)
-        });
-        this.totalAmount = Math.round(this.totalAmount)
-        this.totalAmt.emit(this.totalAmount)
-      }
+      // if (this.ornamentsForm.valid) {
+      this.totalAmount = 0;
+      this.OrnamentsData.value.forEach(element => {
+        this.totalAmount += Number(element.loanAmount)
+      });
+      this.totalAmount = Math.round(this.totalAmount)
+      this.totalAmt.emit(this.totalAmount)
+      // }
     })
 
   }
@@ -233,6 +234,25 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.images.push(data)
   }
 
+  removeOrnaments(idx) {
+    
+    if (this.left > 150) {
+      let tempWidth = (this.OrnamentsData.length * 130) - 130
+      if (this.width >= 130 && tempWidth < 910) {
+        this.left = this.left - 130
+        this.width = tempWidth;
+      }
+      const left = (this.left).toString() + 'px'
+      const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
+      width.style.maxWidth = left
+      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
+      addmore.style.left =  (this.width).toString() + 'px'
+
+    }
+    this.images.splice(idx, 1)
+    this.OrnamentsData.removeAt(idx)
+  }
+
   selectKarat(index) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
     controls.controls.ltvPercent.reset()
@@ -246,7 +266,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string, ) {
+  uploadFile(index, event, string,) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
@@ -295,12 +315,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           temp = controls.controls.purityTest.value
 
         if (!temp.includes(url))
-          
-        if (typeof url == "object") {
-          temp = url
-        } else {
-          temp.push(url)
-        }
+
+          if (typeof url == "object") {
+            temp = url
+          } else {
+            temp.push(url)
+          }
         this.images[index].purity = temp
         controls.controls.purityTest.patchValue(this.images[index].purity)
         this.purity.nativeElement.value = ''
@@ -419,6 +439,26 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     ).subscribe()
     console.log(this.ornamentsForm.value, this.totalAmount)
 
+  }
+
+  webcam(index, event, string) {
+    const dialogRef = this.dilaog.open(WebcamDialogComponent,
+      {
+        data: {},
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+          console.log(res)
+          this.patchUrlIntoForm(string, res.uploadFile.URL, index)
+          // this.profile = res.uploadFile.URL
+          // this.personalForm.get('profileImage').patchValue(this.profile);
+          this.ref.detectChanges()
+        })
+        // this.controls.
+      }
+    });
   }
 
 }
