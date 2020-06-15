@@ -103,7 +103,7 @@ export class CancelOrderComponent implements OnInit {
         this.router.navigate(["/broker/orders"]);
       },
       error => {
-        this.toastr.errorToastr("Invalid OTP");
+        this.toastr.errorToastr(error.error);
       })
   }
 }
