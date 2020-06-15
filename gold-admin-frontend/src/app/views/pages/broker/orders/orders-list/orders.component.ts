@@ -28,6 +28,7 @@ export class OrdersComponent implements OnInit {
   dataSource: OrdersDatasource;
   displayedColumns = [
     "storeId",
+    "customerName",
     "userId",
     "mobileNumber",
     "orderId",
