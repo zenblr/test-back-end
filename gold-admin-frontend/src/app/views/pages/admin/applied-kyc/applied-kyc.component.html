@@ -42,14 +42,15 @@
                 <ng-container matColumnDef="kycStatus">
                     <mat-header-cell *matHeaderCellDef>KYC Status</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span class="text-success" *ngIf="role.customer.kycStatus == 'approved'">
-                            {{role.customer.kycStatus | titlecase}}
+                        <span class="text-success" *ngIf="role.customerKycClassification.kycStatusFromBm == 'approved'">
+                            {{role.customerKycClassification.kycStatusFromBm | titlecase}}
                         </span>
-                        <span class="text-warning" *ngIf="role.customer.kycStatus == 'pending'">
-                            {{role.customer.kycStatus | titlecase}}
+                        <span class="text-warning"
+                            *ngIf="role.customerKycClassification.kycStatusFromBm == 'incomplete'">
+                            {{role.customerKycClassification.kycStatusFromBm | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="role.customer.kycStatus == 'rejected'">
-                            {{role.customer.kycStatus | titlecase}}
+                        <span class="text-danger" *ngIf="role.customerKycClassification.kycStatusFromBm == 'rejected'">
+                            {{role.customerKycClassification.kycStatusFromBm | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -111,7 +112,7 @@
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Cutomer ID</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                            {{role.customer.customerUniqueId | uppercase}}
+                        {{role.customer.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
 

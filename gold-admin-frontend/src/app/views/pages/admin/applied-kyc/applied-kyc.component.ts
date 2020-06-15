@@ -18,7 +18,7 @@ import { AddAppraiserComponent } from '../user-management/assign-appraiser/add-a
 })
 export class AppliedKycComponent implements OnInit {
 
-  filteredDataList:any = {};
+  filteredDataList: any = {};
   dataSource: AppliedKycDatasource;
   displayedColumns = ['fullName', 'pan', 'customerId', 'appraiserName', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
   leadsResult = []
@@ -77,6 +77,7 @@ export class AppliedKycComponent implements OnInit {
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadPage();
       });
@@ -124,7 +125,7 @@ export class AppliedKycComponent implements OnInit {
     this.filter$.next();
     this.filter$.complete();
     this.appliedKycService.applyFilter.next({});
-		this.sharedService.closeFilter.next(true);
+    this.sharedService.closeFilter.next(true);
   }
 
   editKyc(data) {
@@ -141,7 +142,7 @@ export class AppliedKycComponent implements OnInit {
 
   assign(item) {
     // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', customer: item.customer,id:item.customerId }, width: '500px' });
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
