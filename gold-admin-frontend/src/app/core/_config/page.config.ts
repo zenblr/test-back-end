@@ -109,6 +109,14 @@ export class PageConfig {
 			"lead-management": {
 				page: { title: "All Leads", desc: "" },
 			},
+			"account": {
+				"loan-disbursement": {
+					page: { title: "Loan Disbursement", desc: "" },
+				},
+				"loan-repayment": {
+					page: { title: "Loan Repayment", desc: "" },
+				}
+			},
 			repayment: {
 				monthly: {
 					page: { title: "Monthly Repayment", desc: "" },

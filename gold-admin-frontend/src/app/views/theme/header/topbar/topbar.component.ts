@@ -45,6 +45,8 @@ import { ReasonsService } from '../../../../core/masters/reasons/services/reason
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
 import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
+import { LoanRepaymentService } from '../../../../core/account/loan-repayment/services/loan-repayment.service';
+import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -128,7 +130,9 @@ export class TopbarComponent implements OnInit {
 		private appliedKycService: AppliedKycService,
 		private appliedLoan: AppliedLoanService,
 		private leadSourceService: LeadSourceService,
-		private shopService: ShopService
+		private shopService: ShopService,
+		private loanRepaymentService: LoanRepaymentService,
+		private loanDisbursementService: LoanDisbursementService,
 	) {
 
 		this.router.events.subscribe(val => {
@@ -487,6 +491,18 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.showBackButton = true;
 		}
+		if (this.path == "loan-repayment") {
+			this.value1 = "Add Loan Repayment";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
+		}
+		if (this.path == "loan-disbursement") {
+			this.value1 = "Add Loan Disbursement";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
+		}
 		if (location.href.includes("edit-refund-details")) {
 			this.showBackButton = true;
 		}
@@ -634,6 +650,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'lead-source') {
 			this.leadSourceService.openModal.next(true)
+		}
+		if (this.path == 'loan-disbursement') {
+			this.loanDisbursementService.openModal.next(true)
+		}
+		if (this.path == 'loan-repayment') {
+			this.loanRepaymentService.openModal.next(true)
 		}
 	}
 

@@ -316,12 +316,12 @@ export class MenuConfig {
 							submenu: [
 								{
 									title: "Loan Disbursed Details",
-									page: "/admin/Loan-disbursed-detail",
+									page: "/admin/account/loan-disbursement",
 									permission: false,
 								},
 								{
 									title: "Loan Repayment Details",
-									page: "/admin/Loan-repayment-detail",
+									page: "/admin/account/loan-repayment",
 									permission: false,
 								},
 							],
