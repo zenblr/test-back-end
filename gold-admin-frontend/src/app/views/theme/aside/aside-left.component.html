@@ -115,7 +115,7 @@
 	<i *ngIf="item.submenu" class="kt-menu__ver-arrow la la-angle-right"></i>
 
 	<!-- if menu item is cart then put cart count -->
-	<span *ngIf="item.count" class="kt-menu__link-count pl-1"> ({{cartTotalCount}})</span>
+	<span *ngIf="item.count && cartTotalCount" class="kt-menu__link-count pl-1"> ({{cartTotalCount}})</span>
 </ng-template>
 
 <ng-template #menuItemSeparatorTemplate let-item="item" let-parentItem="parentItem">

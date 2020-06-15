@@ -84,6 +84,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		private auth: AuthService,
 		private sharedService: SharedService,
 		private shoppingCartService: ShoppingCartService,
+		private ref: ChangeDetectorRef
 	) {
 		this.router.events.subscribe(event => {
 			if (event instanceof NavigationEnd) {
@@ -100,6 +101,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 					Promise.resolve(null).then(() => {
 						this.cartTotalCount = ct;
 						console.log(this.cartTotalCount);
+						this.ref.detectChanges();
 					});
 				}
 			});
@@ -251,7 +253,6 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 				localStorage.clear();
 				this.sharedService.role.next(null);
 				this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl } });
-
 			}
 		), catchError(err => {
 			throw err
