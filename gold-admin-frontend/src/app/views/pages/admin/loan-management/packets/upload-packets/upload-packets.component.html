@@ -41,14 +41,14 @@
             <div class="row" [formGroupName]="idx">
                 <div class="col-3 ">
                     <div class="img-container packets" *ngIf="!packet.controls.emptyPacketWithNoOrnament.value"
-                        (click)="emptyPacketWithNoOrnament.click()">
+                        (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
                         <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                     </div>
                     <img class="packets position-relative" [src]="packet.controls.emptyPacketWithNoOrnament.value"
                         *ngIf="packet.controls.emptyPacketWithNoOrnament.value">
                     <img *ngIf="packet.controls.emptyPacketWithNoOrnament.value && url != 'view-loan'"
                         src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                        (click)="emptyPacketWithNoOrnament.click()">
+                        (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with No
                         Ornaments</label>
                     <div>
@@ -61,14 +61,14 @@
                 </div>
                 <div class="col-3 ">
                     <div class="img-container packets" *ngIf="!packet.controls.packetWithAllOrnaments.value"
-                        (click)="packetWithAllOrnaments.click()">
+                        (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
                         <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                     </div>
                     <img class="packets position-relative" [src]="packet.controls.packetWithAllOrnaments.value"
                         *ngIf="packet.controls.packetWithAllOrnaments.value">
                     <img *ngIf="packet.controls.packetWithAllOrnaments.value && url != 'view-loan'"
                         src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                        (click)="packetWithAllOrnaments.click()">
+                        (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with All
                         Ornaments</label>
                     <div>
@@ -81,14 +81,14 @@
                 </div>
                 <div class="col-3 ">
                     <div class="img-container packets" *ngIf="!packet.controls.packetWithSealing.value"
-                        (click)="packetWithSealing.click()">
+                        (click)="webcam(idx,$event,'packetWithSealing')">
                         <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                     </div>
                     <img class="packets position-relative" [src]="packet.controls.packetWithSealing.value"
                         *ngIf="packet.controls.packetWithSealing.value">
                     <img *ngIf="packet.controls.packetWithSealing.value && url != 'view-loan'"
                         src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                        (click)="packetWithSealing.click()">
+                        (click)="webcam(idx,$event,'packetWithSealing')">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with
                         Sealing</label>
                     <div>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="col-3">
                     <div class="img-container packets" *ngIf="!packet.controls.packetWithWeight.value"
-                        (click)="packetWithWeight.click()">
+                        (click)="webcam(idx,$event,'packetWithWeight')">
                         <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                     </div>
                     <!-- <span class="pos-action"> -->
@@ -111,7 +111,7 @@
                     <!-- </span> -->
                     <img *ngIf="packet.controls.packetWithWeight.value && url != 'view-loan'"
                         src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                        (click)="packetWithWeight.click()">
+                        (click)="webcam(idx,$event,'packetWithWeight')">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with
                         Weight</label>
                     <div>

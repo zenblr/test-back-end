@@ -6,6 +6,8 @@ import { PacketsService } from '../../../../../../core/loan-management';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
+import { WebcamDialogComponent } from '../../../kyc-settings/webcam-dialog/webcam-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'kt-upload-packets',
@@ -39,7 +41,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private router: Router,
     private toast: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private dilaog:MatDialog
   ) { }
 
 
@@ -179,9 +182,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       this.sharedService.uploadFile(event.target.files[0]).pipe(
         map(res => {
-          const packet = this.packets.at(index) as FormArray
-          packet.controls[value].patchValue(res.uploadFile.URL)
-          console.log(this.packets.value)
+          
         }),
         catchError(err => {
           throw err
@@ -249,6 +250,28 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       }
       // this.store.dispatch(new RoleDeleted({ id: _item.id }));
       // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
+    });
+  }
+
+  webcam(index, event, value) {
+    const dialogRef = this.dilaog.open(WebcamDialogComponent,
+      {
+        data: {},
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+          console.log(res)
+          const packet = this.packets.at(index) as FormArray
+          packet.controls[value].patchValue(res.uploadFile.URL)
+          console.log(this.packets.value)
+          // this.profile = res.uploadFile.URL
+          // this.personalForm.get('profileImage').patchValue(this.profile);
+          this.ref.detectChanges()
+        })
+        // this.controls.
+      }
     });
   }
 

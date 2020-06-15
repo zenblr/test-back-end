@@ -12,6 +12,7 @@ import { LoanApplicationFormService } from '../../../../../../../core/loan-manag
 import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
 import { OrnamentsService } from '../../../../../../../core/masters/ornaments/services/ornaments.service';
 import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
+import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
 
 
 @Component({
@@ -60,6 +61,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public router: Router,
     public loanApplicationFormService: LoanApplicationFormService,
     public ornamentTypeService: OrnamentsService,
+    public layoutUtilsService:LayoutUtilsService
   ) {
 
   }
@@ -236,6 +238,21 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       ornamentImage: ''
     }
     this.images.push(data)
+  }
+
+  deleteOrnaments(idx) {
+    const _title = 'Delete Packet';
+    const _description = 'Are you sure to permanently delete this packet?';
+    const _waitDesciption = 'Packet is deleting...';
+    const _deleteMessage = `Packet has been deleted`;
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+       this.removeOrnaments(idx)
+      }
+      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
+      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
+    });
   }
 
   removeOrnaments(idx) {
