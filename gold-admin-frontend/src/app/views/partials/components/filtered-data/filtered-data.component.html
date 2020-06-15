@@ -104,6 +104,16 @@
                         </div>
                     </div>
                     <!-- lead -->
+                    <div class="filtered-data" *ngIf="filteredList?.leadStatus">
+                        <div class="filtered-title">By Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.leadStatus; let i = index;">
+                                <span>{{item?.statusName | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('leadStatus', i)">
+                            </div>
+                        </div>
+                    </div>
                     <div class="filtered-data" *ngIf="filteredList?.states">
                         <div class="filtered-title">By State</div>
                         <div class="d-flex">
@@ -150,7 +160,8 @@
                     <div class="filtered-data" *ngIf="filteredList?.appraiserStatus">
                         <div class="filtered-title">By CCE Status</div>
                         <div class="d-flex">
-                            <div class="filtered-value" *ngFor="let item of filteredList?.appraiserStatus; let i = index;">
+                            <div class="filtered-value"
+                                *ngFor="let item of filteredList?.appraiserStatus; let i = index;">
                                 <span>{{item?.name | titlecase}}</span>
                                 <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
                                     (click)="clearFilter('appraiserStatus',i)">

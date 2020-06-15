@@ -653,6 +653,7 @@ export class MenuConfig {
 							root: true,
 							page: "/broker/cart",
 							src: "assets/media/aside-icons/icons-01.svg",
+							count: true,
 							permission: false,
 						},
 						{

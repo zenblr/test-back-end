@@ -148,9 +148,6 @@ export class UserPersonalComponent implements OnInit {
   }
 
   submit() {
-
-    console.log(this.personalForm.value);
-
     if (this.personalForm.invalid) {
       this.personalForm.markAllAsTouched()
       if (this.controls.profileImage.invalid) {

@@ -29,7 +29,7 @@ export class OrdersService {
 		if (event && event.orderemistatus) {
 			reqParams.orderemistatus = event.orderemistatus;
 		}
-		return this.http.get<any>(API_ENDPOINT + `api/order/merchant-order`, {
+		return this.http.get<any>(API_ENDPOINT + `api/order`, {
 			params: reqParams,
 		});
 	}

@@ -61,8 +61,7 @@
                 <ng-container matColumnDef="customerName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.order?.customerDetails?.firstName ? element?.order?.customerDetails?.firstName : '-'}}&nbsp;
-                        {{element?.order?.customerDetails?.lastName}}
+                        {{element?.order?.customerDetails?.firstName || element?.order?.customerDetails?.lastName ? (element?.order?.customerDetails?.firstName + ' ' + element?.order?.customerDetails?.lastName | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
@@ -85,10 +84,20 @@
                         </div>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="emiPaidAmount">
+                    <mat-header-cell *matHeaderCellDef class="align-right">EMI Paid Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.emiPaidAmount ? element?.emiPaidAmount : '-'}}</mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="emiAmount">
                     <mat-header-cell *matHeaderCellDef class="align-right">EMI Amount</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
                         {{element?.emiAmount ? element?.emiAmount : '-'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="emiPendingAmount">
+                    <mat-header-cell *matHeaderCellDef class="align-right">EMI Pending Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.emiBalancePayment ? element?.emiBalancePayment : '-'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="emiPaidDate">
                     <mat-header-cell *matHeaderCellDef>EMI Paid Date</mat-header-cell>
