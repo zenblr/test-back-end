@@ -3,8 +3,8 @@
         <div class="col-3">
             <select class="form-control packet-dropdown" formControlName="packetId"
                 [class.isError]="packetInfo.controls.packetId.invalid && packetInfo.controls.packetId.touched">
-                <option value="" [selected]="true">Select Packet</option>
-                <option [value]="packet.id" *ngFor="let packet of packetsDetails; index as idx">
+                <option value=null [selected]="true">Select Packet</option>
+                <option [value]="packet.id" [disabled]="packet.disabled" *ngFor="let packet of packetsDetails; index as idx">
                     {{packet.packetUniqueId | uppercase}}</option>
             </select>
             <mat-error *ngIf="packetInfo.controls.packetId.invalid && packetInfo.controls.packetId.touched">
@@ -34,9 +34,9 @@
     <mat-tab-group [formGroup]="packetImg" >
         <mat-tab formArrayName="packetsArray" label="" *ngFor="let packet of packets.controls;index as idx">
             <ng-template mat-tab-label>
-                {{packet.controls.packetsName.value | uppercase}}
-                <img *ngIf="packets.length > 1" class="removeImageSize kt-padding-l-5 kt-pointer"
-                    [src]="'assets/media/icons/cancel.png'" (click)="removePacketsTab(idx)" />
+                {{packet.controls.packetsName.value.packetUniqueId | uppercase}}
+                <img class="removeImageSize kt-padding-l-10 kt-pointer"
+                    [src]="'assets/media/icons/cancel.png'" (click)="deletePacket(idx)" />
             </ng-template>
             <div class="row" [formGroupName]="idx">
                 <div class="col-3 ">

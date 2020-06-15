@@ -1,17 +1,18 @@
-import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { PacketsService } from '../../../../../../core/loan-management';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 
 @Component({
   selector: 'kt-upload-packets',
   templateUrl: './upload-packets.component.html',
   styleUrls: ['./upload-packets.component.scss']
 })
-export class UploadPacketsComponent implements OnInit, AfterViewInit,OnChanges {
+export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() viewpacketsDetails;
   @ViewChild('form', { static: false }) form;
@@ -36,15 +37,17 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit,OnChanges {
     private packetService: PacketsService,
     private route: ActivatedRoute,
     private router: Router,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private layoutUtilsService: LayoutUtilsService,
+    private ref: ChangeDetectorRef
   ) { }
 
 
-ngOnChanges(change:SimpleChanges){
-  if(change.ornamentType){
-    this.ornamentType = change.ornamentType.currentValue
+  ngOnChanges(change: SimpleChanges) {
+    if (change.ornamentType) {
+      this.ornamentType = change.ornamentType.currentValue
+    }
   }
-}
 
 
 
@@ -77,8 +80,8 @@ ngOnChanges(change:SimpleChanges){
 
   initForm() {
     this.packetInfo = this.fb.group({
-      ornamentType: [null,Validators.required],
-      packetId: ['',Validators.required],
+      ornamentType: [null, Validators.required],
+      packetId: [null, Validators.required],
     })
   }
 
@@ -97,7 +100,8 @@ ngOnChanges(change:SimpleChanges){
   getPacketsDetails() {
     this.packetService.getPacketsAvailable().pipe(
       map(res => {
-        this.packetsDetails = res.data
+        this.packetsDetails = res.data;
+        this.packetsDetails.map(ele => ele.disabled = false)
       })
     ).subscribe()
   }
@@ -195,10 +199,11 @@ ngOnChanges(change:SimpleChanges){
     let index = this.packetsDetails.findIndex(ele => {
       return ele.id == this.controls.packetId.value;
     })
-    this.packetsName = this.packetsDetails[index].packetUniqueId
+    this.packetsName = this.packetsDetails[index]
+    this.packetsDetails[index].disabled = true
     console.log(this.controls.packetId.value)
 
-    this.packetsDetails.splice(index, 1)
+    // this.packetsDetails.splice(index, 1)
   }
 
   save() {
@@ -206,11 +211,45 @@ ngOnChanges(change:SimpleChanges){
       this.packetImg.markAllAsTouched()
       return
     }
-    this.packetService.uploadPackets(this.packets.value, this.loanId).pipe(
-      map(res => {
-        this.toast.success(res.message)
-        this.router.navigate(['/admin/loan-management/applied-loan'])
-      })
-    ).subscribe()
+    const _title = 'Save Packet';
+    const _description = 'Are you sure ,you want to save packets?';
+    const _waitDesciption = 'Packet is saving...';
+    const _deleteMessage = `Packet has been saved`;
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.packetService.uploadPackets(this.packets.value, this.loanId).pipe(
+          map(res => {
+            this.toast.success(res.message)
+            this.router.navigate(['/admin/loan-management/applied-loan'])
+          })
+        ).subscribe()
+      }
+      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
+      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
+    });
+
   }
+
+  deletePacket(idx) {
+    const _title = 'Delete Packet';
+    const _description = 'Are you sure to permanently delete this packet?';
+    const _waitDesciption = 'Packet is deleting...';
+    const _deleteMessage = `Packet has been deleted`;
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        const controls = this.packets.at(idx) as FormGroup;
+        let index = this.packetsDetails.findIndex(ele => {
+          return ele.id == controls.controls.packetsName.value.id;
+        })
+        this.packetsDetails[index].disabled = false
+        this.packets.removeAt(idx);
+        this.ref.detectChanges()
+      }
+      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
+      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
+    });
+  }
+
 }
