@@ -74,11 +74,11 @@
                                 <td>{{data.emiAmount}}</td>
                                 <td>{{data.dueDate ? (data.dueDate | date:'dd MMM yyyy') : '-'}}</td>
                                 <td>{{data.orderemistatus.statusName | titlecase}}</td>
-                                <td *ngIf="data.orderStatusId == 1">
+                                <!-- <td *ngIf="data.orderStatusId == 1">
                                     <button type="button" class="btn btn-outline" (click)="getEmiAmount(data.id)">Pay
                                         EMI</button>
-                                </td>
-                                <td *ngIf="data.orderStatusId != 1">
+                                </td> -->
+                                <td *ngIf="data.orderStatusId != 1 && data.orderStatusId != 15">
                                     <button type="button" class="btn btn-outline"
                                         (click)="printEmiReceipt(data.id)">Print EMI Receipt</button>
                                 </td>

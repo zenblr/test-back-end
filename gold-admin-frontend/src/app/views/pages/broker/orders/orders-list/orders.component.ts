@@ -41,7 +41,8 @@ export class OrdersComponent implements OnInit {
     "performa",
     "contract",
     "cancelReceipt",
-    "orderPayment"
+    "orderPayment",
+    "cancelOrder"
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("sort1", { static: true }) sort: MatSort;
@@ -139,5 +140,9 @@ export class OrdersComponent implements OnInit {
 
   viewOrPay(element) {
     this.router.navigate(["/broker/orders/view-pay/", element.id]);
+  }
+
+  cancelOrder(element) {
+    this.router.navigate(["/broker/orders/cancel-order/", element.id]);
   }
 }
