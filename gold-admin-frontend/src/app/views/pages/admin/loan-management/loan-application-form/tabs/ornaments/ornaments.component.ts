@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
 import { OrnamentsService } from '../../../../../../../core/masters/ornaments/services/ornaments.service';
+import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
 
 
 @Component({
@@ -140,12 +141,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.ornamentsForm.valueChanges.subscribe(() => {
       // if (this.ornamentsForm.valid) {
-        this.totalAmount = 0;
-        this.OrnamentsData.value.forEach(element => {
-          this.totalAmount += Number(element.loanAmount)
-        });
-        this.totalAmount = Math.round(this.totalAmount)
-        this.totalAmt.emit(this.totalAmount)
+      this.totalAmount = 0;
+      this.OrnamentsData.value.forEach(element => {
+        this.totalAmount += Number(element.loanAmount)
+      });
+      this.totalAmount = Math.round(this.totalAmount)
+      this.totalAmt.emit(this.totalAmount)
       // }
     })
 
@@ -295,12 +296,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           temp = controls.controls.purityTest.value
 
         if (!temp.includes(url))
-          
-        if (typeof url == "object") {
-          temp = url
-        } else {
-          temp.push(url)
-        }
+
+          if (typeof url == "object") {
+            temp = url
+          } else {
+            temp.push(url)
+          }
         this.images[index].purity = temp
         controls.controls.purityTest.patchValue(this.images[index].purity)
         this.purity.nativeElement.value = ''
@@ -419,6 +420,26 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     ).subscribe()
     console.log(this.ornamentsForm.value, this.totalAmount)
 
+  }
+
+  webcam(index, event, string) {
+    const dialogRef = this.dilaog.open(WebcamDialogComponent,
+      {
+        data: {},
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+          console.log(res)
+          this.patchUrlIntoForm(string, res.uploadFile.URL, index)
+          // this.profile = res.uploadFile.URL
+          // this.personalForm.get('profileImage').patchValue(this.profile);
+          this.ref.detectChanges()
+        })
+        // this.controls.
+      }
+    });
   }
 
 }

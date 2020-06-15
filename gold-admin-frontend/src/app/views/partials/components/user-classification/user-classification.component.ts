@@ -226,7 +226,7 @@ export class UserClassificationComponent implements OnInit {
           if (res) {
             this.toastr.success(this.titlecase.transform(res.message));
             // this.next.emit(true);
-            this.route.navigate(['/applied-kyc']);
+            this.route.navigate(['/admin/applied-kyc']);
           }
         })
       ).subscribe();
@@ -236,7 +236,7 @@ export class UserClassificationComponent implements OnInit {
           if (res) {
             this.toastr.success(this.titlecase.transform(res.message));
             // this.next.emit(true);
-            this.route.navigate(['/applied-kyc']);
+            this.route.navigate(['/admin/applied-kyc']);
 
           }
         })
