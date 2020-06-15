@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <kt-button [value]="'Search'" [type]="'submit'" (action)="getExistingCustomer()"></kt-button>
+                    <kt-button [value]="'Search'" [type]="'submit'" (action)="checkCustomerExist()"></kt-button>
                 </div>
             </div>
         </form>
@@ -104,6 +104,9 @@
                                 numbersOnly>
                             <mat-error *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
                                 Field is required
+                            </mat-error>
+                            <mat-error *ngIf="controls.mobileNumber.errors?.pattern && controls.mobileNumber.touched">
+                                Invalid Input
                             </mat-error>
                         </div>
                     </div>
