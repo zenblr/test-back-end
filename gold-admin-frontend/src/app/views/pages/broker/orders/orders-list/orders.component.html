@@ -60,6 +60,24 @@
                     <mat-cell *matCellDef="let element">
                         {{element?.quantity ? element?.quantity : '-'}}</mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="emiStart">
+                    <mat-header-cell *matHeaderCellDef>EMI Start Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div class="d-block">
+                            <div>{{element['emiStartDate'] ? (element['emiStartDate'] | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element['emiStartDate'] ? (element['emiStartDate'] | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="emiEnd">
+                    <mat-header-cell *matHeaderCellDef>EMI End Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div class="d-block">
+                            <div>{{element['emiEndDate'] ? (element['emiEndDate'] | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element['emiEndDate'] ? (element['emiEndDate'] | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element['orderCurrentStatus.id'] == 1 || element['orderCurrentStatus.id'] == 5,

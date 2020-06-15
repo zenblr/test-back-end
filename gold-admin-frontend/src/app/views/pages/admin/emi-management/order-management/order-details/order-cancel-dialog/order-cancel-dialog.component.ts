@@ -29,10 +29,8 @@ export class OrderCancelDialogComponent implements OnInit {
     this.orderId = this.route.snapshot.params.id;
     this.formInitialize();
     this.orderService.getCancelOrderPrice(this.orderId).subscribe(res => {
-      this.cancelData = res;
       this.bindValue(res);
     });
-    this.chRef.detectChanges();
   }
   formInitialize() {
     this.cancelForm = this.fb.group({
@@ -47,12 +45,12 @@ export class OrderCancelDialogComponent implements OnInit {
       differenceAmt: [''],
       totalCancellationCharges: [''],
       amtPayable: [''],
-      customerBankName: ['', Validators.required],
+      customerBankName: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')])],
       customerAccountNo: ['', Validators.required],
-      ifscCode: ['', Validators.required],
+      ifscCode: ['', Validators.compose([Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')])],
       cancellationCharges: ['', Validators.required],
-      passbookId: [0],
-      checkCopyId: [0],
+      passbookId: [null],
+      checkCopyId: [null],
       status: ['']
     });
   }
@@ -81,6 +79,8 @@ export class OrderCancelDialogComponent implements OnInit {
     }
 
     this.cancelForm.patchValue(data);
+    this.cancelData = value;
+    this.chRef.detectChanges();
   }
 
   uploadImage(data) {
@@ -110,7 +110,7 @@ export class OrderCancelDialogComponent implements OnInit {
     }
     // console.log(this.cancelForm.value);
     let params = {
-      cancellationCharges: this.controls.cancellationCharges.value,
+      cancellationCharges: Number(this.controls.cancellationCharges.value),
       customerBankName: this.controls.customerBankName.value,
       customerAccountNo: this.controls.customerAccountNo.value,
       ifscCode: this.controls.ifscCode.value,
@@ -121,6 +121,7 @@ export class OrderCancelDialogComponent implements OnInit {
     this.orderService.updateCancelOrder(this.orderId, params).subscribe(
       res => {
         this.toastr.successToastr("Order Cancelled Successfully");
+        this.router.navigate(["/admin/emi-management/order-details"]);
       }
     );
   }

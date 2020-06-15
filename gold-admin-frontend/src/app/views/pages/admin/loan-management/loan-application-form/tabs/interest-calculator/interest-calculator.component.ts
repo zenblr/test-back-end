@@ -44,6 +44,7 @@ export class InterestCalculatorComponent implements OnInit {
   editedDate: any;
   paymentType: string;
   approved: boolean = false
+  unSecuredAmount: number;
   constructor(
     private fb: FormBuilder,
     private partnerService: PartnerService,
@@ -206,10 +207,19 @@ export class InterestCalculatorComponent implements OnInit {
       let rbiLoanPercent = (scheme.rbiLoanPercent / 100)
       if (amt > this.totalAmt * rbiLoanPercent) {
         this.controls.finalLoanAmount.setErrors({ rbi: true })
+        return
       } else {
         this.controls.finalLoanAmount.setErrors(null)
 
+        
+      }
+      if (amt > this.totalAmt) {
+        this.controls.finalLoanAmount.setErrors({ eligible: true })
         return
+      } else {
+        this.controls.finalLoanAmount.setErrors(null)
+
+        
       }
 
 
@@ -264,9 +274,9 @@ export class InterestCalculatorComponent implements OnInit {
         (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
         / 360
 
-      let amt = Number(this.controls.finalLoanAmount.value) - maximumAmtAllowed
+      this.unSecuredAmount = Number(this.controls.finalLoanAmount.value) - maximumAmtAllowed
 
-      this.unSecuredInterestAmount = (amt *
+      this.unSecuredInterestAmount = (this.unSecuredAmount *
         (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
         / 360
 
@@ -362,8 +372,15 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   changeUnSecuredScheme() {
+    var data = { 
+      unsecuredSchemeAmount:this.unSecuredAmount,
+      unsecuredSchemeInterest:2,
+      unsecuredSchemeName:1,
+      calculation:this.dateOfPayment
+    }
     console.log('modal')
     const dialogRef = this.dialog.open(UnSecuredSchemeComponent, {
+      data:{unsecuredSchemeForm:data},
       width: '500px'
     });
   }

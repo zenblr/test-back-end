@@ -95,7 +95,7 @@
                 <ng-container matColumnDef="weight">
                     <mat-header-cell *matHeaderCellDef class="align-right">Weight</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element['product.weight'] ? element['product.weight'] : '-'}}
+                        {{element['weight'] ? element['weight'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderTotalAmount">
@@ -146,6 +146,12 @@
                     'text-green' : element['orderCurrentStatus.id'] != 1 || element['orderCurrentStatus.id'] != 5 ||
                     element['orderCurrentStatus.id'] != 9 || element['orderCurrentStatus.id'] != 13}">
                         {{element['orderCurrentStatus.statusName'] ? (element['orderCurrentStatus.statusName'] | titlecase) : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="trackingId">
+                    <mat-header-cell *matHeaderCellDef>Tracking ID</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element['ordertracking.trackingId'] ? element['ordertracking.trackingId'] : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="cancelOrder">

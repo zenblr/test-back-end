@@ -10,7 +10,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 export class UnSecuredSchemeComponent implements OnInit {
   unsecuredSchemeForm: FormGroup;
   unsecuredSchemes = [{ id: 1, name: 'Micro Scheme' }, { id: 2, name: 'Future Scheme' }, { id: 3, name: 'Emerging Scheme' },]
-
+  details:any;
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<UnSecuredSchemeComponent>,
@@ -19,6 +19,9 @@ export class UnSecuredSchemeComponent implements OnInit {
 
   ngOnInit() {
     this.initForm()
+    this.unsecuredSchemeForm.patchValue(this.data.unsecuredSchemeForm)
+    this.details = this.data.unsecuredSchemeForm
+    console.log(this.details)
   }
 
   initForm() {

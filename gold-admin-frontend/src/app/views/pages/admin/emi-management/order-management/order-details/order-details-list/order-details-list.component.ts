@@ -55,6 +55,7 @@ export class OrderDetailsListComponent implements OnInit {
 		"orderQty",
 		"invoiceNo",
 		"orderStatus",
+		"trackingId",
 		"cancelOrder",
 		"merchant",
 		"action",
@@ -238,7 +239,7 @@ export class OrderDetailsListComponent implements OnInit {
 
 	cancelOrder(order) {
 		this.router.navigate([
-			"emi-management/order-details/cancel-order/",
+			"/admin/emi-management/order-details/cancel-order/",
 			order.id,
 		]);
 	}

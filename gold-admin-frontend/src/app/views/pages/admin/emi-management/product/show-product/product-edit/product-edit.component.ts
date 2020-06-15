@@ -95,6 +95,11 @@ export class ProductEditComponent implements OnInit {
     const _productData = this.productForm.value;
     const id = this.controls.id.value;
 
+    _productData.weight = parseFloat(_productData.weight);
+    _productData.manufacturingCostPerGram = parseFloat(_productData.manufacturingCostPerGram);
+    _productData.hallmarkingPackaging = parseFloat(_productData.hallmarkingPackaging);
+    _productData.shipping = parseFloat(_productData.shipping);
+
     delete _productData.id;
     delete _productData.sku;
     delete _productData.price;

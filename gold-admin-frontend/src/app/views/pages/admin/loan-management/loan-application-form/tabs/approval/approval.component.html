@@ -88,9 +88,10 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 40%" >Field</th>
+                            <th scope="col" style="width: 40%">Field</th>
                             <th scope="col" style="width: 30%" class="text-center">Appraiser</th>
-                            <th scope="col" style="width: 30%" class="text-center" *ngIf="viewBMForm || url == 'view-loan'">Branch Manager</th>
+                            <th scope="col" style="width: 30%" class="text-center"
+                                *ngIf="viewBMForm || url == 'view-loan'">Branch Manager</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -157,7 +158,8 @@
                                     Field Required</mat-error>
                             </td>
                             <td class="rating-bm" *ngIf="viewBMForm || url == 'view-loan'">
-                                <select class="form-control" formControlName="loanStatusForBM" (change)="resetBM();statusBM()"
+                                <select class="form-control" formControlName="loanStatusForBM"
+                                    (change)="resetBM();statusBM()"
                                     [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                                     <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" *ngFor="let status of branchManager">
@@ -172,8 +174,35 @@
                 </table>
             </div>
         </div>
-        <div class="row justify-content-center " *ngIf="controls.loanStatusForAppraiser.value && controls.loanStatusForAppraiser.value != 'approved'">
-            <div class="col-8">
+        <div class="row justify-content-center "
+            *ngIf="controls.loanStatusForAppraiser.value && controls.loanStatusForAppraiser.value != 'approved'">
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-4">
+                        <label for="">Choose a reason</label>
+                    </div>
+                    <div class="col-8">
+                        <select class="form-control" placeholder="reason for Incomplete" (change)="patchReason()">
+                            <option value='' selected disabled>Choose a reason </option>
+                            <option [value]="reason.description" *ngFor="let reason of reasons">
+                                {{reason.description}}
+                            </option>
+                        </select>
+
+                        <!-- <mat-form-field class="w-100 kt-margin-t-20"
+                    *ngIf="cceControls.reasonForOther.value == 'Other'">
+                    <textarea matInput formControlName="reasonFromCce"
+                        placeholder="Reason for {{ cceControls.kycStatusFromCce.value }}"></textarea>
+                    <mat-error>Field Required</mat-error>
+
+                </mat-form-field> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center "
+            *ngIf="controls.loanStatusForAppraiser.value && controls.loanStatusForAppraiser.value != 'approved'">
+            <div class="col-7">
                 <mat-form-field class="w-100">
 
                     <textarea cols="4" rows="3" matInput formControlName="commentByAppraiser"
@@ -184,7 +213,8 @@
 
             </div>
         </div>
-        <div class="row justify-content-center " *ngIf="controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved'">
+        <div class="row justify-content-center "
+            *ngIf="controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved'">
             <div class="col-8">
                 <mat-form-field class="w-100">
 

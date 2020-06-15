@@ -67,7 +67,7 @@ export class ProfileChangePassComponent implements OnInit {
     this.profileService.changePassword(passwordData).subscribe(res => {
       if (res) {
         this.toastr.successToastr(
-          "Pancard Updated Sucessfully"
+          "Password Changed Successfully"
         );
         this.dialogRef.close('reload');
       }

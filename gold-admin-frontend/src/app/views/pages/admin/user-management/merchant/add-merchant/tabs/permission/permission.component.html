@@ -2,8 +2,8 @@
 <kt-portlet>
   <kt-portlet-body>
     <div class="row height justify-content-center">
-      <div class="col-7 scroll">
-        <mat-tab-group>
+      <div class="col-8 scroll">
+        <mat-tab-group mat-align-tabs="center">
           <mat-tab label="Category">
             <div class="row justify-content-center">
               <div class="col-10">
@@ -93,7 +93,7 @@
                                   <span class="position-relative ">
                                     <label class="custom-checkbox">
                                       <span
-                                        class="label-checkbox text-color font-weight-500 kt-margin-l-30">{{product.productName | titlecase}}</span>
+                                        class="label-checkbox text-color font-weight-500 kt-margin-l-30" [matTooltip]="product.productName">{{product.productName |truncate:[13,'...'] | titlecase}}</span>
                                       <input type="checkbox" [checked]="product.isSelected"
                                         (change)="generateProduct($event.target.checked,catIndex,subIndex,idx)">
                                       <span class="checkmark top-0"></span>

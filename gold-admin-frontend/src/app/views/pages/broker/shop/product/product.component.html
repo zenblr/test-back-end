@@ -1,0 +1,97 @@
+<kt-toastr #toastr></kt-toastr>
+
+<kt-portlet>
+    <kt-portlet-body [class]="'kt-portlet__body--fit'">
+        <div class="row card-container mt-4" *ngIf="product">
+            <div class="col-md-4">
+                <div class="card p-2">
+                    <img class="mx-auto"
+                        [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
+                        alt="test" width="275px" height="315px">
+                </div>
+            </div>
+            <div class="col-md-8">
+                <p class="text-color font-weight-bold">{{product.productName | titlecase}}
+                </p>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p>SKU Code :&nbsp;<span class="text-color font-weight-500">{{product.sku}}</span>
+                        </p>
+                        <p>Metal Type :&nbsp;<span
+                                class="text-color font-weight-500">{{product.subCategory.category.metalType.metalType}}</span>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <p>Jewellery Type :&nbsp;<span
+                                class="text-color font-weight-500">{{product.subCategory.subCategoryName}}</span>
+                        </p>
+                        <p>Conversion Factor :&nbsp;<span
+                                class="text-color font-weight-500">{{product.subCategory.category.conversionFactor}}</span>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <p>Weight :&nbsp;<span class="text-color font-weight-500">{{product.weight}}
+                                Gram</span>
+                        </p>
+                    </div>
+                </div>
+                <table class="table border mt-4">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col" class="text-color">Particular</th>
+                            <th scope="col" class="text-color">Price (Rs.)</th>
+                            <th scope="col" class="text-color">Initial Payment</th>
+                            <th scope="col" class="text-color">Balance Payment</th>
+                            <th scope="col" class="text-color">Payment Amount (Per Month)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="radio" name="particular" [value]="product.paymentData[0].paymentTypeId"
+                                    (change)="selectedPayment($event)"></td>
+                            <td>Spot</td>
+                            <td>{{product.productPrice[0].finalProductPrice}}</td>
+                            <td>NA</td>
+                            <td>NA</td>
+                            <td>NA</td>
+                        </tr>
+                        <tr *ngIf="product.isEmiAvailable">
+                            <td><input type="radio" name="particular" [value]="product.paymentData[1].paymentTypeId"
+                                    (change)="selectedPayment($event)"></td>
+
+                            <td>3 Months</td>
+                            <td>{{product.productPrice[0].forwordCostForThreeMonth}}</td>
+                            <td>{{product.productPrice[0].initialPaymentThree}}</td>
+                            <td>{{product.productPrice[0].balancePaymentThree}}</td>
+                            <td>{{product.productPrice[0].paymentAmountPerMonthThree}}</td>
+                        </tr>
+                        <tr *ngIf="product.isEmiAvailable">
+                            <td><input type="radio" name="particular" [value]="product.paymentData[2].paymentTypeId"
+                                    (change)="selectedPayment($event)"></td>
+
+                            <td>6 Months</td>
+                            <td>{{product.productPrice[0].forwordCostForSixMonth}}</td>
+                            <td>{{product.productPrice[0].initialPaymentSix}}</td>
+                            <td>{{product.productPrice[0].balancePaymentSix}}</td>
+                            <td>{{product.productPrice[0].paymentAmountPerMonthSix}}</td>
+                        </tr>
+                        <tr *ngIf="product.isEmiAvailable">
+                            <td><input type="radio" name="particular" [value]="product.paymentData[3].paymentTypeId"
+                                    (change)="selectedPayment($event)"></td>
+
+                            <td>9 Months</td>
+                            <td>{{product.productPrice[0].forwordCostForNineMonth}}</td>
+                            <td>{{product.productPrice[0].initialPaymentNine}}</td>
+                            <td>{{product.productPrice[0].balancePaymentNine}}</td>
+                            <td>{{product.productPrice[0].paymentAmountPerMonthNine}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <kt-button [value]='"Add to Cart"' [type]='"button"' (action)="action()" class="py-3 float-right">
+                </kt-button>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

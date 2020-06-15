@@ -30,6 +30,7 @@
                         <select formControlName="partnerId" class="form-control" (change)="getSchemes()"
                             [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Partner</option>
+                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found</option>
                             <option [value]="partner.id" *ngFor="let partner of partnerList">
                                 {{partner.name | uppercase}}
                             </option>
@@ -52,6 +53,7 @@
                         <select formControlName="schemeId" class="form-control" (change)="scheme()"
                             [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
+                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found</option>
                             <option [value]="schemes.id" *ngFor="let schemes of schemesList">
                                 {{schemes.schemeName | uppercase}} ({{schemes.schemeAmountStart}} -
                                 {{schemes.schemeAmountEnd}})
@@ -90,8 +92,11 @@
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.maximunAllowed">
                                 <small>Enter Amount less then Maximum % Allowed</small>
                             </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible">
+                                <small>Enter  Amount less Eligible Amount</small>
+                            </mat-error>
                         </div>
-
+                        
 
                     </div>
                 </div>

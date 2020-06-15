@@ -161,6 +161,11 @@ export class PageConfig {
 							page: { title: "Order Details", desc: "" },
 						},
 					},
+					'cancel-order': {
+						id: {
+							page: { title: "Cancel Order", desc: "" },
+						},
+					},
 				},
 				"emi-details": {
 					page: { title: "EMI Details", desc: "" },
@@ -184,11 +189,6 @@ export class PageConfig {
 				},
 				reports: {
 					page: { title: "Reports", desc: "" },
-				},
-				'cancel-order': {
-					id: {
-						page: { title: "Cancel Order", desc: "" },
-					},
 				},
 			},
 			"applied-kyc": {
@@ -246,12 +246,28 @@ export class PageConfig {
 			"orders": {
 				page: { title: "Orders", desc: "" },
 			},
+			"shop": {
+				page: { title: "Shop", desc: "" },
+				'product': {
+					id: {
+						page: { title: "Product Details", desc: "" },
+					},
+				},
+			},
+			"cart": {
+				page: { title: "Shopping Cart", desc: "" },
+			},
 			"profile": {
 				page: { title: "Profile", desc: "" },
 			},
-			"checkout-customer": {
-				page: { title: "Customer Details", desc: "" },
-			}
+			"checkout-customer-address": {
+				page: { title: "Customer Address", desc: "" },
+			},
+			"order-received": {
+				id: {
+					page: { title: "Order Received", desc: "" },
+				}
+			},
 		}
 	};
 

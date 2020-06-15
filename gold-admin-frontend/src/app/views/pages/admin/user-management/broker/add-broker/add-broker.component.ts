@@ -21,6 +21,7 @@ export class AddBrokerComponent implements OnInit {
   merchants: any[] = [];
   status: any[] = [];
   store: any;
+  formData: FormData;
 
   constructor(
     public dialogRef: MatDialogRef<AddBrokerComponent>,
@@ -77,14 +78,17 @@ export class AddBrokerComponent implements OnInit {
       panCardNumber: ['', Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')],
       nameOnPanCard: [''],
       panCard: [''],
+      panCardImg: [''],
       imgName: [''],
       userId: [],
-      ifscCode: [],
-      bankName: [],
-      bankBranch: [],
-      accountHolderName: [],
-      accountNumber: [],
-      passbookStatementChequeId: []
+      ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
+      bankName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
+      bankBranch: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
+      accountHolderName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
+      accountNumber: ['', Validators.required],
+      passbookStatementChequeId: [],
+      passbookImg:[],
+      passbookImgName: ['', Validators.required]
     })
 
     // this.controls.imgName.disable()
@@ -147,14 +151,25 @@ export class AddBrokerComponent implements OnInit {
 
   }
 
-  getFileInfo(event) {
+  getFileInfo(event, type) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0]).pipe(
+      this.formData = new FormData();
+      this.formData.append("avatar", event.target.files[0]);
+      this.sharedService.fileUpload(this.formData).pipe(
         map(res => {
-          this.brokerFrom.controls.imgName.patchValue(event.target.files[0].name)
-          this.brokerFrom.controls.panCard.patchValue(res.uploadFile.URL)
+
+          if (type == 'pan') {
+            this.brokerFrom.controls.imgName.patchValue(event.target.files[0].name)
+            this.brokerFrom.controls.panCard.patchValue(res.uploadFile.id)
+            this.brokerFrom.controls.panCardImg.patchValue(res.uploadFile.URL)
+          } else {
+            this.brokerFrom.controls.passbookImgName.patchValue(event.target.files[0].name)
+            this.brokerFrom.controls.passbookStatementChequeId.patchValue(res.uploadFile.id)
+            this.brokerFrom.controls.passbookImg.patchValue(res.uploadFile.URL)
+          }
+
         }), catchError(err => {
           this.toast.error(err.error.message);
           throw err

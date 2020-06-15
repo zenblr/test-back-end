@@ -1,1 +1,1 @@
-export const API_ENDPOINT = 'http://emiapi.nimapinfotech.com/'
+export const API_ENDPOINT = 'https://emiapi.nimapinfotech.com/'

@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { LoanApplicationFormService } from "../../../../../core/loan-management";
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { OrnamentsService } from '../../../../../core/masters/ornaments/services/ornaments.service';
 
 @Component({
   selector: 'kt-loan-application-form',
@@ -36,13 +37,16 @@ export class LoanApplicationFormComponent implements OnInit {
   customerDetail: any;
   disabled = [false, false, false, false, false, false];
   loanId: any;
+  ornamentType = [];
   finalLoanAmt: any;
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
     public loanApplicationFormService: LoanApplicationFormService,
     public toast: ToastrService,
-    public rout: ActivatedRoute
+    public rout: ActivatedRoute,
+    public ornamentTypeService: OrnamentsService,
+
   ) {
     this.url = this.router.url.split('/')[3]
     this.id = this.rout.snapshot.params.id
@@ -89,6 +93,8 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.getOrnamentType()
     setTimeout(() => {
 
       if (this.url == "package-image-upload") {
@@ -103,6 +109,14 @@ export class LoanApplicationFormComponent implements OnInit {
     }, 1000)
   }
 
+  getOrnamentType() {
+    this.ornamentTypeService.getOrnamentType(1, -1, '').pipe(
+      map(res => {
+        console.log(res);
+        this.ornamentType = res.data;
+      })
+    ).subscribe();
+  }
 
   loan(event) {
     this.loanId = event

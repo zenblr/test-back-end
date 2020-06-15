@@ -16,14 +16,17 @@
 		default,
 		bg-color
 	);
+	.kt-aside--minimize & {
+		display: block;
+	}
 
 	.kt-aside__brand-logo {
 		display: flex;
 		justify-content: flex-start;
 		img {
-			transform: translate(50%, 0px);
+			transform: translate(55%, 0px);
 			.kt-aside--minimize & {
-				transform: translate(25%, 0px) !important;
+				transform: translate(-8%, 0px) !important;
 				height: 50px;
 				transition: kt-get(
 					$kt-aside-config,
@@ -67,21 +70,26 @@
 	font-weight: 600;
 	color: #ffde9c;
 	 background-color: #454D67; 
-	 padding: 15px 0;
-	span {
-		.kt-aside--minimize & {
-			display: none;
-			transition: kt-get(
+	// span {
+	// 	.kt-aside--minimize & {
+	// 		display: none;
+	// 		transition: kt-get(
+	// 			$kt-aside-config,
+	// 			base,
+	// 			minimize,
+	// 			transition
+	// 		);
+	// 	}
+	// }
+	.kt-aside--minimize &{
+		display: none;
+		padding: 0;
+		transition: kt-get(
 				$kt-aside-config,
 				base,
 				minimize,
 				transition
 			);
-		}
-	}
-	.kt-aside--minimize &{
-		font-size: 10px;
-		padding: 5px 0;
 	}
 }
 
@@ -101,7 +109,7 @@
 		// Aside minimize mode
 		.kt-header--fixed.kt-aside--minimize & {
 			justify-content: center;
-			height: 75px;
+			height: auto;
 			.kt-aside__brand-tools {
 				justify-content: center;
 

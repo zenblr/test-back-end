@@ -1,5 +1,7 @@
 :host{
-  
+    .removeImageSize {
+        height: 16px;
+	}
     ::ng-deep.mat-tab-header {
 		position: relative !important;
     }
@@ -13,12 +15,15 @@
     //     -moz-appearance: none !important;
     //   }
     
+    .img-container{
+		max-width: unset !important;
+	}
     .addMore{
         width: 40%;
         position: absolute;
 		top: 20px;
     }
-	.addMore button {
+	button {
 		background: transparent;
 		border: thin solid #454D67;
 		border-radius: 5px;
@@ -29,12 +34,11 @@
         width: 100%;
         border-radius: 15px;
     }
-    .addMore .packet-dropdown{
+    .packet-dropdown{
         background: transparent !important;
 		border: thin solid #454D67 !important;
         border-radius: 5px !important;
         font-weight: bold !important;
-        margin-left: 20px !important;
     }
     .pacekts-label {
         font-size: 12px;
