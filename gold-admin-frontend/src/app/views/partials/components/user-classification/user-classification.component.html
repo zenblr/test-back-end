@@ -167,21 +167,22 @@
                     </table>
                     <div *ngIf="showTextBoxBM && userType == 6">
                         <div class="row kt-padding-l-10">
-                            <div class="col-3 form-label">
-                                <label for="" class="kt-padding-l-10">Reason by B.M -</label> 
+                            <div class="col-4 form-label">
+                                <label for="" class="kt-padding-l-10 m-0">Reason by B.M -</label>
                             </div>
-                            <div class="col-8 form-label">
+                            <div class="col-8 ">
                                 {{cceControls.reasonFromBm.value}}
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div *ngIf="showTextBoxCce  && userType == 6" class="col kt-margin-t-20 kt-margin-b-20"
+
+                <!-- <ng-container *ngIf="editRating"> -->
+                <div *ngIf="(showTextBoxCce  && userType == 6)" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <div class="row">
-                        <div class="col-4">
-                            <label for="">Choose a reason</label>
+                        <div class="col-4 form-label">
+                            <label for="" class="kt-padding-l-10">Choose a reason</label>
                         </div>
                         <div class="col-8">
                             <select class="form-control" formControlName="reasonForOther"
@@ -201,9 +202,8 @@
                             </mat-form-field>
                         </div>
                     </div>
-
-
                 </div>
+                <!-- </ng-container> -->
                 <div *ngIf="showTextBoxBM && userType== 5" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <mat-form-field class="w-100">

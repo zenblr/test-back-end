@@ -61,8 +61,7 @@
                 <ng-container matColumnDef="customerName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.order?.customerDetails?.firstName ? element?.order?.customerDetails?.firstName : '-'}}&nbsp;
-                        {{element?.order?.customerDetails?.lastName}}
+                        {{element?.order?.customerDetails?.firstName || element?.order?.customerDetails?.lastName ? (element?.order?.customerDetails?.firstName + ' ' + element?.order?.customerDetails?.lastName | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">

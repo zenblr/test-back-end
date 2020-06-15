@@ -1,0 +1,103 @@
+<kt-portlet *ngIf="orderData">
+    <kt-portlet-body [class]="'kt-portlet__body--fit'">
+        <div class="row justify-content-center kt-padding-t-10 kt-padding-b-10" [ngStyle]="{'min-height':'80vh'}">
+            <div class="col-10">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td>Name</td>
+                            <td class="font-weight-500">
+                                {{orderData.customerDetails.firstName}}&nbsp;{{orderData.customerDetails.lastName}}</td>
+                            <td>Order ID</td>
+                            <td class="font-weight-500">{{orderData.orderUniqueId}}</td>
+                        </tr>
+                        <tr>
+                            <td>Mobile</td>
+                            <td class="font-weight-500">{{orderData.customerDetails.mobileNumber}}</td>
+                            <td>Product Name</td>
+                            <td class="font-weight-500">{{orderData.product.productName}}</td>
+                        </tr>
+                        <tr>
+                            <td>SKU</td>
+                            <td class="font-weight-500">{{orderData.product.sku}}</td>
+                            <td>Weight</td>
+                            <td class="font-weight-500">{{orderData.weight}}&nbsp;Grams</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <div *ngIf="orderData.paymentType.id != 4">
+                    <div class="row">
+                        <div class="col-md-3 d-block">
+                            <div>Invoice Price</div>
+                            <div>
+                                <h4>{{orderData.orderdetails[0].finalOrderPrice}}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-block">
+                            <div>EMI Scheme</div>
+                            <div>
+                                <h4>{{orderData.paymentType.paymentType}} Months</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-block">
+                            <div>Initial Payment</div>
+                            <div>
+                                <h4>{{orderData.orderdetails[0].initialPayment}}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-block">
+                            <div>EMI Amount</div>
+                            <div>
+                                <h4>{{orderData.orderdetails[0].emiAmount}}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <table class="table table-borderless" *ngIf="orderData && orderData.orderemidetails">
+                        <thead>
+                            <tr class="text-color">
+                                <th scope="col">Member ID</th>
+                                <th scope="col">Order ID</th>
+                                <th scope="col">EMI Date</th>
+                                <th scope="col">EMI Amount</th>
+                                <th scope="col">EMI Deduct Date</th>
+                                <th scope="col">Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of orderData.orderemidetails">
+                                <td>{{orderData.customerDetails.customerUniqueId}}</td>
+                                <td>{{orderData.orderUniqueId}}</td>
+                                <td>{{data.dueDate | date:'dd MMM yyyy'}}</td>
+                                <td>{{data.emiAmount}}</td>
+                                <td>{{data.dueDate ? (data.dueDate | date:'dd MMM yyyy') : '-'}}</td>
+                                <td>{{data.orderemistatus.statusName | titlecase}}</td>
+                                <td *ngIf="data.orderStatusId == 1">
+                                    <button type="button" class="btn btn-outline" (click)="getEmiAmount(data.id)">Pay
+                                        EMI</button>
+                                </td>
+                                <td *ngIf="data.orderStatusId != 1">
+                                    <button type="button" class="btn btn-outline"
+                                        (click)="printEmiReceipt(data.id)">Print EMI Receipt</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center" *ngIf="orderData.paymentType.id == 4">
+                    <div class="d-block">
+                        <div>Invoice Price</div>
+                        <div>
+                            <h4>{{orderData.orderdetails[0].finalOrderPrice}}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </kt-portlet-body>
+    <kt-portlet-footer class="text-center" *ngIf="orderData.orderCurrentStatus.id == 8">
+        <button type="button" class="btn btn-outline my-2">Print EMI Receipt</button>
+    </kt-portlet-footer>
+</kt-portlet>

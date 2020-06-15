@@ -95,10 +95,10 @@
                                         </mat-error>
                                         <mat-error
                                             *ngIf="controls.age.errors?.pattern && controls.age.touched && controls.age.invalid">
-                                            <Small *ngIf="controls.gender.value == 'm'">Age should be greater than
-                                                20</Small>
-                                            <Small *ngIf="controls.gender.value != 'm'">Age should be greater than
-                                                17</Small>
+                                            <Small *ngIf="controls.gender.value == 'm'">Age should be 21 and
+                                                above</Small>
+                                            <Small *ngIf="controls.gender.value != 'm'">Age should be 18 and
+                                                above</Small>
                                         </mat-error>
                                     </div>
                                 </div>

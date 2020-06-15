@@ -67,7 +67,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="kycStatus">
-                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>KYC Status</mat-header-cell>
                     <mat-cell *matCellDef="let lead">
                         <span class="text-success" *ngIf="lead.kycStatus == 'approved'">
                             {{lead.kycStatus | titlecase}} </span>

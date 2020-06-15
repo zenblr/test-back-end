@@ -13,6 +13,12 @@
                         {{element["customerDetails.customerUniqueId"] ? element["customerDetails.customerUniqueId"] : '-'}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element["customerDetails.firstName"] || element["customerDetails.lastName"] ? (element["customerDetails.firstName"] + ' ' + element["customerDetails.lastName"] | titlecase) : '-'}}
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="userId">
                     <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
                     <mat-cell *matCellDef="let element">
@@ -87,24 +93,43 @@
                         {{element["orderCurrentStatus.statusName"] ? (element["orderCurrentStatus.statusName"] | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
-
-                <!-- <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+                <ng-container matColumnDef="performa">
+                    <mat-header-cell *matHeaderCellDef>Perform Invoice</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element.order.orderId)"
-                                class="kt-pointer"> View</div>
-                            <div *ngxPermissionsOnly="['EMIDetailsView']"
-                                [ngStyle]="{'display':element.orderemistatus.id == 4 ? 'block':'none'}"
-                                (click)="printCancellationReceipt(element)" class="kt-pointer">&nbsp;| Print EMI Receipt
-                            </div>
-                        </div>
+                        <span *ngIf="element['orderCurrentStatus.id'] != 13">
+                            <kt-button [value]="'Print'" [type]="'submit'" (click)="performa(element)"></kt-button>
+                        </span>
                     </mat-cell>
-                </ng-container> -->
+                </ng-container>
+                <ng-container matColumnDef="contract">
+                    <mat-header-cell *matHeaderCellDef>Contract</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <kt-button [value]="'Print'" [type]="'submit'" (click)="contract(element)"></kt-button>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="cancelReceipt">
+                    <mat-header-cell *matHeaderCellDef>Cancel Receipt</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element['orderCurrentStatus.id'] == 13">
+                            <kt-button [value]="'Print'" [type]="'submit'" (click)="cancelReceipt(element)"></kt-button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="orderPayment">
+                    <mat-header-cell *matHeaderCellDef>Order Payment</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element['orderCurrentStatus.id'] != 2 && element['orderCurrentStatus.id'] != 3">
+                            <kt-button [value]="'View'" [type]="'submit'" (click)="viewOrPay(element)"></kt-button>
+                        </span>
+                        <span *ngIf="element['orderCurrentStatus.id'] == 2 || element['orderCurrentStatus.id'] == 3">
+                            <kt-button [value]="'Pay'" [type]="'submit'" (click)="viewOrPay(element)"></kt-button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 150%;"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 180%;"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 150%;"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 180%;"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

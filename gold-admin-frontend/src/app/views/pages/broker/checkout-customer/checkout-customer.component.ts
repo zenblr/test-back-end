@@ -12,12 +12,15 @@ import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/m
 })
 export class CheckoutCustomerComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+  numberSearchForm: FormGroup;
   checkoutCustomerForm: FormGroup;
   otpForm: FormGroup;
   stateList = [];
   cityList = [];
   showformFlag = false;
-  showPlaceOrder = false;
+  showPlaceOrderFlag = false;
+  showNumberSearchFlag = true;
+  showCustomerFlag = false;
   checkoutData: any;
   existingCustomerData: any;
   finalOrderData: any;
@@ -36,9 +39,14 @@ export class CheckoutCustomerComponent implements OnInit {
   ngOnInit() {
     this.formInitialize();
     this.getCheckoutCart();
+    this.getStates();
   }
 
   formInitialize() {
+    this.numberSearchForm = this.fb.group({
+      mobNo: ['', Validators.required],
+    });
+
     this.checkoutCustomerForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -54,6 +62,8 @@ export class CheckoutCustomerComponent implements OnInit {
     this.otpForm = this.fb.group({
       otp: ['', Validators.required],
     });
+
+    this.checkoutCustomerForm.valueChanges.subscribe(val => console.log(val))
   }
 
   get controls() {
@@ -80,42 +90,54 @@ export class CheckoutCustomerComponent implements OnInit {
   checkCustomerType(type) {
     if (type == 'new') {
       this.showformFlag = true;
-      this.showPlaceOrder = true;
-      this.getStates();
+      this.showPlaceOrderFlag = true;
+      this.showNumberSearchFlag = false;
+      this.showCustomerFlag = false;
+      this.checkoutCustomerForm.enable();
     } else {
       this.showformFlag = false;
-      this.showPlaceOrder = false
+      this.showPlaceOrderFlag = false;
+      this.showNumberSearchFlag = true;
+      this.showCustomerFlag = true;
+      this.checkoutCustomerForm.disable();
     }
     this.existingCustomerData = null;
     this.finalOrderData = null;
+    this.numberSearchForm.reset();
     this.checkoutCustomerForm.reset();
     this.otpForm.reset();
+    this.controls['stateName'].patchValue('');
+    this.controls['cityName'].patchValue('');
   }
 
   getExistingCustomer() {
-    if (this.controls.mobileNumber.invalid) {
-      this.checkoutCustomerForm.markAllAsTouched();
+    if (this.numberSearchForm.invalid) {
+      this.numberSearchForm.markAllAsTouched();
       return;
     }
-    this.checkoutCustomerService.getExistingCustomer(this.controls.mobileNumber.value).subscribe(res => {
+    this.checkoutCustomerService.getExistingCustomer(this.numberSearchForm.controls.mobNo.value).subscribe(res => {
       if (res) {
         this.existingCustomerData = res;
-        this.checkoutCustomerForm.patchValue({
-          firstName: res.customerDetails.firstName,
-          lastName: res.customerDetails.lastName,
-          mobileNumber: res.customerDetails.mobileNumber,
-          email: res.customerDetails.email,
-          address: res.customerDetails.customeraddress[0].address,
-          landMark: res.customerDetails.customeraddress[0].landMark,
-          postalCode: res.customerDetails.pinCode,
-          countryName: [''],
-          stateName: res.customerDetails.customeraddress[0].state,
-          cityName: res.customerDetails.customeraddress[0].city,
-          blockId: [''],
+        setTimeout(() => {
+          this.checkoutCustomerForm.patchValue({
+            firstName: res.customerDetails.firstName,
+            lastName: res.customerDetails.lastName,
+            mobileNumber: res.customerDetails.mobileNumber,
+            email: res.customerDetails.email,
+            address: res.customerDetails.customeraddress[0].address,
+            landMark: res.customerDetails.customeraddress[0].landMark,
+            postalCode: res.customerDetails.pinCode,
+            stateName: res.customerDetails.customeraddress[0].stateId,
+            cityName: res.customerDetails.customeraddress[0].cityId,
+          });
+          this.getCities();
         });
-        this.getCities();
-        this.showPlaceOrder = true;
+        this.showformFlag = true;
+        this.showPlaceOrderFlag = true;
+        this.showCustomerFlag = true;
         this.finalOrderData = null;
+        this.checkoutCustomerForm.disable();
+        this.ref.detectChanges();
       }
     },
       error => {
@@ -131,9 +153,18 @@ export class CheckoutCustomerComponent implements OnInit {
 
   getCities() {
     if (this.controls.stateName.value == '') {
-      this.cityList = []
+      this.cityList = [];
     } else {
-      this.sharedService.getCities(this.controls.stateName.value.id).subscribe(res => this.cityList = res.message);
+      let stateData;
+      if (this.showCustomerFlag) {
+        stateData = this.controls.stateName.value;
+      } else {
+        stateData = this.controls.stateName.value.id;
+      }
+      this.sharedService.getCities(stateData).subscribe(res => {
+        this.cityList = res.message;
+        this.ref.detectChanges();
+      });
     }
   }
 
@@ -154,12 +185,16 @@ export class CheckoutCustomerComponent implements OnInit {
       cityName: this.controls.cityName.value.name,
       blockId: this.checkoutData.blockId
     }
+    if (this.showCustomerFlag) {
+      generateOTPData.stateName = this.existingCustomerData.customerDetails.customeraddress[0].state.name;
+      generateOTPData.cityName = this.existingCustomerData.customerDetails.customeraddress[0].city.name;
+    }
     console.log(generateOTPData)
     this.checkoutCustomerService.generateOTP(generateOTPData).subscribe(res => {
       if (res) {
         console.log(res);
         this.finalOrderData = res;
-        const msg = 'OTP successfully has been sent.';
+        const msg = 'OTP has been sent successfully.';
         this.toastr.successToastr(msg);
       }
     },
@@ -185,7 +220,7 @@ export class CheckoutCustomerComponent implements OnInit {
     this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
       if (res) {
         console.log(res);
-        const msg = 'Order successfully has been placed.';
+        const msg = 'Order has been placed successfully.';
         this.toastr.successToastr(msg);
         this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
       }
