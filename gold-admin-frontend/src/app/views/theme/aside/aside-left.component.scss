@@ -17,7 +17,7 @@
 	.kt-menu__link-count {
 		display: flex;
 		align-items: center;
-		flex-grow: 0;
+		flex-grow: 0 !important;
 	}
 
 	.bgColor{
