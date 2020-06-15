@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { UserDetailsService } from '../../../../core/kyc-settings/services/user-details.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomerClassificationService } from '../../../../core/kyc-settings/services/customer-classification.service';
@@ -70,6 +70,7 @@ export class UserClassificationComponent implements OnInit {
     private route: Router,
     private sharedService: SharedService,
     private titlecase: TitleCasePipe,
+    private ref: ChangeDetectorRef
   ) {
     let res = this.sharedService.getDataFromStorage()
     this.userType = res.userDetails.userTypeId;
@@ -91,7 +92,9 @@ export class UserClassificationComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataBindingEdit();
+    setTimeout(() => {
+      this.dataBindingEdit();
+    }, 1000)
   }
 
   dataBindingEdit() {
@@ -110,7 +113,7 @@ export class UserClassificationComponent implements OnInit {
           this.cceControls.reasonForOther.patchValue('Other')
         }
       }
-
+      this.ref.detectChanges();
     }
   }
 
@@ -156,19 +159,19 @@ export class UserClassificationComponent implements OnInit {
 
   conditionalValidation() {
     // this.custClassificationForm.get('kycRatingFromCce').valueChanges.subscribe(res => {
-    if (this.custClassificationForm.controls.kycRatingFromCce.valid && this.custClassificationForm.controls.kycStatusFromCce.valid) {
-      if ((this.custClassificationForm.controls.kycRatingFromCce.value == '5' || this.custClassificationForm.controls.kycRatingFromCce.value == '4') && this.custClassificationForm.controls.kycStatusFromCce.value == 'approved') {
-        this.custClassificationForm.get('reasonFromCce').clearValidators();
-        // if (!this.editRating) {
-        this.custClassificationForm.get('reasonFromCce').patchValue('');
-        // }
-        this.showTextBoxCce = false;
-      } else {
-        this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
-        this.showTextBoxCce = true;
-      }
-      this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
+    // if (this.custClassificationForm.controls.kycRatingFromCce.valid && this.custClassificationForm.controls.kycStatusFromCce.valid) {
+    if ((this.custClassificationForm.controls.kycRatingFromCce.value == '5' || this.custClassificationForm.controls.kycRatingFromCce.value == '4') && this.custClassificationForm.controls.kycStatusFromCce.value == 'approved') {
+      this.custClassificationForm.get('reasonFromCce').clearValidators();
+      // if (!this.editRating) {
+      this.custClassificationForm.get('reasonFromCce').patchValue('');
+      // }
+      this.showTextBoxCce = false;
+    } else {
+      this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
+      this.showTextBoxCce = true;
     }
+    this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
+    // }
 
     // Validation for BM
     this.custClassificationForm.get('kycStatusFromBm').valueChanges.subscribe(res => {

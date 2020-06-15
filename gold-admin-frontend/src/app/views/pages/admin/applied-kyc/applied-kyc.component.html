@@ -45,7 +45,8 @@
                         <span class="text-success" *ngIf="role.customerKycClassification.kycStatusFromBm == 'approved'">
                             {{role.customerKycClassification.kycStatusFromBm | titlecase}}
                         </span>
-                        <span class="text-warning" *ngIf="role.customerKycClassification.kycStatusFromBm == 'pending'">
+                        <span class="text-warning"
+                            *ngIf="role.customerKycClassification.kycStatusFromBm == 'incomplete'">
                             {{role.customerKycClassification.kycStatusFromBm | titlecase}}
                         </span>
                         <span class="text-danger" *ngIf="role.customerKycClassification.kycStatusFromBm == 'rejected'">
