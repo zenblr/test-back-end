@@ -126,10 +126,18 @@
                         </span>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="cancelOrder">
+                    <mat-header-cell *matHeaderCellDef>Cancel Order</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element['orderCurrentStatus.id'] == 2 || element['orderCurrentStatus.id'] == 3">
+                            <kt-button [value]="'Cancel'" [type]="'button'" (click)="cancelOrder(element)">
+                            </kt-button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 200%;"></mat-header-row>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 180%;"></mat-header-row>
-
-                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 180%;"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 200%;"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

@@ -56,4 +56,16 @@ export class ShopService {
     emiTransaction(data): Observable<any> {
         return this.http.post(API_ENDPOINT + 'api/order/pay-emi', data)
     }
+
+    getCancelDetails(id): Observable<any> {
+        return this.http.get(API_ENDPOINT + 'api/cancel-order/' + id)
+    }
+
+    getOtp(data): Observable<any> {
+        return this.http.post(API_ENDPOINT + 'api/cancel-order/send-otp', data)
+    }
+
+    updateCancelOrder(id, data): Observable<any> {
+        return this.http.put(API_ENDPOINT + 'api/cancel-order/' + id, data)
+    }
 }
