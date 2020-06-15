@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
 import { OrnamentsService } from '../../../../../../../core/masters/ornaments/services/ornaments.service';
+import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
 
 
 @Component({
@@ -448,6 +449,26 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     ).subscribe()
     console.log(this.ornamentsForm.value, this.totalAmount)
 
+  }
+
+  webcam(index, event, string) {
+    const dialogRef = this.dilaog.open(WebcamDialogComponent,
+      {
+        data: {},
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+          console.log(res)
+          this.patchUrlIntoForm(string, res.uploadFile.URL, index)
+          // this.profile = res.uploadFile.URL
+          // this.personalForm.get('profileImage').patchValue(this.profile);
+          this.ref.detectChanges()
+        })
+        // this.controls.
+      }
+    });
   }
 
 }
