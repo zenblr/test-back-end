@@ -83,7 +83,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		private cdr: ChangeDetectorRef,
 		private auth: AuthService,
 		private sharedService: SharedService,
-		private shoppingCartService: ShoppingCartService,
+		public shoppingCartService: ShoppingCartService,
 		private ref: ChangeDetectorRef
 	) {
 		this.router.events.subscribe(event => {
@@ -101,7 +101,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 					Promise.resolve(null).then(() => {
 						this.cartTotalCount = ct;
 						console.log(this.cartTotalCount);
-						this.ref.detectChanges();
+						// this.ref.detectChanges();
 					});
 				}
 			});
