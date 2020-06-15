@@ -15,6 +15,10 @@ import {
 } from "../../../../../core/merchant-broker";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { SharedService } from "../../../../../core/shared/services/shared.service";
+import { OrderDetailsService } from "../../../../../core/emi-management/order-management/order-details/services/order-details.service";
+import { CancelOrderDetailsService } from "../../../../../core/emi-management/order-management";
+import { Router } from "@angular/router";
+
 @Component({
   selector: 'kt-orders',
   templateUrl: './orders.component.html',
@@ -34,7 +38,10 @@ export class OrdersComponent implements OnInit {
     "emiStart",
     "emiEnd",
     "status",
-    // "action",
+    "performa",
+    "contract",
+    "cancelReceipt",
+    "orderPayment"
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("sort1", { static: true }) sort: MatSort;
@@ -53,13 +60,17 @@ export class OrdersComponent implements OnInit {
     orderemistatus: "",
   };
   filteredDataList = {};
+
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
     private ordersService: OrdersService,
     private dataTableService: DataTableService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private orderDetailsService: OrderDetailsService,
+    private cancelOrderDetailsService: CancelOrderDetailsService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -114,9 +125,22 @@ export class OrdersComponent implements OnInit {
     this.dataSource.loadOrdersDetails(this.ordersData);
   }
 
-  /**
- * On Destroy
- */
+  performa(element) {
+    this.orderDetailsService.getProforma(element.id).subscribe();
+  }
+
+  contract(element) {
+    this.orderDetailsService.getContract(element.id).subscribe();
+  }
+
+  cancelReceipt(element) {
+    this.cancelOrderDetailsService.getReceipt(element.id).subscribe();
+  }
+
+  viewOrPay(element) {
+    this.router.navigate(["/broker/orders/view-pay/", element.id]);
+  }
+
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.destroy$.next();
