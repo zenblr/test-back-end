@@ -30,6 +30,7 @@ import { DisburseDialogComponent } from './disburse-dialog/disburse-dialog.compo
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { UnSecuredSchemeComponent } from './loan-application-form/un-secured-scheme/un-secured-scheme.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
+import { PacketTrackingComponent } from './packets/packet-tracking/packet-tracking.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -56,8 +57,12 @@ const rout: Routes = [
     component: LoanDetailsComponent
   },
   {
-    path: 'package-image-upload/:id',
+    path: 'packet-image-upload/:id',
     component: LoanApplicationFormComponent
+  },
+  {
+    path: 'packet-tracking',
+    component: PacketTrackingComponent
   },
   {
     path: 'view-loan/:id',
@@ -86,6 +91,7 @@ const rout: Routes = [
     LoanDetailsComponent,
     DisburseDialogComponent,
     UnSecuredSchemeComponent,
+    PacketTrackingComponent,
   ],
   imports: [
     CommonModule,

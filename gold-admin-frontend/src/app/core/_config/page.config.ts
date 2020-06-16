@@ -223,13 +223,16 @@ export class PageConfig {
 				packet: {
 					page: { title: "Packets", desc: "" },
 				},
+				"packet-tracking": {
+					page: { title: "Packet Tracking", desc: "" },
+				},
 				"all-loan": {
 					page: { title: "All Loans", desc: "" },
 				},
 				"applied-loan": {
 					page: { title: "Applied Loan", desc: "" },
 				},
-				"package-image-upload": {
+				"packet-image-upload": {
 					id: {
 						page: { title: "PACKET IMAGE UPLOAD", desc: "" },
 					}

@@ -666,3 +666,10 @@ mat-header-row {
 		background-color: rgba(69, 77, 103, 0.54) !important;
 	}
 }
+
+.btn-transparent {
+	background: transparent;
+	border: thin solid #454D67;
+	border-radius: 5px;
+	padding: 5px;
+}

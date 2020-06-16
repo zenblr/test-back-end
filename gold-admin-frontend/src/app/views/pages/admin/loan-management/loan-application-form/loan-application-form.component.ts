@@ -75,7 +75,7 @@ export class LoanApplicationFormComponent implements OnInit {
       this.action = 'edit'
       this.customerDetail = res.data
       // this.totalAmount = res.data.totalEligibleAmt
-      if (this.url == "package-image-upload") {
+      if (this.url == "packet-image-upload") {
         this.selected = 6;
         this.disabledForm = true;
       } else if (this.url == "view-loan") {
@@ -97,7 +97,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.getOrnamentType()
     setTimeout(() => {
 
-      if (this.url == "package-image-upload") {
+      if (this.url == "packet-image-upload") {
         this.selected = 6;
         this.disabledForm = true;
       } else if (this.url == "view-loan") {

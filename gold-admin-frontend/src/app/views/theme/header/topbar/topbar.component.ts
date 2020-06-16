@@ -45,6 +45,7 @@ import { ReasonsService } from '../../../../core/masters/reasons/services/reason
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
 import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
+import { PacketTrackingService} from '../../../../core/loan-management'
 
 @Component({
 	selector: "kt-topbar",
@@ -128,7 +129,8 @@ export class TopbarComponent implements OnInit {
 		private appliedKycService: AppliedKycService,
 		private appliedLoan: AppliedLoanService,
 		private leadSourceService: LeadSourceService,
-		private shopService: ShopService
+		private shopService: ShopService,
+		private packetTrackingService:PacketTrackingService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -348,6 +350,11 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.value1 = "Add Packet Location";
 		}
+		if (this.path == "packet-tracking") {
+			this.dataSourceHeader();
+			this.showfilter = false;
+		}
+		
 		if (this.path == "purposes") {
 			this.dataSourceHeader();
 			this.value1 = "Add Purpose";
@@ -493,7 +500,7 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("view-loan")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes("package-image-upload")) {
+		if (location.href.includes("packet-image-upload")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("loan-details/")) {
@@ -629,6 +636,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'packet-location') {
 			this.packetLocation.openModal.next(true)
 		}
+		
 		if (this.path == 'purposes') {
 			this.purposeService.openModal.next(true)
 		}
