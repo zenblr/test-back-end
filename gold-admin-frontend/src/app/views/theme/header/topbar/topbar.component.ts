@@ -46,6 +46,8 @@ import { AppliedKycService } from '../../../../core/applied-kyc/services/applied
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
 import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
 import { PacketTrackingService} from '../../../../core/loan-management'
+import { LoanRepaymentService } from '../../../../core/account/loan-repayment/services/loan-repayment.service';
+import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -130,7 +132,9 @@ export class TopbarComponent implements OnInit {
 		private appliedLoan: AppliedLoanService,
 		private leadSourceService: LeadSourceService,
 		private shopService: ShopService,
-		private packetTrackingService:PacketTrackingService
+		private packetTrackingService:PacketTrackingService,
+		private loanRepaymentService: LoanRepaymentService,
+		private loanDisbursementService: LoanDisbursementService,
 	) {
 
 		this.router.events.subscribe(val => {
@@ -494,6 +498,18 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.showBackButton = true;
 		}
+		if (this.path == "loan-repayment") {
+			this.value1 = "Add Loan Repayment";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
+		}
+		if (this.path == "loan-disbursement") {
+			this.value1 = "Add Loan Disbursement";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
+		}
 		if (location.href.includes("edit-refund-details")) {
 			this.showBackButton = true;
 		}
@@ -642,6 +658,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'lead-source') {
 			this.leadSourceService.openModal.next(true)
+		}
+		if (this.path == 'loan-disbursement') {
+			this.loanDisbursementService.openModal.next(true)
+		}
+		if (this.path == 'loan-repayment') {
+			this.loanRepaymentService.openModal.next(true)
 		}
 	}
 
