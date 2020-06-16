@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone } from '@angular/core';
 import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/merchant-broker';
+import { WindowRefService, ICustomWindow } from '../../../../core/shared/services/window-ref.service';
 
 @Component({
   selector: 'kt-checkout-customer',
   templateUrl: './checkout-customer.component.html',
-  styleUrls: ['./checkout-customer.component.scss']
+  styleUrls: ['./checkout-customer.component.scss'],
 })
 export class CheckoutCustomerComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -26,7 +27,32 @@ export class CheckoutCustomerComponent implements OnInit {
   checkoutData: any;
   existingCustomerData: any;
   finalOrderData: any;
+  rzp: any;
+  private _window: ICustomWindow;
+  public razorpayOptions: any = {
+    key: '',
+    amount: '',
+    currency: 'INR',
+    name: 'Test Name',
+    description: 'Test Transaction',
+    image: 'https://example.com/your_logo',
+    order_id: '',
+    handler: this.razorPayResponsehandler.bind(this),
+    modal: {
+      ondismiss: (() => {
+        this.zone.run(() => {
 
+        })
+      })
+    },
+    prefill: {},
+    notes: {
+      address: ''
+    },
+    theme: {
+      color: '#454d67'
+    },
+  };
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -34,8 +60,12 @@ export class CheckoutCustomerComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private checkoutCustomerService: CheckoutCustomerService,
-    private shoppingCartService: ShoppingCartService
-  ) { }
+    private shoppingCartService: ShoppingCartService,
+    private zone: NgZone,
+    private winRef: WindowRefService
+  ) {
+    this._window = this.winRef.nativeWindow;
+  }
 
   ngOnInit() {
     this.formInitialize();
@@ -234,15 +264,24 @@ export class CheckoutCustomerComponent implements OnInit {
       customerId: this.finalOrderData.customerId,
       otp: this.otpForm.controls.otp.value,
       blockId: this.finalOrderData.blockId,
-      transactionId: 'TRA' + Date.now(),
+      // transactionId: 'TRA' + Date.now(),
       totalInitialAmount: this.checkoutData.nowPayableAmount
     }
-    this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
+    this.checkoutCustomerService.verifyOTP(placeOrderData).subscribe(res => {
       if (res) {
         console.log(res);
-        const msg = 'Order has been placed successfully.';
-        this.toastr.successToastr(msg);
-        this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
+        // const msg = 'Order has been placed successfully.';
+        // this.toastr.successToastr(msg);
+        // this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
+
+        // blockId: "m3p2cPy"
+        // customerId: 19
+        this.razorpayOptions.key = res.razerPayConfig.key_id;
+        this.razorpayOptions.amount = res.totalInitialAmount;
+        this.razorpayOptions.order_id = res.razorPayOrder.id;
+        // this.razorpayOptions.handler = this.razorPayResponsehandler;
+
+        this.initPay(this.razorpayOptions)
       }
     },
       error => {
@@ -250,5 +289,23 @@ export class CheckoutCustomerComponent implements OnInit {
         const msg = error.error.message;
         this.toastr.errorToastr(msg);
       });
+  }
+
+  razorPayResponsehandler(response: any) {
+    console.log(response)
+    this.zone.run(() => {
+
+    })
+  }
+
+  initPay(options) {
+    this.rzp = new this.winRef.nativeWindow['Razorpay'](options);
+    this.rzp.open();
+  }
+
+  paymentHandler(res: any) {
+    this.zone.run(() => {
+      // add API call here
+    });
   }
 }
