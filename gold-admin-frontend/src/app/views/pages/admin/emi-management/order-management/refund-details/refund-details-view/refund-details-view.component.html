@@ -18,7 +18,7 @@
             </div>
             <div class="col-6">
                 <div class="row">
-                    <div class="col-6 text-muted">User ID :</div>
+                    <div class="col-6 text-muted">Customer ID :</div>
                     <div class="col-6"> {{
                         refundData?.order?.customerDetails?.customerUniqueId
                             ? refundData?.order?.customerDetails
@@ -150,7 +150,7 @@
                     <div class="col-6"> {{
                         refundData?.cancelOrder?.cancelDate
                             ? (refundData?.cancelOrder?.cancelDate
-                              | date : "MMM d, y")
+                              | date : "MMM d, y hh:mm a")
                              : "-"
                     }}</div>
                 </div>
@@ -231,7 +231,7 @@
                 <div class="row">
                     <div class="col-6 text-muted">Cancel order from :</div>
                     <div class="col-6">
-                        {{refundData?.order?.orderBy?.broker?.merchant?.merchantName ? refundData?.order?.orderBy?.broker?.merchant?.merchantName  : "-"}}
+                        {{refundData?.order?.orderBy?.broker?.merchant?.merchantName ? refundData?.order?.orderBy?.broker?.merchant?.merchantName  : "-" | titlecase}}
                     </div>
                 </div>
             </div>

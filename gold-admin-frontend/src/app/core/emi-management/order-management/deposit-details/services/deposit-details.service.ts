@@ -44,11 +44,21 @@ export class DepositDetailsService {
 		);
 	}
 
-	reportExport(): Observable<any> {
+	reportExport(event?: any): Observable<any> {
+		const reqParams: any = {};
+		if (event && event.paymentRecievedDate) {
+			reqParams.paymentRecievedDate = event.paymentRecievedDate;
+		}
+		if (event && event.paymentType) {
+			reqParams.paymentType = event.paymentType;
+		}
+		if (event && event.orderCurrentStatus) {
+			reqParams.orderCurrentStatus = event.orderCurrentStatus;
+		}
 		return this.http
 			.get(
 				API_ENDPOINT + `api/deposit-details/deposit-details-report`,
-				{ responseType: "arraybuffer" }
+				{ responseType: "arraybuffer", params: reqParams, }
 			)
 			.pipe(
 				map((res) => {
