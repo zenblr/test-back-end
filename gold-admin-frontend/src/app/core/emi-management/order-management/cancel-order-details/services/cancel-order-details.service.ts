@@ -43,11 +43,18 @@ export class CancelOrderDetailsService {
 		});
 	}
 
-	reportExport(): Observable<any> {
+	reportExport(event?: any): Observable<any> {
+		const reqParams: any = {};
+		if (event && event.cancelDate) {
+			reqParams.cancelDate = event.cancelDate;
+		}
+		if (event && event.merchantName) {
+			reqParams.merchantId = event.merchantName;
+		}
 		return this.http
 			.get(
 				API_ENDPOINT + `api/cancel-order/cancel-order-report`,
-				{ responseType: "arraybuffer" }
+				{ responseType: "arraybuffer", params: reqParams, }
 			)
 			.pipe(
 				map((res) => {

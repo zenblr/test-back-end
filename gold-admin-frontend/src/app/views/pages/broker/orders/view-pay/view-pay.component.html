@@ -64,6 +64,8 @@
                                 <th scope="col">Order ID</th>
                                 <th scope="col">EMI Date</th>
                                 <th scope="col">EMI Amount</th>
+                                <th scope="col">EMI Paid Amount</th>
+                                <th scope="col">EMI Balance Amount</th>
                                 <th scope="col">EMI Deduct Date</th>
                                 <th scope="col">Status</th>
                                 <th></th>
@@ -79,6 +81,8 @@
                                 <td>{{orderData.orderUniqueId}}</td>
                                 <td>{{data.dueDate | date:'dd MMM yyyy'}}</td>
                                 <td>{{data.emiAmount}}</td>
+                                <td>{{data.emiPaidAmount}}</td>
+                                <td>{{data.emiBalancePayment}}</td>
                                 <td>{{data.dueDate ? (data.dueDate | date:'dd MMM yyyy') : '-'}}</td>
                                 <td>{{data.orderemistatus.statusName | titlecase}}</td>
                                 <td *ngIf="data.orderStatusId != 1 && data.orderStatusId != 15">
