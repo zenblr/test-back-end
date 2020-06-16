@@ -145,7 +145,7 @@ export class CheckoutCustomerComponent implements OnInit {
           });
           this.getCities();
           if (this.showPrefilledDataFlag) {
-            const msg = 'Customer is already exist. The Details will be automatically pre filled';
+            const msg = 'Customer is already exist. The Details will be automatically pre-filled';
             this.toastr.successToastr(msg);
             this.showPrefilledDataFlag = false;
           }
@@ -160,8 +160,10 @@ export class CheckoutCustomerComponent implements OnInit {
     },
       error => {
         console.log(error.error.message);
-        const msg = error.error.message;
-        this.toastr.errorToastr(msg);
+        if (!this.showPrefilledDataFlag) {
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        }
       });
   }
 
