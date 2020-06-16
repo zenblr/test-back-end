@@ -21,7 +21,8 @@
                             alt="test" width="150px" height="150px">
                         <div class="text-color customer-id font-weight-bold mt-2">{{product.productName}}</div>
                         <p>Weight: {{product.weight}} GMS</p>
-                        <p class="text-color font-weight-bold">₹ {{product.productPrice[0].finalProductPrice}}
+                        <p class="text-color font-weight-bold"><span
+                                class="currency">{{product.productPrice[0].finalProductPrice | indianCurrencyFormat}}</span>
                         </p>
                         <kt-button [value]='"Order Now"' [type]='"button"' (action)="action(product.id)"
                             class="kt-padding-r-5"></kt-button>
@@ -66,8 +67,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2 text-center">
-                                    <h5 class="text-color font-weight-bold pt-4">₹
-                                        {{product.productPrice[0].finalProductPrice}}
+                                    <h5 class="text-color font-weight-bold pt-4 currency">
+                                        {{product.productPrice[0].finalProductPrice | indianCurrencyFormat}}
                                     </h5>
                                     <kt-button [value]='"Order Now"' [type]='"button"' (action)="action(product.id)"
                                         class="py-3"></kt-button>

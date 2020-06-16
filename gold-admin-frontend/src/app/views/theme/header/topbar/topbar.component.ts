@@ -546,6 +546,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "checkout-customer-address") {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/orders/view-pay/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/orders/cancel-order/')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {

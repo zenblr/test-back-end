@@ -179,7 +179,7 @@ export class EmiDetailsListComponent implements OnInit {
 	}
 
 	downloadReport() {
-		this.emiDetailsService.reportExport().subscribe();
+		this.emiDetailsService.reportExport(this.emiData).subscribe();
 		this.emiDetailsService.exportExcel.next(false);
 	}
 

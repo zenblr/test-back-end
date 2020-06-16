@@ -62,6 +62,7 @@ export class RefundDetailsEditComponent implements OnInit {
 					map((res) => {
 						this.refundData = res;
 						this.editRefund();
+						this.ref.detectChanges();
 					})
 				)
 				.subscribe();
@@ -125,7 +126,7 @@ export class RefundDetailsEditComponent implements OnInit {
 		};
 		this.refundForm.patchValue(data);
 
-		if (this.refundData.passbookCopy.url && this.refundData.checkCopy.url) {
+		if (this.refundData.passbookCopy && this.refundData.checkCopy) {
 			this.showUploadedFile = true;
 			this.showUploadFile = false;
 		} else {

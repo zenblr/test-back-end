@@ -188,12 +188,11 @@ export class CancelOrderDetailsListComponent implements OnInit {
 	}
 
 	downloadReport() {
-		this.cancelOrderDetailsService.reportExport().subscribe();
+		this.cancelOrderDetailsService.reportExport(this.cancelData).subscribe();
 		this.cancelOrderDetailsService.exportExcel.next(false);
 	}
 
 	applyFilter(data) {
-		console.log(data);
 		this.cancelData.merchantName = data.data.merchant;
 		this.cancelData.cancelDate = data.data.startDate;
 		this.dataSource.loadCancelOrderDetails(this.cancelData);
