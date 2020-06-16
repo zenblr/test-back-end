@@ -243,6 +243,7 @@ export class CheckoutCustomerComponent implements OnInit {
         const msg = 'Order has been placed successfully.';
         this.toastr.successToastr(msg);
         this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
+        this.shoppingCartService.cartCount.next(0);
       }
     },
       error => {

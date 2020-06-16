@@ -105,12 +105,13 @@
                     <div *ngIf="!(cartData?.emiScheme?.length ||cartData?.emiAmount?.length)" class="text-center">
                         <div>Grand Total</div>
                         <hr>
-                        <h3 class="pt-3 currency">{{cartData?.invoicePrice | indianCurrencyFormat}}</h3>
+                        <h3 class="pt-3 currency">{{cartData?.invoicePrice | indianCurrencyFormat }}</h3>
                     </div>
                     <div *ngIf="cartData?.emiScheme?.length || cartData?.emiAmount?.length">
                         <div class="row py-2">
                             <div class="col-8 text-muted">Grand Total:</div>
-                            <div class="col-4 text-right currency">{{cartData?.invoicePrice | indianCurrencyFormat}}
+                            <div class="col-4 text-right currency">
+                                {{cartData?.invoicePrice | indianCurrencyFormat}}
                             </div>
                         </div>
                         <div class="row py-2">
