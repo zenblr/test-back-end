@@ -131,10 +131,16 @@ router.use('/packet', packet)
 const ratingReason = require('./ratingReason');
 router.use('/rating-reason', ratingReason)
 
-const holidayMaster= require('./holidayMaster'); // add holiday list master
-router.use('/holiday-master',holidayMaster)
+const holidayMaster = require('./holidayMaster'); // add holiday list master
+router.use('/holiday-master', holidayMaster)
 
-const uploadHolidayMaster= require('./uploadHolidayMaster'); // upload holiday list master
-router.use('/upload-holiday-master',uploadHolidayMaster)
+const uploadHolidayMaster = require('./uploadHolidayMaster'); // upload holiday list master
+router.use('/upload-holiday-master', uploadHolidayMaster)
+
+const purpose = require('./purpose'); // upload holiday list master
+router.use('/purpose', purpose)
+
+const ornamentType = require('./ornamentType'); // upload holiday list master
+router.use('/ornament-type', ornamentType)
 
 module.exports = router;

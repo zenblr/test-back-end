@@ -48,6 +48,7 @@ import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
 import { PacketTrackingService} from '../../../../core/loan-management'
 import { LoanRepaymentService } from '../../../../core/account/loan-repayment/services/loan-repayment.service';
 import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
+import { ShoppingCartService } from '../../../../core/merchant-broker';
 
 @Component({
 	selector: "kt-topbar",
@@ -135,6 +136,7 @@ export class TopbarComponent implements OnInit {
 		private packetTrackingService:PacketTrackingService,
 		private loanRepaymentService: LoanRepaymentService,
 		private loanDisbursementService: LoanDisbursementService,
+		private shoppingCartService: ShoppingCartService,
 	) {
 
 		this.router.events.subscribe(val => {
@@ -199,6 +201,17 @@ export class TopbarComponent implements OnInit {
 					this.breadcrumbs = bc;
 				});
 			})
+		);
+		this.subscriptions.push(
+			this.shoppingCartService.cartCount$
+				.pipe(takeUntil(this.destroy$))
+				.subscribe((ct) => {
+					if (ct != null) {
+						Promise.resolve(null).then(() => {
+							this.totalRecords = ct;
+						});
+					}
+				})
 		);
 	}
 

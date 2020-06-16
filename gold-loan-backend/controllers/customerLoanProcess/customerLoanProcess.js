@@ -32,9 +32,8 @@ exports.customerDetails = async (req, res, next) => {
     }
 
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId, isActive: true },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus'],
-        where: { kycStatus: 'approved' },
+        where: { customerUniqueId, isActive: true ,kycStatus: 'approved'},
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus']
     })
 
     let customerLoanStage = await models.customerLoan.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false } })
@@ -64,16 +63,24 @@ exports.customerDetails = async (req, res, next) => {
 //FUNCTION fot submitting basic details 
 exports.loanBasicDeatils = async (req, res, next) => {
 
-    let { customerId, customerUniqueId, panCardNumber, mobileNumber, kycStatus, startDate } = req.body
+    let { customerId, customerUniqueId, panCardNumber, mobileNumber, kycStatus, startDate, purpose, loanId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'applying' } })
+
+    if (loanId != null) {
+        let customerLoanStage = await models.customerLoan.findOne({ where: { id: loanId } })
+        if (!check.isEmpty(customerLoanStage)) {
+            return res.status(200).json({ message: 'success', loanId: customerLoanStage.id, loanCurrentStage: '2' })
+        }
+    }
+
 
     let loanData = await sequelize.transaction(async t => {
 
         let loan = await models.customerLoan.create({ customerId: customerId, customerLoanCurrentStage: '2', loanStageId: stageId.id, createdBy, modifiedBy }, { transaction: t })
 
-        await models.customerLoanPersonalDetail.create({ loanId: loan.id, customerUniqueId, mobileNumber, panCardNumber, startDate, kycStatus, createdBy, modifiedBy }, { transaction: t })
+        await models.customerLoanPersonalDetail.create({ loanId: loan.id, customerUniqueId, mobileNumber, panCardNumber, startDate, purpose, kycStatus, createdBy, modifiedBy }, { transaction: t })
         return loan
     })
     return res.status(200).json({ message: 'success', loanId: loanData.id, loanCurrentStage: '2' })
@@ -98,9 +105,12 @@ exports.loanNomineeDetails = async (req, res, next) => {
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '3' })
     } else {
+        let loanSubmitted = await models.customerLoan.findOne({ where: { id: loanId } })
         let loanData = await sequelize.transaction(async t => {
 
-            let loan = await models.customerLoan.update({ customerLoanCurrentStage: '3', modifiedBy }, { where: { id: loanId }, transaction: t })
+            if (loanSubmitted.isLoanSubmitted = false) {
+                let loan = await models.customerLoan.update({ customerLoanCurrentStage: '3', modifiedBy }, { where: { id: loanId }, transaction: t })
+            }
 
             await models.customerLoanNomineeDetail.update({ nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t })
             return loan
@@ -135,8 +145,13 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData })
     } else {
+
+        let loanSubmitted = await models.customerLoan.findOne({ where: { id: loanId } })
+
         let loanData = await sequelize.transaction(async t => {
-            await models.customerLoan.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt }, { where: { id: loanId }, transaction: t })
+            if (loanSubmitted.isLoanSubmitted = false) {
+                await models.customerLoan.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt }, { where: { id: loanId }, transaction: t })
+            }
             let ornaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, {
                 updateOnDuplicate: ["loanId", "ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "loanAmount", "finalNetWeight", "currentLtvAmount", "modifiedBy"]
             }, { transaction: t })
@@ -167,8 +182,13 @@ exports.loanFinalLoan = async (req, res, next) => {
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '5', finalLoanAmount })
     } else {
+
+        let loanSubmitted = await models.customerLoan.findOne({ where: { id: loanId } })
+
         let loanData = await sequelize.transaction(async t => {
-            await models.customerLoan.update({ customerLoanCurrentStage: '5', modifiedBy, totalFinalInterestAmt: loanFinalCalculator.totalFinalInterestAmt }, { where: { id: loanId }, transaction: t })
+            if (loanSubmitted.isLoanSubmitted = false) {
+                await models.customerLoan.update({ customerLoanCurrentStage: '5', modifiedBy, totalFinalInterestAmt: loanFinalCalculator.totalFinalInterestAmt }, { where: { id: loanId }, transaction: t })
+            }
 
             let loan = await models.customerFinalLoan.update({ partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
             return loan
@@ -196,9 +216,13 @@ exports.loanBankDetails = async (req, res, next) => {
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '6' })
     } else {
-        let loanData = await sequelize.transaction(async t => {
-            await models.customerLoan.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: loanId }, transaction: t })
 
+        let loanSubmitted = await models.customerLoan.findOne({ where: { id: loanId } })
+
+        let loanData = await sequelize.transaction(async t => {
+            if (loanSubmitted.isLoanSubmitted = false) {
+                await models.customerLoan.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: loanId }, transaction: t })
+            }
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
             return loan
         })
@@ -594,6 +618,50 @@ exports.getLoanDetails = async (req, res, next) => {
         return res.status(200).json([]);
     } else {
         return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
+    }
+}
+
+//FUNCTION FOR GET ASSIGN APPRAISER CUSTOMER LIST 
+exports.getAssignAppraiserCustomer = async (req, res, next) => {
+    let { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+    let id = req.userData.id;
+
+    let query = {}
+    let searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$customer.first_name$": { [Op.iLike]: search + '%' },
+                "$customer.last_name$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+            },
+        }],
+        appraiserId: id
+    };
+
+    let includeArray = [{
+        model: models.customer,
+        as: 'customer',
+        attributes: ['id', 'firstName', 'lastName']
+    }]
+
+    let data = await models.customerAssignAppraiser.findAll({
+        where: searchQuery,
+        include: includeArray,
+        order: [
+            ['id', 'DESC']
+        ],
+        offset: offset,
+        limit: pageSize
+    })
+
+    let count = await models.customerAssignAppraiser.findAll({
+        where: searchQuery,
+        include: includeArray,
+    });
+    if (data.length === 0) {
+        return res.status(200).json([]);
+    } else {
+        return res.status(200).json({ message: 'success', data: data, count: count.length })
     }
 }
 

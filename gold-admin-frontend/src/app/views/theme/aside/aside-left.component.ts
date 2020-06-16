@@ -16,6 +16,7 @@ import { LayoutConfigService, MenuAsideService, MenuOptions, OffcanvasOptions } 
 import { HtmlClassService } from '../html-class.service';
 import { AuthService } from '../../../core/auth';
 import { SharedService } from '../../../core/shared/services/shared.service';
+import { ShoppingCartService } from '../../../core/merchant-broker';
 
 @Component({
 	selector: 'kt-aside-left',
@@ -27,10 +28,11 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 
 	@ViewChild('asideMenu', { static: true }) asideMenu: ElementRef;
 
-    private returnUrl: string;
+	private returnUrl: string;
 	currentRouteUrl = '';
 	insideTm: any;
 	outsideTm: any;
+	cartTotalCount = 0;
 
 	menuCanvasOptions: OffcanvasOptions = {
 		baseClass: 'kt-aside',
@@ -80,17 +82,29 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		private render: Renderer2,
 		private cdr: ChangeDetectorRef,
 		private auth: AuthService,
-		private sharedService: SharedService
+		private sharedService: SharedService,
+		private shoppingCartService: ShoppingCartService,
+		private ref: ChangeDetectorRef
 	) {
 		this.router.events.subscribe(event => {
-            if (event instanceof NavigationEnd) {
-                if (event.url != '/logout' && event.url != '/auth' && event.url != '/login')
-                    this.returnUrl = event.url;
-            }
-        });
+			if (event instanceof NavigationEnd) {
+				if (event.url != '/logout' && event.url != '/auth' && event.url != '/login')
+					this.returnUrl = event.url;
+			}
+		});
 	}
 
 	ngAfterViewInit(): void {
+		this.shoppingCartService.cartCount$
+			.subscribe((ct) => {
+				if (ct != null) {
+					Promise.resolve(null).then(() => {
+						this.cartTotalCount = ct;
+						console.log(this.cartTotalCount);
+						this.ref.detectChanges();
+					});
+				}
+			});
 	}
 
 	ngOnInit() {
@@ -238,8 +252,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			res => {
 				localStorage.clear();
 				this.sharedService.role.next(null);
-				this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl }});
-
+				this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl } });
 			}
 		), catchError(err => {
 			throw err
