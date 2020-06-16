@@ -37,11 +37,15 @@ exports.getLead = async (req, res, next) => {
     } else if (getAll == "false") {
         whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
     } else if (getAll == undefined) {
+        if (offset !== 1 && pageSize !== -1 ) { 
         whereCondition = { 
             where: searchQuery, 
             order: [['id', 'DESC']],
             offset: offset,
             limit: pageSize, }
+        } else {
+            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] } 
+        }
     }
     let allLead = await models.lead.findAll(whereCondition)
     let count = await models.lead.findAll({
@@ -50,7 +54,12 @@ exports.getLead = async (req, res, next) => {
       if (allLead.length == 0) {
         return res.status(200).json({ data: [] });
       }
-      return res.status(200).json({ data: allLead, count: count.length });
+      if (offset !== 1 && pageSize !== -1 ) { 
+        return res.status(200).json({ data: allLead, count: count.length });
+      } else {
+        return res.status(200).json({ data: allLead });
+
+      }
 
 }
 
