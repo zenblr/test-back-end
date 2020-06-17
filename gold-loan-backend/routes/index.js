@@ -146,4 +146,7 @@ router.use('/ornament-type', ornamentType)
 const lead = require('./lead');
 router.use('/lead', lead)
 
+const packetLocation = require('./packetLocation');
+router.use('/packetLocation', packetLocation)
+
 module.exports = router;
