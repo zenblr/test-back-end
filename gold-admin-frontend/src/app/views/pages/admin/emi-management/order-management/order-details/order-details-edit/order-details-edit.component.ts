@@ -206,6 +206,7 @@ export class OrderDetailsEditComponent implements OnInit {
 				uploadedAwbFileControl.setValidators([Validators.required]);
 				uploadedAwbBoxControl.setValidators([Validators.required]);
 			} else {
+				this.showUploadFile = false;
 				uploadedAwbFileControl.setValidators([]);
 				uploadedAwbBoxControl.setValidators([]);
 			}

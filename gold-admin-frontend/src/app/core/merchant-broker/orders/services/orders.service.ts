@@ -9,6 +9,10 @@ import { API_ENDPOINT } from '../../../../app.constant';
 	providedIn: "root",
 })
 export class OrdersService {
+
+	applyFilter = new BehaviorSubject<any>({});
+	applyFilter$ = this.applyFilter.asObservable();
+
 	constructor(
 		private http: HttpClient,
 		private excelService: ExcelService,
@@ -26,8 +30,14 @@ export class OrdersService {
 		if (event && event.search) {
 			reqParams.search = event.search;
 		}
-		if (event && event.orderemistatus) {
-			reqParams.orderemistatus = event.orderemistatus;
+		if (event && event.weight) {
+			reqParams.weight = event.weight;
+		}
+		if (event && event.paymentType) {
+			reqParams.paymentType = event.paymentType;
+		}
+		if (event && event.orderCurrentStatus) {
+			reqParams.orderCurrentStatus = event.orderCurrentStatus;
 		}
 		return this.http.get<any>(API_ENDPOINT + `api/order`, {
 			params: reqParams,

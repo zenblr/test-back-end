@@ -70,6 +70,11 @@ export class CancelOrderComponent implements OnInit {
   }
 
   getOtp() {
+    if (this.cancelForm.invalid) {
+      this.cancelForm.markAllAsTouched();
+      return;
+    }
+
     let params = {
       orderId: this.orderId
     }

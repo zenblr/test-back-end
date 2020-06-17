@@ -45,7 +45,7 @@ import { ReasonsService } from '../../../../core/masters/reasons/services/reason
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
 import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
-import { ShoppingCartService } from '../../../../core/merchant-broker';
+import { ShoppingCartService, OrdersService } from '../../../../core/merchant-broker';
 
 @Component({
 	selector: "kt-topbar",
@@ -131,6 +131,8 @@ export class TopbarComponent implements OnInit {
 		private leadSourceService: LeadSourceService,
 		private shopService: ShopService,
 		private shoppingCartService: ShoppingCartService,
+		private ordersService: OrdersService,
+
 	) {
 
 		this.router.events.subscribe(val => {
@@ -492,6 +494,10 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 		}
+		if (location.href.includes('/broker/customers')) {
+			this.value1 = "";
+			this.type1 = "";
+		}
 		if (location.href.includes("edit-order-details")) {
 			this.value5 = "Print Proforma";
 			this.type5 = "button";
@@ -551,6 +557,13 @@ export class TopbarComponent implements OnInit {
 		}
 		if (location.href.includes('/orders/cancel-order/')) {
 			this.showBackButton = true;
+		}
+		if (location.href.includes('/broker/orders')) {
+			this.showInput = true;
+			this.filterName = "orderDetails";
+			this.filterWidth = "630px";
+			this.listType = "tenure,orderStatus";
+			this.showfilter = true;
 		}
 	}
 
@@ -708,6 +721,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-loan") {
 			this.appliedLoan.applyFilter.next(data)
+		}
+		if (location.href.includes('/broker/orders')) {
+			this.ordersService.applyFilter.next(data)
 		}
 	}
 

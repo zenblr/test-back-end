@@ -6,7 +6,7 @@
                 <form [formGroup]="orderForm">
                     <div class="row kt-margin-t-15">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color">Member Id</label>
+                            <label class="font-weight-500 text-color">Customer Id</label>
                         </div>
                         <div class="col-8">
                             <input type="text" formControlName="memberId" class="form-control" numbersOnly disabled>
@@ -82,7 +82,8 @@
                     </div>
                     <div class="row kt-margin-t-15" *ngIf="showUploadFile">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color">Upload Awb File</label>
+                            <label class="font-weight-500 text-color" [class.mandatory]="showUploadFile">Upload Awb
+                                File</label>
                         </div>
                         <div class="col-8">
                             <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'uploadedAwbFile'"
@@ -101,7 +102,8 @@
                     </div>
                     <div class="row kt-margin-t-15" *ngIf="showUploadFile">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color">Upload Awb Box</label>
+                            <label class="font-weight-500 text-color" [class.mandatory]="showUploadFile">Upload Awb
+                                Box</label>
                         </div>
                         <div class="col-8">
                             <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'uploadedAwbBox'"
