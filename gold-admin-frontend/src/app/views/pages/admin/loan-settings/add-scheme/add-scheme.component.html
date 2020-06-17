@@ -89,8 +89,8 @@
                             <label class="kt-padding-l-10 mandatory"> Maximum % Allowed </label>
                         </div>
                         <div class="col-9">
-                            <input type="test" class="form-control" formControlName="maxPercentAllowed"
-                                [class.isError]="fillingForm.get('maxPercentAllowed').touched && fillingForm.get('maxPercentAllowed').invalid"
+                            <input type="test" class="form-control" formControlName="maximumPercentageAllowed"
+                                [class.isError]="fillingForm.get('maximumPercentageAllowed').touched && fillingForm.get('maximumPercentageAllowed').invalid"
                                 placeholder="Maximum % Allowed">
                             <mat-error
                                 *ngIf="fillingForm.get('processingChargePercent').errors?.pattern && fillingForm.get('processingChargePercent').touched">

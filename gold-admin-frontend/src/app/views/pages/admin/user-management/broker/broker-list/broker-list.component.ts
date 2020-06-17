@@ -244,8 +244,6 @@ export class BrokerListComponent implements OnInit, OnDestroy {
       userId: broker.userId,
       nameOnPanCard: broker.nameOnPanCard,
       panCard: broker.panCard,
-      imgName:broker.panCardDetails.originalname,
-      panCardImg:broker.panCardDetails.url,
       panCardNumber: broker.user.panCardNumber,
       ifscCode: broker.ifscCode,
       bankName: broker.bankName,
@@ -255,6 +253,10 @@ export class BrokerListComponent implements OnInit, OnDestroy {
       passbookStatementChequeId:broker.passbookStatementCheque,
       passbookImg:broker.passbookStatementChequeDetails.url,
       passbookImgName:broker.passbookStatementChequeDetails.originalname
+    }
+    if(broker.panCardDetails){
+      data['imgName'] = broker.panCardDetails.originalname
+      data['panCardImg'] = broker.panCardDetails.url
     }
     return data
   }

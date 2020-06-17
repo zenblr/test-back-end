@@ -74,6 +74,7 @@ export class PageConfig {
 			"user-management": {
 				partner: {
 					page: { title: "All Partners", desc: "" },
+					"view-schemes": { id: { page: { title: "Schemes", desc: "" }, } }
 				},
 				branch: {
 					page: { title: "All Partner Branches", desc: "" },
@@ -92,6 +93,14 @@ export class PageConfig {
 				},
 				merchant: {
 					page: { title: "All Merchants", desc: "" },
+				},
+				"add-merchant": {
+					page: { title: "Add Merchants", desc: "" },
+				},
+				"edit-merchant": {
+					id: {
+						page: { title: "Edit Merchant", desc: "" },
+					}
 				},
 				broker: {
 					page: { title: "Brokers", desc: "" },

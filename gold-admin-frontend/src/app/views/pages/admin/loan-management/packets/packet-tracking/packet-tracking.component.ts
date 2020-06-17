@@ -8,6 +8,7 @@ import { AssignPacketsComponent } from '../assign-packets/assign-packets.compone
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { UpdateLocationComponent } from '../update-location/update-location.component';
 
 @Component({
   selector: 'kt-packet-tracking',
@@ -116,11 +117,11 @@ export class PacketTrackingComponent implements OnInit {
     });
   }
 
-  editPacket(role) {
-    console.log(role)
-    const dialogRef = this.dialog.open(AssignPacketsComponent,
+  updatePacket(packet) {
+    console.log(packet)
+    const dialogRef = this.dialog.open(UpdateLocationComponent,
       {
-        data: { packetData: role, action: 'edit' },
+        data: { packetData: packet, action: 'edit' },
         width: '400px'
       });
     dialogRef.afterClosed().subscribe(res => {

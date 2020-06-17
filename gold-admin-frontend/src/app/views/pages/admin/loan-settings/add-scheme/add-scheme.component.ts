@@ -63,11 +63,12 @@ export class AddSchemeComponent implements OnInit {
       // interestRateNinetyDaysAnnually: [''],
       // interestRateOneHundredEightyDaysAnnually: [''],
       partnerId: ['', Validators.required],
-      schemeType: [],
-      processingChargeFixed: [],
-      processingChargePercent: [],
-      maxPercentAllowed: [],
-      penalInterest: []
+      schemeType: ['',Validators.required],
+      processingChargeFixed: ['',Validators.required],
+      processingChargePercent: ['',Validators.required],
+      maximumPercentageAllowed: ['',Validators.required],
+      penalInterest: [''],
+      isDefault:[null]
     })
 
     this.csvForm = this.fb.group({

@@ -70,7 +70,7 @@ export class AddInternalUserBranchComponent implements OnInit {
       address: ['', Validators.required],
       stateId: ['', Validators.required],
       cityId: ['', Validators.required],
-      pinCode: ['', Validators.required],
+      pinCode: ['', [Validators.required,Validators.minLength(6)]],
       multiselect:[''],
       partnerId:['']
     })
