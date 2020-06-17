@@ -21,10 +21,11 @@ export class CheckoutCustomerComponent implements OnInit {
   showPlaceOrderFlag = false;
   showNumberSearchFlag = true;
   showCustomerFlag = false;
+  isMandatory = true;
+  showPrefilledDataFlag = false;
   checkoutData: any;
   existingCustomerData: any;
   finalOrderData: any;
-  isMandatory = true;
 
   constructor(
     private fb: FormBuilder,
@@ -50,7 +51,7 @@ export class CheckoutCustomerComponent implements OnInit {
     this.checkoutCustomerForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      mobileNumber: ['', Validators.required],
+      mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       email: ['', Validators.email],
       address: ['', Validators.required],
       landMark: ['', Validators.required],
@@ -61,6 +62,13 @@ export class CheckoutCustomerComponent implements OnInit {
 
     this.otpForm = this.fb.group({
       otp: ['', Validators.required],
+    });
+
+    this.controls.mobileNumber.valueChanges.subscribe(res => {
+      if (this.controls.mobileNumber.valid) {
+        this.showPrefilledDataFlag = true;
+        this.getExistingCustomer(this.controls.mobileNumber.value);
+      }
     });
 
     this.checkoutCustomerForm.valueChanges.subscribe(val => console.log(val))
@@ -88,6 +96,14 @@ export class CheckoutCustomerComponent implements OnInit {
   }
 
   checkCustomerType(type) {
+    this.existingCustomerData = null;
+    this.finalOrderData = null;
+    this.numberSearchForm.reset();
+    this.checkoutCustomerForm.reset();
+    this.otpForm.reset();
+    this.controls['stateName'].patchValue('');
+    this.controls['cityName'].patchValue('');
+
     if (type == 'new') {
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
@@ -101,21 +117,18 @@ export class CheckoutCustomerComponent implements OnInit {
       this.showCustomerFlag = true;
       this.checkoutCustomerForm.disable();
     }
-    this.existingCustomerData = null;
-    this.finalOrderData = null;
-    this.numberSearchForm.reset();
-    this.checkoutCustomerForm.reset();
-    this.otpForm.reset();
-    this.controls['stateName'].patchValue('');
-    this.controls['cityName'].patchValue('');
   }
 
-  getExistingCustomer() {
+  checkCustomerExist() {
     if (this.numberSearchForm.invalid) {
       this.numberSearchForm.markAllAsTouched();
       return;
     }
-    this.checkoutCustomerService.getExistingCustomer(this.numberSearchForm.controls.mobNo.value).subscribe(res => {
+    this.getExistingCustomer(this.numberSearchForm.controls.mobNo.value);
+  }
+
+  getExistingCustomer(mobNo) {
+    this.checkoutCustomerService.getExistingCustomer(mobNo).subscribe(res => {
       if (res) {
         this.existingCustomerData = res;
         setTimeout(() => {
@@ -131,6 +144,11 @@ export class CheckoutCustomerComponent implements OnInit {
             cityName: res.customerDetails.customeraddress[0].cityId,
           });
           this.getCities();
+          if (this.showPrefilledDataFlag) {
+            const msg = 'Customer is already exist. The Details will be automatically pre-filled';
+            this.toastr.successToastr(msg);
+            this.showPrefilledDataFlag = false;
+          }
         });
         this.showformFlag = true;
         this.showPlaceOrderFlag = true;
@@ -142,8 +160,10 @@ export class CheckoutCustomerComponent implements OnInit {
     },
       error => {
         console.log(error.error.message);
-        const msg = error.error.message;
-        this.toastr.errorToastr(msg);
+        if (!this.showPrefilledDataFlag) {
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        }
       });
   }
 
@@ -223,6 +243,7 @@ export class CheckoutCustomerComponent implements OnInit {
         const msg = 'Order has been placed successfully.';
         this.toastr.successToastr(msg);
         this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
+        this.shoppingCartService.cartCount.next(0);
       }
     },
       error => {

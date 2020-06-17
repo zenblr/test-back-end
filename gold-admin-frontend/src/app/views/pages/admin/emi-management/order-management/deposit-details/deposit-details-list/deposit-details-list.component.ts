@@ -77,7 +77,7 @@ export class DepositDetailsListComponent implements OnInit {
 		orderCurrentStatus: "",
 	};
 	filteredDataList = {};
-	
+
 	constructor(
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
@@ -164,7 +164,7 @@ export class DepositDetailsListComponent implements OnInit {
 		if (
 			this.paginator.pageIndex < 0 ||
 			this.paginator.pageIndex >
-				this.paginator.length / this.paginator.pageSize
+			this.paginator.length / this.paginator.pageSize
 		)
 			return;
 		let from = this.paginator.pageIndex * this.paginator.pageSize + 1;
@@ -186,12 +186,11 @@ export class DepositDetailsListComponent implements OnInit {
 	}
 
 	downloadReport() {
-		this.depositDetailsService.reportExport().subscribe();
+		this.depositDetailsService.reportExport(this.depositData).subscribe();
 		this.depositDetailsService.exportExcel.next(false);
 	}
 
 	applyFilter(data) {
-		console.log(data);
 		this.depositData.paymentType = data.data.paymentType;
 		this.depositData.paymentRecievedDate = data.data.startDate;
 		this.depositData.orderCurrentStatus = data.data.status;

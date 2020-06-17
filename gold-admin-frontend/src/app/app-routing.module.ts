@@ -33,10 +33,6 @@ const routes: Routes = [
 				// }
 			},
 			{
-				path: 'wizard',
-				loadChildren: () => import('../app/views/pages/wizard/wizard.module').then(m => m.WizardModule)
-			},
-			{
 				path: 'error/403',
 				component: ErrorPageComponent,
 				data: {

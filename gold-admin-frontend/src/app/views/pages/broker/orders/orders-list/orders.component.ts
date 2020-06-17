@@ -42,7 +42,8 @@ export class OrdersComponent implements OnInit {
     "performa",
     "contract",
     "cancelReceipt",
-    "orderPayment"
+    "orderPayment",
+    "cancelOrder"
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("sort1", { static: true }) sort: MatSort;
@@ -142,6 +143,9 @@ export class OrdersComponent implements OnInit {
     this.router.navigate(["/broker/orders/view-pay/", element.id]);
   }
 
+  cancelOrder(element) {
+    this.router.navigate(["/broker/orders/cancel-order/", element.id]);
+  }
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.destroy$.next();

@@ -49,6 +49,7 @@ import { ShopComponent } from './shop/shop.component';
 import { ProductComponent } from './shop/product/product.component';
 import { OrderReceivedComponent } from './order-received/order-received.component';
 import { ViewPayComponent } from './orders/view-pay/view-pay.component';
+import { CancelOrderComponent } from './orders/cancel-order/cancel-order.component';
 
 const routes: Routes = [
   {
@@ -73,6 +74,10 @@ const routes: Routes = [
       {
         path: "orders/view-pay/:id",
         component: ViewPayComponent,
+      },
+      {
+        path: "orders/cancel-order/:id",
+        component: CancelOrderComponent,
       },
       {
         path: "profile",
@@ -116,7 +121,8 @@ const routes: Routes = [
     ShopComponent,
     ProductComponent,
     OrderReceivedComponent,
-    ViewPayComponent
+    ViewPayComponent,
+    CancelOrderComponent
   ],
   imports: [
     CommonModule,

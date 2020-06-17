@@ -143,4 +143,10 @@ router.use('/purpose', purpose)
 const ornamentType = require('./ornamentType'); // upload holiday list master
 router.use('/ornament-type', ornamentType)
 
+const lead = require('./lead');
+router.use('/lead', lead)
+
+const packetLocation = require('./packetLocation');
+router.use('/packetLocation', packetLocation)
+
 module.exports = router;
