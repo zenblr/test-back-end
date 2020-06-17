@@ -42,7 +42,7 @@ export class CheckoutCustomerComponent implements OnInit {
       ondismiss: (() => {
         this.zone.run(() => {
 
-        })
+        });
       })
     },
     prefill: {},
@@ -256,34 +256,25 @@ export class CheckoutCustomerComponent implements OnInit {
       });
   }
 
-  placeOrder() {
+  verifyOTP() {
     if (this.otpForm.invalid) {
       this.otpForm.markAllAsTouched();
       return;
     }
-    const placeOrderData = {
+    const verifyOTPData = {
       customerId: this.finalOrderData.customerId,
       otp: this.otpForm.controls.otp.value,
       blockId: this.finalOrderData.blockId,
-      // transactionId: 'TRA' + Date.now(),
       totalInitialAmount: this.checkoutData.nowPayableAmount
     }
-    this.checkoutCustomerService.verifyOTP(placeOrderData).subscribe(res => {
+    this.checkoutCustomerService.verifyOTP(verifyOTPData).subscribe(res => {
       if (res) {
         console.log(res);
-        // const msg = 'Order has been placed successfully.';
-        // this.toastr.successToastr(msg);
-        // this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
-
-        // blockId: "m3p2cPy"
-        // customerId: 19
-        this.razorpayOptions.key = res.razerPayConfig.key_id;
+        this.razorpayOptions.key = res.razerPayConfig;
         this.razorpayOptions.amount = res.totalInitialAmount;
         this.razorpayOptions.order_id = res.razorPayOrder.id;
-        // this.razorpayOptions.handler = this.razorPayResponsehandler;
 
         this.initPay(this.razorpayOptions)
-        // this.shoppingCartService.cartCount.next(0);
       }
     },
       error => {
@@ -293,21 +284,34 @@ export class CheckoutCustomerComponent implements OnInit {
       });
   }
 
-  razorPayResponsehandler(response: any) {
-    console.log(response)
-    this.zone.run(() => {
-
-    })
-  }
-
   initPay(options) {
     this.rzp = new this.winRef.nativeWindow['Razorpay'](options);
     this.rzp.open();
   }
 
-  paymentHandler(res: any) {
+  razorPayResponsehandler(response: any) {
+    console.log(response)
     this.zone.run(() => {
-      // add API call here
+      const placeOrderData = {
+        customerId: this.finalOrderData.customerId,
+        blockId: this.finalOrderData.blockId,
+        transactionDetails: response,
+        totalInitialAmount: this.checkoutData.nowPayableAmount
+      }
+      this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
+        if (res) {
+          console.log(res);
+          const msg = 'Order has been placed successfully.';
+          this.toastr.successToastr(msg);
+          this.shoppingCartService.cartCount.next(0);
+          this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId])
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
     });
   }
 }
