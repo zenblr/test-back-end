@@ -124,7 +124,17 @@ export class LoanSchemeComponent implements OnInit {
     this.sharedService.closeFilter.next(true);
   }
 
-  changeDefault(event, index, item) {
+  changeDefault(event, index, item, partnerIdx) {
+    this.schemes[partnerIdx].schemes[index].default = true
+    console.log(item)
+    this.loanSettingService.toogleDefault(item).subscribe(res => {
+      if (res) {
+        this.toastr.success("Updated Successfully")
+        this.getScheme()
+      }
+    }, err => {
+      this.schemes[partnerIdx].schemes[index].default = false
+    })
     console.log(event, index)
   }
 

@@ -62,4 +62,13 @@ export class LoanSettingsService {
       }))
   }
 
+  toogleDefault(item): Observable<any> {
+    return this.http.put(`api/scheme/update-default/${item.id}`,{partnerId:item.partnerScheme.partnerId}).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this._toastr.error(err.error.message)
+        throw (err)
+      }))
+  }
 }

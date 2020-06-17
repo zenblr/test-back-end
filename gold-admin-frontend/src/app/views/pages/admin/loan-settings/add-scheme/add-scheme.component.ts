@@ -68,7 +68,7 @@ export class AddSchemeComponent implements OnInit {
       processingChargePercent: ['',Validators.required],
       maximumPercentageAllowed: ['',Validators.required],
       penalInterest: [''],
-      isDefault:[null]
+      isDefault:[false]
     })
 
     this.csvForm = this.fb.group({
@@ -168,7 +168,7 @@ export class AddSchemeComponent implements OnInit {
 
   setAsDefault(event) {
     if (this.fillingForm.controls.schemeType.valid && this.fillingForm.controls.schemeType.value == 'unsecured') {
-      this.fillingForm.controls.default.patchValue(event);
+      this.fillingForm.controls.isDefault.patchValue(event);
     }
   }
 }
