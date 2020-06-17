@@ -16,9 +16,7 @@ import { AuthNoticeService } from '../../../../core/auth';
 // services
 import { AuthService } from '../../../../core/auth/_services/auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { ToastrComponent } from '../../../../views/partials/components/toastr/toastr.component';
-import { MatDialog } from '@angular/material';
-import { SignUpBrokerComponent } from '../sign-up-broker/sign-up-broker.component'
+import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
 
 /**
  * ! Just example => Should be removed in development
@@ -29,40 +27,22 @@ const DEMO_PARAMS = {
 };
 
 @Component({
-	selector: 'kt-login',
-	templateUrl: './login.component.html',
-	styleUrls: ['./login.component.scss'],
+	selector: 'kt-sign-up-broker',
+	templateUrl: './sign-up-broker.component.html',
+	styleUrls: ['./sign-up-broker.component.scss'],
 	encapsulation: ViewEncapsulation.None
 })
-export class LoginComponent implements OnInit, OnDestroy {
-
+export class SignUpBrokerComponent implements OnInit, OnDestroy {
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-	// Public params
 	loginForm: FormGroup;
 	loading = false;
 	isLoggedIn$: Observable<boolean>;
 	errors: any = [];
 
 	private unsubscribe: Subject<any>;
-
 	private returnUrl: any;
 
-	// Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
-
-	/**
-	 * Component constructor
-	 *
-	 * @param router: Router
-	 * @param auth: AuthService
-	 * @param authNoticeService: AuthNoticeService
-	 * @param translate: TranslateService
-	 * 
-	 * @param fb: FormBuilder
-	 * @param cdr
-	 * @param route
-	 */
 	constructor(
-		public dialog: MatDialog,
 		private router: Router,
 		private auth: AuthService,
 		private authNoticeService: AuthNoticeService,
@@ -75,13 +55,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 	}
 
-	/**
-	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
-	 */
-
-	/**
-	 * On init
-	 */
 	ngOnInit(): void {
 		this.initLoginForm();
 
@@ -91,9 +64,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	/**
-	 * On destroy
-	 */
 	ngOnDestroy(): void {
 		this.authNoticeService.setNotice(null);
 		this.unsubscribe.next();
@@ -101,12 +71,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 		this.loading = false;
 	}
 
-	/**
-	 * Form initalization
-	 * Default params, validators
-	 */
 	initLoginForm() {
-		// demo message to show
 		if (!this.authNoticeService.onNoticeChanged$.getValue()) {
 			const initialNotice = `Use account
 			<strong>${DEMO_PARAMS.EMAIL}</strong> and password
@@ -127,9 +92,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	/**
-	 * Form Submit
-	 */
 	submit() {
 		const controls = this.loginForm.controls;
 		/** check form */
@@ -214,27 +176,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 				this.cdr.markForCheck();
 			})
 		).subscribe();
-
 	}
 
-	brokerRegister() {
-		const dialogRef = this.dialog.open(SignUpBrokerComponent,
-			{
-				data: { action: '' },
-				width: '450px'
-			});
-		dialogRef.afterClosed().subscribe(res => {
-			if (res) {
-			}
-		})
-	}
+	brokerRegister() { }
 
-	/**
-	 * Checking control validation
-	 *
-	 * @param controlName: string => Equals to formControlName
-	 * @param validationType: string => Equals to valitors name
-	 */
 	isControlHasError(controlName: string, validationType: string): boolean {
 		const control = this.loginForm.controls[controlName];
 		if (!control) {

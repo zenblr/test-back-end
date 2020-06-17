@@ -1,0 +1,47 @@
+<kt-toastr #toastr></kt-toastr>
+<form class="kt-form" [formGroup]="loginForm" autocomplete="off">
+	<div class="form-group mb-0">
+		<div class="kt-margin-t-40 kt-margin-b-15">
+			<input type="text" class="login-form-input" placeholder="Email ID / Mobile Number"
+				formControlName="mobileNo" autocomplete="off" />
+			<div *ngIf="loginForm.controls.mobileNo.touched && loginForm.controls.mobileNo.invalid">
+				<mat-error *ngIf="isControlHasError('mobileNo','required')">
+					<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
+				</mat-error>
+				<mat-error *ngIf="isControlHasError('mobileNo','pattern')">
+					<strong>{{ 'AUTH.VALIDATION.INVALID_FIELD' | translate }}</strong>
+				</mat-error>
+				<mat-error
+					*ngIf="isControlHasError('mobileNo','maxlength') || isControlHasError('mobileNo','minlength')">
+					<strong>{{ 'AUTH.VALIDATION.MAX_LENGTH_FIELD' | translate }} 10</strong>
+				</mat-error>
+			</div>
+		</div>
+		<div class="kt-margin-b-15">
+			<input type="password" class="login-form-input" placeholder="Password" formControlName="password"
+				autocomplete="off">
+			<mat-error *ngIf="isControlHasError('password','required')">
+				<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
+			</mat-error>
+			<mat-error *ngIf="isControlHasError('password','minlength')">
+				<strong>{{ 'AUTH.VALIDATION.MIN_LENGTH_FIELD' | translate }} 3</strong>
+			</mat-error>
+			<mat-error *ngIf="isControlHasError('password','maxlength')">
+				<strong>{{ 'AUTH.VALIDATION.MAX_LENGTH_FIELD' | translate }} 100</strong>
+			</mat-error>
+		</div>
+		<div class="kt-margin-b-15">
+			<button class="btn btn-login w-100" (click)="submit()"
+				[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">Login</button>
+		</div>
+		<div class="kt-margin-b-30">
+			<p class="text-center forgot kt-pointer" routerLink="/auth/forgot-password">Forgot Password?</p>
+		</div>
+		<div class=" kt-margin-b-15">
+			<button class="btn btn-sign-otp w-100" (click)="signInWithOtp()">Sign In With Otp</button>
+		</div>
+		<div class=" kt-margin-b-15">
+			<button class="btn btn-sign-otp w-100" (click)="brokerRegister()">Register as a broker</button>
+		</div>
+	</div>
+</form>

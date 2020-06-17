@@ -14,12 +14,13 @@ import { LoginComponent } from './login/login.component';
 import { ChangePassword } from './change-password/change-password.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { AuthNoticeComponent } from './auth-notice/auth-notice.component';
+import { SignInWithOtpComponent } from './sign-in-with-otp/sign-in-with-otp.component';
+import { SignUpBrokerComponent } from './sign-up-broker/sign-up-broker.component';
 import { CoreModule } from '../../../core/core.module';
 
 // Auth
 import { AuthGuard, AuthService } from '../../../core/auth';
 import { PartialsModule } from '../../partials/partials.module';
-import { SignInWithOtpComponent } from './sign-in-with-otp/sign-in-with-otp.component';
 
 const routes: Routes = [
 	{
@@ -82,8 +83,10 @@ const routes: Routes = [
 		ChangePassword,
 		ForgotPasswordComponent,
 		AuthNoticeComponent,
-		SignInWithOtpComponent
-	]
+		SignInWithOtpComponent,
+		SignUpBrokerComponent
+	],
+	entryComponents: [SignUpBrokerComponent]
 })
 
 export class AuthModule {
