@@ -27,9 +27,9 @@ exports.getRatingReason = async (req, res, next) => {
     } else if (getAll == undefined) {
         whereCondition = { order: [['id', 'DESC']] }
     }
-    let allRating = await models.ratingReason.findAll(whereCondition)
-    return res.status(200).json({ data: allRating })
-
+    let allRating = await models.ratingReason.findAll(whereCondition);
+    let count = await models.ratingReason.findAll(whereCondition);
+    return res.status(200).json({ data: allRating, count: count.length});
 }
 
 exports.updateRatingReason = async (req, res, next) => {

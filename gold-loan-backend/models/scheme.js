@@ -25,11 +25,36 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'interest_rate_one_hundred_eighty_days_monthly'
         },
+        processingChargeFxed: {
+            type: DataTypes.FLOAT,
+            field: 'processing_charge_fxed'
+        },
+        processingChargePercent: {
+            type: DataTypes.FLOAT,
+            field: 'processing_charge_percent'
+        },
+        maximumPercentageAllowed: {
+            type: DataTypes.FLOAT,
+            field: 'maximum_percentage_allowed'
+        },
+        penalInterest: {
+            type: DataTypes.FLOAT,
+            field: 'penal_interest'
+        },
+        default: {
+            type: DataTypes.BOOLEAN,
+            field: 'default',
+        },
+        schemeType: {
+            type: DataTypes.ENUM,
+            field: 'scheme_type',
+            values: ['secure', 'unsecure'],
+            allowNull: false,
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
             defaultValue: true
-
         }
     },
         {

@@ -25,7 +25,7 @@ exports.getCustomerDetails = async (req, res, next) => {
     let statusId = status.id
     let checkStatusCustomer = await models.customer.findOne({
         where: { statusId, id: numberExistInCustomer.id },
-        attributes: ['firstName', 'lastName', 'panCardNumber']
+        attributes: ['firstName', 'lastName', 'panCardNumber','panType','panCardNumber','panImage']
     })
     if (check.isEmpty(checkStatusCustomer)) {
         return res.status(400).json({ message: "Please proceed after confirm your lead stage status" });
