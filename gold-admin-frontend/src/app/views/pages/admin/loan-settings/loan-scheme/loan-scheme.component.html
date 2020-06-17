@@ -89,18 +89,24 @@
                         </div>
 
                         <div class="col-12">
-                            <div class="row kt-margin-t-10">
-                                <div class="col form-label justify-content-center">
-                                    <label>Scheme Type - {{schemeDeatils.schemeType | titlecase}}</label>
+                            <div class="row kt-margin-t-10 scheme-details">
+                                <div class="col justify-content-center">
+                                    <p>Scheme Type</p>
+                                    <p>{{schemeDeatils.schemeType | titlecase}}</p>
                                 </div>
-                                <div class="col form-label justify-content-center">
-                                    <label>Processing Charges - {{schemeDeatils.processingChargeFixed}}</label>
+                                <div class="col justify-content-center">
+                                    <p>Maximum % Allowed </p>
+                                    <p>{{schemeDeatils.maximumPercentageAllowed}} %</p>
                                 </div>
-                                <div class="col form-label justify-content-center">
-                                    <label>Maximum % Allowed - {{schemeDeatils.maximumPercentageAllowed}}%</label>
+                                <div class="col justify-content-center">
+                                    <p>Penal Interest</p>
+                                    <p>{{schemeDeatils.penalInterest}} %</p>
                                 </div>
-                                <div class="col form-label justify-content-center">
-                                    <label>Penal Interest - {{schemeDeatils.penalInterest}}%</label>
+                                <div class="col-4 p-0 justify-content-center">
+                                    <p>Processing Charges</p>
+                                    <p>Fixed - {{schemeDeatils.processingChargeFixed}} <strong>or</strong>
+                                        Percentage of Loan Amount - {{schemeDeatils.processingChargePercent}} %
+                                    </p>
                                 </div>
                             </div>
                         </div>
