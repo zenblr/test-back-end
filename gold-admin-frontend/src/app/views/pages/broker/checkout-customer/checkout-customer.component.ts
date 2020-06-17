@@ -283,6 +283,7 @@ export class CheckoutCustomerComponent implements OnInit {
         // this.razorpayOptions.handler = this.razorPayResponsehandler;
 
         this.initPay(this.razorpayOptions)
+        // this.shoppingCartService.cartCount.next(0);
       }
     },
       error => {

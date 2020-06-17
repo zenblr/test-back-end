@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderReceivedService } from '../../../../core/merchant-broker';
+import { OrderDetailsService } from "../../../../core/emi-management/order-management/order-details/services/order-details.service";
 
 @Component({
   selector: 'kt-order-received',
@@ -19,7 +20,9 @@ export class OrderReceivedComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
-    private orderReceivedService: OrderReceivedService
+    private orderReceivedService: OrderReceivedService,
+    private orderDetailsService: OrderDetailsService,
+
   ) { }
 
   ngOnInit() {
@@ -32,10 +35,14 @@ export class OrderReceivedComponent implements OnInit {
   }
 
   printProforma() {
-
+    for (let i = 0; i < this.orderDetail.orderData.length; i++) {
+      this.orderDetailsService.getProforma(this.orderDetail.orderData[i].id).subscribe();
+    }
   }
 
   printContract() {
-
+    for (let i = 0; i < this.orderDetail.orderData.length; i++) {
+      this.orderDetailsService.getContract(this.orderDetail.orderData[i].id).subscribe();
+    }
   }
 }

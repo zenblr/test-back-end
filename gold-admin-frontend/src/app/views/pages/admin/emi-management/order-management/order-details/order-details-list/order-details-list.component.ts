@@ -246,7 +246,7 @@ export class OrderDetailsListComponent implements OnInit {
 	}
 
 	downloadReport() {
-		this.orderDetailsService.reportExport().subscribe();
+		this.orderDetailsService.reportExport(this.orderData).subscribe();
 		this.orderDetailsService.exportExcel.next(false);
 	}
 

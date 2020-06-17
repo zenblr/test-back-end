@@ -236,12 +236,17 @@
                         <div class="col-8 font-weight-500">
                             <div class="row">
                                 <div class="col-6 text-muted pb-2">Invoice Price:</div>
-                                <div class="col-6">₹ {{checkoutData?.invoiceAmount | number}}</div>
+                                <div class="col-6"><span
+                                        class="currency">{{checkoutData?.invoiceAmount | indianCurrencyFormat}}</span>
+                                </div>
                                 <div class="col-6 text-muted pb-2">Now Payable Amount:</div>
-                                <div class="col-6">₹ {{checkoutData?.nowPayableAmount | number}}</div>
+                                <div class="col-6"><span class="currency">
+                                        {{checkoutData?.nowPayableAmount | indianCurrencyFormat}}</span></div>
                                 <ng-container *ngIf="checkoutData?.emiScheme?.length ||checkoutData?.emiAmount?.length">
                                     <div class="col-6 text-muted pb-2">Initial Payment:</div>
-                                    <div class="col-6">₹ {{checkoutData?.initialPayment | number}}</div>
+                                    <div class="col-6"><span class="currency">
+                                            {{checkoutData?.initialPayment | indianCurrencyFormat}}</span>
+                                    </div>
                                     <div class="col-6 text-muted pb-2">EMI Scheme:</div>
                                     <div class="col-6" *ngIf="checkoutData?.emiScheme?.length">
                                         <span class="content"
@@ -254,7 +259,8 @@
                                     <div class="col-6" *ngIf="checkoutData?.emiAmount?.length">
                                         <div class="content"
                                             *ngFor="let amt of checkoutData?.emiAmount; let isLast=last">
-                                            ₹ {{amt | number}}{{isLast ? '' : ', '}}
+                                            <span class="currency">
+                                                {{amt | indianCurrencyFormat}}{{isLast ? '' : ', '}}</span>
                                         </div>
                                     </div>
                                     <div class="col-6 offset-6">(Per Month)</div>

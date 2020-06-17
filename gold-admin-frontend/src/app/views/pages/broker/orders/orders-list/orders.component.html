@@ -94,7 +94,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="performa">
-                    <mat-header-cell *matHeaderCellDef>Perform Invoice</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Proforma Invoice</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <span *ngIf="element['orderCurrentStatus.id'] != 13">
                             <kt-button [value]="'Print'" [type]="'submit'" (click)="performa(element)"></kt-button>
