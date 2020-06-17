@@ -5,7 +5,7 @@
     <div class="kt-portlet__body font-weight-500" *ngIf="data.action == 'view'">
         <div class="row py-2">
             <div class="col-md-5 text-muted">
-                User ID
+                Customer ID :
             </div>
             <div class="col-md-7">
                 {{orderData?.order?.customerDetails.customerUniqueId ? orderData?.order?.customerDetails.customerUniqueId : '-'}}
@@ -13,7 +13,7 @@
         </div>
         <div class="row py-2">
             <div class="col-md-5 text-muted">
-                Order ID
+                Order ID :
             </div>
             <div class="col-md-7">
                 {{orderData?.order?.orderUniqueId ? orderData?.order?.orderUniqueId : '-'}}
@@ -21,7 +21,7 @@
         </div>
         <div class="row py-2">
             <div class="col-md-5 text-muted">
-                Order Total Amount
+                Order Total Amount :
             </div>
             <div class="col-md-7">
                 {{orderData?.finalOrderPrice ? orderData?.finalOrderPrice : '-'}}
@@ -29,7 +29,7 @@
         </div>
         <div class="row py-2">
             <div class="col-md-5 text-muted">
-                Order Initial Amount
+                Order Initial Amount :
             </div>
             <div class="col-md-7">
                 {{orderData?.initialPayment ? orderData?.initialPayment : '-'}}
@@ -37,7 +37,7 @@
         </div>
         <div class="row py-2">
             <div class="col-md-5 text-muted">
-                EMI Due Date
+                EMI Due Date :
             </div>
             <div class="col-md-7">
                 {{orderData?.dueDate ? (orderData?.dueDate | date:'medium') : '-'}}
@@ -45,7 +45,7 @@
         </div>
         <div class="row py-2">
             <div class="col-md-5 text-muted">
-                EMI Payment Date
+                EMI Payment Date :
             </div>
             <div class="col-md-7">
                 {{orderData?.paymentRecievedDate ? (orderData?.paymentRecievedDate | date:'medium') : '-'}}

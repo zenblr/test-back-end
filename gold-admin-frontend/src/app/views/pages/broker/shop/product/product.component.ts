@@ -43,7 +43,7 @@ export class ProductComponent implements OnInit {
       })
 
     } else {
-      this.toastr.errorToastr("Select 1 Payment Type");
+      this.toastr.errorToastr("Select a Payment Type");
       return;
     }
   }
