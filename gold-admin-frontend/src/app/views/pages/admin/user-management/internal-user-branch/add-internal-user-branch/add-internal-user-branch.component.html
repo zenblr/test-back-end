@@ -39,19 +39,21 @@
                             <div class="col-4 form-label">
                                 <label for="" *ngIf="data.action!='view'"
                                     class="kt-padding-l-10 text-color mandatory">Select Parnter</label>
-                                    <label for="" *ngIf="data.action =='view'"
+                                <label for="" *ngIf="data.action =='view'"
                                     class="kt-padding-l-10 text-color">Parnter</label>
                             </div>
                             <div class="col-8">
-                                <kt-multi-select-search *ngIf="data.action != 'view'" [items]="partners" [multiple]="true"
-                                    formControlName="multiselect" [bindLabel]="'name'" [bindValue]="'id'">
-                                </kt-multi-select-search >
+                                <kt-multi-select-search *ngIf="data.action != 'view'" [items]="partners"
+                                    [multiple]="true" formControlName="multiselect" [bindLabel]="'name'"
+                                    [bindValue]="'id'">
+                                </kt-multi-select-search>
                                 <!-- <select class="form-control" formControlName="partnerId" autocomplete="off"
                                     [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select</option>
                                     <option [value]="branch.id" *ngFor="let branch of branch">{{branch.name |titlecase}}</option>
                                 </select> -->
-                                <input type="text" readonly class="form-control" value="{{data.branch.partner.join(',')}}" *ngIf="data.action == 'view' && data">
+                                <input type="text" readonly class="form-control"
+                                    value="{{data.branch.partner.join(',')}}" *ngIf="data.action == 'view' && data">
                                 <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.errors?.required">
                                     Required field</mat-error>
                             </div>
@@ -115,6 +117,115 @@
                                 <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
                                     Required field
                                 </mat-error>
+                            </div>
+                        </div>
+
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="kt-padding-l-10 text-color ">Bank Name
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="bankName" placeholder="Bank Name"
+                                    [class.isError]="controls.bankName.touched && controls.bankName.invalid">
+                                <mat-error *ngIf="controls.bankName.touched && controls.bankName.errors?.required">
+                                    Required field</mat-error>
+                                <mat-error *ngIf="controls.bankName.touched && controls.bankName.errors?.pattern">
+                                    Invalid</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="kt-padding-l-10 text-color ">Bank Branch
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="bankBranch" placeholder="Bank Branch"
+                                    [class.isError]="controls.bankBranch.touched && controls.bankBranch.invalid">
+                                <mat-error *ngIf="controls.bankBranch.touched && controls.bankBranch.errors?.required">
+                                    Required field</mat-error>
+                                <mat-error *ngIf="controls.bankBranch.touched && controls.bankBranch.errors?.pattern">
+                                    Invalid </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="kt-padding-l-10 text-color ">IFSC Code
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control text-uppercase" maxlength="11" formControlName="ifscCode"
+                                    placeholder="IFSC Code"
+                                    [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
+                                <mat-error *ngIf="controls.ifscCode.touched && controls.ifscCode.errors?.required">
+                                    Required field</mat-error>
+                                <mat-error *ngIf="controls.ifscCode.touched && controls.ifscCode.errors?.pattern">
+                                    Invalid</mat-error>
+                            </div>
+                        </div>
+
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="kt-padding-l-10 text-color ">A/C Holder Name
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="accountHolderName"
+                                    placeholder="A/C Holder Name"
+                                    [class.isError]="controls.accountHolderName.touched && controls.accountHolderName.invalid">
+                                <mat-error
+                                    *ngIf="controls.accountHolderName.touched && controls.accountHolderName.errors?.required">
+                                    Required field</mat-error>
+                                <mat-error
+                                    *ngIf="controls.accountHolderName.touched && controls.accountHolderName.errors?.pattern">
+                                    Invalid</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label for="" [class.mandatory]="data.action!='view'"
+                                    class="kt-padding-l-10 text-color ">A/C Number
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" numbersOnly formControlName="accountNumber"
+                                    placeholder="A/C Number"
+                                    [class.isError]="controls.accountNumber.touched && controls.accountNumber.invalid">
+                                <mat-error
+                                    *ngIf="controls.accountNumber.touched && controls.accountNumber.errors?.required">
+                                    Required field</mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15" *ngIf="data.action!='view'">
+                            <div class="col-4 form-label">
+                                <label class="text-color  kt-padding-l-10 mandatory">Upload Passbook / Bank Statement /
+                                    Cancel
+                                    Cheque
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="input-group"
+                                    [class.isError]="controls.passbookImgName.touched && controls.passbookImgName.errors?.required">
+                                    <input type="text" class="form-control" formControlName="passbookImgName" readonly
+                                        placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                            (click)="data.action !== 'view' && pass.click()">Attach</span>
+                                    </div>
+                                </div>
+                                <input type="file" id="file" aria-label="File browser example" #pass
+                                    (input)="getFileInfo($event,'pass')" class="d-none">
+                                <span class="file-custom"></span>
+
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15" *ngIf="data.action  != 'add' && controls.passbookImg.value">
+                            <div class="col-12">
+                                <img [src]="controls.passbookImg.value" alt="" class="img-fluid">
                             </div>
                         </div>
                     </div>

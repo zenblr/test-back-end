@@ -13,21 +13,22 @@ import { PartnerService } from '../../../../../../core/user-management/partner/s
   styleUrls: ['./add-internal-user-branch.component.scss']
 })
 export class AddInternalUserBranchComponent implements OnInit {
-  
+
   title: string = ''
   addInternalBranchForm: FormGroup;
-  states:any[]=[]
-  cities:any[]=[]
+  states: any[] = []
+  cities: any[] = []
   partners = [];
   button: string;
+  formData: FormData;
 
   constructor(
     public dialogRef: MatDialogRef<AddInternalUserBranchComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
-    private internalUserBranchService:InternalUserBranchService,
-    public toast:ToastrService,
-    public sharedService:SharedService,
+    private internalUserBranchService: InternalUserBranchService,
+    public toast: ToastrService,
+    public sharedService: SharedService,
     private partnerService: PartnerService
 
   ) { }
@@ -71,21 +72,29 @@ export class AddInternalUserBranchComponent implements OnInit {
       stateId: ['', Validators.required],
       cityId: ['', Validators.required],
       pinCode: ['', Validators.required],
-      multiselect:[''],
-      partnerId:['']
+      multiselect: [''],
+      partnerId: [''],
+      ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
+      bankName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
+      bankBranch: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
+      accountHolderName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
+      accountNumber: ['', Validators.required],
+      passbookStatementChequeId: [],
+      passbookImg: [],
+      passbookImgName: ['', Validators.required]
     })
   }
 
-  getStates(){
+  getStates() {
     this.sharedService.getStates().pipe(
-      map(res =>{
+      map(res => {
         this.states = res.message;
       })).subscribe()
   }
 
-  getCites(){
+  getCites() {
     this.sharedService.getCities(this.controls.stateId.value).pipe(
-      map(res =>{
+      map(res => {
         this.cities = res.message;
       })).subscribe()
   }
@@ -110,27 +119,58 @@ export class AddInternalUserBranchComponent implements OnInit {
       return
     }
     this.controls.partnerId.patchValue(this.controls.multiselect.value.multiSelect)
-    if(this.data.action == 'add'){
+    if (this.data.action == 'add') {
       this.internalUserBranchService.addInternalBranch(this.addInternalBranchForm.value).pipe(
         map(res => {
-        this.toast.success(res['message'])
-         this.dialogRef.close(res)
+          this.toast.success(res['message'])
+          this.dialogRef.close(res)
         }),
-        catchError(err=>{
+        catchError(err => {
           this.toast.error(err.error.error)
           throw err
         })).subscribe()
-    }else{
- 
-    this.internalUserBranchService.editInternalBranch(this.addInternalBranchForm.value,this.data.branch.userId).pipe(
-      map(res => {
-      this.toast.success(res['message'])
-       this.dialogRef.close(res)
-      }),
-      catchError(err=>{
-        this.toast.error(err.error.message)
-        throw err
-      })).subscribe()
-  }}
+    } else {
+
+      this.internalUserBranchService.editInternalBranch(this.addInternalBranchForm.value, this.data.branch.userId).pipe(
+        map(res => {
+          this.toast.success(res['message'])
+          this.dialogRef.close(res)
+        }),
+        catchError(err => {
+          this.toast.error(err.error.message)
+          throw err
+        })).subscribe()
+    }
+  }
+
+  getFileInfo(event, type) {
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      this.formData = new FormData();
+      this.formData.append("avatar", event.target.files[0]);
+      this.sharedService.fileUpload(this.formData).pipe(
+        map(res => {
+
+          // if (type == 'pan') {
+          //   this.addInternalBranchForm.controls.imgName.patchValue(event.target.files[0].name)
+          //   this.addInternalBranchForm.controls.panCard.patchValue(res.uploadFile.id)
+          //   this.addInternalBranchForm.controls.panCardImg.patchValue(res.uploadFile.URL)
+          // } else {
+          this.addInternalBranchForm.controls.passbookImgName.patchValue(event.target.files[0].name)
+          this.addInternalBranchForm.controls.passbookStatementChequeId.patchValue(res.uploadFile.id)
+          this.addInternalBranchForm.controls.passbookImg.patchValue(res.uploadFile.URL)
+          // }
+
+        }), catchError(err => {
+          this.toast.error(err.error.message);
+          throw err
+        })
+      ).subscribe()
+    } else {
+      this.toast.error('Upload Valid File Format');
+    }
+
+  }
 }
 
