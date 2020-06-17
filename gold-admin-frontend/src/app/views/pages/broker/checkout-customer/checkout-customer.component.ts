@@ -29,13 +29,13 @@ export class CheckoutCustomerComponent implements OnInit {
   finalOrderData: any;
   rzp: any;
   private _window: ICustomWindow;
-  public razorpayOptions: any = {
+  razorpayOptions: any = {
     key: '',
     amount: '',
     currency: 'INR',
-    name: 'Test Name',
-    description: 'Test Transaction',
-    image: 'https://example.com/your_logo',
+    name: 'Augmont',
+    description: '',
+    image: 'https://gold.nimapinfotech.com/assets/media/logos/logo.png',
     order_id: '',
     handler: this.razorPayResponsehandler.bind(this),
     modal: {
@@ -53,6 +53,7 @@ export class CheckoutCustomerComponent implements OnInit {
       color: '#454d67'
     },
   };
+
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
