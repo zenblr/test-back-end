@@ -13,17 +13,50 @@ export class PacketLocationService {
   openModal$ = this.openModal.asObservable();
 
   constructor(
-    public http:HttpClient,
-    public toastr:ToastrService,
-    ) { }
+    public http: HttpClient,
+    public toastr: ToastrService,
+  ) { }
 
-  getpacketsTrackingDetails(from, to, search):Observable <any>{
-    return this.http.get(`/api/?search=${search}&from=${from}&to=${to}`).pipe(
-      map(res=>res),
+  getpacketsTrackingDetails(from, to, search): Observable<any> {
+    return this.http.get(`/api/packetLocation?search=${search}&from=${from}&to=${to}`).pipe(
+      map(res => res),
       catchError(err => {
         if (err.error.message)
-        this.toastr.error(err.error.message);
+          this.toastr.error(err.error.message);
         throw (err);
       }))
+  }
+
+  addpacketLocation(location): Observable<any> {
+    return this.http.post<any>(`/api/packetLocation`, { location }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  updatepacketLocation(id, location): Observable<any> {
+    return this.http.put<any>(`/api/packetLocation/${id}`, { location }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  deletepacketLocation(id): Observable<any> {
+    return this.http.delete<any>(`/api/packetLocation?id=${id}&isActive=false`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
   }
 }
