@@ -32,13 +32,13 @@
                                 </div>
                                 <div class="col offset-4">
                                     <div class="row pb-2">
-                                        <div class="col">
-                                            <mat-slide-toggle  *ngIf="schemeDeatils.schemeType == 'unsecured'" [disabled]="schemeDeatils.default"
-                                                (change)="changeDefault($event.checked, idx, schemeDeatils,i)" [checked]="schemeDeatils.default">
+                                        <div class="col-6" *ngIf="schemeDeatils.schemeType == 'unsecured'">
+                                            <mat-slide-toggle
+                                                (change)="changeDefault($event.checked, idx, schemeDeatils)">
                                                 <strong>Default</strong>
                                             </mat-slide-toggle>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-6" [class.offset-6]="schemeDeatils.schemeType == 'secured'">
                                             <mat-slide-toggle [checked]="schemeDeatils.isActive"
                                                 (change)="changeStatus($event.checked, idx,schemeDeatils)">
                                                 <strong>Status</strong>
@@ -89,18 +89,24 @@
                         </div>
 
                         <div class="col-12">
-                            <div class="row kt-margin-t-10">
-                                <div class="col form-label justify-content-center">
-                                    <label>Scheme Type - Secured</label>
+                            <div class="row kt-margin-t-10 scheme-details">
+                                <div class="col justify-content-center">
+                                    <p>Scheme Type</p>
+                                    <p>{{schemeDeatils.schemeType | titlecase}}</p>
                                 </div>
-                                <div class="col form-label justify-content-center">
-                                    <label>Processing Charges - 500</label>
+                                <div class="col justify-content-center">
+                                    <p>Maximum % Allowed </p>
+                                    <p>{{schemeDeatils.maximumPercentageAllowed}} %</p>
                                 </div>
-                                <div class="col form-label justify-content-center">
-                                    <label>Maximum % Allowed - 67%</label>
+                                <div class="col justify-content-center">
+                                    <p>Penal Interest</p>
+                                    <p>{{schemeDeatils.penalInterest}} %</p>
                                 </div>
-                                <div class="col form-label justify-content-center">
-                                    <label>Penal Interest - 10%</label>
+                                <div class="col-4 p-0 justify-content-center">
+                                    <p>Processing Charges</p>
+                                    <p>Fixed - {{schemeDeatils.processingChargeFixed}} <strong>or</strong>
+                                        Percentage of Loan Amount - {{schemeDeatils.processingChargePercent}} %
+                                    </p>
                                 </div>
                             </div>
                         </div>

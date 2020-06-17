@@ -5,6 +5,7 @@ import { PartnerService } from '../../../../../core/user-management/partner/serv
 import { map, catchError, finalize } from 'rxjs/operators';
 import { LoanSettingsService } from '../../../../../core/loan-setting';
 import { ToastrService } from 'ngx-toastr';
+import { min } from 'moment';
 
 @Component({
   selector: 'kt-add-scheme',
@@ -63,12 +64,13 @@ export class AddSchemeComponent implements OnInit {
       // interestRateNinetyDaysAnnually: [''],
       // interestRateOneHundredEightyDaysAnnually: [''],
       partnerId: ['', Validators.required],
-      schemeType: ['',Validators.required],
-      processingChargeFixed: ['',Validators.required],
-      processingChargePercent: ['',Validators.required],
-      maximumPercentageAllowed: ['',Validators.required],
-      penalInterest: [''],
-      isDefault:[false]
+      schemeType: ['', [Validators.required]],
+      processingChargeFixed: [, [Validators.required, Validators.min(0)]],
+      processingChargePercent: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      isDefault: [false]
+
     })
 
     this.csvForm = this.fb.group({
