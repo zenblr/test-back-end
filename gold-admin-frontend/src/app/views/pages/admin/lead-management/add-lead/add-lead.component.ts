@@ -9,6 +9,7 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
 import { map } from 'rxjs/operators';
 import { LeadService } from '../../../../../core/lead-management/services/lead.service';
+import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
 
 @Component({
   selector: 'kt-add-lead',
@@ -39,13 +40,15 @@ export class AddLeadComponent implements OnInit {
   branches = []
   details: any;
   showCommentBox = false;
+  leadSources = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private sharedService: SharedService,
     private fb: FormBuilder,
-    private leadService: LeadService
+    private leadService: LeadService,
+    private leadSourceService: LeadSourceService
   ) {
     this.details = this.sharedService.getDataFromStorage()
     console.log(this.details)
@@ -54,6 +57,7 @@ export class AddLeadComponent implements OnInit {
   ngOnInit() {
     this.formInitialize();
     this.setForm();
+    this.getLeadSourceWithoutPagination();
     this.getInternalBranhces();
     this.getStates();
     this.getStatus();
@@ -126,6 +130,12 @@ export class AddLeadComponent implements OnInit {
     this.leadService.getInternalBranhces().subscribe(res => {
       this.branches = res.data;
     });
+  }
+
+  getLeadSourceWithoutPagination() {
+    this.leadSourceService.getLeadSourceWithoutPagination().subscribe(res => {
+      this.leadSources = res.data
+    })
   }
 
   getStates() {

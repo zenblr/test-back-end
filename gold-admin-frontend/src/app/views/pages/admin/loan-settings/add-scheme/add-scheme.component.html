@@ -52,6 +52,18 @@
                                 </option>
                             </select>
 
+                            <div *ngIf="fillingForm.get('schemeType').value == 'unsecured'">
+                                <label class="custom-checkbox ">
+                                    <span class="label-checkbox">Set as Default</span>
+                                    <input type="checkbox" (change)="setAsDefault($event.target.checked)">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <!-- <label class="custom-checkbox">
+                                        <span class="label-checkbox">{{action.actionName |titlecase}}</span>
+                                        <input type="checkbox" [checked]="action.isSelected" (change)="actionChange($event.target.checked,moduleIndex,entityIndex,permissionIndex)">
+                                        <span class="checkmark"></span>
+                                    </label> -->
+                            </div>
                         </div>
                     </div>
 

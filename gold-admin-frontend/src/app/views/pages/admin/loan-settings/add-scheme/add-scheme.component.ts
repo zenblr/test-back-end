@@ -164,4 +164,10 @@ export class AddSchemeComponent implements OnInit {
     this.csvForm.get('csv').patchValue(event.target.files[0].name);
 
   }
+
+  setAsDefault(event) {
+    if (this.fillingForm.controls.schemeType.valid && this.fillingForm.controls.schemeType.value == 'unsecured') {
+      this.fillingForm.controls.default.patchValue(event);
+    }
+  }
 }

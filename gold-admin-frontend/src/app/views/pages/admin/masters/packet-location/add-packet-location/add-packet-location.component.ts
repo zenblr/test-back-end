@@ -11,16 +11,16 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AddPacketLocationComponent implements OnInit {
 
-  packetLocation:FormGroup
+  packetLocation: FormGroup
   title: string;
   button: string;
 
   constructor(
-    private fb:FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddPacketLocationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private packetLocationService:PacketLocationService,
-    private toastr:ToastrService
+    private packetLocationService: PacketLocationService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -29,23 +29,26 @@ export class AddPacketLocationComponent implements OnInit {
     this.setTitle()
   }
 
-  initForm(){
+  initForm() {
     this.packetLocation = this.fb.group({
-      location:['',Validators.required]
+      id: [],
+      location: ['', Validators.required]
     })
   }
 
   setTitle() {
+    console.log(this.data)
     if (this.data.action == 'add') {
       this.title = "Add Location";
       this.button = "Add";
     } else {
       this.button = "Update";
       this.title = "Edit Location"
+      this.packetLocation.patchValue(this.data.locationData)
     }
   }
 
-  get controls(){
+  get controls() {
     return this.packetLocation.controls
   }
 
@@ -57,32 +60,36 @@ export class AddPacketLocationComponent implements OnInit {
     }
   }
 
-    onSubmit(){
-      if(this.packetLocation.invalid){
-        this.packetLocation.markAllAsTouched()
-        return
-      }
-      
-      if (this.data.action == 'edit') {
-        // this.packetLocationService.updateOrnaments(id, data).subscribe(res => {
-        //   if (res) {
-        //     const msg = 'Ornament Updated Sucessfully';
-        //     this.toastr.success(msg);
-        //     this.dialogRef.close(true);
-        //   }
-        // });
-  
-      } else {
-        // this.packetLocationService.addOrnaments(data).subscribe(res => {
-        //   if (res) {
-        //     const msg = 'Ornament Added Successfully';
-        //     this.toastr.success(msg);
-        //     this.dialogRef.close(true);
-        //   }
-        // });
-      }
-
+  onSubmit() {
+    if (this.packetLocation.invalid) {
+      this.packetLocation.markAllAsTouched()
+      return
     }
-  
+
+    const data = this.packetLocation.value;
+    const id = this.controls.id.value;
+
+
+    if (this.data.action == 'edit') {
+      this.packetLocationService.updatepacketLocation(id, data.location).subscribe(res => {
+        if (res) {
+          const msg = 'Ornament Updated Sucessfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      });
+
+    } else {
+      this.packetLocationService.addpacketLocation(data.location).subscribe(res => {
+        if (res) {
+          const msg = 'Ornament Added Successfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      });
+    }
+
+  }
+
 
 }
