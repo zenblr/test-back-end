@@ -28,6 +28,26 @@ exports.schemeValidation = [
     .exists()
     .withMessage('interest rate for 180 Days Monthly  is required'),
 
+    body('processingChargeFixed')
+    .exists()
+    .withMessage('processing charge fixed is required'),
+
+    body('processingChargePercent')
+    .exists()
+    .withMessage('processing charge percent is required'),
+
+    body('maximumPercentageAllowed')
+    .exists()
+    .withMessage('maximum percentage allowed is required'),
+
+    body('penalInterest')
+    .exists()
+    .withMessage('penal interest is required'),
+
+    body('schemeType')
+    .exists()
+    .withMessage('scheme type is required'),
+
   // body('interestRateThirtyDaysAnnually')
   //   .exists()
   //   .withMessage('interest rate for 30 Days Annually  is required'),

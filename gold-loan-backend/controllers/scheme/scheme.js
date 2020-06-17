@@ -7,7 +7,7 @@ const check = require('../../lib/checkLib');
 // add scheme
 exports.addScheme = async (req, res, next) => {
     let { schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-        interestRateOneHundredEightyDaysMonthly, partnerId } = req.body;
+        interestRateOneHundredEightyDaysMonthly, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault } = req.body;
     schemeName = schemeName.toLowerCase();
     let schemeNameExist = await models.scheme.findOne({
         where: { schemeName },
@@ -28,8 +28,25 @@ exports.addScheme = async (req, res, next) => {
 
         const addSchemeData = await models.scheme.create({
             schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-            interestRateOneHundredEightyDaysMonthly
+            interestRateOneHundredEightyDaysMonthly, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, default: isDefault
         });
+
+        let readSchemeByPartner = await models.partner.findOne({
+            where: { isActive: true, id: partnerId[0] },
+            include: [{
+                model: models.scheme,
+                where: { isActive: true }
+            }],
+        });
+        if (readSchemeByPartner) {
+            let schemeArray = [];
+            for (let scheme of readSchemeByPartner.schemes) {
+                schemeArray.push(scheme.id);
+            }
+            await models.scheme.update(
+                { default: false }, { where: { id: { [Op.in]: schemeArray } } });
+
+        }
 
         // for (let i = 0; i < partnerId.length; i++) {
         // console.log(partnerId[i]);
@@ -181,3 +198,33 @@ exports.filterScheme = async (req, res, next) => {
 
 //edit scheme
 
+exports.UpdateDefault = async (req, res, next) => {
+        let { id } = req.params;
+        let {partnerId}  = req.body;
+        let readSchemeByPartner = await models.partner.findOne({
+            where: { isActive: true, id: partnerId },
+            include: [{
+                model: models.scheme,
+                where: { isActive: true }
+            }],
+        });
+
+        if (readSchemeByPartner) {
+            let schemeArray = [];
+            for (let scheme of readSchemeByPartner.schemes) {
+                schemeArray.push(scheme.id);
+            }
+            let updateDefault = await models.scheme.update(
+                { default: false }, { where: { id: { [Op.in]: schemeArray } }, });
+
+            console.log(updateDefault);
+
+            if (updateDefault) {
+                await models.scheme.update(
+                    { default: true }, { where: { id } });
+            }
+        }
+
+        return res.status(200).json({ message: 'Success' });
+
+}
