@@ -5,84 +5,84 @@
             <div class="col-8">
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">Full Name</label>
+                        <label>Full Name</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.firstName ? profileDetails?.brokerData?.firstName:'-'}}&nbsp;{{profileDetails?.brokerData?.lastName ? profileDetails?.brokerData?.lastName:'-'}}
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">Email</label>
+                        <label>Email</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.email ? profileDetails?.brokerData?.email:'-'}}
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">Mobile No.</label>
+                        <label>Mobile No.</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.mobileNumber ? profileDetails?.brokerData?.mobileNumber:'-'}}
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">Permanent Address</label>
+                        <label>Permanent Address</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.address[0]?.address ? profileDetails?.brokerData?.address[0]?.address:'-'}}
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">City</label>
+                        <label>City</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.address[0]?.city.name ? profileDetails?.brokerData?.address[0]?.city.name:'-'}}
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">State</label>
+                        <label>State</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.address[0]?.state.name ? profileDetails?.brokerData?.address[0]?.state.name:'-'}}
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">Pincode</label>
+                        <label>Pincode</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.address[0]?.postalCode ? profileDetails?.brokerData?.address[0]?.postalCode:'-'}}
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">Pan Card No</label>
+                        <label>PAN Card No</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.panCardNumber ? profileDetails?.brokerData?.panCardNumber:'-'}}
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">Name on Pan Card</label>
+                        <label>Name on PAN Card</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.broker?.nameOnPanCard ? profileDetails?.brokerData?.broker?.nameOnPanCard:'-'}}
                     </div>
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">Pan Card</label>
+                        <label>PAN Card</label>
                     </div>
-                    <div class="col-3">
+                    <div class="col-3 font-weight-500 text-color">
                         {{profileDetails?.brokerData?.broker?.panCardDetails?.originalname ? profileDetails?.brokerData?.broker?.panCardDetails?.originalname :'-'}}
                     </div>
-                    <div class="col">
+                    <div class="col font-weight-500">
                         <span class="text-primary kt-pointer"
                             *ngIf="profileDetails?.brokerData.broker.panCardDetails.url;else elseBlock"
                             (click)="open(profileDetails.brokerData.broker.panCardDetails.url)">View Attachment</span>
@@ -90,12 +90,12 @@
                 </div>
                 <div class="row kt-margin-t-15">
                     <div class="col-4 align-self-center">
-                        <label class="font-weight-500 text-color">Password</label>
+                        <label>Password</label>
                     </div>
-                    <div class="col-3">
+                    <div class="col-3 font-weight-500 text-color">
                         ***********
                     </div>
-                    <div class="col">
+                    <div class="col font-weight-500">
                         <span class="text-primary kt-pointer" (click)="changePassword()">Change Password</span>
                     </div>
                 </div>
