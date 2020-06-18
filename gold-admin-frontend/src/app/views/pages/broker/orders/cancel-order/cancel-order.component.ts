@@ -70,7 +70,6 @@ export class CancelOrderComponent implements OnInit {
   }
 
   getOtp() {
-    debugger
     if (this.cancelForm.invalid) {
       this.cancelForm.markAllAsTouched();
       return;
