@@ -15,7 +15,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class AppliedLoanComponent implements OnInit {
 
-  filteredDataList:any = {};
+  filteredDataList: any = {};
   userType: any
   dataSource: AppliedLoanDatasource;
   displayedColumns = ['fullName', 'customerID', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions', 'view'];
@@ -53,12 +53,12 @@ export class AppliedLoanComponent implements OnInit {
     })
 
     this.AppliedLoanService.applyFilter$
-    .pipe(takeUntil(this.filter$))
-    .subscribe((res) => {
-      if (Object.entries(res).length) {
-        this.applyFilter(res);
-      }
-    });
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
   }
 
   ngOnInit() {
@@ -95,6 +95,8 @@ export class AppliedLoanComponent implements OnInit {
 
     this.dataSource.loadAppliedLoans(this.searchValue, 1, 25);
 
+    // this.disburse('data')
+
   }
 
   ngOnDestroy() {
@@ -106,7 +108,7 @@ export class AppliedLoanComponent implements OnInit {
     this.filter$.next();
     this.filter$.complete();
     this.AppliedLoanService.applyFilter.next({});
-		this.sharedService.closeFilter.next(true);
+    this.sharedService.closeFilter.next(true);
   }
 
 
@@ -120,7 +122,7 @@ export class AppliedLoanComponent implements OnInit {
     this.dataSource.loadAppliedLoans(this.searchValue, from, to);
   }
 
-  applyFilter(data){
+  applyFilter(data) {
     console.log(data)
     this.filteredDataList = data.list
   }
@@ -140,7 +142,7 @@ export class AppliedLoanComponent implements OnInit {
 
   editLoan(loan) {
     if (((
-      (loan.loanStatusForBM == 'pending'  || loan.loanStatusForBM == 'rejected' || loan.loanStatusForBM == 'incomplete')
+      (loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected' || loan.loanStatusForBM == 'incomplete')
       && this.userType == 5 && loan.loanStatusForAppraiser == 'approved' || loan.loanStatusForAppraiser == 'rejected') || (loan.loanStatusForAppraiser == 'pending'
         && this.userType == 7) && this.edit)) {
       this.router.navigate(['/admin/loan-management/loan-application-form', loan.id])
