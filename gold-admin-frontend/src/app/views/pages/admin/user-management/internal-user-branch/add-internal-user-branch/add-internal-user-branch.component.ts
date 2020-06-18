@@ -81,7 +81,7 @@ export class AddInternalUserBranchComponent implements OnInit {
       accountNumber: ['', Validators.required],
       passbookStatementChequeId: [],
       passbookImg: [],
-      passbookImgName: ['', Validators.required]
+      passbookImgName: ['', Validators.required],
     })
   }
 
@@ -147,9 +147,9 @@ export class AddInternalUserBranchComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.formData = new FormData();
-      this.formData.append("avatar", event.target.files[0]);
-      this.sharedService.fileUpload(this.formData).pipe(
+      // this.formData = new FormData();
+      // this.formData.append("avatar", event.target.files[0]);
+      this.sharedService.uploadFile(event.target.files[0]).pipe(
         map(res => {
 
           // if (type == 'pan') {
@@ -161,7 +161,6 @@ export class AddInternalUserBranchComponent implements OnInit {
           this.addInternalBranchForm.controls.passbookStatementChequeId.patchValue(res.uploadFile.id)
           this.addInternalBranchForm.controls.passbookImg.patchValue(res.uploadFile.URL)
           // }
-
         }), catchError(err => {
           this.toast.error(err.error.message);
           throw err

@@ -29,7 +29,8 @@
                                         {{lead.leadName | titlecase}}
                                     </option>
                                 </select>
-                                <mat-error *ngIf="controls.leadSourceId.touched && controls.leadSourceId.errors?.required">
+                                <mat-error
+                                    *ngIf="controls.leadSourceId.touched && controls.leadSourceId.errors?.required">
                                     Required field
                                 </mat-error>
 
@@ -165,7 +166,7 @@
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="panType">
-                                    <option [value]="" selected>Select</option>
+                                    <option value="" selected>Select</option>
                                     <option value="pan">PAN</option>
                                     <option value="form60">FORM 60</option>
                                 </select>
@@ -178,14 +179,16 @@
                             <div class="offset-5 col" *ngIf="!controls.panImage.value">
                                 <input type="file" #file (input)="getFileInfo($event)" class="d-none">
                                 <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
-                                    (click)="file.click()" >
+                                    (click)="file.click()">
                                 </kt-button>
                             </div>
                             <div class="col-5 form-label" *ngIf="controls.panImage.value">
-                                <label for="" class="text-primary kt-padding-l-15 kt-pointer" (click)="preview()">View Image</label>
+                                <label for="" class="text-primary kt-padding-l-15 kt-pointer" (click)="preview()">View
+                                    Image</label>
                             </div>
                             <div class="col form-label" *ngIf="controls.panImage.value">
-                                <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer" (click)="remove()">Remove</label>
+                                <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer"
+                                    (click)="remove()">Remove</label>
                             </div>
                         </div>
 
@@ -227,20 +230,22 @@
                                         matTooltip="Pan Verified">Verified</button>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
                             <div class="offset-9 col" *ngIf="!controls.panImage.value">
                                 <input type="file" #file (input)="getFileInfo($event)" class="d-none">
                                 <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
-                                    (click)="file.click()" >
+                                    (click)="file.click()">
                                 </kt-button>
                             </div>
                             <div class="offset-4 col-5 form-label" *ngIf="controls.panImage.value">
-                                <label for="" class="text-primary kt-padding-l-15 kt-pointer" (click)="preview()">View Image</label>
+                                <label for="" class="text-primary kt-padding-l-15 kt-pointer" (click)="preview()">View
+                                    Image</label>
                             </div>
                             <div class="col form-label" *ngIf="controls.panImage.value">
-                                <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer" (click)="remove()">Remove</label>
+                                <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer"
+                                    (click)="remove()">Remove</label>
                             </div>
                         </div>
 

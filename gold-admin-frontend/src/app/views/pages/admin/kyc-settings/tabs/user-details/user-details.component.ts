@@ -60,13 +60,13 @@ export class UserDetailsComponent implements OnInit {
         this.otpButton = true;
         this.isMobileVerified = false;
         this.otpSent = false;
-        
+
         Object.keys(this.controls).forEach(key => {
           if (key != 'mobileNumber') {
             this.userBasicForm.get(key).reset();
           }
         })
-        
+
       }
     });
 
@@ -77,6 +77,17 @@ export class UserDetailsComponent implements OnInit {
         this.panButton = true;
         this.isPanVerified = false;
       }
+    });
+
+    this.controls.panType.valueChanges.subscribe(res => {
+      if (res == 'form60') {
+        this.controls.panCardNumber.reset()
+        this.controls.panCardNumber.clearValidators()
+      }
+      if (res == 'pan') {
+        this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+      }
+      this.controls.panCardNumber.updateValueAndValidity()
     });
 
     this.controls.otp.valueChanges.subscribe(res => {
@@ -103,7 +114,7 @@ export class UserDetailsComponent implements OnInit {
       referenceCode: [],
       panType: ['', Validators.required],
       form60: [''],
-      panImage: [''],
+      panImage: [],
       panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
     })
   }
@@ -119,8 +130,8 @@ export class UserDetailsComponent implements OnInit {
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
         if (res.customerInfo.panCardNumber !== null) {
-          this.controls.panCardNumber.disable();
-          this.controls.panType.disable();
+          // this.controls.panCardNumber.disable();
+          // this.controls.panType.disable();
         } else {
           this.showVerifyPAN = true;
         }
@@ -230,10 +241,6 @@ export class UserDetailsComponent implements OnInit {
         this.userBasicForm.controls.panCardNumber.enable()
       })
     ).subscribe();
-
-
-
-    // this.next.emit(true);  // delete this line    
   }
 
 }

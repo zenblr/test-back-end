@@ -324,6 +324,11 @@ export class AddLeadComponent implements OnInit {
         const PAN = this.controls.panCardNumber.value.toUpperCase();
         this.leadForm.get('panCardNumber').patchValue(PAN);
       }
+      if (this.controls.panType.value == '') {
+        this.leadForm.get('panType').patchValue(null);
+        this.controls.panImage.patchValue('')
+      }
+
       const leadData = this.leadForm.value;
 
       this.leadService.addLead(leadData).subscribe(res => {
@@ -340,6 +345,10 @@ export class AddLeadComponent implements OnInit {
           this.toastr.errorToastr(msg);
         });
     } else if (this.data.action == 'edit') {
+      if (this.controls.panType.value == '') {
+        this.leadForm.get('panType').patchValue(null);
+        this.controls.panImage.patchValue('')
+      }
       const leadData = this.leadForm.value;
       console.log('edit')
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {
