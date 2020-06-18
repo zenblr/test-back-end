@@ -145,6 +145,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       customerId: [, Validators.required],
       kycStatus: [, Validators.required],
       purpose: ["", Validators.required],
+      panType:[],
       loanId: []
     })
   }

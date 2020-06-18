@@ -35,8 +35,8 @@ export class LoanApplicationFormService {
     )
   }
 
-  submitFinalIntrest(loanFinalCalculator, loanId): Observable<any> {
-    return this.http.post(`/api/loan-process/final-loan-details`, { loanFinalCalculator, loanId }).pipe(
+  submitFinalIntrest(loanFinalCalculator, loanId,intrestTable): Observable<any> {
+    return this.http.post(`/api/loan-process/final-loan-details`, { loanFinalCalculator, loanId ,intrestTable}).pipe(
       map(res => res)
     )
   }

@@ -132,7 +132,7 @@ export class AddLeadComponent implements OnInit {
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
-      panType: [''],
+      panType: [],
       form60: [''],
       panImage: [],
       comment: [''],
@@ -318,7 +318,7 @@ export class AddLeadComponent implements OnInit {
       }
 
 
-      if (this.controls.panCardNumber.value == '') {
+      if (!this.controls.panCardNumber.value) {
         this.leadForm.get('panCardNumber').patchValue(null);
       } else {
         const PAN = this.controls.panCardNumber.value.toUpperCase();

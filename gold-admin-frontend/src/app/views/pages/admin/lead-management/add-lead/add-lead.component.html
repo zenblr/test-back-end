@@ -165,7 +165,7 @@
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="panType">
-                                    <option value="" selected>Select</option>
+                                    <option [value]="" selected>Select</option>
                                     <option value="pan">PAN</option>
                                     <option value="form60">FORM 60</option>
                                 </select>
@@ -185,7 +185,7 @@
                                 <label for="" class="text-primary kt-padding-l-15 kt-pointer" (click)="preview()">View Image</label>
                             </div>
                             <div class="col form-label" *ngIf="controls.panImage.value">
-                                <label for="" class="text-danger kt-padding-l-15 kt-pointer" (click)="remove()">Remove</label>
+                                <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer" (click)="remove()">Remove</label>
                             </div>
                         </div>
 
