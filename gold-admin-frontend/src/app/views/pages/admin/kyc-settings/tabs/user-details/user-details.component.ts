@@ -81,7 +81,7 @@ export class UserDetailsComponent implements OnInit {
 
     this.controls.panType.valueChanges.subscribe(res => {
       if (res == 'form60') {
-        this.controls.panCardNumber.reset()
+        this.controls.panCardNumber.patchValue('')
         this.controls.panCardNumber.clearValidators()
       }
       if (res == 'pan') {
@@ -216,8 +216,10 @@ export class UserDetailsComponent implements OnInit {
       return
     }
     this.userBasicForm.enable()
-    const PAN = this.controls.panCardNumber.value.toUpperCase();
-    this.userBasicForm.get('panCardNumber').patchValue(PAN)
+    if (this.controls.panCardNumber.value) {
+      const PAN = this.controls.panCardNumber.value.toUpperCase();
+      this.userBasicForm.get('panCardNumber').patchValue(PAN)
+    }
     const basicForm = this.userBasicForm.value;
     this.userDetailsService.basicDetails(basicForm).pipe(
       map(res => {
