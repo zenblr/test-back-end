@@ -71,8 +71,10 @@ export class UserDetailsComponent implements OnInit {
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
-      if (this.controls.panCardNumber.valid) {
+      if (this.controls.panCardNumber.status == 'DISABLED' || this.controls.panCardNumber.valid) {
         this.panButton = false;
+        this.isPanVerified = true;
+
       } else {
         this.panButton = true;
         this.isPanVerified = false;
@@ -81,10 +83,12 @@ export class UserDetailsComponent implements OnInit {
 
     this.controls.panType.valueChanges.subscribe(res => {
       if (res == 'form60') {
+        this.controls.panCardNumber.reset()
         this.controls.panCardNumber.patchValue('')
         this.controls.panCardNumber.clearValidators()
       }
       if (res == 'pan') {
+        this.controls.form60.reset()
         this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
       }
       this.controls.panCardNumber.updateValueAndValidity()
@@ -113,8 +117,8 @@ export class UserDetailsComponent implements OnInit {
       otp: [, [, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [],
       panType: ['', Validators.required],
-      form60: ['', Validators.required],
-      panImage: [],
+      form60: [''],
+      panImage: [,Validators.required],
       panCardNumber: [''],
     })
   }
@@ -130,8 +134,8 @@ export class UserDetailsComponent implements OnInit {
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
         if (res.customerInfo.panCardNumber !== null) {
-          // this.controls.panCardNumber.disable();
-          // this.controls.panType.disable();
+          this.controls.panCardNumber.disable();
+          this.controls.panType.disable();
         } else {
           this.showVerifyPAN = true;
         }
