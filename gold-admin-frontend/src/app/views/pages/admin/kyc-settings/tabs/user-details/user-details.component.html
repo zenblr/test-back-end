@@ -159,7 +159,7 @@
 							<label class="mandatory  text-color font-weight-500">PAN</label>
 						</div>
 
-						<div class="col">
+						<div class="col-4">
 							<!-- <mat-form-field appearance="outline" class="w-100"> -->
 							<input class="form-control" formControlName="panCardNumber" autocomplete="off"
 								placeholder="PAN"
@@ -178,6 +178,9 @@
 								Invalid Input
 							</mat-error>
 							<!-- </mat-form-field> -->
+						</div>
+						<div class="col form-label">
+							<label for="" class="text-primary kt-padding-l-20 kt-pointer" (click)="preview()">View Image</label>
 						</div>
 
 						<div *ngIf="showVerifyPAN" class="col">

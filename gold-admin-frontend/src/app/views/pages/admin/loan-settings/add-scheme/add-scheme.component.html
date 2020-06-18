@@ -51,22 +51,24 @@
                                     {{scheme.name | titlecase}}
                                 </option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-b-15" *ngIf="fillingForm.get('schemeType').value == 'unsecured'">
 
-                            <div *ngIf="fillingForm.get('schemeType').value == 'unsecured'">
-                                <label class="custom-checkbox ">
-                                    <span class="label-checkbox">Set as Default</span>
-                                    <input type="checkbox" (change)="setAsDefault($event.target.checked)">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <!-- <label class="custom-checkbox">
+                        <div class="offset-3 position-relative" >
+                            <label class="custom-checkbox ">
+                                <span class="label-checkbox">Set as Default</span>
+                                <input type="checkbox" (change)="setAsDefault($event.target.checked)"
+                                    formControlName="isDefault">
+                                <span class="checkmark top-0"></span>
+                            </label>
+                            <!-- <label class="custom-checkbox">
                                         <span class="label-checkbox">{{action.actionName |titlecase}}</span>
                                         <input type="checkbox" [checked]="action.isSelected" (change)="actionChange($event.target.checked,moduleIndex,entityIndex,permissionIndex)">
                                         <span class="checkmark"></span>
                                     </label> -->
-                            </div>
                         </div>
                     </div>
-
                     <div class="row kt-margin-b-10">
                         <div class="col-3 form-label">
                             <label class="kt-padding-l-10 mandatory"> Processing Charges</label>

@@ -149,8 +149,8 @@ export class AppliedLoanComponent implements OnInit {
     }
   }
 
-  packageImageUpload(loan) {
-    this.router.navigate(['/admin/loan-management/package-image-upload', loan.id])
+  packetImageUpload(loan) {
+    this.router.navigate(['/admin/loan-management/packet-image-upload', loan.id])
   }
 
   viewLoan(loan) {

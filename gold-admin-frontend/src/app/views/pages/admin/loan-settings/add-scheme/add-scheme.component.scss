@@ -8,6 +8,10 @@
         position: relative;
     }
 
+    .top-0{
+        top: 0 !important;
+    }
+
     /* position the unit to the right of the wrapper */
     .amount::after {
         position   : absolute;
@@ -30,7 +34,7 @@
     }
 
     .bg {
-        background-color: #454D67 !important;
+        background-color: #eff0f1 !important;
         color           : rgb(193, 193, 193) !important;
 
     }

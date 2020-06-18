@@ -68,7 +68,9 @@ export class AddSchemeComponent implements OnInit {
       processingChargeFixed: [, [Validators.required, Validators.min(0)]],
       processingChargePercent: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]]
+      penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      isDefault: [false]
+
     })
 
     this.csvForm = this.fb.group({
@@ -168,7 +170,7 @@ export class AddSchemeComponent implements OnInit {
 
   setAsDefault(event) {
     if (this.fillingForm.controls.schemeType.valid && this.fillingForm.controls.schemeType.value == 'unsecured') {
-      this.fillingForm.controls.default.patchValue(event);
+      this.fillingForm.controls.isDefault.patchValue(event);
     }
   }
 }

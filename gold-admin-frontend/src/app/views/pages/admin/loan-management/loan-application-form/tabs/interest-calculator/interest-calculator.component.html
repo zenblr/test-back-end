@@ -89,8 +89,8 @@
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.rbi">
                                 <small>Entered Amount Violates RBI Guidelines</small>
                             </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.maximunAllowed">
-                                <small>Enter Amount less then Maximum % Allowed</small>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.maximumAmtAllowed">
+                                <small>Entered amount exceeds loan criteria</small>
                             </mat-error>
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible">
                                 <small>Enter  Amount less Eligible Amount</small>
@@ -251,7 +251,7 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let data of dateOfPayment;index as idx; last as last">
-                                    <td *ngIf="approved">{{data.date | date :'mediumDate'}}</td>
+                                    <td *ngIf="approved">{{data.emiDueDate | date :'mediumDate'}}</td>
                                     <td *ngIf="!approved">{{data.paymentType | uppercase}}&nbsp;{{idx+1}}</td>
 
                                     <td class="text-center currency">

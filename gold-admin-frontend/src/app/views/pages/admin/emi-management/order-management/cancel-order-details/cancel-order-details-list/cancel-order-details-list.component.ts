@@ -184,7 +184,7 @@ export class CancelOrderDetailsListComponent implements OnInit {
 	}
 
 	printCancellationReceipt(order) {
-		this.cancelOrderDetailsService.getReceipt(order.id).subscribe();
+		this.cancelOrderDetailsService.getReceipt(order.order.id).subscribe();
 	}
 
 	downloadReport() {

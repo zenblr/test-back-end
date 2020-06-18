@@ -267,6 +267,14 @@ export class MenuConfig {
 										this.permissionsArr.includes('packetView')),
 								},
 								{
+									title: "Packet Tracking",
+									page: "/admin/loan-management/packet-tracking",
+									bullet: 'dot',
+									permission: !(this.permissionsArr.includes('packetEdit') ||
+										this.permissionsArr.includes('packetAdd') ||
+										this.permissionsArr.includes('packetView')),
+								},
+								{
 									title: "Applied Loan",
 									page: "/admin/loan-management/applied-loan",
 									bullet: 'dot',
@@ -653,6 +661,7 @@ export class MenuConfig {
 							root: true,
 							page: "/broker/cart",
 							src: "assets/media/aside-icons/icons-01.svg",
+							count: true,
 							permission: false,
 						},
 						{

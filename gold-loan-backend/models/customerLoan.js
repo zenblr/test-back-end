@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM,
             field: 'loan_status_for_appraiser',
             values: ['approved', 'pending', 'rejected'],
-            defaultValue: 'pending'
         },
         commentByAppraiser: {
             type: DataTypes.TEXT,

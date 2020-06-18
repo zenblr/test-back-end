@@ -74,6 +74,7 @@ export class PageConfig {
 			"user-management": {
 				partner: {
 					page: { title: "All Partners", desc: "" },
+					"view-schemes": { id: { page: { title: "Schemes", desc: "" }, } }
 				},
 				branch: {
 					page: { title: "All Partner Branches", desc: "" },
@@ -92,6 +93,14 @@ export class PageConfig {
 				},
 				merchant: {
 					page: { title: "All Merchants", desc: "" },
+				},
+				"add-merchant": {
+					page: { title: "Add Merchants", desc: "" },
+				},
+				"edit-merchant": {
+					id: {
+						page: { title: "Edit Merchant", desc: "" },
+					}
 				},
 				broker: {
 					page: { title: "Brokers", desc: "" },
@@ -231,13 +240,16 @@ export class PageConfig {
 				packet: {
 					page: { title: "Packets", desc: "" },
 				},
+				"packet-tracking": {
+					page: { title: "Packet Tracking", desc: "" },
+				},
 				"all-loan": {
 					page: { title: "All Loans", desc: "" },
 				},
 				"applied-loan": {
 					page: { title: "Applied Loan", desc: "" },
 				},
-				"package-image-upload": {
+				"packet-image-upload": {
 					id: {
 						page: { title: "PACKET IMAGE UPLOAD", desc: "" },
 					}

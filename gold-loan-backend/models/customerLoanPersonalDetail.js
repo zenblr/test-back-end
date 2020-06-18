@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_card_number',
             allowNull: false
         },
+        purpose: {
+            type: DataTypes.TEXT,
+            field: 'purpose',
+            allowNull: false
+        },
         startDate: {
             type: DataTypes.DATE,
             field: 'start_date',

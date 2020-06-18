@@ -2,7 +2,7 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { applyForLoanApplication, updateCustomerLoanDetail, addPackageImagesForLoan, disbursementOfLoanAmount, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, getOrnamentType, loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanFinalLoan, loanBankDetails, loanAppraiserRating } =
+const { applyForLoanApplication, updateCustomerLoanDetail, addPackageImagesForLoan, disbursementOfLoanAmount, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, getOrnamentType, loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer } =
     require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
@@ -37,4 +37,5 @@ route.get('/applied-loan-details', checkAuth, wrapper(appliedLoanDetails)); // F
 
 route.get('/customer-loan-details/:customerUniqueId', checkAuth, wrapper(customerDetails)); // FETCH CUSTOMER DETAILS
 
+route.get('/assign-appraiser-customer', checkAuth, wrapper(getAssignAppraiserCustomer))
 module.exports = route; // EXPORTING ALL ROUTES

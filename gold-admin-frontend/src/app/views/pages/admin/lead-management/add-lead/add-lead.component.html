@@ -22,14 +22,14 @@
                             </div>
 
                             <div class="col-8">
-                                <select class="form-control" formControlName="lead"
-                                    [class.isError]="controls.lead.touched && controls.lead.invalid">
+                                <select class="form-control" formControlName="leadSourceId"
+                                    [class.isError]="controls.leadSourceId.touched && controls.leadSourceId.invalid">
                                     <option value="" [disabled]="true" [selected]="true"> Select Lead </option>
                                     <option *ngFor="let lead of leadSources" [value]="lead.id">
                                         {{lead.leadName | titlecase}}
                                     </option>
                                 </select>
-                                <mat-error *ngIf="controls.lead.touched && controls.lead.errors?.required">
+                                <mat-error *ngIf="controls.leadSourceId.touched && controls.leadSourceId.errors?.required">
                                     Required field
                                 </mat-error>
 
@@ -160,6 +160,36 @@
                         </div>
 
                         <div class="row kt-padding-t-15">
+                            <div class="col-4 align-self-center form-label">
+                                <label class="text-color font-weight-500">PAN / FORM 60 </label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="panType">
+                                    <option [value]="" selected>Select</option>
+                                    <option value="pan">PAN</option>
+                                    <option value="form60">FORM 60</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'form60'">
+                            <div class="col-4 align-self-center form-label">
+                                <label class="mandatory  text-color font-weight-500">FORM 60 </label>
+                            </div>
+                            <div class="offset-5 col" *ngIf="!controls.panImage.value">
+                                <input type="file" #file (input)="getFileInfo($event)" class="d-none">
+                                <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
+                                    (click)="file.click()" >
+                                </kt-button>
+                            </div>
+                            <div class="col-5 form-label" *ngIf="controls.panImage.value">
+                                <label for="" class="text-primary kt-padding-l-15 kt-pointer" (click)="preview()">View Image</label>
+                            </div>
+                            <div class="col form-label" *ngIf="controls.panImage.value">
+                                <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer" (click)="remove()">Remove</label>
+                            </div>
+                        </div>
+
+                        <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
                             <!-- PAN -->
                             <div class="col-4 form-label">
                                 <mat-label>PAN</mat-label>
@@ -179,9 +209,12 @@
                                     *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
                                     Invalid Input
                                 </mat-error>
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
+                                    Required field
+                                </mat-error>
                                 <!-- </mat-form-field> -->
                             </div>
-
                             <div class="col">
                                 <div *ngIf="!isPanVerified">
                                     <kt-button [myClass]="'w-100'" [isDisabled]="panButton || viewOnly"
@@ -194,7 +227,24 @@
                                         matTooltip="Pan Verified">Verified</button>
                                 </div>
                             </div>
+                            
                         </div>
+                        <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
+                            <div class="offset-9 col" *ngIf="!controls.panImage.value">
+                                <input type="file" #file (input)="getFileInfo($event)" class="d-none">
+                                <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
+                                    (click)="file.click()" >
+                                </kt-button>
+                            </div>
+                            <div class="offset-4 col-5 form-label" *ngIf="controls.panImage.value">
+                                <label for="" class="text-primary kt-padding-l-15 kt-pointer" (click)="preview()">View Image</label>
+                            </div>
+                            <div class="col form-label" *ngIf="controls.panImage.value">
+                                <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer" (click)="remove()">Remove</label>
+                            </div>
+                        </div>
+
+
 
                         <!-- Internal Branch -->
                         <div class="row kt-padding-t-15">

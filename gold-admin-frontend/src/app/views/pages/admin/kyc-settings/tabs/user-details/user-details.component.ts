@@ -103,7 +103,7 @@ export class UserDetailsComponent implements OnInit {
       referenceCode: [],
       panType: ['', Validators.required],
       form60: [''],
-      form60Img: [''],
+      panImage: [''],
       panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
     })
   }
@@ -120,7 +120,7 @@ export class UserDetailsComponent implements OnInit {
         this.userBasicForm.patchValue(res.customerInfo);
         if (res.customerInfo.panCardNumber !== null) {
           this.controls.panCardNumber.disable();
-          this.controls.panType.patchValue('pan')
+          this.controls.panType.disable();
         } else {
           this.showVerifyPAN = true;
         }
@@ -166,7 +166,7 @@ export class UserDetailsComponent implements OnInit {
         map(res => {
           if (res) {
             this.controls.form60.patchValue(event.target.files[0].name)
-            this.controls.form60Img.patchValue(res.uploadFile.URL)
+            this.controls.panImage.patchValue(res.uploadFile.URL)
           }
         }), catchError(err => {
           throw err
@@ -177,7 +177,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   preview() {
-    let img = [this.controls.form60Img.value]
+    let img = [this.controls.panImage.value]
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
         images: img,

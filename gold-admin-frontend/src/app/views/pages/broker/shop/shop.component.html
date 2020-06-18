@@ -15,11 +15,11 @@
     <kt-portlet>
         <kt-portlet-body [class]="'kt-portlet__body--fit'">
             <div class="row card-container" *ngIf="products && toogler == 'grid'">
-                <div class="card" *ngFor="let product of products;index as i">
+                <div class="card col-2" *ngFor="let product of products;index as i">
                     <div class="bg-white text-center">
                         <img [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
                             alt="test" width="150px" height="150px">
-                        <p class="text-color customer-id font-weight-bold mt-2">{{product.productName}}</p>
+                        <div class="text-color customer-id font-weight-bold mt-2">{{product.productName}}</div>
                         <p>Weight: {{product.weight}} GMS</p>
                         <p class="text-color font-weight-bold">₹ {{product.productPrice[0].finalProductPrice}}
                         </p>

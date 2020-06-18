@@ -7,11 +7,11 @@
 <kt-portlet *ngIf="schemes.length>0">
     <kt-portlet-body class="min-vh-60">
         <mat-tab-group #matTab>
-            <mat-tab label='{{scheme.name | uppercase}}' *ngFor="let scheme of schemes">
+            <mat-tab label='{{scheme.name | uppercase}}' *ngFor="let scheme of schemes;index as i">
                 <label class="text-color font-weight-bold h-v-text-center m-0" *ngIf="scheme.schemes.length==0">No
                     Schemes
                     Available</label>
-                <div class="row kt-padding-10 kt-margin-b-25"
+                <div class="row kt-padding-10 kt-padding-b-25"
                     *ngFor="let schemeDeatils of scheme.schemes, index as idx">
 
                     <div class="col-2 from-style">
@@ -32,9 +32,9 @@
                                 </div>
                                 <div class="col offset-4">
                                     <div class="row pb-2">
-                                        <div class="col-6" *ngIf="schemeDeatils.schemeType == 'unsecured'">
-                                            <mat-slide-toggle
-                                                (change)="changeDefault($event.checked, idx, schemeDeatils)">
+                                        <div class="col">
+                                            <mat-slide-toggle  *ngIf="schemeDeatils.schemeType == 'unsecured'" [disabled]="schemeDeatils.default"
+                                                (change)="changeDefault($event.checked, idx, schemeDeatils,i)" [checked]="schemeDeatils.default">
                                                 <strong>Default</strong>
                                             </mat-slide-toggle>
                                         </div>
