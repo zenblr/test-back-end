@@ -6,6 +6,8 @@ import { Subscription, merge, fromEvent, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { ToastrComponent } from '../../../../../partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
+import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+
 
 @Component({
   selector: 'kt-customer-details-list',
@@ -17,7 +19,7 @@ export class CustomerDetailsListComponent implements OnInit {
   dataSource: CustomerDetailsDatasource;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   displayedColumns = ['storeId', 'vkMobileNumber', 'centerState', 'centerCity', 'customerId', 'customerEmail',
-    'fullName', 'mobileNumber', 'state', 'city', 'pincode', 'panCardNumber', 'merchant', 'createdDate'];
+    'fullName', 'mobileNumber', 'state', 'city', 'pincode', 'panCardName', 'panCardNumber', 'viewPanCard', 'merchant', 'createdDate'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   // Filter fields
@@ -114,6 +116,18 @@ export class CustomerDetailsListComponent implements OnInit {
   downloadReport() {
     this.customerDetailsService.reportExport().subscribe();
     this.customerDetailsService.exportExcel.next(false);
+  }
+
+  open(image) {
+    let images = [];
+    images.push(image)
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: images,
+        index: 0
+      },
+      width: "auto"
+    })
   }
 
   /**

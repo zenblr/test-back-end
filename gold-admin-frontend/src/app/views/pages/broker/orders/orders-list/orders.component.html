@@ -8,7 +8,7 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
                 <ng-container matColumnDef="storeId">
-                    <mat-header-cell *matHeaderCellDef>Member ID</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element["customerDetails.customerUniqueId"] ? element["customerDetails.customerUniqueId"] : '-'}}
                     </mat-cell>
