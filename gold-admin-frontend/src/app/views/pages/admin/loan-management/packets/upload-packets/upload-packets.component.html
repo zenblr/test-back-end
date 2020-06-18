@@ -64,14 +64,14 @@
                 </div>
                 <div class="col-3 ">
                     <div class="img-container packets" *ngIf="!packet.controls.packetWithAllOrnaments.value"
-                        (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
+                        (click)="webcam(idx,$event,'packetWithAllOrnaments')">
                         <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
                     </div>
                     <img class="packets position-relative" [src]="packet.controls.packetWithAllOrnaments.value"
                         *ngIf="packet.controls.packetWithAllOrnaments.value">
                     <img *ngIf="packet.controls.packetWithAllOrnaments.value && url != 'view-loan'"
                         src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                        (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
+                        (click)="webcam(idx,$event,'packetWithAllOrnaments')">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Packets with All
                         Ornaments</label>
                     <div>

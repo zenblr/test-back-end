@@ -75,6 +75,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         const pack = this.packets.at(index) as FormGroup;
         pack.patchValue(array[index])
         pack.patchValue({ packetsName: array[index].packet.packetUniqueId })
+        pack.patchValue({ ornamentsName: array[index].ornaments.packetUniqueId })
         console.log(pack)
         // pack.at(inde).patchValue(array[index])
       }
@@ -149,6 +150,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       packetWithSealing: ['', Validators.required],
       packetWithWeight: ['', Validators.required],
       packetId: [this.controls.packetId.value],
+      ornamentsId: [this.controls.ornamentType.value],
       packetsName: [this.packetsName],
       ornamentsName:[this.ornamentName]
     }))
