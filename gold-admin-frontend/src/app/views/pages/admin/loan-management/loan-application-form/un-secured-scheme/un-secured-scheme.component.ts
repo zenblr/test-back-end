@@ -9,8 +9,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 })
 export class UnSecuredSchemeComponent implements OnInit {
   unsecuredSchemeForm: FormGroup;
-  unsecuredSchemes = [{ id: 1, name: 'Micro Scheme' }, { id: 2, name: 'Future Scheme' }, { id: 3, name: 'Emerging Scheme' },]
-  details:any;
+  unsecuredSchemes = []
+  details: any;
+  paymentType: string;
+  colJoin: number;
+  unSecuredInterestAmount: number;
+  seletedScheme = []
+
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<UnSecuredSchemeComponent>,
@@ -21,6 +26,7 @@ export class UnSecuredSchemeComponent implements OnInit {
     this.initForm()
     this.unsecuredSchemeForm.patchValue(this.data.unsecuredSchemeForm)
     this.details = this.data.unsecuredSchemeForm
+    this.unsecuredSchemes = this.details.unsecuredScheme.schemes
     console.log(this.details)
   }
 
@@ -42,13 +48,53 @@ export class UnSecuredSchemeComponent implements OnInit {
 
   action(event) {
     if (event) {
-      // this.onSubmit();
+      this.onSubmit();
     } else if (!event) {
       this.closeModal();
     }
   }
 
-  calculate() {
+  unsecuredSchemeChange() {
+    this.seletedScheme = []
+    let scheme = this.unsecuredSchemes.filter(res => { return this.controls.unsecuredSchemeName.value == res.id })
+    if(scheme && scheme.length > 0){
+      Array.prototype.push.apply(this.seletedScheme,scheme)
+    }
+    switch (this.details.paymentType) {
+      case "30":
+        if (scheme.length > 0)
+          this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateThirtyDaysMonthly)
 
+        this.paymentType = "Month"
+        this.colJoin = 1
+
+        break;
+      case "90":
+        if (scheme.length > 0)
+          this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateNinetyDaysMonthly)
+
+        this.paymentType = "Quater"
+        this.colJoin = 3
+
+        break;
+      case "180":
+        if (scheme.length > 0)
+          this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateOneHundredEightyDaysMonthly)
+
+        this.paymentType = "Half Yearly"
+        this.colJoin = 6
+
+        break;
+    }
+  }
+
+  calculate() {
+    this.unSecuredInterestAmount = (this.details.unsecuredSchemeAmount *
+      (this.controls.unsecuredSchemeInterest.value * 12 / 100)) * this.details.paymentType
+      / 360
+  }
+
+  onSubmit() {
+    this.dialogRef.close(this.seletedScheme)
   }
 }

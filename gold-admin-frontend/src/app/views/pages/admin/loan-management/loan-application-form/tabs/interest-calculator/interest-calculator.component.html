@@ -180,15 +180,15 @@
                         <label class="mandatory">Processing Charges</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" class="form-control" formControlName="processingChargeFixed"
+                        <input type="number" class="form-control" formControlName="processingCharge"
                             placeholder="1100"
-                            [class.isError]="controls.processingChargeFixed.touched && controls.processingChargeFixed.invalid" />
+                            [class.isError]="controls.processingCharge.touched && controls.processingCharge.invalid" />
                         <mat-error
-                            *ngIf="controls.processingChargeFixed.errors?.pattern && controls.processingChargeFixed.touched">
+                            *ngIf="controls.processingCharge.errors?.pattern && controls.processingCharge.touched">
                             Invalid Input
                         </mat-error>
                         <mat-error
-                            *ngIf="controls.processingChargeFixed.errors?.required && controls.processingChargeFixed.touched">
+                            *ngIf="controls.processingCharge.errors?.required && controls.processingCharge.touched">
                             Required field
                         </mat-error>
                     </div>
@@ -307,24 +307,28 @@
                                 {{totalinterestAmount.toFixed(2) | indianCurrencyFormat}}</label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" *ngIf="isUnSecuredSchemeApplied">
                         <div class="col-8">
                             <label for="" class="form-label">
                                 Unsecured Scheme
                             </label>
                         </div>
                         <div class="col-4">
-
+                            <label class="font-weight-bold">
+                                {{selectedUnsecuredscheme[0]?.schemeName | titlecase}}
+                            </label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" *ngIf="isUnSecuredSchemeApplied">
                         <div class="col-8">
                             <label for="" class="form-label">
                                 Interest Rate(Unsecured Scheme)
                             </label>
                         </div>
                         <div class="col-4">
-
+                            <label class="font-weight-bold">
+                                {{controls.unsceuredschemeInterest.value}}%
+                            </label>
                         </div>
                     </div>
                     <div class="row " *ngIf="isUnSecuredSchemeApplied">
@@ -345,5 +349,4 @@
             </div>
         </div>
     </div>
-    <button (click)="changeUnSecuredScheme()">Open Modal</button>
 </div>

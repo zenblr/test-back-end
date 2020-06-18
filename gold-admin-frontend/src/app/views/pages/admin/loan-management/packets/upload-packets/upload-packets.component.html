@@ -1,10 +1,11 @@
-<div  *ngIf="url != 'view-loan' ">
+<div *ngIf="url != 'view-loan' ">
     <form class="row pl-5" action="" [formGroup]="packetInfo" (submit)="addmore()" #form="ngForm">
         <div class="col-3">
             <select class="form-control packet-dropdown" formControlName="packetId"
                 [class.isError]="packetInfo.controls.packetId.invalid && packetInfo.controls.packetId.touched">
                 <option value=null [selected]="true">Select Packet</option>
-                <option [value]="packet.id" [disabled]="packet.disabled" *ngFor="let packet of packetsDetails; index as idx">
+                <option [value]="packet.id" [disabled]="packet.disabled"
+                    *ngFor="let packet of packetsDetails; index as idx">
                     {{packet.packetUniqueId | uppercase}}</option>
             </select>
             <mat-error *ngIf="packetInfo.controls.packetId.invalid && packetInfo.controls.packetId.touched">
@@ -17,8 +18,8 @@
             <select class="form-control packet-dropdown" formControlName="ornamentType"
                 [class.isError]="packetInfo.controls.ornamentType.touched && packetInfo.controls.ornamentType.invalid">
                 <option value="null" [disabled]="true" [selected]="true">Select Ornament</option>
-                <option [value]="ornament.name" *ngFor="let ornament of ornamentType">
-                    {{ornament.name | titlecase}}
+                <option [value]="ornament.id" [disabled]="ornament.disabled" *ngFor="let ornament of ornamentType">
+                    {{ornament.ornamentType | titlecase}}
                 </option>
             </select>
             <mat-error *ngIf="packetInfo.controls.ornamentType.touched && packetInfo.controls.ornamentType.invalid">
@@ -31,12 +32,14 @@
     </form>
 </div>
 <div class="pl-5">
-    <mat-tab-group [formGroup]="packetImg" >
+    <mat-tab-group [formGroup]="packetImg">
         <mat-tab formArrayName="packetsArray" label="" *ngFor="let packet of packets.controls;index as idx">
             <ng-template mat-tab-label>
-                {{packet.controls.packetsName.value.packetUniqueId | uppercase}}
-                <img class="removeImageSize kt-padding-l-10 kt-pointer"
-                    [src]="'assets/media/icons/cancel.png'" (click)="deletePacket(idx)" />
+                <span
+                    class="tab-number text-gray">{{packet.controls.packetsName.value.packetUniqueId | uppercase}}</span>
+                <span class="tab-text">{{packet.controls.ornamentsName.value.ornamentType | uppercase}}</span>
+                <img class="removeImageSize kt-padding-l-10 kt-pointer" [src]="'assets/media/icons/cancel.png'"
+                    (click)="deletePacket(idx)" />
             </ng-template>
             <div class="row" [formGroupName]="idx">
                 <div class="col-3 ">
@@ -98,7 +101,7 @@
                     </div>
                     <input type="file" class="d-none" #packetWithSealing
                         (change)="uploadFile(idx,'packetWithSealing',$event)">
-    
+
                 </div>
                 <div class="col-3">
                     <div class="img-container packets" *ngIf="!packet.controls.packetWithWeight.value"
@@ -121,7 +124,7 @@
                     </div>
                     <input type="file" class="d-none" #packetWithWeight
                         (change)="uploadFile(idx,'packetWithWeight',$event)">
-    
+
                 </div>
             </div>
         </mat-tab>

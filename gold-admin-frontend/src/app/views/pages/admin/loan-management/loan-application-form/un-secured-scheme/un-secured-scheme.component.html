@@ -9,11 +9,11 @@
                         <label class="mandatory"> Select Unsecured Scheme</label>
                     </div>
                     <div class="col-6">
-                        <select class="form-control" formControlName="unsecuredSchemeName"
+                        <select class="form-control" formControlName="unsecuredSchemeName" (change)="unsecuredSchemeChange()"
                             [class.isError]="controls.unsecuredSchemeName.touched && controls.unsecuredSchemeName.invalid">
                             <option selected disabled value="">Select Status</option>
                             <option *ngFor="let scheme of unsecuredSchemes" [value]="scheme.id">
-                                {{scheme.name | titlecase}}
+                                {{scheme.schemeName | titlecase}}
                             </option>
                         </select>
                         <mat-error
@@ -27,7 +27,7 @@
                         <label class="mandatory"> Unsecured Loan Amount</label>
                     </div>
                     <div class="col-6">
-                        <input class="form-control" formControlName="unsecuredSchemeAmount" placeholder="5000"
+                        <input class="form-control" formControlName="unsecuredSchemeAmount" placeholder="5000" readonly
                             [class.isError]="controls.unsecuredSchemeAmount.touched && controls.unsecuredSchemeAmount.invalid">
 
                         <mat-error
@@ -42,7 +42,7 @@
                         <label class="mandatory"> Interest Rate (%)</label>
                     </div>
                     <div class="col-6">
-                        <input class="form-control" formControlName="unsecuredSchemeInterest" placeholder="2%"
+                        <input class="form-control" formControlName="unsecuredSchemeInterest" placeholder="2%" readonly
                             [class.isError]="controls.unsecuredSchemeInterest.touched && controls.unsecuredSchemeInterest.invalid">
 
                         <mat-error
