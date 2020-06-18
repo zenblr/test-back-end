@@ -58,6 +58,9 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: ['', Validators.required],
       stateName: ['', Validators.required],
       cityName: ['', Validators.required],
+      panCardNumber: [''],
+      nameOnPanCard: [''],
+      panCardFileId: [''],
     });
 
     this.otpForm = this.fb.group({
@@ -251,5 +254,15 @@ export class CheckoutCustomerComponent implements OnInit {
         const msg = error.error.message;
         this.toastr.errorToastr(msg);
       });
+  }
+
+  uploadImage(data) {
+    this.checkoutCustomerForm.controls['panCardFileId'].patchValue(
+      data.uploadData.id
+    );
+  }
+
+  removeImage(data) {
+    this.checkoutCustomerForm.controls['panCardFileId'].patchValue('');
   }
 }
