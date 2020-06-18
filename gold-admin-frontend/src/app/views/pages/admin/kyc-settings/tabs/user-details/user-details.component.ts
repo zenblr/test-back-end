@@ -113,9 +113,9 @@ export class UserDetailsComponent implements OnInit {
       otp: [, [, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [],
       panType: ['', Validators.required],
-      form60: [''],
+      form60: ['', Validators.required],
       panImage: [],
-      panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panCardNumber: [''],
     })
   }
 
