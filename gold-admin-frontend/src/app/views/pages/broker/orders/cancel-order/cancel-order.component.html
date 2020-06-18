@@ -204,9 +204,9 @@
                                 <input type="text" class="form-control" style="width: 50%;" formControlName="otp"
                                     numbersOnly>&nbsp;&nbsp;
                                 <kt-button [value]="value" [type]="'button'" (click)="confirmOtp()"></kt-button>
-                                <mat-error *ngIf="controls.otp.touched && controls.otp.errors?.required">
-                                    OTP is required</mat-error>
                             </div>
+                            <mat-error *ngIf="controls.otp.touched && controls.otp.errors?.required">
+                                OTP is required</mat-error>
                         </div>
                     </div>
                 </form>
