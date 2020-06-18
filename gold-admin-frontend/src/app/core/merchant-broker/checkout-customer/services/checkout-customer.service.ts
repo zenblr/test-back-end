@@ -14,6 +14,10 @@ export class CheckoutCustomerService {
         return this.http.get<any>(API_ENDPOINT + `api/customer/` + mobileNumber);
     }
 
+    findExistingCustomer(data): Observable<any> {
+        return this.http.post<any>(API_ENDPOINT + `api/customer`, data);
+    }
+
     generateOTP(data): Observable<any> {
         return this.http.post<any>(API_ENDPOINT + `api/order/send-otp`, data);
     }

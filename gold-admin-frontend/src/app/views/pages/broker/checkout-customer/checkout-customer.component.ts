@@ -45,7 +45,7 @@ export class CheckoutCustomerComponent implements OnInit {
 
   formInitialize() {
     this.numberSearchForm = this.fb.group({
-      mobNo: ['', Validators.required],
+      mobileNo: ['', Validators.required]
     });
 
     this.checkoutCustomerForm = this.fb.group({
@@ -87,7 +87,7 @@ export class CheckoutCustomerComponent implements OnInit {
         const blockData = {
           blockId: res.blockId
         }
-        this.checkoutData = res
+        this.checkoutData = res;
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
       }
     },
@@ -127,11 +127,15 @@ export class CheckoutCustomerComponent implements OnInit {
       this.numberSearchForm.markAllAsTouched();
       return;
     }
-    this.getExistingCustomer(this.numberSearchForm.controls.mobNo.value);
+    this.getExistingCustomer(this.numberSearchForm.controls.mobileNo.value);
   }
 
-  getExistingCustomer(mobNo) {
-    this.checkoutCustomerService.getExistingCustomer(mobNo).subscribe(res => {
+  getExistingCustomer(mobileNo) {
+    const existingCustomerData = {
+      mobileNo: mobileNo,
+      invoiceAmount: this.checkoutData.invoiceAmount
+    }
+    this.checkoutCustomerService.findExistingCustomer(existingCustomerData).subscribe(res => {
       if (res) {
         this.existingCustomerData = res;
         setTimeout(() => {
@@ -147,6 +151,17 @@ export class CheckoutCustomerComponent implements OnInit {
             cityName: res.customerDetails.customeraddress[0].cityId,
           });
           this.getCities();
+          if (res.customerDetails.kycDetails) {
+            this.checkoutCustomerForm.patchValue({
+              panCardNumber: res.customerDetails.kycDetails.panCardNumber,
+              nameOnPanCard: res.customerDetails.kycDetails.nameOnPanCard,
+              panCardFileId: res.customerDetails.kycDetails.panCardFileId
+            });
+          } else {
+            this.controls['panCardNumber'].enable();
+            this.controls['nameOnPanCard'].enable();
+            this.controls['panCardFileId'].enable();
+          }
           if (this.showPrefilledDataFlag) {
             const msg = 'Customer is already exist. The Details will be automatically pre-filled';
             this.toastr.successToastr(msg);
