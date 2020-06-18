@@ -167,6 +167,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
 
   patchReason(){
+    this.resetAppraiser()
     if(this.controls.reasons.value == 'Other'){
       this.controls.commentByAppraiser.setValidators(Validators.required);
       this.controls.commentByAppraiser.updateValueAndValidity()
@@ -190,6 +191,11 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   applyForm() {
+    if(this.approvalForm.invalid){
+      this.approvalForm.markAllAsTouched()
+      return 
+    }
+    this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
     this.loanFormService.applyForLoan(this.approvalForm.value, this.loanId).pipe(
       map(res => {
         this.router.navigate(['/admin/loan-management/applied-loan'])
