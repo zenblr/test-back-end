@@ -558,7 +558,7 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/orders/cancel-order/')) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('/broker/orders')) {
+		if (this.path == "orders") {
 			this.showInput = true;
 			this.filterName = "orderDetails";
 			this.filterWidth = "630px";

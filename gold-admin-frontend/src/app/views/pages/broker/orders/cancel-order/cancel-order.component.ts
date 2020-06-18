@@ -41,7 +41,7 @@ export class CancelOrderComponent implements OnInit {
       ifscCode: ['', Validators.compose([Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')])],
       passbookId: [null],
       checkCopyId: [null],
-      otp: [null, Validators.required],
+      otp: [null],
     });
   }
 
@@ -70,6 +70,7 @@ export class CancelOrderComponent implements OnInit {
   }
 
   getOtp() {
+    debugger
     if (this.cancelForm.invalid) {
       this.cancelForm.markAllAsTouched();
       return;
@@ -87,6 +88,8 @@ export class CancelOrderComponent implements OnInit {
   }
 
   confirmOtp() {
+    this.controls.otp.setValidators([Validators.required]);
+    this.controls.otp.updateValueAndValidity();
     if (this.cancelForm.invalid) {
       this.cancelForm.markAllAsTouched();
       return;
