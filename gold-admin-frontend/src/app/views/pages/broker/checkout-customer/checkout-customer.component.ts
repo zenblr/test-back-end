@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone } from '@angular/core';
 import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/merchant-broker';
+import { WindowRefService, ICustomWindow } from '../../../../core/shared/services/window-ref.service';
 
 @Component({
   selector: 'kt-checkout-customer',
   templateUrl: './checkout-customer.component.html',
-  styleUrls: ['./checkout-customer.component.scss']
+  styleUrls: ['./checkout-customer.component.scss'],
 })
 export class CheckoutCustomerComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -26,6 +27,32 @@ export class CheckoutCustomerComponent implements OnInit {
   checkoutData: any;
   existingCustomerData: any;
   finalOrderData: any;
+  rzp: any;
+  private _window: ICustomWindow;
+  razorpayOptions: any = {
+    key: '',
+    amount: '',
+    currency: 'INR',
+    name: 'Augmont',
+    description: '',
+    image: 'https://gold.nimapinfotech.com/assets/media/logos/logo.png',
+    order_id: '',
+    handler: this.razorPayResponsehandler.bind(this),
+    modal: {
+      ondismiss: (() => {
+        this.zone.run(() => {
+
+        });
+      })
+    },
+    prefill: {},
+    notes: {
+      address: ''
+    },
+    theme: {
+      color: '#454d67'
+    },
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -34,8 +61,12 @@ export class CheckoutCustomerComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private checkoutCustomerService: CheckoutCustomerService,
-    private shoppingCartService: ShoppingCartService
-  ) { }
+    private shoppingCartService: ShoppingCartService,
+    private zone: NgZone,
+    private winRef: WindowRefService
+  ) {
+    this._window = this.winRef.nativeWindow;
+  }
 
   ngOnInit() {
     this.formInitialize();
@@ -243,25 +274,25 @@ export class CheckoutCustomerComponent implements OnInit {
       });
   }
 
-  placeOrder() {
+  verifyOTP() {
     if (this.otpForm.invalid) {
       this.otpForm.markAllAsTouched();
       return;
     }
-    const placeOrderData = {
+    const verifyOTPData = {
       customerId: this.finalOrderData.customerId,
       otp: this.otpForm.controls.otp.value,
       blockId: this.finalOrderData.blockId,
-      transactionId: 'TRA' + Date.now(),
       totalInitialAmount: this.checkoutData.nowPayableAmount
     }
-    this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
+    this.checkoutCustomerService.verifyOTP(verifyOTPData).subscribe(res => {
       if (res) {
         console.log(res);
-        const msg = 'Order has been placed successfully.';
-        this.toastr.successToastr(msg);
-        this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
-        this.shoppingCartService.cartCount.next(0);
+        this.razorpayOptions.key = res.razerPayConfig;
+        this.razorpayOptions.amount = res.totalInitialAmount;
+        this.razorpayOptions.order_id = res.razorPayOrder.id;
+
+        this.initPay(this.razorpayOptions)
       }
     },
       error => {
@@ -279,5 +310,36 @@ export class CheckoutCustomerComponent implements OnInit {
 
   removeImage(data) {
     this.checkoutCustomerForm.controls['panCardFileId'].patchValue('');
+  }
+  
+  initPay(options) {
+    this.rzp = new this.winRef.nativeWindow['Razorpay'](options);
+    this.rzp.open();
+  }
+
+  razorPayResponsehandler(response: any) {
+    console.log(response)
+    this.zone.run(() => {
+      const placeOrderData = {
+        customerId: this.finalOrderData.customerId,
+        blockId: this.finalOrderData.blockId,
+        transactionDetails: response,
+        totalInitialAmount: this.checkoutData.nowPayableAmount
+      }
+      this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
+        if (res) {
+          console.log(res);
+          const msg = 'Order has been placed successfully.';
+          this.toastr.successToastr(msg);
+          this.shoppingCartService.cartCount.next(0);
+          this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId])
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
+    });
   }
 }

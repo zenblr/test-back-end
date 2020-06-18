@@ -17,7 +17,7 @@ import { Spinkit } from 'ng-http-loader';
 
 @Component({
 	// tslint:disable-next-line:component-selector
-	selector: 'body[kt-root]',
+	selector: 'kt-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

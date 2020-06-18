@@ -22,7 +22,11 @@ export class CheckoutCustomerService {
         return this.http.post<any>(API_ENDPOINT + `api/order/send-otp`, data);
     }
 
+    verifyOTP(data): Observable<any> {
+        return this.http.post<any>(API_ENDPOINT + `api/order/verify-otp`, data);
+    }
+
     placeOrder(data): Observable<any> {
-        return this.http.post<any>(API_ENDPOINT + `api/order`, data);
+        return this.http.post<any>(API_ENDPOINT + `api/order/place`, data);
     }
 }
