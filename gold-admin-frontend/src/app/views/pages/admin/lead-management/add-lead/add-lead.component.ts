@@ -194,6 +194,7 @@ export class AddLeadComponent implements OnInit {
       // console.log(res);
       this.leadForm.patchValue(res.singleCustomer);
       this.getCities();
+      this.commentBox()
     },
       error => {
         this.toastr.errorToastr(error.error.message);

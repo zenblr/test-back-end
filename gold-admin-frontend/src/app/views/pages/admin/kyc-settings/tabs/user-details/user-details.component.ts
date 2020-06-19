@@ -70,16 +70,18 @@ export class UserDetailsComponent implements OnInit {
       }
     });
 
-    // this.controls.panCardNumber.valueChanges.subscribe(res => {
-    // if (this.controls.panCardNumber.status == 'DISABLED' || this.controls.panCardNumber.valid) {
-    //   this.panButton = false;
-    //   this.isPanVerified = true;
+    this.controls.panCardNumber.valueChanges.subscribe(res => {
+      if (this.controls.panCardNumber.valid) {
+        this.panButton = false;
+        // this.isPanVerified = true;
 
-    // } else {
-    //   this.panButton = true;
-    //   this.isPanVerified = false;
-    // }
-    // });
+      } else {
+        this.panButton = true;
+        this.isPanVerified = false;
+      }
+
+      // this.verifyPAN()
+    });
 
     this.controls.panType.valueChanges.subscribe(res => {
       if (res == 'form60') {
@@ -212,16 +214,16 @@ export class UserDetailsComponent implements OnInit {
     //   }
     // });
 
-    if (this.controls.panCardNumber.status == 'DISABLED' || this.controls.panCardNumber.valid) {
-      this.panButton = false;
-      this.isPanVerified = true;
+    // if (this.controls.panCardNumber.status == 'DISABLED' || this.controls.panCardNumber.valid) {
+    //   this.panButton = false;
+    //   this.isPanVerified = true;
 
-    } else {
-      this.panButton = true;
-      this.isPanVerified = false;
-    }
+    // } else {
+    //   this.panButton = true;
+    //   this.isPanVerified = false;
+    // }
 
-    // this.isPanVerified = true;
+    this.isPanVerified = true;
   }
 
   submit() {
