@@ -1,12 +1,12 @@
 module.exports=(sequelize,DataTypes)=>{
     const SmsAlert=sequelize.define('smsAlert',{
         alertFor: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             field: 'alert_for',
             allowNull: false,
         },
         content: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             field: 'content',
             allowNull: false,
         },
