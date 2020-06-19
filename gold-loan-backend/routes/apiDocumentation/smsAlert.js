@@ -16,12 +16,12 @@
  *         schema:
  *           type: object
  *           properties:
- *             event:
+ *             alertFor:
  *               type: string
  *             content:
  *               type: string
  *         required:
- *           - event
+ *           - alertFor
  *           - content
  *     responses:
  *       201:
@@ -36,36 +36,25 @@
  *     security:
  *       - bearerAuth: []
  *     consumes:
- *       - application/json
+ *        - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
  *     responses:
  *       200:
  *          description: Success
  *       404:
  *          description: data not found
- *   delete:
- *     tags:
- *       - Sms Alert
- *     summary: To delete by Id
- *     parameters:
- *     - name: "id"
- *       in: "query"
- *       description: "Id of sms alert to delete"
- *       required: true
- *       type: "integer"
- *     - name: "isActive"
- *       in: "query"
- *       description: " value of isActive of sms to delete"
- *       required: true
- *       type: "boolean"
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Updated.
- *       404:
- *         description: sms alert deleted failed.
  * /sms-alert/{id}:
  *   get:
  *     tags:
@@ -107,12 +96,9 @@
  *         schema:
  *           type: object
  *           properties:
- *             event:
- *               type: string
  *             content:
  *               type: string
  *         required:
- *           - event
  *           - content
  *     responses:
  *       200:
