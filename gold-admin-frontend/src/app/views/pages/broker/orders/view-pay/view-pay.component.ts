@@ -43,7 +43,15 @@ export class ViewPayComponent implements OnInit {
     let params = {
       emiId: this.emi,
     }
-    this.shopService.getEmiAmount(params).subscribe(res => this.payEmi(res.amount))
+    if (this.emi) {
+      this.shopService.getEmiAmount(params).subscribe(res => {
+        this.payEmi(res.amount)
+      },
+        error => {
+          this.toastr.errorToastr(error.message);
+          this.ngOnInit();
+        })
+    }
   }
 
   payEmi(amount) {
@@ -55,6 +63,7 @@ export class ViewPayComponent implements OnInit {
     this.shopService.emiTransaction(params).subscribe(res => {
       this.ngOnInit();
       this.toastr.successToastr("EMI Paid Successfully");
+      this.emi = [];
     },
       error => {
         this.toastr.errorToastr(error.error);

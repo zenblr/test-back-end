@@ -111,10 +111,23 @@
                         {{element?.pinCode ? element?.pinCode : '-'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="panCardNumber">
-                    <mat-header-cell *matHeaderCellDef>Customer Pan Card No.</mat-header-cell>
+                <ng-container matColumnDef="panCardName">
+                    <mat-header-cell *matHeaderCellDef>Name on PAN Card</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.panCardNumber ? element?.panCardNumber : '-'}}
+                        {{element?.kycDetails?.nameOnPanCard ? element?.kycDetails?.nameOnPanCard : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="panCardNumber">
+                    <mat-header-cell *matHeaderCellDef>PAN Card No.</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.kycDetails?.panCardNumber ? element?.kycDetails?.panCardNumber : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="viewPanCard">
+                    <mat-header-cell *matHeaderCellDef>View PAN Card</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span class="text-primary kt-pointer" *ngIf="element?.kycDetails?.panCard.url;else elseBlock"
+                            (click)="open(element.kycDetails.panCard.url)">View</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="merchant">
@@ -156,3 +169,6 @@
     </kt-portlet-body>
     <!-- end::Body -->
 </kt-portlet>
+<ng-template #elseBlock>
+    -
+</ng-template>
