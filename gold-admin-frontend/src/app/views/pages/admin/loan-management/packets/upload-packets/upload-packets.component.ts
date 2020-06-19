@@ -44,7 +44,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private layoutUtilsService: LayoutUtilsService,
     private ref: ChangeDetectorRef,
     private dilaog: MatDialog
-  ) { }
+  ) {
+    
+   }
 
 
   ngOnChanges(change: SimpleChanges) {
@@ -59,6 +61,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   ngOnInit() {
     this.initForm()
     this.getPacketsDetails()
+
+   
 
     this.url = this.router.url.split('/')[2]
     this.loanId = this.route.snapshot.params.id
@@ -82,6 +86,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
       console.log(this.viewpacketsDetails.loanPacketDetails)
     }
+
   }
 
   initForm() {

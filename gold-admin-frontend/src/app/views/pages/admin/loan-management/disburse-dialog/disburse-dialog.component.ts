@@ -95,13 +95,12 @@ export class DisburseDialogComponent implements OnInit {
   }
 
   submit() {
-    this.formEnable()
-    console.log(this.disburseForm.value)
-    return 
+   
     if (this.disburseForm.invalid) {
       this.disburseForm.markAllAsTouched()
       return
     }
+    this.formEnable()
     this.loanService.disburse(this.disburseForm.value).pipe(
       map(res => {
         this.toast.success(res.message)

@@ -7,7 +7,7 @@
     }
     ::ng-deep.mat-tab-label{
         min-width: 130px !important;
-        padding: 0 !important;
+        padding-top: 3px !important;
     }
 
     ::ng-deep.mat-tab-label .mat-tab-label-content {
@@ -19,9 +19,16 @@
  
     // }
       
-      ::ng-deep.mat-tab-label .mat-tab-label-content span{
+      ::ng-deep.mat-tab-label .mat-tab-label-content span,
+      ::ng-deep.mat-tab-label .mat-tab-label-content img{
         display: flex!important;
-        flex: 1 0 100%!important;  
+        flex: 1 0 90%!important;  
+        justify-content: left !important;
+
+      }
+      ::ng-deep.mat-tab-label .mat-tab-label-content img{
+        display: flex!important;
+        flex: 1 0 10%!important;  
         justify-content: left !important;
 
       }
