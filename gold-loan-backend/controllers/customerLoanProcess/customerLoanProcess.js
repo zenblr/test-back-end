@@ -32,8 +32,8 @@ exports.customerDetails = async (req, res, next) => {
     }
 
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId, isActive: true ,kycStatus: 'approved'},
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus' , 'panType', 'panImage']
+        where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage']
     })
 
     let customerLoanStage = await models.customerLoan.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false } })
@@ -166,8 +166,8 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 //FUNCTION for final loan calculator
 exports.loanFinalLoan = async (req, res, next) => {
     let { loanFinalCalculator, loanId, intrestTable } = req.body
-    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate } = loanFinalCalculator
-    
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, totalFinalInterestAmt } = loanFinalCalculator
+
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
@@ -178,7 +178,6 @@ exports.loanFinalLoan = async (req, res, next) => {
         intrestTable[i]['loanId'] = loanId
         intrestData.push(intrestTable[i])
     }
-    console.log(intrestTable);
     let checkFinalLoan = await models.customerFinalLoan.findOne({ where: { loanId: loanId } })
 
     if (check.isEmpty(checkFinalLoan)) {
@@ -186,9 +185,9 @@ exports.loanFinalLoan = async (req, res, next) => {
 
             await models.customerLoanIntrestCalculator.bulkCreate(intrestData, { transaction: t });
 
-            await models.customerLoan.update({ customerLoanCurrentStage: '5', modifiedBy, totalFinalInterestAmt: loanFinalCalculator.totalFinalInterestAmt }, { where: { id: loanId }, transaction: t })
+            await models.customerLoan.update({ customerLoanCurrentStage: '5', modifiedBy, totalFinalInterestAmt: totalFinalInterestAmt }, { where: { id: loanId }, transaction: t })
 
-            let loan = await models.customerFinalLoan.create({ loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, createdBy, modifiedBy }, { transaction: t });
+            let loan = await models.customerFinalLoan.create({ loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, createdBy, modifiedBy }, { transaction: t });
             return loan
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '5', finalLoanAmount })
@@ -198,15 +197,15 @@ exports.loanFinalLoan = async (req, res, next) => {
 
         let loanData = await sequelize.transaction(async t => {
 
-            await models.customerLoanIntrestCalculator.destroy({where:{loanId: loanId},  transaction: t });
+            await models.customerLoanIntrestCalculator.destroy({ where: { loanId: loanId }, transaction: t });
 
             await models.customerLoanIntrestCalculator.bulkCreate(intrestData, { transaction: t });
 
             if (loanSubmitted.isLoanSubmitted = false) {
-                await models.customerLoan.update({ customerLoanCurrentStage: '5', modifiedBy, totalFinalInterestAmt: loanFinalCalculator.totalFinalInterestAmt }, { where: { id: loanId }, transaction: t })
+                await models.customerLoan.update({ customerLoanCurrentStage: '5', modifiedBy, totalFinalInterestAmt: totalFinalInterestAmt }, { where: { id: loanId }, transaction: t })
             }
 
-            let loan = await models.customerFinalLoan.update({ partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
+            let loan = await models.customerFinalLoan.update({ partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
             return loan
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '5', finalLoanAmount })
@@ -354,13 +353,22 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
         },
         {
+            model: models.customerLoanIntrestCalculator,
+            as: 'customerLoanIntrestCalculator',
+        },
+        {
             model: models.customerFinalLoan,
             as: 'finalLoan',
             // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            include: [{
-                model: models.scheme,
-                as: 'scheme'
-            }]
+            include: [
+                {
+                    model: models.scheme,
+                    as: 'scheme'
+                }, {
+                    model: models.scheme,
+                    as: 'unsecuredScheme'
+                }
+            ]
         },
         {
             model: models.customerLoanPackageDetails,
@@ -379,11 +387,11 @@ exports.getSingleLoanDetails = async (req, res, next) => {
     });
 
     let ornamentType = [];
-    for(let ornamentsDetail of customerLoan.loanOrnamentsDetail ){
-        ornamentType.push({ornamentType:ornamentsDetail.ornamentType,id: ornamentsDetail.id})
+    for (let ornamentsDetail of customerLoan.loanOrnamentsDetail) {
+        ornamentType.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
     }
     customerLoan.dataValues.ornamentType = ornamentType;
-    return res.status(200).json({ message: 'success', data: customerLoan})
+    return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS

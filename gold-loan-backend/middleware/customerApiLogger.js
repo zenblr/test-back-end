@@ -29,8 +29,8 @@ module.exports = (req, res, next) => {
 
 
     ];
-    console.log(req.originalUrl)
-    if (includeUrls.includes(req.originalUrl)) {
+    
+    if (includeUrls.includes(req._parsedUrl.pathname)) {
         try {
             const token = req.headers.authorization.split(" ")[1];
             console.log(token)

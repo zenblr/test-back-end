@@ -34,6 +34,9 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerLoanDisbursement.associate = function (models) {
         CustomerLoanDisbursement.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
+
+        CustomerLoanDisbursement.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerLoanDisbursement.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // FUNCTION TO DISBURSEMENT OF LOAN AMOUNT
