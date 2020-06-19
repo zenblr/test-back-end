@@ -1,5 +1,5 @@
 // Angular
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 // RxJS
 import { Observable, Subscription } from 'rxjs';
 // Object-Path
@@ -12,6 +12,8 @@ import { MenuConfig } from '../../../core/_config/menu.config';
 import { PageConfig } from '../../../core/_config/page.config';
 import { SharedService } from '../../../core/shared/services/shared.service';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { GlobalSettingService } from '../../../core/global-setting/services/global-setting.service';
+import { map } from 'rxjs/operators';
 
 @Component({
 	selector: 'kt-base',
@@ -48,7 +50,9 @@ export class BaseComponent implements OnInit, OnDestroy {
 		private pageConfigService: PageConfigService,
 		private htmlClassService: HtmlClassService,
 		private sharedService: SharedService,
-		public permissionsService: NgxPermissionsService
+		public permissionsService: NgxPermissionsService,
+		private globalSettingService: GlobalSettingService,
+		private ref: ChangeDetectorRef
 	) {
 
 
@@ -91,6 +95,11 @@ export class BaseComponent implements OnInit, OnDestroy {
 			});
 		});
 		this.unsubscribe.push(subscr);
+
+		this.globalSettingService.getGlobalSetting().pipe(map(res => {
+			this.globalSettingService.globalSetting.next(res);
+			this.ref.detectChanges();
+		})).subscribe()
 	}
 
 	/**

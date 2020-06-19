@@ -71,14 +71,16 @@ export class UserDetailsComponent implements OnInit {
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
-      if (this.controls.panCardNumber.status == 'DISABLED' || this.controls.panCardNumber.valid) {
+      if (this.controls.panCardNumber.valid) {
         this.panButton = false;
-        this.isPanVerified = true;
+        // this.isPanVerified = true;
 
       } else {
         this.panButton = true;
         this.isPanVerified = false;
       }
+
+      // this.verifyPAN()
     });
 
     this.controls.panType.valueChanges.subscribe(res => {
@@ -118,7 +120,7 @@ export class UserDetailsComponent implements OnInit {
       referenceCode: [],
       panType: ['', Validators.required],
       form60: [''],
-      panImage: [,Validators.required],
+      panImage: [, Validators.required],
       panCardNumber: [''],
     })
   }
@@ -136,6 +138,7 @@ export class UserDetailsComponent implements OnInit {
         if (res.customerInfo.panCardNumber !== null) {
           this.controls.panCardNumber.disable();
           this.controls.panType.disable();
+          this.isPanVerified = true;
         } else {
           this.showVerifyPAN = true;
         }
@@ -210,6 +213,15 @@ export class UserDetailsComponent implements OnInit {
     //     this.isPanVerified = true;
     //   }
     // });
+
+    // if (this.controls.panCardNumber.status == 'DISABLED' || this.controls.panCardNumber.valid) {
+    //   this.panButton = false;
+    //   this.isPanVerified = true;
+
+    // } else {
+    //   this.panButton = true;
+    //   this.isPanVerified = false;
+    // }
 
     this.isPanVerified = true;
   }

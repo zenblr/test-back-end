@@ -215,7 +215,8 @@
 								<img class="fetched-image" *ngIf="controls.panImage.value" [src]="controls.panImage"
 									style="border-radius: 15px;" alt="" />
 								<img src="../../../../../assets/media/icons/edit.svg" alt=""
-									class="kt-pointer remove-icon" (click)="form60.click()" *ngIf="controls.panImage.value && !controls.panType.status == 'DISABLED'">
+									class="kt-pointer remove-icon" (click)="form60.click()"
+									*ngIf="controls.panImage.value && !(controls.panType.status == 'DISABLED')">
 								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
 									(input)="getFileInfo($event)">
 							</div>

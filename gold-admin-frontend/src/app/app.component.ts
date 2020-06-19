@@ -14,6 +14,8 @@ import { locale as frLang } from './core/_config/i18n/fr';
 import { SharedService } from './core/shared/services/shared.service';
 
 import { Spinkit } from 'ng-http-loader';
+import { GlobalSettingService } from './core/global-setting/services/global-setting.service';
+import { map } from 'rxjs/operators';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -43,7 +45,8 @@ export class AppComponent implements OnInit, OnDestroy {
 		private layoutConfigService: LayoutConfigService,
 		private splashScreenService: SplashScreenService,
 		private sharedService: SharedService,
-		private ref: ChangeDetectorRef
+		private ref: ChangeDetectorRef,
+		private globalSettingService: GlobalSettingService
 	) {
 		// if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
 		// 	location.href = location.href.replace("http://", "https://");
