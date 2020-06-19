@@ -27,7 +27,7 @@ exports.postCity = async (req, res, next) => {
 }
 
 exports.getCity = async (req, res, next) => {
-    const { stateId } = req.params;
+    const stateId = req.query.stateId;
     let city = await models.city.findAll({
         where: { isActive: true, stateId: stateId },
         attributes: ['id', 'name', 'stateId'],
