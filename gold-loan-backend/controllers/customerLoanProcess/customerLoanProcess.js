@@ -546,28 +546,22 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
 }
 
 exports.disbursementOfLoanBankDetails = async (req, res,next) => {
-    let { loanId } = req.body;
-    let createdBy = req.userData.id; 
+    let { loanId } = req.query;
+    let createdBy =  req.userData.id; 
     let userBankDetails = await models.customerLoanBankDetail.findOne({
-         where: { loanId: loanId },
-        attributes: ['bankName','bankBranchName', 'accountType', 'accountHolderName',
+         where: { loanId: parseInt(loanId) },
+        attributes: ['paymentType','bankName','bankBranchName', 'accountType', 'accountHolderName',
          'accountNumber','ifscCode'] 
     });
-
-    let loanbrokerId = await models.userInternalBranch.findOne({ where: { userId: createdBy } });
-    
-    let brokerBankDetails = await models.internalBranch.findOne({
-         where: { id: loanbrokerId.internalBranchId },
-         attributes: ['bankName','bankBranch', 'accountHolderName', 'accountNumber','ifscCode']
-        });
-
-    let data = {
-        userBankDetails: userBankDetails,
-        brokerBankDetails: brokerBankDetails
+    if (userBankDetails.paymentType !== 'bank') {
+        let loanbrokerId = await models.userInternalBranch.findOne({ where: { userId: createdBy } });
+        let brokerBankDetails = await models.internalBranch.findOne({
+            where: { id: loanbrokerId.internalBranchId },
+            attributes: ['bankName','bankBranch', 'accountHolderName', 'accountNumber','ifscCode']
+            });
+        userBankDetails =  brokerBankDetails;
     }
-
-    
-        return res.status(200).json({ message: 'success', data: data})
+    return res.status(200).json({ message: 'success', data: userBankDetails})
 
 }
 
@@ -575,7 +569,8 @@ exports.disbursementOfLoanBankDetails = async (req, res,next) => {
 //  FUNCTION FOR DISBURSEMENT OF LOAN AMOUNT
 exports.disbursementOfLoanAmount = async (req, res, next) => {
 
-    let { loanId, transactionId, date } = req.body;
+    let { loanId, transactionId, date, paymentMode, ifscCode,bankName, bankBranch, 
+        accountHolderName,accountNumber } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
@@ -586,7 +581,8 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
         await sequelize.transaction(async (t) => {
             await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
-            await models.customerLoanDisbursement.create({ loanId, transactionId, date, createdBy, modifiedBy }, { transaction: t })
+            await models.customerLoanDisbursement.create({ loanId, transactionId, date, paymentMode, ifscCode,bankName, bankBranch, 
+                accountHolderName,accountNumber, createdBy, modifiedBy }, { transaction: t })
         })
         return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });
     } else {
