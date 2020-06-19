@@ -1,5 +1,4 @@
 <kt-toastr #toastr></kt-toastr>
-
 <kt-portlet *ngIf="orderData">
     <kt-portlet-body [class]="'kt-portlet__body--fit'">
         <div class="row justify-content-center kt-padding-t-10 kt-padding-b-10">
@@ -33,25 +32,28 @@
                         <div class="col-md-3 d-block">
                             <div>Invoice Price</div>
                             <div>
-                                <h4>{{orderData.orderdetails[0].finalOrderPrice}}</h4>
+                                <h4 class="currency">
+                                    {{orderData?.orderdetails[0]?.finalOrderPrice | indianCurrencyFormat}}</h4>
                             </div>
                         </div>
                         <div class="col-md-3 d-block">
                             <div>EMI Scheme</div>
                             <div>
-                                <h4>{{orderData.paymentType.paymentType}} Months</h4>
+                                <h4>{{orderData?.paymentType?.paymentType}} Months</h4>
                             </div>
                         </div>
                         <div class="col-md-3 d-block">
                             <div>Initial Payment</div>
                             <div>
-                                <h4>{{orderData.orderdetails[0].initialPayment}}</h4>
+                                <h4 class="currency">
+                                    {{orderData?.orderdetails[0]?.initialPayment | indianCurrencyFormat}}</h4>
                             </div>
                         </div>
                         <div class="col-md-3 d-block">
                             <div>EMI Amount</div>
                             <div>
-                                <h4>{{orderData.orderdetails[0].emiAmount}}</h4>
+                                <h4 class="currency">{{orderData?.orderdetails[0]?.emiAmount | indianCurrencyFormat}}
+                                </h4>
                             </div>
                         </div>
                     </div>
