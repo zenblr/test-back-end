@@ -5,10 +5,10 @@ import { LogisticPartnerService } from '../../../../../../core/emi-management/lo
 import { map, takeUntil, skip, distinctUntilChanged, tap } from 'rxjs/operators';
 import { Subject, Subscription, merge } from 'rxjs';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
-import { LogisticPartnerDataSource} from '../../../../../../core/emi-management/logistic-partner/datasource/logistic-partner.datasource';
+import { LogisticPartnerDataSource } from '../../../../../../core/emi-management/logistic-partner/datasource/logistic-partner.datasource';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { Role } from '../../../../../../core/auth';
- import { ToastrComponent } from '../../../../../partials/components';
+import { ToastrComponent } from '../../../../../partials/components';
 // import { BranchModel } from 'src/app/core/user-management/branch/models/branch.model';
 import { LayoutUtilsService, MessageType } from '../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
@@ -22,38 +22,38 @@ import { ToastrService } from 'ngx-toastr';
 export class ListLogisticPartnerComponent implements OnInit {
   destroy$ = new Subject();
   private subscriptions: Subscription[] = [];
-  private logisticPartner:any=[];
+  private logisticPartner: any = [];
   dataSource: LogisticPartnerDataSource;
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
- /**
-  * @param layoutUtilsService:LayoutUtilsService
-  */
-  displayedColumns = ['name','actions'];
+  /**
+   * @param layoutUtilsService:LayoutUtilsService
+   */
+  displayedColumns = ['name', 'actions'];
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
   partnerService: any;
- 
-  constructor(public dialog: MatDialog, private logisticPartnerService: LogisticPartnerService,    private dataTableService: DataTableService,    private layoutUtilsService: LayoutUtilsService,
-    private toast:ToastrService
 
-    ) {
-    
-      this.logisticPartnerService.openModal$.pipe(
-        map(res => {
-          if (res) {
-            this.addRole();
-          }
-        }),
-        takeUntil(this.destroy$)).subscribe();
-  
+  constructor(public dialog: MatDialog, private logisticPartnerService: LogisticPartnerService, private dataTableService: DataTableService, private layoutUtilsService: LayoutUtilsService,
+    private toast: ToastrService
+
+  ) {
+
+    this.logisticPartnerService.openModal$.pipe(
+      map(res => {
+        if (res) {
+          this.addRole();
+        }
+      }),
+      takeUntil(this.destroy$)).subscribe();
+
   }
- 
+
   ngOnInit() {
     const sortSubscription = this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
     this.subscriptions.push(sortSubscription);
-  
+
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
       tap(() => {
         this.loadBranchPage();
@@ -63,11 +63,11 @@ export class ListLogisticPartnerComponent implements OnInit {
     this.subscriptions.push(paginatorSubscriptions);
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
-    .subscribe(res => {
-      this.searchValue = res;
-      this.paginator.pageIndex = 0;
-      this.loadBranchPage();
-    });
+      .subscribe(res => {
+        this.searchValue = res;
+        this.paginator.pageIndex = 0;
+        this.loadBranchPage();
+      });
 
     // this.dataSource.paginator = this.paginator;
     this.dataSource = new LogisticPartnerDataSource(this.logisticPartnerService);
@@ -98,7 +98,7 @@ export class ListLogisticPartnerComponent implements OnInit {
 
     this.dataSource.loadLogisticPartners(from, to, this.searchValue);
   }
-   /** ACTIONS */
+  /** ACTIONS */
 	/**
 	 * Delete role
 	 *
@@ -107,7 +107,7 @@ export class ListLogisticPartnerComponent implements OnInit {
   deleteRole(_item: Role) {
     const role = _item;
     const _title = 'Delete  Logistic Partner';
-    const _description = 'Are you sure to permanently delete this logistic partner?';
+    const _description = 'Are you sure you want to permanently delete this Logistic Partner?';
     const _waitDesciption = ' Logistic Partner is deleting.';
     const _deleteMessage = ` Logistic Partner has been deleted`;
 
@@ -129,8 +129,9 @@ export class ListLogisticPartnerComponent implements OnInit {
 
 
   addRole(): void {
-      const dialogRef = this.dialog.open(AddLogisticPartnerComponent, {
-         data: { action: 'add' }, width: '450px' });
+    const dialogRef = this.dialog.open(AddLogisticPartnerComponent, {
+      data: { action: 'add' }, width: '450px'
+    });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadBranchPage();
@@ -143,47 +144,47 @@ export class ListLogisticPartnerComponent implements OnInit {
 	 *
 	 * @param role: Role
 	 */
-    editRole(role: Role) {
-      const _saveMessage = `Role successfully has been saved.`;
-      const _messageType = role.id ? MessageType.Update : MessageType.Create;
-      const dialogRef = this.dialog.open(AddLogisticPartnerComponent, {
-        data: { partnerId: role.id, action: 'edit' },
-        width: '450px'
-      });
-      dialogRef.afterClosed().subscribe(res => {
-        if (res) {
-          this.loadBranchPage();
-        }
-      });
-    
-}
-// export interface PeriodicElement {
-//   name: string;
-//   position: number;
-//   weight: number;
-//   symbol: string;
-// }
+  editRole(role: Role) {
+    const _saveMessage = `Role successfully has been saved.`;
+    const _messageType = role.id ? MessageType.Update : MessageType.Create;
+    const dialogRef = this.dialog.open(AddLogisticPartnerComponent, {
+      data: { partnerId: role.id, action: 'edit' },
+      width: '450px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadBranchPage();
+      }
+    });
 
-// const ELEMENT_DATA: PeriodicElement[] = [
-//   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-//   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-//   {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-//   {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-//   {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-//   {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-//   {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-//   {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-//   {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-//   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-//   {position: 11, name: 'Sodium', weight: 22.9897, symbol: 'Na'},
-//   {position: 12, name: 'Magnesium', weight: 24.305, symbol: 'Mg'},
-//   {position: 13, name: 'Aluminum', weight: 26.9815, symbol: 'Al'},
-//   {position: 14, name: 'Silicon', weight: 28.0855, symbol: 'Si'},
-//   {position: 15, name: 'Phosphorus', weight: 30.9738, symbol: 'P'},
-//   {position: 16, name: 'Sulfur', weight: 32.065, symbol: 'S'},
-//   {position: 17, name: 'Chlorine', weight: 35.453, symbol: 'Cl'},
-//   {position: 18, name: 'Argon', weight: 39.948, symbol: 'Ar'},
-//   {position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K'},
-//   {position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca'},
-// ];
+  }
+  // export interface PeriodicElement {
+  //   name: string;
+  //   position: number;
+  //   weight: number;
+  //   symbol: string;
+  // }
+
+  // const ELEMENT_DATA: PeriodicElement[] = [
+  //   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+  //   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
+  //   {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
+  //   {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
+  //   {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
+  //   {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
+  //   {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
+  //   {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
+  //   {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
+  //   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
+  //   {position: 11, name: 'Sodium', weight: 22.9897, symbol: 'Na'},
+  //   {position: 12, name: 'Magnesium', weight: 24.305, symbol: 'Mg'},
+  //   {position: 13, name: 'Aluminum', weight: 26.9815, symbol: 'Al'},
+  //   {position: 14, name: 'Silicon', weight: 28.0855, symbol: 'Si'},
+  //   {position: 15, name: 'Phosphorus', weight: 30.9738, symbol: 'P'},
+  //   {position: 16, name: 'Sulfur', weight: 32.065, symbol: 'S'},
+  //   {position: 17, name: 'Chlorine', weight: 35.453, symbol: 'Cl'},
+  //   {position: 18, name: 'Argon', weight: 39.948, symbol: 'Ar'},
+  //   {position: 19, name: 'Potassium', weight: 39.0983, symbol: 'K'},
+  //   {position: 20, name: 'Calcium', weight: 40.078, symbol: 'Ca'},
+  // ];
 }

@@ -44,10 +44,14 @@ export class EmiDetailsService {
 			.get(API_ENDPOINT + `api/emi-details/${id}`);
 	}
 
-	reportExport(): Observable<any> {
+	reportExport(event?: any): Observable<any> {
+		const reqParams: any = {};
+		if (event && event.orderemistatus) {
+			reqParams.orderemistatus = event.orderemistatus;
+		}
 		return this.http
 			.get(API_ENDPOINT + `api/emi-details/emi-report`, {
-				responseType: "arraybuffer",
+				responseType: "arraybuffer", params: reqParams,
 			})
 			.pipe(
 				map((res) => {
@@ -81,7 +85,7 @@ export class EmiDetailsService {
 					(data) => {
 						this.pdfService.saveAsPdfFile(
 							data,
-							"EmiReceipt_" + Date.now()
+							"EMIReceipt_" + Date.now()
 						);
 					},
 					(error) => console.log(error)

@@ -8,7 +8,7 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
                 <ng-container matColumnDef="storeId">
-                    <mat-header-cell *matHeaderCellDef>Member ID</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element["customerDetails.customerUniqueId"] ? element["customerDetails.customerUniqueId"] : '-'}}
                     </mat-cell>
@@ -94,7 +94,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="performa">
-                    <mat-header-cell *matHeaderCellDef>Perform Invoice</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Proforma Invoice</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <span *ngIf="element['orderCurrentStatus.id'] != 13">
                             <kt-button [value]="'Print'" [type]="'submit'" (click)="performa(element)"></kt-button>
@@ -126,10 +126,18 @@
                         </span>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="cancelOrder">
+                    <mat-header-cell *matHeaderCellDef>Cancel Order</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element['orderCurrentStatus.id'] == 2 || element['orderCurrentStatus.id'] == 3">
+                            <kt-button [value]="'Cancel'" [type]="'button'" (click)="cancelOrder(element)">
+                            </kt-button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 200%;"></mat-header-row>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 180%;"></mat-header-row>
-
-                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 180%;"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 200%;"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

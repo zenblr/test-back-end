@@ -246,7 +246,7 @@ export class OrderDetailsListComponent implements OnInit {
 	}
 
 	downloadReport() {
-		this.orderDetailsService.reportExport().subscribe();
+		this.orderDetailsService.reportExport(this.orderData).subscribe();
 		this.orderDetailsService.exportExcel.next(false);
 	}
 
@@ -280,7 +280,6 @@ export class OrderDetailsListComponent implements OnInit {
 	}
 
 	applyFilter(data) {
-		console.log(data);
 		this.orderData.paymentType = data.data.paymentType;
 		this.orderData.orderCurrentStatus = data.data.status;
 		this.orderData.weight = data.data.weight;

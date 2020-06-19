@@ -10,6 +10,7 @@ import { API_ENDPOINT } from '../../../app.constant';
 export class ShopService {
     toggle = new BehaviorSubject<any>('list');
     toggle$ = this.toggle.asObservable();
+
     constructor(
         private http: HttpClient,
     ) { }
@@ -45,7 +46,7 @@ export class ShopService {
         return this.http.post(API_ENDPOINT + 'api/cart', data)
     }
 
-    getDetails(id): Observable<any> {
+    getOrderDetails(id): Observable<any> {
         return this.http.get(API_ENDPOINT + 'api/order/' + id)
     }
 
@@ -53,7 +54,19 @@ export class ShopService {
         return this.http.post(API_ENDPOINT + 'api/order/pay-emi/amount', data)
     }
 
-    emiTransaction(data): Observable<any> {
+    payEMI(data): Observable<any> {
         return this.http.post(API_ENDPOINT + 'api/order/pay-emi', data)
+    }
+
+    getCancelDetails(id): Observable<any> {
+        return this.http.get(API_ENDPOINT + 'api/cancel-order/' + id)
+    }
+
+    getOtp(data): Observable<any> {
+        return this.http.post(API_ENDPOINT + 'api/cancel-order/send-otp', data)
+    }
+
+    updateCancelOrder(id, data): Observable<any> {
+        return this.http.put(API_ENDPOINT + 'api/cancel-order/' + id, data)
     }
 }

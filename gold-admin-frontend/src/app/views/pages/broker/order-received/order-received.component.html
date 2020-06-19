@@ -49,8 +49,8 @@
                                 <td>
                                     {{prod?.product?.sku ? prod?.product?.sku : '-'}}
                                 </td>
-                                <td>
-                                    {{prod?.orderdetails[0]?.finalOrderPrice ? '₹ ' + (prod?.orderdetails[0]?.finalOrderPrice | number) : '-'}}
+                                <td class="currency">
+                                    {{prod?.orderdetails[0]?.finalOrderPrice ? (prod?.orderdetails[0]?.finalOrderPrice | indianCurrencyFormat) : '-'}}
                                 </td>
                                 <td>
                                     {{prod?.quantity ? prod?.quantity : '-'}}
@@ -62,7 +62,8 @@
             </div>
             <div class="row text-center py-4">
                 <div class="col-12">
-                    <h3>Invoice Price - ₹ {{orderDetail?.invoiceAmount | number}}</h3>
+                    <h3>Invoice Price - <span
+                            class="currency">{{orderDetail?.invoiceAmount | indianCurrencyFormat}}</span></h3>
                 </div>
             </div>
             <div class="row text-center py-2">

@@ -42,7 +42,8 @@ export class OrdersComponent implements OnInit {
     "performa",
     "contract",
     "cancelReceipt",
-    "orderPayment"
+    "orderPayment",
+    "cancelOrder"
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("sort1", { static: true }) sort: MatSort;
@@ -58,8 +59,11 @@ export class OrdersComponent implements OnInit {
     from: 1,
     to: 25,
     search: "",
-    orderemistatus: "",
+    weight: 0,
+    paymentType: 0,
+    orderCurrentStatus: 0,
   };
+
   filteredDataList = {};
 
   constructor(
@@ -72,7 +76,15 @@ export class OrdersComponent implements OnInit {
     private orderDetailsService: OrderDetailsService,
     private cancelOrderDetailsService: CancelOrderDetailsService,
     private router: Router,
-  ) { }
+  ) {
+    this.ordersService.applyFilter$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
+  }
 
   ngOnInit() {
     const sortSubscription = this.sort.sortChange.subscribe(
@@ -142,11 +154,25 @@ export class OrdersComponent implements OnInit {
     this.router.navigate(["/broker/orders/view-pay/", element.id]);
   }
 
+  cancelOrder(element) {
+    this.router.navigate(["/broker/orders/cancel-order/", element.id]);
+  }
+
+  applyFilter(data) {
+    this.ordersData.paymentType = data.data.paymentType;
+    this.ordersData.orderCurrentStatus = data.data.status;
+    this.ordersData.weight = data.data.weight;
+    this.dataSource.loadOrdersDetails(this.ordersData);
+    this.filteredDataList = data.list;
+  }
+
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.destroy$.next();
     this.destroy$.complete();
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
+    this.ordersService.applyFilter.next({});
+    this.sharedService.closeFilter.next(true);
   }
 }

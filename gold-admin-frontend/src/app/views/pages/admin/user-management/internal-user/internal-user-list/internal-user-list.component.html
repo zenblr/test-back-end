@@ -7,7 +7,7 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="userId">
-                    <mat-header-cell *matHeaderCellDef>User ID</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let user">
                         <div class="text-color">
                             {{user.userUniqueId}}
@@ -57,12 +57,12 @@
                     <mat-cell *matCellDef="let user">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div (click)="editUser(user,'edit')" class="kt-pointer"
-                            *ngxPermissionsOnly="['internalUserEdit']"> Edit
+                                *ngxPermissionsOnly="['internalUserEdit']"> Edit
                                 |
                                 &nbsp;
                             </div>
                             <div (click)="deleteUser(user)" class="kt-pointer text-danger"
-                            *ngxPermissionsOnly="['internalUserDelete']"> Delete
+                                *ngxPermissionsOnly="['internalUserDelete']"> Delete
 
                             </div>
                         </div>

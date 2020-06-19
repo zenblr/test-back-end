@@ -19,18 +19,18 @@
                         </div>
                         <div class="col-7 p-0">
                             <input type="text" aria-label="Mobile Number" placeholder="Mobile Number"
-                                class="form-control" formControlName="mobNo"
-                                [class.isError]="numberSearchForm.controls.mobNo.touched && numberSearchForm.controls.mobNo.invalid"
+                                class="form-control" formControlName="mobileNo"
+                                [class.isError]="numberSearchForm.controls.mobileNo.touched && numberSearchForm.controls.mobileNo.invalid"
                                 numbersOnly>
                             <mat-error
-                                *ngIf="numberSearchForm.controls.mobNo.errors?.required && numberSearchForm.controls.mobNo.touched">
+                                *ngIf="numberSearchForm.controls.mobileNo.errors?.required && numberSearchForm.controls.mobileNo.touched">
                                 Field is required
                             </mat-error>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <kt-button [value]="'Search'" [type]="'submit'" (action)="getExistingCustomer()"></kt-button>
+                    <kt-button [value]="'Search'" [type]="'submit'" (action)="checkCustomerExist()"></kt-button>
                 </div>
             </div>
         </form>
@@ -67,7 +67,7 @@
                 </div>
             </div> -->
             <div class="row py-3">
-                <div class="col-6 pr-4">
+                <div class="col-6" [ngClass]="showNumberSearchFlag ? 'pr-4' : 'pl-4'">
                     <div class="row">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Customer
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 pl-4">
+                <div class="col-6" [ngClass]="!showNumberSearchFlag ? 'pr-4 order-first' : 'pl-4'">
                     <div class="row">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Mobile
@@ -104,6 +104,9 @@
                                 numbersOnly>
                             <mat-error *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
                                 Field is required
+                            </mat-error>
+                            <mat-error *ngIf="controls.mobileNumber.errors?.pattern && controls.mobileNumber.touched">
+                                Invalid Input
                             </mat-error>
                         </div>
                     </div>
@@ -224,6 +227,86 @@
                     </div>
                 </div>
             </div>
+            <ng-container *ngIf="checkoutData?.kycRequired || existingCustomerData?.kycRequired">
+                <div class="row py-3">
+                    <div class="col-6 pr-4">
+                        <div class="row">
+                            <div class="col-4 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">PAN Card
+                                    Number</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" aria-label="PAN Card Number" placeholder="PAN Card Number"
+                                    class="form-control" formControlName="panCardNumber"
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+                                    maxlength="10" style="text-transform: uppercase;">
+                                <mat-error
+                                    *ngIf=" controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
+                                    Field is required
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
+                                    Invalid Input
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 pl-4">
+                        <div class="row">
+                            <div class="col-4 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">PAN Card
+                                    Name</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" aria-label="PAN Card Name" placeholder="PAN Card Name"
+                                    class="form-control" formControlName="nameOnPanCard"
+                                    [class.isError]="controls.nameOnPanCard.touched && controls.nameOnPanCard.invalid">
+                                <mat-error
+                                    *ngIf=" controls.nameOnPanCard.errors?.required && controls.nameOnPanCard.touched">
+                                    Field is required
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-3">
+                    <div class="col-6 pr-4">
+                        <div class="row">
+                            <div class="col-4 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Upload PAN
+                                    Card</label>
+                            </div>
+                            <div class="col-8">
+                                <ng-container *ngIf="!existingCustomerData?.customerDetails?.kycDetails">
+                                    <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'panCardFileId'"
+                                        [fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
+                                        (remove)="removeImage($event)">
+                                    </kt-uplod-preview-image>
+                                    <input type="text" formControlName="panCardFileId" class="form-control"
+                                        [class.isError]="controls.panCardFileId.touched && controls.panCardFileId.invalid"
+                                        hidden>
+                                    <div *ngIf="controls.panCardFileId.touched && controls.panCardFileId.invalid">
+                                        <mat-error
+                                            *ngIf="controls.panCardFileId.touched && controls.panCardFileId.errors?.required">
+                                            Field is required</mat-error>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="existingCustomerData?.customerDetails?.kycDetails">
+                                    <a class="text-body"
+                                        [href]="existingCustomerData?.customerDetails?.kycDetails?.panCard?.url"
+                                        download="{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}"
+                                        target="_blank">
+                                        <span>{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}</span>
+                                        <span class="pl-2">
+                                            <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
+                                        </span>
+                                    </a>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
         </form>
         <div *ngIf="showPlaceOrderFlag">
             <hr>
@@ -233,12 +316,17 @@
                         <div class="col-8 font-weight-500">
                             <div class="row">
                                 <div class="col-6 text-muted pb-2">Invoice Price:</div>
-                                <div class="col-6">₹ {{checkoutData?.invoiceAmount | number}}</div>
+                                <div class="col-6"><span
+                                        class="currency">{{checkoutData?.invoiceAmount | indianCurrencyFormat}}</span>
+                                </div>
                                 <div class="col-6 text-muted pb-2">Now Payable Amount:</div>
-                                <div class="col-6">₹ {{checkoutData?.nowPayableAmount | number}}</div>
+                                <div class="col-6"><span class="currency">
+                                        {{checkoutData?.nowPayableAmount | indianCurrencyFormat}}</span></div>
                                 <ng-container *ngIf="checkoutData?.emiScheme?.length ||checkoutData?.emiAmount?.length">
                                     <div class="col-6 text-muted pb-2">Initial Payment:</div>
-                                    <div class="col-6">₹ {{checkoutData?.initialPayment | number}}</div>
+                                    <div class="col-6"><span class="currency">
+                                            {{checkoutData?.initialPayment | indianCurrencyFormat}}</span>
+                                    </div>
                                     <div class="col-6 text-muted pb-2">EMI Scheme:</div>
                                     <div class="col-6" *ngIf="checkoutData?.emiScheme?.length">
                                         <span class="content"
@@ -251,7 +339,8 @@
                                     <div class="col-6" *ngIf="checkoutData?.emiAmount?.length">
                                         <div class="content"
                                             *ngFor="let amt of checkoutData?.emiAmount; let isLast=last">
-                                            ₹ {{amt | number}}{{isLast ? '' : ', '}}
+                                            <span class="currency">
+                                                {{amt | indianCurrencyFormat}}{{isLast ? '' : ', '}}</span>
                                         </div>
                                     </div>
                                     <div class="col-6 offset-6">(Per Month)</div>
@@ -275,12 +364,15 @@
                                     [class.isError]="otpForm.controls.otp.touched && otpForm.controls.otp.invalid"
                                     numbersOnly>
                                 <mat-error
-                                    *ngIf=" otpForm.controls.otp.errors?.required && otpForm.controls.otp.touched">
+                                    *ngIf="otpForm.controls.otp.errors?.required && otpForm.controls.otp.touched">
                                     Field is required
+                                </mat-error>
+                                <mat-error *ngIf="otpForm.controls.otp.errors?.pattern && otpForm.controls.otp.touched">
+                                    Invalid Input
                                 </mat-error>
                             </div>
                             <div class="col-6">
-                                <kt-button [value]="'Place Order'" [type]="'submit'" (action)="placeOrder()"
+                                <kt-button [value]="'Place Order'" [type]="'submit'" (action)="verifyOTP()"
                                     [isDisabled]="!finalOrderData"></kt-button>
                             </div>
                         </div>

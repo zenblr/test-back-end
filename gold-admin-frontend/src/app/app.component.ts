@@ -19,7 +19,7 @@ import { map } from 'rxjs/operators';
 
 @Component({
 	// tslint:disable-next-line:component-selector
-	selector: 'body[kt-root]',
+	selector: 'kt-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

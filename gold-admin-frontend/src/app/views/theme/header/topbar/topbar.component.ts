@@ -48,7 +48,7 @@ import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
 import { PacketTrackingService} from '../../../../core/loan-management'
 import { LoanRepaymentService } from '../../../../core/account/loan-repayment/services/loan-repayment.service';
 import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
-import { ShoppingCartService } from '../../../../core/merchant-broker';
+import { ShoppingCartService, OrdersService } from '../../../../core/merchant-broker';
 
 @Component({
 	selector: "kt-topbar",
@@ -137,6 +137,8 @@ export class TopbarComponent implements OnInit {
 		private loanRepaymentService: LoanRepaymentService,
 		private loanDisbursementService: LoanDisbursementService,
 		private shoppingCartService: ShoppingCartService,
+		private ordersService: OrdersService,
+
 	) {
 
 		this.router.events.subscribe(val => {
@@ -503,6 +505,10 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Export";
 			this.type1 = "button";
 		}
+		if (location.href.includes('/broker/customers')) {
+			this.value1 = "";
+			this.type1 = "";
+		}
 		if (location.href.includes("edit-order-details")) {
 			this.value5 = "Print Proforma";
 			this.type5 = "button";
@@ -568,6 +574,19 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "checkout-customer-address") {
 			this.showBackButton = true;
+		}
+		if (location.href.includes('/orders/view-pay/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/orders/cancel-order/')) {
+			this.showBackButton = true;
+		}
+		if (this.path == "orders") {
+			this.showInput = true;
+			this.filterName = "orderDetails";
+			this.filterWidth = "630px";
+			this.listType = "tenure,orderStatus";
+			this.showfilter = true;
 		}
 	}
 
@@ -732,6 +751,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-loan") {
 			this.appliedLoan.applyFilter.next(data)
+		}
+		if (location.href.includes('/broker/orders')) {
+			this.ordersService.applyFilter.next(data)
 		}
 	}
 

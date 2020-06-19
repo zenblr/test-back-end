@@ -31,4 +31,8 @@ export class ShoppingCartService {
     orderVerifyBlock(data): Observable<any> {
         return this.http.post<any>(API_ENDPOINT + `api/order/verify-block`, data);
     }
+
+    getCartCount(): Observable<any> {
+        return this.http.get<any>(API_ENDPOINT + `api/cart/count`);
+    }
 }

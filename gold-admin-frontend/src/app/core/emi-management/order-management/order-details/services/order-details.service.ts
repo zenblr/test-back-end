@@ -80,10 +80,20 @@ export class OrderDetailsService {
 		);
 	}
 
-	reportExport(): Observable<any> {
+	reportExport(event?: any): Observable<any> {
+		const reqParams: any = {};
+		if (event && event.weight) {
+			reqParams.weight = event.weight;
+		}
+		if (event && event.paymentType) {
+			reqParams.paymentType = event.paymentType;
+		}
+		if (event && event.orderCurrentStatus) {
+			reqParams.orderCurrentStatus = event.orderCurrentStatus;
+		}
 		return this.http
 			.get(API_ENDPOINT + `api/order/order-report`, {
-				responseType: "arraybuffer",
+				responseType: "arraybuffer", params: reqParams,
 			})
 			.pipe(
 				map((res) => {
