@@ -238,10 +238,15 @@
                             <div class="col-8">
                                 <input type="text" aria-label="PAN Card Number" placeholder="PAN Card Number"
                                     class="form-control" formControlName="panCardNumber"
-                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid">
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+                                    maxlength="10" style="text-transform: uppercase;">
                                 <mat-error
                                     *ngIf=" controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
                                     Field is required
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
+                                    Invalid Input
                                 </mat-error>
                             </div>
                         </div>
@@ -268,7 +273,7 @@
                     <div class="col-6 pr-4">
                         <div class="row">
                             <div class="col-4 align-self-center">
-                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Upload Pan
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Upload PAN
                                     Card</label>
                             </div>
                             <div class="col-8">
@@ -359,8 +364,11 @@
                                     [class.isError]="otpForm.controls.otp.touched && otpForm.controls.otp.invalid"
                                     numbersOnly>
                                 <mat-error
-                                    *ngIf=" otpForm.controls.otp.errors?.required && otpForm.controls.otp.touched">
+                                    *ngIf="otpForm.controls.otp.errors?.required && otpForm.controls.otp.touched">
                                     Field is required
+                                </mat-error>
+                                <mat-error *ngIf="otpForm.controls.otp.errors?.pattern && otpForm.controls.otp.touched">
+                                    Invalid Input
                                 </mat-error>
                             </div>
                             <div class="col-6">

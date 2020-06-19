@@ -10,16 +10,12 @@ export class CheckoutCustomerService {
 
     constructor(private http: HttpClient) { }
 
-    getExistingCustomer(mobileNumber): Observable<any> {
-        return this.http.get<any>(API_ENDPOINT + `api/customer/` + mobileNumber);
-    }
-
     findExistingCustomer(data): Observable<any> {
         return this.http.post<any>(API_ENDPOINT + `api/customer`, data);
     }
 
-    generateOTP(data): Observable<any> {
-        return this.http.post<any>(API_ENDPOINT + `api/order/send-otp`, data);
+    generateOTPAdmin(data): Observable<any> {
+        return this.http.post<any>(API_ENDPOINT + `api/order/send-otp-admin`, data);
     }
 
     verifyOTP(data): Observable<any> {

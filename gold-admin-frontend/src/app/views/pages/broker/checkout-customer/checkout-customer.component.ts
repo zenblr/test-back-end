@@ -92,10 +92,12 @@ export class CheckoutCustomerComponent implements OnInit {
       panCardNumber: [''],
       nameOnPanCard: [''],
       panCardFileId: [''],
+      kycRequired: [false],
     });
+    this.setPanDetailsValidators();
 
     this.otpForm = this.fb.group({
-      otp: ['', Validators.required],
+      otp: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
     });
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
@@ -112,6 +114,27 @@ export class CheckoutCustomerComponent implements OnInit {
     return this.checkoutCustomerForm.controls;
   }
 
+  setPanDetailsValidators() {
+    const panCardNumberControl = this.checkoutCustomerForm.get('panCardNumber');
+    const nameOnPanCardControl = this.checkoutCustomerForm.get('nameOnPanCard');
+    const panCardFileIdControl = this.checkoutCustomerForm.get('panCardFileId');
+
+    this.checkoutCustomerForm.get('kycRequired').valueChanges.subscribe((val) => {
+      if (val) {
+        panCardNumberControl.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]);
+        nameOnPanCardControl.setValidators([Validators.required]);
+        panCardFileIdControl.setValidators([Validators.required]);
+      } else {
+        panCardNumberControl.setValidators([]);
+        nameOnPanCardControl.setValidators([]);
+        panCardFileIdControl.setValidators([]);
+      }
+      panCardNumberControl.updateValueAndValidity();
+      nameOnPanCardControl.updateValueAndValidity();
+      panCardFileIdControl.updateValueAndValidity();
+    });
+  }
+
   getCheckoutCart() {
     this.shoppingCartService.getCheckoutCart().subscribe(res => {
       if (res && res.blockId) {
@@ -120,6 +143,7 @@ export class CheckoutCustomerComponent implements OnInit {
         }
         this.checkoutData = res;
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
+        this.controls['kycRequired'].patchValue(this.checkoutData.kycRequired);
       }
     },
       error => {
@@ -180,6 +204,7 @@ export class CheckoutCustomerComponent implements OnInit {
             postalCode: res.customerDetails.pinCode,
             stateName: res.customerDetails.customeraddress[0].stateId,
             cityName: res.customerDetails.customeraddress[0].cityId,
+            kycRequired: res.kycRequired,
           });
           this.getCities();
           if (res.customerDetails.kycDetails) {
@@ -252,6 +277,9 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: this.controls.postalCode.value,
       stateName: this.controls.stateName.value.name,
       cityName: this.controls.cityName.value.name,
+      panCardNumber: this.controls.panCardNumber.value,
+      nameOnPanCard: this.controls.nameOnPanCard.value,
+      panCardFileId: this.controls.panCardFileId.value,
       blockId: this.checkoutData.blockId
     }
     if (this.showCustomerFlag) {
@@ -259,7 +287,7 @@ export class CheckoutCustomerComponent implements OnInit {
       generateOTPData.cityName = this.existingCustomerData.customerDetails.customeraddress[0].city.name;
     }
     console.log(generateOTPData)
-    this.checkoutCustomerService.generateOTP(generateOTPData).subscribe(res => {
+    this.checkoutCustomerService.generateOTPAdmin(generateOTPData).subscribe(res => {
       if (res) {
         console.log(res);
         this.finalOrderData = res;
@@ -311,7 +339,7 @@ export class CheckoutCustomerComponent implements OnInit {
   removeImage(data) {
     this.checkoutCustomerForm.controls['panCardFileId'].patchValue('');
   }
-  
+
   initPay(options) {
     this.rzp = new this.winRef.nativeWindow['Razorpay'](options);
     this.rzp.open();
