@@ -137,14 +137,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     })
 
     this.ornamentsForm.valueChanges.subscribe(() => {
-      // if (this.ornamentsForm.valid) {
+      if (this.ornamentsForm.valid) {
       this.totalAmount = 0;
       this.OrnamentsData.value.forEach(element => {
         this.totalAmount += Number(element.loanAmount)
       });
       this.totalAmount = Math.round(this.totalAmount)
       this.totalAmt.emit(this.totalAmount)
-      // }
+      }
     })
 
   }

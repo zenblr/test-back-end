@@ -37,8 +37,34 @@
                             </mat-error>
                         </div>
                     </div>
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Loan Amount</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="finalLoanAmount"
+                                [class.isError]="controls.finalLoanAmount.invalid &&  controls.finalLoanAmount.touched">
+                            <mat-error
+                                *ngIf="controls.finalLoanAmount.touched && controls.finalLoanAmount.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Loan Status</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="disbursementStatus"
+                                [class.isError]="controls.disbursementStatus.invalid &&  controls.disbursementStatus.touched">
+                            <mat-error
+                                *ngIf="controls.disbursementStatus.touched && controls.disbursementStatus.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div>
 
-                    <div class="row justify-content-center kt-margin-t-10" *ngIf="controls.paymentMode.value == 'bank'">
+                    <!-- <div class="row justify-content-center kt-margin-t-10" *ngIf="controls.paymentMode.value == 'bank'">
                         <div class="col-4 form-label">
                             <label class="kt-padding-l-10 mandatory">Acknowledgement OTP</label>
                         </div>
@@ -53,7 +79,7 @@
                             <kt-button [type]="'button'" [value]="'Generate'" (click)="generateOTP()"></kt-button>
                         </div>
 
-                    </div>
+                    </div> -->
 
                     <div class="row justify-content-center kt-margin-t-10">
                         <div class="col-4 form-label">
@@ -146,14 +172,14 @@
                                 Required field</mat-error>
                         </div>
                     </div>
-                    <div class="row kt-padding-t-15" *ngIf="controls.passbookImg.value">
+                    <!-- <div class="row kt-padding-t-15">
                         <div class="col-4 form-label">
                             <label class="text-color  kt-padding-l-10 ">Passbook / Bank Statement /
                                 Cancel
                                 Cheque
                             </label>
                         </div>
-                        <!-- <div class="col-8">
+                        <div class="col-8" *ngIf="!controls.passbookImg.value">
                             <div class="input-group"
                                 [class.isError]="controls.passbookImgName.touched && controls.passbookImgName.errors?.required">
                                 <input type="text" class="form-control" formControlName="passbookImgName" readonly
@@ -167,13 +193,11 @@
                                 (input)="getFileInfo($event,'pass')" class="d-none">
                             <span class="file-custom"></span>
 
-                        </div> -->
-                    </div>
-                    <div class="row kt-padding-t-15" *ngIf="data.action  != 'add' && controls.passbookImg.value">
-                        <div class="col-12">
-                            <img [src]="controls.passbookImg.value" alt="" class="img-fluid">
                         </div>
                     </div>
+                    <div class="col-8" *ngIf="controls.passbookImg.value">
+                        <img [src]="controls.passbookImg.value" alt="" class="img-fluid">
+                    </div> -->
                 </div>
             </div>
         </form>

@@ -60,7 +60,7 @@
             </form>
         </div>
 
-        <div class="col" *ngIf="details.calculation.length">
+        <div class="col" *ngIf="details.calculation.length && !isUnsecuredSchemeChanged">
             <div class="table-div" id="print">
                 <table class="table">
                     <thead>
@@ -77,7 +77,7 @@
                             <td *ngIf="!approved">{{data.paymentType | uppercase}}&nbsp;{{idx+1}}</td>
 
                             <td class="text-center currency">
-                                {{data.securedInterestAmount | indianCurrencyFormat}}
+                                {{data.unsecuredIntrestAmount | indianCurrencyFormat}}
                             </td>
 
                         </tr>
@@ -98,7 +98,7 @@
         </div>
     </div>
     <kt-portlet-footer>
-        <div class="p-3">
+        <div class="p-3" *ngIf="!isUnsecuredSchemeChanged">
             <kt-modal-footer (action)="action($event)" [value]="'Add'"></kt-modal-footer>
         </div>
     </kt-portlet-footer>

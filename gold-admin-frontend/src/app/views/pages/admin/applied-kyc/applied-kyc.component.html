@@ -28,13 +28,13 @@
                     <mat-header-cell *matHeaderCellDef>CCE Approval Status</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <span class="text-success"
-                            *ngIf="role.customerKycClassification.kycStatusFromCce == 'approved'">
-                            {{role.customerKycClassification.kycStatusFromCce | titlecase}} </span>
-                        <span class="text-warning" *ngIf="role.customerKycClassification.kycStatusFromCce == 'pending'">
-                            {{role.customerKycClassification.kycStatusFromCce | titlecase}}
+                            *ngIf="role.customerKycClassification?.kycStatusFromCce == 'approved'">
+                            {{role.customerKycClassification?.kycStatusFromCce | titlecase}} </span>
+                        <span class="text-warning" *ngIf="role.customerKycClassification?.kycStatusFromCce == 'pending'">
+                            {{role.customerKycClassification?.kycStatusFromCce | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="role.customerKycClassification.kycStatusFromCce == 'rejected'">
-                            {{role.customerKycClassification.kycStatusFromCce | titlecase}}
+                        <span class="text-danger" *ngIf="role.customerKycClassification?.kycStatusFromCce == 'rejected'">
+                            {{role.customerKycClassification?.kycStatusFromCce | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -42,15 +42,15 @@
                 <ng-container matColumnDef="kycStatus">
                     <mat-header-cell *matHeaderCellDef>KYC Status</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span class="text-success" *ngIf="role.customerKycClassification.kycStatusFromBm == 'approved'">
-                            {{role.customerKycClassification.kycStatusFromBm | titlecase}}
+                        <span class="text-success" *ngIf="role.customerKycClassification?.kycStatusFromBm == 'approved'">
+                            {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
                         </span>
                         <span class="text-warning"
-                            *ngIf="role.customerKycClassification.kycStatusFromBm == 'incomplete'">
-                            {{role.customerKycClassification.kycStatusFromBm | titlecase}}
+                            *ngIf="role.customerKycClassification?.kycStatusFromBm == 'incomplete'">
+                            {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="role.customerKycClassification.kycStatusFromBm == 'rejected'">
-                            {{role.customerKycClassification.kycStatusFromBm | titlecase}}
+                        <span class="text-danger" *ngIf="role.customerKycClassification?.kycStatusFromBm == 'rejected'">
+                            {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -62,13 +62,13 @@
                             *ngxPermissionsOnly="['appliedKycEdit','customerClassificationEdit']">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
                                 <span
-                                    *ngIf="(userType == 6 && role.customerKycClassification.kycStatusFromCce == 'pending') || (userType == 5 && role.customerKycClassification.kycStatusFromCce == 'approved' && (role.customer.kycStatus == 'rejected' || role.customer.kycStatus == 'pending'))">
+                                    *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'pending') || (userType == 5 && role.customerKycClassification?.kycStatusFromCce == 'approved' && (role.customer.kycStatus == 'rejected' || role.customer.kycStatus == 'pending'))">
                                     <!-- <img src="../../../../assets/media/icons/action.svg"> -->
                                     <strong>Action ></strong>
                                 </span>
                             </div>
                             <span
-                                *ngIf="(userType == 6 && role.customerKycClassification.kycStatusFromCce == 'approved') || (userType == 5 && role.kycStatus == 'approved')"></span>
+                                *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'approved') || (userType == 5 && role.kycStatus == 'approved')"></span>
 
 
                         </div>
@@ -88,13 +88,13 @@
                     <mat-cell *matCellDef="let role" class="kt-pointer">
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
                             <button style="width: 120px;" class="apply-kyc" (click)="assign(role)"
-                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved' && !role.customer.customerAssignAppraiser">Assign
+                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved' && !role.customer.customerAssignAppraiser">Assign
                                 Appraiser</button>
                         </div>
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserEdit']">
 
                             <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(role)"
-                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification.kycStatusFromCce == 'approved' && role.customer.customerAssignAppraiser">Update
+                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved' && role.customer.customerAssignAppraiser">Update
                                 Appraiser</button>
                         </div>
                     </mat-cell>

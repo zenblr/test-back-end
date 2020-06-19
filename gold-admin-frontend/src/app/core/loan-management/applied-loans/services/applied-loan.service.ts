@@ -38,6 +38,18 @@ export class AppliedLoanService {
       }))
   }
 
+
+  getBankDetails(loanId): Observable<any> {
+    return this.http.get(`/api/loan-process/disbursement-loan-bank-detail?loanId=${loanId}`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) {
+          this.toastr.error(err.error.message)
+        }
+        throw (err);
+      }))
+  }
+
   generateOTP(id) {
     return this.http.post(`/api/loan-process`, id).pipe(
       map(res => res),

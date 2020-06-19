@@ -222,6 +222,7 @@
             <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcInterestAmount()"></kt-button>
         </div>
     </div>
+    
     <div class="row justify-content-center kt-margin-b-20" *ngIf="dateOfPayment.length > 0">
         <div class="col-8">
             <div class="row justify-content-center">
@@ -255,15 +256,15 @@
                                     <td *ngIf="!approved">{{data.paymentType | uppercase}}&nbsp;{{idx+1}}</td>
 
                                     <td class="text-center currency">
-                                        {{data.securedInterestAmount | indianCurrencyFormat}}
+                                        {{data.securedIntrestAmount | indianCurrencyFormat}}
                                     </td>
 
                                     <td class="text-center currency" *ngIf="isUnSecuredSchemeApplied">
-                                        {{data.unSecuredInterestAmount | indianCurrencyFormat}}
+                                        {{data.unsecuredIntrestAmount | indianCurrencyFormat}}
                                     </td>
 
                                     <td class="text-center currency" *ngIf="isUnSecuredSchemeApplied">
-                                        {{data.totalAmt.toFixed(2) | indianCurrencyFormat}}
+                                        {{data.totalAmount.toFixed(2) | indianCurrencyFormat}}
                                     </td>
 
                                 </tr>
@@ -304,7 +305,7 @@
                         </div>
                         <div class="col-4">
                             <label class="font-weight-bold currency">
-                                {{totalinterestAmount.toFixed(2) | indianCurrencyFormat}}</label>
+                                {{controls.totalFinalInterestAmt.value | indianCurrencyFormat}}</label>
                         </div>
                     </div>
                     <div class="row" *ngIf="isUnSecuredSchemeApplied">
@@ -331,7 +332,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row " *ngIf="isUnSecuredSchemeApplied">
+                    <div class="row " *ngIf="isUnSecuredSchemeApplied && !disable">
                         <div class="col-12">
                             <div class="kt-margin-t-20 text-center">
                                 <kt-button [value]="'Change Unsecured Scheme'" [type]="'button'"

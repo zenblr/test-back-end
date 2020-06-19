@@ -1,11 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+
 
 @Component({
   selector: 'kt-un-secured-scheme',
   templateUrl: './un-secured-scheme.component.html',
-  styleUrls: ['./un-secured-scheme.component.scss']
+  styleUrls: ['./un-secured-scheme.component.scss'],
 })
 export class UnSecuredSchemeComponent implements OnInit {
   unsecuredSchemeForm: FormGroup;
@@ -15,9 +16,10 @@ export class UnSecuredSchemeComponent implements OnInit {
   colJoin: number;
   unSecuredInterestAmount: number;
   seletedScheme = []
+  isUnsecuredSchemeChanged: boolean = false;
 
   constructor(
-    private fb: FormBuilder,
+    public fb: FormBuilder,
     public dialogRef: MatDialogRef<UnSecuredSchemeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
@@ -27,6 +29,7 @@ export class UnSecuredSchemeComponent implements OnInit {
     this.unsecuredSchemeForm.patchValue(this.data.unsecuredSchemeForm)
     this.details = this.data.unsecuredSchemeForm
     this.unsecuredSchemes = this.details.unsecuredScheme.schemes
+    this.seletedScheme = this.unsecuredSchemes.filter(scheme => { return scheme.id == this.controls.unsecuredSchemeName.value })
     console.log(this.details)
   }
 
@@ -55,10 +58,13 @@ export class UnSecuredSchemeComponent implements OnInit {
   }
 
   unsecuredSchemeChange() {
+    this.isUnsecuredSchemeChanged = true;
     this.seletedScheme = []
+
     let scheme = this.unsecuredSchemes.filter(res => { return this.controls.unsecuredSchemeName.value == res.id })
-    if(scheme && scheme.length > 0){
-      Array.prototype.push.apply(this.seletedScheme,scheme)
+
+    if (scheme && scheme.length > 0) {
+      Array.prototype.push.apply(this.seletedScheme, scheme)
     }
     switch (this.details.paymentType) {
       case "30":
@@ -92,9 +98,27 @@ export class UnSecuredSchemeComponent implements OnInit {
     this.unSecuredInterestAmount = (this.details.unsecuredSchemeAmount *
       (this.controls.unsecuredSchemeInterest.value * 12 / 100)) * this.details.paymentType
       / 360
+    this.isUnsecuredSchemeChanged = false;
+    this.genrateTable()
+  }
+
+  genrateTable() {
+    let tempIndex = 0;
+    for (let index = 0; index < this.details.tenure; index++) {
+      if ((index + 1) % this.colJoin == 0) {
+        this.details.calculation[tempIndex].unsecuredIntrestAmount = this.unSecuredInterestAmount
+        tempIndex += 1;
+
+      }
+      else if (index + 1 == length) {
+        this.details.calculation[tempIndex].unsecuredIntrestAmount = ((this.unSecuredInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
+        tempIndex += 1;
+      }
+    }
   }
 
   onSubmit() {
-    this.dialogRef.close(this.seletedScheme)
+    if (!this.isUnsecuredSchemeChanged)
+      this.dialogRef.close(this.seletedScheme)
   }
 }

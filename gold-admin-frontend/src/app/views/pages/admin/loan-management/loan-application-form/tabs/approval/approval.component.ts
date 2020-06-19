@@ -60,12 +60,12 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     let res = this.sharedSerive.getDataFromStorage()
     this.userType = res.userDetails.userTypeId
     if (this.userType == 7) {
-      // this.controls.loanStatusForBM.disable()
+      this.controls.loanStatusForBM.disable()
       this.viewBMForm = false;
     } else if (this.userType == 5) {
-      // this.controls.loanStatusForAppraiser.disable()
+      this.controls.loanStatusForAppraiser.disable()
     } else {
-      // this.approvalForm.disable()
+      this.approvalForm.disable()
     }
   }
 
@@ -81,7 +81,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       commentByBM: [''],
       reasons:['']
     })
-    // this.approvalFormEmit.emit(this.approvalForm)
+
 
   }
   get controls() {
@@ -92,6 +92,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.approvalForm.patchValue(changes.details.currentValue)
+        this.approvalForm.patchValue({reasons:changes.details.currentValue.commentByAppraiser})
         this.statusAppraiser()
         this.statusBM()
         this.ref.markForCheck()
@@ -101,14 +102,14 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.approvalForm.markAllAsTouched()
     }
     if (this.disable) {
-      // this.approvalForm.disable()
+      this.approvalForm.disable()
     }
   }
 
   ngAfterViewInit() {
     let user = this.sharedSerive.getDataFromStorage()
     if (user.userDetails.userTypeId == 7) {
-      // this.controls.commentByBM.disable()
+      this.controls.commentByBM.disable()
     }
     // this.approvalForm.valueChanges.subscribe(() => {
     //   this.approvalFormEmit.emit(this.approvalForm)
@@ -145,7 +146,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
   statusAppraiser() {
 
-    if (this.controls.loanStatusForAppraiser.value != 'approved') {
+    if (this.controls.loanStatusForAppraiser.value != 'approved' ) {
       this.controls.reasons.setValidators(Validators.required);
       this.controls.reasons.updateValueAndValidity()
     } else {
@@ -179,7 +180,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   statusBM() {
-    if (this.controls.loanStatusForBM.value != 'approved') {
+    if (this.controls.loanStatusForBM.value != 'approved' && this.controls.loanStatusForBM.value != 'pending') {
       this.controls.commentByBM.setValidators(Validators.required);
       this.controls.commentByBM.updateValueAndValidity()
     } else {
