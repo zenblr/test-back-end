@@ -2,7 +2,9 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { applyForLoanApplication, updateCustomerLoanDetail, addPackageImagesForLoan, disbursementOfLoanAmount, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, getOrnamentType, loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer } =
+const { applyForLoanApplication, updateCustomerLoanDetail, addPackageImagesForLoan, disbursementOfLoanAmount,
+     disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails,
+     getOrnamentType, loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer } =
     require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
@@ -29,7 +31,9 @@ route.put('/change-loan-detail/:loanId', checkAuth, wrapper(updateCustomerLoanDe
 
 route.post('/add-packet-images', checkAuth, wrapper(addPackageImagesForLoan)); // ADD PACKAGE IMAGES
 
-route.post('/disbursement-of-loan', checkAuth, wrapper(disbursementOfLoanAmount)); // DISBURSEMENT OF LOAN AMOUNT
+route.post('/disbursement-of-loan',checkAuth,  wrapper(disbursementOfLoanAmount)); // DISBURSEMENT OF LOAN AMOUNT
+
+route.get('/disbursement-loan-bank-detail',checkAuth,  wrapper(disbursementOfLoanBankDetails)); // DISBURSEMENT OF LOAN BANK DETAIL
 
 route.get('/loan-details', checkAuth, wrapper(getLoanDetails)); // FETCH LOAN DETAILS
 

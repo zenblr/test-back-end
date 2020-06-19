@@ -524,6 +524,33 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
     }
 }
 
+exports.disbursementOfLoanBankDetails = async (req, res,next) => {
+    let { loanId } = req.body;
+    let createdBy = req.userData.id; 
+    let userBankDetails = await models.customerLoanBankDetail.findOne({
+         where: { loanId: loanId },
+        attributes: ['bankName','bankBranchName', 'accountType', 'accountHolderName',
+         'accountNumber','ifscCode'] 
+    });
+
+    let loanbrokerId = await models.userInternalBranch.findOne({ where: { userId: createdBy } });
+    
+    let brokerBankDetails = await models.internalBranch.findOne({
+         where: { id: loanbrokerId.internalBranchId },
+         attributes: ['bankName','bankBranch', 'accountHolderName', 'accountNumber','ifscCode']
+        });
+
+    let data = {
+        userBankDetails: userBankDetails,
+        brokerBankDetails: brokerBankDetails
+    }
+
+    
+        return res.status(200).json({ message: 'success', data: data})
+
+}
+
+
 //  FUNCTION FOR DISBURSEMENT OF LOAN AMOUNT
 exports.disbursementOfLoanAmount = async (req, res, next) => {
 
