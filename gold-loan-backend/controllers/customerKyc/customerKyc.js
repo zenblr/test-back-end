@@ -36,7 +36,7 @@ exports.getCustomerDetails = async (req, res, next) => {
 
 exports.submitCustomerKycinfo = async (req, res, next) => {
 
-    let { firstName, lastName, mobileNumber, panCardNumber } = req.body
+    let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage} = req.body
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
@@ -45,7 +45,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let statusId = status.id
     let getCustomerInfo = await models.customer.findOne({
         where: { mobileNumber: mobileNumber, statusId },
-        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode']
+        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage']
     })
     if (check.isEmpty(getCustomerInfo)) {
         return res.status(404).json({ message: "Your status is not confirm" });
@@ -193,7 +193,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" })
 
-        await models.customer.update({ panCardNumber: panCardNumber }, { where: { id: getCustomerInfo.id }, transaction: t })
+        await models.customer.update({ panCardNumber: panCardNumber,  panType, panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
 
         let createCustomerKyc = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
@@ -303,7 +303,7 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     })
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber','panType', 'panImage'],
         include: [{
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',

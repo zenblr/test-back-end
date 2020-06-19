@@ -34,6 +34,30 @@ module.exports = (sequelize, DataTypes) => {
             field: 'modified_by',
             allowNull: false,
         },
+        ifscCode: {
+            type: DataTypes.STRING,
+            field:'ifsc_code'
+        },
+        bankName: {
+            type: DataTypes.STRING,
+            field:'bank_name'
+        },
+        bankBranch: {
+            type: DataTypes.STRING,
+            field:'bank_branch'
+        },
+        accountHolderName: {
+            type: DataTypes.STRING,
+            field:'account_holder_name'
+        },
+        accountNumber: {
+            type: DataTypes.BIGINT,
+            field:'account_number'
+        },
+        passbookStatementChequeId: {
+            type: DataTypes.INTEGER,
+            field:'passbook_statement_cheque_id'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -59,6 +83,7 @@ module.exports = (sequelize, DataTypes) => {
         InternalBranch.belongsToMany(models.user, { through: models.userInternalBranch });
         InternalBranch.belongsToMany(models.partner, { through: models.internalBranchPartner })
 
+        InternalBranch.belongsTo(models.fileUpload, {foreignKey: 'passbookStatementChequeId', as: 'passbookStatementCheque'})
 
     }
     return InternalBranch;
