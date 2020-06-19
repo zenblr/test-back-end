@@ -103,23 +103,19 @@ module.exports = (sequelize, DataTypes) => {
         leadSourceId:{
             type: DataTypes.INTEGER,
             field: 'lead_source_id',
-            allowNull: false,
         },
         source:{
             type: DataTypes.STRING,
             field: 'source',
-            allowNull: false,
         },
         panType:{
             type: DataTypes.ENUM,
             field: 'pan_type',
             values: ['pan', 'form60'],
-            allowNull: false,
         },
         panImage:{
             type: DataTypes.STRING,
             field: 'pan_image',
-            allowNull: false,
         }
     }, {
         freezeTableName: true,
