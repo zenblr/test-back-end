@@ -552,19 +552,24 @@ exports.disbursementOfLoanBankDetails = async (req, res,next) => {
     let { loanId } = req.query;
     let createdBy =  req.userData.id; 
     let userBankDetails = await models.customerLoanBankDetail.findOne({
-         where: { loanId: parseInt(loanId) },
-        attributes: ['paymentType','bankName','bankBranchName', 'accountType', 'accountHolderName',
+         where: { loanId: loanId },
+        attributes: ['paymentType','bankName', 'bankBranchName', 'accountType', 'accountHolderName',
          'accountNumber','ifscCode'] 
     });
-    if (userBankDetails.paymentType !== 'bank') {
-        let loanbrokerId = await models.userInternalBranch.findOne({ where: { userId: createdBy } });
-        let brokerBankDetails = await models.internalBranch.findOne({
-            where: { id: loanbrokerId.internalBranchId },
-            attributes: ['bankName','bankBranch', 'accountHolderName', 'accountNumber','ifscCode']
-            });
-        userBankDetails =  brokerBankDetails;
+    let loanbrokerId = await models.userInternalBranch.findOne({ where: { userId: createdBy } });
+    let brokerBankDetails = await models.internalBranch.findOne({
+        where: { id: loanbrokerId.internalBranchId },
+        attributes: ['bankName','bankBranch', 'accountHolderName', 'accountNumber','ifscCode']
+        });
+        
+    let checkFinalLoan = await models.customerFinalLoan.findOne({ where: { loanId: loanId } })
+    let data = {
+        userBankDetail: userBankDetails,
+        branchBankDetail: brokerBankDetails,
+        paymentType: userBankDetails.paymentType,
+        finalLoanAmount: checkFinalLoan.finalLoanAmount
     }
-    return res.status(200).json({ message: 'success', data: userBankDetails})
+    return res.status(200).json({ message: 'success', data: data})
 
 }
 
