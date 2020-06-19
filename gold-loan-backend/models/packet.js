@@ -25,11 +25,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'packet_assigned'
         },
+        internalUserBranch: {
+            type: DataTypes.INTEGER,
+            field: 'internal_user_branch'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
             defaultValue: true
-        }
+        },
     }, {
         freezeTableName: true,
         tableName: 'loan_packet',
@@ -40,12 +44,14 @@ module.exports = (sequelize, DataTypes) => {
     packet.associate = function (models) {
         packet.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         packet.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        packet.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranch', as: 'internalBranch' });
+        
     }
 
     // FUNCTION TO ADD PACKET
     packet.addPacket =
-        (packetUniqueId, createdBy, modifiedBy) => packet.create({
-            packetUniqueId, createdBy, modifiedBy, packetAssigned: false, isActive: true
+        (packetUniqueId, createdBy, modifiedBy, internalUserBranch) => packet.create({
+            packetUniqueId, createdBy, modifiedBy,internalUserBranch, packetAssigned: false, isActive: true
         });
 
     // FUNCTION TO ASSIGN PACKET
@@ -56,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO UPDATE PACKET
     packet.updatePacket =
-        (id, packetUniqueId, modifiedBy) => packet.update({ packetUniqueId, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
+        (id, packetUniqueId,internalUserBranch, modifiedBy) => packet.update({ packetUniqueId,internalUserBranch, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
 
     // FUNCTION TO REMOVE PACKET
     packet.removePacket =

@@ -10,3 +10,7 @@ exports.isEmpty = (value) => {
         return false;
     }
 }
+
+exports.isNumeric = (value) => {
+    return !isNaN(parseFloat(value)) && 'undefined' !== typeof value ? parseFloat(value) : false;
+  }

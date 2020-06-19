@@ -149,4 +149,7 @@ router.use('/lead', lead)
 const packetLocation = require('./packetLocation');
 router.use('/packetLocation', packetLocation)
 
+const globalSetting = require('./globalSettings');
+router.use('/global-setting', globalSetting)
+
 module.exports = router;

@@ -1,4 +1,4 @@
-const { addScheme, readScheme, readSchemeById, editScheme, readSchemeByPartnerId, deactiveScheme, updateScheme, filterScheme, readSchemeOnAmount } = require("../controllers/scheme/scheme");
+const { addScheme, readScheme, readSchemeById, editScheme, readSchemeByPartnerId, deactiveScheme, updateScheme, filterScheme, readSchemeOnAmount, UpdateDefault, readUnsecuredSchemeOnAmount  } = require("../controllers/scheme/scheme");
 
 const { wrapper } = require('../utils/errorWrap');
 const validationError = require('../middleware/validationError');
@@ -29,8 +29,9 @@ route.get('/:id', checkAuth, checkRolePermission, wrapper(readSchemeById)); // r
 
 route.put('/:id', checkAuth, checkRolePermission, schemeValidation, validationError, wrapper(updateScheme));  // update scheme 
 
+route.put('/update-default/:id', checkAuth,  wrapper(UpdateDefault)); // api to update default
 
-
+route.get('/unsecured-scheme/:id/:amount', checkAuth,  wrapper(readUnsecuredSchemeOnAmount));
 
 module.exports = route;
 
