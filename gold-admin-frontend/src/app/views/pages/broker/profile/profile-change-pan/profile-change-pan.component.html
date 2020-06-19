@@ -9,7 +9,7 @@
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
                         <div class="row">
                             <div class="col-5">
-                                <label [class.mandatory]="isMandatory">Pan Card No</label>
+                                <label [class.mandatory]="isMandatory">PAN Card No</label>
                             </div>
                             <div class="col-7">
                                 <input class="form-control" formControlName="panCardNumber" type="text"
@@ -22,7 +22,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-5">
-                                <label [class.mandatory]="isMandatory">Name on Pan Card</label>
+                                <label [class.mandatory]="isMandatory">Name on PAN Card</label>
                             </div>
                             <div class="col-7">
                                 <input class="form-control" formControlName="nameOnPanCard" type="text"
@@ -35,7 +35,7 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-5">
-                                <label [class.mandatory]="isMandatory">Upload Pan Card</label>
+                                <label [class.mandatory]="isMandatory">Upload PAN Card</label>
                             </div>
                             <div class="col-7">
                                 <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'pancard'"
@@ -46,7 +46,7 @@
                                     [class.isError]="controls.pancard.touched && controls.pancard.invalid" hidden>
                                 <div *ngIf="controls.pancard.touched && controls.pancard.invalid">
                                     <mat-error *ngIf="controls.pancard.touched && controls.pancard.errors?.required">
-                                        Pan Card is required</mat-error>
+                                        PAN Card is required</mat-error>
                                 </div>
                             </div>
                         </div>

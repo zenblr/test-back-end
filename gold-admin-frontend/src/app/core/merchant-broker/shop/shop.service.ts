@@ -10,6 +10,7 @@ import { API_ENDPOINT } from '../../../app.constant';
 export class ShopService {
     toggle = new BehaviorSubject<any>('list');
     toggle$ = this.toggle.asObservable();
+
     constructor(
         private http: HttpClient,
     ) { }

@@ -245,6 +245,16 @@ export class PageConfig {
 			},
 			"orders": {
 				page: { title: "Orders", desc: "" },
+				'view-pay': {
+					id: {
+						page: { title: "Orders", desc: "" },
+					},
+				},
+				'cancel-order': {
+					id: {
+						page: { title: "Cancel Order", desc: "" },
+					},
+				},
 			},
 			"shop": {
 				page: { title: "Shop", desc: "" },

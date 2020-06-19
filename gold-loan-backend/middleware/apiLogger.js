@@ -5,11 +5,11 @@ const redisConn = require('../config/redis')
 
 const client = redis.createClient(redisConn.PORT, redisConn.HOST);
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
 
     const createdDateTime = new Date();
 
-    let skipUrls = [ 
+    let skipUrls = [
         "/api/customer/banner",
         "/api/customer/offer",
         "/api/customer/lender-banner",
@@ -30,7 +30,7 @@ module.exports = (req, res, next) => {
 
 
 
-        
+
         "/api/user/addadmin",
         "/",
 
@@ -68,10 +68,10 @@ module.exports = (req, res, next) => {
                     next();
                 } else {
                     models.logger.findOne({
-                            where: {
-                                token: token
-                            }
-                        })
+                        where: {
+                            token: token
+                        }
+                    })
                         .then(loggedInUser => {
                             if (!loggedInUser) {
                                 res.status(401).json({
