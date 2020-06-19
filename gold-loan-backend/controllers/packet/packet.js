@@ -90,8 +90,22 @@ exports.viewPacket = async (req, res, next) => {
 
 //  FUNCTION FOR GET AVAILABLE PACKET
 exports.availablePacket = async (req, res, next) => {
+    let data = await models.user.findOne({
+        where:{
+            id: req.userData.id
+        },
+        include: {
+            model: models.userInternalBranch,
+            
+        }
+    });
+    let internalBranchId = [];
+    for(let idData of data.internalBranches){
+        internalBranchId.push(idData.id);
+    }
+
     let availablePacketDetails = await models.packet.findAll({
-        where: { isActive: true, packetAssigned: false },
+        where: { isActive: true, packetAssigned: false,  internalUserBranch: { [Op.in]: internalBranchId } },
     });
     if (availablePacketDetails.length === 0) {
         res.status(200).json({ message: 'no packet details found', data: [] });
