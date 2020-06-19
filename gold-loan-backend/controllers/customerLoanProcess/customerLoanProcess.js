@@ -587,7 +587,7 @@ exports.disbursementOfLoanBankDetails = async (req, res,next) => {
 exports.disbursementOfLoanAmount = async (req, res, next) => {
 
     let { loanId, transactionId, date, paymentMode, ifscCode,bankName, bankBranch, 
-        accountHolderName,accountNumber } = req.body;
+        accountHolderName,accountNumber,disbursementStatus } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
@@ -599,7 +599,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
             await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
             await models.customerLoanDisbursement.create({ loanId, transactionId, date, paymentMode, ifscCode,bankName, bankBranch, 
-                accountHolderName,accountNumber, createdBy, modifiedBy }, { transaction: t })
+                accountHolderName,accountNumber,disbursementStatus, createdBy, modifiedBy }, { transaction: t })
         })
         return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });
     } else {
