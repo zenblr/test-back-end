@@ -2,13 +2,15 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 // material
 import { DialogData } from '../../../material/popups-and-modals/dialog/dialog.component';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 // services
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 // components
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { LeadService } from '../../../../../core/lead-management/services/lead.service';
+import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
 
 @Component({
   selector: 'kt-add-lead',
@@ -39,13 +41,16 @@ export class AddLeadComponent implements OnInit {
   branches = []
   details: any;
   showCommentBox = false;
+  leadSources = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private sharedService: SharedService,
     private fb: FormBuilder,
-    private leadService: LeadService
+    private leadService: LeadService,
+    private dialog: MatDialog,
+    private leadSourceService: LeadSourceService
   ) {
     this.details = this.sharedService.getDataFromStorage()
     console.log(this.details)
@@ -54,6 +59,7 @@ export class AddLeadComponent implements OnInit {
   ngOnInit() {
     this.formInitialize();
     this.setForm();
+    this.getLeadSourceWithoutPagination();
     this.getInternalBranhces();
     this.getStates();
     this.getStatus();
@@ -67,6 +73,31 @@ export class AddLeadComponent implements OnInit {
         this.otpSent = false;
       }
       this.mobileAlreadyExists = false;
+    });
+
+    this.controls.panType.valueChanges.subscribe(res => {
+      if (this.controls.panType.value) {
+        if (this.controls.panType.value == "pan") {
+          this.controls.panCardNumber.setValidators(
+            [
+              Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$'),
+              Validators.required
+            ])
+          this.controls.panCardNumber.updateValueAndValidity()
+        } else {
+          this.controls.panCardNumber.reset()
+          this.controls.panCardNumber.clearValidators()
+          this.controls.panCardNumber.updateValueAndValidity()
+        }
+        this.controls.panImage.reset()
+        this.controls.panImage.setValidators(Validators.required)
+        this.controls.panImage.updateValueAndValidity()
+      } else {
+        this.controls.panImage.clearValidators()
+        this.controls.panImage.updateValueAndValidity()
+        this.controls.panCardNumber.clearValidators()
+        this.controls.panCardNumber.updateValueAndValidity()
+      }
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
@@ -95,14 +126,17 @@ export class AddLeadComponent implements OnInit {
       mobileNumber: ['', [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],
-      panCardNumber: ['', [Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panCardNumber: [''],
       stateId: [this.details.userDetails.stateId, [Validators.required]],
       cityId: [this.details.userDetails.cityId, [Validators.required]],
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: ['', [Validators.required]],
+      panType: [],
+      form60: [''],
+      panImage: [],
       comment: [''],
-      lead: [''],
+      leadSourceId: [''],
       source: [''],
     });
     this.getCities()
@@ -126,6 +160,12 @@ export class AddLeadComponent implements OnInit {
     this.leadService.getInternalBranhces().subscribe(res => {
       this.branches = res.data;
     });
+  }
+
+  getLeadSourceWithoutPagination() {
+    this.leadSourceService.getLeadSourceWithoutPagination().subscribe(res => {
+      this.leadSources = res.data
+    })
   }
 
   getStates() {
@@ -154,6 +194,7 @@ export class AddLeadComponent implements OnInit {
       // console.log(res);
       this.leadForm.patchValue(res.singleCustomer);
       this.getCities();
+      this.commentBox()
     },
       error => {
         this.toastr.errorToastr(error.error.message);
@@ -234,6 +275,40 @@ export class AddLeadComponent implements OnInit {
     return this.leadForm.controls;
   }
 
+
+  getFileInfo(event) {
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      this.sharedService.uploadFile(event.target.files[0]).pipe(
+        map(res => {
+          if (res) {
+            // this.controls.form60.patchValue(event.target.files[0].name)
+            this.controls.panImage.patchValue(res.uploadFile.URL)
+          }
+        }), catchError(err => {
+          throw err
+        })).subscribe()
+    } else {
+      this.toastr.errorToastr('Upload Valid File Format')
+    }
+  }
+
+  preview() {
+    let img = [this.controls.panImage.value]
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: img,
+        index: 0
+      },
+      width: "auto"
+    })
+  }
+
+  remove() {
+    this.controls.panImage.patchValue('')
+  }
+
   onSubmit() {
     if (this.data.action == 'add') {
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
@@ -244,12 +319,17 @@ export class AddLeadComponent implements OnInit {
       }
 
 
-      if (this.controls.panCardNumber.value == '') {
+      if (!this.controls.panCardNumber.value) {
         this.leadForm.get('panCardNumber').patchValue(null);
       } else {
         const PAN = this.controls.panCardNumber.value.toUpperCase();
         this.leadForm.get('panCardNumber').patchValue(PAN);
       }
+      if (this.controls.panType.value == '') {
+        this.leadForm.get('panType').patchValue(null);
+        this.controls.panImage.patchValue('')
+      }
+
       const leadData = this.leadForm.value;
 
       this.leadService.addLead(leadData).subscribe(res => {
@@ -266,6 +346,10 @@ export class AddLeadComponent implements OnInit {
           this.toastr.errorToastr(msg);
         });
     } else if (this.data.action == 'edit') {
+      if (this.controls.panType.value == '') {
+        this.leadForm.get('panType').patchValue(null);
+        this.controls.panImage.patchValue('')
+      }
       const leadData = this.leadForm.value;
       console.log('edit')
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {

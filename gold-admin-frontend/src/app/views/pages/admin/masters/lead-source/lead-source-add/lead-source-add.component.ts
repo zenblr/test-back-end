@@ -39,7 +39,7 @@ export class LeadSourceAddComponent implements OnInit {
   initForm() {
     this.leadSourceForm = this.fb.group({
       id: [],
-      lead: ['', [Validators.required]],
+      leadName: ['', [Validators.required]],
       // source: ['', [Validators.required]],
     })
   }
@@ -61,7 +61,7 @@ export class LeadSourceAddComponent implements OnInit {
     const id = this.controls.id.value;
 
     if (this.data.action == 'edit') {
-      this.leadSourceService.updateLeadSource(id, data.name).subscribe(res => {
+      this.leadSourceService.updateLeadSource(id, data.leadName).subscribe(res => {
         if (res) {
           const msg = 'Lead Updated Sucessfully';
           this.toastr.success(msg);
@@ -70,7 +70,7 @@ export class LeadSourceAddComponent implements OnInit {
       });
 
     } else {
-      this.leadSourceService.addLeadSource(data.name).subscribe(res => {
+      this.leadSourceService.addLeadSource(data.leadName).subscribe(res => {
         if (res) {
           const msg = 'Lead Added Successfully';
           this.toastr.success(msg);

@@ -58,7 +58,7 @@ export class PacketLocationListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getHolidays(1, 25, this.searchValue);
+    this.dataSource.getpacketsTrackingDetails(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -76,7 +76,7 @@ export class PacketLocationListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.getHolidays(from, to, this.searchValue);
+    this.dataSource.getpacketsTrackingDetails(from, to, this.searchValue);
   }
 
   addLocation() {

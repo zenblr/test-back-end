@@ -86,7 +86,7 @@
                                     [class.isError]="controls.guardianAge.touched && controls.guardianAge.invalid">
                                 <mat-error *ngIf="controls.guardianAge.touched && controls.guardianAge.invalid">
                                     <span *ngIf="controls.guardianAge.errors?.required">Field is Required</span>
-                                    <span *ngIf="controls.guardianAge.errors?.pattern">Age should be greater than 17 </span>
+                                    <span *ngIf="controls.guardianAge.errors?.pattern">Age should be 18 or above</span>
                                 </mat-error>
                             </div>
                         </div>

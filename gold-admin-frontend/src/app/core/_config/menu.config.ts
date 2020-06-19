@@ -267,6 +267,14 @@ export class MenuConfig {
 										this.permissionsArr.includes('packetView')),
 								},
 								{
+									title: "Packet Tracking",
+									page: "/admin/loan-management/packet-tracking",
+									bullet: 'dot',
+									permission: !(this.permissionsArr.includes('packetEdit') ||
+										this.permissionsArr.includes('packetAdd') ||
+										this.permissionsArr.includes('packetView')),
+								},
+								{
 									title: "Applied Loan",
 									page: "/admin/loan-management/applied-loan",
 									bullet: 'dot',
@@ -316,12 +324,12 @@ export class MenuConfig {
 							submenu: [
 								{
 									title: "Loan Disbursed Details",
-									page: "/admin/Loan-disbursed-detail",
+									page: "/admin/account/loan-disbursement",
 									permission: false,
 								},
 								{
 									title: "Loan Repayment Details",
-									page: "/admin/Loan-repayment-detail",
+									page: "/admin/account/loan-repayment",
 									permission: false,
 								},
 							],
@@ -330,7 +338,7 @@ export class MenuConfig {
 							title: "Report",
 							root: true,
 							bullet: 'dot',
-							src: "assets/media/aside-icons/icons-11.svg",
+							src: "assets/media/aside-icons/icons-27.svg",
 							permission: false,
 							submenu: [
 								{
@@ -394,7 +402,7 @@ export class MenuConfig {
 						},
 						{
 							title: "Log Out",
-							src: "assets/media/aside-icons/icons-12.svg",
+							src: "assets/media/aside-icons/icons-11.svg",
 							permission: false,
 						},
 					],

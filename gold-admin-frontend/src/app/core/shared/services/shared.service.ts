@@ -42,7 +42,7 @@ export class SharedService {
 	}
 
 	getCities(id): Observable<any> {
-		return this.http.get(`/api/city/${id}`);
+		return this.http.get(`/api/city?stateId=${id}`);
 	}
 
 	uploadFile(files): Observable<any> {

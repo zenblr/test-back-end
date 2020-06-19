@@ -26,8 +26,9 @@ export class PartnerService {
   }
 
   getPartnerBySchemeAmount(amount):Observable<any>{
-    return this.http.get<any>(`/api/scheme/partner-scheme-amount/${amount}`);
-    
+    return this.http.get<any>(`/api/scheme/partner-scheme-amount/${amount}`).pipe(
+      map(res => res)
+    )
   }
 
   getPartnerById(id): Observable<any> {
@@ -42,8 +43,15 @@ export class PartnerService {
   deletePartner(id): Observable<any> {
     return this.http.delete<any>(`/api/partner?id=${id}&isActive=${false}`);
   }
+
   getSchemesByParnter(id): Observable<any> {
     return this.http.get(`/api/scheme/partner-scheme/${id}`).pipe(
+      map(res => res)
+    )
+  }
+
+  getUnsecuredSchemeByParnter(id,amount):Observable<any>{
+    return this.http.get(`/api/scheme/unsecured-scheme/${id}/${amount}`).pipe(
       map(res => res)
     )
   }

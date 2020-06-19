@@ -85,7 +85,7 @@ export class EmiDetailsService {
 					(data) => {
 						this.pdfService.saveAsPdfFile(
 							data,
-							"EmiReceipt_" + Date.now()
+							"EMIReceipt_" + Date.now()
 						);
 					},
 					(error) => console.log(error)

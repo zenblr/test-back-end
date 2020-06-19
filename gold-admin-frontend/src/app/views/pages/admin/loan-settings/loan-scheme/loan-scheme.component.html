@@ -7,11 +7,11 @@
 <kt-portlet *ngIf="schemes.length>0">
     <kt-portlet-body class="min-vh-60">
         <mat-tab-group #matTab>
-            <mat-tab label='{{scheme.name | uppercase}}' *ngFor="let scheme of schemes">
+            <mat-tab label='{{scheme.name | uppercase}}' *ngFor="let scheme of schemes;index as i">
                 <label class="text-color font-weight-bold h-v-text-center m-0" *ngIf="scheme.schemes.length==0">No
                     Schemes
                     Available</label>
-                <div class="row kt-padding-10 kt-margin-b-25"
+                <div class="row kt-padding-10 kt-padding-b-25"
                     *ngFor="let schemeDeatils of scheme.schemes, index as idx">
 
                     <div class="col-2 from-style">
@@ -33,12 +33,12 @@
                                 <div class="col offset-4">
                                     <div class="row pb-2">
                                         <div class="col">
-                                            <mat-slide-toggle
-                                                (change)="changeDefault($event.checked, idx, schemeDeatils)">
+                                            <mat-slide-toggle  *ngIf="schemeDeatils.schemeType == 'unsecured'" [disabled]="schemeDeatils.default"
+                                                (change)="changeDefault($event.checked, idx, schemeDeatils,i)" [checked]="schemeDeatils.default">
                                                 <strong>Default</strong>
                                             </mat-slide-toggle>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-6" [class.offset-6]="schemeDeatils.schemeType == 'secured'">
                                             <mat-slide-toggle [checked]="schemeDeatils.isActive"
                                                 (change)="changeStatus($event.checked, idx,schemeDeatils)">
                                                 <strong>Status</strong>
@@ -89,18 +89,24 @@
                         </div>
 
                         <div class="col-12">
-                            <div class="row kt-margin-t-10">
-                                <div class="col form-label justify-content-center">
-                                    <label>Scheme Type - Secured</label>
+                            <div class="row kt-margin-t-10 scheme-details">
+                                <div class="col justify-content-center">
+                                    <p>Scheme Type</p>
+                                    <p>{{schemeDeatils.schemeType | titlecase}}</p>
                                 </div>
-                                <div class="col form-label justify-content-center">
-                                    <label>Processing Charges - 500</label>
+                                <div class="col justify-content-center">
+                                    <p>Maximum % Allowed </p>
+                                    <p>{{schemeDeatils.maximumPercentageAllowed}} %</p>
                                 </div>
-                                <div class="col form-label justify-content-center">
-                                    <label>Maximum % Allowed - 67%</label>
+                                <div class="col justify-content-center">
+                                    <p>Penal Interest</p>
+                                    <p>{{schemeDeatils.penalInterest}} %</p>
                                 </div>
-                                <div class="col form-label justify-content-center">
-                                    <label>Penal Interest - 10%</label>
+                                <div class="col-4 p-0 justify-content-center">
+                                    <p>Processing Charges</p>
+                                    <p>Fixed - {{schemeDeatils.processingChargeFixed}} <strong>or</strong>
+                                        Percentage of Loan Amount - {{schemeDeatils.processingChargePercent}} %
+                                    </p>
                                 </div>
                             </div>
                         </div>

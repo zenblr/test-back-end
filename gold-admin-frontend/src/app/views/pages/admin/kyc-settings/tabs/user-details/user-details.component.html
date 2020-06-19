@@ -127,40 +127,20 @@
 						</div>
 						<div class="col-8">
 							<select class="form-control" formControlName="panType">
-								<option value="" selected disabled>Select</option>
+								<option value=null selected disabled>Select</option>
 								<option value="pan">PAN</option>
-								<option value="60">FORM 60</option>
+								<option value="form60">FORM 60</option>
 							</select>
 						</div>
 					</div>
-					<div class="row kt-padding-t-15" *ngIf="controls.panType.value == '60'">
-						<div class="offset-4 col-6">
-							<div class="input-group mb-3">
-								<input type="text" class="form-control" placeholder="Select File"
-									aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
-									formControlName="form60"
-									[class.isError]="controls.form60.touched && controls.form60.invalid" />
-								<div class="input-group-append">
-									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-										(click)="form60.click()">Attach</span>
-								</div>
-								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
-									(input)="getFileInfo($event)">
-							</div>
-						</div>
-						<div class="col-2 form-label" *ngIf="controls.form60.value">
-							<label class="text-primary text-center kt-pointer" (click)="preview()">View Images</label>
-						</div>
-					</div>
+
 
 					<div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
-						<!-- PAN -->
 						<div class="col-4 align-self-center form-label">
 							<label class="mandatory  text-color font-weight-500">PAN</label>
 						</div>
 
-						<div class="col">
-							<!-- <mat-form-field appearance="outline" class="w-100"> -->
+						<div class="col-5">
 							<input class="form-control" formControlName="panCardNumber" autocomplete="off"
 								placeholder="PAN"
 								[class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
@@ -177,10 +157,13 @@
 								">
 								Invalid Input
 							</mat-error>
-							<!-- </mat-form-field> -->
 						</div>
+						<!-- <div class="col form-label">
+							<label for="" class="text-primary kt-padding-l-20 kt-pointer" (click)="preview()">View
+								Image</label>
+						</div> -->
 
-						<div *ngIf="showVerifyPAN" class="col">
+						<div class="col">
 							<div *ngIf="!isPanVerified">
 								<kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
 									[value]="'Verify'" (action)="verifyPAN()">
@@ -195,7 +178,52 @@
 						</div>
 					</div>
 
-					<div class="row kt-padding-t-15">
+					<div class="row kt-padding-t-15" *ngIf="!controls.panImage.value && controls.panType.value">
+						<div class="col-4 align-self-center form-label">
+							<label *ngIf="controls.panType.value == ''"
+								ngClass="{'mandatory': controls.panType.value != ''}"
+								class="text-color font-weight-500">
+							</label>
+							<label *ngIf="controls.panType.value != ''"
+								class="mandatory  text-color font-weight-500">{{ controls.panType.value | uppercase }}
+							</label>
+						</div>
+						<div class="col-8">
+							<div class="input-group mb-3">
+								<input type="text" class="form-control" placeholder="Select File"
+									aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+									formControlName="form60"
+									[class.isError]="controls.form60.touched && controls.panImage.invalid" />
+								<div class="input-group-append">
+									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+										(click)="form60.click()">Attach</span>
+								</div>
+								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+									(input)="getFileInfo($event)">
+							</div>
+						</div>
+						<!-- <div class="col-2 form-label" *ngIf="controls.form60.value">
+							<label class="text-primary text-center kt-pointer" (click)="preview()">View Images</label>
+						</div> -->
+					</div>
+
+					<div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value">
+						<div class="col offset-4">
+							<div class="img-container">
+								<img *ngIf="!controls.panImage.value" class=""
+									src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+								<img class="fetched-image" *ngIf="controls.panImage.value" [src]="controls.panImage"
+									style="border-radius: 15px;" alt="" />
+								<img src="../../../../../assets/media/icons/edit.svg" alt=""
+									class="kt-pointer remove-icon" (click)="form60.click()"
+									*ngIf="controls.panImage.value && !(controls.panType.status == 'DISABLED')">
+								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+									(input)="getFileInfo($event)">
+							</div>
+						</div>
+					</div>
+
+					<div class="row kt-margin-t-10 kt-margin-b-20">
 						<div class="col-8 offset-4">
 							<kt-button [value]="'Next'" [type]="'button'" (action)="submit()">
 							</kt-button>

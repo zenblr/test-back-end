@@ -64,7 +64,7 @@ export class LeadSourceListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getLeadSources(1, 25, this.searchValue);
+    this.dataSource.getLeadSources(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -101,7 +101,7 @@ export class LeadSourceListComponent implements OnInit {
   editLeadSource(item) {
     const dialogRef = this.dialog.open(LeadSourceAddComponent,
       {
-        data: { ornamentData: item, action: 'edit' },
+        data: { leadSourceData: item, action: 'edit' },
         width: '400px'
       });
     dialogRef.afterClosed().subscribe(res => {

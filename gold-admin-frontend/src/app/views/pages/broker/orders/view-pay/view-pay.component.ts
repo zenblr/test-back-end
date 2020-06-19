@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { ShopService } from '../../../../../core/merchant-broker';
 import { ActivatedRoute, Router } from "@angular/router";
 import { EmiDetailsService } from "../../../../../core/emi-management/order-management";
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
+import { WindowRefService, ICustomWindow } from '../../../../../core/shared/services/window-ref.service';
 
 @Component({
   selector: 'kt-view-pay',
@@ -11,11 +12,40 @@ import { ToastrComponent } from '../../../../partials/components/toastr/toastr.c
 })
 export class ViewPayComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-
   orderId: any;
   orderData: any;
   emi = [];
+  emiAmount = 0;
+  rzp: any;
+  private _window: ICustomWindow;
+  razorpayOptions: any = {
+    key: '',
+    amount: '',
+    currency: 'INR',
+    name: 'Augmont',
+    description: '',
+    image: 'https://gold.nimapinfotech.com/assets/media/logos/logo.png',
+    order_id: '',
+    handler: this.razorPayResponsehandler.bind(this),
+    modal: {
+      ondismiss: (() => {
+        this.zone.run(() => {
+
+        });
+      })
+    },
+    prefill: {},
+    notes: {
+      address: ''
+    },
+    theme: {
+      color: '#454d67'
+    },
+  };
+
   constructor(
+    private zone: NgZone,
+    private winRef: WindowRefService,
     private shopService: ShopService,
     private route: ActivatedRoute,
     private emiDetailsService: EmiDetailsService,
@@ -23,7 +53,11 @@ export class ViewPayComponent implements OnInit {
 
   ngOnInit() {
     this.orderId = this.route.snapshot.params.id;
-    this.shopService.getDetails(this.orderId).subscribe(res => this.orderData = res.orderData)
+    this.getOrderDetails();
+  }
+
+  getOrderDetails() {
+    this.shopService.getOrderDetails(this.orderId).subscribe(res => this.orderData = res.orderData);
   }
 
   selectedEmi(event, id) {
@@ -40,34 +74,47 @@ export class ViewPayComponent implements OnInit {
   }
 
   getEmiAmount() {
-    let params = {
+    const params = {
       emiId: this.emi,
     }
     if (this.emi) {
       this.shopService.getEmiAmount(params).subscribe(res => {
-        this.payEmi(res.amount)
+        this.emiAmount = res.amount;
+        this.razorpayOptions.key = res.razerPayConfig;
+        this.razorpayOptions.amount = res.razorPayOrder.amount;
+        this.razorpayOptions.order_id = res.razorPayOrder.id;
+
+        this.initPay(this.razorpayOptions);
       },
         error => {
           this.toastr.errorToastr(error.message);
-          this.ngOnInit();
-        })
+          this.getOrderDetails();
+        });
     }
   }
 
-  payEmi(amount) {
-    let params = {
-      transactionId: 'TRA' + Date.now(),
-      transactionAmount: Number(amount),
-      emiId: this.emi,
-    }
-    this.shopService.emiTransaction(params).subscribe(res => {
-      this.ngOnInit();
-      this.toastr.successToastr("EMI Paid Successfully");
-      this.emi = [];
-    },
-      error => {
-        this.toastr.errorToastr(error.error);
-      })
+  initPay(options) {
+    this.rzp = new this.winRef.nativeWindow['Razorpay'](options);
+    this.rzp.open();
+  }
+
+  razorPayResponsehandler(response: any) {
+    console.log(response)
+    this.zone.run(() => {
+      const payEMIData = {
+        transactionDetails: response,
+        transactionAmount: Number(this.emiAmount),
+        emiId: this.emi,
+      }
+      this.shopService.payEMI(payEMIData).subscribe(res => {
+        this.toastr.successToastr("EMI Paid Successfully");
+        this.emi = [];
+        this.getOrderDetails();
+      },
+        error => {
+          this.toastr.errorToastr(error.error);
+        })
+    });
   }
 
   printEmiReceipt(id) {

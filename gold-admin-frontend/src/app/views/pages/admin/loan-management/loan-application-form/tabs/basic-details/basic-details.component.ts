@@ -68,9 +68,10 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.details) {
       if (changes.action.currentValue == 'add') {
-        this.basicForm.controls.mobileNumber.patchValue(this.details.mobileNumber)
-        this.basicForm.controls.panCardNumber.patchValue(this.details.panCardNumber)
-        this.basicForm.controls.customerId.patchValue(this.details.id)
+        this.basicForm.controls.mobileNumber.patchValue(changes.details.currentValue.mobileNumber)
+        this.basicForm.controls.panCardNumber.patchValue(changes.details.currentValue.panCardNumber)
+        this.basicForm.controls.panImage.patchValue(changes.details.currentValue.panImage)
+        this.basicForm.controls.customerId.patchValue(changes.details.currentValue.id)
         this.basicForm.controls.customerUniqueId.enable()
       } else if (changes.action.currentValue == 'edit') {
 
@@ -78,6 +79,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.basicForm.patchValue(changes.details.currentValue.loanPersonalDetail)
         this.currentDate = new Date(changes.details.currentValue.loanPersonalDetail.startDate)
         this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
+        this.basicForm.controls.panImage.patchValue(changes.details.currentValue.panImage)
+
         // this.basicFormEmit.emit(this.basicForm)
         this.basicForm.controls.loanId.patchValue(changes.details.currentValue.id)
         this.basicForm.disable()
@@ -145,7 +148,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       customerId: [, Validators.required],
       kycStatus: [, Validators.required],
       purpose: ["", Validators.required],
-      loanId: []
+      panType:[],
+      loanId: [],
+      panImage:[]
     })
   }
 

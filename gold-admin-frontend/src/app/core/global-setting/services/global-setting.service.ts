@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -13,8 +13,22 @@ export class GlobalSettingService {
     public toastr: ToastrService,
     public http: HttpClient) { }
 
+  globalSetting: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  globalSetting$: Observable<any> = this.globalSetting.asObservable();
+
   setGlobalSetting(params): Observable<any> {
-    return this.http.post(`/api/gold-rate`, params.data).pipe(
+    return this.http.post(`/api/global-setting`, params).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
+
+  getGlobalSetting(): Observable<any> {
+    return this.http.get(`/api/global-setting`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

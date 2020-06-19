@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { map } from 'rxjs/operators';
 import { Location } from '@angular/common'
+import { CustomerClassificationService } from '../../../../../../../core/kyc-settings/services/customer-classification.service';
 
 @Component({
   selector: 'kt-approval',
@@ -30,6 +31,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   approvalForm: FormGroup;
   url: string;
   viewBMForm = true;
+  reasons: any []= [];
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -38,6 +40,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     public router: Router,
     public loanFormService: LoanApplicationFormService,
     public location: Location,
+    private custClassificationService: CustomerClassificationService,
+
   ) { }
 
   ngOnInit() {
@@ -49,7 +53,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.url = this.router.url.split('/')[3]
     this.initForm();
-    this.getRoles()
+    this.getRoles();
+    this.getReasonsList();
   }
   getRoles() {
     let res = this.sharedSerive.getDataFromStorage()
@@ -74,8 +79,9 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       goldValuationForBM: [false],
       loanStatusForBM: ['pending'],
       commentByBM: [''],
+      reasons:['']
     })
-    // this.approvalFormEmit.emit(this.approvalForm)
+
 
   }
   get controls() {
@@ -86,6 +92,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.approvalForm.patchValue(changes.details.currentValue)
+        this.approvalForm.patchValue({reasons:changes.details.currentValue.commentByAppraiser})
         this.statusAppraiser()
         this.statusBM()
         this.ref.markForCheck()
@@ -127,15 +134,25 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
+
+  getReasonsList() {
+    this.custClassificationService.getReasonsList().pipe(
+      map(res => {
+        console.log(res)
+        this.reasons = res.data;
+      })
+    ).subscribe()
+  }
+
   statusAppraiser() {
 
-    if (this.controls.loanStatusForAppraiser.value != 'approved') {
-      this.controls.commentByAppraiser.setValidators(Validators.required);
-      this.controls.commentByAppraiser.updateValueAndValidity()
+    if (this.controls.loanStatusForAppraiser.value != 'approved' ) {
+      this.controls.reasons.setValidators(Validators.required);
+      this.controls.reasons.updateValueAndValidity()
     } else {
-      this.controls.commentByAppraiser.clearValidators();
-      this.controls.commentByAppraiser.updateValueAndValidity();
-      this.controls.commentByAppraiser.markAsUntouched()
+      this.controls.reasons.clearValidators();
+      this.controls.reasons.updateValueAndValidity();
+      this.controls.reasons.markAsUntouched()
     }
   }
 
@@ -148,8 +165,22 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.controls.commentByBM.reset()
 
   }
+
+
+  patchReason(){
+    this.resetAppraiser()
+    if(this.controls.reasons.value == 'Other'){
+      this.controls.commentByAppraiser.setValidators(Validators.required);
+      this.controls.commentByAppraiser.updateValueAndValidity()
+    } else {
+      this.controls.commentByAppraiser.clearValidators();
+      this.controls.commentByAppraiser.updateValueAndValidity();
+      this.controls.commentByAppraiser.markAsUntouched()
+    }
+  }
+
   statusBM() {
-    if (this.controls.loanStatusForBM.value != 'approved') {
+    if (this.controls.loanStatusForBM.value != 'approved' && this.controls.loanStatusForBM.value != 'pending') {
       this.controls.commentByBM.setValidators(Validators.required);
       this.controls.commentByBM.updateValueAndValidity()
     } else {
@@ -161,6 +192,11 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   applyForm() {
+    if(this.approvalForm.invalid){
+      this.approvalForm.markAllAsTouched()
+      return 
+    }
+    this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
     this.loanFormService.applyForLoan(this.approvalForm.value, this.loanId).pipe(
       map(res => {
         this.router.navigate(['/admin/loan-management/applied-loan'])

@@ -8,6 +8,7 @@
 	}
 	::ng-deep.mat-tab-header {
 		position: relative !important;
+		max-width: 90% !important;
 	}
 	// ::ng-deep.mat-tab-body-content{
 	// 	padding-top: 0em !important;
@@ -17,14 +18,19 @@
 		padding: 0 !important;
 		// height: 30px !important;
 	}
+	.img-container{
+		max-width: unset !important;
+	}
 	.addmore {
 		position: absolute;
 		top: 30px;
-		left: 150px;
+		// left: 150px;
+		// right: 0px;
 		background: transparent;
 		border: thin solid #454d67;
 		border-radius: 5px;
 		padding: 5px;
+		z-index: 5;
 	}
 	.addmore:disabled {
 		cursor: not-allowed;

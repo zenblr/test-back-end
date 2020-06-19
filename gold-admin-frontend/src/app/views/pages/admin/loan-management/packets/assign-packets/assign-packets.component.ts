@@ -50,7 +50,7 @@ export class AssignPacketsComponent implements OnInit {
     this.packetForm = this.fb.group({
       id: [],
       packetUniqueId: ['', [Validators.required]],
-      internalBranchId: ['', [Validators.required]],
+      internalUserBranch: ['', [Validators.required]],
     })
   }
 

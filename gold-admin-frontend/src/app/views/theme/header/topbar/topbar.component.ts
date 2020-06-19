@@ -45,6 +45,9 @@ import { ReasonsService } from '../../../../core/masters/reasons/services/reason
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
 import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
+import { PacketTrackingService} from '../../../../core/loan-management'
+import { LoanRepaymentService } from '../../../../core/account/loan-repayment/services/loan-repayment.service';
+import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
 import { ShoppingCartService, OrdersService } from '../../../../core/merchant-broker';
 
 @Component({
@@ -130,6 +133,9 @@ export class TopbarComponent implements OnInit {
 		private appliedLoan: AppliedLoanService,
 		private leadSourceService: LeadSourceService,
 		private shopService: ShopService,
+		private packetTrackingService:PacketTrackingService,
+		private loanRepaymentService: LoanRepaymentService,
+		private loanDisbursementService: LoanDisbursementService,
 		private shoppingCartService: ShoppingCartService,
 		private ordersService: OrdersService,
 
@@ -363,6 +369,11 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.value1 = "Add Packet Location";
 		}
+		if (this.path == "packet-tracking") {
+			this.dataSourceHeader();
+			this.showfilter = false;
+		}
+		
 		if (this.path == "purposes") {
 			this.dataSourceHeader();
 			this.value1 = "Add Purpose";
@@ -506,13 +517,25 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.showBackButton = true;
 		}
+		if (this.path == "loan-repayment") {
+			this.value1 = "Add Loan Repayment";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
+		}
+		if (this.path == "loan-disbursement") {
+			this.value1 = "Add Loan Disbursement";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "schemeAdd";
+		}
 		if (location.href.includes("edit-refund-details")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("view-loan")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes("package-image-upload")) {
+		if (location.href.includes("packet-image-upload")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("loan-details/")) {
@@ -661,11 +684,18 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'packet-location') {
 			this.packetLocation.openModal.next(true)
 		}
+		
 		if (this.path == 'purposes') {
 			this.purposeService.openModal.next(true)
 		}
 		if (this.path == 'lead-source') {
 			this.leadSourceService.openModal.next(true)
+		}
+		if (this.path == 'loan-disbursement') {
+			this.loanDisbursementService.openModal.next(true)
+		}
+		if (this.path == 'loan-repayment') {
+			this.loanRepaymentService.openModal.next(true)
 		}
 	}
 

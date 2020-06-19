@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { LoanApplicationFormService } from "../../../../../core/loan-management";
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { OrnamentsService } from '../../../../../core/masters/ornaments/services/ornaments.service';
 
 @Component({
   selector: 'kt-loan-application-form',
@@ -34,15 +35,18 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false, false, false, false, false, false];
+  disabled = [false, true, true, true, true, true];
   loanId: any;
+  ornamentType = [];
   finalLoanAmt: any;
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
     public loanApplicationFormService: LoanApplicationFormService,
     public toast: ToastrService,
-    public rout: ActivatedRoute
+    public rout: ActivatedRoute,
+    public ornamentTypeService: OrnamentsService,
+
   ) {
     this.url = this.router.url.split('/')[3]
     this.id = this.rout.snapshot.params.id
@@ -71,7 +75,7 @@ export class LoanApplicationFormComponent implements OnInit {
       this.action = 'edit'
       this.customerDetail = res.data
       // this.totalAmount = res.data.totalEligibleAmt
-      if (this.url == "package-image-upload") {
+      if (this.url == "packet-image-upload") {
         this.selected = 6;
         this.disabledForm = true;
       } else if (this.url == "view-loan") {
@@ -89,9 +93,11 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.getOrnamentType()
     setTimeout(() => {
 
-      if (this.url == "package-image-upload") {
+      if (this.url == "packet-image-upload") {
         this.selected = 6;
         this.disabledForm = true;
       } else if (this.url == "view-loan") {
@@ -103,6 +109,14 @@ export class LoanApplicationFormComponent implements OnInit {
     }, 1000)
   }
 
+  getOrnamentType() {
+    this.ornamentTypeService.getOrnamentType(1, -1, '').pipe(
+      map(res => {
+        console.log(res);
+        this.ornamentType = res.data;
+      })
+    ).subscribe();
+  }
 
   loan(event) {
     this.loanId = event
@@ -294,22 +308,21 @@ export class LoanApplicationFormComponent implements OnInit {
 
 
   next(event) {
-  //   if (event.index != undefined) {
-  //     this.selected = event.index;
-  //   } else {
-  //     this.selected = event;
-  //   }
-  //   for (let index = 0; index < this.disabled.length; index++) {
-  //     if (this.url != "view-loan") {
-  //       if (this.selected >= index) {
-  //         this.disabled[index] = false
-  //       } else {
-  //         this.disabled[index] = true
-  //       }
-  //     } else {
-  //       this.disabled[index] = false
-  //     }
-  //   }
-  // }
+    if (event.index != undefined) {
+      this.selected = event.index;
+    } else {
+      this.selected = event;
+    }
+    for (let index = 0; index < this.disabled.length; index++) {
+      if (this.url != "view-loan") {
+        if (this.selected >= index) {
+          this.disabled[index] = false
+        } else {
+          this.disabled[index] = true
+        }
+      } else {
+        this.disabled[index] = false
+      }
+    }
   }
 }

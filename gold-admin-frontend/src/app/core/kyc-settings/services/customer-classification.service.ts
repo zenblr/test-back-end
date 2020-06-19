@@ -22,7 +22,7 @@ export class CustomerClassificationService {
   }
 
   getReasonsList(): Observable<any> {
-    return this.http.get(`/api/rating-reason`).pipe(
+    return this.http.get(`/api/rating-reason?from=1&to=-1`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

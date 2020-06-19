@@ -60,23 +60,40 @@ export class UserDetailsComponent implements OnInit {
         this.otpButton = true;
         this.isMobileVerified = false;
         this.otpSent = false;
-        
+
         Object.keys(this.controls).forEach(key => {
           if (key != 'mobileNumber') {
             this.userBasicForm.get(key).reset();
           }
         })
-        
+
       }
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
       if (this.controls.panCardNumber.valid) {
         this.panButton = false;
+        // this.isPanVerified = true;
+
       } else {
         this.panButton = true;
         this.isPanVerified = false;
       }
+
+      // this.verifyPAN()
+    });
+
+    this.controls.panType.valueChanges.subscribe(res => {
+      if (res == 'form60') {
+        this.controls.panCardNumber.reset()
+        this.controls.panCardNumber.patchValue('')
+        this.controls.panCardNumber.clearValidators()
+      }
+      if (res == 'pan') {
+        this.controls.form60.reset()
+        this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+      }
+      this.controls.panCardNumber.updateValueAndValidity()
     });
 
     this.controls.otp.valueChanges.subscribe(res => {
@@ -103,8 +120,8 @@ export class UserDetailsComponent implements OnInit {
       referenceCode: [],
       panType: ['', Validators.required],
       form60: [''],
-      form60Img: [''],
-      panCardNumber: ['', [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panImage: [, Validators.required],
+      panCardNumber: [''],
     })
   }
 
@@ -120,7 +137,8 @@ export class UserDetailsComponent implements OnInit {
         this.userBasicForm.patchValue(res.customerInfo);
         if (res.customerInfo.panCardNumber !== null) {
           this.controls.panCardNumber.disable();
-          this.controls.panType.patchValue('pan')
+          this.controls.panType.disable();
+          this.isPanVerified = true;
         } else {
           this.showVerifyPAN = true;
         }
@@ -166,7 +184,7 @@ export class UserDetailsComponent implements OnInit {
         map(res => {
           if (res) {
             this.controls.form60.patchValue(event.target.files[0].name)
-            this.controls.form60Img.patchValue(res.uploadFile.URL)
+            this.controls.panImage.patchValue(res.uploadFile.URL)
           }
         }), catchError(err => {
           throw err
@@ -177,7 +195,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   preview() {
-    let img = [this.controls.form60Img.value]
+    let img = [this.controls.panImage.value]
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
         images: img,
@@ -196,6 +214,15 @@ export class UserDetailsComponent implements OnInit {
     //   }
     // });
 
+    // if (this.controls.panCardNumber.status == 'DISABLED' || this.controls.panCardNumber.valid) {
+    //   this.panButton = false;
+    //   this.isPanVerified = true;
+
+    // } else {
+    //   this.panButton = true;
+    //   this.isPanVerified = false;
+    // }
+
     this.isPanVerified = true;
   }
 
@@ -205,8 +232,10 @@ export class UserDetailsComponent implements OnInit {
       return
     }
     this.userBasicForm.enable()
-    const PAN = this.controls.panCardNumber.value.toUpperCase();
-    this.userBasicForm.get('panCardNumber').patchValue(PAN)
+    if (this.controls.panCardNumber.value) {
+      const PAN = this.controls.panCardNumber.value.toUpperCase();
+      this.userBasicForm.get('panCardNumber').patchValue(PAN)
+    }
     const basicForm = this.userBasicForm.value;
     this.userDetailsService.basicDetails(basicForm).pipe(
       map(res => {
@@ -230,10 +259,6 @@ export class UserDetailsComponent implements OnInit {
         this.userBasicForm.controls.panCardNumber.enable()
       })
     ).subscribe();
-
-
-
-    // this.next.emit(true);  // delete this line    
   }
 
 }

@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone } from '@angular/core';
 import { ToastrComponent } from '../../../partials/components/toastr/toastr.component';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/merchant-broker';
+import { WindowRefService, ICustomWindow } from '../../../../core/shared/services/window-ref.service';
 
 @Component({
   selector: 'kt-checkout-customer',
   templateUrl: './checkout-customer.component.html',
-  styleUrls: ['./checkout-customer.component.scss']
+  styleUrls: ['./checkout-customer.component.scss'],
 })
 export class CheckoutCustomerComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -26,16 +27,45 @@ export class CheckoutCustomerComponent implements OnInit {
   checkoutData: any;
   existingCustomerData: any;
   finalOrderData: any;
+  rzp: any;
+  private _window: ICustomWindow;
+  razorpayOptions: any = {
+    key: '',
+    amount: '',
+    currency: 'INR',
+    name: 'Augmont',
+    description: '',
+    image: 'https://gold.nimapinfotech.com/assets/media/logos/logo.png',
+    order_id: '',
+    handler: this.razorPayResponsehandler.bind(this),
+    modal: {
+      ondismiss: (() => {
+        this.zone.run(() => {
+
+        });
+      })
+    },
+    prefill: {},
+    notes: {
+      address: ''
+    },
+    theme: {
+      color: '#454d67'
+    },
+  };
 
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
     private ref: ChangeDetectorRef,
-    private route: ActivatedRoute,
     private router: Router,
     private checkoutCustomerService: CheckoutCustomerService,
-    private shoppingCartService: ShoppingCartService
-  ) { }
+    private shoppingCartService: ShoppingCartService,
+    private zone: NgZone,
+    private winRef: WindowRefService
+  ) {
+    this._window = this.winRef.nativeWindow;
+  }
 
   ngOnInit() {
     this.formInitialize();
@@ -45,7 +75,7 @@ export class CheckoutCustomerComponent implements OnInit {
 
   formInitialize() {
     this.numberSearchForm = this.fb.group({
-      mobNo: ['', Validators.required],
+      mobileNo: ['', Validators.required]
     });
 
     this.checkoutCustomerForm = this.fb.group({
@@ -58,10 +88,15 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: ['', Validators.required],
       stateName: ['', Validators.required],
       cityName: ['', Validators.required],
+      panCardNumber: [''],
+      nameOnPanCard: [''],
+      panCardFileId: [''],
+      kycRequired: [false],
     });
+    this.setPanDetailsValidators();
 
     this.otpForm = this.fb.group({
-      otp: ['', Validators.required],
+      otp: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
     });
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
@@ -78,14 +113,36 @@ export class CheckoutCustomerComponent implements OnInit {
     return this.checkoutCustomerForm.controls;
   }
 
+  setPanDetailsValidators() {
+    const panCardNumberControl = this.checkoutCustomerForm.get('panCardNumber');
+    const nameOnPanCardControl = this.checkoutCustomerForm.get('nameOnPanCard');
+    const panCardFileIdControl = this.checkoutCustomerForm.get('panCardFileId');
+
+    this.checkoutCustomerForm.get('kycRequired').valueChanges.subscribe((val) => {
+      if (val) {
+        panCardNumberControl.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]);
+        nameOnPanCardControl.setValidators([Validators.required]);
+        panCardFileIdControl.setValidators([Validators.required]);
+      } else {
+        panCardNumberControl.setValidators([]);
+        nameOnPanCardControl.setValidators([]);
+        panCardFileIdControl.setValidators([]);
+      }
+      panCardNumberControl.updateValueAndValidity();
+      nameOnPanCardControl.updateValueAndValidity();
+      panCardFileIdControl.updateValueAndValidity();
+    });
+  }
+
   getCheckoutCart() {
     this.shoppingCartService.getCheckoutCart().subscribe(res => {
       if (res && res.blockId) {
         const blockData = {
           blockId: res.blockId
         }
-        this.checkoutData = res
+        this.checkoutData = res;
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
+        this.controls['kycRequired'].patchValue(this.checkoutData.kycRequired);
       }
     },
       error => {
@@ -124,11 +181,15 @@ export class CheckoutCustomerComponent implements OnInit {
       this.numberSearchForm.markAllAsTouched();
       return;
     }
-    this.getExistingCustomer(this.numberSearchForm.controls.mobNo.value);
+    this.getExistingCustomer(this.numberSearchForm.controls.mobileNo.value);
   }
 
-  getExistingCustomer(mobNo) {
-    this.checkoutCustomerService.getExistingCustomer(mobNo).subscribe(res => {
+  getExistingCustomer(mobileNo) {
+    const existingCustomerData = {
+      mobileNo: mobileNo,
+      invoiceAmount: this.checkoutData.invoiceAmount
+    }
+    this.checkoutCustomerService.findExistingCustomer(existingCustomerData).subscribe(res => {
       if (res) {
         this.existingCustomerData = res;
         setTimeout(() => {
@@ -142,8 +203,20 @@ export class CheckoutCustomerComponent implements OnInit {
             postalCode: res.customerDetails.pinCode,
             stateName: res.customerDetails.customeraddress[0].stateId,
             cityName: res.customerDetails.customeraddress[0].cityId,
+            kycRequired: res.kycRequired,
           });
           this.getCities();
+          if (res.customerDetails.kycDetails) {
+            this.checkoutCustomerForm.patchValue({
+              panCardNumber: res.customerDetails.kycDetails.panCardNumber,
+              nameOnPanCard: res.customerDetails.kycDetails.nameOnPanCard,
+              panCardFileId: res.customerDetails.kycDetails.panCardFileId
+            });
+          } else {
+            this.controls['panCardNumber'].enable();
+            this.controls['nameOnPanCard'].enable();
+            this.controls['panCardFileId'].enable();
+          }
           if (this.showPrefilledDataFlag) {
             const msg = 'Customer is already exist. The Details will be automatically pre-filled';
             this.toastr.successToastr(msg);
@@ -203,6 +276,9 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: this.controls.postalCode.value,
       stateName: this.controls.stateName.value.name,
       cityName: this.controls.cityName.value.name,
+      panCardNumber: this.controls.panCardNumber.value,
+      nameOnPanCard: this.controls.nameOnPanCard.value,
+      panCardFileId: this.controls.panCardFileId.value,
       blockId: this.checkoutData.blockId
     }
     if (this.showCustomerFlag) {
@@ -210,7 +286,7 @@ export class CheckoutCustomerComponent implements OnInit {
       generateOTPData.cityName = this.existingCustomerData.customerDetails.customeraddress[0].city.name;
     }
     console.log(generateOTPData)
-    this.checkoutCustomerService.generateOTP(generateOTPData).subscribe(res => {
+    this.checkoutCustomerService.generateOTPAdmin(generateOTPData).subscribe(res => {
       if (res) {
         console.log(res);
         this.finalOrderData = res;
@@ -225,25 +301,25 @@ export class CheckoutCustomerComponent implements OnInit {
       });
   }
 
-  placeOrder() {
+  verifyOTP() {
     if (this.otpForm.invalid) {
       this.otpForm.markAllAsTouched();
       return;
     }
-    const placeOrderData = {
+    const verifyOTPData = {
       customerId: this.finalOrderData.customerId,
       otp: this.otpForm.controls.otp.value,
       blockId: this.finalOrderData.blockId,
-      transactionId: 'TRA' + Date.now(),
       totalInitialAmount: this.checkoutData.nowPayableAmount
     }
-    this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
+    this.checkoutCustomerService.verifyOTP(verifyOTPData).subscribe(res => {
       if (res) {
         console.log(res);
-        const msg = 'Order has been placed successfully.';
-        this.toastr.successToastr(msg);
-        this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
-        this.shoppingCartService.cartCount.next(0);
+        this.razorpayOptions.key = res.razerPayConfig;
+        this.razorpayOptions.amount = res.totalInitialAmount;
+        this.razorpayOptions.order_id = res.razorPayOrder.id;
+
+        this.initPay(this.razorpayOptions)
       }
     },
       error => {
@@ -251,5 +327,46 @@ export class CheckoutCustomerComponent implements OnInit {
         const msg = error.error.message;
         this.toastr.errorToastr(msg);
       });
+  }
+
+  uploadImage(data) {
+    this.checkoutCustomerForm.controls['panCardFileId'].patchValue(
+      data.uploadData.id
+    );
+  }
+
+  removeImage(data) {
+    this.checkoutCustomerForm.controls['panCardFileId'].patchValue('');
+  }
+
+  initPay(options) {
+    this.rzp = new this.winRef.nativeWindow['Razorpay'](options);
+    this.rzp.open();
+  }
+
+  razorPayResponsehandler(response: any) {
+    console.log(response)
+    this.zone.run(() => {
+      const placeOrderData = {
+        customerId: this.finalOrderData.customerId,
+        blockId: this.finalOrderData.blockId,
+        transactionDetails: response,
+        totalInitialAmount: this.checkoutData.nowPayableAmount
+      }
+      this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
+        if (res) {
+          console.log(res);
+          const msg = 'Order has been placed successfully.';
+          this.toastr.successToastr(msg);
+          this.shoppingCartService.cartCount.next(0);
+          this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId])
+        }
+      },
+        error => {
+          console.log(error.error.message);
+          const msg = error.error.message;
+          this.toastr.errorToastr(msg);
+        });
+    });
   }
 }

@@ -22,10 +22,10 @@
 	</div>
 </span>
 <div class="vh50" *ngIf="errors.length > 0">
-	
-	<div *ngFor="let error of errors">
-		<h4 class="text-center">{{error.message}} </h4>
-	</div>
+
+
+	<h4 class="text-center">Requested device not found</h4>
+
 	<div class="text-center col-12 kt-padding-10">
 		<kt-button [type]="'button'" [value]="'Ok'" (click)="close()"></kt-button>
 	</div>

@@ -14,14 +14,19 @@
     </div>
     <kt-portlet>
         <kt-portlet-body [class]="'kt-portlet__body--fit'">
+
             <div class="row card-container" *ngIf="products && toogler == 'grid'">
-                <div class="card col-2" *ngFor="let product of products;index as i">
-                    <div class="bg-white text-center">
-                        <img [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
-                            alt="test" width="150px" height="150px">
+                <div class="grid-card" *ngFor="let product of products;index as i">
+                    <div class="card bg-white text-center">
+                        <div class="productGridImageDiv d-flex align-items-center justify-content-center">
+                            <img class="productGridImage"
+                                [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
+                                alt="test">
+                        </div>
                         <div class="text-color customer-id font-weight-bold mt-2">{{product.productName}}</div>
                         <p>Weight: {{product.weight}} GMS</p>
-                        <p class="text-color font-weight-bold"><span
+                        <p class="text-color font-weight-bold">
+                            <span
                                 class="currency">{{product.productPrice[0].finalProductPrice | indianCurrencyFormat}}</span>
                         </p>
                         <kt-button [value]='"Order Now"' [type]='"button"' (action)="action(product.id)"
@@ -35,9 +40,10 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-2">
-                                    <img [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
-                                        alt="test" width="100px" height="100px">
+                                <div class="col-md-2 d-flex align-items-center justify-content-center">
+                                    <img class="productListImage"
+                                        [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
+                                        alt="test">
                                 </div>
                                 <div class="col-md-8">
                                     <p class="text-color customer-id font-weight-bold">
@@ -78,6 +84,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="card-container mt-4 text-color font-weight-bold" [ngStyle]="{'min-height':'60vh'}"
                 *ngIf="products?.length == 0">
                 <p class="text-center">No Records Found</p>

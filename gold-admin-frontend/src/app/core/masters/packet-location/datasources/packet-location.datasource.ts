@@ -15,7 +15,7 @@ export class PacketLocationDatasource extends BaseDataSource {
         super();
     }
 
-    getOrnaments(from, to, search) {
+    getpacketsTrackingDetails(from, to, search) {
         this.loadingSubject.next(true);
 
         // this.entitySubject.next(this.leads); // delete this
