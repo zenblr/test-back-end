@@ -14,6 +14,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'scheme_id'
         },
+        unsecuredSchemeId: {
+            type: DataTypes.INTEGER,
+            field: 'unsecured_scheme_id'
+        },
+        securedLoanAmount: {
+            type: DataTypes.STRING,
+            field: 'secured_loan_amount',
+        },
+        unsecuredLoanAmount: {
+            type: DataTypes.STRING,
+            field: 'unsecured_loan_amount',
+        },
         finalLoanAmount: {
             type: DataTypes.STRING,
             field: 'final_loan_amount',
@@ -73,6 +85,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerFinalLoan.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
         CustomerFinalLoan.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
         CustomerFinalLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
+        CustomerFinalLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
+
 
         CustomerFinalLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerFinalLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });

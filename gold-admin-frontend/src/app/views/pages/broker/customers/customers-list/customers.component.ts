@@ -15,6 +15,8 @@ import {
 } from "../../../../../core/merchant-broker";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { SharedService } from "../../../../../core/shared/services/shared.service";
+import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+
 
 @Component({
   selector: 'kt-customers',
@@ -24,7 +26,7 @@ import { SharedService } from "../../../../../core/shared/services/shared.servic
 export class CustomersComponent implements OnInit {
   dataSource: CustomersDatasource;
   displayedColumns = ['customerId', 'customerEmail',
-    'fullName', 'mobileNumber', 'state', 'city', 'pincode', 'panCardNumber'];
+    'fullName', 'mobileNumber', 'state', 'city', 'pincode', 'panCardName', 'panCardNumber', 'viewPanCard'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("sort1", { static: true }) sort: MatSort;
   // Filter fields
@@ -101,6 +103,18 @@ export class CustomersComponent implements OnInit {
     this.customersData.to = to;
     this.customersData.search = this.searchValue;
     this.dataSource.loadCustomersDetails(this.customersData);
+  }
+
+  open(image) {
+    let images = [];
+    images.push(image)
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: images,
+        index: 0
+      },
+      width: "auto"
+    })
   }
 
   /**

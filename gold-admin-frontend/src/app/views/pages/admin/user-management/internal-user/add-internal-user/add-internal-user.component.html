@@ -55,20 +55,23 @@
                                 <select class="form-control" formControlName="internalBranchId" autocomplete="off"
                                     [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select</option>
-                                    <option [value]="branch.id" *ngFor="let branch of branch">{{branch.name |titlecase}}</option>
+                                    <option [value]="branch.id" *ngFor="let branch of branch">{{branch.name |titlecase}}
+                                    </option>
                                 </select>
-                                <mat-error *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
+                                <mat-error
+                                    *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
                                     Required field</mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15" *ngIf="data.action != 'edit'">
                             <div class="col-4 form-label">
-                                <label for="" class="kt-padding-l-10 text-color mandatory">User ID</label>
+                                <label for="" class="kt-padding-l-10 text-color mandatory">Customer ID</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="userUniqueId" placeholder="e.g 012345"
                                     [class.isError]="controls.userUniqueId.touched && controls.userUniqueId.invalid">
-                                <mat-error *ngIf="controls.userUniqueId.errors?.required && controls.userUniqueId.touched">
+                                <mat-error
+                                    *ngIf="controls.userUniqueId.errors?.required && controls.userUniqueId.touched">
                                     Required field
                                 </mat-error>
                             </div>
@@ -96,13 +99,14 @@
                                 <input class="form-control" numbersOnly maxlength="10" formControlName="mobileNumber"
                                     placeholder="e.g 9023451234"
                                     [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid">
-                                    <mat-error
+                                <mat-error
                                     *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
                                     Required field
-                                </mat-error><mat-error
-                                *ngIf="controls.mobileNumber.errors?.minlength && controls.mobileNumber.touched">
-                                Invalid Input
-                            </mat-error>
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.mobileNumber.errors?.minlength && controls.mobileNumber.touched">
+                                    Invalid Input
+                                </mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
