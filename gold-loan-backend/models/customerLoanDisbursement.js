@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field:'account_number'
         },
+        disbursementStatus: {
+            type: DataTypes.STRING,
+            field:'disbursement_status'
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
