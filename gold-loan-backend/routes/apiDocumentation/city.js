@@ -1,16 +1,16 @@
 /**
  * @swagger
- * /city/{stateId}:
+ * /city:
  *   get:
  *     tags:
  *       - City
  *     summary: To read city by Id
  *     parameters:
- *     - name: stateId
- *       in: "path"
+ *     - name: "stateId"
+ *       in: "query"
  *       description: "ID of city to return"
  *       required: true
- *       type: integer
+ *       type: "integer"
  *     security:
  *       - bearerAuth: [] 
  *     consumes:
@@ -18,7 +18,6 @@
  *     responses:
  *       200:
  *         description: success.
- * /city:
  *   post:
  *     tags:
  *       - City
