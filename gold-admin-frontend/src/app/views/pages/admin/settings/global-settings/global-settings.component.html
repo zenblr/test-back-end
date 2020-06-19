@@ -1,130 +1,136 @@
 <kt-portlet>
     <kt-portlet-body class="">
-        <div class="col-8 mx-auto parent-container">
+        <div class="col-6 mx-auto parent-container">
+            <form [formGroup]="globalSettingForm">
 
-            <div class="row kt-padding-t-40 " [formGroup]="ltvGoldPercentForm">
-                <div class="col-8">
-                    <div class="row">
-                        <div class="col-6 form-label text-color d-flex align-items-center">LTV gold
-                            value(%)
-                        </div>
-                        <div class="col-6 per-gram d-flex align-items-center">
-                            <input type="text" class="form-control" numbersOnly formControlName="ltvGoldPercent"
-                                placeholder="75%"
-                                [class.isError]="ltvGoldPercentForm.controls.ltvGoldPercent.invalid && ltvGoldPercentForm.controls.ltvGoldPercent.touched">
-                            <mat-error
-                                *ngIf="ltvGoldPercentForm.controls.ltvGoldPercent.invalid && ltvGoldPercentForm.controls.ltvGoldPercent.touched">
-                                Field required</mat-error>
+                <div class="row kt-padding-t-40 ">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-6 form-label text-color d-flex align-items-center mandatory">LTV gold
+                                value(%)
+                            </div>
+                            <div class="col-6 per-gram align-items-center">
+                                <input type="text" class="form-control" numbersOnly formControlName="ltvGoldValue"
+                                    placeholder="75%"
+                                    [class.isError]="controls.ltvGoldValue.invalid && controls.ltvGoldValue.touched">
+                                <mat-error *ngIf="controls.ltvGoldValue.invalid && controls.ltvGoldValue.touched">
+                                    Field required</mat-error>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-4">
+                    <!-- <div class="col-4">
                     <kt-button [value]="'Save'" [type]="'submit'" (action)="submit('ltvGoldPercent')"></kt-button>
+                </div> -->
                 </div>
-            </div>
 
-            <div class="row kt-padding-t-40 " [formGroup]="minimumLoanAmountForm">
-                <div class="col-8">
-                    <div class="row">
-                        <div class="col-6 form-label text-color d-flex align-items-center">Minimum
-                            loan
-                            amount allowed
-                        </div>
-                        <div class="col-6 per-gram d-flex align-items-center">
-                            <input type="text" class="form-control" numbersOnly formControlName="minimumLoanAmount"
-                                placeholder="5000"
-                                [class.isError]="minimumLoanAmountForm.controls.minimumLoanAmount.invalid && minimumLoanAmountForm.controls.minimumLoanAmount.touched">
-                            <mat-error
-                                *ngIf="minimumLoanAmountForm.controls.minimumLoanAmount.invalid && minimumLoanAmountForm.controls.minimumLoanAmount.touched">
-                                Field required</mat-error>
+                <div class="row kt-padding-t-40 ">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-6 form-label text-color d-flex align-items-center mandatory">Minimum
+                                loan
+                                amount allowed
+                            </div>
+                            <div class="col-6 per-gram align-items-center">
+                                <input type="text" class="form-control" numbersOnly
+                                    formControlName="minimumLoanAmountAllowed" placeholder="5000"
+                                    [class.isError]="controls.minimumLoanAmountAllowed.invalid && controls.minimumLoanAmountAllowed.touched">
+                                <mat-error
+                                    *ngIf="controls.minimumLoanAmountAllowed.invalid && controls.minimumLoanAmountAllowed.touched">
+                                    Field required</mat-error>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-4">
+                    <!-- <div class="col-4">
                     <kt-button [value]="'Save'" [type]="'submit'" (action)="submit('minimumLoanAmount')"></kt-button>
+                </div> -->
                 </div>
-            </div>
 
-            <div class="row kt-padding-t-40 " [formGroup]="minimumTopUpAmountForm">
-                <div class="col-8">
-                    <div class="row">
-                        <div class="col-6 form-label text-color d-flex align-items-center">Minimum
-                            Top-Up Amount
-                        </div>
-                        <div class="col-6 per-gram d-flex align-items-center">
-                            <input type="text" class="form-control" formControlName="minimumTopUpAmount"
-                                placeholder="1000"
-                                [class.isError]="minimumTopUpAmountForm.controls.minimumTopUpAmount.invalid && minimumTopUpAmountForm.controls.minimumTopUpAmount.touched">
-                            <mat-error
-                                *ngIf="minimumTopUpAmountForm.controls.minimumTopUpAmount.invalid && minimumTopUpAmountForm.controls.minimumTopUpAmount.touched">
-                                Field required</mat-error>
+                <div class="row kt-padding-t-40 ">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-6 form-label text-color d-flex align-items-center mandatory">Minimum
+                                Top-Up Amount
+                            </div>
+                            <div class="col-6 per-gram align-items-center">
+                                <input type="text" class="form-control" formControlName="minimumTopUpAmount"
+                                    placeholder="1000"
+                                    [class.isError]="controls.minimumTopUpAmount.invalid && controls.minimumTopUpAmount.touched">
+                                <mat-error
+                                    *ngIf="controls.minimumTopUpAmount.invalid && controls.minimumTopUpAmount.touched">
+                                    Field required</mat-error>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-4">
+                    <!-- <div class="col-4">
                     <kt-button [value]="'Save'" [type]="'submit'" (action)="submit('minimumTopUpAmount')"></kt-button>
+                </div> -->
                 </div>
-            </div>
 
-            <div class="row kt-padding-t-40 " [formGroup]="gracePeriodForm">
-                <div class="col-8">
-                    <div class="row">
-                        <div class="col-6 form-label text-color d-flex align-items-center">Grace
-                            Period
-                            Days
-                        </div>
-                        <div class="col-6 per-gram d-flex align-items-center">
-                            <input type="text" class="form-control" numbersOnly formControlName="gracePeriod"
-                                placeholder="12"
-                                [class.isError]="gracePeriodForm.controls.gracePeriod.invalid && gracePeriodForm.controls.gracePeriod.touched">
-                            <mat-error
-                                *ngIf="gracePeriodForm.controls.gracePeriod.invalid && gracePeriodForm.controls.gracePeriod.touched">
-                                Field required</mat-error>
+                <div class="row kt-padding-t-40 ">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-6 form-label text-color d-flex align-items-center mandatory">Grace
+                                Period
+                                Days
+                            </div>
+                            <div class="col-6 per-gram align-items-center">
+                                <input type="text" class="form-control" numbersOnly formControlName="gracePeriodDays"
+                                    placeholder="12"
+                                    [class.isError]="controls.gracePeriodDays.invalid && controls.gracePeriodDays.touched">
+                                <mat-error *ngIf="controls.gracePeriodDays.invalid && controls.gracePeriodDays.touched">
+                                    Field required</mat-error>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-4">
+                    <!-- <div class="col-4">
                     <kt-button [value]="'Save'" [type]="'submit'" (action)="submit('gracePeriod')"></kt-button>
+                </div> -->
                 </div>
-            </div>
 
-            <div class="row kt-padding-t-40 " [formGroup]="cashTransactionLimitForm">
-                <div class="col-8">
-                    <div class="row">
-                        <div class="col-6 form-label text-color d-flex align-items-center">Cash Transaction Limit
-                        </div>
-                        <div class="col-6 per-gram d-flex align-items-center">
-                            <input type="text" class="form-control" numbersOnly formControlName="cashTransactionLimit"
-                                placeholder="5000"
-                                [class.isError]="cashTransactionLimitForm.controls.cashTransactionLimit.invalid && cashTransactionLimitForm.controls.cashTransactionLimit.touched">
-                            <mat-error
-                                *ngIf="cashTransactionLimitForm.controls.cashTransactionLimit.invalid && cashTransactionLimitForm.controls.cashTransactionLimit.touched">
-                                Field required</mat-error>
+                <div class="row kt-padding-t-40 ">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-6 form-label text-color d-flex align-items-center mandatory">Cash
+                                Transaction Limit
+                            </div>
+                            <div class="col-6 per-gram align-items-center">
+                                <input type="text" class="form-control" numbersOnly
+                                    formControlName="cashTransactionLimit" placeholder="5000"
+                                    [class.isError]="controls.cashTransactionLimit.invalid && controls.cashTransactionLimit.touched">
+                                <mat-error
+                                    *ngIf="controls.cashTransactionLimit.invalid && controls.cashTransactionLimit.touched">
+                                    Field required</mat-error>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-4">
+                    <!-- <div class="col-4">
                     <kt-button [value]="'Save'" [type]="'submit'" (action)="submit('cashTransactionLimit')"></kt-button>
+                </div> -->
                 </div>
-            </div>
 
-            <div class="row kt-padding-t-40 kt-padding-b-30" [formGroup]="gstForm">
-                <div class="col-8">
-                    <div class="row">
-                        <div class="col-6 form-label text-color d-flex align-items-center">GST (%)
-                        </div>
-                        <div class="col-6 per-gram d-flex align-items-center">
-                            <input type="text" class="form-control" formControlName="gst" placeholder="8"
-                                [class.isError]="gstForm.controls.gst.invalid && gstForm.controls.gst.touched">
-                            <mat-error *ngIf="gstForm.controls.gst.invalid && gstForm.controls.gst.touched">
-                                Field required</mat-error>
+                <div class="row kt-padding-t-40">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-6 form-label text-color d-flex align-items-center mandatory">GST (%)
+                            </div>
+                            <div class="col-6 per-gram align-items-center">
+                                <input type="text" class="form-control" formControlName="gst" placeholder="8"
+                                    [class.isError]="controls.gst.invalid && controls.gst.touched">
+                                <mat-error *ngIf="controls.gst.invalid && controls.gst.touched">
+                                    Field required</mat-error>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-4">
+                    <!-- <div class="col-4">
                     <kt-button [value]="'Save'" [type]="'submit'" (action)="submit('gst')"></kt-button>
+                </div> -->
                 </div>
-            </div>
+
+                <div class="row col-6 offset-6 kt-padding-t-40 kt-padding-b-40">
+                    <kt-button [value]="'Save'" [type]="'submit'" (action)="submit()"></kt-button>
+                </div>
+            </form>
+
         </div>
 
     </kt-portlet-body>
