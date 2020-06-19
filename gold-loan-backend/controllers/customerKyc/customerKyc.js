@@ -86,7 +86,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         } else if (KycStage.customerKycCurrentStage == "4") {
             let customerKycReview = await models.customer.findOne({
                 where: { id: KycStage.customerId },
-                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber'],
+                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber','panType', 'panImage'],
                 include: [{
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
@@ -571,7 +571,7 @@ exports.getReviewAndSubmit = async (req, res, next) => {
 
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber','panType', 'panImage'],
         include: [{
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
