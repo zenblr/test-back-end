@@ -58,7 +58,6 @@ export class CheckoutCustomerComponent implements OnInit {
     private fb: FormBuilder,
     private sharedService: SharedService,
     private ref: ChangeDetectorRef,
-    private route: ActivatedRoute,
     private router: Router,
     private checkoutCustomerService: CheckoutCustomerService,
     private shoppingCartService: ShoppingCartService,

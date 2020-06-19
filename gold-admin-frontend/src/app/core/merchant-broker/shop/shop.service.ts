@@ -46,7 +46,7 @@ export class ShopService {
         return this.http.post(API_ENDPOINT + 'api/cart', data)
     }
 
-    getDetails(id): Observable<any> {
+    getOrderDetails(id): Observable<any> {
         return this.http.get(API_ENDPOINT + 'api/order/' + id)
     }
 
@@ -54,7 +54,7 @@ export class ShopService {
         return this.http.post(API_ENDPOINT + 'api/order/pay-emi/amount', data)
     }
 
-    emiTransaction(data): Observable<any> {
+    payEMI(data): Observable<any> {
         return this.http.post(API_ENDPOINT + 'api/order/pay-emi', data)
     }
 
