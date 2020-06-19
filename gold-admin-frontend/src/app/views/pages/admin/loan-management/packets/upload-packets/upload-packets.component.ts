@@ -31,6 +31,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   packetsName: any;
   url: string;
   @Input() ornamentType
+  ornamentName: any;
 
   constructor(
     private sharedService: SharedService,
@@ -42,13 +43,14 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private toast: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
     private ref: ChangeDetectorRef,
-    private dilaog:MatDialog
+    private dilaog: MatDialog
   ) { }
 
 
   ngOnChanges(change: SimpleChanges) {
-    if (change.ornamentType) {
-      this.ornamentType = change.ornamentType.currentValue
+    if (change.ornamentType && change.ornamentType.currentValue) {
+      this.ornamentType = change.ornamentType.currentValue.ornamentType
+      this.ornamentType.map(ele => ele.disabled = false)
     }
   }
 
@@ -73,6 +75,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         const pack = this.packets.at(index) as FormGroup;
         pack.patchValue(array[index])
         pack.patchValue({ packetsName: array[index].packet.packetUniqueId })
+        pack.patchValue({ ornamentsName: array[index].ornaments.packetUniqueId })
         console.log(pack)
         // pack.at(inde).patchValue(array[index])
       }
@@ -147,7 +150,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       packetWithSealing: ['', Validators.required],
       packetWithWeight: ['', Validators.required],
       packetId: [this.controls.packetId.value],
-      packetsName: [this.packetsName]
+      ornamentsId: [this.controls.ornamentType.value],
+      packetsName: [this.packetsName],
+      ornamentsName:[this.ornamentName]
     }))
 
     this.form.resetForm()
@@ -182,7 +187,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       this.sharedService.uploadFile(event.target.files[0]).pipe(
         map(res => {
-          
+
         }),
         catchError(err => {
           throw err
@@ -197,11 +202,18 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   removePackets() {
     let arrayIndex = this.packets.length
     const controls = this.packets.at(arrayIndex) as FormGroup;
+
     let index = this.packetsDetails.findIndex(ele => {
       return ele.id == this.controls.packetId.value;
     })
     this.packetsName = this.packetsDetails[index]
     this.packetsDetails[index].disabled = true
+
+    let ornamnetsIndex = this.ornamentType.findIndex(ele => {
+      return ele.id == this.controls.ornamentType.value;
+    })
+    this.ornamentName = this.ornamentType[ornamnetsIndex]
+    this.ornamentType[index].disabled = true    
     console.log(this.controls.packetId.value)
 
     // this.packetsDetails.splice(index, 1)

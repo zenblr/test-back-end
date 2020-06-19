@@ -1,89 +1,6 @@
 <div class="container">
     <form [formGroup]="approvalForm">
         <div class="row justify-content-center">
-            <!-- <div class="col-8 bordered">
-                <div class="row head">
-                    <div class="col-4">Field</div>
-                    <div class="col-4 border text-center">Appraiser</div>
-                    <div class="col-4 text-center" *ngIf="viewBMForm || url == 'view-loan'">Branch Manager</div>
-                </div>
-                <div class="row body border-top-bottom">
-                    <div class="col-4 form-label">
-                        <label for="">Loan Application Form</label>
-                    </div>
-                    <div class="col-4 border text-center">
-                        <img src="../../../../../../../assets/media/icons/correct.svg"
-                            [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
-                            *ngIf="controls.applicationFormForAppraiser.value"
-                            (click)="approvalOfAppraiser(false,'form')">
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                            [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
-                            *ngIf="!controls.applicationFormForAppraiser.value"
-                            (click)="approvalOfAppraiser(true,'form')">
-                    </div>
-                    <div class="col-4 text-center" *ngIf="viewBMForm || url == 'view-loan'">
-                        <img src="../../../../../../../assets/media/icons/correct.svg"
-                            [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
-                            *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                            [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
-                            *ngIf="!controls.applicationFormForBM.value" (click)="approvalOfBM(true,'form')">
-                    </div>
-                </div>
-                <div class="row body border-top-bottom">
-                    <div class="col-4 form-label">
-                        <label>Gold Valuation</label>
-                    </div>
-                    <div class="col-4 border text-center">
-                        <img src="../../../../../../../assets/media/icons/correct.svg"
-                            [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
-                            *ngIf="controls.goldValuationForAppraiser.value"
-                            (click)="approvalOfAppraiser(false,'gold')">
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                            [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
-                            *ngIf="!controls.goldValuationForAppraiser.value"
-                            (click)="approvalOfAppraiser(true,'gold')">
-
-                    </div>
-                    <div class="col-4 text-center" *ngIf="viewBMForm || url == 'view-loan'">
-                        <img src="../../../../../../../assets/media/icons/correct.svg"
-                            [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable )}"
-                            *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')" disabled>
-                        <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                            [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
-                            *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')" disabled>
-
-                    </div>
-                </div>
-                <div class="row body">
-                    <div class="col-4 form-label">
-                        <label for="">Final Status</label>
-                    </div>
-                    <div class="col-4 border text-center select">
-                        <select class="form-control " formControlName="loanStatusForAppraiser"
-                            (change)="statusAppraiser()"
-                            [class.isError]="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
-                            <option [value]="" [disabled]="true" [selected]="true">Select Status</option>
-                            <option [value]="status.value" *ngFor="let status of appraiser">{{status.name | titlecase}}
-                            </option>
-                        </select>
-                        <mat-error
-                            *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
-                            Field Required</mat-error>
-                    </div>
-                    <div class="col-4 text-center select" *ngIf="viewBMForm || url == 'view-loan'">
-                        <select class="form-control" formControlName="loanStatusForBM" (change)="statusBM()"
-                            [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
-                            <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
-                            <option [value]="status.value" *ngFor="let status of branchManager">
-                                {{status.name | titlecase}}</option>
-                        </select>
-                        <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">Field
-                            Required</mat-error>
-                    </div>
-                </div>
-            </div> -->
-
             <div class="table-div">
                 <table class="table">
                     <thead>
@@ -182,13 +99,16 @@
                         <label for="">Choose a reason</label>
                     </div>
                     <div class="col-8">
-                        <select class="form-control" placeholder="reason for Incomplete" (change)="patchReason()">
+                        <select class="form-control" placeholder="reason for Incomplete" (change)="patchReason()"
+                            formControlName="reasons"
+                            [class.isError]="controls.reasons.touched && controls.reasons.invalid">
                             <option value='' selected disabled>Choose a reason </option>
                             <option [value]="reason.description" *ngFor="let reason of reasons">
                                 {{reason.description}}
                             </option>
                         </select>
-
+                        <mat-error *ngIf="controls.reasons.touched && controls.reasons.invalid">Field
+                            Required</mat-error>
                         <!-- <mat-form-field class="w-100 kt-margin-t-20"
                     *ngIf="cceControls.reasonForOther.value == 'Other'">
                     <textarea matInput formControlName="reasonFromCce"
@@ -200,8 +120,7 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center "
-            *ngIf="controls.loanStatusForAppraiser.value && controls.loanStatusForAppraiser.value != 'approved'">
+        <div class="row justify-content-center " *ngIf="controls.reasons.value && controls.reasons.value == 'Other'">
             <div class="col-7">
                 <mat-form-field class="w-100">
 

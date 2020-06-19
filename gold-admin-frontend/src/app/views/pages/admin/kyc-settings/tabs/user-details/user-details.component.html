@@ -178,7 +178,7 @@
 						</div>
 					</div>
 
-					<div class="row kt-padding-t-15">
+					<div class="row kt-padding-t-15" *ngIf="!controls.panImage.value && controls.panType.value">
 						<div class="col-4 align-self-center form-label">
 							<label *ngIf="controls.panType.value == ''"
 								ngClass="{'mandatory': controls.panType.value != ''}"
@@ -193,7 +193,7 @@
 								<input type="text" class="form-control" placeholder="Select File"
 									aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
 									formControlName="form60"
-									[class.isError]="controls.form60.touched && controls.form60.invalid" />
+									[class.isError]="controls.form60.touched && controls.panImage.invalid" />
 								<div class="input-group-append">
 									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
 										(click)="form60.click()">Attach</span>
@@ -207,18 +207,23 @@
 						</div> -->
 					</div>
 
-					<div class="row kt-margin-t-20 kt-margin-b-20">
+					<div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value">
 						<div class="col offset-4">
 							<div class="img-container">
 								<img *ngIf="!controls.panImage.value" class=""
 									src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
 								<img class="fetched-image" *ngIf="controls.panImage.value" [src]="controls.panImage"
 									style="border-radius: 15px;" alt="" />
+								<img src="../../../../../assets/media/icons/edit.svg" alt=""
+									class="kt-pointer remove-icon" (click)="form60.click()"
+									*ngIf="controls.panImage.value && !(controls.panType.status == 'DISABLED')">
+								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+									(input)="getFileInfo($event)">
 							</div>
 						</div>
 					</div>
 
-					<div class="row kt-padding-t-15">
+					<div class="row kt-margin-t-10 kt-margin-b-20">
 						<div class="col-8 offset-4">
 							<kt-button [value]="'Next'" [type]="'button'" (action)="submit()">
 							</kt-button>

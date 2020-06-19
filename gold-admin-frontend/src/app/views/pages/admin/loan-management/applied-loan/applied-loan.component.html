@@ -39,7 +39,7 @@
 
                 <ng-container matColumnDef="schemeName">
                     <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan?.scheme?.schemeName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="appraisalApproval">
@@ -91,7 +91,7 @@
                             <div *ngIf="loan.loanStage.id == 3">
                                 <div class="kt-pointer" class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="packageImageUpload(loan)" class="red-button" 
+                                    <button (click)="packetImageUpload(loan)" class="red-button" 
                                     [ngClass]="{'cursor-not-allowed':!edit}">Assign
                                         Packet</button>
                                 </div>
