@@ -22,7 +22,7 @@ const upload = multer({
 
 router.post('/', checkAuth, upload.single('csv'), wrapper(postState));
 
-router.get('/', checkAuth, wrapper(getState));
+router.get('/', wrapper(getState));
 
 
 

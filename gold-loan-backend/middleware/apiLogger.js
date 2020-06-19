@@ -49,8 +49,12 @@ module.exports = (req, res, next) => {
         "/api/user/send-otp",
         "/api/user/update-password",
         "/api/user/verify-register-otp",
+
+        "/api/state",
+        "/api/city"
     ];
-    if (!skipUrls.includes(req.originalUrl)) {
+
+    if (!skipUrls.includes(req._parsedUrl.pathname)) {
         try {
             const token = req.headers.authorization.split(" ")[1];
 
