@@ -178,7 +178,6 @@ exports.loanFinalLoan = async (req, res, next) => {
         intrestTable[i]['loanId'] = loanId
         intrestData.push(intrestTable[i])
     }
-    console.log(intrestTable);
     let checkFinalLoan = await models.customerFinalLoan.findOne({ where: { loanId: loanId } })
 
     if (check.isEmpty(checkFinalLoan)) {
@@ -375,6 +374,10 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             model: models.customer,
             as: 'customer',
             attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.customerLoanIntrestCalculator,
+            as: 'customerLoanIntrestCalculator',
         }]
     });
 
