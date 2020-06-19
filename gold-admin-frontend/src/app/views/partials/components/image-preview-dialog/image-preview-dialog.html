@@ -1,7 +1,7 @@
-
- 
+<div *ngIf="type != 'view'" class="position-relative">
+  <img src="../../../../../assets/media/icons/cancel.svg" class="cancel" alt="" (click)="close()">
   <div class="row kt-padding-l-40 kt-padding-r-40">
-    <div class="col-12"> 
+    <div class="col-12">
       <ngb-carousel *ngIf="images">
         <ng-template ngbSlide *ngFor="let img of images">
           <div class="picsum-img-wrapper">
@@ -11,3 +11,18 @@
       </ngb-carousel>
     </div>
   </div>
+</div>
+
+<div *ngIf="type == 'view'">
+  <div class="row kt-padding-l-40 kt-padding-r-40">
+    <div class="col-12">
+      <ngb-carousel *ngIf="viewImages.length" [showNavigationArrows]="viewImages?.length > 1">
+        <ng-template ngbSlide *ngFor="let img of viewImages">
+          <div class="picsum-img-wrapper">
+            <img [src]="img?.url" alt="Random first slide" class="viewImage text-center">
+          </div>
+        </ng-template>
+      </ngb-carousel>
+    </div>
+  </div>
+</div>

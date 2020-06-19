@@ -67,7 +67,6 @@ export class SignInWithOtpComponent implements OnInit {
 
 
   input(event, ref: string) {
-    console.log(event.target.value)
     if (event.target.value == "") {
       if (ref == 'four') {
         this.three.nativeElement.focus()
@@ -126,15 +125,12 @@ export class SignInWithOtpComponent implements OnInit {
 
       this.auth.verifyotp(atob(referenceCode), otp).pipe(
         tap(response => {
-          console.log(response)
           this.router.navigate(['/auth/change-password'])
         }), catchError(err => {
-          console.log(err.error.message)
           this.toastr.errorToastr(err.error.message);
           throw err;
         }), finalize(() => {
           this.loading = false;
-          console.log(this.loading)
           this.cdr.detectChanges();
         })).subscribe()
     }
@@ -150,10 +146,10 @@ export class SignInWithOtpComponent implements OnInit {
             // this.store.dispatch(new Login({ authToken: user.accessToken }));
             localStorage.removeItem('mobile')
             localStorage.removeItem('reference')
-            localStorage.setItem('accessToken', user.token);
+            localStorage.setItem('UserDetails', JSON.stringify(user));
             // debugger
             if (this.returnUrl === '/') {
-              this.router.navigate(['/dashboard']);
+              this.router.navigate(['/admin/dashboard']);
             } else {
               this.router.navigateByUrl(this.returnUrl); // Main page
             }

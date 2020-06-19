@@ -6,9 +6,25 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
-        name: {
+        paymentType: {
+            type: DataTypes.TEXT,
+            field: 'payment_type'
+        },
+        bankName: {
             type: DataTypes.STRING,
-            field: 'name'
+            field: 'bank_name'
+        },
+        bankBranchName:{
+            type: DataTypes.STRING,
+            field: 'bank_branch_name'
+        },
+        accountType:{
+            type: DataTypes.STRING,
+            field: 'account_type',
+        },
+        accountHolderName:{
+            type: DataTypes.STRING,
+            field: 'account_holder_name'
         },
         accountNumber: {
             type: DataTypes.STRING,
@@ -18,10 +34,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'ifsc_code'
         },
+        passbookProof: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'passbook_proof'
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
     }, {
         freezeTableName: true,
@@ -31,12 +59,15 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanBankDetail.associate = function (models) {
         customerLoanBankDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+
+        customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     // FUNCTION TO ADD CUSTOMER BANK DETAIL
     customerLoanBankDetail.addCustomerBankDetail =
-        (loanId, name, accountNumber, ifscCode, t) => customerLoanBankDetail.create({
-            loanId, name, accountNumber, ifscCode, isActive: true
+        (loanId, name, accountNumber, ifscCode, createdBy, modifiedBy, t) => customerLoanBankDetail.create({
+            loanId, name, accountNumber, ifscCode, createdBy, modifiedBy, isActive: true
         }, { t });
 
     return customerLoanBankDetail;

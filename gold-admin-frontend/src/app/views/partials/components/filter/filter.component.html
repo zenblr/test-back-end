@@ -1,3 +1,313 @@
-<button mat-raised-button class="filter">
-    <img src="../../../../../assets/media/icons/svg/General/filter.svg" alt="" height="20" width="20">
-  </button>
+<!-- Filtered Dialog  -->
+<div ngbDropdown class="dropdown dropdown-inline" #filterDropdown="ngbDropdown" aria-haspopup="true"
+  aria-expanded="false" (openChange)="toggleDropdown($event)">
+
+  <button ngbDropdownToggle id="filterDropdown" class="filter" mat-raised-button type="button">
+    <img src="assets/media/icons/svg/General/filter.svg" height="20" width="20"></button>
+
+  <div ngbDropdownMenu class="p-0" aria-labelledby="filterDropdown">
+    <div class="kt-filter-dropdown" [style.width]="filterWidth">
+      <div class="kt-portlet m-0">
+
+        <div class="kt-pointer d-none" (click)="filterDropdown.close()">
+          <i class="fa fa-times pull-right"></i>
+        </div>
+
+        <!-- Product -->
+        <div class="kt-portlet__body" *ngIf="filterName =='product'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row pb-3" *ngxPermissionsOnly="['categoryView', 'subCategoryView']">
+                    <div class="col-6" *ngxPermissionsOnly="['categoryView']">
+                      <label>By Category</label>
+                      <kt-multi-select-search [items]="categoryList" [multiple]="true" bindLabel="categoryName"
+                        formControlName="category" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                    <div class="col-6" *ngxPermissionsOnly="['subCategoryView']">
+                      <label>By Sub-Category</label>
+                      <kt-multi-select-search [items]="subCategoryList" [multiple]="true" bindLabel="subCategoryName"
+                        formControlName="subCategory" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <label>Price From</label>
+                      <input class="form-control" formControlName="priceFrom" type="text" numbersOnly />
+                    </div>
+                    <div class="col-4">
+                      <label>Price To</label>
+                      <input class="form-control" formControlName="priceTo" type="text" numbersOnly />
+                    </div>
+                    <div class="col-4">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                    <div class="col-12 pt-2">
+                      <mat-error *ngIf="controls.priceTo.errors?.priceRange">
+                        <span>Price To should be greater then Price From</span>
+                      </mat-error>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- leads -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'leads'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col">
+                <label>By Location</label>
+                <!-- <select class="form-control" name="category">
+                  <option value="" [selected]="true">Select State</option>
+                  <option *ngFor="let item of states" [value]="item?.id">
+                    {{item?.name}}
+                  </option>
+                </select> -->
+
+                <ng-select [items]="states" bindLabel="name" placeholder="Select State" (change)="getCities($event)"
+                  formControlName="states">
+
+                </ng-select>
+
+
+              </div>
+              <div class="col">
+                <label style="visibility: hidden;">nostatus</label>
+                <kt-multi-select-search formControlName="cities" [items]="cities" [multiple]="true" [bindLabel]="'name'"
+                  [isClear]="clearData" [placeholder]="'Select City'"></kt-multi-select-search>
+              </div>
+              <div class="col">
+                <label>By Status</label>
+                <kt-multi-select-search formControlName="leadStatus" [items]="statusList" [multiple]="true"
+                  [bindLabel]="'statusName'" [placeholder]="'Select Status'" [isClear]="clearData">
+                </kt-multi-select-search>
+              </div>
+              <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- kyc  -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'kyc'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col">
+                <label>By CCE Status</label>
+                <kt-multi-select-search formControlName="cceStatus" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'CCE Status'">
+                </kt-multi-select-search>
+              </div>
+
+              <div class="col">
+                <label>By KYC Status</label>
+                <kt-multi-select-search formControlName="kycStatus" [items]="approvalStatus.bm" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'KYC Status'"></kt-multi-select-search>
+              </div>
+              <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- loan -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'loan'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col">
+                <label>By Appraiser Status</label>
+                <kt-multi-select-search formControlName="appraiserStatus" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Appraiser Status'">
+                </kt-multi-select-search>
+              </div>
+              <div class="col">
+                <label>By Loan Status</label>
+                <kt-multi-select-search formControlName="loanStatus" [items]="approvalStatus.bm" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Loan Status'"></kt-multi-select-search>
+              </div>
+              <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+
+        <!-- packets -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'packets'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>By Packet Assigned</label>
+                <select placeholder="Packet Assigned" class="form-control" formControlName="scheme">
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- scheme -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'scheme'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>By Scheme Type</label>
+                <select placeholder="Scheme Type" class="form-control" formControlName="scheme">
+                  <option selected disabled> Scheme Type </option>
+                  <option value=''>All</option>
+                  <option value=true>Active</option>
+                  <option value=false>Inactive</option>
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- EMI Details -->
+        <div class="kt-portlet__body" *ngIf="filterName =='emiDetails'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row">
+                    <div class="col-8">
+                      <label>By Status</label>
+                      <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                    <div class="col-4">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="kt-portlet__body" *ngIf="filterName =='orderDetails'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row">
+                    <div class="col-3">
+                      <label>By Weight(gm)</label>
+                      <input class="form-control" placeholder="eg-100" formControlName="weight" type="text"
+                        numbersOnly />
+                    </div>
+                    <div class="col-3">
+                      <label>By Tenure(months)</label>
+                      <kt-multi-select-search [items]="paymentTypeList" [multiple]="true" bindLabel="paymentType"
+                        formControlName="paymentType" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                    <div class="col-4">
+                      <label>By Status</label>
+                      <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                    <div class="col-2">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Deposit Details -->
+        <div class="kt-portlet__body" *ngIf="filterName =='depositDetails'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row pb-3">
+                    <div class="col-6">
+                      <label>By Payment Received Date</label>
+                      <input type="text" class="form-control" [matDatepicker]="pickerStartDate"
+                        (click)="pickerStartDate.open()" formControlName="startDate">
+                      <mat-datepicker #pickerStartDate></mat-datepicker>
+                    </div>
+                    <div class="col-6">
+                      <label>By Tenure(months)</label>
+                      <kt-multi-select-search [items]="paymentTypeList" [multiple]="true" bindLabel="paymentType"
+                        formControlName="paymentType" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <label>By Status</label>
+                      <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                    <div class="col-6">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Cancel Order Details -->
+        <div class="kt-portlet__body" *ngIf="filterName =='cancelOrderDetails'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row">
+                    <div class="col-5">
+                      <label>By Merchant</label>
+                      <kt-multi-select-search [items]="merchantList" [multiple]="true" bindLabel="merchantName"
+                        formControlName="merchant" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                    <div class="col-4">
+                      <label>By Cancel Date</label>
+                      <input type="text" class="form-control" [matDatepicker]="pickerStartDate"
+                        (click)="pickerStartDate.open()" formControlName="startDate">
+                      <mat-datepicker #pickerStartDate></mat-datepicker>
+                    </div>
+                    <div class="col-3">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
         internalBranchId: {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id',
-            allowNull: false,
         },
         firstName: {
             type: DataTypes.STRING,
@@ -48,6 +47,12 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
+        kycStatus: {
+            type: DataTypes.ENUM,
+            field: 'kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'pending', 'rejected']
+        },
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',
@@ -59,6 +64,10 @@ module.exports = (sequelize, DataTypes) => {
         statusId: {
             type: DataTypes.INTEGER,
             field: 'status_id',
+        },
+        comment: {
+            type: DataTypes.TEXT,
+            field: 'comment',
         },
         stateId: {
             type: DataTypes.INTEGER,
@@ -72,41 +81,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'pin_code',
         },
-        kycStatus: {
-            type: DataTypes.ENUM,
-            field: 'kyc_status',
-            defaultValue: "pending",
-            values: ['confirm', 'pending', 'complete', 'closed']
-        },
-        isKycSubmitted: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_kyc_submitted',
-            defaultValue: false
-        },
-        isVerifiedByCce: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_verified_by_Cce',
-            defaultValue: false
-        },
-        cceVerifiedBy: {
-            type: DataTypes.INTEGER,
-            field: 'cce_verified_by',
-            defaultValue: null
-        },
-        isVerifiedByBranchManager: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_verified_by_branch_manager',
-            defaultValue: false
-        },
-        branchManagerVerifiedBy: {
-            type: DataTypes.INTEGER,
-            field: 'branch_manager_verified_by',
-            defaultValue: null
-        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -130,7 +108,9 @@ module.exports = (sequelize, DataTypes) => {
     Customer.associate = function (models) {
         Customer.belongsTo(models.internalBranch, { foreignKey: 'internalBranchId', as: 'internalBranch' })
 
-        Customer.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerId', as: 'customerKyc' });
+        Customer.hasOne(models.customerAssignAppraiser, { foreignKey: 'customerId', as: 'customerAssignAppraiser' });
+        Customer.hasOne(models.customerKyc, { foreignKey: 'customerId', as: 'customerKyc' });
+        Customer.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerId', as: 'customerKycPersonal' });
         Customer.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });
         Customer.hasMany(models.customerKycBankDetail, { foreignKey: 'customerId', as: 'customerKycBank' });
 
@@ -148,8 +128,6 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        Customer.belongsTo(models.user, { foreignKey: 'cceVerifiedBy', as: 'cceStageBy' });
-        Customer.belongsTo(models.user, { foreignKey: 'branchManagerVerifiedBy', as: 'branchManagerBy' });
     }
 
     // This hook is always run before create.

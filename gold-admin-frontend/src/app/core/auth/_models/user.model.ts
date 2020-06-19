@@ -17,6 +17,7 @@ export class User extends BaseModel {
 	phone: string;
     address: Address;
     socialNetworks: SocialNetworks;
+    userDetails: any;
 
     clear(): void {
         this.id = undefined;
@@ -35,5 +36,6 @@ export class User extends BaseModel {
         this.address.clear();
         this.socialNetworks = new SocialNetworks();
         this.socialNetworks.clear();
+        this.userDetails = {};
     }
 }

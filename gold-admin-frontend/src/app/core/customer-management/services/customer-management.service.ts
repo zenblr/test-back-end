@@ -1,79 +1,40 @@
 import { Injectable, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { ToastrComponent } from '../../../views/partials/components';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerManagementService {
 
-  openModal = new BehaviorSubject<any>(false);
-  openModal$ = this.openModal.asObservable();
-
+  
   toggle = new BehaviorSubject<any>('list');
   toggle$ = this.toggle.asObservable();
 
-  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
+  customer = new BehaviorSubject<any>({});
+  customer$ = this.customer.asObservable()
+  // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent
+  applyFilter = new BehaviorSubject<any>({});
+  applyFilter$ = this.applyFilter.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
-  getAllLeads(from, to, search, stageName): Observable<any> {
-    return this.http.get<any>(`/api/customer?search=${search}&from=${from}&to=${to}&stageName=${stageName}`); // stageName=lead in queryParams
-  }
+  
 
-  addLead(data): Observable<any> {
-    return this.http.post<any>(`/api/customer`, data);
-  }
-
-  getStatus(): Observable<any> {
-    return this.http.get<any>(`/api/status`).pipe(
-      map(res => res),
-      catchError(err => {
-        this.toastr.errorToastr(err.error.message);
-        throw (err);
+  getCustomers(from, to, search):Observable<any> {
+    return this.http.get(`/api/customer/customer-management?search=${search}&from=${from}&to=${to}`).pipe(
+      tap(res => {
+        this.customer.next(res)
       })
-    );
+    ) // stageName=lead in queryParams
   }
 
-  getLeadById(id): Observable<any> {
-    return this.http.get<any>(`/api/customer/${id}`).pipe(
-      map(res => res),
-      catchError(err => {
-        this.toastr.errorToastr(err.error.message)
-        throw (err)
-      })
-    );;
+  getCustomerById(id):Observable<any>{
+    return this.http.get(`/api/customer/customer-management/${id}`)
   }
 
-  editLead(id, data): Observable<any> {
-    return this.http.put<any>(`/api/customer/${id}`, data).pipe(
-      map(res => res),
-      catchError(err => {
-        this.toastr.errorToastr(err.error.message)
-        throw (err)
-      })
-    );
-  }
 
-  sendOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/customer/send-register-otp`, data); //mobile
-  }
-
-  verifyOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/customer/verify-otp`, data); // ref,otp
-  }
-
-  resendOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/customer/resend-otp`, data);
-  }
-
-  verifyPAN(data): Observable<any> {
-    return this.http.post<any>(`/api/customer/verify-pan`, data);
-  }
-
-  deleteCustomer(id): Observable<any> {
-    return this.http.delete<any>(`/api/customer/delete/${id}`);
-  }
 }

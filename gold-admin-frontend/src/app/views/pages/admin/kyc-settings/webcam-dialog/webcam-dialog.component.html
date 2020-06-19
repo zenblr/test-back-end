@@ -1,0 +1,32 @@
+<span *ngIf="errors.length == 0">
+	<div style="text-align:center" class="view-container">
+		<img src="../../../../../assets/media/icons/cancel.svg" class="cancel" alt="" (click)="close()">
+
+		<div>
+			<webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
+				*ngIf="showWebcam" [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+				[videoOptions]="videoOptions" (cameraSwitched)="cameraWasSwitched($event)"
+				(initError)="handleInitError($event)"></webcam>
+			<br />
+			<!-- <div class="actionBtn" (click)="triggerSnapshot();" title="Take Picture">📸</div>
+		<div class="actionBtn" (click)="showNextWebcam(true);" title="Switch Camera">🔁</div> -->
+		</div>
+	</div>
+
+
+	<div class="p-2 camera-container">
+		<div (click)="triggerSnapshot();" title="Take Picture">
+			<img src="../../../../../assets//media//icons//camera.svg">
+		</div>
+		<!-- <kt-modal-footer (action)="action($event)" [value]="'Click Picture'"></kt-modal-footer> -->
+	</div>
+</span>
+<div class="vh50" *ngIf="errors.length > 0">
+	
+	<div *ngFor="let error of errors">
+		<h4 class="text-center">{{error.message}} </h4>
+	</div>
+	<div class="text-center col-12 kt-padding-10">
+		<kt-button [type]="'button'" [value]="'Ok'" (click)="close()"></kt-button>
+	</div>
+</div>

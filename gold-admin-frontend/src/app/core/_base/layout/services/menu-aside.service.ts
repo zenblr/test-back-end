@@ -13,7 +13,9 @@ import { filter } from 'rxjs/operators';
 export class MenuAsideService {
 	// Public properties
 	menuList$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-	currentRouteUrl: string;
+	currentUrl = [];
+	parentRouteUrl: string;
+	childRouteUrl: string;
 
 	/**
 	 * Service constructor
@@ -24,14 +26,17 @@ export class MenuAsideService {
 		private menuConfigService: MenuConfigService,
 		private router: Router,
 	) {
-		this.currentRouteUrl = this.router.url.split('/')[1]
+		this.currentUrl = this.router.url.split('/');
+		this.parentRouteUrl = this.currentUrl[1];
+		this.childRouteUrl = this.currentUrl[2];
 		this.router.events
 			.pipe(filter(event => event instanceof NavigationEnd))
 			.subscribe(event => {
-				this.currentRouteUrl = this.router.url.split('/')[1];
+				this.currentUrl = this.router.url.split('/');
+				this.parentRouteUrl = this.currentUrl[1];
+				this.childRouteUrl = this.currentUrl[2];
 				this.loadMenu();
 			});
-
 		this.loadMenu();
 	}
 
@@ -40,11 +45,20 @@ export class MenuAsideService {
 	 */
 	loadMenu() {
 		// get menu list
-		var aside = ''
-		if (this.currentRouteUrl == 'user-management') {
-			aside = 'aside.itemsTwo'
-		} else {
-			aside = 'aside.itemsOne'
+		let aside = '';
+		switch (this.parentRouteUrl) {
+			case 'admin': aside = 'aside.adminItems';
+				switch (this.childRouteUrl) {
+					case 'user-management': aside = 'aside.userMgmtItems';
+						break;
+					case 'emi-management': aside = 'aside.emiMgmtItems';
+						break;
+				}
+				break;
+			case 'broker': aside = 'aside.brokerItems';
+				break;
+			default: aside = 'aside.adminItems';
+				break;
 		}
 		const menuItems: any[] = objectPath.get(this.menuConfigService.getMenus(), aside);
 		this.menuList$.next(menuItems);

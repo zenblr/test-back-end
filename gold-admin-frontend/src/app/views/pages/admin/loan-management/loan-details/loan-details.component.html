@@ -1,0 +1,96 @@
+<kt-portlet>
+
+    <kt-portlet-body>
+
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="customerID">
+                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan.customer.customerUniqueId | uppercase}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="loanId">
+                    <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.loanUniqueId | uppercase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="schemeName">
+                    <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="amount">
+                    <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="interestRate">
+                    <mat-header-cell *matHeaderCellDef>Intrest Rate</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.interestRate}} % P.M</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="tenure">
+                    <mat-header-cell *matHeaderCellDef>Loan Tenure</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.tenure}} Months</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="interestRestDays">
+                    <mat-header-cell *matHeaderCellDef>Payment Frequency</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <span *ngIf="loan.finalLoan.paymentFrequency == '30'">Monthly</span>
+                        <span *ngIf="loan.finalLoan.paymentFrequency == '90'">Quarterly</span>
+                        <span *ngIf="loan.finalLoan.paymentFrequency == '180'">Half Yearly</span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="startDate">
+                    <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date : 'mediumDate'}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="endDate">
+                    <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <!-- <div style="display: contents" class="kt-pointer" > -->
+                        <span (click)="viewLoan(loan)" class="kt-pointer font-weight-bold"
+                        *ngxPermissionsOnly="['loanDetailsView']">View Loan </span>
+                        <!-- </div> -->
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="new" >
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <!-- <div style="display: contents" class="kt-pointer" > -->
+                        <button (click)="new(loan)" class="addmore" *ngxPermissionsOnly="['loanApplicationAdd']"
+                        >Add New Loan</button>
+                        <!-- </div> -->
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <!-- Message for empty data  -->
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+
+        <!-- start: BOTTOM -->
+        <div class="mat-table__bottom">
+            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <!-- MATERIAL PAGINATOR | Binded to dasources -->
+            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

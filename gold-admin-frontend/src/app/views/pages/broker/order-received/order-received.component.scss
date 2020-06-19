@@ -1,0 +1,21 @@
+:host {
+    .kt-portlet__body {
+        padding: 25px !important;
+    }
+    .checkout-height {
+        min-height: 80vh;
+        // max-height: 72vh;
+    }
+    table {
+        thead {
+            background-color: #f2f2f2;
+        }
+        tbody {
+            tr {
+                td {
+                    padding: 1rem;
+                }
+            }
+        }
+    }
+}

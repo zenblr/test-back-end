@@ -1,0 +1,31 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row justify-content-center min-height">
+            <div class="col-6 align-self-center">
+                <form [formGroup]="commissionForm">
+                    <div formArrayName="category" *ngFor="let cat of commissionForm.get('category')['controls'];index as idx">
+                        <div [formGroupName]="idx">
+                            <div class="row kt-margin-t-15">
+                                <div class="col-3  align-self-center">
+                                    <label class="font-weight-500 text-color">{{cat.controls.category.value.categoryName | titlecase}} %</label>
+                                </div>
+                                <div class="col-9 ">
+                                    <input type="number" class="form-control" placeholder="Enter Commission(%)" 
+                                    formControlName="commission" [class.isError]="cat.controls.commission.touched && cat.controls.commission.invalid">
+                                    <mat-error *ngIf="cat.controls.commission.touched && cat.controls.commission.errors?.required">Field is Required </mat-error>
+                                    <mat-error *ngIf="cat.controls.commission.touched && cat.controls.commission.errors?.pattern">Invalid Input</mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-12">
+                            <kt-button [value]="'Next'" [type]="'button'" (click)="submit()"></kt-button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

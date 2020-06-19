@@ -1,0 +1,226 @@
+<kt-toastr #toastr></kt-toastr>
+
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row justify-content-center scroll kt-padding-t-10 kt-padding-b-10">
+            <div class="col-6">
+                <form [formGroup]="cancelForm">
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Store Id</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="storeId" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Order Id</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="orderId" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Customer Id</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="userId" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Customer Name</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="customerName" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Mobile Number</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="mobileNumber" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Booking Price</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="bookingPrice" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Total Amt. Paid</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="totalAmt" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Cancellation Price of Order</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="cancellationPrice" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Difference Amt.</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="differenceAmt" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Cancellation
+                                Charges</label>
+                        </div>
+                        <div class="col-7">
+                            <input class="form-control" formControlName="cancellationCharges" type="text" numbersOnly
+                                [class.isError]="controls.cancellationCharges.touched && controls.cancellationCharges.invalid">
+                            <mat-error
+                                *ngIf="controls.cancellationCharges.errors?.required && controls.cancellationCharges.touched">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Total Cancellation Charges</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="totalCancellationCharges" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Amount Payable to Customer</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="amtPayable" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Bank Name</label>
+                        </div>
+                        <div class="col-7">
+                            <input class="form-control" formControlName="customerBankName" type="text"
+                                [class.isError]="controls.customerBankName.touched && controls.customerBankName.invalid">
+                            <mat-error
+                                *ngIf="controls.customerBankName.errors?.required && controls.customerBankName.touched">
+                                Required field
+                            </mat-error>
+                            <mat-error
+                                *ngIf="controls.customerBankName.errors?.pattern && controls.customerBankName.touched">
+                                Alphabets Only
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Account
+                                Number</label>
+                        </div>
+                        <div class="col-7">
+                            <input class="form-control" formControlName="customerAccountNo" type="text" numbersOnly
+                                maxlength="18" minlength="8"
+                                [class.isError]="controls.customerAccountNo.touched && controls.customerAccountNo.invalid">
+                            <mat-error
+                                *ngIf="controls.customerAccountNo.errors?.required && controls.customerAccountNo.touched">
+                                Required field
+                            </mat-error>
+                            <mat-error
+                                *ngIf="controls.customerAccountNo.errors?.minlength && controls.customerAccountNo.touched">
+                                Minimum 8 digits Only
+                            </mat-error>
+                            <mat-error
+                                *ngIf="controls.customerAccountNo.errors?.maxlength && controls.customerAccountNo.touched">
+                                Maximum 18 digits Only
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row kt-padding-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">IFSC Code</label>
+                        </div>
+                        <div class="col-7">
+                            <input class="form-control" formControlName="ifscCode" type="text"
+                                [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
+                            <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
+                                Required field
+                            </mat-error>
+                            <mat-error *ngIf="controls.ifscCode.errors?.pattern && controls.ifscCode.touched">
+                                Please Input Valid Code
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Passbook Copy</label>
+                        </div>
+                        <div class="col-7">
+                            <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'passbookCopy'"
+                                [fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
+                                (remove)="removeImage($event)">
+                            </kt-uplod-preview-image>
+                            <input type="text" formControlName="passbookId" class="form-control"
+                                [class.isError]="controls.passbookId.touched && controls.passbookId.invalid" hidden>
+                            <div *ngIf="controls.passbookId.touched && controls.passbookId.invalid">
+                                <mat-error *ngIf="controls.passbookId.touched && controls.passbookId.errors?.required">
+                                    Passbook Copy is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Cheque Copy</label>
+                        </div>
+                        <div class="col-7">
+                            <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'checkCopy'"
+                                [fileAcceptType]="'image/*, .pdf'" [action]="'remove'" (upload)="uploadImage($event)"
+                                (remove)="removeImage($event)">
+                            </kt-uplod-preview-image>
+                            <input type="text" formControlName="checkCopyId" class="form-control"
+                                [class.isError]="controls.checkCopyId.touched && controls.checkCopyId.invalid" hidden>
+                            <div *ngIf="controls.checkCopyId.touched && controls.checkCopyId.invalid">
+                                <mat-error
+                                    *ngIf="controls.checkCopyId.touched && controls.checkCopyId.errors?.required">
+                                    Cheque Copy is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="cancelData?.nextStatus">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Status</label>
+                        </div>
+                        <div class="col-7">
+                            <select class="form-control" formControlName="status"
+                                [class.isError]="controls.status.touched && controls.status.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                <option [value]="cancelData.nextStatus.statusId">
+                                    {{cancelData.nextStatus.statusName | titlecase}}</option>
+                            </select>
+                            <div *ngIf="controls.status.touched && controls.status.invalid">
+                                <mat-error *ngIf="controls.status.touched && controls.status.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-12 text-right">
+                            <kt-button [value]="'Submit'" [type]="'submit'" (click)="onSubmit()"></kt-button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

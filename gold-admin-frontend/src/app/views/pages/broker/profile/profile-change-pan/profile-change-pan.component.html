@@ -1,0 +1,64 @@
+<kt-toastr #toastr></kt-toastr>
+
+<div class="kt-portlet">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-form">
+            <form [formGroup]="panForm">
+                <div class="form-group kt-form__group row">
+                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+                        <div class="row">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">PAN Card No</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="panCardNumber" type="text"
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid">
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Name on PAN Card</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="form-control" formControlName="nameOnPanCard" type="text"
+                                    [class.isError]="controls.nameOnPanCard.touched && controls.nameOnPanCard.invalid">
+                                <mat-error
+                                    *ngIf="controls.nameOnPanCard.errors?.required && controls.nameOnPanCard.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-5">
+                                <label [class.mandatory]="isMandatory">Upload PAN Card</label>
+                            </div>
+                            <div class="col-7">
+                                <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'pancard'"
+                                    [fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
+                                    (remove)="removeImage($event)">
+                                </kt-uplod-preview-image>
+                                <input type="text" formControlName="pancard" class="form-control"
+                                    [class.isError]="controls.pancard.touched && controls.pancard.invalid" hidden>
+                                <div *ngIf="controls.pancard.touched && controls.pancard.invalid">
+                                    <mat-error *ngIf="controls.pancard.touched && controls.pancard.errors?.required">
+                                        PAN Card is required</mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" value="Update">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>

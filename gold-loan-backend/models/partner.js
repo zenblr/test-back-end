@@ -36,9 +36,16 @@ module.exports = (sequelize, DataTypes) => {
 
     Partner.associate = function (models) {
 
-        Partner.belongsToMany(models.scheme, { through: models.partnerScheme })
+        Partner.belongsToMany(models.scheme, { through: models.partnerScheme });
+        Partner.belongsToMany(models.internalBranch, { through: models.internalBranchPartner });
         Partner.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Partner.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        Partner.hasMany(models.partnerBranch, { foreignKey: 'partnerId', as: 'partnerBranch' });
+
+
+        Partner.hasMany(models.partnerCommissionHistory, { foreignKey: 'partnerId', as: 'partnerCommissionHistory' });
+
     }
 
 

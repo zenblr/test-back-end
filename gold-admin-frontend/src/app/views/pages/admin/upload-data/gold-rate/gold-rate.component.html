@@ -1,0 +1,71 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row kt-padding-t-20 ">
+            <div class="col-3 form-label" placeholder="">
+                <label for="" class="mandatory kt-padding-l-10">Upload Gold Rate</label>
+            </div>
+            <div class="col-3 per-gram align-items-center">
+                <input type="text" class="form-control" numbersOnly [formControl]="goldRate"
+                    [class.isError]="goldRate.invalid && goldRate.touched">
+                <mat-error *ngIf="goldRate.invalid && goldRate.touched">Field required</mat-error>
+            </div>
+            <!-- <div class="col">
+                <div class="row">
+                    <div class="col-4 offset-1" style="font-weight: 500;">
+                        <p>Previous Gold Rate</p>
+                    </div>
+                    <div class="col" style="font-weight: 400;">
+                        <p>{{gold.previousGoldRate}} per gram</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4 offset-1" style="font-weight: 500;">
+                        <p>Last Updated</p>
+                    </div>
+                    <div class="col" style="font-weight: 400;">
+                        <p>{{ gold.updatedAt | date:'medium'}}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 offset-1" style="font-weight: 500;">
+                        <p>Updated By</p>
+                    </div>
+                    <div class="col" style="font-weight: 400;">
+                        <p>{{ gold.Modifiedby.firstName | titlecase }} &nbsp; {{ gold.Modifiedby.lastName | titlecase }}
+                        </p>
+                    </div>
+                </div>
+            </div> -->
+
+        </div>
+        <div class="row kt-margin-t-20 kt-margin-b-40" *ngxPermissionsOnly="['goldRateAdd']">
+            <div class="col-lg-12">
+                <kt-button [type]="'button'" [value]="'Save'" (click)="updateGoldRate()">
+                </kt-button>
+            </div>
+        </div>
+        <h3 class="py-2">Gold Rate Log</h3>
+        <div class="table-div">
+            <table class="table">
+                <thead>
+    
+                    <th>Updated BY</th>
+                    <th>Last Updated Date</th>
+                    <th>Last Updated Time</th>
+                    <th>Updated Gold Rate</th>
+                </thead>
+                <tr *ngFor="let gold of goldInfo;">
+                    <td>
+                        {{gold.Modifiedby.firstName | titlecase}}
+                        {{gold.Modifiedby.lastName | titlecase}}
+                    </td>
+                    <td>{{gold.modifiedTime | date :'mediumDate'}}</td>
+                    <td>{{gold.modifiedTime | date :'mediumTime'}}</td>
+                    <td>{{gold.goldRate}}</td>
+                </tr>
+            </table>
+        </div>
+        
+    </kt-portlet-body>
+</kt-portlet>

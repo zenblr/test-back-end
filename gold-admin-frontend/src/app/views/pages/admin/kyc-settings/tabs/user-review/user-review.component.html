@@ -1,0 +1,1045 @@
+<kt-portlet>
+    <kt-modal-header *ngIf="!viewOnly" [title]='"KYC Details"' (action)="action()"></kt-modal-header>
+    <kt-portlet-body>
+        <div *ngIf="data">
+            <form [formGroup]=reviewForm>
+                <!-- Basic Details -->
+                <div class="row kt-margin-t-30">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Basic Details </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <div class="profile-div">
+                                    <!-- <img class="" src="../../../../../../assets/media/icons/user.png" alt="" /> -->
+                                    <img *ngIf="data" class="profile-pic"
+                                        [src]="data.customerKycReview.customerKycPersonal.profileImage" alt=""
+                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.profileImage)" />
+                                </div>
+                            </div>
+                            <div class="col-7 d-flex" *ngIf="viewOnly">
+                                <div class="align-self-center">
+                                    <input type="file" accept="image/png, image/jpeg" #profile class="d-none"
+                                        (input)="getFileInfo($event, 'profile')" />
+                                    <label [class.mandatory]="viewOnly"
+                                        [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                        (click)="userType != 5 && webcam()" class=" text-primary"
+                                        style="font-weight: 600;">Change Profile
+                                        Picture</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Full Name</label>
+                            </div>
+                            <div class="col-7">
+                                <!-- <div class="row"> -->
+                                <!-- <div class="col"> -->
+                                <input type="text" class="form-control" placeholder="Full Name"
+                                    formControlName="firstName"
+                                    value="{{this.data.customerKycReview.firstName | titlecase}} &nbsp;&nbsp;{{this.data.customerKycReview.lastName | titlecase}}"
+                                    readonly />
+
+                                <!-- </div> -->
+                                <!-- <div class="col">
+                                        <input type="text" class="form-control" placeholder="Full Name"
+                                            formControlName="lastName" />
+    
+                                    </div> -->
+                                <!-- </div> -->
+                                <!-- <mat-error
+                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                Required field
+                            </mat-error> -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> Mobile No.</label>
+                            </div>
+                            <div class="col-7">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="Mobile Number"
+                                            formControlName="mobileNumber"
+                                            value="{{ this.data.customerKycReview.mobileNumber | titlecase }}"
+                                            readonly />
+                                        <!-- <mat-error
+                                                *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                                Required field
+                                            </mat-error> -->
+                                    </div>
+                                    <div class="col pl-0" *ngIf="viewOnly">
+                                        <button class="w-100 btn success-button" color="success">Verified</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">PAN</label>
+                            </div>
+                            <div class="col-7">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="PAN"
+                                            formControlName="panCardNumber"
+                                            value="{{ this.data.customerKycReview.panCardNumber | uppercase }}"
+                                            readonly />
+
+                                    </div>
+                                    <div class="col pl-0" *ngIf="viewOnly">
+                                        <button class="w-100 btn success-button" color="success">Verified</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Details -->
+                <div class="row kt-margin-t-50">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Address & Identity </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Address & Identity</label>
+                            </div>
+                            <div class="col-7">
+                                <!-- <input class="form-control"
+                                    value="{{ data.customerKycReview.customerKycPersonal.identityType.name | titlecase }}" /> -->
+                                <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof"
+                                    [class.isError]="reviewForm.controls.identityTypeId.invalid && reviewForm.controls.identityTypeId.touched">
+                                    <option value="" [disabled]="true" [selected]="true"> Select Proof</option>
+                                    <option *ngFor="let proof of identityProofs" [value]="proof.id">{{ proof.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Unique Identity No.</label>
+                            </div>
+                            <div class="col-7">
+                                <input formControlName="identityProofNumber" type="text"
+                                    placeholder="Unique Identity Number" class="form-control"
+                                    [class.isError]="reviewForm.controls.identityProofNumber.touched && reviewForm.controls.identityProofNumber.invalid">
+                                <mat-error
+                                    *ngIf="reviewForm.controls.identityProofNumber.errors?.required && reviewForm.controls.identityProofNumber.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Proof</label>
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group mb-3" *ngIf="viewOnly">
+                                    <input type="text" class="form-control" placeholder="Select File"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+                                        formControlName="identityProofFileName" />
+                                    <div class="input-group-append">
+                                        <span [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                            class="input-group-text bgx font-weight" id="basic-addon2"
+                                            (click)="userType != 5 && identity.click()"
+                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                    </div>
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #identity
+                                        (input)="getFileInfo($event, 'identityProof')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-6">
+                        <div class="col-8 offset-4">
+                            <div class="img-container">
+                                <div class="">
+                                    <img class="" src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+                                  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
+                    <ng-container *ngIf="data.customerKycReview.customerKycPersonal.identityProof.length == 0">
+                        <div class="col-4">
+                            <div class="img-container">
+                                <img class="placeholder-image" src="assets/media/icons/image-placeholder.png"
+                                    style="border-radius: 15px;" alt="" />
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.customerKycReview.customerKycPersonal.identityProof.length > 0">
+                        <div class="col-4"
+                            *ngFor="let pass of data.customerKycReview.customerKycPersonal.identityProof, index as idx">
+                            <div class="img-container">
+                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
+                                    (click)="previewImage(pass)" />
+                                <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="removeImages(idx, 'identityProof');">
+                            </div>
+                        </div>
+                    </ng-container>
+
+                </div>
+            </form>
+
+            <form *ngIf="cities0" [formGroup]="customerKycAddressOne">
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h6> Permanent Address </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">State</label>
+                            </div>
+                            <div class="col-7">
+                                <!-- <input type="text" class="form-control"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].state.name | titlecase }}" /> -->
+                                <select formControlName="stateId" class="form-control" (change)="getCities('permanent')"
+                                    [class.isError]="customerKycAddressOne.controls.stateId.touched && customerKycAddressOne.controls.stateId.invalid">
+                                    <option value="" selected disabled> Select State
+                                    </option>
+                                    <option *ngFor="let state of states" [value]="state.id">
+                                        {{state.name}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycAddressOne.controls.stateId.errors?.required && customerKycAddressOne.controls.stateId.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=" col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">City</label>
+                            </div>
+                            <div class="col-7">
+                                <!-- <input type="text" class="form-control" value="{{ data.customerKycReview.customerKycAddress[0].city.name | titlecase }}
+                                   " /> -->
+                                <select formControlName="cityId" class="form-control"
+                                    [class.isError]="customerKycAddressOne.controls.cityId.touched && customerKycAddressOne.controls.cityId.invalid">
+                                    <option value="" selected disabled> Select City
+                                    </option>
+                                    <option *ngFor="let city of cities0" [value]="city.id">
+                                        {{city.name}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycAddressOne.controls.cityId.errors?.required && customerKycAddressOne.controls.cityId.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> Address </label>
+                            </div>
+                            <div class="col-7">
+                                <textarea type="text" class="form-control" placeholder="Enter Address"
+                                    formControlName="address" rows="4"
+                                    [class.isError]="customerKycAddressOne.controls.address.touched && customerKycAddressOne.controls.address.invalid"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].address  }}"></textarea>
+                                <mat-error
+                                    *ngIf="customerKycAddressOne.controls.address.errors?.required && customerKycAddressOne.controls.address.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Pin Code</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Pin Code" formControlName="pinCode"
+                                    value="{{ data.customerKycReview.customerKycAddress[0].pinCode }}"
+                                    [class.isError]="customerKycAddressOne.controls.pinCode.touched && customerKycAddressOne.controls.pinCode.invalid"
+                                    numbersOnly maxlength="6" />
+                                <mat-error
+                                    *ngIf="customerKycAddressOne.controls.pinCode.errors?.required && customerKycAddressOne.controls.pinCode.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycAddressOne.controls.pinCode.errors?.pattern && customerKycAddressOne.controls.pinCode.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+
+                            <div class="offset-1 col-3 form-label kt-margin-t-20">
+                                <label [class.mandatory]="viewOnly" class="">Address Proof</label>
+                            </div>
+                            <div class="col-7 kt-margin-t-20">
+                                <select formControlName="addressProofTypeId" class="form-control"
+                                    [class.isError]="customerKycAddressOne.controls.addressProofTypeId.touched && customerKycAddressOne.controls.addressProofTypeId.invalid">
+                                    <option value="" selected disabled> Select Proof
+                                    </option>
+                                    <option *ngFor="let proof of addressProofs" [value]="proof.id">
+                                        {{proof.name}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycAddressOne.controls.addressProofTypeId.errors?.required && customerKycAddressOne.controls.addressProofTypeId.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Proof</label>
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group mb-3" *ngIf="viewOnly">
+                                    <input type="text" class="form-control" placeholder="Select File"
+                                        formControlName="addressProofFileName" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg font-weight" id="basic-addon2"
+                                            (click)="userType !== 5 && permanent.click()"
+                                            [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                    </div>
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #permanent
+                                        (input)="getFileInfo($event, 'permanent')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Unique Identity No.</label>
+                            </div>
+                            <div class="col-7">
+                                <input formControlName="addressProofNumber" type="text"
+                                    placeholder="Unique Identity Number" class="form-control"
+                                    [class.isError]="customerKycAddressOne.controls.addressProofNumber.touched && customerKycAddressOne.controls.addressProofNumber.invalid">
+                                <mat-error
+                                    *ngIf="customerKycAddressOne.controls.addressProofNumber.errors?.required && customerKycAddressOne.controls.addressProofNumber.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
+                    <ng-container *ngIf="data.customerKycReview.customerKycAddress[0].addressProof.length == 0">
+                        <div class="col-4">
+                            <div class="img-container">
+                                <img class="placeholder-image" src="assets/media/icons/image-placeholder.png"
+                                    style="border-radius: 15px;" alt="" />
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.customerKycReview.customerKycAddress[0].addressProof.length > 0">
+                        <div class="col-4"
+                            *ngFor="let pass of data.customerKycReview.customerKycAddress[0].addressProof, index as idx">
+                            <div class="img-container">
+                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
+                                    (click)="previewImage(pass)" />
+                                <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="removeImages(idx, 'permanent');">
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </form>
+
+            <form [formGroup]="customerKycAddressTwo">
+                <!-- Address Details -->
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h6>Current Residential Address </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">State</label>
+                            </div>
+                            <div class="col-7">
+                                <!-- <input type="text" class="form-control"
+                                    value="{{ data.customerKycReview.customerKycAddress[1].state.name | titlecase }}" /> -->
+                                <select formControlName="stateId" class="form-control"
+                                    (change)="getCities('residential')"
+                                    [class.isError]="customerKycAddressTwo.controls.stateId.touched && customerKycAddressTwo.controls.stateId.invalid">
+                                    <option value="" selected disabled> Select State
+                                    </option>
+                                    <option *ngFor="let state of states" [value]="state.id">
+                                        {{state.name}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycAddressTwo.controls.stateId.errors?.required && customerKycAddressTwo.controls.stateId.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">City</label>
+                            </div>
+                            <div class="col-7">
+                                <!-- <input type="text" class="form-control"
+                                    value="{{ data.customerKycReview.customerKycAddress[1].city.name | titlecase }}" /> -->
+                                <select formControlName="cityId" class="form-control"
+                                    [class.isError]="customerKycAddressTwo.controls.cityId.touched && customerKycAddressTwo.controls.cityId.invalid">
+                                    <option value="" selected disabled> Select City
+                                    </option>
+                                    <option *ngFor="let city of cities1" [value]="city.id">
+                                        {{city.name}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycAddressTwo.controls.cityId.errors?.required && customerKycAddressTwo.controls.cityId.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> Address </label>
+                            </div>
+                            <div class="col-7">
+                                <textarea type="text" class="form-control" placeholder="Enter Address"
+                                    formControlName="address" rows="4"
+                                    value="{{ data.customerKycReview.customerKycAddress[1].address }}"
+                                    [class.isError]="customerKycAddressTwo.controls.address.touched && customerKycAddressTwo.controls.address.invalid">
+                                </textarea>
+                                <mat-error
+                                    *ngIf="customerKycAddressTwo.controls.address.errors?.required && customerKycAddressTwo.controls.address.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Pin Code</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Pin Code" formControlName="pinCode"
+                                    value="{{ data.customerKycReview.customerKycAddress[1].pinCode }}"
+                                    [class.isError]="customerKycAddressTwo.controls.pinCode.touched && customerKycAddressTwo.controls.pinCode.invalid" />
+                                <mat-error
+                                    *ngIf="customerKycAddressTwo.controls.pinCode.errors?.required && customerKycAddressTwo.controls.pinCode.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycAddressTwo.controls.pinCode.errors?.pattern && customerKycAddressTwo.controls.pinCode.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+
+                            <div class="offset-1 col-3 form-label kt-margin-t-20">
+                                <label [class.mandatory]="viewOnly" class="">Address Proof</label>
+                            </div>
+                            <div class="col-7 kt-margin-t-20">
+                                <select formControlName="addressProofTypeId" class="form-control"
+                                    [class.isError]="customerKycAddressTwo.controls.addressProofTypeId.touched && customerKycAddressTwo.controls.addressProofTypeId.invalid">
+                                    <option value="" selected disabled> Select Proof
+                                    </option>
+                                    <option *ngFor="let proof of addressProofs" [value]="proof.id">
+                                        {{proof.name}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycAddressTwo.controls.addressProofTypeId.errors?.required && customerKycAddressTwo.controls.addressProofTypeId.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col-6">
+                        <div class="col-8 offset-4">
+                            <div class="img-container">
+                                <ng-container
+                                    *ngFor="let pass of data.customerKycReview.customerKycAddress[1].addressProof">
+                                    <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Proof</label>
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group mb-3" *ngIf="viewOnly">
+                                    <input type="text" class="form-control" placeholder="Select File"
+                                        formControlName="addressProofFileName" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg font-weight" id="basic-addon2"
+                                            (click)="userType !==5 && residential.click()"
+                                            [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                    </div>
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #residential
+                                        (input)="getFileInfo($event, 'residential')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Unique Identity No.</label>
+                            </div>
+                            <div class="col-7">
+                                <input formControlName="addressProofNumber" type="text"
+                                    placeholder="Unique Identity Number" class="form-control"
+                                    [class.isError]="customerKycAddressTwo.controls.addressProofNumber.touched && customerKycAddressTwo.controls.addressProofNumber.invalid">
+                                <mat-error
+                                    *ngIf="customerKycAddressTwo.controls.addressProofNumber.errors?.required && customerKycAddressTwo.controls.addressProofNumber.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
+                    <ng-container *ngIf="data.customerKycReview.customerKycAddress[1].addressProof.length == 0">
+                        <div class="col-4">
+                            <div class="img-container">
+                                <img class="placeholder-image" src="assets/media/icons/image-placeholder.png"
+                                    style="border-radius: 15px;" alt="" />
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.customerKycReview.customerKycAddress[1].addressProof.length > 0">
+                        <div class="col-4"
+                            *ngFor="let pass of data.customerKycReview.customerKycAddress[1].addressProof, index as idx">
+                            <div class="img-container">
+                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
+                                    (click)="previewImage(pass)" />
+                                <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="removeImages(idx, 'residential');">
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </form>
+
+            <!-- Personal Details -->
+            <form action="" [formGroup]="customerKycPersonal">
+                <div class="row kt-margin-t-50">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Personal Details </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> Date of Birth </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                    formControlName="dateOfBirth" (dateChange)="ageValidation()"
+                                    [class.isError]="customerKycPersonal.controls.dateOfBirth.touched && customerKycPersonal.controls.dateOfBirth.invalid"
+                                    readonly placeholder="4/5/2020" [max]="maxDate" />
+                                <mat-datepicker #picker></mat-datepicker>
+
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.dateOfBirth.errors?.required && customerKycPersonal.controls.dateOfBirth.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Gender</label>
+                            </div>
+                            <div class="col-7">
+                                <select formControlName="gender" class="form-control"
+                                    [class.isError]="customerKycPersonal.controls.gender.touched && customerKycPersonal.controls.gender.invalid">
+                                    <option value="" disabled selected> Select </option>
+                                    <option value="m">Male</option>
+                                    <option value="f">Female</option>
+                                    <option value="o">Other</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.gender.errors?.required && customerKycPersonal.controls.gender.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row kt-margin-t-20">
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> Age </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Age" formControlName="age"
+                                    numbersOnly [value]="data.customerKycReview.customerKycPersonal.age" readonly
+                                    [class.isError]="customerKycPersonal.controls.age.touched && customerKycPersonal.controls.age.invalid" />
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.age.errors?.required && customerKycPersonal.controls.age.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.age.errors?.pattern && customerKycPersonal.controls.age.touched">
+                                    Invalid Input
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Marital Status</label>
+                            </div>
+                            <div class="col-7">
+                                <!-- <ng-container *ngIf="data.customerKycReview.customerKycPersonal.martialStatus == 'single'">
+                                    <input type="text" class="form-control" placeholder="" value="Single" />
+                                </ng-container>
+                                <ng-container *ngIf="data.customerKycReview.customerKycPersonal.martialStatus == 'married'">
+                                    <input type="text" class="form-control" placeholder="" value="Married" />
+                                </ng-container>
+                                <ng-container *ngIf="data.customerKycReview.customerKycPersonal.martialStatus == 'divorced'">
+                                    <input type="text" class="form-control" placeholder="" value="Divorced" />
+                                </ng-container> -->
+
+                                <select formControlName="martialStatus" class="form-control"
+                                    [class.isError]="customerKycPersonal.controls.martialStatus.touched && customerKycPersonal.controls.martialStatus.invalid">
+                                    <option value="" selected disabled>Select Status</option>
+                                    <option value="single">Single</option>
+                                    <option value="married">Married</option>
+                                    <option value="divorced">Divorced</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.martialStatus.errors?.required && customerKycPersonal.controls.martialStatus.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class=""> Occupation </label>
+                            </div>
+                            <div class="col-7">
+                                <select name="" id="" formControlName="occupationId" class="form-control"
+                                    placeholder="Select Occupation"
+                                    [class.isError]="customerKycPersonal.controls.occupationId.touched && customerKycPersonal.controls.occupationId.invalid">
+                                    <option value=null [selected]="true">Select Occupation
+                                    </option>
+                                    <option [value]="occ.id" *ngFor="let occ of occupations;"> {{occ.name}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.occupationId.errors?.required && customerKycPersonal.controls.occupationId.touched">
+                                    Required field
+                                </mat-error>
+                                <!-- <input type="text" class="form-control" placeholder="" formControlName="occupationId"
+                                    value="{{ data.customerKycReview.customerKycPersonal.occupation.name }}" /> -->
+                                <!-- <mat-error
+                                    *ngIf="controls.alternateMobileNumber.errors?.required && controls.alternateMobileNumber.touched">
+                                    Required field
+                                </mat-error> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label
+                                    *ngIf="customerKycPersonal.controls.martialStatus.value == 'single' || customerKycPersonal.controls.martialStatus.value == 'divorced' || customerKycPersonal.controls.martialStatus.value == ''"
+                                    [class.mandatory]="viewOnly">Father's Name</label>
+                                <label *ngIf="customerKycPersonal.controls.martialStatus.value == 'married'"
+                                    [class.mandatory]="viewOnly">
+                                    Spouse Name</label>
+                                <!-- <label [class.mandatory]="viewOnly" class="">Father/Spouse Name</label> -->
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="" formControlName="spouseName"
+                                    value="{{ data.customerKycReview.customerKycPersonal.spouseName | titlecase }}"
+                                    [class.isError]="customerKycPersonal.controls.spouseName.touched && customerKycPersonal.controls.spouseName.invalid" />
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.spouseName.errors?.required && customerKycPersonal.controls.spouseName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label class="">Signature</label>
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group mb-3" *ngIf="viewOnly">
+                                    <input type="text" class="form-control" placeholder="Select File"
+                                        formControlName="signatureProofFileName" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg font-weight" id="basic-addon2"
+                                            (click)="userType !== 5 && signature.click()"
+                                            [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                    </div>
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #signature
+                                        (input)="getFileInfo($event, 'signature')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> Alternate No. </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Mobile Number"
+                                    formControlName="alternateMobileNumber" maxlength="10" numbersOnly
+                                    [value]="data.customerKycReview.customerKycPersonal.alternateMobileNumber"
+                                    [class.isError]="customerKycPersonal.controls.alternateMobileNumber.touched && customerKycPersonal.controls.alternateMobileNumber.invalid" />
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.alternateMobileNumber.errors?.required && customerKycPersonal.controls.alternateMobileNumber.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycPersonal.controls.alternateMobileNumber.errors?.pattern && customerKycPersonal.controls.alternateMobileNumber.touched">
+                                    Invalid Input
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20 kt-margin-b-20"
+                    *ngIf="data.customerKycReview.customerKycPersonal.signatureProof">
+                    <div class="col-6">
+                        <div class="col-8 offset-4">
+                            <div class="img-container kt-margin-r-15">
+                                <ng-container>
+                                    <img class="fetched-image"
+                                        [src]="data.customerKycReview.customerKycPersonal.signatureProof"
+                                        style="border-radius: 15px;" alt=""
+                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.signatureProof)" />
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+            <!-- Bank Details -->
+            <!-- <form action="" [formGroup]="customerKycBank">
+                <div class="row kt-margin-t-50">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-12 form-label header">
+                                <h5> Bank Details </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> Bank Name </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Bank Name"
+                                    formControlName="bankName"
+                                    value="{{ data.customerKycReview.customerKycBank[0].bankName | titlecase }}"
+                                    [class.isError]="customerKycBank.controls.bankName.touched && customerKycBank.controls.bankName.invalid" />
+                                <mat-error
+                                    *ngIf="customerKycBank.controls.bankName.errors?.required && customerKycBank.controls.bankName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Bank Branch</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Branch Name"
+                                    formControlName="bankBranchName"
+                                    value="{{ data.customerKycReview.customerKycBank[0].bankBranchName | titlecase }}"
+                                    [class.isError]="customerKycBank.controls.bankBranchName.touched && customerKycBank.controls.bankBranchName.invalid" />
+                                <mat-error
+                                    *ngIf="customerKycBank.controls.bankBranchName.errors?.required && customerKycBank.controls.bankBranchName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> A/C Type </label>
+                            </div>
+                            <div class="col-7">
+                             
+
+                                <select name="" id="" class="form-control" placeholder="" formControlName="accountType"
+                                    [class.isError]="customerKycBank.controls.accountType.touched && customerKycBank.controls.accountType.invalid">
+                                    <option value="" selected disabled>Select Account Type
+                                    </option>
+                                    <option value="saving"> Saving</option>
+                                    <option value="current"> Current</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="customerKycBank.controls.accountType.errors?.required && customerKycBank.controls.accountType.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">A/C Holder</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="Kane Taylor"
+                                    formControlName="accountHolderName"
+                                    [class.isError]="customerKycBank.controls.accountHolderName.touched && customerKycBank.controls.accountHolderName.invalid"
+                                    value="{{ data.customerKycReview.customerKycBank[0].accountHolderName | titlecase }}" />
+                                <mat-error
+                                    *ngIf="customerKycBank.controls.accountHolderName.errors?.required && customerKycBank.controls.accountHolderName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class=""> A/C No. </label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="xxxx xxxx xx8867"
+                                    formControlName="accountNumber" numbersOnly maxlength="18" minlength="8"
+                                    [value]="data.customerKycReview.customerKycBank[0].accountNumber"
+                                    [class.isError]="customerKycBank.controls.accountNumber.touched && customerKycBank.controls.accountNumber.invalid" />
+                                <mat-error
+                                    *ngIf="customerKycBank.controls.accountNumber.errors?.required && customerKycBank.controls.accountNumber.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label [class.mandatory]="viewOnly" class="">IFSC Code</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" placeholder="IFSCXXXX890" maxlength="11"
+                                    formControlName="ifscCode"
+                                    value="{{ data.customerKycReview.customerKycBank[0].ifscCode | uppercase }}"
+                                    [class.isError]="customerKycBank.controls.ifscCode.touched && customerKycBank.controls.ifscCode.invalid" />
+                                <mat-error
+                                    *ngIf="customerKycBank.controls.ifscCode.errors?.required && customerKycBank.controls.ifscCode.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="customerKycBank.controls.ifscCode.errors?.pattern && customerKycBank.controls.ifscCode.touched">
+                                    Invalid Input
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3 offset-1 form-label">
+                                <label [class.mandatory]="viewOnly" class="">Passbook or Statement</label>
+                            </div>
+                            <div class="col-7">
+                                <div class="input-group mb-3" *ngIf="viewOnly">
+                                    <input type="text" class="form-control" placeholder="Select File"
+                                        formControlName="passbookProofFileName" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                            (click)="pass.click()"
+                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                    </div>
+                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #pass
+                                        (input)="getFileInfo($event, 'passbook')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row offset-2 kt-margin-t-20 kt-margin-b-20">
+                    <ng-container *ngIf="data.customerKycReview.customerKycBank[0].passbookProof.length == 0">
+                        <div class="col-4">
+                            <div class="img-container">
+                                <img class="placeholder-image" src="assets/media/icons/image-placeholder.png"
+                                    style="border-radius: 15px;" alt="" />
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.customerKycReview.customerKycBank[0].passbookProof.length > 0">
+                        <div class="col-4"
+                            *ngFor="let pass of data.customerKycReview.customerKycBank[0].passbookProof, index as idx">
+                            <div class="img-container  kt-margin-r-15">
+                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt="" />
+                                <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="removeImages(idx, 'passbook');">
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </form> -->
+
+
+            <div class="row" *ngIf="viewOnly">
+                <div class="col-6">
+                    <div class="offset-4">
+                        <div class="col kt-margin-t-20 kt-margin-b-20">
+                            <kt-button [value]="'Submit'" [type]="'button'" (action)="submit()"></kt-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- </form> -->
+    </kt-portlet-body>
+</kt-portlet>

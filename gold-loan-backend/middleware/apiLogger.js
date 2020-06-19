@@ -9,12 +9,35 @@ module.exports = (req, res, next) => {
 
     const createdDateTime = new Date();
 
-    let skipUrls = [        
+    let skipUrls = [ 
+        "/api/customer/banner",
+        "/api/customer/offer",
+        "/api/customer/lender-banner",
+        "/api/customer-feedback",
+        "/api/customer/gold-rate",
+        "/api/customer/personal-detail",
+        "/api/customer/bank-detail",
+        "/api/customer/address-detail",
+        "/api/customer/nominee-detail",
+        "/api/customer/address-proof-image-detail",
+        "/api/customer/pan-card-image-detail",
+        "/api/customer/partner-branch",
+        "/api/customer/get-all-scheme",
+        "/api/customer/my-loan",
+        "/api/customer/scheme-based-on-price",
+        "/api/customer/loan-detail",
+        "/api/customer/customer-feedback",
+
+
+
+        
         "/api/user/addadmin",
         "/",
 
+        "/api/customer/send-otp",
         "/api/customer/verify-register-otp",
         "/api/customer/send-register-otp",
+        "/api/auth/verify-customer-login",
 
         "/api/auth/user-login",
         "/api/auth/customer-login",
@@ -33,7 +56,7 @@ module.exports = (req, res, next) => {
 
             client.get(token, (err, result) => {
                 if (err) {
-                    res.status(400).json({
+                    res.status(401).json({
                         message: err
                     })
                 } else if (result) {

@@ -1,0 +1,18 @@
+:host {
+    .per-gram {
+        display : inline-block;
+        position: relative;
+    }
+
+    /* position the unit to the right of the wrapper */
+    .per-gram::after {
+        position   : absolute;
+        top: 50%;
+    transform: translateY(-50%);
+        right      : 1em;
+        transition : all .05s ease-in-out;
+        content    : 'Per gram';
+        color      : #707480;
+        font-weight: bold;
+    }
+}

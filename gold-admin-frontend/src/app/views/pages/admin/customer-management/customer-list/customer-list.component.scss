@@ -1,0 +1,12 @@
+:host {
+    .mat-column-actions {
+        flex: 0 0 210px;
+    }
+    .mat-column-fullName {
+        padding-left: 10px !important;
+    }
+
+    .mat-table__wrapper .mat-table .mat-header-cell {
+        padding-right: 0%;
+    }
+}

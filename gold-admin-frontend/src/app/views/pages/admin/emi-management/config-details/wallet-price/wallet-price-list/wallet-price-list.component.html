@@ -1,0 +1,77 @@
+<div class="row" *ngIf="walletPrice">
+    <div class="col-12">
+        <div *ngIf="walletPrice;then showData;else dataNotFound"></div>
+        <ng-template #showData>
+            <div class="row row-full-height">
+                <div class="col-3">
+                    <kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand h-auto'">
+                        <kt-portlet-body [class]="'kt-portlet__body--fluid'">
+                            <custom-kt-widget26 [value]="walletPrice?.walletGoldPrice"
+                                [desc]="'Wallet Gold Price (1 gm)'"></custom-kt-widget26>
+                        </kt-portlet-body>
+                    </kt-portlet>
+                </div>
+                <div class="col-3">
+                    <kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand h-auto'">
+                        <kt-portlet-body [class]="'kt-portlet__body--fluid'">
+                            <custom-kt-widget26 [value]="walletPrice?.walletSilverPrice"
+                                [desc]="'Wallet Silver Price (1 gm)'"></custom-kt-widget26>
+                        </kt-portlet-body>
+                    </kt-portlet>
+                </div>
+                <div class="col-3">
+                    <kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand h-auto'">
+                        <kt-portlet-body [class]="'kt-portlet__body--fluid'">
+                            <custom-kt-widget26 [value]="walletPrice?.gst" [desc]="'GST Value (%)'"></custom-kt-widget26>
+                        </kt-portlet-body>
+                    </kt-portlet>
+                </div>
+                <div class="col-3">
+                    <kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand h-auto'">
+                        <kt-portlet-body [class]="'kt-portlet__body--fluid'">
+                            <custom-kt-widget26 [value]="walletPrice?.cancelValue" [desc]="'Cancel Value (%)'">
+                            </custom-kt-widget26>
+                        </kt-portlet-body>
+                    </kt-portlet>
+                </div>
+                <div class="col-3">
+                    <kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand h-auto'">
+                        <kt-portlet-body [class]="'kt-portlet__body--fluid'">
+                            <custom-kt-widget26 [value]="walletPrice?.forwordCostThreeMonth"
+                                [desc]="'Fwd Cost 3 Months (%)'"></custom-kt-widget26>
+                        </kt-portlet-body>
+                    </kt-portlet>
+                </div>
+                <div class="col-3">
+                    <kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand h-auto'">
+                        <kt-portlet-body [class]="'kt-portlet__body--fluid'">
+                            <custom-kt-widget26 [value]="walletPrice?.forwordCostSixMonth"
+                                [desc]="'Fwd Cost 6 Months (%)'"></custom-kt-widget26>
+                        </kt-portlet-body>
+                    </kt-portlet>
+                </div>
+                <div class="col-3">
+                    <kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand h-auto'">
+                        <kt-portlet-body [class]="'kt-portlet__body--fluid'">
+                            <custom-kt-widget26 [value]="walletPrice?.forwordCostNineMonth"
+                                [desc]="'Fwd Cost 9 Months (%)'"></custom-kt-widget26>
+                        </kt-portlet-body>
+                    </kt-portlet>
+                </div>
+                <div class="col-3">
+                    <kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand h-auto'">
+                        <kt-portlet-body [class]="'kt-portlet__body--fluid'">
+                            <custom-kt-widget26 [value]="walletPrice?.kycLimit"
+                                [desc]="'KYC Limit'"></custom-kt-widget26>
+                        </kt-portlet-body>
+                    </kt-portlet>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #dataNotFound>
+            <div class="row row-full-height">
+                <div class="col-12">No records found</div>
+            </div>
+        </ng-template>
+    </div>
+</div>

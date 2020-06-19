@@ -1,0 +1,168 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <kt-portlet-body *ngIf="cartData">
+        <div class="row" *ngIf="cartData?.allCartData?.length;else noCartItems">
+            <div class="col-8 cart-height overflow-auto">
+                <div class="cart-list-item" *ngFor="let item of cartData?.allCartData">
+                    <div class="row">
+                        <div class="col-2 d-flex align-items-center justify-content-center">
+                            <img [src]="item?.product.productImage != '0' ? item?.product?.productImage: 'assets/media/icons/image-placeholder.png'"
+                                alt="test" class="productImage">
+                        </div>
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="col-10 font-weight-bold">{{item?.product?.productName}}</div>
+                                <div class="col-2 text-danger kt-pointer" (click)="removeCartItem(item?.cartId)">Remove
+                                </div>
+                            </div>
+                            <hr>
+                            <!-- <div class="row py-1">
+                                <div class="col-3 text-muted">SKU Code</div>
+                                <div class="col-3">{{item?.product?.sku}}</div>
+                                <div class="col-2 text-muted">Price</div>
+                                <div class="col-2 text-muted">Quantity</div>
+                                <div class="col-2 text-muted">SubTotal</div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">Installments</div>
+                                <div class="col-3">{{item?.paymentTypeId != 4 ? item?.paymentType?.paymentType : 'N/A'}}
+                                </div>
+                                <div class="col-2">{{item?.price | number}}</div>
+                                <div class="col-2" *ngIf="item?.paymentTypeId != 4;else elseBlock">{{item?.quantity}}
+                                </div>
+                                <ng-template #elseBlock>
+                                    <div class="col-2">
+                                        <input type="text" value="{{item?.quantity}}"
+                                            class="form-control h-75 w-75 productQtyInput">
+                                    </div>
+                                </ng-template>
+                                <div class="col-2">{{item?.finalPrice | number}}</div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-3 text-muted">Initial Payment</div>
+                                <div class="col-3">
+                                    {{item?.paymentTypeId != 4 ? (item?.initialPayment | number) : 'N/A'}}</div>
+                                <div class="col-2 offset-2" *ngIf="item?.paymentTypeId == 4">
+                                    <kt-button [myClass]="'updateQty'" [value]="'Update'" [type]="'button'"
+                                        (click)="updateQuantity(item)"></kt-button>
+                                </div>
+                            </div>
+                            <div class="row py-1" *ngIf="item?.paymentTypeId != 4">
+                                <div class="col-3 text-muted">EMI Amount</div>
+                                <div class="col-3">{{item?.emiAmount | number}}</div>
+                            </div> -->
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="text-muted py-1">SKU Code:</div>
+                                    <div class="text-muted py-1">Installments:</div>
+                                    <div class="text-muted py-1">Initial Payment:</div>
+                                    <div class="text-muted py-1" *ngIf="item?.paymentTypeId != 4">EMI Amount:</div>
+                                </div>
+                                <div class="col">
+                                    <div class="py-1">{{item?.product?.sku}}</div>
+                                    <div class="py-1">
+                                        {{item?.paymentTypeId != 4 ? item?.paymentType?.paymentType : 'N/A'}}</div>
+                                    <div class="py-1 currency">
+                                        {{item?.paymentTypeId != 4 ? (item?.initialPayment | indianCurrencyFormat) : 'N/A'}}
+                                    </div>
+                                    <div class="py-1 currency" *ngIf="item?.paymentTypeId != 4">
+                                        {{item?.emiAmount | indianCurrencyFormat}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="text-muted py-1">Price</div>
+                                    <div class="py-1 currency">{{item?.price | indianCurrencyFormat}}</div>
+                                </div>
+                                <div class="col text-center" *ngIf="item?.paymentTypeId == 4">
+                                    <div class="text-muted py-1">Quantity</div>
+                                    <div class="py-1" *ngIf="item?.paymentTypeId != 4;else elseBlock">
+                                        {{item?.quantity}}
+                                    </div>
+                                    <ng-template #elseBlock>
+                                        <div>
+                                            <input #qtyInput type="text" class="form-control productQtyInput"
+                                                name="cart-item-{{item.cartId}}" [(ngModel)]="item.quantity"
+                                                (input)="updateInput($event)" numbersOnly>
+                                        </div>
+                                        <div class="pt-3">
+                                            <kt-button [myClass]="'updateQty'" [value]="'Update'" [type]="'button'"
+                                                (click)="updateQuantity(item)"></kt-button>
+                                        </div>
+                                    </ng-template>
+                                </div>
+                                <div class="col">
+                                    <div class="text-muted py-1">SubTotal</div>
+                                    <div class="py-1 currency">{{item?.finalPrice | indianCurrencyFormat}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="cart-list-item">
+                    <div *ngIf="!(cartData?.emiScheme?.length ||cartData?.emiAmount?.length)" class="text-center">
+                        <div>Grand Total</div>
+                        <hr>
+                        <h3 class="pt-3 currency">{{cartData?.invoicePrice | indianCurrencyFormat }}</h3>
+                    </div>
+                    <div *ngIf="cartData?.emiScheme?.length || cartData?.emiAmount?.length">
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">Grand Total:</div>
+                            <div class="col-4 text-right currency">
+                                {{cartData?.invoicePrice | indianCurrencyFormat}}
+                            </div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">Now Payable Amount:</div>
+                            <div class="col-4 text-right currency">{{cartData?.nowPayableAmount | indianCurrencyFormat}}
+                            </div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">Initial Amount:</div>
+                            <div class="col-4 text-right currency">
+                                {{cartData?.initialPaymentTotal | indianCurrencyFormat}}</div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">EMI Scheme:</div>
+                            <div class="col-4 text-right" *ngIf="cartData?.emiScheme?.length">
+                                <span class="content" *ngFor="let scheme of cartData?.emiScheme; let isLast=last">
+                                    {{scheme}}{{isLast ? '' : ', '}}
+                                </span>
+                                <span>Months</span>
+                            </div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-8 text-muted">EMI Amount(Per Month):</div>
+                            <div class="col-4 text-right" *ngIf="cartData?.emiAmount?.length">
+                                <div class="content currency" *ngFor="let amt of cartData?.emiAmount; let isLast=last">
+                                    {{amt | indianCurrencyFormat}}{{isLast ? '' : ', '}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center pt-3">
+                        <kt-button [value]="'Proceed to Checkout'" [type]="'button'" (click)="checkoutCart()">
+                        </kt-button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 pt-4">
+                <kt-button [value]="'Continue Shopping'" [type]="'button'" (click)="redirectToShop()"></kt-button>
+            </div>
+        </div>
+        <ng-template #noCartItems>
+            <div class="row cart-height align-items-center">
+                <div class="col-12 text-center">
+                    <h3 class="pb-3">SHOPPING CART IS EMPTY</h3>
+                    <div class="font-weight-normal">You have no items in your shopping cart.</div>
+                    <div class="font-weight-normal">
+                        <span class="font-weight-bold kt-pointer" (click)="redirectToShop()">Click here </span>
+                        <span> to continue shopping.</span>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </kt-portlet-body>
+</kt-portlet>

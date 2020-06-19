@@ -11,10 +11,11 @@ const CONSTANT = require("../../utils/constant");
 
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
+let sms = require('../../utils/sendSMS');
 
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, address, statusId, pinCode, internalBranchId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -31,36 +32,19 @@ exports.addCustomer = async (req, res, next) => {
     where: { mobileNumber: mobileNumber },
   });
   if (!check.isEmpty(customerExist)) {
-    return res
-      .status(404)
-      .json({ message: "This Mobile number already Exists" });
+    return res.status(404).json({ message: "This Mobile number already Exists" });
   }
 
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
   let stageId = getStageId.id;
   let email = "nimap@infotech.com";
-  let password = firstName;
+  let password = `${firstName}@1234`;
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, createdBy, modifiedBy, isActive: true },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true },
       { transaction: t }
     );
-    if (check.isEmpty(address.length)) {
-      for (let i = 0; i < address.length; i++) {
-        let data = await models.customerAddress.create(
-          {
-            customerId: customer.id,
-            address: address[i].address,
-            landMark: address[i].landMark,
-            stateId: address[i].stateId,
-            cityId: address[i].cityId,
-            postalCode: address[i].postalCode,
-          },
-          { transaction: t }
-        );
-      }
-    }
   });
   return res.status(200).json({ messgae: `Customer created` });
 };
@@ -83,17 +67,12 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   let otp = Math.floor(1000 + Math.random() * 9000);
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
-  await models.customerOtp.create({
-    mobileNumber,
-    otp,
-    createdTime,
-    expiryTime,
-    referenceCode,
-  });
-
-  request(
-    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`
-  );
+  await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+  let message = await `Dear ${referenceCode}, Your OTP for completing the order request is ${otp}.`
+  await sms.sendSms(mobileNumber, message);
+  // request(
+  //   `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
+  // );
 
   return res
     .status(200)
@@ -121,16 +100,12 @@ exports.sendOtp = async (req, res, next) => {
   let otp = Math.floor(1000 + Math.random() * 9000);
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
-  await models.customerOtp.create({
-    mobileNumber,
-    otp,
-    createdTime,
-    expiryTime,
-    referenceCode,
-  });
-  request(
-    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}`
-  );
+  await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+  let message = await `Dear ${referenceCode}, Your OTP for completing the order request is ${otp}.`
+  await sms.sendSms(mobileNumber, message);
+  // request(
+  //   `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
+  // );
 
   return res
     .status(200)
@@ -172,14 +147,20 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment } = req.body;
+
+  let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
+
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
+  if (id == customerExist.statusId) {
+    return res.status(400).json({ message: `This customer status is confirm, You cannot change any information of that customer.` })
+  }
   if (check.isEmpty(customerExist)) {
     return res.status(404).json({ message: "Customer does not exist" });
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, pinCode, internalBranchId, modifiedBy },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -203,8 +184,8 @@ exports.deactivateCustomer = async (req, res, next) => {
 };
 
 
-exports.getAllCustomers = async (req, res, next) => {
-  let { stageName } = req.query;
+exports.getAllCustomersForLead = async (req, res, next) => {
+  let { stageName, cityId, stateId, statusId } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -212,59 +193,90 @@ exports.getAllCustomers = async (req, res, next) => {
   );
   let stage = await models.stage.findOne({ where: { stageName } });
 
-  console.log(search, offset, pageSize, stage.id);
+  let query = {};
+  if (cityId) {
+    cityId = req.query.cityId.split(",");
+    query.cityId = cityId;
+  }
+  if (statusId) {
+    statusId = req.query.statusId.split(",");
+    query.statusId = statusId;
+  }
+  if (stateId) {
+    stateId = req.query.stateId.split(",");
+    query.stateId = stateId;
+  }
 
   const searchQuery = {
-    [Op.or]: {
-      first_name: { [Op.iLike]: search + "%" },
-      last_name: { [Op.iLike]: search + "%" },
-      mobile_number: { [Op.iLike]: search + "%" },
-      pan_card_number: { [Op.iLike]: search + "%" },
-      "$status.status_name$": {
-        [Op.iLike]: search + "%",
+    [Op.and]: [query, {
+      [Op.or]: {
+        first_name: { [Op.iLike]: search + "%" },
+        last_name: { [Op.iLike]: search + "%" },
+        mobile_number: { [Op.iLike]: search + "%" },
+        pan_card_number: { [Op.iLike]: search + "%" },
+        "$internalBranch.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$status.status_name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$city.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$state.name$": {
+          [Op.iLike]: search + "%",
+        }
       },
-      "$city.name$": {
-        [Op.iLike]: search + "%",
-      },
-      "$state.name$": {
-        [Op.iLike]: search + "%",
-      }
-    },
+    }],
     isActive: true,
   };
-  let includeArray = [
-    {
-      model: models.state,
-      as: "state",
-    },
-    {
-      model: models.city,
-      as: "city",
-    },
-    {
-      model: models.stage,
-      as: "stage",
-      where: { id: stage.id },
-    },
-    {
-      model: models.status,
-      as: "status",
-    },
+  let includeArray = [{
+    model: models.customerKyc,
+    as: "customerKyc",
+    attributes: ['isKycSubmitted']
+  }, {
+    model: models.state,
+    as: "state",
+  },
+  {
+    model: models.city,
+    as: "city",
+  },
+  {
+    model: models.stage,
+    as: "stage",
+    where: { id: stage.id },
+  },
+  {
+    model: models.status,
+    as: "status",
+  },
+  {
+    model: models.internalBranch,
+    as: "internalBranch"
+  }
   ]
+  let internalBranchId = req.userData.internalBranchId
+  if (req.userData.userTypeId != 4) {
+    searchQuery.internalBranchId = internalBranchId
+  }
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
+    attributes: { exclude: ['mobileNumber', 'createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
     order: [["id", "DESC"]],
     offset: offset,
     limit: pageSize,
     include: includeArray,
   });
-  let count = await models.customer.count({
+  let count = await models.customer.findAll({
     where: searchQuery,
     include: includeArray,
   });
-
-  return res.status(200).json({ data: allCustomers, count: count });
+  if (allCustomers.length == 0) {
+    return res.status(200).json({ data: [] });
+  }
+  return res.status(200).json({ data: allCustomers, count: count.length });
 };
 
 
@@ -300,29 +312,149 @@ exports.getSingleCustomer = async (req, res, next) => {
 };
 
 
-exports.filterCustomer = async (req, res) => {
-  var { cityId, stateId, statusId } = req.query;
-  const query = {};
+exports.getCustomerUniqueId = async (req, res) => {
+  let customer = await models.customer.findAll({
+    attributes: ['id', 'customerUniqueId','firstName','lastName'],
+    where: { kycStatus: "approved" }
+  })
+  let assignCustomer = await models.customerAssignAppraiser.findAll({
+    attributes: ['id', 'customerUniqueId']
+  })
+  let arrayDiff = function (a, b) {
+    return a.filter(function (i) { return !b.find((c) => { return c.customerUniqueId == i.customerUniqueId }) });
+  };
+  let getDiff = (a, b) => {
+    let c = arrayDiff(a, b);
+    let d = arrayDiff(b, a);
+    return [...c, ...d]
+  }
 
+  let diff = getDiff(customer, assignCustomer)
+  return res.status(200).json({ data: diff })
+}
+
+
+exports.getAllCustomerForCustomerManagement = async (req, res) => {
+  let { cityId, stateId } = req.query;
+
+  const { search, offset, pageSize } = paginationWithFromTo(
+    req.query.search,
+    req.query.from,
+    req.query.to
+  );
+  let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+
+  let query = {};
   if (cityId) {
     cityId = req.query.cityId.split(",");
     query.cityId = cityId;
   }
-  if (statusId) {
-    statusId = req.query.statusId.split(",");
-    query.statusId = statusId;
-  }
-
   if (stateId) {
+    stateId = req.query.stateId.split(",");
     query.stateId = stateId;
   }
 
-  let customerFilterData = await models.customer.findAll({
-    where: query,
+  const searchQuery = {
+    [Op.and]: [query, {
+      [Op.or]: {
+        first_name: { [Op.iLike]: search + "%" },
+        last_name: { [Op.iLike]: search + "%" },
+        mobile_number: { [Op.iLike]: search + "%" },
+        pan_card_number: { [Op.iLike]: search + "%" },
+        "$city.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$state.name$": {
+          [Op.iLike]: search + "%",
+        }
+      },
+    }],
     isActive: true,
-  });
-  if (!customerFilterData[0]) {
-    return res.status(404).json({ message: "data not found" });
+  };
+
+  let includeArray = [{
+    model: models.customerLoan,
+    as: 'customerLoan',
+    where: { loanStageId: stageId.id },
+    attributes: [],
+  }, {
+    model: models.state,
+    as: "state",
+  }, {
+    model: models.city,
+    as: "city",
+  }, {
+    model: models.customerKycPersonalDetail,
+    as: 'customerKycPersonal',
+    attributes: ['profileImage']
+  }]
+  let internalBranchId = req.userData.internalBranchId
+  if (req.userData.userTypeId != 4) {
+    searchQuery.internalBranchId = internalBranchId
   }
-  return res.status(200).json({ customerFilterData });
-};
+
+  let allCustomers = await models.customer.findAll({
+    where: searchQuery,
+    attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    order: [["id", "DESC"]],
+    offset: offset,
+    subQuery: false,
+    limit: pageSize,
+    include: includeArray,
+  });
+  let count = await models.customer.findAll({
+    where: searchQuery,
+    include: includeArray,
+    subQuery: false
+  });
+  if (allCustomers.length === 0) {
+    return res.status(200).json([]);
+  } else {
+    return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
+  }
+}
+
+
+exports.getsingleCustomerManagement = async (req, res) => {
+  const { customerId } = req.params;
+  let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+  let singleCustomer = await models.customer.findOne({
+    where: { id: customerId },
+    include: [
+      {
+        model: models.customerKycPersonalDetail,
+        as: 'customerKycPersonal',
+        include: [{
+          model: models.identityType,
+          as: 'identityType',
+          attributes: ['id', 'name']
+        }]
+      },
+      {
+        model: models.customerKycAddressDetail,
+        as: 'customerKycAddress',
+        include: [{
+          model: models.state,
+          as: "state"
+        }, {
+          model: models.city,
+          as: "city"
+        }]
+      },
+      {
+        model: models.customerLoan,
+        as: 'customerLoan',
+        where: { loanStageId: stageId.id },
+        include: [{
+          model: models.customerFinalLoan,
+          as: 'finalLoan'
+        }, {
+          model: models.customerLoanNomineeDetail,
+          as: 'loanNomineeDetail'
+        }]
+      }
+    ]
+  })
+
+  return res.status(200).json({ message: "Success", data: singleCustomer })
+}

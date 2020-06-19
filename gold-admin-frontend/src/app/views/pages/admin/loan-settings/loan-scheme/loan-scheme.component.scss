@@ -1,0 +1,49 @@
+:host {
+    .min-vh-60{
+        min-height: 89vh;
+        overflow: hidden;
+    }
+    .heading {
+        font-weight: 600;
+        font-size  : 13px;
+    }
+
+    .border-right {
+        border-right: 1px solid #C5C6C6 !important;
+    }
+
+    .border-bottom {
+        border-bottom: 1px solid #C5C6C6;
+    }
+
+    .border-radius {
+        border       : 1px solid #C5C6C6;
+        border-radius: 20px;
+    }
+
+    .from-style {
+        align-self  : center;
+        padding-left: 30px;
+
+    }
+
+    .text-gray {
+        color      : #C5C6C6;
+        font-size  : 14px;
+        font-weight: 600;
+    }
+
+    .border-left-radius {
+        border-top-left-radius: 20px;
+    }
+
+    .border-right-radius {
+        border-top-right-radius: 20px;
+    }
+
+    .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: #454d67 !important;
+    }
+    
+
+}

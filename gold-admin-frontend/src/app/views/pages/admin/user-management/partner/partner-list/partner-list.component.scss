@@ -1,0 +1,17 @@
+:host{
+    .mat-column-actions {
+        flex: 0 0 25% !important;
+    }
+    .mat-column-partnerId{
+        flex: 0 0 25% !important;
+    }
+    .mat-column-name{
+        flex: 0 0 25% !important;
+    }
+    .mat-column-commission{
+        flex: 0 0 25% !important;
+        .mat-cell {
+            justify-content: center;
+        }
+    }
+}

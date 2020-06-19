@@ -1,14 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycAddressDetail = sequelize.define('customerKycAddressDetail', {
         // attributes
-        customerKycId: {
-            type: DataTypes.INTEGER,
-            field: 'customer_kyc_id',
-            allowNull: false
-        },
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id',
+            allowNull: false
+        },
+        customerKycId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_kyc_id',
             allowNull: false
         },
         addressType: {
@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'pin_code'
         },
+        addressProofTypeId:{
+            type: DataTypes.INTEGER,
+            field: 'address_proof_type_id'
+        },
         addressProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'address_proof'
@@ -43,6 +47,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'address_proof_number',
         },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true
+        }
 
     }, {
         freezeTableName: true,
@@ -53,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
     CustomerKycAddressDetail.associate = function (models) {
 
 
-        CustomerKycAddressDetail.belongsTo(models.customerKycPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
+        CustomerKycAddressDetail.belongsTo(models.customerKyc, { foreignKey: 'customerKycId', as: 'customerKyc' });
         CustomerKycAddressDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
 
@@ -61,6 +78,9 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKycAddressDetail.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
         CustomerKycAddressDetail.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
+
+        CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });        
     }
 
 

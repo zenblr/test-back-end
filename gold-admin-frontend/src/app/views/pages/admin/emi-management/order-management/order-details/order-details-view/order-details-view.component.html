@@ -1,0 +1,93 @@
+<div class="kt-portlet" *ngIf="orderTrackingLogs$ | async as orderTrackingLogs">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-portlet__body-progress" *ngIf="viewLoading">
+            <mat-spinner [diameter]="20"></mat-spinner>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Logistic Name</th>
+                            <th scope="col">Tracking ID</th>
+                            <th scope="col">AWB File</th>
+                            <th scope="col">AWB Box</th>
+                            <th scope="col">Created At</th>
+                            <th scope="col">Updated By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let logs of orderTrackingLogs">
+                            <td>
+                                {{
+									logs?.ordertracking?.orderUniqueId
+										? logs?.ordertracking?.orderUniqueId
+										: "-"
+								}}
+                            </td>
+                            <td>
+                                {{
+									logs?.ordertrackingstatus?.statusName
+										? (logs?.ordertrackingstatus
+												?.statusName | titlecase)
+										: "-"
+								}}
+                            </td>
+                            <td>
+                                {{
+									logs?.logistic?.name
+										? logs?.logistic?.name
+										: "-"
+								}}
+                            </td>
+                            <td>
+                                {{ logs?.trackingId ? logs?.trackingId : "-" }}
+                            </td>
+                            <td>
+                                <div *ngIf="logs.uploadedAwbFile?.url; else elseBlock" class="d-inline-flex">
+                                    <div>{{
+										logs?.uploadedAwbFile?.originalname
+									}}</div>&nbsp;
+                                    <a href="{{ logs?.uploadedAwbFile?.url }}" target="_blank" download="{{
+										logs?.uploadedAwbFile?.originalname
+									}}"><img src="assets/media/icons/_download.svg" alt="" width="14px" /></a>
+                                </div>
+                            </td>
+                            <td>
+                                <div *ngIf="logs.uploadedAwbBox?.url; else elseBlock" class="d-inline-flex">
+                                    <div> {{
+										logs?.uploadedAwbBox?.originalname
+									}}</div>&nbsp;
+                                    <a href="{{ logs?.uploadedAwbBox?.url }}" target="_blank" download="{{
+										logs?.uploadedAwbBox?.originalname
+									}}"><img src="assets/media/icons/_download.svg" alt="" width="14px" /></a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-block">
+                                    <div>
+                                        {{logs?.createdAt ? (logs?.createdAt | date:'MMM d, y') : '-'}}
+                                    </div>
+                                    <div>
+                                        {{logs?.createdAt ? (logs?.createdAt | date:'h:mm a') : ''}}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {{ logs?.stausChangedBy?.firstName }}
+                                {{ logs?.stausChangedBy?.lastName }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    -
+</ng-template>

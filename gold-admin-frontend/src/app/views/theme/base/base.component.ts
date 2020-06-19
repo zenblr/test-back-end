@@ -10,11 +10,8 @@ import { HtmlClassService } from '../html-class.service';
 import { LayoutConfig } from '../../../core/_config/layout.config';
 import { MenuConfig } from '../../../core/_config/menu.config';
 import { PageConfig } from '../../../core/_config/page.config';
-// User permissions
+import { SharedService } from '../../../core/shared/services/shared.service';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { currentUserPermissions, Permission } from '../../../core/auth';
-import { select, Store } from '@ngrx/store';
-import { AppState } from '../../../core/reducers';
 
 @Component({
 	selector: 'kt-base',
@@ -34,8 +31,6 @@ export class BaseComponent implements OnInit, OnDestroy {
 
 	// Private properties
 	private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
-	private currentUserPermissions$: Observable<Permission[]>;
-
 
 	/**
 	 * Component constructor
@@ -52,13 +47,14 @@ export class BaseComponent implements OnInit, OnDestroy {
 		private menuConfigService: MenuConfigService,
 		private pageConfigService: PageConfigService,
 		private htmlClassService: HtmlClassService,
-		private store: Store<AppState>,
-		private permissionsService: NgxPermissionsService) {
-		this.loadRolesWithPermissions();
+		private sharedService: SharedService,
+		public permissionsService: NgxPermissionsService
+	) {
+
 
 		// register configs by demos
 		this.layoutConfigService.loadConfigs(new LayoutConfig().configs);
-		this.menuConfigService.loadConfigs(new MenuConfig().configs);
+		this.menuConfigService.loadConfigs(new MenuConfig(this.sharedService, this.permissionsService).configs);
 		this.pageConfigService.loadConfigs(new PageConfig().configs);
 
 		// setup element classes
@@ -102,21 +98,5 @@ export class BaseComponent implements OnInit, OnDestroy {
 	 */
 	ngOnDestroy(): void {
 		this.unsubscribe.forEach(sb => sb.unsubscribe());
-	}
-
-	/**
-	 * NGX Permissions, init roles
-	 */
-	loadRolesWithPermissions() {
-		this.currentUserPermissions$ = this.store.pipe(select(currentUserPermissions));
-		const subscr = this.currentUserPermissions$.subscribe(res => {
-			if (!res || res.length === 0) {
-				return;
-			}
-
-			this.permissionsService.flushPermissions();
-			res.forEach((pm: Permission) => this.permissionsService.addPermission(pm.name));
-		});
-		this.unsubscribe.push(subscr);
 	}
 }

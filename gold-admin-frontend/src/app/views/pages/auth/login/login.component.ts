@@ -8,10 +8,10 @@ import { finalize, takeUntil, tap, catchError } from 'rxjs/operators';
 // Translate
 import { TranslateService } from '@ngx-translate/core';
 // Store
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../../core/reducers';
+
+
 // Auth
-import { AuthNoticeService, Login, Logout } from '../../../../core/auth';
+import { AuthNoticeService } from '../../../../core/auth';
 
 // services
 import { AuthService } from '../../../../core/auth/_services/auth.service';
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 	 * @param auth: AuthService
 	 * @param authNoticeService: AuthNoticeService
 	 * @param translate: TranslateService
-	 * @param store: Store<AppState>
+	 * 
 	 * @param fb: FormBuilder
 	 * @param cdr
 	 * @param route
@@ -64,7 +64,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 		private auth: AuthService,
 		private authNoticeService: AuthNoticeService,
 		private translate: TranslateService,
-		private store: Store<AppState>,
 		private fb: FormBuilder,
 		private cdr: ChangeDetectorRef,
 		private route: ActivatedRoute,
@@ -147,18 +146,23 @@ export class LoginComponent implements OnInit, OnDestroy {
 		this.auth
 			.login(authData.mobileNo, authData.password)
 			.pipe(
-				tap(user => {
+				tap(res => {
 					// console.log(user);
-					if (user) {
+					if (res) {
 						// this.store.dispatch(new Login({ authToken: user.accessToken }));
-						localStorage.setItem('accessToken', user['Token']);
+						localStorage.setItem('UserDetails', JSON.stringify(res));
 						// debugger
-						if (this.returnUrl === '/') {
-							this.router.navigate(['/dashboard']);
-						} else {
-							this.router.navigateByUrl(this.returnUrl); // Main page
-						}
-						// this.router.navigateByUrl(this.returnUrl); // Main page
+						// if (res.userDetails.userTypeId === 2 || res.userDetails.userTypeId === 3) {
+						// 	this.router.navigate(['/broker']);
+						// } else {
+						// 	this.router.navigate(['/admin']);
+						// }
+						this.router.navigate(['/']);
+						// if (this.returnUrl === '/') {
+						// 	this.router.navigate(['/admin/dashboard']);
+						// } else {
+						// 	this.router.navigateByUrl(this.returnUrl); // Main page
+						// }
 					} else {
 						this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.INVALID_LOGIN'), 'danger');
 					}
@@ -172,7 +176,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 					this.cdr.markForCheck();
 				}),
 				catchError(err => {
-
 					let showError = JSON.stringify(err.error.message);
 					this.toastr.errorToastr(showError);
 					throw err;

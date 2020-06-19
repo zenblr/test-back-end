@@ -7,77 +7,30 @@ import { ErrorPageComponent } from './views/theme/content/error-page/error-page.
 // Auth
 import { AuthGuard } from './core/auth';
 import { ReverseAuthGuard } from './core/auth/_guards/reverse-auth.guard';
+import { RoleGuard } from './core/auth/_guards/role.guard';
+import { RedirectGuard } from './core/auth/_guards/redirect.guard';
 
 const routes: Routes = [
 	{
 		path: 'auth', loadChildren: () => import('../app/views/pages/auth/auth.module').then(m => m.AuthModule),
 		canActivate: [ReverseAuthGuard]
 	},
-
 	{
 		path: '',
 		component: BaseComponent,
 		canActivate: [AuthGuard],
 		children: [
 			{
-				path: 'dashboard',
-				loadChildren: () => import('../app/views/pages/dashboard/dashboard.module').then(m => m.DashboardModule)
+				path: 'admin',
+				loadChildren: () => import('./views/pages/admin/admin.module').then(m => m.AdminModule)
 			},
 			{
-				path: 'admin-account',
-				loadChildren: () => import('../app/views/pages/admin-account/admin-account.module').then(m => m.AdminAccountModule)
-			},
-			{
-				path: 'upload-data',
-				loadChildren: () => import('../app/views/pages/upload-data/upload-data.module').then(m => m.UploadDataModule)
-			},
-			{
-				path: 'loan-setting',
-				loadChildren: () => import('../app/views/pages/loan-settings/loan-settings.module').then(m => m.LoanSettingsModule)
-			},
-			{
-				path:'upload-data',
-				loadChildren:() => import('../app/views/pages/upload-data/upload-data.module').then(m=>m.UploadDataModule),
-			},
-			{
-				path: 'customer-management',
-				loadChildren: () => import('../app/views/pages/customer-management/customer-management.module').then(m => m.CustomerManagementModule)
-			},
-			{
-				path: 'kyc-setting',
-				loadChildren: () => import('../app/views/pages/kyc-settings/kyc-settings.module').then(m => m.KycSettingsModule)
-			},
-			{
-				path: 'lead-management',
-				loadChildren: () => import('../app/views/pages/lead-management/lead-management.module').then(m => m.LeadManagementModule)
-			},
-			{
-				path: 'mail',
-				loadChildren: () => import('../app/views/pages/apps/mail/mail.module').then(m => m.MailModule)
-			},
-			{
-				path: 'ecommerce',
-				loadChildren: () => import('../app/views/pages/apps/e-commerce/e-commerce.module').then(m => m.ECommerceModule)
-			},
-			{
-				path: 'ngbootstrap',
-				loadChildren: () => import('../app/views/pages/ngbootstrap/ngbootstrap.module').then(m => m.NgbootstrapModule)
-			},
-			{
-				path: 'material',
-				loadChildren: () => import('../app/views/pages/material/material.module').then(m => m.MaterialModule)
-			},
-			{
-				path: 'user-management',
-				loadChildren: () => import('../app/views/pages/user-management/user-management.module').then(m => m.UserManagementModule)
-			},
-			{
-				path: 'wizard',
-				loadChildren: () => import('../app/views/pages/wizard/wizard.module').then(m => m.WizardModule)
-			},
-			{
-				path: 'builder',
-				loadChildren: () => import('../app/views/theme/content/builder/builder.module').then(m => m.BuilderModule)
+				path: 'broker',
+				loadChildren: () => import('./views/pages/broker/broker.module').then(m => m.MerchantModule),
+				// canActivate: [RoleGuard],
+				// data: {
+				// 	expectedRole: 2
+				// }
 			},
 			{
 				path: 'error/403',
@@ -90,17 +43,19 @@ const routes: Routes = [
 				}
 			},
 			{ path: 'error/:type', component: ErrorPageComponent },
-			{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-			{ path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
+			{ path: '', redirectTo: '', pathMatch: 'full', canActivate: [RedirectGuard] },
+			{ path: '**', redirectTo: '', pathMatch: 'full', canActivate: [RedirectGuard] }
 		]
 	},
-
 	{ path: '**', redirectTo: 'error/403', pathMatch: 'full' },
 ];
 
 @NgModule({
 	imports: [
 		RouterModule.forRoot(routes)
+	],
+	providers: [
+		RoleGuard
 	],
 	exports: [RouterModule]
 })

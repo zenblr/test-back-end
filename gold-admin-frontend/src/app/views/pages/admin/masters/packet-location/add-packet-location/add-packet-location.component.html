@@ -1,0 +1,39 @@
+<!-- <p>add-lead works!</p> -->
+
+<kt-toastr #toastr></kt-toastr>
+<div class="kt-portlet">
+
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div>
+        <div class="kt-form">
+            <form [formGroup]="packetLocation">
+                <div class="kt-portlet__body">
+
+                    <div class="kt-portlet__body-progress">
+                        <mat-spinner [diameter]="20"></mat-spinner>
+                    </div>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-4 form-label">
+                                <label for="" class="mandatory">Location</label>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" formControlName="location"
+                                    [class.isError]="controls.location.invalid &&  controls.location.touched">
+                                    <mat-error *ngIf="controls.location.touched && controls.location.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="p-3">
+                    <kt-modal-footer (action)="action($event)" [value]="button">
+                    </kt-modal-footer>
+                </div>
+            </form>
+        </div>
+    </div>

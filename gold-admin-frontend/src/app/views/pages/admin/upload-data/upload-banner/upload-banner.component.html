@@ -1,0 +1,21 @@
+<kt-toastr #toastr></kt-toastr>
+
+<kt-portlet>
+    <kt-portlet-body style="min-height: 79vh;">
+        <div class="row kt-padding-t-20">
+            <div class="col-12">
+                <label class="font-weight-bold text-color d-flex align-items-center">Upload Promotional Banners</label>
+                <label  class="font-weight-500 text-gray d-flex align-items-center"> 600px X 300px with .jpg or .png</label>
+            </div>
+        </div>
+        <kt-uplod-data-image [images]="images"></kt-uplod-data-image>
+    </kt-portlet-body>
+    <kt-portlet-footer *ngxPermissionsOnly="['promotionalBannerAdd']">
+        <div class="row p-3">
+            <div class="col-lg-12 kt-padding-l-15">
+                <kt-button [type]="'button'" [value]="'Save'" (click)="uploadBanners()">
+                </kt-button>
+            </div>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>

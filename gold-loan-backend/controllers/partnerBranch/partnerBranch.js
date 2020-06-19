@@ -31,28 +31,46 @@ exports.addBranch = async (req, res, next) => {
 
 //get branch
 exports.readBranch = async (req, res, next) => {
+    let { cityId, stateId, partnerId } = req.query;
 
     const { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+
+    let query = {};
+    if (cityId) {
+        cityId = req.query.cityId.split(",");
+        query.cityId = cityId;
+    }
+    if (stateId) {
+        stateId = req.query.stateId.split(",");
+        query.stateId = stateId;
+    }
+    if (partnerId) {
+        partnerId = req.query.partnerId.split(",");
+        query.partnerId = partnerId;
+    }
+
     const searchQuery = {
-        [Op.or]: {
-            name: { [Op.iLike]: search + '%' },
-            branchId: { [Op.iLike]: search + '%' },
-            "$partner.name$": {
-                [Op.iLike]: search + "%",
+        [Op.and]: [query, {
+            [Op.or]: {
+                name: { [Op.iLike]: search + '%' },
+                branchId: { [Op.iLike]: search + '%' },
+                "$partner.name$": {
+                    [Op.iLike]: search + "%",
+                },
+                pinCode: sequelize.where(
+                    sequelize.cast(sequelize.col("pin_code"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%"
+                    }),
+                "$city.name$": {
+                    [Op.iLike]: search + "%",
+                },
+                "$state.name$": {
+                    [Op.iLike]: search + "%",
+                }
             },
-            pinCode: sequelize.where(
-                sequelize.cast(sequelize.col("pin_code"), "varchar"),
-                {
-                    [Op.iLike]: search + "%"
-                }),
-            "$city.name$": {
-                [Op.iLike]: search + "%",
-            },
-            "$state.name$": {
-                [Op.iLike]: search + "%",
-            }
-        },
+        }],
         isActive: true
     }
     const includeArray = [
@@ -138,10 +156,10 @@ exports.updateBranch = async (req, res, next) => {
     let modifiedBy = req.userData.id;
 
     const { partnerId, name, cityId, stateId, address, pinCode, isActive } = req.body;
-    let pId = name.slice(0, 3).toUpperCase() + '-' + branchId;
+    // let pId = name.slice(0, 3).toUpperCase() + '-' + branchId;
 
 
-    let branchData = await models.partnerBranch.update({ partnerId, branchId: pId, name, cityId, stateId, address, pinCode, modifiedBy, isActive }, { where: { id: branchId, isActive: true } });
+    let branchData = await models.partnerBranch.update({ partnerId, name, cityId, stateId, address, pinCode, modifiedBy, isActive }, { where: { id: branchId, isActive: true } });
     if (branchData[0] == 0) {
         return res.status(404).json({ message: " Update failed" });
     }

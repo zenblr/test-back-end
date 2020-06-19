@@ -1,10 +1,10 @@
 // Angular
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 // RxJS
-import { Observable, BehaviorSubject, of} from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 // CRUD
-import { QueryParamsModel,  QueryResultsModel, HttpExtenstionsModel } from '../../../../../../core/_base/crud';
+import { QueryParamsModel, QueryResultsModel, HttpExtenstionsModel } from '../../../../../../core/_base/crud';
 import { DataTableService, DataTableItemModel } from '../../../../../../core/_base/layout';
 
 // Why not use MatTableDataSource?
@@ -43,8 +43,8 @@ export class DataTableDataSource implements DataSource<DataTableItemModel> {
 	 */
 	connect(collectionViewer: CollectionViewer): Observable<any[]> {
 		// Connecting data source
-        return this.entitySubject.asObservable();
-    }
+		return this.entitySubject.asObservable();
+	}
 
 	/**
 	 * Disconnect data-source
@@ -53,9 +53,9 @@ export class DataTableDataSource implements DataSource<DataTableItemModel> {
 	 */
 	disconnect(collectionViewer: CollectionViewer): void {
 		// Disonnecting data source
-        this.entitySubject.complete();
-		      this.loadingSubject.complete();
-		      this.paginatorTotalSubject.complete();
+		this.entitySubject.complete();
+		this.loadingSubject.complete();
+		this.paginatorTotalSubject.complete();
 	}
 
 	baseFilter(_entities: any[], _queryParams: QueryParamsModel): QueryResultsModel {
@@ -79,21 +79,21 @@ export class DataTableDataSource implements DataSource<DataTableItemModel> {
 		queryResults.items = entitiesResult;
 		queryResults.totalCount = totalCount;
 		return queryResults;
-    }
+	}
 
-    loadItems(queryParams: QueryParamsModel) {
-		this.loadingSubject.next(true);
-		this.dataTableService.getAllItems().pipe(
-			tap(res => {
-				const result = this.baseFilter(res, queryParams);
-				this.entitySubject.next(result.items);
-				this.paginatorTotalSubject.next(result.totalCount);
+	loadItems(queryParams: QueryParamsModel) {
+		// this.loadingSubject.next(true);
+		// this.dataTableService.getAllItems().pipe(
+		// 	tap(res => {
+		// 		const result = this.baseFilter(res, queryParams);
+		// 		this.entitySubject.next(result.items);
+		// 		this.paginatorTotalSubject.next(result.totalCount);
 
-			}),
-			catchError(err => of(new QueryResultsModel([], err))),
-			finalize(() => this.loadingSubject.next(false))
-		).subscribe();
-    }
+		// 	}),
+		// 	catchError(err => of(new QueryResultsModel([], err))),
+		// 	finalize(() => this.loadingSubject.next(false))
+		// ).subscribe();
+	}
 
 	sortArray(_incomingArray: any[], _sortField: string = '', _sortOrder: string = 'asc'): any[] {
 		const httpExtenstion = new HttpExtenstionsModel();

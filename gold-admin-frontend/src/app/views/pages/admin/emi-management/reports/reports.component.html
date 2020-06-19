@@ -1,0 +1,117 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <kt-portlet-body [class]="'kt-portlet__body--fit d-flex align-items-center justify-content-center'">
+        <div class="row row-no-padding row-col-separator-xl" style="width: 40%;">
+            <div class="col-12">
+                <form [formGroup]="reportForm">
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Select Report</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="reportType"
+                                [class.isError]="controls.reportType.touched && controls.reportType.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Report</option>
+                                <ng-container *ngFor="let item of reportTypes">
+                                    <option *ngIf="item?.permission" [value]="item.id">
+                                        {{item.name}}</option>
+                                </ng-container>
+                            </select>
+                            <div *ngIf="controls.reportType.touched && controls.reportType.invalid">
+                                <mat-error *ngIf="controls.reportType.touched && controls.reportType.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row kt-margin-t-15" *ngIf="controls?.reportType?.value == '1' || 
+                    controls?.reportType?.value == '2' ||  controls?.reportType?.value == '3' || 
+                    controls?.reportType?.value == '4' || controls?.reportType?.value == '5'">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color"
+                                *ngIf="controls?.reportType?.value == '1'">Merchant</label>
+                            <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '2'">Deposit
+                                Funds Origin</label>
+                            <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '3'">EMI
+                                From</label>
+                            <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '4'">Order
+                                From</label>
+                            <label class="font-weight-500 text-color" *ngIf="controls?.reportType?.value == '5'">Cancel
+                                Order From</label>
+                        </div>
+                        <div class="col-8">
+                            <!-- <select class="form-control" formControlName="merchantId"
+                                [class.isError]="controls.merchantId.touched && controls.merchantId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Report</option>
+                                <option [value]="item.id" *ngFor="let item of merchantList">
+                                    {{item?.merchantName | titlecase}}</option>
+                            </select> -->
+                            <kt-multi-select-search [items]="merchantList" [multiple]="true" bindLabel="merchantName"
+                                bindValue="id" formControlName="merchantId" [isClear]="clearData">
+                            </kt-multi-select-search>
+
+                            <div *ngIf="controls.merchantId.touched && controls.merchantId.invalid">
+                                <mat-error *ngIf="controls.merchantId.touched && controls.merchantId.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="controls?.reportType?.value != '7'">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">From Date</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" [matDatepicker]="pickerStartDate"
+                                (click)="pickerStartDate.open()" formControlName="startDate"
+                                [class.isError]="controls.startDate.touched && controls.startDate.invalid" readonly
+                                placeholder="4/5/2020">
+                            <mat-datepicker #pickerStartDate></mat-datepicker>
+                            <mat-error *ngIf="controls.startDate.errors?.required && controls.startDate.touched">
+                                Field is required
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="controls?.reportType?.value != '7'">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">To Date</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" [matDatepicker]="pickerEndDate"
+                                (click)="pickerEndDate.open()" formControlName="endDate"
+                                [class.isError]="controls.endDate.touched && controls.endDate.invalid" readonly
+                                placeholder="4/5/2020" [min]="controls.startDate.value"
+                                [disabled]="!controls.startDate.value">
+                            <mat-datepicker #pickerEndDate></mat-datepicker>
+                            <mat-error *ngIf="controls.endDate.errors?.required && controls.endDate.touched">
+                                Field is required
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="controls?.reportType?.value == '4'">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Status</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="statusId"
+                                [class.isError]="controls.statusId.touched && controls.statusId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                <option value="0">All</option>
+                                <option [value]="item.statusId" *ngFor="let item of orderStatusList">
+                                    {{item?.statusName | titlecase}}</option>
+                            </select>
+                            <div *ngIf="controls.statusId.touched && controls.statusId.invalid">
+                                <mat-error *ngIf="controls.statusId.touched && controls.statusId.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-12 text-right">
+                            <kt-button [value]="'Generate Report'" [type]="'submit'" (click)="submit()"></kt-button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

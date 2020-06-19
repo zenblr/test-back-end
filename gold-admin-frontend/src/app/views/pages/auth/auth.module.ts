@@ -3,16 +3,11 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 // Material
 import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule ,MatProgressSpinnerModule} from '@angular/material';
 // Translate
 import { TranslateModule } from '@ngx-translate/core';
-// NGRX
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-// CRUD
-import { InterceptService } from '../../../core/_base/crud/';
+
 // Module components
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './login/login.component';
@@ -22,10 +17,9 @@ import { AuthNoticeComponent } from './auth-notice/auth-notice.component';
 import { CoreModule } from '../../../core/core.module';
 
 // Auth
-import { AuthEffects, AuthGuard, authReducer, AuthService } from '../../../core/auth';
+import { AuthGuard, AuthService } from '../../../core/auth';
 import { PartialsModule } from '../../partials/partials.module';
 import { SignInWithOtpComponent } from './sign-in-with-otp/sign-in-with-otp.component';
-
 
 const routes: Routes = [
 	{
@@ -75,18 +69,11 @@ const routes: Routes = [
 		MatCheckboxModule,
 		MatProgressSpinnerModule,
 		TranslateModule.forChild(),
-		StoreModule.forFeature('auth', authReducer),
-		EffectsModule.forFeature([AuthEffects]),
 		PartialsModule,
 		CoreModule
 	],
 	providers: [
-		InterceptService,
-		{
-			provide: HTTP_INTERCEPTORS,
-			useClass: InterceptService,
-			multi: true
-		},
+		
 	],
 	exports: [AuthComponent],
 	declarations: [

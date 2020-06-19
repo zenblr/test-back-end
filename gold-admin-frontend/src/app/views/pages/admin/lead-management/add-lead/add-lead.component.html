@@ -1,0 +1,391 @@
+<!-- <p>add-lead works!</p> -->
+
+<kt-toastr #toastr></kt-toastr>
+<div class="kt-portlet">
+
+    <kt-modal-header [title]='modalTitle' (action)="action($event)"></kt-modal-header>
+    <div>
+        <div class="kt-form">
+            <form [formGroup]="leadForm">
+                <div class="kt-portlet__body lead-form">
+
+                    <div class="kt-portlet__body-progress">
+                        <mat-spinner [diameter]="20"></mat-spinner>
+                    </div>
+
+                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
+
+                        <!-- Lead Drop Down -->
+                        <div class="row">
+                            <div class="col-4 form-label">
+                                <mat-label>Lead</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <select class="form-control" formControlName="lead"
+                                    [class.isError]="controls.lead.touched && controls.lead.invalid">
+                                    <option value="" [disabled]="true" [selected]="true"> Select Lead </option>
+                                    <option *ngFor="let branch of branches" [value]="branch.id">
+                                        {{branch.name | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="controls.lead.touched && controls.lead.errors?.required">
+                                    Required field
+                                </mat-error>
+
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+
+                        <!-- Source -->
+
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label>Source</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <input class="form-control" formControlName="source">
+                                <mat-error *ngIf="controls.source.touched && controls.source.errors?.required">
+                                    Required field
+                                </mat-error>
+
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+                        <!-- Name -->
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Full Name</mat-label>
+                            </div>
+
+                            <div class="col-4">
+                                <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
+                                    class="form-control" formControlName="firstName"
+                                    [class.isError]="controls.firstName.touched && controls.firstName.invalid">
+                                <mat-error *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                            <div class="col-4">
+
+                                <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
+                                    class="form-control" formControlName="lastName"
+                                    [class.isError]="controls.lastName.touched && controls.lastName.invalid">
+
+                                <mat-error *ngIf=" controls.lastName.errors?.required && controls.lastName.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+
+
+                        <div class="row kt-padding-t-15">
+                            <!-- Mobile -->
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Mobile Number</mat-label>
+                            </div>
+
+                            <div class="col-5">
+                                <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                <input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
+                                    autocomplete="off" placeholder="Enter mobile number" margin
+                                    [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid">
+                                <mat-error
+                                    *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.mobileNumber.errors?.pattern && controls.mobileNumber.touched">
+                                    Invalid Input
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="mobileAlreadyExists && controls.mobileNumber.touched && !controls.mobileNumber.errors?.required">
+                                    <small>
+                                        Mobile number already exists!
+                                    </small>
+                                </mat-error>
+                                <!-- </mat-form-field> -->
+                            </div>
+
+                            <div class="col-3">
+                                <div *ngIf="!otpSent">
+                                    <kt-button [myClass]="'w-100'" [isDisabled]="otpButton || viewOnly"
+                                        [type]="'button'" [value]="'Send OTP'" (action)="sendOTP()">
+                                    </kt-button>
+                                </div>
+                                <div *ngIf="otpSent && !isMobileVerified">
+                                    <kt-button [myClass]="'w-100'" [isDisabled]="otpButton" [type]="'button'"
+                                        [value]="'Sent'">
+                                    </kt-button>
+                                </div>
+                                <div *ngIf="isMobileVerified">
+                                    <button class="w-100 success-button" mat-raised-button color="success"
+                                        matTooltip="OTP Verified">Verified</button>
+                                </div>
+                            </div>
+
+                            <ng-container *ngIf="otpSent && !isMobileVerified">
+                                <!-- OTP -->
+                                <div class="col-4 kt-padding-t-15"></div>
+
+                                <div class="col-5 kt-padding-t-15">
+                                    <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                    <input class="form-control" formControlName="otp" autocomplete="off"
+                                        placeholder="Enter OTP"
+                                        [class.isError]="controls.otp.touched && controls.otp.invalid">
+                                    <mat-error *ngIf="controls.otp.errors?.required && controls.otp.touched">
+                                        Required field
+                                    </mat-error>
+                                    <mat-error *ngIf="controls.otp.errors?.pattern && controls.otp.touched">Invalid
+                                        Input
+                                    </mat-error>
+                                    <mat-error *ngIf="controls.otp.touched && controls.otp.errors?.verifyOTP">
+                                        Mobile number not verfied
+                                    </mat-error>
+                                    <mat-hint class="kt-pointer" (click)="resendOTP()">Didn't get an OTP?
+                                        <strong>Resend</strong></mat-hint>
+                                    <!-- </mat-form-field> -->
+                                </div>
+
+                                <div class="col-3 kt-padding-t-15">
+                                    <div *ngIf="!isMobileVerified">
+                                        <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Verify'"
+                                            [isDisabled]="isOpverified" (action)="verifyOTP()">
+                                        </kt-button>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                        </div>
+
+                        <div class="row kt-padding-t-15">
+                            <!-- PAN -->
+                            <div class="col-4 form-label">
+                                <mat-label>PAN</mat-label>
+                            </div>
+
+                            <div class="col-5">
+                                <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                <input class="form-control" formControlName="panCardNumber" autocomplete="off"
+                                    placeholder="PAN" maxlength="10"
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+                                    style="text-transform: uppercase;">
+                                <!-- <mat-error
+                                        *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
+                                        Required field
+                                    </mat-error> -->
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
+                                    Invalid Input
+                                </mat-error>
+                                <!-- </mat-form-field> -->
+                            </div>
+
+                            <div class="col">
+                                <div *ngIf="!isPanVerified">
+                                    <kt-button [myClass]="'w-100'" [isDisabled]="panButton || viewOnly"
+                                        [type]="'button'" [value]="'Verify'" (action)="verifyPAN()">
+                                    </kt-button>
+                                </div>
+
+                                <div *ngIf="isPanVerified">
+                                    <button class="w-100 success-button" mat-raised-button
+                                        matTooltip="Pan Verified">Verified</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Internal Branch -->
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Internal Branch</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <select class="form-control" formControlName="internalBranchId"
+                                    [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
+                                    <option value="" [disabled]="true" [selected]="true"> Select Internal Branch
+                                    </option>
+                                    <option *ngFor="let branch of branches" [value]="branch.id">
+                                        {{branch.name | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
+                                    Required field
+                                </mat-error>
+
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+
+
+                        <!-- State -->
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">State</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                <!-- <mat-label class="mandatory">State</mat-label> -->
+                                <select class="form-control" formControlName="stateId" (change)="getCities()" margin
+                                    [class.isError]="controls.stateId.touched && controls.stateId.invalid">
+                                    <option disabled selected value=""> Select State</option>
+                                    <option *ngFor="let state of states" [value]="state.id">
+                                        {{state.name}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">
+                                    Required field
+                                </mat-error>
+
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+
+
+                        <!-- City -->
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">City</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                <select class="form-control" formControlName="cityId" margin
+                                    [class.isError]="controls.cityId.touched && controls.cityId.invalid">
+                                    <option selected value="" disabled> Select City</option>
+                                    <option *ngFor="let city of cities" [value]="city.id">
+                                        {{city.name}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
+                                    Required field</mat-error>
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Pin Code</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                <input class="form-control" formControlName="pinCode" numbersOnly maxlength="6"
+                                    placeholder="000 000">
+                                <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
+                                    Required field</mat-error>
+                                <mat-error *ngIf="controls.pinCode.errors?.pattern && controls.pinCode.touched">
+                                    Invalid Input</mat-error>
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label>Date & Time</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                <input class="form-control" formControlName="dateTime" readonly
+                                    placeholder="Enter Full Name" value="{{currentDate |  date:'medium'}}">
+                                <mat-error *ngIf="controls.dateTime.errors?.required ">Required field</mat-error>
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+
+
+                        <!-- Status -->
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Select Status</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                <!-- <mat-label class="mandatory">Select</mat-label> -->
+                                <select class="form-control" formControlName="statusId" (change)="commentBox()"
+                                    [class.isError]="controls.statusId.touched && controls.statusId.invalid">
+                                    <option selected disabled value="">Select Status</option>
+                                    <option *ngFor="let stat of status" [value]="stat.id">
+                                        {{stat.statusName | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="controls.statusId.errors?.required && controls.statusId.touched">
+                                    Required field</mat-error>
+                                <!-- </mat-form-field> -->
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15" *ngIf="controls.statusId.value != 1 && showCommentBox">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Comment</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <textarea name="" id="" cols="3" rows="3" formControlName="comment" class="form-control"
+                                    [class.isError]="controls.comment.touched && controls.comment.invalid"></textarea>
+                                <mat-error *ngIf="controls.comment.errors?.required && controls.comment.touched">
+                                    Required field</mat-error>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                                <div class="col">
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <mat-label class="mandatory">State</mat-label>
+                                        <mat-select formControlName="stateId" (selectionChange)="getCities($event)">
+                                            <mat-option *ngFor="let state of states" [value]="state.id">
+                                                {{state.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="controls.stateId.errors?.required">Required field</mat-error>
+
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col">
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <mat-label class="mandatory">City</mat-label>
+                                        <mat-select formControlName="cityId">
+                                            <mat-option *ngFor="let city of cities" [value]="city.id">
+                                                {{city.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="controls.cityId.errors?.required">Required field</mat-error>
+
+                                    </mat-form-field>
+                                </div>
+                            </div> -->
+
+
+                    </div>
+                </div>
+
+                <!-- <div class="kt-form__actions kt-form__actions--solid">
+                        <div class="row text-right">
+                            <div class="col-lg-12">
+                                <kt-button [type]="'button'" [value]="'Add'" [isDisabled]="leadForm.invalid"
+                                    (action)="onSubmit()">
+                                </kt-button>
+                                &nbsp;
+                                <kt-button [type]="'reset'" [value]="'Cancel'" (action)="closeModal()">
+                                </kt-button>
+                            </div>
+                        </div>
+                    </div> -->
+
+
+                <div class="p-3" *ngIf="data.action != 'view'">
+                    <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="data.action">
+                    </kt-modal-footer>
+                    <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+                    </kt-modal-footer>
+                </div>
+            </form>
+        </div>
+    </div>

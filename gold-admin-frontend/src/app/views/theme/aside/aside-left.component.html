@@ -10,7 +10,8 @@
 		[ngStyle]="{'background':'#454D67'}">
 		<div #asideMenu ktMenu [options]="menuOptions" [perfectScrollbar]="{wheelPropagation: false}"
 			[ngStyle]="{'max-height': '90vh', 'position': 'relative','background':'#454D67','padding-bottom':'120px'}"
-			id="kt_aside_menu" class="kt-aside-menu" [ngClass]="htmlClassService.getClasses('aside_menu', true)">
+			id="kt_aside_menu" class="kt-aside-menu" [ngClass]="htmlClassService.getClasses('aside_menu', true)"
+			(mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)">
 			<ul class="kt-menu__nav" [ngClass]="htmlClassService.getClasses('aside_menu_nav', true)">
 				<ng-container [ngTemplateOutlet]="menuListTemplate"></ng-container>
 			</ul>
@@ -96,14 +97,14 @@
 
 	<!-- if menu item using bullet -->
 	<i *ngIf="parentItem && parentItem.bullet === 'dot'" class="kt-menu__link-bullet kt-menu__link-bullet--dot">
-		<span></span>
+		<span class="bgColor"></span>
 	</i>
 	<i *ngIf="parentItem && parentItem.bullet === 'line'" class="kt-menu__link-bullet kt-menu__link-bullet--line">
-		<span></span>
+		<span class="bgColor"></span>
 	</i>
 
 	<!-- menu item title text -->
-	<span class="kt-menu__link-text" [translate]="item.translate"
+	<span class="kt-menu__link-text" [ngClass]="{'kt-menu__link-count': item.count}" [translate]="item.translate"
 		(click)="item.title == 'Log Out' ? logout() : ''">{{item.title}}</span>
 	<!-- menu item with badge -->
 	<span *ngIf="item.badge" class="kt-menu__link-badge">
@@ -112,6 +113,10 @@
 
 	<!-- if menu item has submenu child then put arrow icon -->
 	<i *ngIf="item.submenu" class="kt-menu__ver-arrow la la-angle-right"></i>
+
+	<!-- if menu item is cart then put cart count -->
+	<span *ngIf="item.count && cartTotalCount" class="kt-menu__link-text kt-menu__link-count pl-1">
+		({{shoppingCartService.cartCount$ | async}})</span>
 </ng-template>
 
 <ng-template #menuItemSeparatorTemplate let-item="item" let-parentItem="parentItem">

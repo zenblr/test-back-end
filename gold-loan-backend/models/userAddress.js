@@ -3,11 +3,12 @@ module.exports = (sequelize, DataTypes) => {
         // attributes
         userId: {
             type: DataTypes.INTEGER,
-            field: 'user_id'
+            field: 'user_id',
+            allowNull: false,
         },
         address:{
             type: DataTypes.TEXT,
-            field: 'address'
+            field: 'address',
         },
         landMark: {
             type: DataTypes.STRING,

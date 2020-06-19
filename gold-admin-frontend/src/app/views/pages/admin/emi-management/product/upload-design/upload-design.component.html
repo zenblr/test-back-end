@@ -1,0 +1,53 @@
+<kt-portlet>
+    <kt-portlet-body [class]="'kt-portlet__body--fit d-flex align-items-center justify-content-center'">
+        <div class="row row-no-padding row-col-separator-xl">
+            <div class="col-12 text-center">
+                <h5 class="text-dark">To upload your design click here on Choose File.</h5>
+                <p class="pt-4">
+                    <label for="file-upload" class="custom-file-upload font-weight-500">
+                        Choose File
+                    </label>
+                    <input #file id="file-upload" type="file" accept='image/*' (change)="uploadImages($event)"
+                        multiple />
+                    <span *ngIf="greaterThanFiftyImageError">
+                        <strong class="displayError">Maximum Limit Is 50 Images</strong>
+                    </span>
+                </p>
+                <p class="text-danger" *ngIf="improperCount">{{improperCount}} image is not as per the dimension in
+                    guideline</p>
+                <div *ngIf="!files.length">
+                    <p>No files are chosen</p>
+                </div>
+                <div *ngIf="files.length">
+                    <p>{{files.length}} files are selected to upload</p>
+                    <!-- <div class="row">
+                            <div class="col-8 offset-2">
+                                <div class="row">
+                                    <div class="col-3" *ngFor="let file of filesPreview">
+                                        <img [src]="file" class="border" style="width: 100%; height:100%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                </div>
+                <div class="col-8 offset-3 text-left">
+                    <p class="font-weight-500">Design image parameters guideline for upload images:</p>
+                    <div>Size of image - Maximum 200 KB</div>
+                    <p>Image dimensions - 1500 pixels x 1500 pixels</p>
+                </div>
+
+                <p><span class="font-weight-500">Note:</span> The design name must be as per the SKUCODE of products,
+                    which are already uploaded for eg.SKUCODE_1</p>
+                <p>
+                    <!-- <button type="button " (click)="uploadFiles()" cdkFocusInitial
+                        [disabled]="greaterThanFiftyImageError || greaterThanFiftyImageButton ">
+                        Upload
+                    </button> -->
+                    <kt-button [type]="'button'" [value]="'Upload'" class="kt-margin-r-10" (click)="uploadFiles()">
+                    </kt-button>
+                    <kt-button [type]="'reset'" [value]="'Cancel'" (click)="cancelFiles()"></kt-button>
+                </p>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

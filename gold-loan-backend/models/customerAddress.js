@@ -3,17 +3,16 @@ module.exports = (sequelize, DataTypes) => {
         // attributes
         customerId: {
             type: DataTypes.INTEGER,
-            field: 'customer_id'
+            field: 'customer_id',
+            allowNull: false,
         },
         address:{
             type: DataTypes.TEXT,
             field: 'address',
-            allowNull:false
         },
         landMark: {
             type: DataTypes.STRING,
             field: 'land_mark',
-            allowNull: false,
         },
         stateId: {
             type: DataTypes.INTEGER,

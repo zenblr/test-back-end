@@ -18,13 +18,6 @@ import { environment } from '../environments/environment';
 import 'hammerjs';
 // NGX Permissions
 import { NgxPermissionsModule } from 'ngx-permissions';
-// NGRX
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreRouterConnectingModule } from '@ngrx/router-store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-// State
-import { metaReducers, reducers } from './core/reducers';
 // Copmponents
 import { AppComponent } from './app.component';
 // Modules
@@ -36,7 +29,6 @@ import { PartialsModule } from './views/partials/partials.module';
 // Layout Services
 import {
 	DataTableService,
-	FakeApiService,
 	KtDialogService,
 	LayoutConfigService,
 	LayoutRefService,
@@ -62,6 +54,11 @@ import * as xml from 'highlight.js/lib/languages/xml';
 import * as json from 'highlight.js/lib/languages/json';
 // Toastr Service
 import { ToastrModule } from 'ngx-toastr';
+
+import { NgHttpLoaderModule } from 'ng-http-loader';
+
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // tslint:disable-next-line:class-name
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -96,24 +93,22 @@ export function hljsLanguages(): HighlightLanguage[] {
 		BrowserModule,
 		AppRoutingModule,
 		HttpClientModule,
-		environment.isMockEnabled ? HttpClientInMemoryWebApiModule.forRoot(FakeApiService, {
-			passThruUnknownUrl: true,
-			dataEncapsulation: false
-		}) : [],
 		NgxPermissionsModule.forRoot(),
 		PartialsModule,
 		CoreModule,
 		OverlayModule,
-		StoreModule.forRoot(reducers, { metaReducers }),
-		EffectsModule.forRoot([]),
-		StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
-		StoreDevtoolsModule.instrument(),
 		AuthModule.forRoot(),
 		TranslateModule.forRoot(),
 		MatProgressSpinnerModule,
 		InlineSVGModule.forRoot(),
 		ThemeModule,
-		ToastrModule.forRoot()
+		ToastrModule.forRoot({
+			timeOut: 3500,
+		}),
+		NgHttpLoaderModule.forRoot(),
+		NgSelectModule,
+		FormsModule,
+		ReactiveFormsModule,
 	],
 	exports: [],
 	providers: [

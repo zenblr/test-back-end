@@ -49,8 +49,8 @@ export class DeleteEntityDialogComponent implements OnInit {
 	onYesClick(): void {
 		/* Server loading imitation. Remove this */
 		this.viewLoading = true;
-		setTimeout(() => {
-			this.dialogRef.close(true); // Keep only this row
-		}, 2500);
+		// setTimeout(() => {
+		this.dialogRef.close(true); // Keep only this row
+		// }, 2500);
 	}
 }

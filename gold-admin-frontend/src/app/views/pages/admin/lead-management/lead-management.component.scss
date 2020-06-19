@@ -1,0 +1,56 @@
+:host {
+    .mat-table__wrapper {
+        height: 79vh !important; //set table height
+    }
+    ::ng-deep.mat-row,
+    ::ng-deep.mat-header-row{
+        width: 130% !important;
+    }
+    .mat-column-fullName{
+        flex: 0 0 11% !important;
+        padding-left: 5px !important;
+    }
+    .mat-column-view{
+        flex: 0 0 6% !important;
+    }
+    .mat-column-pan{
+        flex: 0 0 7% !important;
+    }
+    .mat-column-internalBranch{
+        flex: 0 0 10% !important;
+    }
+    .mat-column-state{
+        flex: 0 0 9% !important;
+    }
+    .mat-column-city{
+        flex: 0 0 9% !important;
+    }
+    .mat-column-pincode{
+        flex: 0 0 7% !important;
+    }
+    .mat-column-date{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-status{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-kycStatus{
+        flex: 0 0 8% !important;
+    }
+    .border-apply{
+        border: 1px solid !important;
+    }
+    .mat-column-kyc{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-actions{
+        flex: 0 0 6% !important;
+
+    }
+    .apply-kyc {
+		background: transparent;
+		border: thin solid #454D67;
+		border-radius: 5px;
+		padding: 5px;
+	}
+}

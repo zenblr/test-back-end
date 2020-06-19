@@ -1,0 +1,22 @@
+:host{
+    ::ng-deep.mat-tab-label .mat-tab-label-content {
+        flex-wrap: wrap!important;
+      }
+    //   ::ng-deep.mat-tab-label{
+    //     // justify-content: left !important;
+    //     padding-left: 0px !important;
+ 
+    // }
+      
+      ::ng-deep.mat-tab-label .mat-tab-label-content span{
+        display: flex!important;
+        flex: 1 0 100%!important;  
+        justify-content: left !important;
+
+      }
+      ::ng-deep.mat-ink-bar{
+        width: 180px !important;
+      }
+
+    
+}

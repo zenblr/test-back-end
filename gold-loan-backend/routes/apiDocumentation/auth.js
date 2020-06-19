@@ -5,7 +5,7 @@
  *     tags:
  *       - Authentication
  *     name: userLogin
- *     summary: To get login 
+ *     summary: To get  user login 
  *     consumes:
  *       - application/json
  *     parameters:
@@ -29,12 +29,12 @@
  *         description: Wrong Credentials
  *       404:
  *         description: User not found
- * /auth/verify-login:
+ * /auth/verify-customer-login:
 *   post:
  *     tags:
  *       - Authentication
  *     name: userLogin
- *     summary: To get login 
+ *     summary: To get customer login 
  *     consumes:
  *       - application/json
  *     parameters:
@@ -85,5 +85,30 @@
  *         description: Wrong Credentials
  *       404:
  *         description: User not found
- *       
+ * /customer/send-otp:
+ *   post:
+ *     tags:
+ *       - Authentication
+ *     name: send otp
+ *     summary: To get customer login 
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             mobileNumber:
+ *               type: string
+ *         required:
+ *           - mobileNumber
+ *     responses:
+ *       200:
+ *         description: Otp send to your entered mobile number.
+ *       401:
+ *         description: Wrong Credentials
+ *       404:
+ *         description: Mobile number is not Exist.
+ *   
  */

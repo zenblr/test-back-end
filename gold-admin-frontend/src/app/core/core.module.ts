@@ -1,6 +1,6 @@
 // Anglar
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 // Layout Directives
 // Services
 import {
@@ -18,12 +18,16 @@ import {
 	TabClickEventDirective,
 	TimeElapsedPipe,
 	ToggleDirective,
-	NumberDirective
-} from './_base/layout';
+	NumberDirective,
+} from "./_base/layout";
 // Services
-import { AuthService } from './auth/_services/auth.service';
-import { AlphabetsDirective } from './_base/layout/directives/alphabets.directive';
-import { DecimalOnlyDirective } from './_base/layout/directives/decimal-only.directive';
+import { AuthService } from "./auth/_services/auth.service";
+import { AlphabetsDirective } from "./_base/layout/directives/alphabets.directive";
+import { DecimalOnlyDirective } from "./_base/layout/directives/decimal-only.directive";
+import { SchemeAmountPipe } from "./_base/layout/pipes/scheme-amount.pipe";
+import { ExcelService, PdfService } from "./_base/crud";
+import { IndianCurrencyFormatPipe } from './_base/layout/pipes/indian-currency-format.pipe';
+import { TruncatePipe } from './_base/layout/pipes/truncate-text.pipe';
 
 @NgModule({
 	imports: [CommonModule],
@@ -47,6 +51,9 @@ import { DecimalOnlyDirective } from './_base/layout/directives/decimal-only.dir
 		FirstLetterPipe,
 		AlphabetsDirective,
 		DecimalOnlyDirective,
+		SchemeAmountPipe,
+		IndianCurrencyFormatPipe,
+		TruncatePipe,
 	],
 	exports: [
 		// directives
@@ -65,11 +72,13 @@ import { DecimalOnlyDirective } from './_base/layout/directives/decimal-only.dir
 		JoinPipe,
 		GetObjectPipe,
 		SafePipe,
+		SchemeAmountPipe,
 		FirstLetterPipe,
 		AlphabetsDirective,
-		DecimalOnlyDirective
+		DecimalOnlyDirective,
+		IndianCurrencyFormatPipe,
+		TruncatePipe
 	],
-	providers: [AuthService]
+	providers: [AuthService, ExcelService, PdfService],
 })
-export class CoreModule {
-}
+export class CoreModule {}

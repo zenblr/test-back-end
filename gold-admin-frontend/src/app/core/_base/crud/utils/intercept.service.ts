@@ -19,7 +19,6 @@ export class InterceptService implements HttpInterceptor {
 		private sharedSerivce: SharedService,
 		private router: Router
 	) {
-		this.sharedSerivce.loader$.subscribe()
 	}
 	// intercept request and add token
 	intercept(
@@ -41,7 +40,7 @@ export class InterceptService implements HttpInterceptor {
 		// console.log('----request----');
 		// console.log(request);
 		// console.log('--- end of request---');
-		this.sharedSerivce.loader.next(true)
+		// this.sharedSerivce.loader.next(true)
 		return next.handle(request).pipe(
 			tap(
 				event => {
@@ -49,7 +48,7 @@ export class InterceptService implements HttpInterceptor {
 						// console.log('all looks good');
 						// http response status code
 						// console.log(event.body.count);
-						if (event.body.count) {
+						if (event.body.count != undefined) {
 							this.sharedSerivce.totalCount.next(event.body.count)
 						} else {
 							this.sharedSerivce.totalCount.next(null)
@@ -62,8 +61,8 @@ export class InterceptService implements HttpInterceptor {
 					// console.log('----response----');
 					// console.error('status code:');
 					// tslint:disable-next-line:no-debugger
-					console.error(error.status);
-					console.error(error.message);
+					// console.error(error.status);
+					// console.error(error.message);
 					// console.log('--- end of response---');
 				}
 			),
@@ -78,7 +77,7 @@ export class InterceptService implements HttpInterceptor {
 				}
 			),
 			finalize(() => {
-				this.sharedSerivce.loader.next(false)
+				// this.sharedSerivce.loader.next(false)
 			})
 		);
 	}

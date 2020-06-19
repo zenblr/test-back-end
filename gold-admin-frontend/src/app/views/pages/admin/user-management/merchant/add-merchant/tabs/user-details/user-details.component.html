@@ -1,0 +1,171 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row justify-content-center scroll  kt-padding-t-10 kt-padding-b-10">
+            <div class="col-6">
+                <form action="" [formGroup]="userDetails">
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class=" mandatory font-weight-500 text-color">Merchant Name </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="merchantName" class="form-control"
+                                placeholder="e.g John Smith"
+                                [class.isError]="controls.merchantName.touched && controls.merchantName.invalid">
+                            <div *ngIf="controls.merchantName.touched && controls.merchantName.invalid">
+                                <mat-error
+                                    *ngIf="controls.merchantName.touched && controls.merchantName.errors?.required">
+                                    Field is required</mat-error>
+                                <mat-error
+                                    *ngIf="controls.merchantName.touched && controls.merchantName.errors?.pattern">Enter
+                                    Valid Name</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class=" mandatory font-weight-500 text-color">Full Name </label>
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="text" class="form-control" formControlName="firstName"
+                                        placeholder="e.g John"
+                                        [class.isError]="controls.firstName.touched && controls.firstName.invalid"
+                                        ktAlphabets>
+                                    <div *ngIf="controls.firstName.touched && controls.firstName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.firstName.touched && controls.firstName.errors?.required">
+                                            Field
+                                            is required</mat-error>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control" formControlName="lastName"
+                                        placeholder="e.g Smith"
+                                        [class.isError]="controls.lastName.touched && controls.lastName.invalid"
+                                        ktAlphabets>
+                                    <div *ngIf="controls.lastName.touched && controls.lastName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.lastName.touched && controls.lastName.errors?.required">
+                                            Field
+                                            is required</mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class=" mandatory font-weight-500 text-color">Email </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="email"
+                                placeholder="e.g abc@123.com"
+                                [class.isError]="controls.email.touched && controls.email.invalid">
+                            <div *ngIf="controls.email.touched && controls.email.invalid">
+                                <mat-error *ngIf="controls.email.touched && controls.email.errors?.required">Field is
+                                    required</mat-error>
+                                <mat-error *ngIf="controls.email.touched && controls.email.errors?.email">Enter Valid
+                                    Email</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class=" mandatory font-weight-500 text-color">Mobile Number </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="mobileNumber"
+                                placeholder="9892043210" numbersOnly
+                                [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid"
+                                maxlength="10">
+                            <div *ngIf="controls.mobileNumber.touched && controls.mobileNumber.invalid">
+                                <mat-error
+                                    *ngIf="controls.mobileNumber.touched && controls.mobileNumber.errors?.required">
+                                    Field is required</mat-error>
+                                <mat-error
+                                    *ngIf="controls.mobileNumber.touched && controls.mobileNumber.errors?.minlength">
+                                    Length Should be 10    
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class=" mandatory font-weight-500 text-color">State</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="stateId"
+                                [class.isError]="controls.stateId.touched && controls.stateId.invalid"
+                                (change)="getCities()">
+                                <option value="" [selected]="true" [disabled]="true">Select State</option>
+                                <option [value]="stateId.id" *ngFor="let stateId of states">{{stateId.name}}</option>
+                            </select>
+                            <div *ngIf="controls.stateId.touched && controls.stateId.invalid">
+                                <mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">Field
+                                    is
+                                    required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class=" mandatory font-weight-500 text-color">Select City</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="cityId"
+                                [class.isError]="controls.cityId.touched && controls.cityId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select City</option>
+                                <option [value]="c.id" *ngFor="let c of cityId">{{c.name}}</option>
+                            </select>
+                            <div *ngIf="controls.cityId.touched && controls.cityId.invalid">
+                                <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">Field is
+                                    required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class=" mandatory font-weight-500 text-color">Pin Code</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="pinCode" placeholder="112345"
+                                numbersOnly [class.isError]="controls.pinCode.touched && controls.pinCode.invalid"
+                                maxlength="6">
+                            <div *ngIf="controls.pinCode.touched && controls.pinCode.invalid">
+                                <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.required">Field
+                                    is required</mat-error>
+                                <mat-error *ngIf="controls.pinCode.touched && controls.pinCode.errors?.minlength"> Length Should be 6 </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="url == 'add-merchant'">
+                        <div class="col-4 align-self-center">
+                            <label class=" mandatory font-weight-500 text-color">Merchant Initial</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" placeholder="e.g AU" class="form-control" formControlName="initial" maxlength="2" ktAlphabets
+                            [class.isError]="controls.initial.touched && controls.initial.invalid">
+                            <div *ngIf="controls.initial.touched && controls.initial.invalid">
+                                <mat-error
+                                    *ngIf="controls.initial.touched && controls.initial.errors?.required">
+                                    Field
+                                    is required</mat-error>
+                                    <mat-error
+                                    *ngIf="controls.initial.touched && controls.initial.errors?.minlength">
+                                    Field
+                                    is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-12">
+                            <kt-button [value]="'Next'" [type]="'button'" (click)="submit()"></kt-button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

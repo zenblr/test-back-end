@@ -1,14 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycBankDetail = sequelize.define('customerKycBankDetail', {
         // attributes
-        customerKycId: {
-            type: DataTypes.INTEGER,
-            field: 'customer_kyc_id',
-            allowNull: false
-        },
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id',
+            allowNull: false
+        },
+        customerKycId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_kyc_id',
             allowNull: false
         },
         bankName:{
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         accountType:{
             type: DataTypes.ENUM,
-            field: 'account_type_id',
+            field: 'account_type',
             values: ['saving', 'current']
         },
         accountHolderName:{
@@ -39,6 +39,19 @@ module.exports = (sequelize, DataTypes) => {
         passbookProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'passbook_proof'
+        },
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true
         }
    
     }, {
@@ -49,9 +62,12 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerKycBankDetail.associate = function(models) {
 
-        CustomerKycBankDetail.belongsTo(models.customerKycPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
+        CustomerKycBankDetail.belongsTo(models.customerKyc, { foreignKey: 'customerKycId', as: 'customerKyc' });
 
         CustomerKycBankDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+
+        CustomerKycBankDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerKycBankDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });     
 
     }
 

@@ -57,7 +57,7 @@
  *       type: "integer"
  *     - name: "isActive"
  *       in: "query"
- *       description: " value of isAcive of customer query to delete"
+ *       description: " value of isActive of customer query to delete"
  *       required: true
  *       type: "boolean"
  *     security:

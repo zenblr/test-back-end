@@ -2,10 +2,12 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetect
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { finalize, catchError, map } from 'rxjs/operators';
 import { ToastrComponent } from '../toastr/toastr.component';
-import {MatDialog } from '@angular/material'
+import { MatDialog } from '@angular/material'
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { NgxPermissionsService } from 'ngx-permissions'
 
 @Component({
   selector: 'kt-uplod-data-image',
@@ -22,62 +24,78 @@ export class UplodDataImageComponent implements OnInit {
 
   @ViewChild("file", { static: false }) file;
   @ViewChild(ToastrComponent, { static: false }) toastr: ToastrComponent;
+  promotionPage = false;
+  add: boolean;
+  editBanner: boolean;
+  deleteBanner: boolean;
 
 
   constructor(
+    public ngxPermissionService: NgxPermissionsService,
     private ref: ChangeDetectorRef,
     private sharedService: SharedService,
-    public dilaog:MatDialog,
+    public dilaog: MatDialog,
     private layoutUtilsService: LayoutUtilsService,
-    private ele:ElementRef,
-    private toastrService:ToastrService
+    private ele: ElementRef,
+    private toastrService: ToastrService,
+    private router: Router
   ) { }
 
 
   ngOnInit() {
+    this.ngxPermissionService.permissions$.subscribe(res => {
+      this.getPermission(res)
+    })
+    const currentPage = this.router.url;
+    if (currentPage == '/admin/upload-data/upload-banner') {
+      this.promotionPage = true;
+    }
   }
 
   uploadImages(event) {
     var details = event.target.files
-    if (details.length == 0) {
-      this.index == null
-    } else {
-      var reader = new FileReader()
-      console.log(reader.readAsDataURL(details[0]))
-      console.log(details[0])
-      var reader = new FileReader();
-      const img = new Image();
-      img.src = window.URL.createObjectURL(details[0]);
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (_event) => {
-        setTimeout(() => {
-          const width = img.naturalWidth;
-          const height = img.naturalHeight;
-          window.URL.revokeObjectURL(img.src);
-          if (width !== 600 || height !== 300) {  
-            this.toastrService.error('Please Upload Image of Valid Size');
-            console.log(width , height)
-          }else{
-            this.sharedService.uploadFile(details[0]).pipe(map(res => {
-              if (this.index != null) {
-                this.images.splice(this.index, 1, res.uploadFile.URL)
-                this.index = null;
-              } else {
-                this.images.push(res.uploadFile.URL)
-              }
-              this.ref.detectChanges();
-            }),
-              catchError(err => {
-                this.toastrService.error('Please try Again');
-                throw err
-              }), finalize(() => {
-                this.file.nativeElement.value = ''
-              })).subscribe()
-          }
-          this.ref.detectChanges();
-        }, 2000);
+    var name = event.target.files[0].name
+    var ext = name.split('.')
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      if (details.length == 0) {
+        this.index == null
+      } else {
+        var reader = new FileReader()
+        var reader = new FileReader();
+        const img = new Image();
+        img.src = window.URL.createObjectURL(details[0]);
+        reader.readAsDataURL(event.target.files[0]);
+        reader.onload = (_event) => {
+          setTimeout(() => {
+            const width = img.naturalWidth;
+            const height = img.naturalHeight;
+            window.URL.revokeObjectURL(img.src);
+            if (width !== 600 || height !== 300) {
+              this.toastrService.error('Please Upload Image of Valid Size');
+            } else {
+              this.sharedService.uploadFile(details[0]).pipe(map(res => {
+                if (this.index != null) {
+                  this.images.splice(this.index, 1, res.uploadFile.URL)
+                  this.index = null;
+                } else {
+                  this.images.push(res.uploadFile.URL)
+                }
+                this.ref.detectChanges();
+              }),
+                catchError(err => {
+                  this.toastrService.error('Please try Again');
+                  throw err
+                }), finalize(() => {
+                  this.file.nativeElement.value = ''
+                })).subscribe()
+            }
+            this.ref.detectChanges();
+          }, 2000);
+        }
+
       }
-      
+    } else {
+      this.toastrService.error('Upload Valid File Format');
     }
   }
 
@@ -96,7 +114,6 @@ export class UplodDataImageComponent implements OnInit {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
         this.images.splice(index, 1);
         this.ref.detectChanges();
       }
@@ -106,15 +123,49 @@ export class UplodDataImageComponent implements OnInit {
 
   }
 
-  open(index){
-    this.dilaog.open(ImagePreviewDialogComponent,{
-      data:{
-        images:this.images,
-        index:index
+  open(index) {
+    this.dilaog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: this.images,
+        index: index
       },
-      width:"auto"
+      width: "auto"
     })
   }
 
+  reset() {
+    this.add = false;
+    this.editBanner = false;
+    this.deleteBanner = false;
+  }
 
+  getPermission(permission) {
+    this.reset()
+    if (location.href.includes('upload-banner')) {
+      if (permission.promotionalBannerAdd)
+        this.add = true
+      if (permission.promotionalBannerEdit)
+        this.editBanner = true
+      if (permission.promotionalBannerDelete)
+        this.deleteBanner = true
+    }
+    if (location.href.includes('upload-offer')) {
+      if (permission.offerBannerAdd)
+        this.add = true
+      if (permission.offerBannerEdit)
+        this.editBanner = true
+      if (permission.offerBannerDelete)
+        this.deleteBanner = true
+
+    }
+    if (location.href.includes('upload-lender-banner')) {
+      if (permission.partnerBannerAdd)
+        this.add = true
+      if (permission.partnerBannerEdit)
+        this.editBanner = true
+      if (permission.partnerBannerDelete)
+        this.deleteBanner = true
+    }
+    console.log(this.add,this.editBanner,this.deleteBanner)
+  }
 }

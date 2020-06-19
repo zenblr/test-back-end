@@ -53,7 +53,7 @@
  *       type: "integer"
  *     - name: "isActive"
  *       in: "query"
- *       description: " value of isAcive of occupation to delete"
+ *       description: "value of isActive of occupation to delete"
  *       required: true
  *       type: "boolean"
  *     security:

@@ -13,4 +13,14 @@
 	.kt-menu__link-text {
 		white-space: nowrap;
 	}
+
+	.kt-menu__link-count {
+		display: flex;
+		align-items: center;
+		flex-grow: 0 !important;
+	}
+
+	.bgColor{
+		background-color: white !important;
+	}
 }

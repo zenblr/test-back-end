@@ -5,14 +5,12 @@ import { LayoutConfigService, ToggleOptions } from '../../../core/_base/layout';
 import { HtmlClassService } from '../html-class.service';
 import { UploadOfferService } from '../../../core/upload-data';
 import { tap } from 'rxjs/operators';
+import { GoldRateService } from '../../../core/upload-data/gold-rate/gold-rate.service';
 
 @Component({
 	selector: 'kt-brand',
 	styles: [`.gold-rate{
-		font-weight: 600;
-		color: #ffde9c;
-		 background-color: #454D67; 
-		 padding: 15px 0; 
+		 
 		 /* padding-left: 62px ; */
 	}`],
 	templateUrl: './brand.component.html',
@@ -38,19 +36,20 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	 * @param htmlClassService: HtmlClassService
 	 */
 	constructor(private layoutConfigService: LayoutConfigService, public htmlClassService: HtmlClassService,
-		private uploadOfferService: UploadOfferService, private ref: ChangeDetectorRef) {
+		public goldRateService: GoldRateService, private ref: ChangeDetectorRef) {
 
-		this.uploadOfferService.getOffers().pipe(
+		this.goldRateService.getGoldRate().pipe(
 			tap(res => {
 				// console.log(res)
 				this.rate = res.goldRate;
+				this.goldRateService.goldRate.next(this.rate);
 				this.ref.detectChanges();
-				this.uploadOfferService.goldRate.next(this.rate);
+
 			})
 		).subscribe(res => {
 
 		});
-		// this.uploadOfferService.goldRate.next(this.rate);
+		// this.goldRateService.goldRate.next(this.rate);
 	}
 
 	/**
@@ -67,11 +66,11 @@ export class BrandComponent implements OnInit, AfterViewInit {
 		// var rate;
 
 
-		this.uploadOfferService.goldRate$.subscribe(res => {
-			// console.log(res);
-			this.goldRate = res
-			this.ref.detectChanges();
-		});
+		// this.goldRateService.goldRate$.subscribe(res => {
+		// 	// console.log(res);
+		// 	this.goldRate = res
+		// 	this.ref.detectChanges();
+		// });
 	}
 
 	/**

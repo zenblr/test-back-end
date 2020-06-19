@@ -1,0 +1,77 @@
+<!-- <kt-action-natification></kt-action-natification> -->
+
+<kt-toastr #toastr></kt-toastr>
+
+<div class="kt-portlet">
+    <kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-form">
+            <form [formGroup]="karatDetailsForm">
+
+                <div class="kt-portlet__body-progress">
+                    <mat-spinner [diameter]="20"></mat-spinner>
+                </div>
+
+                <!-- <kt-alert type="warn" [duration]="30000" [showCloseButton]="true" (close)="onAlertClose($event)">
+                            Oh snap! Change a few things up and try submitting again.
+                        </kt-alert> -->
+
+
+
+                <div class="col-lg-12 kt-margin-bottom-20-mobile">
+                    <div class="row">
+                        <!-- karat details Name -->
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Karat </label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" formControlName="karat" autocomplete="off"
+                                placeholder="Enter Karat Details"
+                                [class.isError]="controls.karat.touched && controls.karat.invalid">
+                            <mat-error *ngIf="controls.karat.touched && controls.karat.errors?.required">Required
+                                field</mat-error>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-4 form-label">
+                            <label [class.mandatory]="isMandatory ">Percentage % </label>
+                        </div>
+                        <div class="col-4">
+                            <input class="form-control" formControlName="fromPercentage" autocomplete="off"
+                                placeholder="from %"
+                                [class.isError]="controls.fromPercentage.touched && controls.fromPercentage.invalid">
+                            <mat-error
+                                *ngIf="controls.fromPercentage.touched && controls.fromPercentage.errors?.required">
+                                Required
+                                field</mat-error>
+                            <mat-error
+                                *ngIf="controls.fromPercentage.touched && controls.fromPercentage.errors?.pattern">
+                                Invalid Percentage
+                            </mat-error>
+                        </div>
+                        <div class="col-4">
+                            <input class="form-control" formControlName="toPercentage" autocomplete="off"
+                                placeholder="To %"
+                                [class.isError]="controls.toPercentage.touched && controls.toPercentage.invalid">
+                            <mat-error *ngIf="controls.toPercentage.touched && controls.toPercentage.errors?.required">
+                                Required
+                                field</mat-error>
+                            <mat-error *ngIf="controls.toPercentage.touched && controls.toPercentage.errors?.pattern">
+                                Invalid Percentage
+                            </mat-error>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <kt-portlet-footer>
+        <div class="p-4">
+            <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="data.action">
+            </kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>

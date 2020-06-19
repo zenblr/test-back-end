@@ -1,0 +1,160 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="kt-form kt-margin-b-10">
+        </div>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
+                matSortActive="id" matSortDirection="asc" matSortDisableClear>
+                <ng-container matColumnDef="storeId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element["customerDetails.customerUniqueId"] ? element["customerDetails.customerUniqueId"] : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element["customerDetails.firstName"] || element["customerDetails.lastName"] ? (element["customerDetails.firstName"] + ' ' + element["customerDetails.lastName"] | titlecase) : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="userId">
+                    <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element["customerDetails.mobileNumber"] ? element["customerDetails.mobileNumber"] : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="mobileNumber">
+                    <mat-header-cell *matHeaderCellDef>Order ID</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element["orderUniqueId"] ? element["orderUniqueId"] : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="orderId">
+                    <mat-header-cell *matHeaderCellDef>Order Total Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element["orderdetails.finalOrderPrice"] ? element["orderdetails.finalOrderPrice"] : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="emiDate">
+                    <mat-header-cell *matHeaderCellDef>Order Initial Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element["orderdetails.initialPayment"] ? element["orderdetails.initialPayment"] : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="emiAmount">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Order Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        <div class="d-block">
+                            <div>
+                                {{element?.createdAt ? (element?.createdAt | date:'MMM d, y') : '-'}}
+                            </div>
+                            <div>{{element?.createdAt ? (element?.createdAt | date:'h:mm a') : ''}}
+                            </div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="emiPaidDate">
+                    <mat-header-cell *matHeaderCellDef>EMI Tenure</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element["paymentType.paymentType"] ? element["paymentType.paymentType"] : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef>Ordered Qty.</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.quantity ? element?.quantity : '-'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="emiStart">
+                    <mat-header-cell *matHeaderCellDef>EMI Start Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div class="d-block">
+                            <div>{{element['emiStartDate'] ? (element['emiStartDate'] | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element['emiStartDate'] ? (element['emiStartDate'] | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="emiEnd">
+                    <mat-header-cell *matHeaderCellDef>EMI End Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div class="d-block">
+                            <div>{{element['emiEndDate'] ? (element['emiEndDate'] | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element['emiEndDate'] ? (element['emiEndDate'] | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element['orderCurrentStatus.id'] == 1 || element['orderCurrentStatus.id'] == 5,
+                    'text-red' : element['orderCurrentStatus.id'] == 9 || element['orderCurrentStatus.id'] == 13,
+                    'text-green' : element['orderCurrentStatus.id'] != 1 || element['orderCurrentStatus.id'] != 5 ||
+                    element['orderCurrentStatus.id'] != 9 || element['orderCurrentStatus.id'] != 13}">
+                        {{element["orderCurrentStatus.statusName"] ? (element["orderCurrentStatus.statusName"] | titlecase) : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="performa">
+                    <mat-header-cell *matHeaderCellDef>Proforma Invoice</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element['orderCurrentStatus.id'] != 13">
+                            <kt-button [value]="'Print'" [type]="'submit'" (click)="performa(element)"></kt-button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="contract">
+                    <mat-header-cell *matHeaderCellDef>Contract</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <kt-button [value]="'Print'" [type]="'submit'" (click)="contract(element)"></kt-button>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="cancelReceipt">
+                    <mat-header-cell *matHeaderCellDef>Cancel Receipt</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element['orderCurrentStatus.id'] == 13">
+                            <kt-button [value]="'Print'" [type]="'submit'" (click)="cancelReceipt(element)"></kt-button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="orderPayment">
+                    <mat-header-cell *matHeaderCellDef>Order Payment</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element['orderCurrentStatus.id'] != 2 && element['orderCurrentStatus.id'] != 3">
+                            <kt-button [value]="'View'" [type]="'submit'" (click)="viewOrPay(element)"></kt-button>
+                        </span>
+                        <span *ngIf="element['orderCurrentStatus.id'] == 2 || element['orderCurrentStatus.id'] == 3">
+                            <kt-button [value]="'Pay'" [type]="'submit'" (click)="viewOrPay(element)"></kt-button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="cancelOrder">
+                    <mat-header-cell *matHeaderCellDef>Cancel Order</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span *ngIf="element['orderCurrentStatus.id'] == 2 || element['orderCurrentStatus.id'] == 3">
+                            <kt-button [value]="'Cancel'" [type]="'button'" (click)="cancelOrder(element)">
+                            </kt-button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 200%;"></mat-header-row>
+
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 200%;"></mat-row>
+            </mat-table>
+
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <!-- Message for empty data  -->
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+
+        <!-- start: BOTTOM -->
+        <div class="mat-table__bottom">
+            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <!-- MATERIAL PAGINATOR | Binded to dasources -->
+            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+        <!-- end: BOTTOM -->
+    </kt-portlet-body>
+    <!-- end::Body -->
+</kt-portlet>

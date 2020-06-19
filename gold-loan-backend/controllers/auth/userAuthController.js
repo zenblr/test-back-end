@@ -14,44 +14,67 @@ const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
 exports.userLogin = async (req, res, next) => {
-
     const { mobileNumber, password } = req.body;
-
-    // let checkUser = await models.user.findOne({
-    //     where: { mobileNumber, isActive: true },
-    //     include: [{ model: models.role }]
-    // });
 
     let checkUser = await models.user.findOne({
         where: {
-              [Op.or]: [
+            [Op.or]: [
                 {
-                  email: mobileNumber,
+                    email: mobileNumber,
                 },
                 {
-                  mobileNumber: mobileNumber,
+                    mobileNumber: mobileNumber,
                 }
-              ]
-          },
-          include: [{ model: models.role }]
+            ]
+        },
+        include: [{
+            model: models.role
+        }, {
+            model: models.internalBranch
+        }]
     })
-
+    console.log(checkUser)
     if (!checkUser) {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }
+
+
+    let userRoleId = await checkUser.roles.map((data) => data.id);
+    let roleName = await checkUser.roles.map((data) => data.roleName)
+
     let userDetails = await checkUser.comparePassword(password);
     if (userDetails === true) {
-        const Token = jwt.sign({
-            id: checkUser.dataValues.id,
-            mobile: checkUser.dataValues.mobileNumber,
-            firstName: checkUser.dataValues.firstName,
-            lastName: checkUser.dataValues.lastName,
-            roleId: checkUser.dataValues.roles[0].id,
-            roleName: checkUser.dataValues.roles[0].roleName,
-        },
-            JWT_SECRETKEY, {
-            expiresIn: JWT_EXPIRATIONTIME
-        });
+        let Token;
+        if(checkUser.internalBranches.length != 0){
+             Token = jwt.sign({
+                id: checkUser.dataValues.id,
+                mobile: checkUser.dataValues.mobileNumber,
+                firstName: checkUser.dataValues.firstName,
+                lastName: checkUser.dataValues.lastName,
+                roleId: userRoleId,
+                roleName: roleName,
+                userTypeId: checkUser.userTypeId,
+                internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
+            },
+                JWT_SECRETKEY, {
+                expiresIn: JWT_EXPIRATIONTIME
+            });
+        } else {
+            Token = jwt.sign({
+                id: checkUser.dataValues.id,
+                mobile: checkUser.dataValues.mobileNumber,
+                firstName: checkUser.dataValues.firstName,
+                lastName: checkUser.dataValues.lastName,
+                roleId: userRoleId,
+                roleName: roleName,
+                userTypeId: checkUser.userTypeId,
+                internalBranchId: null
+            },
+                JWT_SECRETKEY, {
+                expiresIn: JWT_EXPIRATIONTIME
+            });
+        }
+        
 
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
@@ -68,39 +91,52 @@ exports.userLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
-        // let getRole = await models.userRole.getAllRole(decoded.id);
-        // let roleId = await getRole.map((data) => data.roleId);
-        // let modules = await models.roleModule.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},
-        //     attributes: [],
-        //     include: [
-        //         {
-        //           model: models.module,
-        //           as:'module',
-        //           attributes: ['id','moduleName'],
-        //           where: { isActive: true}
-        //         },
-        //       ]
-        // });
+        let getRole = await models.userRole.getAllRole(checkUser.dataValues.id);
+        let roleId = await getRole.map((data) => data.roleId);
+        let modules = await models.roleModule.findAll({
+            where: { roleId: { [Op.in]: roleId }, isActive: true },
+            attributes: [],
+            include: [
+                {
+                    model: models.module,
+                    as: 'module',
+                    attributes: ['id', 'moduleName'],
+                    where: { isActive: true }
+                },
+            ]
+        });
 
-        // let getPermissions = await models.rolePermission.findAll({where : {roleId: {[Op.in]: roleId}, isActive : true},attributes: ['permissionId']});
-        // let permissionId = await getPermissions.map((data) => data.permissionId);
-        // let permissions = await models.entity.findAll({
-        //     where : {isActive : true},
-        //     attributes: ['id','entityName'],
-        //     include: [
-        //         {
-        //           model: models.permission,
-        //           as:'permission',
-        //           attributes: ['id','actionName'],
-        //           where: { isActive: true, id: {[Op.in]: permissionId} }
-        //         },
-        //       ]
-        // })
-        return res.status(200).json({ message: 'login successful', Token });
+        let getPermissions = await models.rolePermission.findAll({ where: { roleId: { [Op.in]: roleId }, isActive: true }, attributes: ['permissionId'] });
+        let permissionId = await getPermissions.map((data) => data.permissionId);
+        let permissions = await models.permission.findAll({
+            attributes: ['id', 'actionName', 'description'],
+            raw: true,
+            where: { isActive: true, id: { [Op.in]: permissionId } }
+        },
+        )
+        if(checkUser.internalBranches.length == 0){
+            return res.status(200).json({
+                message: 'login successful', Token, modules, permissions,
+                userDetails: {
+                    userTypeId: checkUser.userTypeId
+                }
+            });
+        } else {
+            return res.status(200).json({
+                message: 'login successful', Token, modules, permissions,
+                userDetails: {
+                    userTypeId: checkUser.userTypeId,
+                    stateId: checkUser.internalBranches[0].stateId,
+                    cityId: checkUser.internalBranches[0].cityId,
+                    internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
+                }
+            });
+        }
+        
+
     } else {
-       return res.status(401).json({ message: 'Wrong Credentials' });
+        return res.status(401).json({ message: 'Wrong Credentials' });
     }
-
 }
 
 exports.logout = async (req, res, next) => {
@@ -124,24 +160,34 @@ exports.verifyLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(401).json({ message: `Invalid Otp` })
+        return res.status(400).json({ message: `Invalid Otp` })
     }
 
+    let checkUser;
     var token = await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
         let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber }, transaction: t });
-        let checkUser = await models.user.findOne({
+        checkUser = await models.user.findOne({
             where: { id: user.id, isActive: true },
-            include: [{ model: models.role }],
+            include: [{
+                model: models.role
+            }, {
+                model: models.internalBranch
+            }],
             transaction: t
         });
+        let roleId = await checkUser.roles.map((data) => data.id);
+        let roleName = await checkUser.roles.map((data) => data.roleName)
+
         Token = jwt.sign({
             id: checkUser.dataValues.id,
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
-            roleId: checkUser.dataValues.roles[0].id,
-            roleName: checkUser.dataValues.roles[0].roleName,
+            roleId: roleId,
+            roleName: roleName,
+            userTypeId: checkUser.userTypeId,
+            internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -163,6 +209,36 @@ exports.verifyLoginOtp = async (req, res, next) => {
         return Token
 
     })
-    return res.status(200).json({ message: 'login successful', token });
+    let getRole = await models.userRole.getAllRole(checkUser.dataValues.id);
+    let roleId = await getRole.map((data) => data.roleId);
+    let modules = await models.roleModule.findAll({
+        where: { roleId: { [Op.in]: roleId }, isActive: true },
+        attributes: [],
+        include: [
+            {
+                model: models.module,
+                as: 'module',
+                attributes: ['id', 'moduleName'],
+                where: { isActive: true }
+            },
+        ]
+    });
+
+    let getPermissions = await models.rolePermission.findAll({ where: { roleId: { [Op.in]: roleId }, isActive: true }, attributes: ['permissionId'] });
+    let permissionId = await getPermissions.map((data) => data.permissionId);
+    let permissions = await models.permission.findAll({
+        attributes: ['id', 'actionName', 'description'],
+        raw: true,
+        where: { isActive: true, id: { [Op.in]: permissionId } }
+    },
+    )
+    return res.status(200).json({
+        message: 'login successful', token, modules, permissions, userDetails: {
+            userTypeId: checkUser.userTypeId,
+            stateId: checkUser.internalBranches[0].stateId,
+            cityId: checkUser.internalBranches[0].cityId,
+            internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
+        }
+    });
 
 }

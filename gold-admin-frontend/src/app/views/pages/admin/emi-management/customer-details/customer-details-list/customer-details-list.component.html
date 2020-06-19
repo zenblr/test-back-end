@@ -1,0 +1,174 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+    <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+    <!-- <kt-portlet-header [title]="'Branch List'" [class]="'kt-portlet__head--lg'" [viewLoading$]="dataSource.loading$">
+
+        <ng-container ktPortletTools>
+
+        </ng-container>
+    </kt-portlet-header> -->
+    <!-- end::Header -->
+
+    <kt-portlet-body>
+        <!-- start::FILTERS & GROUP ACTIONS -->
+        <div class="kt-form kt-margin-b-10">
+
+            <!-- start::GROUP ACTIONS -->
+            <!-- Group actions list: 'Delete selected' | 'Fetch selected' | 'Update status for selected' -->
+            <!-- Group actions are shared for all LISTS -->
+
+            <!-- end::GROUP ACTIONS -->
+        </div>
+        <!-- end::FILTERS & GROUP ACTIONS -->
+
+        <!-- MATERIAL TABLE | Binded to datasources -->
+        <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
+                matSortActive="id" matSortDirection="asc" matSortDisableClear>
+                <!-- Checkbox Column -->
+
+                <!-- Table with selection -->
+                <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
+                <!-- <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="mat-column-checkbox">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container> -->
+
+                <ng-container matColumnDef="storeId">
+                    <mat-header-cell *matHeaderCellDef>Store ID</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.Createdby?.broker?.store?.storeUniqueId ? element?.Createdby?.broker?.store?.storeUniqueId : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="vkMobileNumber">
+                    <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.Createdby?.mobileNumber ? element?.Createdby?.mobileNumber : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="centerState">
+                    <mat-header-cell *matHeaderCellDef>Center State</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.Createdby?.address[0]?.state?.name ? element?.Createdby?.address[0]?.state?.name : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="centerCity">
+                    <mat-header-cell *matHeaderCellDef>Center City</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.Createdby?.address[0]?.city?.name ? element?.Createdby?.address[0]?.city?.name : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.customerUniqueId ? element?.customerUniqueId : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="customerEmail">
+                    <mat-header-cell *matHeaderCellDef>Customer Email</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.email ? element?.email : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="fullName">
+                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.firstName || element?.lastName  ? element?.firstName + ' ' +element?.lastName : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="mobileNumber">
+                    <mat-header-cell *matHeaderCellDef>Customer Mobile Number</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.mobileNumber ? element?.mobileNumber : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="state">
+                    <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.state?.name ? element?.state?.name : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="city">
+                    <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.city?.name ? element?.city?.name : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="pincode">
+                    <mat-header-cell *matHeaderCellDef>Pincode</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.pinCode ? element?.pinCode : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="panCardName">
+                    <mat-header-cell *matHeaderCellDef>Name on PAN Card</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.kycDetails?.nameOnPanCard ? element?.kycDetails?.nameOnPanCard : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="panCardNumber">
+                    <mat-header-cell *matHeaderCellDef>PAN Card No.</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.kycDetails?.panCardNumber ? element?.kycDetails?.panCardNumber : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="viewPanCard">
+                    <mat-header-cell *matHeaderCellDef>View PAN Card</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span class="text-primary kt-pointer" *ngIf="element?.kycDetails?.panCard.url;else elseBlock"
+                            (click)="open(element.kycDetails.panCard.url)">View</span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="merchant">
+                    <mat-header-cell *matHeaderCellDef>Merchant</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.Createdby?.broker?.merchant?.merchantName ? element?.Createdby?.broker?.merchant?.merchantName : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="createdDate">
+                    <mat-header-cell *matHeaderCellDef>Created Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div class="d-block">
+                            <div>{{element?.createdAt ? (element?.createdAt | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element?.createdAt ? (element?.createdAt | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 250%;"></mat-header-row>
+
+                <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 250%;"></mat-row>
+            </mat-table>
+
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <!-- Message for empty data  -->
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+
+        <!-- start: BOTTOM -->
+        <div class="mat-table__bottom">
+            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <!-- MATERIAL PAGINATOR | Binded to dasources -->
+            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+        <!-- end: BOTTOM -->
+    </kt-portlet-body>
+    <!-- end::Body -->
+</kt-portlet>
+<ng-template #elseBlock>
+    -
+</ng-template>

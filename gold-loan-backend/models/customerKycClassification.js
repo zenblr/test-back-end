@@ -1,65 +1,63 @@
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycClassification = sequelize.define('customerKycClassification', {
         // attributes
-        customerKycId: {
-            type: DataTypes.INTEGER,
-            field: 'customer_kyc_id',
-            allowNull: false
-        },
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id',
             allowNull: false
         },
-
-        behaviourRatingCce: {
+        customerKycId: {
             type: DataTypes.INTEGER,
-            field: 'behaviour_rating_cce',
+            field: 'customer_kyc_id',
             allowNull: false
         },
-        idProofRatingCce: {
+        kycRatingFromCce: {
             type: DataTypes.INTEGER,
-            field: 'id_proof_rating_cce',
-            allowNull: false
-        },
-        addressProofRatingCce: {
-            type: DataTypes.INTEGER,
-            field: 'address_proof_rating_cce',
+            field: 'kyc_rating_from_cce',
             allowNull: false
         },
         kycStatusFromCce: {
             type: DataTypes.ENUM,
             field: 'kyc_status_from_cce',
-            values: ['confirm', 'pending', 'closed'],
+            values: ['approved', 'pending', 'incomplete', 'rejected'],
             allowNull: false
+        },
+        reasonFromCce: {
+            type: DataTypes.TEXT,
+            field: 'reason_from_cce',
         },
         cceId: {
             type: DataTypes.INTEGER,
             field: 'cce_id',
             allowNull: false
         },
-        behaviourRatingBranchManager: {
-            type: DataTypes.INTEGER,
-            field: 'behaviour_rating_branch_manager',
-        },
-        idProofRatingBranchManager: {
-            type: DataTypes.INTEGER,
-            field: 'id_proof_rating_branch_manager',
-        },
-        addressProofRatingBranchManager: {
-            type: DataTypes.INTEGER,
-            field: 'address_proof_rating_branch_manager',
-        },
-        kycStatusFromBranchManager: {
+        kycStatusFromBm: {
             type: DataTypes.ENUM,
-            field: 'kyc_status_from_branch_manager',
-            values: ['confirm', 'pending', 'closed'],
+            field: 'kyc_status_from_bm',
+            values: ['approved', 'pending', 'incomplete', 'rejected'],
+            defaultValue: "pending"
+        },
+        reasonFromBm: {
+            type: DataTypes.TEXT,
+            field: 'reason_from_bm',
         },
         branchManagerId: {
             type: DataTypes.INTEGER,
             field: 'branch_manager_id',
         },
-
+        createdBy: {
+            type: DataTypes.INTEGER,
+            field: 'created_by'
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true
+        }
 
     }, {
         freezeTableName: true,
@@ -69,26 +67,16 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerKycClassification.associate = function (models) {
 
-        CustomerKycClassification.belongsTo(models.customerKycPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKyc' });
+        CustomerKycClassification.belongsTo(models.customerKyc, { foreignKey: 'customerKycId', as: 'customerKyc' });
         CustomerKycClassification.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'cceId', as: 'cceInfo' });
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'branchManagerId', as: 'branchManagerInfo' });
 
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'behaviourRatingCce', as: 'behaviourCce' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'idProofRatingCce', as: 'idProofCce' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'addressProofRatingCce', as: 'addressProofCce' });
+        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'kycRatingFromCce', as: 'KycRatingFromCce' });
 
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'behaviourRatingBranchManager', as: 'behaviourBranchManager' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'idProofRatingBranchManager', as: 'idProofBranchManager' });
-        CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'addressProofRatingBranchManager', as: 'addressProofBranchManager' });
-
-  
-
-
-
-
-
+        CustomerKycClassification.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerKycClassification.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
     return CustomerKycClassification;
