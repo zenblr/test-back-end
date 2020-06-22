@@ -39,7 +39,7 @@ export class LoanDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.sharedService.getRole().subscribe(res => {
-    this.roles = res
+      this.roles = res
     })
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
@@ -100,9 +100,16 @@ export class LoanDetailsComponent implements OnInit {
   new(loan) {
     this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
   }
-  
+
   packetImageUpload(loan) {
     this.router.navigate(['/admin/loan-management/packet-image-upload', loan.id])
   }
 
+  topUp(loan) {
+    this.router.navigate(['/admin/loan-management/topup'])
+  }
+
+  partPayment(loan) {
+    this.router.navigate([])
+  }
 }
