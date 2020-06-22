@@ -93,8 +93,10 @@ export class AddLeadComponent implements OnInit {
         this.controls.panImage.setValidators(Validators.required)
         this.controls.panImage.updateValueAndValidity()
       } else {
+        this.controls.panImage.reset()
         this.controls.panImage.clearValidators()
         this.controls.panImage.updateValueAndValidity()
+        this.controls.panCardNumber.reset()
         this.controls.panCardNumber.clearValidators()
         this.controls.panCardNumber.updateValueAndValidity()
       }
