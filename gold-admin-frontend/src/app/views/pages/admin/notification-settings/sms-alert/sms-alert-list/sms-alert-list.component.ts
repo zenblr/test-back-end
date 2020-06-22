@@ -87,9 +87,9 @@ export class SmsAlertListComponent implements OnInit {
 
   editAlert(data) {
     const dialogRef = this.dialog.open(SmsAlertAddComponent, {
-        data: { data: data, action: 'edit' },
-        width: '500px'
-      });
+      data: { data: data, action: 'edit' },
+      width: '500px'
+    });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -99,7 +99,16 @@ export class SmsAlertListComponent implements OnInit {
   }
 
   viewAlert(data) {
-
+    const dialogRef = this.dialog.open(SmsAlertAddComponent, {
+      data: { data: data, action: 'view' },
+      width: '500px',
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        console.log(res);
+      }
+      this.smsAlertService.openDialog.next(false);
+    });
   }
 
   deleteAlert(data) {
