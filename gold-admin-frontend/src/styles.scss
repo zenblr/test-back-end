@@ -642,6 +642,10 @@ mat-header-row {
 		background-color: #eff0f1;
 		border-top: none;
 	}
+	th.transparent{
+		background-color: #fff;
+		border-bottom: none;
+	}
 	th:first-child {
 		border-top-left-radius: 10px;
 	}

@@ -11,16 +11,21 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 import { MonthlyPaymentAddComponent } from './monthly-payment-add/monthly-payment-add.component';
+import { PayIntersetEmiComponent } from './pay-interset-emi/pay-interset-emi.component';
 
 const routes: Routes = [
   {
     path: 'monthly',
     component: MonthlyPaymentComponent,
+  },
+  {
+    path: 'interest-emi',
+    component: PayIntersetEmiComponent,
   }
 ]
 
 @NgModule({
-  declarations: [MonthlyPaymentComponent, MonthlyPaymentAddComponent],
+  declarations: [MonthlyPaymentComponent, MonthlyPaymentAddComponent, PayIntersetEmiComponent],
   imports: [
     CommonModule,
     FormsModule,
