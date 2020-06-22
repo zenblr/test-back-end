@@ -72,7 +72,11 @@ const routes: Routes = [
 		component: EMIManagementComponent,
 
 		children: [
-			{ path: "", redirectTo: "products", pathMatch: "full" },
+			{ path: "", redirectTo: "dashboard", pathMatch: "full" },
+			{
+				path: "dashboard",
+				component: DashboardComponent,
+			},
 			{
 				path: "products",
 				component: ProductListComponent,

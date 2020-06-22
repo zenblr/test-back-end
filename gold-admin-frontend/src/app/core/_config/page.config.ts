@@ -141,6 +141,9 @@ export class PageConfig {
 				page: { title: "Assigned Customers", desc: "" },
 			},
 			"emi-management": {
+				'dashboard': {
+					page: { title: "Dashboard", desc: "" },
+				},
 				products: {
 					page: { title: "Show Products", desc: "" },
 				},

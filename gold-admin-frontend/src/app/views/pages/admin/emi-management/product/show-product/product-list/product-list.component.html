@@ -56,7 +56,9 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="sku">
-                    <mat-header-cell *matHeaderCellDef>SKU Code</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>SKU Code &nbsp;<img class="kt-pointer" [src]="sortImg"
+                            width="14px" alt="sort" (click)="sortSku()">
+                    </mat-header-cell>
                     <mat-cell *matCellDef="let element">{{element?.sku}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="productName">
