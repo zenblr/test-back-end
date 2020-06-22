@@ -14,6 +14,9 @@ export class SmsAlertService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
+  getAllSMSAlert(from?, to?, search?): Observable<any> {
+    return this.http.get<any>(`api/sms-alert?search=${search}&from=${from}&to=${to}`);
+  }
 
   addAlert(data): Observable<any> {
     return this.http.post<any>(`/api/status`, data).pipe(

@@ -13,8 +13,7 @@ import { SmsAlertAddComponent } from '../sms-alert-add/sms-alert-add.component';
   styleUrls: ['./sms-alert-list.component.scss']
 })
 export class SmsAlertListComponent implements OnInit {
-
-  dataSource;
+  dataSource: SmsAlertDatasource;
   displayedColumns = ['alertId', 'subject', 'content', 'actions'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -61,17 +60,8 @@ export class SmsAlertListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.loadLeads(1, 25, this.searchValue);
+    this.dataSource.loadAllSMSlert(1, 25, this.searchValue);
   }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(el => el.unsubscribe());
-    this.unsubscribeSearch$.next();
-    this.unsubscribeSearch$.complete();
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
 
   loadPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
@@ -79,7 +69,7 @@ export class SmsAlertListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadLeads(from, to, this.searchValue);
+    this.dataSource.loadAllSMSlert(from, to, this.searchValue);
   }
 
   addAlert() {
@@ -105,5 +95,13 @@ export class SmsAlertListComponent implements OnInit {
 
   deleteAlert(data) {
 
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(el => el.unsubscribe());
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

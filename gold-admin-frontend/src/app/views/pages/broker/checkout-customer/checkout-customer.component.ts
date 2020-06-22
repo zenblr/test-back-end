@@ -162,7 +162,6 @@ export class CheckoutCustomerComponent implements OnInit {
       invoiceAmount: this.checkoutData.invoiceAmount
     }
     this.checkoutCustomerService.findExistingCustomer(existingCustomerData).subscribe(res => {
-      if (res) {
         this.existingCustomerData = res;
         setTimeout(() => {
           this.checkoutCustomerForm.patchValue({
@@ -201,7 +200,6 @@ export class CheckoutCustomerComponent implements OnInit {
         this.finalOrderData = null;
         this.checkoutCustomerForm.disable();
         this.ref.detectChanges();
-      }
     },
       error => {
         console.log(error.error.message);
@@ -259,12 +257,10 @@ export class CheckoutCustomerComponent implements OnInit {
     }
     console.log(generateOTPData)
     this.checkoutCustomerService.generateOTPAdmin(generateOTPData).subscribe(res => {
-      if (res) {
         console.log(res);
         this.finalOrderData = res;
         const msg = 'OTP has been sent successfully.';
         this.toastr.successToastr(msg);
-      }
     },
       error => {
         console.log(error.error.message);
@@ -285,14 +281,12 @@ export class CheckoutCustomerComponent implements OnInit {
       totalInitialAmount: this.checkoutData.nowPayableAmount
     }
     this.checkoutCustomerService.verifyOTP(verifyOTPData).subscribe(res => {
-      if (res) {
         console.log(res);
         this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
         this.razorpayPaymentService.razorpayOptions.amount = res.totalInitialAmount;
         this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
         this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
         this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
-      }
     },
       error => {
         console.log(error.error.message);
@@ -321,13 +315,11 @@ export class CheckoutCustomerComponent implements OnInit {
         totalInitialAmount: this.checkoutData.nowPayableAmount
       }
       this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
-        if (res) {
           console.log(res);
           const msg = 'Order has been placed successfully.';
           this.toastr.successToastr(msg);
           this.shoppingCartService.cartCount.next(0);
-          this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId])
-        }
+          this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
       },
         error => {
           console.log(error.error.message);

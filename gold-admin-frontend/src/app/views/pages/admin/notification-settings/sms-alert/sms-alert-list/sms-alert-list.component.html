@@ -5,17 +5,17 @@
 
                 <ng-container matColumnDef="alertId">
                     <mat-header-cell *matHeaderCellDef>Alert Id</mat-header-cell>
-                    <mat-cell *matCellDef="let alert">{{alert.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let alert">{{alert?.id}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="subject">
                     <mat-header-cell *matHeaderCellDef>Alert For</mat-header-cell>
-                    <mat-cell *matCellDef="let alert">{{alert.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let alert">{{alert?.alertFor}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="content">
                     <mat-header-cell *matHeaderCellDef>Content</mat-header-cell>
-                    <mat-cell *matCellDef="let alert">{{alert.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let alert">{{alert?.content}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
@@ -23,9 +23,9 @@
                     <mat-cell *matCellDef="let alert">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div class="kt-pointer" (click)="viewAlert(alert)">View &nbsp;|&nbsp;</div>
-                            <div class="kt-pointer" (click)="editAlert(alert)">Edit &nbsp;|&nbsp;</div>
-                            <div class="kt-pointer text-danger" (click)="deleteAlert(alert)">
-                                <span class="text-danger">Delete</span></div>
+                            <div class="kt-pointer" (click)="editAlert(alert)">Edit </div>
+                            <!-- <div class="kt-pointer text-danger" (click)="deleteAlert(alert)">
+                                <span class="text-danger">Delete</span></div> -->
                         </div>
                     </mat-cell>
                 </ng-container>
