@@ -70,9 +70,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.url = this.router.url.split('/')[2]
     this.getKarat()
     this.initForm()
-    // this.ornamentsForm.valueChanges.subscribe(() => {
-    //   this.OrnamentsDataEmit.emit(this.OrnamentsData)
-    // })
   }
 
   getKarat() {
@@ -91,8 +88,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       ornamentData: this.fb.array([])
     })
     this.addmore();
-    // this.OrnamentsDataEmit.emit(this.OrnamentsData)
-
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -250,8 +245,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (res) {
        this.removeOrnaments(idx)
       }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
     });
   }
 
@@ -479,11 +472,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
           this.patchUrlIntoForm(string, res.uploadFile.URL, index)
-          // this.profile = res.uploadFile.URL
-          // this.personalForm.get('profileImage').patchValue(this.profile);
-          this.ref.detectChanges()
         })
-        // this.controls.
       }
     });
   }

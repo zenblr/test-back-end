@@ -301,7 +301,8 @@ export class AddLeadComponent implements OnInit {
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
         images: img,
-        index: 0
+        index: 0,
+        modal:true
       },
       width: "auto"
     })
