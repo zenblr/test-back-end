@@ -4,6 +4,8 @@ import { ToastrComponent } from '../../../partials/components/toastr/toastr.comp
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { SharedService } from '../../../../core/shared/services/shared.service';
+import { AuthService } from '../../../../core/auth';
+import { error } from 'protractor';
 
 @Component({
 	selector: 'kt-sign-up-broker',
@@ -26,7 +28,7 @@ export class SignUpBrokerComponent implements OnInit, OnDestroy {
 		public dialogRef: MatDialogRef<SignUpBrokerComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		private ref: ChangeDetectorRef,
-
+		private auth: AuthService
 	) {
 		this.unsubscribe = new Subject();
 
@@ -45,17 +47,18 @@ export class SignUpBrokerComponent implements OnInit, OnDestroy {
 
 	initLoginForm() {
 		this.registerForm = this.fb.group({
-			fullName: ['', Validators.required],
+			firstName: ['', Validators.required],
+			lastName: ['', Validators.required],
 			mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
-			email: ['', Validators.email],
+			email: ['', Validators.compose([Validators.required, Validators.email])],
 			address: ['', Validators.required],
-			postalCode: ['', Validators.required],
-			stateName: ['', Validators.required],
-			cityName: ['', Validators.required],
+			pinCode: ['', Validators.required],
+			stateId: ['', Validators.required],
+			cityId: ['', Validators.required],
 			storeId: [''],
 			panCardNumber: [''],
 			nameOnPanCard: [''],
-			pancard: [''],
+			panCard: [''],
 		});
 	}
 
@@ -68,11 +71,11 @@ export class SignUpBrokerComponent implements OnInit, OnDestroy {
 	}
 
 	getCities() {
-		if (this.controls.stateName.value == '') {
+		if (this.controls.stateId.value == '') {
 			this.cityList = [];
 		} else {
 			let stateData;
-			stateData = this.controls.stateName.value.id;
+			stateData = this.controls.stateId.value;
 			this.sharedService.getCities(stateData).subscribe(res => {
 				this.cityList = res.message;
 				this.ref.detectChanges();
@@ -81,13 +84,13 @@ export class SignUpBrokerComponent implements OnInit, OnDestroy {
 	}
 
 	uploadImage(data) {
-		this.registerForm.controls["pancard"].patchValue(
-			data.uploadData.URL
+		this.registerForm.controls["panCard"].patchValue(
+			data.uploadData.id
 		);
 	}
 
 	removeImage(data) {
-		this.registerForm.controls["pancard"].patchValue("");
+		this.registerForm.controls["panCard"].patchValue("");
 	}
 
 	submit() {
@@ -99,6 +102,14 @@ export class SignUpBrokerComponent implements OnInit, OnDestroy {
 			);
 			return;
 		}
+
+		this.auth.registerBroker(this.registerForm.value).subscribe(res => {
+			this.toastr.successToastr(res.message);
+			this.dialogRef.close();
+		},
+			error => {
+				this.toastr.errorToastr(error.error.message);
+			});
 	}
 
 	action(event: Event) {

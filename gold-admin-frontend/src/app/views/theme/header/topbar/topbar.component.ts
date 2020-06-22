@@ -150,17 +150,17 @@ export class TopbarComponent implements OnInit {
 				}
 			});
 
-		this.orderDetailsService.button$
-			.pipe(takeUntil(this.destroy$))
-			.subscribe((res) => {
-				if (res && res == "spot") {
-					this.button = false;
-				} else if (res && res != "spot") {
-					this.button = true;
-				} else {
-					this.button = false;
-				}
-			});
+		// this.orderDetailsService.button$
+		// 	.pipe(takeUntil(this.destroy$))
+		// 	.subscribe((res) => {
+		// 		if (res && res == "spot") {
+		// 			this.button = false;
+		// 		} else if (res && res != "spot") {
+		// 			this.button = true;
+		// 		} else {
+		// 			this.button = false;
+		// 		}
+		// 	});
 	}
 
 	ngOnInit() {

@@ -5,14 +5,28 @@
 		<form [formGroup]="registerForm">
 			<div class="row kt-padding-t-15">
 				<div class="col-4">
-					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Customer
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">First
 						Name</label>
 				</div>
 				<div class="col-8">
-					<input type="text" aria-label="Full name" placeholder="Full Name" ktAlphabets class="form-control"
-						formControlName="fullName"
-						[class.isError]="controls.fullName.touched && controls.fullName.invalid">
-					<mat-error *ngIf="controls.fullName.errors?.required && controls.fullName.touched">
+					<input type="text" aria-label="First Name" placeholder="First Name" ktAlphabets class="form-control"
+						formControlName="firstName"
+						[class.isError]="controls.firstName.touched && controls.firstName.invalid">
+					<mat-error *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
+						Field is required
+					</mat-error>
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Last
+						Name</label>
+				</div>
+				<div class="col-8">
+					<input type="text" aria-label="Last Name" placeholder="Last Name" ktAlphabets class="form-control"
+						formControlName="lastName"
+						[class.isError]="controls.lastName.touched && controls.lastName.invalid">
+					<mat-error *ngIf="controls.lastName.errors?.required && controls.lastName.touched">
 						Field is required
 					</mat-error>
 				</div>
@@ -36,11 +50,14 @@
 			</div>
 			<div class="row kt-padding-t-15">
 				<div class="col-4">
-					<label class="font-weight-500 text-color">Email ID</label>
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Email ID</label>
 				</div>
 				<div class="col-8">
 					<input type="text" aria-label="Email ID" placeholder="Email ID" class="form-control"
 						formControlName="email" [class.isError]="controls.email.touched && controls.email.invalid">
+					<mat-error *ngIf="controls.email.errors?.required && controls.email.touched">
+						Field is required
+					</mat-error>
 					<mat-error *ngIf="controls.email.errors?.email && controls.email.touched">
 						Invalid Email ID
 					</mat-error>
@@ -65,21 +82,14 @@
 					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">State</label>
 				</div>
 				<div class="col-8">
-					<select *ngIf="showCustomerFlag" class="form-control" formControlName="stateName"
-						(change)="getCities()">
+					<select class="form-control" formControlName="stateId"
+						[class.isError]="controls.stateId.touched && controls.stateId.invalid" (change)="getCities()">
 						<option value="" [selected]="true" [disabled]="true">Select State</option>
-						<option [value]="state.id" *ngFor="let state of stateList">{{state.name}}
+						<option [ngValue]="state.id" *ngFor="let state of stateList">{{state.name}}
 						</option>
 					</select>
-					<select *ngIf="!showCustomerFlag" class="form-control" formControlName="stateName"
-						[class.isError]="controls.stateName.touched && controls.stateName.invalid"
-						(change)="getCities()">
-						<option value="" [selected]="true" [disabled]="true">Select State</option>
-						<option [ngValue]="state" *ngFor="let state of stateList">{{state.name}}
-						</option>
-					</select>
-					<div *ngIf="controls.stateName.touched && controls.stateName.invalid">
-						<mat-error *ngIf="controls.stateName.touched && controls.stateName.errors?.required">
+					<div *ngIf="controls.stateId.touched && controls.stateId.invalid">
+						<mat-error *ngIf="controls.stateId.touched && controls.stateId.errors?.required">
 							Field is required</mat-error>
 					</div>
 				</div>
@@ -89,17 +99,13 @@
 					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">City</label>
 				</div>
 				<div class="col-8">
-					<select *ngIf="showCustomerFlag" class="form-control" formControlName="cityName">
+					<select class="form-control" formControlName="cityId"
+						[class.isError]="controls.cityId.touched && controls.cityId.invalid">
 						<option value="" [selected]="true" [disabled]="true">Select City</option>
-						<option [value]="city.id" *ngFor="let city of cityList">{{city.name}}</option>
+						<option [ngValue]="city.id" *ngFor="let city of cityList">{{city.name}}</option>
 					</select>
-					<select *ngIf="!showCustomerFlag" class="form-control" formControlName="cityName"
-						[class.isError]="controls.cityName.touched && controls.cityName.invalid">
-						<option value="" [selected]="true" [disabled]="true">Select City</option>
-						<option [ngValue]="city" *ngFor="let city of cityList">{{city.name}}</option>
-					</select>
-					<div *ngIf="controls.cityName.touched && controls.cityName.invalid">
-						<mat-error *ngIf="controls.cityName.touched && controls.cityName.errors?.required">
+					<div *ngIf="controls.cityId.touched && controls.cityId.invalid">
+						<mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
 							Field
 							is required</mat-error>
 					</div>
@@ -111,9 +117,9 @@
 				</div>
 				<div class="col-8">
 					<input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
-						formControlName="postalCode"
-						[class.isError]="controls.postalCode.touched && controls.postalCode.invalid">
-					<mat-error *ngIf=" controls.postalCode.errors?.required && controls.postalCode.touched">
+						formControlName="pinCode" numbersOnly
+						[class.isError]="controls.pinCode.touched && controls.pinCode.invalid">
+					<mat-error *ngIf=" controls.pinCode.errors?.required && controls.pinCode.touched">
 						Field is required
 					</mat-error>
 				</div>
@@ -148,11 +154,11 @@
 					<label class="font-weight-500 text-color">Upload PAN Card</label>
 				</div>
 				<div class="col-8">
-					<kt-uplod-preview-image [type]="'formField'" [formFieldName]="'pancard'"
+					<kt-uplod-preview-image [type]="'formField'" [formFieldName]="'panCard'"
 						[fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
 						(remove)="removeImage($event)">
 					</kt-uplod-preview-image>
-					<input type="text" formControlName="pancard" class="form-control" hidden>
+					<input type="text" formControlName="panCard" class="form-control" hidden>
 				</div>
 			</div>
 		</form>

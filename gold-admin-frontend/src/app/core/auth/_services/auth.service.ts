@@ -8,7 +8,7 @@ import { catchError, map } from 'rxjs/operators';
 import { QueryParamsModel, QueryResultsModel } from '../../_base/crud';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
-
+import { API_ENDPOINT } from '../../../app.constant';
 const API_USERS_URL = 'api/users';
 const API_PERMISSION_URL = 'api/permissions';
 const API_ROLES_URL = 'api/roles';
@@ -66,7 +66,7 @@ export class AuthService {
             return token.Token
     }
 
-    
+
 
     getUserByToken(): Observable<User> {
         const userToken = localStorage.getItem(environment.authTokenKey);
@@ -92,6 +92,12 @@ export class AuthService {
                     return null;
                 })
             );
+    }
+
+    registerBroker(params): Observable<any> {
+        return this.http.post(API_ENDPOINT + 'api/Broker/register', params).pipe(
+            map(res => res)
+        )
     }
 
     /*

@@ -140,7 +140,7 @@
                             <input type="text" formControlName="ifscCode" class="form-control" disabled>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15" *ngIf="showUploadFile">
+                    <div class="row kt-margin-t-15" *ngIf="showPassUploadFile">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Passbook Copy</label>
                         </div>
@@ -158,7 +158,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15" *ngIf="showUploadFile">
+                    <div class="row kt-margin-t-15" *ngIf="!showPassUploadFile">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Passbook Copy</label>
+                        </div>
+                        <div class="col-8">
+                            <a class="text-body" [href]="refundData.passbookCopy.url"
+                                download="{{refundData.passbookCopy.originalname}}" target="_blank">
+                                <span>{{refundData.passbookCopy.originalname}}</span>
+                                <span class="pl-2">
+                                    <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="showCheckUploadFile">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Cheque Copy</label>
                         </div>
@@ -175,28 +189,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-15" *ngIf="showUploadedFile">
-                        <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color">Passbook Copy</label>
-                        </div>
-                        <div class="col-8">
-                            <a class="text-body" [href]="refundData.passbookCopy.url"
-                                download="{{refundData.passbookCopy.originalname}}" target="_blank">
-                                <span>{{refundData.passbookCopy.originalname}}</span>
-                                <span class="pl-2">
-                                    <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row kt-margin-t-15" *ngIf="showUploadedFile">
+                    <div class="row kt-margin-t-15" *ngIf="!showCheckUploadFile">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Cheque Copy</label>
                         </div>
                         <div class="col-8">
-                            <a class="text-body" [href]="refundData.passbookCopy.url"
-                                download="{{refundData.passbookCopy.originalname}}" target="_blank">
-                                <span>{{refundData.passbookCopy.originalname}}</span>
+                            <a class="text-body" [href]="refundData.checkCopy.url"
+                                download="{{refundData.checkCopy.originalname}}" target="_blank">
+                                <span>{{refundData.checkCopy.originalname}}</span>
                                 <span class="pl-2">
                                     <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
                                 </span>
