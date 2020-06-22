@@ -1,47 +1,166 @@
 <kt-toastr #toastr></kt-toastr>
-<form class="kt-form" [formGroup]="loginForm" autocomplete="off">
-	<div class="form-group mb-0">
-		<div class="kt-margin-t-40 kt-margin-b-15">
-			<input type="text" class="login-form-input" placeholder="Email ID / Mobile Number"
-				formControlName="mobileNo" autocomplete="off" />
-			<div *ngIf="loginForm.controls.mobileNo.touched && loginForm.controls.mobileNo.invalid">
-				<mat-error *ngIf="isControlHasError('mobileNo','required')">
-					<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
-				</mat-error>
-				<mat-error *ngIf="isControlHasError('mobileNo','pattern')">
-					<strong>{{ 'AUTH.VALIDATION.INVALID_FIELD' | translate }}</strong>
-				</mat-error>
-				<mat-error
-					*ngIf="isControlHasError('mobileNo','maxlength') || isControlHasError('mobileNo','minlength')">
-					<strong>{{ 'AUTH.VALIDATION.MAX_LENGTH_FIELD' | translate }} 10</strong>
-				</mat-error>
+<div class="kt-portlet">
+	<kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+	<div class="kt-portlet__body font-weight-500">
+		<form [formGroup]="registerForm">
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Customer
+						Name</label>
+				</div>
+				<div class="col-8">
+					<input type="text" aria-label="Full name" placeholder="Full Name" ktAlphabets class="form-control"
+						formControlName="fullName"
+						[class.isError]="controls.fullName.touched && controls.fullName.invalid">
+					<mat-error *ngIf="controls.fullName.errors?.required && controls.fullName.touched">
+						Field is required
+					</mat-error>
+				</div>
 			</div>
-		</div>
-		<div class="kt-margin-b-15">
-			<input type="password" class="login-form-input" placeholder="Password" formControlName="password"
-				autocomplete="off">
-			<mat-error *ngIf="isControlHasError('password','required')">
-				<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
-			</mat-error>
-			<mat-error *ngIf="isControlHasError('password','minlength')">
-				<strong>{{ 'AUTH.VALIDATION.MIN_LENGTH_FIELD' | translate }} 3</strong>
-			</mat-error>
-			<mat-error *ngIf="isControlHasError('password','maxlength')">
-				<strong>{{ 'AUTH.VALIDATION.MAX_LENGTH_FIELD' | translate }} 100</strong>
-			</mat-error>
-		</div>
-		<div class="kt-margin-b-15">
-			<button class="btn btn-login w-100" (click)="submit()"
-				[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">Login</button>
-		</div>
-		<div class="kt-margin-b-30">
-			<p class="text-center forgot kt-pointer" routerLink="/auth/forgot-password">Forgot Password?</p>
-		</div>
-		<div class=" kt-margin-b-15">
-			<button class="btn btn-sign-otp w-100" (click)="signInWithOtp()">Sign In With Otp</button>
-		</div>
-		<div class=" kt-margin-b-15">
-			<button class="btn btn-sign-otp w-100" (click)="brokerRegister()">Register as a broker</button>
-		</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Mobile
+						Number</label>
+				</div>
+				<div class="col-8">
+					<input type="text" aria-label="Mobile Number" placeholder="Mobile Number" class="form-control"
+						formControlName="mobileNumber"
+						[class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid" numbersOnly>
+					<mat-error *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
+						Field is required
+					</mat-error>
+					<mat-error *ngIf="controls.mobileNumber.errors?.pattern && controls.mobileNumber.touched">
+						Invalid Input
+					</mat-error>
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color">Email ID</label>
+				</div>
+				<div class="col-8">
+					<input type="text" aria-label="Email ID" placeholder="Email ID" class="form-control"
+						formControlName="email" [class.isError]="controls.email.touched && controls.email.invalid">
+					<mat-error *ngIf="controls.email.errors?.email && controls.email.touched">
+						Invalid Email ID
+					</mat-error>
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Permanent
+						Address</label>
+				</div>
+				<div class="col-8">
+					<textarea type="text" aria-label="Address" placeholder="Address" class="form-control"
+						formControlName="address"
+						[class.isError]="controls.address.touched && controls.address.invalid"></textarea>
+					<mat-error *ngIf=" controls.address.errors?.required && controls.address.touched">
+						Field is required
+					</mat-error>
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">State</label>
+				</div>
+				<div class="col-8">
+					<select *ngIf="showCustomerFlag" class="form-control" formControlName="stateName"
+						(change)="getCities()">
+						<option value="" [selected]="true" [disabled]="true">Select State</option>
+						<option [value]="state.id" *ngFor="let state of stateList">{{state.name}}
+						</option>
+					</select>
+					<select *ngIf="!showCustomerFlag" class="form-control" formControlName="stateName"
+						[class.isError]="controls.stateName.touched && controls.stateName.invalid"
+						(change)="getCities()">
+						<option value="" [selected]="true" [disabled]="true">Select State</option>
+						<option [ngValue]="state" *ngFor="let state of stateList">{{state.name}}
+						</option>
+					</select>
+					<div *ngIf="controls.stateName.touched && controls.stateName.invalid">
+						<mat-error *ngIf="controls.stateName.touched && controls.stateName.errors?.required">
+							Field is required</mat-error>
+					</div>
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">City</label>
+				</div>
+				<div class="col-8">
+					<select *ngIf="showCustomerFlag" class="form-control" formControlName="cityName">
+						<option value="" [selected]="true" [disabled]="true">Select City</option>
+						<option [value]="city.id" *ngFor="let city of cityList">{{city.name}}</option>
+					</select>
+					<select *ngIf="!showCustomerFlag" class="form-control" formControlName="cityName"
+						[class.isError]="controls.cityName.touched && controls.cityName.invalid">
+						<option value="" [selected]="true" [disabled]="true">Select City</option>
+						<option [ngValue]="city" *ngFor="let city of cityList">{{city.name}}</option>
+					</select>
+					<div *ngIf="controls.cityName.touched && controls.cityName.invalid">
+						<mat-error *ngIf="controls.cityName.touched && controls.cityName.errors?.required">
+							Field
+							is required</mat-error>
+					</div>
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Pincode</label>
+				</div>
+				<div class="col-8">
+					<input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
+						formControlName="postalCode"
+						[class.isError]="controls.postalCode.touched && controls.postalCode.invalid">
+					<mat-error *ngIf=" controls.postalCode.errors?.required && controls.postalCode.touched">
+						Field is required
+					</mat-error>
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color">Store Id</label>
+				</div>
+				<div class="col-8">
+					<input type="text" aria-label="Store ID" placeholder="Store ID" class="form-control"
+						formControlName="storeId">
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color">PAN Card No</label>
+				</div>
+				<div class="col-8">
+					<input class="form-control" formControlName="panCardNumber" type="text">
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color">Name on PAN Card</label>
+				</div>
+				<div class="col-8">
+					<input class="form-control" formControlName="nameOnPanCard" type="text">
+				</div>
+			</div>
+			<div class="row kt-padding-t-15">
+				<div class="col-4">
+					<label class="font-weight-500 text-color">Upload PAN Card</label>
+				</div>
+				<div class="col-8">
+					<kt-uplod-preview-image [type]="'formField'" [formFieldName]="'pancard'"
+						[fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
+						(remove)="removeImage($event)">
+					</kt-uplod-preview-image>
+					<input type="text" formControlName="pancard" class="form-control" hidden>
+				</div>
+			</div>
+		</form>
 	</div>
-</form>
+	<kt-portlet-footer>
+		<div class="p-3">
+			<kt-modal-footer (action)="action($event)" value="Register">
+			</kt-modal-footer>
+		</div>
+	</kt-portlet-footer>
+</div>

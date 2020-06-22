@@ -472,6 +472,14 @@ export class MenuConfig {
 					],
 					emiMgmtItems: [
 						{
+							title: "Dashboard",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/emi-management/dashboard",
+							translate: "MENU.DASHBOARD",
+							permission: false,
+						},
+						{
 							title: "Product",
 							root: true,
 							icon: "flaticon2-open-box",
