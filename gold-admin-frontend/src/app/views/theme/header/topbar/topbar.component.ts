@@ -36,7 +36,7 @@ import { MonthlyService } from "../../../../core/repayment/services/monthly.serv
 import { CustomerDetailsService } from "../../../../core/emi-management/customer-details";
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
 import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
-import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
+import { SMSAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
 import { HolidayService } from '../../../../core/holidays/services/holiday.service';
 import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
 import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
@@ -123,7 +123,7 @@ export class TopbarComponent implements OnInit {
 		private customerDetailsService: CustomerDetailsService,
 		private leadService: LeadService,
 		private emailAlertService: EmailAlertService,
-		private smsAlertService: SmsAlertService,
+		private smsAlertService: SMSAlertService,
 		private holidayService: HolidayService,
 		private packetLocation: PacketLocationService,
 		private ornamentsService: OrnamentsService,

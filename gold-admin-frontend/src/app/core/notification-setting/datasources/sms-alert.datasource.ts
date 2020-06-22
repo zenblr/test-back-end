@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 // CRUD
 import { BaseDataSource } from '../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
-import { SmsAlertService } from '../services/sms-alert.service';
+import { SMSAlertService } from '../services/sms-alert.service';
 
 export class SmsAlertDatasource extends BaseDataSource {
 
@@ -14,7 +14,7 @@ export class SmsAlertDatasource extends BaseDataSource {
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
 
-    constructor(private smsAlertService: SmsAlertService) {
+    constructor(private smsAlertService: SMSAlertService) {
         super();
     }
 

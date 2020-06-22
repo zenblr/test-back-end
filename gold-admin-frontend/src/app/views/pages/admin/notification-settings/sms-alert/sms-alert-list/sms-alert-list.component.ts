@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { Subject, Subscription, merge } from 'rxjs';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
-import { SmsAlertService } from '../../../../../../core/notification-setting/services/sms-alert.service';
+import { SMSAlertService } from '../../../../../../core/notification-setting/services/sms-alert.service';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
 import { SmsAlertDatasource } from '../../../../../../core/notification-setting/datasources/sms-alert.datasource';
 import { SmsAlertAddComponent } from '../sms-alert-add/sms-alert-add.component';
@@ -24,7 +24,7 @@ export class SmsAlertListComponent implements OnInit {
 
   constructor(
     private dataTableService: DataTableService,
-    private smsAlertService: SmsAlertService,
+    private smsAlertService: SMSAlertService,
     public dialog: MatDialog,
 
   ) {
@@ -85,11 +85,20 @@ export class SmsAlertListComponent implements OnInit {
     });
   }
 
-  viewAlert(data) {
-
+  editAlert(data) {
+    const dialogRef = this.dialog.open(SmsAlertAddComponent, {
+        data: { data: data, action: 'edit' },
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+      this.smsAlertService.openDialog.next(false);
+    });
   }
 
-  editAlert(data) {
+  viewAlert(data) {
 
   }
 
