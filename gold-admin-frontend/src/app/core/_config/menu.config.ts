@@ -188,7 +188,6 @@ export class MenuConfig {
 										},
 									],
 								},
-
 							],
 						},
 						{
@@ -398,7 +397,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-29.svg",
 							page: "/broker",
-							permission: !(this.userType === 2 || this.userType === 3 || this.userType === 4),
+							permission: true,
 						},
 						{
 							title: "Log Out",
