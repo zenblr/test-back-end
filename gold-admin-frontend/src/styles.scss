@@ -657,6 +657,15 @@ mat-header-row {
 	th:first-child {
 		border-left: none;
 	}
+
+	table.outer-border{
+		th{
+			border: none;
+		}
+		td{
+			border-left: none;
+		}
+	}
 }
 .currency {
 	font-family: sans-serif !important;
