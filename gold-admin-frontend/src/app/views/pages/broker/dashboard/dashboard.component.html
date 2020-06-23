@@ -50,7 +50,7 @@
 				<hr>
 			</div>
 			<div class="col-12">
-				<table class="table">
+				<table class="table table-borderless">
 					<thead>
 						<tr>
 							<th scope="col">Member ID</th>
@@ -64,6 +64,52 @@
 					</thead>
 					<tbody class="text-muted">
 						<tr *ngFor="let prod of details?.todaysOrderDetail">
+							<td>
+								{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId : '-'}}
+							</td>
+							<td>
+								{{prod?.customerDetails?.firstName || prod?.customerDetails?.lastName ? (prod?.customerDetails?.firstName + ' ' + prod?.customerDetails?.lastName | titlecase) : '-'}}
+							</td>
+							<td>
+								{{prod?.customerDetails?.mobileNumber ? prod?.customerDetails?.mobileNumber : '-'}}
+							</td>
+							<td>
+								{{prod?.orderUniqueId ? prod?.orderUniqueId : '-'}}
+							</td>
+							<td>
+								{{prod?.product?.productName ? prod?.product?.productName : '-'}}
+							</td>
+							<td>
+								{{prod?.weight ? prod?.weight : '-'}}
+							</td>
+							<td>
+								{{prod?.paymentType?.paymentType ? prod?.paymentType?.paymentType : '-'}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row pt-5">
+			<div class="col-12">
+				<h4>Overdue Customer</h4>
+				<hr>
+			</div>
+			<div class="col-12">
+				<table class="table table-borderless">
+					<thead>
+						<tr>
+							<th scope="col">Member ID</th>
+							<th scope="col">Name</th>
+							<th scope="col">Mobile No.</th>
+							<th scope="col">Order ID</th>
+							<th scope="col">Product Name</th>
+							<th scope="col">Weight</th>
+							<th scope="col">EMI Tenure</th>
+						</tr>
+					</thead>
+					<tbody class="text-muted">
+						<tr *ngFor="let prod of details?.overdueCustomer">
 							<td>
 								{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId : '-'}}
 							</td>
