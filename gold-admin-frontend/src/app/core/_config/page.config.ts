@@ -130,6 +130,9 @@ export class PageConfig {
 				monthly: {
 					page: { title: "Monthly Repayment", desc: "" },
 				},
+				'interest-emi': {
+					page: { title: "Pay Interest EMI", desc: "" },
+				},
 			},
 			"kyc-setting": {
 				page: { title: "Customer KYC", desc: "" },

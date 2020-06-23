@@ -12,6 +12,7 @@ import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MatDialogRef } from '@angu
 import { HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 import { MonthlyPaymentAddComponent } from './monthly-payment-add/monthly-payment-add.component';
 import { PayIntersetEmiComponent } from './pay-interset-emi/pay-interset-emi.component';
+import { EmiLogsDialogComponent } from './emi-logs-dialog/emi-logs-dialog.component';
 
 const routes: Routes = [
   {
@@ -25,7 +26,12 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [MonthlyPaymentComponent, MonthlyPaymentAddComponent, PayIntersetEmiComponent],
+  declarations: [
+    MonthlyPaymentComponent,
+    MonthlyPaymentAddComponent,
+    PayIntersetEmiComponent,
+    EmiLogsDialogComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -57,6 +63,9 @@ const routes: Routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
-  entryComponents: [MonthlyPaymentAddComponent]
+  entryComponents: [
+    MonthlyPaymentAddComponent,
+    EmiLogsDialogComponent
+  ]
 })
 export class RepaymentModule { }

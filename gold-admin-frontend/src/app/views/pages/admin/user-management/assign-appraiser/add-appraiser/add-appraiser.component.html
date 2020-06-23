@@ -36,8 +36,8 @@
                                 <input class="form-control" formControlName="customerUniqueId" autocomplete="off"
                                     *ngIf="controls.customerUniqueId.value" readonly>
                                 <ng-select formControlName="customerId" [items]="customers" bindLabel="customerUniqueId"
-                                    bindValue="id" *ngIf="!controls.customerUniqueId.value" (change)="bindCustomerName($event)"
-                                    placeholder="Select Customer ID"
+                                    bindValue="id" *ngIf="!controls.customerUniqueId.value"
+                                    (change)="bindCustomerName($event)" placeholder="Select Customer ID"
                                     [class.isError]="controls.customerId.touched && controls.customerId.invalid">
                                     <!-- <ng-template ng-multi-label-tmp>
                                                 <span style="display:block" class="ng-placeholder">Select items</span>
@@ -82,7 +82,38 @@
                                     Required field
                                 </mat-error>
                             </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label class="mandatory kt-padding-l-10">From Date & Time</label>
+                            </div>
 
+                            <div class="col-8">
+                                <div class="d-inline-flex">
+                                    <input type="text" formControlName="date" [matDatepicker]="picker" class="form-control border-right-custom" (click)="picker.open()" readonly
+                                        placeholder="4/5/2020" [min]="minDate" (dateChange)="timer.open()">
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <input type="text" formControlName="time" class="form-control border-left-custom" [ngxTimepicker]="timer" >
+                                    <ngx-material-timepicker #timer [theme]="darkTheme"></ngx-material-timepicker>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label class="mandatory kt-padding-l-10">To Date & Time</label>
+                            </div>
+
+                            <div class="col-8">
+                                <div class="d-inline-flex">
+                                    <input type="text" formControlName="date" [matDatepicker]="picker1" class="form-control border-right-custom" (click)="picker1.open()" readonly
+                                        placeholder="4/5/2020" [min]="minDate" (dateChange)="timer1.open()">
+                                    <mat-datepicker #picker1></mat-datepicker>
+                                    <input type="text" formControlName="time" class="form-control border-left-custom" [ngxTimepicker]="timer1" >
+                                    <ngx-material-timepicker #timer1 [theme]="darkTheme"></ngx-material-timepicker>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>

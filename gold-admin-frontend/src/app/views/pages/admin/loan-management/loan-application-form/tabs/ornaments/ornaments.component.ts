@@ -13,6 +13,7 @@ import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate
 import { OrnamentsService } from '../../../../../../../core/masters/ornaments/services/ornaments.service';
 import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
+import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
 
 
 @Component({
@@ -49,6 +50,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   url: string
   totalAmount = 0;
   addmoreMinus: any;
+  globalValue: any;
   constructor(
     public fb: FormBuilder,
     public sharedService: SharedService,
@@ -61,12 +63,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public router: Router,
     public loanApplicationFormService: LoanApplicationFormService,
     public ornamentTypeService: OrnamentsService,
-    public layoutUtilsService:LayoutUtilsService
+    public layoutUtilsService: LayoutUtilsService,
+    public globalSettingService: GlobalSettingService
   ) {
 
   }
 
   ngOnInit() {
+
+
+
     this.url = this.router.url.split('/')[2]
     this.getKarat()
     this.initForm()
@@ -125,20 +131,25 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit() {
-    this.goldRateService.goldRate$.subscribe(res => {
-      this.goldRate = res * (75 / 100)
-      const group = this.OrnamentsData.at(0) as FormGroup
-      group.controls.currentLtvAmount.patchValue(this.goldRate)
+    this.globalSettingService.globalSetting$.subscribe(global => {
+      this.globalValue = global;
+      if (global) {
+        this.goldRateService.goldRate$.subscribe(res => {
+          this.goldRate = res * (this.globalValue.ltvGoldValue / 100)
+          const group = this.OrnamentsData.at(0) as FormGroup
+          group.controls.currentLtvAmount.patchValue(this.goldRate)
+        })
+      }
     })
 
     this.ornamentsForm.valueChanges.subscribe(() => {
       if (this.ornamentsForm.valid) {
-      this.totalAmount = 0;
-      this.OrnamentsData.value.forEach(element => {
-        this.totalAmount += Number(element.loanAmount)
-      });
-      this.totalAmount = Math.round(this.totalAmount)
-      this.totalAmt.emit(this.totalAmount)
+        this.totalAmount = 0;
+        this.OrnamentsData.value.forEach(element => {
+          this.totalAmount += Number(element.loanAmount)
+        });
+        this.totalAmount = Math.round(this.totalAmount)
+        this.totalAmt.emit(this.totalAmount)
       }
     })
 
@@ -243,7 +254,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-       this.removeOrnaments(idx)
+        this.removeOrnaments(idx)
       }
     });
   }
@@ -254,9 +265,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.markForCheck()
     const pagination = (this.ele.nativeElement.querySelector('.mat-tab-header-pagination-controls-enabled') as HTMLElement);
     if (!pagination) {
-      if(this.addmoreMinus){
+      if (this.addmoreMinus) {
         this.addmoreMinus = false
-      }else{
+      } else {
         this.left = this.left - 10;
       }
       var left = (this.left).toString() + 'rem'

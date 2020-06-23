@@ -106,9 +106,8 @@ body {
 	cursor: not-allowed !important;
 }
 
-button[type="button"]:disabled{
+button[type="button"]:disabled {
 	cursor: not-allowed !important;
-
 }
 
 .isError {
@@ -269,7 +268,7 @@ input[type="number"] {
 
 /* Style the checkmark/indicator */
 .custom-checkbox .checkmark:after {
-	left: 7px;
+	left: 6px;
 	top: 3px;
 	width: 6px;
 	height: 12px;
@@ -519,12 +518,18 @@ mat-header-row {
 
 .ng-select .ng-select-container .ng-value-container .ng-placeholder {
 	color: #000;
-	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),color 0.250ms cubic-bezier(0.25, 0.8, 0.25, 1),width 0.250ms cubic-bezier(0.25, 0.8, 0.25, 1);
+	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+		color 0.25ms cubic-bezier(0.25, 0.8, 0.25, 1),
+		width 0.25ms cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
-	transform: translateY(-1.68125em) scale(0.75) perspective(100px) translateZ(0.001px);
-	color: #999;	
+.ng-select.ng-select-focused
+	.ng-select-container
+	.ng-value-container
+	.ng-placeholder {
+	transform: translateY(-1.68125em) scale(0.75) perspective(100px)
+		translateZ(0.001px);
+	color: #999;
 }
 
 // ng-select.ng-invalid.ng-touched .ng-select-container {
@@ -642,7 +647,7 @@ mat-header-row {
 		background-color: #eff0f1;
 		border-top: none;
 	}
-	th.transparent{
+	th.transparent {
 		background-color: #fff;
 		border-bottom: none;
 	}
@@ -658,11 +663,11 @@ mat-header-row {
 		border-left: none;
 	}
 
-	table.outer-border{
-		th{
+	table.outer-border {
+		th {
 			border: none;
 		}
-		td{
+		td {
 			border-left: none;
 		}
 	}
@@ -671,7 +676,7 @@ mat-header-row {
 	font-family: sans-serif !important;
 }
 
-.cursor-not-allowed{
+.cursor-not-allowed {
 	cursor: not-allowed !important;
 }
 
@@ -685,9 +690,20 @@ mat-header-row {
 	}
 }
 
+.top-0 {
+	top: 0px !important;
+}
+
 .btn-transparent {
 	background: transparent;
-	border: thin solid #454D67;
+	border: thin solid #454d67;
 	border-radius: 5px;
 	padding: 5px;
+}
+
+.timepicker-overlay,.timepicker-backdrop-overlay {
+	z-index: 1005 !important;
+}
+.timepicker-dial__control{
+	outline: none !important;
 }

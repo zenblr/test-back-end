@@ -6,6 +6,7 @@ import { LoanApplicationFormService } from '../../../../../../../core/loan-manag
 import { catchError, map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { UnSecuredSchemeComponent } from '../../un-secured-scheme/un-secured-scheme.component';
+import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
 
 @Component({
   selector: 'kt-interest-calculator',
@@ -47,6 +48,7 @@ export class InterestCalculatorComponent implements OnInit {
   unSecuredAmount: number;
   unSecuredScheme: any;
   selectedUnsecuredscheme: any[] = [];
+  globalValue: any;
   constructor(
     public fb: FormBuilder,
     public partnerService: PartnerService,
@@ -54,13 +56,16 @@ export class InterestCalculatorComponent implements OnInit {
     public datePipe: DatePipe,
     public ref: ChangeDetectorRef,
     public loanFormService: LoanApplicationFormService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private globalSettingService: GlobalSettingService
   ) {
     this.initForm();
   }
 
   ngOnInit() {
-
+    this.globalSettingService.globalSetting$.subscribe(res => {
+      this.globalValue = res;
+    })
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -192,6 +197,13 @@ export class InterestCalculatorComponent implements OnInit {
     if (this.controls.partnerId.valid && this.controls.finalLoanAmount.value && this.selectedScheme.length) {
       let amt = this.controls.finalLoanAmount.value;
 
+      if (amt < this.globalValue.minimumLoanAmountAllowed) {
+        this.controls.finalLoanAmount.setErrors(null)
+      } else {
+        this.controls.finalLoanAmount.setErrors({ mimimumAmt: true })
+        return
+      }
+
       if (amt <= scheme.schemeAmountEnd && amt >= scheme.schemeAmountStart) {
         this.controls.finalLoanAmount.setErrors(null)
       } else {
@@ -214,7 +226,7 @@ export class InterestCalculatorComponent implements OnInit {
 
       }
 
-      let rbiLoanPercent = (75 / 100)
+      let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
       if (amt > this.totalAmt * rbiLoanPercent) {
         this.controls.finalLoanAmount.setErrors({ rbi: true })
         return
@@ -298,7 +310,7 @@ export class InterestCalculatorComponent implements OnInit {
 
           break;
         case "180":
-          
+
           if (this.selectedScheme.length > 0)
             this.controls.interestRate.patchValue(this.selectedScheme[0].interestRateOneHundredEightyDaysMonthly)
 
