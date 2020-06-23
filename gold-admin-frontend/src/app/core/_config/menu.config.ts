@@ -285,7 +285,7 @@ export class MenuConfig {
 									page: "/admin/loan-management/all-loan",
 									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanDetailsView'),
-								},
+								}
 							],
 						},
 						{

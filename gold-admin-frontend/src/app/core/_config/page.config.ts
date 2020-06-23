@@ -254,6 +254,9 @@ export class PageConfig {
 						page: { title: "PACKET IMAGE UPLOAD", desc: "" },
 					}
 				},
+				"topup": {
+					page: { title: "Top Up", desc: "" },
+				},
 			}
 		},
 		'broker': {
