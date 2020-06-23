@@ -93,7 +93,9 @@
                                 <small>Entered amount exceeds loan criteria</small>
                             </mat-error>
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible">
-                                <small>Enter  Amount less Eligible Amount</small>
+                                <small>Entered  Amount is less Eligible Amount</small>
+                            </mat-error><mat-error *ngIf="controls.finalLoanAmount.errors?.mimimumAmt">
+                                <small>Entered  Amount is less minimum loan amount</small>
                             </mat-error>
                         </div>
                         

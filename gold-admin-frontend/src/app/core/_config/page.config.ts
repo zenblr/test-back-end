@@ -132,7 +132,10 @@ export class PageConfig {
 				},
 				"part-release": {
 					page: { title: "Part Release", desc: "" },
-				}
+				},
+				'interest-emi': {
+					page: { title: "Pay Interest EMI", desc: "" },
+				},
 			},
 			"kyc-setting": {
 				page: { title: "Customer KYC", desc: "" },

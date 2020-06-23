@@ -13,6 +13,7 @@ import { HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../.
 import { MonthlyPaymentAddComponent } from './monthly-payment-add/monthly-payment-add.component';
 import { PayIntersetEmiComponent } from './pay-interset-emi/pay-interset-emi.component';
 import { PartReleaseComponent } from './part-release/part-release.component';
+import { EmiLogsDialogComponent } from './emi-logs-dialog/emi-logs-dialog.component';
 
 const routes: Routes = [
   {
@@ -30,7 +31,13 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [MonthlyPaymentComponent, MonthlyPaymentAddComponent, PayIntersetEmiComponent, PartReleaseComponent],
+  declarations: [
+    MonthlyPaymentComponent,
+    MonthlyPaymentAddComponent,
+    PayIntersetEmiComponent,
+    EmiLogsDialogComponent,
+    PartReleaseComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -62,6 +69,9 @@ const routes: Routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
-  entryComponents: [MonthlyPaymentAddComponent]
+  entryComponents: [
+    MonthlyPaymentAddComponent,
+    EmiLogsDialogComponent
+  ]
 })
 export class RepaymentModule { }

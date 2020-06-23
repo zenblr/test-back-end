@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppliedLoanService } from '../../../../../core/loan-management';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { GlobalSettingService } from '../../../../../core/global-setting/services/global-setting.service';
 
 @Component({
   selector: 'kt-disburse-dialog',
@@ -15,13 +16,20 @@ export class DisburseDialogComponent implements OnInit {
   currentDate = new Date()
   disburseForm: FormGroup
   details: any;
+  globalValue: any;
   constructor(
     public dialogRef: MatDialogRef<DisburseDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     public loanService: AppliedLoanService,
-    public toast: ToastrService
-  ) { }
+    public toast: ToastrService,
+    public globalSettingService: GlobalSettingService
+  ) {
+    this.globalSettingService.globalSetting$.subscribe(res => {
+      console.log(res)
+      this.globalValue = res;
+    })
+  }
 
   ngOnInit() {
     this.disburseForm = this.fb.group({
@@ -95,7 +103,7 @@ export class DisburseDialogComponent implements OnInit {
   }
 
   submit() {
-   
+
     if (this.disburseForm.invalid) {
       this.disburseForm.markAllAsTouched()
       return
@@ -109,7 +117,7 @@ export class DisburseDialogComponent implements OnInit {
       catchError(err => {
         this.toast.error(err.error.message);
         throw err
-      }),finalize(()=>{
+      }), finalize(() => {
         this.formDisable()
       })).subscribe()
   }

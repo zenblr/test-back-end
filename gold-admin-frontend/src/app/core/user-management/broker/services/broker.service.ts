@@ -19,6 +19,12 @@ export class BrokerService {
     )
   }
 
+  getBrokerById(id): Observable<any> {
+    return this.http.get(API_ENDPOINT + `api/broker/${id}`).pipe(
+      map(res => res)
+    )
+  }
+
   getAllMerchant():Observable<any>{
     return this.http.get(API_ENDPOINT + `api/merchant/all-merchant`).pipe(
       map(res => res)
