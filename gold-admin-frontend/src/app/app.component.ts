@@ -14,8 +14,8 @@ import { locale as frLang } from './core/_config/i18n/fr';
 import { SharedService } from './core/shared/services/shared.service';
 
 import { Spinkit } from 'ng-http-loader';
-import { GlobalSettingService } from './core/global-setting/services/global-setting.service';
-import { map } from 'rxjs/operators';
+import { AuthService } from './core/auth';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -45,9 +45,14 @@ export class AppComponent implements OnInit, OnDestroy {
 		private layoutConfigService: LayoutConfigService,
 		private splashScreenService: SplashScreenService,
 		private sharedService: SharedService,
+		private authService: AuthService,
 		private ref: ChangeDetectorRef,
-		private globalSettingService: GlobalSettingService
+		private toast: ToastrService
 	) {
+		console.log(window.location.href);
+		if (window.location.href == 'http://localhost:4200/broker') {
+			this.getSingleSignOn();
+		}
 		// if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
 		// 	location.href = location.href.replace("http://", "https://");
 		//   }
@@ -62,10 +67,6 @@ export class AppComponent implements OnInit, OnDestroy {
 		// 	}
 		// })
 	}
-
-	/**
-	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
-	 */
 
 	/**
 	 * On init
@@ -89,6 +90,19 @@ export class AppComponent implements OnInit, OnDestroy {
 			}
 		});
 		this.unsubscribe.push(routerSubscription);
+	}
+
+	getSingleSignOn() {
+		this.authService.getSingleSignOn('J12NM43-VQF4G4G-K1WGKSQ-956DG56', 'KBLUIS').subscribe(res => {
+			console.log(res)
+			localStorage.setItem('UserDetails', JSON.stringify(res));
+			this.router.navigate(['/broker']);
+		},
+			error => {
+				console.log(error.error.message);
+				const msg = error.error.message;
+				this.toast.error(msg);
+			});
 	}
 
 	/**
