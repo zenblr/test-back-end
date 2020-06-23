@@ -12,7 +12,7 @@
                 <a ngbDropdownItem (click)="interestEmi()">Pay Interest EMI</a>
                 <a ngbDropdownItem (click)="topUp()">Top Up</a>
                 <a ngbDropdownItem (click)="partPayment()">Part Payment</a>
-                <a ngbDropdownItem (click)="$event.preventDefault()">Part Release</a>
+                <a ngbDropdownItem (click)="partRelease()">Part Release</a>
                 <a ngbDropdownItem (click)="new()">Add New Loan</a>
             </div>
         </button>
@@ -90,10 +90,11 @@
                 <ng-container>
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <button class="btn-transparent" ngbDropdown>
+                        <button mat-icon-button class="btn-transparent" ngbDropdown>
                             <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2"
                                 role="button">
-                                <img src="../../../../../../assets/media/icons/options.svg" alt="">
+                                <!-- <img src="../../../../../../assets/media/icons/options.svg" alt=""> -->
+                                <mat-icon>more_vert</mat-icon>
                             </a>
                             <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
                                 class="dropdown-menu dropdown-menu-right">
@@ -101,7 +102,7 @@
                                 <a ngbDropdownItem (click)="$event.preventDefault()">Pay Interest EMI</a>
                                 <a ngbDropdownItem (click)="topUp(loan)">Top Up</a>
                                 <a ngbDropdownItem (click)="partPayment(loan)">Part Payment</a>
-                                <a ngbDropdownItem (click)="$event.preventDefault(loan)">Part Release</a>
+                                <a ngbDropdownItem (click)="partRelease(loan)">Part Release</a>
                                 <a ngbDropdownItem (click)="new(loan)">Add New Loan</a>
                             </div>
                         </button>

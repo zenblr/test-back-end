@@ -130,6 +130,9 @@ export class PageConfig {
 				monthly: {
 					page: { title: "Monthly Repayment", desc: "" },
 				},
+				"part-release": {
+					page: { title: "Part Release", desc: "" },
+				}
 			},
 			"kyc-setting": {
 				page: { title: "Customer KYC", desc: "" },

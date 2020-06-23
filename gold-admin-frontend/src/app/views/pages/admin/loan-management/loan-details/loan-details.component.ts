@@ -109,11 +109,15 @@ export class LoanDetailsComponent implements OnInit {
     this.router.navigate(['/admin/loan-management/topup'])
   }
 
-  interestEmi(){
+  interestEmi() {
     this.router.navigate(['/admin/repayment/interest-emi'])
   }
 
   partPayment(loan) {
     this.router.navigate([])
+  }
+
+  partRelease() {
+    this.router.navigate(['/admin/repayment/part-release'])
   }
 }
