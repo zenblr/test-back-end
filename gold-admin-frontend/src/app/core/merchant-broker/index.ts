@@ -15,3 +15,5 @@ export { ShopService } from './shop/shop.service';
 export { ShoppingCartService } from './shopping-cart/services/shopping-cart.service';
 
 export { OrderReceivedService } from './order-received/services/order-received.service';
+
+export { DashboardService } from './dashboard/services/dashboard.service';
