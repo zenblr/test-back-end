@@ -155,8 +155,8 @@
 				</div>
 				<div class="col-8">
 					<kt-uplod-preview-image [type]="'formField'" [formFieldName]="'panCard'"
-						[fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
-						(remove)="removeImage($event)">
+						[fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
+						(upload)="uploadImage($event)" (remove)="removeImage($event)">
 					</kt-uplod-preview-image>
 					<input type="text" formControlName="panCard" class="form-control" hidden>
 				</div>

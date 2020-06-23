@@ -231,7 +231,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
 	}
 
 	viewProduct(product) {
-		console.log(product);
 		const dialogRef = this.dialog.open(ProductEditComponent, {
 			data: { productId: product.id, action: "view" },
 			width: "550px",

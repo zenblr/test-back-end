@@ -59,7 +59,6 @@ export class OrdersComponent implements OnInit {
     from: 1,
     to: 25,
     search: "",
-    weight: 0,
     paymentType: 0,
     orderCurrentStatus: 0,
   };
@@ -161,7 +160,6 @@ export class OrdersComponent implements OnInit {
   applyFilter(data) {
     this.ordersData.paymentType = data.data.paymentType;
     this.ordersData.orderCurrentStatus = data.data.status;
-    this.ordersData.weight = data.data.weight;
     this.dataSource.loadOrdersDetails(this.ordersData);
     this.filteredDataList = data.list;
   }
