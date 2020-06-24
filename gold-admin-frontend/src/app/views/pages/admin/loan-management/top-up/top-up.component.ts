@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material';
+import { OrnamentsComponent } from '../loan-application-form/tabs/ornaments/ornaments.component';
 
 @Component({
   selector: 'kt-top-up',
@@ -14,7 +16,8 @@ export class TopUpComponent implements OnInit {
   topUpForm: FormGroup;
   constructor(
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -35,6 +38,10 @@ export class TopUpComponent implements OnInit {
 
   viewOrnaments() {
     // this.router.navigate([])
+    const dialogRef = this.dialog.open(OrnamentsComponent, {
+      width: 'auto',
+      data: 'view'
+    });
   }
 
   enterTopUp() {

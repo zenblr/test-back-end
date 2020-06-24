@@ -85,7 +85,6 @@ const rout: Routes = [
     BasicDetailsComponent,
     KycDetailsComponent,
     NomineeDetailsComponent,
-    OrnamentsComponent,
     FinalInterestAmountComponent,
     BankDetailsComponent,
     ApprovalComponent,
@@ -130,7 +129,8 @@ const rout: Routes = [
     DeleteEntityDialogComponent,
     UnSecuredSchemeComponent,
     WebcamDialogComponent,
-    UpdateLocationComponent
+    UpdateLocationComponent,
+    OrnamentsComponent
   ]
 })
 export class LoanManagementModule { }
