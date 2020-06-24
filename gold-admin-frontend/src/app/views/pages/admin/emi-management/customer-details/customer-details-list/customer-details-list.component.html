@@ -126,8 +126,8 @@
                 <ng-container matColumnDef="viewPanCard">
                     <mat-header-cell *matHeaderCellDef>View PAN Card</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span class="text-primary kt-pointer" *ngIf="element?.kycDetails?.panCard.url;else elseBlock"
-                            (click)="open(element.kycDetails.panCard.url)">View</span>
+                        <span class="text-primary kt-pointer" *ngIf="element?.kycDetails?.panCard.URL;else elseBlock"
+                            (click)="open(element.kycDetails.panCard.URL)">View</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="merchant">

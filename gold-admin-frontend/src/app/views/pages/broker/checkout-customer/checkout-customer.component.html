@@ -279,7 +279,8 @@
                                 <ng-container *ngIf="!existingCustomerData?.customerDetails?.kycDetails">
                                     <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'panCardFileId'"
                                         [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
-                                        (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                                        [reason]="'broker'" (upload)="uploadImage($event)"
+                                        (remove)="removeImage($event)">
                                     </kt-uplod-preview-image>
                                     <input type="text" formControlName="panCardFileId" class="form-control"
                                         [class.isError]="controls.panCardFileId.touched && controls.panCardFileId.invalid"
@@ -292,7 +293,7 @@
                                 </ng-container>
                                 <ng-container *ngIf="existingCustomerData?.customerDetails?.kycDetails">
                                     <a class="text-body"
-                                        [href]="existingCustomerData?.customerDetails?.kycDetails?.panCard?.url"
+                                        [href]="existingCustomerData?.customerDetails?.kycDetails?.panCard?.URL"
                                         download="{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}"
                                         target="_blank">
                                         <span>{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}</span>

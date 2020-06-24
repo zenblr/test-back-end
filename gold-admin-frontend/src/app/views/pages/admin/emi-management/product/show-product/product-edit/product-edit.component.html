@@ -22,13 +22,13 @@
                             *ngIf="controls?.productImage?.value != '0' || controls?.productImages?.value.length">
                             <div class="col-12"><label>Images</label></div>
                             <div class="col-3 pb-3" *ngIf="controls?.productImage?.value != '0'">
-                                <kt-uplod-preview-image [image]="controls?.productImage?.value"
+                                <kt-uplod-preview-image [image]="controls?.productImage?.value" [reason]="'product'"
                                     (upload)="uploadImage($event)">
                                 </kt-uplod-preview-image>
                             </div>
                             <div class="col-3 pb-3" *ngFor="let img of controls?.productImages?.value; let i = index;">
-                                <kt-uplod-preview-image [image]="img?.url" [action]="'remove'" [index]="i"
-                                    (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                                <kt-uplod-preview-image [image]="img?.URL" [action]="'remove'" [index]="i"
+                                    [reason]="'product'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
                                 </kt-uplod-preview-image>
                             </div>
                         </div>

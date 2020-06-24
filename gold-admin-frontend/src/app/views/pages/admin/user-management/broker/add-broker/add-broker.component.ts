@@ -87,7 +87,7 @@ export class AddBrokerComponent implements OnInit {
       accountHolderName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
       accountNumber: ['', Validators.required],
       passbookStatementChequeId: [],
-      passbookImg:[],
+      passbookImg: [],
       passbookImgName: ['', Validators.required]
     })
 
@@ -152,12 +152,13 @@ export class AddBrokerComponent implements OnInit {
   }
 
   getFileInfo(event, type) {
+    var reason;
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       this.formData = new FormData();
       this.formData.append("avatar", event.target.files[0]);
-      this.sharedService.fileUpload(this.formData).pipe(
+      this.sharedService.fileUpload(this.formData, reason).pipe(
         map(res => {
 
           if (type == 'pan') {

@@ -173,7 +173,7 @@
                         <div class="col-7">
                             <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'passbookCopy'"
                                 [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
-                                (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                                [reason]="'cancelOrder'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
                             </kt-uplod-preview-image>
                             <input type="text" formControlName="passbookId" class="form-control"
                                 [class.isError]="controls.passbookId.touched && controls.passbookId.invalid" hidden>
@@ -190,7 +190,7 @@
                         <div class="col-7">
                             <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'checkCopy'"
                                 [fileAcceptType]="'image/x-png,image/jpeg,image/jpg, .pdf'" [action]="'remove'"
-                                (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                                [reason]="'cancelOrder'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
                             </kt-uplod-preview-image>
                             <input type="text" formControlName="checkCopyId" class="form-control"
                                 [class.isError]="controls.checkCopyId.touched && controls.checkCopyId.invalid" hidden>

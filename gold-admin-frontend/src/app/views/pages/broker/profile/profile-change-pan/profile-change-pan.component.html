@@ -48,7 +48,7 @@
                             <div class="col-7">
                                 <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'pancard'"
                                     [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
-                                    (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                                    [reason]="'broker'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
                                 </kt-uplod-preview-image>
                                 <input type="text" formControlName="pancard" class="form-control"
                                     [class.isError]="controls.pancard.touched && controls.pancard.invalid" hidden>
