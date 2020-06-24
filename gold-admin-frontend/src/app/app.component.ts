@@ -16,6 +16,7 @@ import { SharedService } from './core/shared/services/shared.service';
 import { Spinkit } from 'ng-http-loader';
 import { AuthService } from './core/auth';
 import { ToastrService } from 'ngx-toastr';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -47,11 +48,20 @@ export class AppComponent implements OnInit, OnDestroy {
 		private sharedService: SharedService,
 		private authService: AuthService,
 		private ref: ChangeDetectorRef,
-		private toast: ToastrService
+		private toast: ToastrService,
+		private cookieService: CookieService,
 	) {
-		console.log(window.location.href);
-		if (window.location.href == 'http://localhost:4200/broker') {
-			this.getSingleSignOn();
+		if (this.cookieService.get('Token') && (this.cookieService.get('modules') ||
+			this.cookieService.get('permissions') || this.cookieService.get('userDetails'))) {
+			const userData = {
+				Token: JSON.parse(this.cookieService.get('Token')),
+				modules: JSON.parse(this.cookieService.get('modules')),
+				permissions: JSON.parse(this.cookieService.get('permissions')),
+				userDetails: JSON.parse(this.cookieService.get('userDetails')),
+			}
+			localStorage.setItem('UserDetails', JSON.stringify(userData));
+			this.cookieService.deleteAll();
+			this.router.navigate(['/broker/dashboard']);
 		}
 		// if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
 		// 	location.href = location.href.replace("http://", "https://");
@@ -90,19 +100,6 @@ export class AppComponent implements OnInit, OnDestroy {
 			}
 		});
 		this.unsubscribe.push(routerSubscription);
-	}
-
-	getSingleSignOn() {
-		this.authService.getSingleSignOn('J12NM43-VQF4G4G-K1WGKSQ-956DG56', 'KBLUIS').subscribe(res => {
-			console.log(res)
-			localStorage.setItem('UserDetails', JSON.stringify(res));
-			this.router.navigate(['/broker']);
-		},
-			error => {
-				console.log(error.error.message);
-				const msg = error.error.message;
-				this.toast.error(msg);
-			});
 	}
 
 	/**
