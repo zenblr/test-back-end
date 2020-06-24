@@ -130,6 +130,9 @@ export class PageConfig {
 				monthly: {
 					page: { title: "Monthly Repayment", desc: "" },
 				},
+				"part-release": {
+					page: { title: "Part Release", desc: "" },
+				},
 				'interest-emi': {
 					page: { title: "Pay Interest EMI", desc: "" },
 				},
@@ -256,6 +259,9 @@ export class PageConfig {
 					id: {
 						page: { title: "PACKET IMAGE UPLOAD", desc: "" },
 					}
+				},
+				"topup": {
+					page: { title: "Top Up", desc: "" },
 				},
 			}
 		},

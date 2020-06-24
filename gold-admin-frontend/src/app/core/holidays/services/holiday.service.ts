@@ -76,7 +76,7 @@ export class HolidayService {
   }
 
   uploadCSV(data): Observable<any> {
-    return this.http.post('api/upload-scheme', data).pipe(
+    return this.http.post('api/upload-holiday-master', data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) {

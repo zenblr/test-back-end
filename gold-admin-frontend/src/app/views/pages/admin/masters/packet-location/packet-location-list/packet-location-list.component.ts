@@ -6,6 +6,8 @@ import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators'
 import { PacketLocationDatasource } from '../../../../../../core/masters/packet-location/datasources/packet-location.datasource'
 import { PacketLocationService } from '../../../../../../core/masters/packet-location/service/packet-location.service';
 import { AddPacketLocationComponent } from '../add-packet-location/add-packet-location.component';
+import { ToastrService } from 'ngx-toastr';
+import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 @Component({
   selector: 'kt-packet-location-list',
   templateUrl: './packet-location-list.component.html',
@@ -25,6 +27,9 @@ export class PacketLocationListComponent implements OnInit {
     private dataTableService: DataTableService,
     private packetLocationService: PacketLocationService,
     public dialog: MatDialog,
+    private toastr: ToastrService,
+    private layoutUtilsService: LayoutUtilsService
+
   ) {
     this.packetLocationService.openModal$.pipe(
       map(res => {
@@ -93,7 +98,6 @@ export class PacketLocationListComponent implements OnInit {
   }
 
   editLocation(location) {
-    console.log(location)
     const dialogRef = this.dialog.open(AddPacketLocationComponent,
       {
         data: { locationData: location, action: 'edit' },
@@ -102,6 +106,26 @@ export class PacketLocationListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
+      }
+    });
+  }
+
+  deleteLocation(_item) {
+    const role = _item;
+    const _title = 'Delete Packet Location';
+    const _description = 'Are you sure to permanently delete this Packet Location?';
+    const _waitDesciption = 'Packet Location is deleting...';
+    const _deleteMessage = `Packet Location has been deleted`;
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.packetLocationService.deletepacketLocation(role.id).subscribe(successDelete => {
+          this.toastr.success(_deleteMessage);
+          this.loadPage();
+        },
+          errorDelete => {
+            this.toastr.error(errorDelete.error.message);
+          });
       }
     });
   }

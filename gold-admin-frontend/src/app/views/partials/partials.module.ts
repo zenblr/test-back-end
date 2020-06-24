@@ -80,8 +80,10 @@ import { AddAppraiserComponent } from '../pages/admin/user-management/assign-app
 
 import { WebcamModule } from "ngx-webcam";
 import { WebcamDialogComponent } from '../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
- 
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { OrnamentsComponent } from '../pages/admin/loan-management/loan-application-form/tabs/ornaments/ornaments.component';
+
+
 
 @NgModule({
 	declarations: [
@@ -150,6 +152,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 		MultiSelectSearchComponent,
 
 		AddAppraiserComponent,
+		OrnamentsComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -210,6 +213,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 		WebcamModule,
 		NgxMaterialTimepickerModule,
 		MultiSelectSearchComponent,
+		OrnamentsComponent
 	],
 	imports: [
 		NgbModule,
