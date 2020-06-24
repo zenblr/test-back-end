@@ -49,9 +49,7 @@ export class AddBrokerComponent implements OnInit {
       this.title = 'Add Broker'
     } else if (this.data.action == 'edit') {
       this.title = 'Update Broker'
-      this.brokerFrom.patchValue(this.data.broker)
-      this.getCities()
-      this.getStore()
+      this.getBrokerById()
     } else {
       this.title = 'View Broker';
       this.brokerFrom.patchValue(this.data.broker)
@@ -92,6 +90,45 @@ export class AddBrokerComponent implements OnInit {
     })
 
     // this.controls.imgName.disable()
+  }
+
+  getBrokerById() {
+    this.brokerService.getBrokerById(this.data.broker).subscribe(res => {
+      this.brokerFrom.patchValue(res)
+      this.patchValueOfBroker(res)
+      this.getCities()
+      this.getStore()
+    })
+  }
+
+  patchValueOfBroker(broker) {
+    this.brokerFrom.patchValue({
+      firstName: broker.user.firstName,
+      lastName: broker.user.lastName,
+      mobileNumber: broker.user.mobileNumber,
+      email: broker.user.email,
+      address: broker.user.address[0].address,
+      stateId: broker.user.address[0].stateId,
+      cityId: broker.user.address[0].cityId,
+      pinCode: broker.user.address[0].postalCode,
+      nameOnPanCard: broker.nameOnPanCard,
+      panCard: broker.nameOnPanCard,
+      passbookStatementChequeId: broker.passbookStatementCheque,
+    })
+
+    if (broker.passbookStatementChequeDetails) {
+      this.brokerFrom.patchValue({
+        passbookImgName: broker.passbookStatementChequeDetails.filename,
+        passbookImg:broker.passbookStatementChequeDetails.url,
+      })
+    }
+
+    if (broker.panCardDetails) {
+      this.brokerFrom.patchValue({
+        imgName: broker.panCardDetails.filename,
+        panCardImg:broker.panCardDetails.url,
+      })
+    }
   }
 
   get controls() {

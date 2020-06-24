@@ -29,7 +29,7 @@ export class PageConfig {
 					page: { title: "Purposes", desc: "" },
 				},
 				'packet-location': {
-					page: { title: "Packet Tracking", desc: "" },
+					page: { title: "Packet Location", desc: "" },
 				},
 				'lead-source': {
 					page: { title: "Lead Source", desc: "" },
@@ -129,6 +129,12 @@ export class PageConfig {
 			repayment: {
 				monthly: {
 					page: { title: "Monthly Repayment", desc: "" },
+				},
+				"part-release": {
+					page: { title: "Part Release", desc: "" },
+				},
+				'interest-emi': {
+					page: { title: "Pay Interest EMI", desc: "" },
 				},
 			},
 			"kyc-setting": {
@@ -256,6 +262,9 @@ export class PageConfig {
 					id: {
 						page: { title: "PACKET IMAGE UPLOAD", desc: "" },
 					}
+				},
+				"topup": {
+					page: { title: "Top Up", desc: "" },
 				},
 			}
 		},

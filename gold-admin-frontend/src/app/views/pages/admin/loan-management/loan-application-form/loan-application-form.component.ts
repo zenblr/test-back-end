@@ -12,15 +12,6 @@ import { OrnamentsService } from '../../../../../core/masters/ornaments/services
 })
 export class LoanApplicationFormComponent implements OnInit {
 
-  invalid = {
-    basic: false,
-    kyc: false,
-    nominee: false,
-    bank: false,
-    approval: false,
-    ornaments: false,
-    intreset: false,
-  }
   url: string
   id: number;
   disabledForm: boolean;
@@ -35,7 +26,7 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false, false, false, false, false, false];
+  disabled = [false, true, true, true, true, true];
   loanId: any;
   ornamentType = [];
   finalLoanAmt: any;
@@ -51,9 +42,9 @@ export class LoanApplicationFormComponent implements OnInit {
     this.url = this.router.url.split('/')[3]
     this.id = this.rout.snapshot.params.id
     if (this.id) {
-      // for (let index = 0; index < this.disabled.length; index++) {
-      //   this.disabled[index] = false;
-      // }
+      for (let index = 0; index < this.disabled.length; index++) {
+        this.disabled[index] = true;
+      }
       this.editApi()
 
     }
@@ -149,162 +140,11 @@ export class LoanApplicationFormComponent implements OnInit {
     ).subscribe()
   }
 
-  // basicForm(event) {
-  //   this.basic = event
-  //   this.invalid.basic = false
-  // }
-
-  // kycEmit(event) {
-  //   this.kyc = event
-  //   this.invalid.kyc = false
-
-  // }
-
-  // nomineeEmit(event) {
-  //   this.nominee = event.nominee
-  //   this.invalid.nominee = false
-
-  //   // if (event.scroll) {
-  //   //   const test = document.getElementById('ornaments');
-  //   //   test.scrollIntoView({ behavior: "smooth" });
-  //   // }
-  // }
-
-  // bankFormEmit(event) {
-  //   this.bank = event
-  //   this.invalid.bank = false
-  // }
-
-  // interestFormEmit(event) {
-  //   this.intreset = event
-  //   this.invalid.intreset = false
-  //   if (this.intreset.valid || this.intreset.status == "DISABLED") {
-  //     this.disabled[4] = false
-  //   } else {
-  //     this.disabled[4] = true;
-  //   }
-  // }
-
-  // approvalFormEmit(event ) {
-  //   this.approval = event
-  //   this.invalid.approval = false
-
-  // }
-
-  // OrnamentsDataEmit(event) {
-  //   this.Ornaments = event
-  //   this.invalid.ornaments = false
-  //   if (this.Ornaments.valid || this.Ornaments.status == "DISABLED") {
-  //     this.disabled[3] = false
-  //     this.calculateTotalEligibleAmount()
-
-  //   } else {
-  //     this.disabled[3] = true;
-  //   }
-  //   this.ref.detectChanges()
-  // }
-
-  // calculateTotalEligibleAmount() {
-  //   this.totalAmount = 0;
-  //   this.Ornaments.value.forEach(element => {
-  //     this.totalAmount += Number(element.loanAmount)
-  //   });
-  //   this.totalAmount = Math.round(this.totalAmount)
-  // }
-
-  // cancel() {
-  //   // this.router.navigate(['/'])
-  // }
-
-  // checkForFormValidation() {
-  //   if (this.basic.invalid) {
-  //     this.selected = 0;
-  //     this.invalid.basic = true;
-  //     window.scrollTo(0, 0)
-  //     return true
-  //   }
-
-  //   if (this.nominee.invalid) {
-  //     this.selected = 2;
-  //     this.invalid.nominee = true;
-  //     window.scrollTo(0, 0)
-  //     return true
-  //   }
-  //   if (this.Ornaments.invalid) {
-  //     this.invalid.ornaments = true;
-  //     // const test = document.getElementById('ornaments');
-  //     // test.scrollIntoView({ behavior: "smooth" });
-  //     return true
-  //   }
-  //   if (this.intreset.invalid) {
-  //     this.selected = 3;
-  //     this.invalid.intreset = true;
-  //     window.scrollTo(0, 0)
-  //     return true
-  //   }
-
-  //   if (this.approval.invalid) {
-  //     this.selected = 4;
-  //     this.invalid.approval = true;
-  //     window.scrollTo(0, 0)
-  //     return true
-  //   }
-
-  // }
-
+  
   total(event) {
     this.totalAmount = event
   }
 
-  createData() {
-    let Obj = {
-      loanOrnmanets: this.Ornaments.value,
-      loanApproval: this.approval.value,
-      loanFinalCalculator: this.intreset.value,
-      loanPersonal: this.basic.value,
-      loanBank: this.bank.value,
-      loanKyc: this.kyc.value,
-      loanNominee: this.nominee.value,
-      customerId: this.basic.controls.customerId.value,
-      totalEligibleAmt: this.totalAmount,
-      totalFinalInterestAmt: (this.intreset.controls.intresetAmt.value)
-    }
-    return Obj
-  }
-
-  apply() {
-    // let valid = this.checkForFormValidation();
-    // if (valid) {
-    //   return
-    // }
-    // let data = this.createData()
-    // if (this.action == 'add') {
-    //   this.loanApplicationFormService.applyForLoan(data).pipe(
-    //     map(res => {
-    //       this.toast.success(res.message)
-    //       this.router.navigate(['/admin/loan-management/applied-loan'])
-    //     }),
-    //     catchError(err => {
-    //       this.toast.error(err.error.message)
-    //       throw err
-    //     })
-    //   ).subscribe()
-    // }
-    // if (this.action == 'edit') {
-    //   data.loanFinalCalculator.loanStartDate = new Date(data.loanFinalCalculator.loanStartDate).toISOString();
-
-    //   this.loanApplicationFormService.updateLoan(this.customerDetail.id, data).pipe(
-    //     map(res => {
-    //       this.toast.success(res.message)
-    //       this.router.navigate(['/admin/loan-management/applied-loan'])
-    //     }),
-    //     catchError(err => {
-    //       this.toast.error(err.error.message)
-    //       throw err
-    //     })
-    //   ).subscribe()
-    // }
-  }
 
 
   next(event) {

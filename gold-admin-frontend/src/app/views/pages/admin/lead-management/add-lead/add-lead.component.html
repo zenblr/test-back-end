@@ -367,7 +367,7 @@
                                 <!-- <mat-label class="mandatory">Select</mat-label> -->
                                 <select class="form-control" formControlName="statusId" (change)="commentBox()"
                                     [class.isError]="controls.statusId.touched && controls.statusId.invalid">
-                                    <option selected disabled value="">Select Status</option>
+                                    <option selected disabled value=null>Select Status</option>
                                     <option *ngFor="let stat of status" [value]="stat.id">
                                         {{stat.statusName | titlecase}}
                                     </option>

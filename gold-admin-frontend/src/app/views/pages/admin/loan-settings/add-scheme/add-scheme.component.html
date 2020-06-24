@@ -85,7 +85,7 @@
                                         Invalid Input
                                     </mat-error>
                                 </div>
-                                <div class="col-1 form-label justify-content-center"><label> Or</label></div>
+                                <!-- <div class="col-1 form-label justify-content-center"><label> Or</label></div> -->
                                 <div class="col">
                                     <input type="number" class="form-control" formControlName="processingChargePercent"
                                         [class.isError]="fillingForm.get('processingChargePercent').touched && fillingForm.get('processingChargePercent').invalid"
@@ -247,7 +247,7 @@
                                     aria-label="Recipient's username" aria-describedby="basic-addon2"
                                     formControlName="csv" readonly>
                                 <div class="input-group-append">
-                                    <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                    <span class="input-group-text kt-pointer font-weight" id="basic-addon2"
                                         (click)="file.click()">Attach</span>
                                 </div>
                             </div>

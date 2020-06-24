@@ -115,6 +115,7 @@ export class GlobalSettingsComponent implements OnInit {
     this.globalSettingService.setGlobalSetting(formData).pipe(map(res => {
       if (res) {
         console.log(res);
+        this.globalSettingService.globalSetting.next(formData)
         this.toastr.success('Successful!')
       }
     })).subscribe()

@@ -1,0 +1,11 @@
+:host {
+	.border-left-custom {
+		border-top-left-radius: 0px !important;
+		border-bottom-left-radius: 0px !important;
+		border-left: none !important;
+    }
+    .border-right-custom {
+		border-top-right-radius: 0px !important;
+		border-bottom-right-radius: 0px !important;
+	}
+}
