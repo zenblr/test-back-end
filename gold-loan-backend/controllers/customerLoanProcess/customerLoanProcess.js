@@ -382,7 +382,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         }, {
             model: models.customer,
             as: 'customer',
-            attributes: ['id', 'firstName', 'lastName']
+            attributes: ['id', 'firstName', 'lastName', 'panType', 'panImage']
         },
         {
             model: models.customerLoanIntrestCalculator,

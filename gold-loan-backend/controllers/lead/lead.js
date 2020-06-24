@@ -11,7 +11,7 @@ exports.addLead = async (req, res, next) => {
     let { leadName } = req.body;
     let leadExist = await models.lead.findOne({ where: {isActive: true, leadName: leadName } })
     if (!check.isEmpty(leadExist)) {
-        return res.status(404).json({ message: 'This lead is already Exist' });
+        return res.status(404).json({ message: 'This Lead already Exists' });
     }
     let lead = await models.lead.create({ leadName })
     return res.status(200).json({ message: `Created` })
@@ -69,7 +69,7 @@ exports.updateLead = async (req, res, next) => {
 
     let leadExist = await models.lead.findOne({ where: { leadName: leadName } })
     if (!check.isEmpty(leadExist)) {
-        return res.status(404).json({ message: 'This Lead is already Exist' });
+        return res.status(404).json({ message: 'This Lead already Exists' });
     }
     let UpdateData = await models.lead.update({ leadName }, { where: { id: id } })
     if (UpdateData[0] === 0) {
