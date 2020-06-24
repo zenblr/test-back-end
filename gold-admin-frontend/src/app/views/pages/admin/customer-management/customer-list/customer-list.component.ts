@@ -45,7 +45,7 @@ export class CustomerListComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes)
+    // console.log(changes)
     if (changes.data)
       this.customerResult = changes.data.currentValue
     // this.dataSource.isPreloadTextViewedSubject.
@@ -60,7 +60,7 @@ export class CustomerListComponent implements OnInit, OnChanges {
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
-        console.log(res)
+        // console.log(res)
         this.searchValue = res;
         this.paginator.pageIndex = 0;
         this.loadLeadsPage();
@@ -101,11 +101,11 @@ export class CustomerListComponent implements OnInit, OnChanges {
   }
 
   editCustomer(role) {
-    console.log(role);
+    // console.log(role);
   }
 
   deleteCustomer(customerData) {
-    console.log(customerData);
+    // console.log(customerData);
     const customer = customerData;
     const _title = 'Delete Customer';
     const _description = 'Are you sure to permanently delete this customer?';
@@ -115,7 +115,7 @@ export class CustomerListComponent implements OnInit, OnChanges {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
+        // console.log(res);
         // this.customerManagementService.deleteCustomer(customer.id).subscribe(successDelete => {
         //   this.toastr.successToastr(_deleteMessage);
         //   // this.loadLeadsPage();

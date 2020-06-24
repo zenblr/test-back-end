@@ -63,7 +63,7 @@ export class AppliedKycComponent implements OnInit {
     // this.subscriptions.push(sortSubscription);
 
     this.ngxPermissionsService.permissions$.subscribe(res => {
-      console.log(res);
+      // console.log(res);
     })
 
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
@@ -88,7 +88,7 @@ export class AppliedKycComponent implements OnInit {
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      console.log(res);
+      // console.log(res);
       this.leadsResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
@@ -109,7 +109,7 @@ export class AppliedKycComponent implements OnInit {
   }
 
   applyFilter(data) {
-    console.log(data);
+    // console.log(data);
     this.queryParamsData.cceStatus = data.data.cceStatus;
     this.queryParamsData.kycStatus = data.data.kycStatus;
     this.dataSource.loadKyc(this.queryParamsData);
@@ -133,7 +133,7 @@ export class AppliedKycComponent implements OnInit {
     const params = { customerId: data.customerId, customerKycId: data.id };
     this.appliedKycService.editKycDetails(params).pipe(
       map(res => {
-        console.log(res);
+        // console.log(res);
         this.appliedKycService.editKyc.next({ editable: true });
         this.router.navigate(['/admin/kyc-setting/edit-kyc']);
       })
@@ -163,7 +163,7 @@ export class AppliedKycComponent implements OnInit {
     // this.dialog.open(UserReviewComponent)
     const params = { customerId: data.customerId, customerKycId: data.id };
     this.appliedKycService.editKycDetails(params).subscribe(res => {
-      console.log(res)
+      // console.log(res)
       const dialogRef = this.dialog.open(UserReviewComponent, { data: { action: 'view' }, width: '900px' });
     })
   }
