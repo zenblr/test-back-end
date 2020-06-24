@@ -15,7 +15,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-4 pr-5 pl-5">
+			<div class="col-4 pr-3 pl-3">
 				<h4>Last Month Orders</h4>
 				<hr>
 				<div class="row">
@@ -62,30 +62,37 @@
 							<th scope="col">EMI Tenure</th>
 						</tr>
 					</thead>
-					<tbody class="text-muted">
-						<tr *ngFor="let prod of details?.todaysOrderDetail">
-							<td>
-								{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId : '-'}}
-							</td>
-							<td>
-								{{prod?.customerDetails?.firstName || prod?.customerDetails?.lastName ? (prod?.customerDetails?.firstName + ' ' + prod?.customerDetails?.lastName | titlecase) : '-'}}
-							</td>
-							<td>
-								{{prod?.customerDetails?.mobileNumber ? prod?.customerDetails?.mobileNumber : '-'}}
-							</td>
-							<td>
-								{{prod?.orderUniqueId ? prod?.orderUniqueId : '-'}}
-							</td>
-							<td>
-								{{prod?.product?.productName ? prod?.product?.productName : '-'}}
-							</td>
-							<td>
-								{{prod?.weight ? prod?.weight : '-'}}
-							</td>
-							<td>
-								{{prod?.paymentType?.paymentType ? prod?.paymentType?.paymentType : '-'}}
-							</td>
-						</tr>
+					<tbody class="text-muted font-weight-normal">
+						<ng-container *ngIf="details?.todaysOrderDetail?.length; else noTodaysOrder">
+							<tr *ngFor="let prod of details?.todaysOrderDetail">
+								<td>
+									{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId : '-'}}
+								</td>
+								<td>
+									{{prod?.customerDetails?.firstName || prod?.customerDetails?.lastName ? (prod?.customerDetails?.firstName + ' ' + prod?.customerDetails?.lastName | titlecase) : '-'}}
+								</td>
+								<td>
+									{{prod?.customerDetails?.mobileNumber ? prod?.customerDetails?.mobileNumber : '-'}}
+								</td>
+								<td>
+									{{prod?.orderUniqueId ? prod?.orderUniqueId : '-'}}
+								</td>
+								<td>
+									{{prod?.product?.productName ? prod?.product?.productName : '-'}}
+								</td>
+								<td>
+									{{prod?.weight ? prod?.weight : '-'}}
+								</td>
+								<td>
+									{{prod?.paymentType?.paymentType ? prod?.paymentType?.paymentType : '-'}}
+								</td>
+							</tr>
+						</ng-container>
+						<ng-template #noTodaysOrder>
+							<tr>
+								<td class="text-center" colspan="7">No records found</td>
+							</tr>
+						</ng-template>
 					</tbody>
 				</table>
 			</div>
@@ -104,34 +111,41 @@
 							<th scope="col">Mobile No.</th>
 							<th scope="col">Order ID</th>
 							<th scope="col">Product Name</th>
-							<th scope="col">Weight</th>
+							<th scope="col">EMI Amount</th>
 							<th scope="col">EMI Tenure</th>
 						</tr>
 					</thead>
-					<tbody class="text-muted">
-						<tr *ngFor="let prod of details?.overdueCustomer">
-							<td>
-								{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId : '-'}}
-							</td>
-							<td>
-								{{prod?.customerDetails?.firstName || prod?.customerDetails?.lastName ? (prod?.customerDetails?.firstName + ' ' + prod?.customerDetails?.lastName | titlecase) : '-'}}
-							</td>
-							<td>
-								{{prod?.customerDetails?.mobileNumber ? prod?.customerDetails?.mobileNumber : '-'}}
-							</td>
-							<td>
-								{{prod?.orderUniqueId ? prod?.orderUniqueId : '-'}}
-							</td>
-							<td>
-								{{prod?.product?.productName ? prod?.product?.productName : '-'}}
-							</td>
-							<td>
-								{{prod?.weight ? prod?.weight : '-'}}
-							</td>
-							<td>
-								{{prod?.paymentType?.paymentType ? prod?.paymentType?.paymentType : '-'}}
-							</td>
-						</tr>
+					<tbody class="text-muted font-weight-normal">
+						<ng-container *ngIf="details?.overdueCustomer?.length; else noOverdueCustomer">
+							<tr *ngFor="let prod of details?.overdueCustomer">
+								<td>
+									{{prod?.customerDetails?.customerUniqueId ? prod?.customerDetails?.customerUniqueId : '-'}}
+								</td>
+								<td>
+									{{prod?.customerDetails?.firstName || prod?.customerDetails?.lastName ? (prod?.customerDetails?.firstName + ' ' + prod?.customerDetails?.lastName | titlecase) : '-'}}
+								</td>
+								<td>
+									{{prod?.customerDetails?.mobileNumber ? prod?.customerDetails?.mobileNumber : '-'}}
+								</td>
+								<td>
+									{{prod?.orderUniqueId ? prod?.orderUniqueId : '-'}}
+								</td>
+								<td>
+									{{prod?.product?.productName ? prod?.product?.productName : '-'}}
+								</td>
+								<td>
+									{{prod?.emiAmount ? prod?.emiAmount : '-'}}
+								</td>
+								<td>
+									{{prod?.paymentType?.paymentType ? prod?.paymentType?.paymentType : '-'}}
+								</td>
+							</tr>
+						</ng-container>
+						<ng-template #noOverdueCustomer>
+							<tr>
+								<td class="text-center" colspan="7">No records found</td>
+							</tr>
+						</ng-template>
 					</tbody>
 				</table>
 			</div>
