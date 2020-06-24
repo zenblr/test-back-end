@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/merchant-broker';
-import { WindowRefService, ICustomWindow } from '../../../../core/shared/services/window-ref.service';
+import { RazorpayPaymentService } from '../../../../core/shared/services/razorpay-payment.service';
 
 @Component({
   selector: 'kt-checkout-customer',
@@ -27,32 +27,6 @@ export class CheckoutCustomerComponent implements OnInit {
   checkoutData: any;
   existingCustomerData: any;
   finalOrderData: any;
-  rzp: any;
-  private _window: ICustomWindow;
-  razorpayOptions: any = {
-    key: '',
-    amount: '',
-    currency: 'INR',
-    name: 'Augmont',
-    description: '',
-    image: 'https://gold.nimapinfotech.com/assets/media/logos/logo.png',
-    order_id: '',
-    handler: this.razorPayResponsehandler.bind(this),
-    modal: {
-      ondismiss: (() => {
-        this.zone.run(() => {
-
-        });
-      })
-    },
-    prefill: {},
-    notes: {
-      address: ''
-    },
-    theme: {
-      color: '#454d67'
-    },
-  };
 
   constructor(
     private fb: FormBuilder,
@@ -62,10 +36,8 @@ export class CheckoutCustomerComponent implements OnInit {
     private checkoutCustomerService: CheckoutCustomerService,
     private shoppingCartService: ShoppingCartService,
     private zone: NgZone,
-    private winRef: WindowRefService
-  ) {
-    this._window = this.winRef.nativeWindow;
-  }
+    private razorpayPaymentService: RazorpayPaymentService
+  ) { }
 
   ngOnInit() {
     this.formInitialize();
@@ -88,8 +60,8 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: ['', Validators.required],
       stateName: ['', Validators.required],
       cityName: ['', Validators.required],
-      panCardNumber: [''],
-      nameOnPanCard: [''],
+      panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern("[A-Z]{5}[0-9]{4}[A-Z]{1}")])],
+      nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       panCardFileId: [''],
       kycRequired: [false],
     });
@@ -190,46 +162,44 @@ export class CheckoutCustomerComponent implements OnInit {
       invoiceAmount: this.checkoutData.invoiceAmount
     }
     this.checkoutCustomerService.findExistingCustomer(existingCustomerData).subscribe(res => {
-      if (res) {
-        this.existingCustomerData = res;
-        setTimeout(() => {
-          this.checkoutCustomerForm.patchValue({
-            firstName: res.customerDetails.firstName,
-            lastName: res.customerDetails.lastName,
-            mobileNumber: res.customerDetails.mobileNumber,
-            email: res.customerDetails.email,
-            address: res.customerDetails.customeraddress[0].address,
-            landMark: res.customerDetails.customeraddress[0].landMark,
-            postalCode: res.customerDetails.pinCode,
-            stateName: res.customerDetails.customeraddress[0].stateId,
-            cityName: res.customerDetails.customeraddress[0].cityId,
-            kycRequired: res.kycRequired,
-          });
-          this.getCities();
-          if (res.customerDetails.kycDetails) {
-            this.checkoutCustomerForm.patchValue({
-              panCardNumber: res.customerDetails.kycDetails.panCardNumber,
-              nameOnPanCard: res.customerDetails.kycDetails.nameOnPanCard,
-              panCardFileId: res.customerDetails.kycDetails.panCardFileId
-            });
-          } else {
-            this.controls['panCardNumber'].enable();
-            this.controls['nameOnPanCard'].enable();
-            this.controls['panCardFileId'].enable();
-          }
-          if (this.showPrefilledDataFlag) {
-            const msg = 'Customer is already exist. The Details will be automatically pre-filled';
-            this.toastr.successToastr(msg);
-            this.showPrefilledDataFlag = false;
-          }
+      this.existingCustomerData = res;
+      setTimeout(() => {
+        this.checkoutCustomerForm.patchValue({
+          firstName: res.customerDetails.firstName,
+          lastName: res.customerDetails.lastName,
+          mobileNumber: res.customerDetails.mobileNumber,
+          email: res.customerDetails.email,
+          address: res.customerDetails.customeraddress[0].address,
+          landMark: res.customerDetails.customeraddress[0].landMark,
+          postalCode: res.customerDetails.pinCode,
+          stateName: res.customerDetails.customeraddress[0].stateId,
+          cityName: res.customerDetails.customeraddress[0].cityId,
+          kycRequired: res.kycRequired,
         });
-        this.showformFlag = true;
-        this.showPlaceOrderFlag = true;
-        this.showCustomerFlag = true;
-        this.finalOrderData = null;
-        this.checkoutCustomerForm.disable();
-        this.ref.detectChanges();
-      }
+        this.getCities();
+        if (res.customerDetails.kycDetails) {
+          this.checkoutCustomerForm.patchValue({
+            panCardNumber: res.customerDetails.kycDetails.panCardNumber,
+            nameOnPanCard: res.customerDetails.kycDetails.nameOnPanCard,
+            panCardFileId: res.customerDetails.kycDetails.panCardFileId
+          });
+        } else {
+          this.controls['panCardNumber'].enable();
+          this.controls['nameOnPanCard'].enable();
+          this.controls['panCardFileId'].enable();
+        }
+        if (this.showPrefilledDataFlag) {
+          const msg = 'Customer already exist. The Details will be automatically pre-filled';
+          this.toastr.successToastr(msg);
+          this.showPrefilledDataFlag = false;
+        }
+      });
+      this.showformFlag = true;
+      this.showPlaceOrderFlag = true;
+      this.showCustomerFlag = true;
+      this.finalOrderData = null;
+      this.checkoutCustomerForm.disable();
+      this.ref.detectChanges();
     },
       error => {
         console.log(error.error.message);
@@ -287,12 +257,10 @@ export class CheckoutCustomerComponent implements OnInit {
     }
     console.log(generateOTPData)
     this.checkoutCustomerService.generateOTPAdmin(generateOTPData).subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.finalOrderData = res;
-        const msg = 'OTP has been sent successfully.';
-        this.toastr.successToastr(msg);
-      }
+      console.log(res);
+      this.finalOrderData = res;
+      const msg = 'OTP has been sent successfully.';
+      this.toastr.successToastr(msg);
     },
       error => {
         console.log(error.error.message);
@@ -313,14 +281,12 @@ export class CheckoutCustomerComponent implements OnInit {
       totalInitialAmount: this.checkoutData.nowPayableAmount
     }
     this.checkoutCustomerService.verifyOTP(verifyOTPData).subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.razorpayOptions.key = res.razerPayConfig;
-        this.razorpayOptions.amount = res.totalInitialAmount;
-        this.razorpayOptions.order_id = res.razorPayOrder.id;
-
-        this.initPay(this.razorpayOptions)
-      }
+      console.log(res);
+      this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
+      this.razorpayPaymentService.razorpayOptions.amount = res.totalInitialAmount;
+      this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
+      this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
+      this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
     },
       error => {
         console.log(error.error.message);
@@ -339,12 +305,7 @@ export class CheckoutCustomerComponent implements OnInit {
     this.checkoutCustomerForm.controls['panCardFileId'].patchValue('');
   }
 
-  initPay(options) {
-    this.rzp = new this.winRef.nativeWindow['Razorpay'](options);
-    this.rzp.open();
-  }
-
-  razorPayResponsehandler(response: any) {
+  razorPayResponsehandler(response) {
     console.log(response)
     this.zone.run(() => {
       const placeOrderData = {
@@ -354,13 +315,11 @@ export class CheckoutCustomerComponent implements OnInit {
         totalInitialAmount: this.checkoutData.nowPayableAmount
       }
       this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
-        if (res) {
-          console.log(res);
-          const msg = 'Order has been placed successfully.';
-          this.toastr.successToastr(msg);
-          this.shoppingCartService.cartCount.next(0);
-          this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId])
-        }
+        console.log(res);
+        const msg = 'Order has been placed successfully.';
+        this.toastr.successToastr(msg);
+        this.shoppingCartService.cartCount.next(0);
+        this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
       },
         error => {
           console.log(error.error.message);

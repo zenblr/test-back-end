@@ -18,6 +18,10 @@
                                     *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
                                     Required field
                                 </mat-error>
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
+                                    Invalid PAN Card No
+                                </mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
@@ -31,6 +35,10 @@
                                     *ngIf="controls.nameOnPanCard.errors?.required && controls.nameOnPanCard.touched">
                                     Required field
                                 </mat-error>
+                                <mat-error
+                                    *ngIf="controls.nameOnPanCard.errors?.pattern && controls.nameOnPanCard.touched">
+                                    Invalid
+                                </mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
@@ -39,8 +47,8 @@
                             </div>
                             <div class="col-7">
                                 <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'pancard'"
-                                    [fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
-                                    (remove)="removeImage($event)">
+                                    [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
+                                    [reason]="'broker'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
                                 </kt-uplod-preview-image>
                                 <input type="text" formControlName="pancard" class="form-control"
                                     [class.isError]="controls.pancard.touched && controls.pancard.invalid" hidden>

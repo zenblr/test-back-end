@@ -32,6 +32,7 @@ import { UnSecuredSchemeComponent } from './loan-application-form/un-secured-sch
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { PacketTrackingComponent } from './packets/packet-tracking/packet-tracking.component';
 import { UpdateLocationComponent } from './packets/update-location/update-location.component';
+import { TopUpComponent } from './top-up/top-up.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -68,6 +69,10 @@ const rout: Routes = [
   {
     path: 'view-loan/:id',
     component: LoanApplicationFormComponent
+  },
+  {
+    path: 'topup',
+    component: TopUpComponent
   }
 ]
 
@@ -80,7 +85,6 @@ const rout: Routes = [
     BasicDetailsComponent,
     KycDetailsComponent,
     NomineeDetailsComponent,
-    OrnamentsComponent,
     FinalInterestAmountComponent,
     BankDetailsComponent,
     ApprovalComponent,
@@ -94,6 +98,7 @@ const rout: Routes = [
     UnSecuredSchemeComponent,
     PacketTrackingComponent,
     UpdateLocationComponent,
+    TopUpComponent,
   ],
   imports: [
     CommonModule,
@@ -124,7 +129,8 @@ const rout: Routes = [
     DeleteEntityDialogComponent,
     UnSecuredSchemeComponent,
     WebcamDialogComponent,
-    UpdateLocationComponent
+    UpdateLocationComponent,
+    OrnamentsComponent
   ]
 })
 export class LoanManagementModule { }

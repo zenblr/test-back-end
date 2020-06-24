@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { LeadManagementDatasource } from '../../../../core/lead-management/datasources/lead.datasources';
 import { LeadService } from '../../../../core/lead-management/services/lead.service';
 import { SharedService } from '../../../../core/shared/services/shared.service';
+import { AddAppraiserComponent } from '../user-management/assign-appraiser/add-appraiser/add-appraiser.component';
 
 @Component({
   selector: 'kt-lead-management',
@@ -18,7 +19,7 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view'];
+  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'appraiser'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -177,5 +178,16 @@ export class LeadManagementComponent implements OnInit {
         this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile } });
       }))
       .subscribe();
+  }
+
+  assign(item) {
+    // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
+    item.customer = {firstName:item.firstName,lastName:item.lastName}
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id }, width: '500px' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadLeadsPage();
+      }
+    });
   }
 }

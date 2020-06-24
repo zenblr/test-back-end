@@ -32,6 +32,7 @@ export class ProductService {
 		if (event && event.priceTo) {
 			reqParams.priceTo = event.priceTo;
 		}
+		reqParams.order = event.order;
 		return this.http.get<any[]>(API_ENDPOINT + `api/products`, { params: reqParams });
 	}
 

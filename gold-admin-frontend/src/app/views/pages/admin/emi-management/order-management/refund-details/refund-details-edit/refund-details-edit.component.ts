@@ -36,8 +36,8 @@ export class RefundDetailsEditComponent implements OnInit {
 	viewLoading = false;
 	title: string;
 	isMandatory = false;
-	showUploadFile = false;
-	showUploadedFile = false;
+	showPassUploadFile = true;
+	showCheckUploadFile = true;
 	hiddenFlag = true;
 	constructor(
 		public dialogRef: MatDialogRef<RefundDetailsEditComponent>,
@@ -126,12 +126,16 @@ export class RefundDetailsEditComponent implements OnInit {
 		};
 		this.refundForm.patchValue(data);
 
-		if (this.refundData.passbookCopy && this.refundData.checkCopy) {
-			this.showUploadedFile = true;
-			this.showUploadFile = false;
+		if (this.refundData.passbookCopy) {
+			this.showPassUploadFile = false;
 		} else {
-			this.showUploadedFile = false;
-			this.showUploadFile = true;
+			this.showPassUploadFile = true;
+		}
+
+		if (this.refundData.checkCopy) {
+			this.showCheckUploadFile = false;
+		} else {
+			this.showCheckUploadFile = true;
 		}
 
 		if (this.refundData.refundStatus.id == 14) {

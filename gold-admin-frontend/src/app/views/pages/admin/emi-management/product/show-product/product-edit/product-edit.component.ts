@@ -154,7 +154,7 @@ export class ProductEditComponent implements OnInit {
       for (let i = 0; i < this.productData.productImages.length; i++) {
         const product = this.productData.productImages[i];
         if (i == data.index) {
-          product.url = data.uploadData.URL;
+          product.url = data.uploadData.url;
           this.productForm.controls['productImages'].patchValue(this.productData.productImages);
         }
       }

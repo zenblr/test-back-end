@@ -57,10 +57,10 @@
                     <mat-cell *matCellDef="let lead">
                         <span class="text-success" *ngIf="lead.status.id == '1'">
                             {{lead.status.statusName | titlecase}} </span>
-                        <span class="text-warning" *ngIf="lead.status.id == '2'">
+                        <span class="text-danger" *ngIf="lead.status.id == '2'">
                             {{lead.status.statusName | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="lead.status.id == '5'">
+                        <span class="text-warning" *ngIf="lead.status.id == '5'">
                             {{lead.status.statusName | titlecase}}
                         </span>
                     </mat-cell>
@@ -116,6 +116,18 @@
                     <mat-cell *matCellDef="let lead">
                         <div *ngxPermissionsOnly="['leadManagmentView']" class="kt-pointer" (click)="viewLead(lead)">
                             View</div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="appraiser">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let lead">
+                        <ng-container *ngIf="lead.status.id == '1'">
+                            <div [ngStyle]="{'display': 'inherit'}">
+                                <button (click)="assign(lead)" class="apply-kyc"
+                                    *ngxPermissionsOnly="['customerKycAdd']">Assign Appraiser</button>
+                            </div>
+                        </ng-container>
+
                     </mat-cell>
                 </ng-container>
 

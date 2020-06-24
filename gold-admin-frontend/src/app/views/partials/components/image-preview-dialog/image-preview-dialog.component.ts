@@ -13,6 +13,7 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
     top: 0;
     right: 0;
     height: 30px;
+    z-index:1;
   cursor:pointer}
   `]
 })
@@ -46,6 +47,7 @@ export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {
       }
       Array.prototype.push.apply(this.images, temp);
     }
+
   }
 
   ngAfterViewInit() {
