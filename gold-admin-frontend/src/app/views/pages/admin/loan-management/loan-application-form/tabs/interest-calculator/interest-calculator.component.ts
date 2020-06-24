@@ -96,7 +96,7 @@ export class InterestCalculatorComponent implements OnInit {
           }
           this.selectedScheme.push(finalLoan.scheme)
           this.selectedUnsecuredscheme.push(finalLoan.unsecuredScheme)
-          this.controls.unsceuredInterestRate.patchValue(finalLoan.unsecuredScheme)
+          // this.controls.unsceuredInterestRate.patchValue(finalLoan.unsecuredScheme)
           this.controls.totalFinalInterestAmt.patchValue(changes.details.currentValue.totalFinalInterestAmt)
 
           this.unSecuredSchemeCheck(amt)

@@ -11,7 +11,9 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <div (click)="editLocation(item)">Edit</div>
+                        <span class="kt-pointer" (click)="editLocation(item)">Edit</span>
+                        <div class="px-2">|</div>
+                        <span class="kt-pointer text-danger" (click)="deleteLocation(item)">Delete</span>
                     </mat-cell>
                 </ng-container>
 

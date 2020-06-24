@@ -26,7 +26,7 @@ export class DisburseDialogComponent implements OnInit {
     public globalSettingService: GlobalSettingService
   ) {
     this.globalSettingService.globalSetting$.subscribe(res => {
-      console.log(res)
+      // console.log(res)
       this.globalValue = res;
     })
   }
@@ -59,6 +59,11 @@ export class DisburseDialogComponent implements OnInit {
         this.details = res.data
         this.patchValue(res.data.paymentType)
         this.disburseForm.patchValue(res.data)
+        if(this.globalValue.cashTransactionLimit < this.disburseForm.controls.finalLoanAmount.value){
+          this.disburseForm.controls.paymentMode.patchValue('bank')
+          this.disburseForm.controls.paymentMode.disable()
+          return
+        }
         this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
 
       }
@@ -125,12 +130,12 @@ export class DisburseDialogComponent implements OnInit {
   generateOTP() {
     this.loanService.generateOTP('id').pipe(
       map(res => {
-        console.log(res);
+        // console.log(res);
       })).subscribe()
   }
 
   setConditionalValidation(event) {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     let selectedType = event.target.value;
     this.patchValue(selectedType)
     // if (selectedType == 'bank') {

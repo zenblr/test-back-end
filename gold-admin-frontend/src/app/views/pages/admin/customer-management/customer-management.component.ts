@@ -53,7 +53,7 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
       distinctUntilChanged()
     ).subscribe(res => {
       this.customerResult = res;
-      console.log(this.dataSource.hasItems)
+      // console.log(this.dataSource.hasItems)
     });
     this.subscriptions.push(entitiesSubscription);
 
@@ -66,7 +66,7 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
 
     this.dataSource.isPreloadTextViewed$.subscribe(res => {
       this.isPreloadTextViewed = res
-      console.log(res)
+      // console.log(res)
     })
     // // First load
     // this.loadLeadsPage();
@@ -81,7 +81,7 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
   }
 
   loadCustomers(event) {
-    console.log(event)
+    // console.log(event)
     this.dataSource.getCustomers(event.from, event.to, event.search);
     this.page.from = event.from;
     this.page.to = event.to;

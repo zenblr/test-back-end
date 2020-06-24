@@ -274,15 +274,15 @@ export class TopbarComponent implements OnInit {
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "ornaments") {
-			this.value1 = "Add Ornaments";
-			this.showInput = true;
-			this.dataSourceHeader();
+			this.value2 = "Add Ornaments";
+			this.type2 = "button";
+			this.rightButton = true;
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "reasons") {
-			this.value1 = "Add Reason";
-			this.showInput = true;
-			this.dataSourceHeader();
+			this.value2 = "Add Reason";
+			this.type2 = "button";
+			this.rightButton = true;
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "lead-management") {
@@ -375,8 +375,9 @@ export class TopbarComponent implements OnInit {
 		}
 
 		if (this.path == "purposes") {
-			this.dataSourceHeader();
-			this.value1 = "Add Purpose";
+			this.value2 = "Add Purpose";
+			this.type2 = "button";
+			this.rightButton = true;
 		}
 		if (this.path == "lead-source") {
 			this.value1 = "Add Lead Source";
