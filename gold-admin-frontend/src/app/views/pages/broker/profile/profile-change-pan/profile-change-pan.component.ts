@@ -28,8 +28,8 @@ export class ProfileChangePanComponent implements OnInit {
 
   formInitialize() {
     this.panForm = this.fb.group({
-      panCardNumber: ['', Validators.required],
-      nameOnPanCard: ['', Validators.required],
+      panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern("[A-Z]{5}[0-9]{4}[A-Z]{1}")])],
+      nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       pancard: ['', Validators.required],
     });
   }
@@ -48,7 +48,7 @@ export class ProfileChangePanComponent implements OnInit {
 
   uploadImage(data) {
     this.panForm.controls["pancard"].patchValue(
-      data.uploadData.URL
+      data.uploadData.id
     );
   }
 
@@ -71,6 +71,9 @@ export class ProfileChangePanComponent implements OnInit {
         );
         this.dialogRef.close('reload');
       }
-    });
+    },
+      err => {
+        this.toastr.errorToastr(err.error.message);
+      });
   }
 }

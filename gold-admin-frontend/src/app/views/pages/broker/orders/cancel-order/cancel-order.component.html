@@ -133,7 +133,7 @@
                         </div>
                         <div class="col-4">
                             <input class="form-control" formControlName="customerAccountNo" type="text" numbersOnly
-                                maxlength="18" minlength="8"
+                                maxlength="20" minlength="3"
                                 [class.isError]="controls.customerAccountNo.touched && controls.customerAccountNo.invalid">
                             <mat-error
                                 *ngIf="controls.customerAccountNo.errors?.required && controls.customerAccountNo.touched">
@@ -141,11 +141,15 @@
                             </mat-error>
                             <mat-error
                                 *ngIf="controls.customerAccountNo.errors?.minlength && controls.customerAccountNo.touched">
-                                Minimum 8 digits Only
+                                Minimum 3 digits Only
                             </mat-error>
                             <mat-error
                                 *ngIf="controls.customerAccountNo.errors?.maxlength && controls.customerAccountNo.touched">
-                                Maximum 18 digits Only
+                                Maximum 20 digits Only
+                            </mat-error>
+                            <mat-error
+                                *ngIf="controls.customerAccountNo.errors?.pattern && controls.customerAccountNo.touched">
+                                Invalid A/c Number
                             </mat-error>
                         </div>
                     </div>
@@ -170,8 +174,8 @@
                         </div>
                         <div class="col-4">
                             <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'passbookCopy'"
-                                [fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
-                                (remove)="removeImage($event)">
+                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
+                                (upload)="uploadImage($event)" (remove)="removeImage($event)">
                             </kt-uplod-preview-image>
                             <input type="text" formControlName="passbookId" class="form-control"
                                 [class.isError]="controls.passbookId.touched && controls.passbookId.invalid" hidden>
@@ -186,8 +190,8 @@
                         </div>
                         <div class="col-4">
                             <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'checkCopy'"
-                                [fileAcceptType]="'image/*, .pdf'" [action]="'remove'" (upload)="uploadImage($event)"
-                                (remove)="removeImage($event)">
+                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg, .pdf'" [action]="'remove'"
+                                (upload)="uploadImage($event)" (remove)="removeImage($event)">
                             </kt-uplod-preview-image>
                             <input type="text" formControlName="checkCopyId" class="form-control"
                                 [class.isError]="controls.checkCopyId.touched && controls.checkCopyId.invalid" hidden>

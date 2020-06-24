@@ -56,8 +56,8 @@ export class SignUpBrokerComponent implements OnInit, OnDestroy {
 			stateId: ['', Validators.required],
 			cityId: ['', Validators.required],
 			storeId: [''],
-			panCardNumber: [''],
-			nameOnPanCard: [''],
+			panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern("[A-Z]{5}[0-9]{4}[A-Z]{1}")])],
+			nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
 			panCard: [''],
 		});
 	}

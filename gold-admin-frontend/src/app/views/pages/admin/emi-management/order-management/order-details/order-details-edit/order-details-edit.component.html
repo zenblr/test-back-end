@@ -87,8 +87,8 @@
                         </div>
                         <div class="col-8">
                             <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'uploadedAwbFile'"
-                                [fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
-                                (remove)="removeImage($event)">
+                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
+                                (upload)="uploadImage($event)" (remove)="removeImage($event)">
                             </kt-uplod-preview-image>
                             <input type="text" formControlName="uploadedAwbFile" class="form-control"
                                 [class.isError]="controls.uploadedAwbFile.touched && controls.uploadedAwbFile.invalid"
@@ -107,8 +107,8 @@
                         </div>
                         <div class="col-8">
                             <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'uploadedAwbBox'"
-                                [fileAcceptType]="'image/*, .pdf'" [action]="'remove'" (upload)="uploadImage($event)"
-                                (remove)="removeImage($event)">
+                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg, .pdf'" [action]="'remove'"
+                                (upload)="uploadImage($event)" (remove)="removeImage($event)">
                             </kt-uplod-preview-image>
                             <input type="text" formControlName="uploadedAwbBox" class="form-control"
                                 [class.isError]="controls.uploadedAwbBox.touched && controls.uploadedAwbBox.invalid"
