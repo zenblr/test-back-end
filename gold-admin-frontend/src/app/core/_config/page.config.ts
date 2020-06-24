@@ -29,7 +29,7 @@ export class PageConfig {
 					page: { title: "Purposes", desc: "" },
 				},
 				'packet-location': {
-					page: { title: "Packet Tracking", desc: "" },
+					page: { title: "Packet Location", desc: "" },
 				},
 				'lead-source': {
 					page: { title: "Lead Source", desc: "" },

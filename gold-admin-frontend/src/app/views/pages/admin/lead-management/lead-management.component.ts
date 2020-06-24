@@ -19,7 +19,7 @@ import { AddAppraiserComponent } from '../user-management/assign-appraiser/add-a
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view','appraiser'];
+  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'appraiser'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -182,7 +182,8 @@ export class LeadManagementComponent implements OnInit {
 
   assign(item) {
     // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
+    item.customer = {firstName:item.firstName,lastName:item.lastName}
+    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();

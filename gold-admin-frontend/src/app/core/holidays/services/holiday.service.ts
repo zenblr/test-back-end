@@ -39,6 +39,18 @@ export class HolidayService {
     );
   }
 
+  editHoliday(data): Observable<any> {
+    return this.http.put<any>(`/api/holiday-master/${data.id}`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) {
+          this.toastr.error(err.error.message);
+        }
+        throw (err);
+      })
+    );
+  }
+
   updateHoliday(id, name): Observable<any> {
     return this.http.put<any>(`/api/holiday-master${id}`, { name }).pipe(
       map(res => res),
