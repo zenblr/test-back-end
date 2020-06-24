@@ -61,7 +61,9 @@ export class AppComponent implements OnInit, OnDestroy {
 			}
 			localStorage.setItem('UserDetails', JSON.stringify(userData));
 			this.cookieService.deleteAll();
-			this.router.navigate(['/broker/dashboard']);
+			setTimeout(() => {
+				this.router.navigate(['/broker/dashboard']);
+			});
 		}
 		// if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
 		// 	location.href = location.href.replace("http://", "https://");
