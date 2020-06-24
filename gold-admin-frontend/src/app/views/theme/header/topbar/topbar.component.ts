@@ -210,7 +210,12 @@ export class TopbarComponent implements OnInit {
 				.subscribe((ct) => {
 					if (ct != null) {
 						Promise.resolve(null).then(() => {
-							this.totalRecords = ct;
+							if (this.router.url.includes('/broker/customers') ||
+								this.router.url.includes('/broker/orders') ||
+								this.router.url.includes('/broker/shop') ||
+								this.router.url.includes('/broker/cart')) {
+								this.totalRecords = ct;
+							}
 						});
 					}
 				})
