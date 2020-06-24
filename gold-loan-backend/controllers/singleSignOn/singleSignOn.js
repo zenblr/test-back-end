@@ -94,11 +94,10 @@ exports.singleSignOnBroker = async (req, res, next) => {
                                 // return res.end();
                                 
                                 // res.setHeader('Access-Control-Allow-Origin', 'https://gold.nimapinfotech.com');
-                                res.cookie(`Token`,`jwt ${Token}`);
-                                res.cookie(`modules`,`${modules}`);
-                                res.cookie(`permissions`,`${permissions}`);
-                                res.cookie(`userDetails`,`${userDetails}`);
-                                // res.append('Set-Cookie', 'Token=' + Token + ';');
+                                res.cookie(`Token`,`${JSON.stringify(Token)}`);
+                                res.cookie(`modules`,`${JSON.stringify(modules)}`);
+                                res.cookie(`permissions`,`${JSON.stringify(permissions)}`);
+                                res.cookie(`userDetails`,`${JSON.stringify(userDetails)}`);
                                 res.redirect('https://gold.nimapinfotech.com');
                     }else{
                         return res.status(401).send({ message: 'Broker account is not approved' });
