@@ -152,4 +152,7 @@ router.use('/packetLocation', packetLocation)
 const globalSetting = require('./globalSettings');
 router.use('/global-setting', globalSetting)
 
+const singleSignOn = require('./singleSignOn');
+router.use('/single-sign-on',singleSignOn);
+
 module.exports = router;
