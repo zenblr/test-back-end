@@ -1,45 +1,67 @@
 <kt-portlet>
 	<kt-portlet-body [class]="'kt-portlet__body--fit'" *ngIf="dashboardDetails$ | async as details">
 		<div class="row">
-			<div class="col-4 pr-5">
-				<h4>Today's Booked Orders</h4>
-				<hr>
+			<div class="col-12">
 				<div class="row">
-					<div class="col">
-						<div class="font-weight-500 text-muted">No. of Orders</div>
-						<h3>{{details?.todaysBooked?.numberOfTodaysbookedOrder}}</h3>
+					<div class="col align-self-center pr-5">
+						<h4>Today's Booked Orders</h4>
 					</div>
-					<div class="col">
-						<div class="font-weight-500 text-muted">Weight (grams)</div>
-						<h3>{{details?.todaysBooked?.totalWeightOftodaysOrder}}</h3>
+					<div class="col align-self-center pr-3 pl-3">
+						<h4>Last Month Orders</h4>
+						<h5>({{details?.lastMonthsBooked?.fromDate | date:'mediumDate'}} to
+							{{details?.lastMonthsBooked?.toDate | date:'mediumDate'}})</h5>
+					</div>
+					<div class="col align-self-center pl-5">
+						<h4>Till Date Orders</h4>
 					</div>
 				</div>
-			</div>
-			<div class="col-4 pr-3 pl-3">
-				<h4>Last Month Orders</h4>
-				<hr>
 				<div class="row">
-					<div class="col">
-						<div class="font-weight-500 text-muted">No. of Orders</div>
-						<h3>{{details?.lastMonthsBooked?.numberOflastMonthBookedOrder}}</h3>
+					<div class="col pr-5">
+						<hr>
 					</div>
-					<div class="col">
-						<div class="font-weight-500 text-muted">Weight (grams)</div>
-						<h3>{{details?.lastMonthsBooked?.totalWeightOflastMonthOrder}}</h3>
+					<div class="col pr-3 pl-3">
+						<hr>
+					</div>
+					<div class="col pl-5">
+						<hr>
 					</div>
 				</div>
-			</div>
-			<div class="col-4 pl-5">
-				<h4>Till Date Orders</h4>
-				<hr>
 				<div class="row">
-					<div class="col">
-						<div class="font-weight-500 text-muted">No. of Orders</div>
-						<h3>{{details?.tilldatebooked?.numberOftillDateBookedOrder}}</h3>
+					<div class="col pr-5">
+						<div class="row">
+							<div class="col">
+								<div class="font-weight-500 text-muted">No. of Orders</div>
+								<h3>{{details?.todaysBooked?.numberOfTodaysbookedOrder}}</h3>
+							</div>
+							<div class="col">
+								<div class="font-weight-500 text-muted">Weight (grams)</div>
+								<h3>{{details?.todaysBooked?.totalWeightOftodaysOrder}}</h3>
+							</div>
+						</div>
 					</div>
-					<div class="col">
-						<div class="font-weight-500 text-muted">Weight (grams)</div>
-						<h3>{{details?.tilldatebooked?.totalWeightOfTillDateOrder}}</h3>
+					<div class="col pr-3 pl-3">
+						<div class="row">
+							<div class="col">
+								<div class="font-weight-500 text-muted">No. of Orders</div>
+								<h3>{{details?.lastMonthsBooked?.numberOflastMonthBookedOrder}}</h3>
+							</div>
+							<div class="col">
+								<div class="font-weight-500 text-muted">Weight (grams)</div>
+								<h3>{{details?.lastMonthsBooked?.totalWeightOflastMonthOrder}}</h3>
+							</div>
+						</div>
+					</div>
+					<div class="col pl-5">
+						<div class="row">
+							<div class="col">
+								<div class="font-weight-500 text-muted">No. of Orders</div>
+								<h3>{{details?.tilldatebooked?.numberOftillDateBookedOrder}}</h3>
+							</div>
+							<div class="col">
+								<div class="font-weight-500 text-muted">Weight (grams)</div>
+								<h3>{{details?.tilldatebooked?.totalWeightOfTillDateOrder}}</h3>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
