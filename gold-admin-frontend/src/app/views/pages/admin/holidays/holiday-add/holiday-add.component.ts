@@ -55,7 +55,7 @@ export class HolidayAddComponent implements OnInit {
       holidayDate: [, Validators.required],
       description: [, Validators.required],
       year: [],
-      id:[]
+      id: []
     })
 
     this.csvForm = this.fb.group({
@@ -91,8 +91,11 @@ export class HolidayAddComponent implements OnInit {
         return
       }
 
-      console.log(this.fillingForm.value)
-      console.log((this.fillingForm.value.holidayDate).toISOString())
+      this.fillingForm.value.holidayDate =
+        new Date(
+          this.fillingForm.value.holidayDate.getTime()
+          - this.fillingForm.value.holidayDate.getTimezoneOffset() * 60000
+        ).toISOString();
 
       if (this.data.action == 'add') {
         this.holidayService.addHoliday(this.fillingForm.value).pipe(
@@ -103,7 +106,7 @@ export class HolidayAddComponent implements OnInit {
             this.ref.detectChanges();
             throw (err)
           })).subscribe()
-      } 
+      }
       else {
 
         this.holidayService.editHoliday(this.fillingForm.value).pipe(
