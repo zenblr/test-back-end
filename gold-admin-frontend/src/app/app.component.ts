@@ -14,8 +14,9 @@ import { locale as frLang } from './core/_config/i18n/fr';
 import { SharedService } from './core/shared/services/shared.service';
 
 import { Spinkit } from 'ng-http-loader';
-import { GlobalSettingService } from './core/global-setting/services/global-setting.service';
-import { map } from 'rxjs/operators';
+import { AuthService } from './core/auth';
+import { ToastrService } from 'ngx-toastr';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -45,9 +46,23 @@ export class AppComponent implements OnInit, OnDestroy {
 		private layoutConfigService: LayoutConfigService,
 		private splashScreenService: SplashScreenService,
 		private sharedService: SharedService,
+		private authService: AuthService,
 		private ref: ChangeDetectorRef,
-		private globalSettingService: GlobalSettingService
+		private toast: ToastrService,
+		private cookieService: CookieService,
 	) {
+		if (this.cookieService.get('Token') && (this.cookieService.get('modules') ||
+			this.cookieService.get('permissions') || this.cookieService.get('userDetails'))) {
+			const userData = {
+				Token: JSON.parse(this.cookieService.get('Token')),
+				modules: JSON.parse(this.cookieService.get('modules')),
+				permissions: JSON.parse(this.cookieService.get('permissions')),
+				userDetails: JSON.parse(this.cookieService.get('userDetails')),
+			}
+			localStorage.setItem('UserDetails', JSON.stringify(userData));
+			this.cookieService.deleteAll();
+			this.router.navigate(['/broker/dashboard']);
+		}
 		// if(window.location.protocol != 'https:' && !window.location.href.includes('localhost')) {
 		// 	location.href = location.href.replace("http://", "https://");
 		//   }
@@ -62,10 +77,6 @@ export class AppComponent implements OnInit, OnDestroy {
 		// 	}
 		// })
 	}
-
-	/**
-	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
-	 */
 
 	/**
 	 * On init
