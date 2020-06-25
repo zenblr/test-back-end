@@ -198,7 +198,7 @@
                                 <mat-label>PAN</mat-label>
                             </div>
 
-                            <div class="col-5">
+                            <div [ngClass]="data.action != 'view'?'col-5':'col-8'">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                 <input class="form-control" formControlName="panCardNumber" autocomplete="off"
                                     placeholder="PAN" maxlength="10"
@@ -218,7 +218,7 @@
                                 </mat-error>
                                 <!-- </mat-form-field> -->
                             </div>
-                            <div class="col">
+                            <div class="col" *ngIf="data.action != 'view'">
                                 <div *ngIf="!isPanVerified">
                                     <kt-button [myClass]="'w-100'" [isDisabled]="panButton || viewOnly"
                                         [type]="'button'" [value]="'Verify'" (action)="verifyPAN()">
