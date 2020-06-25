@@ -154,12 +154,13 @@ export class ProductEditComponent implements OnInit {
       for (let i = 0; i < this.productData.productImages.length; i++) {
         const product = this.productData.productImages[i];
         if (i == data.index) {
-          product.url = data.uploadData.url;
+          product.URL = data.uploadData.URL;
           this.productForm.controls['productImages'].patchValue(this.productData.productImages);
         }
       }
     } else {
-      this.productForm.controls['productImage'].patchValue(data.URL);
+      var urlString = data.URL.replace("/public/", "/");
+      this.productForm.controls['productImage'].patchValue(urlString);
     }
   }
 
