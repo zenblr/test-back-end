@@ -34,4 +34,10 @@
         flex: 0 0 10% !important;
     }
     
+    .dropdown-menu > li > a, .dropdown-menu > .dropdown-item {
+        padding: 0 10px !important;
+    }
+    .nav-link {
+        padding: 0 !important;
+    }
 }

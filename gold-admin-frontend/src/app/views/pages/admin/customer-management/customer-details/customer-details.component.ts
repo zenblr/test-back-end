@@ -41,7 +41,7 @@ export class CustomerDetailsComponent implements OnInit {
     Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycAddress[1].addressProof)
     Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycBank[0].passbookProof)
     Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycPersonal.identityProof)
-    console.log(this.images)
+    // console.log(this.images)
   }
 
   preview(value) {

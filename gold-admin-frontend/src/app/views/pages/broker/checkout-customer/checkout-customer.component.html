@@ -254,11 +254,10 @@
                     <div class="col-6 pl-4">
                         <div class="row">
                             <div class="col-4 align-self-center">
-                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">PAN Card
-                                    Name</label>
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">PAN Card Holder Name</label>
                             </div>
                             <div class="col-8">
-                                <input type="text" aria-label="PAN Card Name" placeholder="PAN Card Name"
+                                <input type="text" aria-label="PAN Card Holder Name" placeholder="PAN Card Holder Name"
                                     class="form-control" formControlName="nameOnPanCard"
                                     [class.isError]="controls.nameOnPanCard.touched && controls.nameOnPanCard.invalid">
                                 <mat-error
@@ -279,7 +278,8 @@
                             <div class="col-8">
                                 <ng-container *ngIf="!existingCustomerData?.customerDetails?.kycDetails">
                                     <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'panCardFileId'"
-                                        [fileAcceptType]="'image/*'" [action]="'remove'" (upload)="uploadImage($event)"
+                                        [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
+                                        [reason]="'broker'" (upload)="uploadImage($event)"
                                         (remove)="removeImage($event)">
                                     </kt-uplod-preview-image>
                                     <input type="text" formControlName="panCardFileId" class="form-control"
@@ -293,7 +293,7 @@
                                 </ng-container>
                                 <ng-container *ngIf="existingCustomerData?.customerDetails?.kycDetails">
                                     <a class="text-body"
-                                        [href]="existingCustomerData?.customerDetails?.kycDetails?.panCard?.url"
+                                        [href]="existingCustomerData?.customerDetails?.kycDetails?.panCard?.URL"
                                         download="{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}"
                                         target="_blank">
                                         <span>{{existingCustomerData?.customerDetails?.kycDetails?.panCard?.originalname}}</span>

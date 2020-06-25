@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
 import { KaratDetailsService } from '../../../../../../../core/loan-setting/karat-details/services/karat-details.service';
 import { map } from 'rxjs/operators';
+import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
 
 @Component({
   selector: 'kt-final-loan-amount',
@@ -20,8 +21,10 @@ export class FinalLoanAmountComponent implements OnInit {
   finalLoanForm: FormGroup;
   karatArr: any;
 
-  constructor(private fb: FormBuilder, private goldRateService: GoldRateService,
+  constructor(private fb: FormBuilder, 
+    private goldRateService: GoldRateService,
     public karatService: KaratDetailsService,
+    private globalSettingService:GlobalSettingService
   ) { }
 
   ngOnInit() {
@@ -33,11 +36,15 @@ export class FinalLoanAmountComponent implements OnInit {
     //     this.calcGoldDeductionWeight();
     //   }
     // });
-
-    this.goldRateService.goldRate$.subscribe(res => {
-      this.currentLtvAmount = res;
-      this.controls.currentLtvAmount.patchValue(this.currentLtvAmount * 0.75);
+    this.globalSettingService.globalSetting$.subscribe(global=>{
+      if(global){
+        this.goldRateService.goldRate$.subscribe(res => {
+          this.currentLtvAmount = res;
+          this.controls.currentLtvAmount.patchValue(this.currentLtvAmount * global.ltvGoldValue);
+        })
+      }
     })
+    
   }
 
   initForm() {

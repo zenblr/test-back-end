@@ -114,7 +114,7 @@ export class HolidayListComponent implements OnInit {
 
   deleteHoliday(item) {
     const _title = 'Delete Holiday';
-    const _description = 'Are you sure to permanently delete this holiday?';
+    const _description = 'Are you sure to permanently delete this Holiday?';
     const _waitDesciption = 'Holiday is deleting...';
     const _deleteMessage = `Holiday has been deleted`;
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);

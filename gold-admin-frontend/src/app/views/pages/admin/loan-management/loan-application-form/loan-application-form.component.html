@@ -15,7 +15,7 @@
                     </mat-tab> -->
                     <mat-tab label="Nominee Details" [disabled]="disabled[1]">
                         <kt-nominee-details  [action]="action" (next)="next($event)"
-                            [invalid]="invalid.nominee" [disable]="disabledForm" [details]="customerDetail" [loanId]="loanId">
+                            [disable]="disabledForm" [details]="customerDetail" [loanId]="loanId">
                         </kt-nominee-details>
                     </mat-tab>
                     <mat-tab label="Ornaments" [disabled]="disabled[2]">
@@ -23,7 +23,7 @@
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
                             style="padding:0px !important">
                             <kt-ornaments [action]="action" (next)="next($event)"
-                                [invalid]="invalid.ornaments" [disable]="disabledForm" [details]="customerDetail"
+                                 [disable]="disabledForm" [details]="customerDetail"
                                 (totalAmt)="total($event)" [loanId]="loanId" [ornamentType]="ornamentType">
                             </kt-ornaments>
                         </div>
@@ -31,7 +31,7 @@
                     </mat-tab>
                     <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">
                         <kt-interest-calculator  (next)="next($event)"
-                            [invalid]="invalid.intreset" [disable]="disabledForm" [action]="action" (finalLoanAmount)="finalLoanAmount($event)"
+                             [disable]="disabledForm" [action]="action" (finalLoanAmount)="finalLoanAmount($event)"
                             [totalAmt]="totalAmount" [details]="customerDetail" [loanId]="loanId"></kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">
@@ -40,8 +40,8 @@
                         </kt-bank-details>
                     </mat-tab>
                     <mat-tab label="Loan Status Approval" [disabled]="disabled[5]">
-                        <kt-approval (apply)="apply()" [action]="action"
-                            [invalid]="invalid.approval" [disable]="disabledForm" [details]="customerDetail" [loanId]="loanId">
+                        <kt-approval  [action]="action"
+                             [disable]="disabledForm" [details]="customerDetail" [loanId]="loanId">
                         </kt-approval>
                     </mat-tab>
                     <mat-tab label="Packets" 

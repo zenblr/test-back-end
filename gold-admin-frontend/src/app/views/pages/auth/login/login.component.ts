@@ -17,6 +17,8 @@ import { AuthNoticeService } from '../../../../core/auth';
 import { AuthService } from '../../../../core/auth/_services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { ToastrComponent } from '../../../../views/partials/components/toastr/toastr.component';
+import { MatDialog } from '@angular/material';
+import { SignUpBrokerComponent } from '../sign-up-broker/sign-up-broker.component'
 
 /**
  * ! Just example => Should be removed in development
@@ -60,6 +62,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 	 * @param route
 	 */
 	constructor(
+		public dialog: MatDialog,
 		private router: Router,
 		private auth: AuthService,
 		private authNoticeService: AuthNoticeService,
@@ -184,6 +187,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 			)
 			.subscribe();
 	}
+
 	signInWithOtp() {
 		if (this.loginForm.controls.mobileNo.invalid) {
 			this.loginForm.controls.mobileNo.markAsTouched();
@@ -212,6 +216,19 @@ export class LoginComponent implements OnInit, OnDestroy {
 		).subscribe();
 
 	}
+
+	brokerRegister() {
+		const dialogRef = this.dialog.open(SignUpBrokerComponent,
+			{
+				data: { action: '' },
+				width: '450px'
+			});
+		dialogRef.afterClosed().subscribe(res => {
+			if (res) {
+			}
+		})
+	}
+
 	/**
 	 * Checking control validation
 	 *
