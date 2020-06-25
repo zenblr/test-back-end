@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'loan_unique_id'
         },
-        masterLoan: {
-            type: DataTypes.STRING,
-            field: 'master_loan'
-        },
         applicationFormForAppraiser: {
             type: DataTypes.BOOLEAN,
             field: 'application_form_for_appraiser',
@@ -61,18 +57,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'bm_id'
         },
-        partnerId: {
-            type: DataTypes.INTEGER,
-            field: 'partner_id'
-        },
-        schemeId: {
-            type: DataTypes.INTEGER,
-            field: 'scheme_id'
-        },
-        unsecuredSchemeId: {
-            type: DataTypes.INTEGER,
-            field: 'unsecured_scheme_id'
-        },
         totalEligibleAmt: {
             type: DataTypes.STRING,
             field: 'total_eligible_amt'
@@ -80,54 +64,6 @@ module.exports = (sequelize, DataTypes) => {
         totalFinalInterestAmt: {
             type: DataTypes.STRING,
             field: 'total_final_interest_amt'
-        },
-        finalLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'final_loan_amount',
-        },
-        securedLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'secured_loan_amount',
-        },
-        unsecuredLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'unsecured_loan_amount',
-        },
-        tenure: {
-            type: DataTypes.INTEGER,
-            field: 'tenure',
-        },
-        loanStartDate: {
-            type: DataTypes.DATEONLY,
-            field: 'loan_start_date'
-        },
-        loanEndDate: {
-            type: DataTypes.DATEONLY,
-            field: 'loan_end_date'
-        },
-        paymentFrequency: {
-            type: DataTypes.STRING,
-            field: 'payment_frequency'
-        },
-        processingCharge: {
-            type: DataTypes.STRING,
-            field: 'processing_charge'
-        },
-        interestRate: {
-            type: DataTypes.STRING,
-            field: 'interest_rate'
-        },
-        unsecuredInterestRate: {
-            type: DataTypes.STRING,
-            field: 'unsecured_interest_rate'
-        },
-        loanType: {
-            type: DataTypes.STRING,
-            field: 'loan_type'
-        },
-        unsecuredLoanId:{
-            type: DataTypes.STRING,
-            field: 'unsecured_loan_id'
         },
         customerLoanCurrentStage: {
             type: DataTypes.ENUM,
@@ -175,10 +111,6 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.packet, { foreignKey: 'loanId', as: 'packet' });
 
         customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
-
-        CustomerFinalLoan.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
-        CustomerFinalLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
-        CustomerFinalLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
 
         customerLoan.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
         customerLoan.belongsTo(models.user, { foreignKey: 'bmId', as: 'bm' });

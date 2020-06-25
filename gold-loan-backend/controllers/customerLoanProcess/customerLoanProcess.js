@@ -46,7 +46,7 @@ exports.customerDetails = async (req, res, next) => {
         } else if (customerCurrentStage == '4') {
             return res.status(200).json({ message: 'success', loanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt })
         } else if (customerCurrentStage == '5') {
-            let { finalLoanAmount } = await models.customerLoan.findOne({ where: { id: customerLoanStage.id } })
+            let { finalLoanAmount } = await models.customerFinalLoan.findOne({ where: { loanId: customerLoanStage.id } })
             return res.status(200).json({ message: 'success', loanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount })
         } else if (customerCurrentStage == '6') {
             return res.status(200).json({ message: 'success', loanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage })
@@ -166,7 +166,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 //FUNCTION for final loan calculator
 exports.loanFinalLoan = async (req, res, next) => {
     let { loanFinalCalculator, loanId, intrestTable } = req.body
-    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, unsecuredInterestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, totalFinalInterestAmt } = loanFinalCalculator
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, totalFinalInterestAmt } = loanFinalCalculator
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -178,17 +178,17 @@ exports.loanFinalLoan = async (req, res, next) => {
         intrestTable[i]['loanId'] = loanId
         intrestData.push(intrestTable[i])
     }
-    let checkFinalLoan = await models.customerLoan.findOne({ where: { id: loanId } })
+    let checkFinalLoan = await models.customerFinalLoan.findOne({ where: { loanId: loanId } })
 
     if (check.isEmpty(checkFinalLoan)) {
         let loanData = await sequelize.transaction(async t => {
 
             await models.customerLoanIntrestCalculator.bulkCreate(intrestData, { transaction: t });
 
-            await models.customerLoan.update({ customerLoanCurrentStage: '5', partnerId, schemeId, unsecuredSchemeId, totalFinalInterestAmt, finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, interestRate, unsecuredInterestRate, loanType, unsecuredLoanId, createdBy, modifiedBy }, { where: { id: loanId }, transaction: t })
+            await models.customerLoan.update({ customerLoanCurrentStage: '5', modifiedBy, totalFinalInterestAmt: totalFinalInterestAmt }, { where: { id: loanId }, transaction: t })
 
-            // let loan = await models.customerFinalLoan.create({ loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, unsecuredInterestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, createdBy, modifiedBy }, { transaction: t });
-            // return loan
+            let loan = await models.customerFinalLoan.create({ loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, createdBy, modifiedBy }, { transaction: t });
+            return loan
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '5', finalLoanAmount })
     } else {
@@ -202,11 +202,11 @@ exports.loanFinalLoan = async (req, res, next) => {
             await models.customerLoanIntrestCalculator.bulkCreate(intrestData, { transaction: t });
 
             if (loanSubmitted.isLoanSubmitted = false) {
-                await models.customerLoan.update({ customerLoanCurrentStage: '5', partnerId, schemeId, unsecuredSchemeId, totalFinalInterestAmt, finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, interestRate, unsecuredInterestRate, loanType, unsecuredLoanId, createdBy, modifiedBy }, { where: { id: loanId }, transaction: t })
+                await models.customerLoan.update({ customerLoanCurrentStage: '5', modifiedBy, totalFinalInterestAmt: totalFinalInterestAmt }, { where: { id: loanId }, transaction: t })
             }
 
-            // let loan = await models.customerFinalLoan.update({ partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, unsecuredInterestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
-            // return loan
+            let loan = await models.customerFinalLoan.update({ partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
+            return loan
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '5', finalLoanAmount })
     }
@@ -557,29 +557,28 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
     }
 }
 
-//Function for loan bank details 
-exports.disbursementOfLoanBankDetails = async (req, res, next) => {
+exports.disbursementOfLoanBankDetails = async (req, res,next) => {
     let { loanId } = req.query;
-    let createdBy = req.userData.id;
+    let createdBy =  req.userData.id; 
     let userBankDetails = await models.customerLoanBankDetail.findOne({
-        where: { loanId: loanId },
-        attributes: ['paymentType', 'bankName', 'bankBranchName', 'accountType', 'accountHolderName',
-            'accountNumber', 'ifscCode']
+         where: { loanId: loanId },
+        attributes: ['paymentType','bankName', 'bankBranchName', 'accountType', 'accountHolderName',
+         'accountNumber','ifscCode'] 
     });
     let loanbrokerId = await models.userInternalBranch.findOne({ where: { userId: createdBy } });
     let brokerBankDetails = await models.internalBranch.findOne({
         where: { id: loanbrokerId.internalBranchId },
-        attributes: ['bankName', 'bankBranch', 'accountHolderName', 'accountNumber', 'ifscCode']
-    });
-
-    let checkFinalLoan = await models.customerLoan.findOne({ where: { id: loanId } })
+        attributes: ['bankName','bankBranch', 'accountHolderName', 'accountNumber','ifscCode']
+        });
+        
+    let checkFinalLoan = await models.customerFinalLoan.findOne({ where: { loanId: loanId } })
     let data = {
         userBankDetail: userBankDetails,
         branchBankDetail: brokerBankDetails,
         paymentType: userBankDetails.paymentType,
         finalLoanAmount: checkFinalLoan.finalLoanAmount
     }
-    return res.status(200).json({ message: 'success', data: data })
+    return res.status(200).json({ message: 'success', data: data})
 
 }
 
@@ -587,32 +586,10 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
 //  FUNCTION FOR DISBURSEMENT OF LOAN AMOUNT
 exports.disbursementOfLoanAmount = async (req, res, next) => {
 
-    let { loanId, transactionId, date, paymentMode, ifscCode, bankName, bankBranch,
-        accountHolderName, accountNumber, disbursementStatus } = req.body;
+    let { loanId, transactionId, date, paymentMode, ifscCode,bankName, bankBranch, 
+        accountHolderName,accountNumber,disbursementStatus } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    let dates = await models.customerLoanIntrestCalculator.findAll({
-        where: { loanId: loanId }
-    })
-    let final = await models.customerLoan.findOne({ where: { id: loanId } })
-
-    for (var i = 0; i < dates.length; i++) {
-        var loanStartDate = new Date()
-        let newEmiDue = new Date(loanStartDate.setDate(loanStartDate.getDate() + (Number(final.paymentFrequency) * (i + 1))))
-
-        if ((index + 1) % this.colJoin == 0) {
-            this.dateOfPayment.push(data)
-        }
-        else if (index + 1 == length) {
-            this.dateOfPayment.push(data)
-        }
-    }
-
-
-
-    let loan = await models.customerLoan.update({ loanStartDate }, { where: { id: loanId } });
-
-    // return res.json({ dates, final })
     let loanDetails = await models.customerLoan.getLoanDetailById(loanId);
     let matchStageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
 
@@ -620,12 +597,9 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
         let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
 
         await sequelize.transaction(async (t) => {
-
             await models.customerLoan.update({ loanStageId: stageId.id }, { where: { id: loanId }, transaction: t })
-            await models.customerLoanDisbursement.create({
-                loanId, transactionId, date, paymentMode, ifscCode, bankName, bankBranch,
-                accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy
-            }, { transaction: t })
+            await models.customerLoanDisbursement.create({ loanId, transactionId, date, paymentMode, ifscCode,bankName, bankBranch, 
+                accountHolderName,accountNumber,disbursementStatus, createdBy, modifiedBy }, { transaction: t })
         })
         return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });
     } else {
@@ -752,4 +726,197 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
     }
 }
 
+//  FUNCTION FOR LOAN APPLICATION FORM
+exports.applyForLoanApplication = async (req, res, next) => {
+
+    let { customerId, totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanBank, loanOrnmanets, loanFinalCalculator, loanPersonal, loanKyc, loanNominee } = req.body
+
+    let checkKycStatus = await models.customer.findOne({ where: { id: customerId, kycStatus: "approved" } })
+    if (check.isEmpty(checkKycStatus)) {
+        return res.status(400).json({ message: `customer Kyc status is not approved` })
+    }
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    //customerLoan
+    let { applicationFormForAppraiser,
+        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser } = loanApproval
+
+    // customerLoanBank
+    let { bankName, accountNumber, ifscCode, bankBranchName, accountType, accountHolderName, passbookProof } = loanBank
+
+    // customerLoanKycAddress
+    let { identityTypeId, identityProof, idCardNumber, permanentAddProofTypeId, permanentAddress, permanentAddStateId, permanentAddCityId, permanentAddPin, permanentAddProof, permanentAddCardNumber, residentialAddProofTypeId, residentialAddress, residentialAddStateId, residentialAddCityId, residentialAddPin, residentialAddProof, residentialAddCardNumber } = loanKyc
+
+    //customerLoanNominee
+    let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
+
+    //customerFinalLoan
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate } = loanFinalCalculator
+
+    //customerPersonal
+    let { customerUniqueId, mobileNumber, panCardNumber, startDate } = loanPersonal
+
+    //customerLoanOrnamanetsDetails
+    // console.log(loanOrnmanets)
+
+    let appliedForLoanApplication = await sequelize.transaction(async t => {
+        // customerLoan
+        let customerLoanCreated;
+        if (loanStatusForAppraiser == "approved") {
+            let stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+
+            customerLoanCreated = await models.customerLoan.create({
+                customerId, applicationFormForAppraiser,
+                goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, loanStageId: stageId.id
+            }, { transaction: t })
+        } else {
+            let stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
+
+            customerLoanCreated = await models.customerLoan.create({
+                customerId, applicationFormForAppraiser,
+                goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, loanStageId: stageId.id
+            }, { transaction: t })
+        }
+
+        let loanId = customerLoanCreated.id;
+
+        // customerLoanBank
+        await models.customerLoanBankDetail.create({
+            loanId, bankName, accountNumber, ifscCode, bankBranchName, accountType, accountHolderName, passbookProof, createdBy, modifiedBy
+        }, { transaction: t });
+
+        //customerLoanKycAddress
+        await models.customerLoanKycDetail.create({
+            loanId, identityTypeId, identityProof, idCardNumber, permanentAddProofTypeId, permanentAddress, permanentAddStateId, permanentAddCityId, permanentAddPin, permanentAddProof,
+            permanentAddCardNumber, residentialAddProofTypeId, residentialAddress, residentialAddStateId, residentialAddCityId, residentialAddPin, residentialAddProof,
+            residentialAddCardNumber, createdBy, modifiedBy
+        }, { transaction: t });
+
+        //customerLoanNominee
+        await models.customerLoanNomineeDetail.create({
+            loanId, nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, createdBy, modifiedBy
+        }, { transaction: t });
+
+        //customerPersonalData
+        await models.customerLoanPersonalDetail.create({
+            loanId, customerUniqueId, mobileNumber, panCardNumber, startDate, createdBy, modifiedBy
+        }, { transaction: t });
+
+        //customerFinalLoan
+        await models.customerFinalLoan.create({
+            loanId, partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, createdBy, modifiedBy
+        }, { transaction: t })
+
+        let allOrnmanets = []
+        for (let i = 0; i < loanOrnmanets.length; i++) {
+            loanOrnmanets[i]['createdBy'] = createdBy
+            loanOrnmanets[i]['modifiedBy'] = modifiedBy
+            loanOrnmanets[i]['loanId'] = loanId
+            allOrnmanets.push(loanOrnmanets[i])
+        }
+
+        //customerOrnamentDetails
+        await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
+
+    })
+
+
+    return res.status(201).json({ message: 'you have successfully applied for the loan' });
+}
+
+//  FUNCTION TO UPDATE CUSTOMER ORNAMENTS DETAILS
+exports.updateCustomerLoanDetail = async (req, res, next) => {
+    let { totalEligibleAmt, totalFinalInterestAmt, loanApproval, loanOrnmanets, loanFinalCalculator, loanNominee } = req.body;
+    let loanId = req.params.loanId;
+    let modifiedBy = req.userData.id;
+
+    //customerFinalLoan
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate } = loanFinalCalculator
+
+    //customerLoanNominee
+    let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = loanNominee
+
+    //customerLoan
+    let { applicationFormForAppraiser,
+        goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM } = loanApproval
+    let cutomerLoanApproval = {}
+
+    let user = await models.user.findOne({ where: { id: req.userData.id } });
+
+    if (user.userTypeId == 7) {
+        let stageId;
+        if (loanStatusForAppraiser == 'approved') {
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
+        } else {
+            stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' } })
+        }
+
+        cutomerLoanApproval['loanStageId'] = stageId.id
+        cutomerLoanApproval['applicationFormForAppraiser'] = applicationFormForAppraiser
+        cutomerLoanApproval['goldValuationForAppraiser'] = goldValuationForAppraiser
+        cutomerLoanApproval['loanStatusForAppraiser'] = loanStatusForAppraiser
+        cutomerLoanApproval['commentByAppraiser'] = commentByAppraiser
+        cutomerLoanApproval['totalEligibleAmt'] = totalEligibleAmt
+        cutomerLoanApproval['totalFinalInterestAmt'] = totalFinalInterestAmt
+        cutomerLoanApproval['modifiedBy'] = modifiedBy
+    }
+
+    if (user.userTypeId == 5) {
+        var loanUniqueId = null;
+        if (loanStatusForBM === 'approved') {
+            if (applicationFormForBM == true && goldValuationForBM == true) {
+                loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+            } else {
+                return res.status(400).json({ message: `One of field is not verified` })
+            }
+        }
+
+        let stageId;
+        if (loanStatusForBM == 'approved') {
+            stageId = await models.loanStage.findOne({ where: { name: 'assign packet' } })
+        } else {
+            stageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
+        }
+
+        cutomerLoanApproval['loanStageId'] = stageId.id
+        cutomerLoanApproval['applicationFormForBM'] = applicationFormForBM
+        cutomerLoanApproval['goldValuationForBM'] = goldValuationForBM
+        cutomerLoanApproval['loanStatusForBM'] = loanStatusForBM
+        cutomerLoanApproval['commentByBM'] = commentByBM
+        cutomerLoanApproval['totalEligibleAmt'] = totalEligibleAmt
+        cutomerLoanApproval['totalFinalInterestAmt'] = totalFinalInterestAmt
+        cutomerLoanApproval['modifiedBy'] = modifiedBy
+        cutomerLoanApproval['loanUniqueId'] = loanUniqueId
+    }
+
+    let updateLoanApplication = await sequelize.transaction(async t => {
+
+        // customerLoan
+        await models.customerLoan.update(cutomerLoanApproval, { where: { id: loanId }, transaction: t })
+        //customerLoanNominee
+        await models.customerLoanNomineeDetail.update({
+            nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, modifiedBy
+        }, { where: { loanId }, transaction: t });
+
+        //customerFinalLoan
+        await models.customerFinalLoan.update({
+            partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, processingChargeFixed, processingChargePercent, interestRate, modifiedBy
+        }, { where: { loanId }, transaction: t })
+
+
+        let allOrnmanets = []
+        for (let i = 0; i < loanOrnmanets.length; i++) {
+            loanOrnmanets[i]['modifiedBy'] = modifiedBy
+            loanOrnmanets[i]['loanId'] = loanId
+            allOrnmanets.push(loanOrnmanets[i])
+        }
+
+        let d = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, {
+            updateOnDuplicate: ["loanId", "ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "purityTest", "ltvPercent", "ltvAmount", "loanAmount", "finalNetWeight", "currentLtvAmount"]
+        }, { transaction: t })
+
+    })
+    return res.status(200).json({ message: 'success' });
+
+}
 

@@ -48,7 +48,7 @@
         "ngx-clipboard": "^12.3.0",
         "ngx-cookie-service": "^3.0.4",
         "ngx-highlightjs": "^3.0.3",
-        "ngx-material-timepicker": "^5.5.1",
+        "ngx-material-timepicker": "^5.5.3",
         "ngx-perfect-scrollbar": "^8.0.0",
         "ngx-permissions": "^7.0.3",
         "ngx-quill": "^7.4.0-0",
