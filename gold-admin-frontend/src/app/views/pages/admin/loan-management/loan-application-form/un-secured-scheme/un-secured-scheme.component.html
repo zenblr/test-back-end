@@ -42,11 +42,11 @@
                         <label class="mandatory"> Interest Rate (%)</label>
                     </div>
                     <div class="col-6">
-                        <input class="form-control" formControlName="unsceuredInterestRate" placeholder="2%" readonly
-                            [class.isError]="controls.unsceuredInterestRate.touched && controls.unsceuredInterestRate.invalid">
+                        <input class="form-control" formControlName="unsecuredSchemeInterest" placeholder="2%" readonly
+                            [class.isError]="controls.unsecuredSchemeInterest.touched && controls.unsecuredSchemeInterest.invalid">
 
                         <mat-error
-                            *ngIf="controls.unsceuredInterestRate.errors?.required && controls.unsceuredInterestRate.touched">
+                            *ngIf="controls.unsecuredSchemeInterest.errors?.required && controls.unsecuredSchemeInterest.touched">
                             Required field
                         </mat-error>
                     </div>
