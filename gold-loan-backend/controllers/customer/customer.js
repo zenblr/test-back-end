@@ -456,9 +456,6 @@ exports.getsingleCustomerManagement = async (req, res) => {
         as: 'customerLoan',
         where: { loanStageId: stageId.id },
         include: [{
-          model: models.customerFinalLoan,
-          as: 'finalLoan'
-        }, {
           model: models.customerLoanNomineeDetail,
           as: 'loanNomineeDetail'
         }]

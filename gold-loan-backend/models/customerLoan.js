@@ -126,7 +126,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_type'
         },
         unsecuredLoanId:{
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'unsecured_loan_id'
         },
         customerLoanCurrentStage: {
@@ -166,7 +166,6 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
         customerLoan.hasOne(models.customerLoanBankDetail, { foreignKey: 'loanId', as: 'loanBankDetail' });
-        customerLoan.hasOne(models.customerLoanKycDetail, { foreignKey: 'loanId', as: 'loanKycDetail' });
         customerLoan.hasMany(models.customerLoanNomineeDetail, { foreignKey: 'loanId', as: 'loanNomineeDetail' });
         customerLoan.hasMany(models.customerLoanOrnamentsDetail, { foreignKey: 'loanId', as: 'loanOrnamentsDetail' });
         customerLoan.hasOne(models.customerLoanPersonalDetail, { foreignKey: 'loanId', as: 'loanPersonalDetail' });
@@ -176,9 +175,11 @@ module.exports = (sequelize, DataTypes) => {
 
         customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 
-        CustomerFinalLoan.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
-        CustomerFinalLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
-        CustomerFinalLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
+        customerLoan.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
+        customerLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
+        customerLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
+
+        customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan', useJunctionTable: false  });
 
         customerLoan.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
         customerLoan.belongsTo(models.user, { foreignKey: 'bmId', as: 'bm' });
