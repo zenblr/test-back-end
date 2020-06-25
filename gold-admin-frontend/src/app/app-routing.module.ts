@@ -15,7 +15,7 @@ const routes: Routes = [
 		path: 'auth', loadChildren: () => import('../app/views/pages/auth/auth.module').then(m => m.AuthModule),
 		canActivate: [ReverseAuthGuard]
 	},
-	{
+	{ 
 		path: '',
 		component: BaseComponent,
 		canActivate: [AuthGuard],
