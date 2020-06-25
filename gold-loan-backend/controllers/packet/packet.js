@@ -11,7 +11,7 @@ const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB
 //  FUNCTION FOR ADD PACKET
 exports.addPacket = async (req, res, next) => {
 
-    let { packetUniqueId } = req.body;
+    let { packetUniqueId, internalUserBranch } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
@@ -21,7 +21,7 @@ exports.addPacket = async (req, res, next) => {
         return res.status(400).json({ message: `This packet Id is already exist` })
     }
     let packetAdded = await models.packet.addPacket(
-        packetUniqueId, createdBy, modifiedBy);
+        packetUniqueId, createdBy, modifiedBy, internalUserBranch);
     res.status(201).json({ message: 'you adeed packet successfully' });
 }
 
@@ -59,6 +59,13 @@ exports.viewPacket = async (req, res, next) => {
         as: 'customerLoan',
         where: { isActive: true },
         attributes: ['id', 'loanUniqueId']
+    },
+    {
+        model: models.internalBranch,
+            required: false,
+            as: 'internalBranch',
+            where: { isActive: true },
+            attributes: ['id', 'internalBranchUniqueId', 'name']
     }];
 
     let packetDetails = await models.packet.findAll({
@@ -83,8 +90,22 @@ exports.viewPacket = async (req, res, next) => {
 
 //  FUNCTION FOR GET AVAILABLE PACKET
 exports.availablePacket = async (req, res, next) => {
+    let data = await models.user.findOne({
+        where:{
+            id: req.userData.id
+        },
+        include: {
+            model: models.userInternalBranch,
+            
+        }
+    });
+    let internalBranchId = [];
+    for(let idData of data.internalBranches){
+        internalBranchId.push(idData.id);
+    }
+
     let availablePacketDetails = await models.packet.findAll({
-        where: { isActive: true, packetAssigned: false },
+        where: { isActive: true, packetAssigned: false,  internalUserBranch: { [Op.in]: internalBranchId } },
     });
     if (availablePacketDetails.length === 0) {
         res.status(200).json({ message: 'no packet details found', data: [] });
@@ -112,10 +133,10 @@ exports.assignPacket = async (req, res, next) => {
 // FUNCTION TO UPDATE PACKET
 exports.changePacket = async (req, res, next) => {
     let id = req.params.id;
-    let { packetUniqueId } = req.body;
+    let { packetUniqueId, internalUserBranch } = req.body;
     let modifiedBy = req.userData.id;
 
-    let packet = await models.packet.updatePacket(id, packetUniqueId, modifiedBy);
+    let packet = await models.packet.updatePacket(id, packetUniqueId,internalUserBranch, modifiedBy);
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "packet not update" });

@@ -134,7 +134,7 @@
                             </div>
                         </div>
                         <div class="row py-2">
-                            <div class="col-8 text-muted">EMI Amount(Per Month):</div>
+                            <div class="col-8 text-muted">EMI Amount (Per Month):</div>
                             <div class="col-4 text-right" *ngIf="cartData?.emiAmount?.length">
                                 <div class="content currency" *ngFor="let amt of cartData?.emiAmount; let isLast=last">
                                     {{amt | indianCurrencyFormat}}{{isLast ? '' : ', '}}

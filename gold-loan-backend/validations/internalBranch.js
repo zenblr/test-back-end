@@ -28,6 +28,24 @@ exports.addInternalBranchValidation = [
                 return true;
             }
         }),
+    body('ifscCode')
+        .exists()
+        .withMessage('ifscCode is required'),
+    body('bankName')
+        .exists()
+        .withMessage('bankName is required'),
+    body('bankBranch')
+        .exists()
+        .withMessage('branch name is required'),
+    body('accountHolderName')
+        .exists()
+        .withMessage('account holder  name is required'),
+    body('accountNumber')
+        .exists()
+        .withMessage('account number is required'),
+    body('passbookStatementChequeId')
+        .exists()
+        .withMessage('passbook or Statement or Cheque is required')
 ]
 
 exports.updateInternalBranchValidation = [
@@ -72,6 +90,24 @@ exports.updateInternalBranchValidation = [
 
     body('address')
         .exists()
-        .withMessage(' address is required')
+        .withMessage(' address is required'),
+    body('ifscCode')
+        .exists()
+        .withMessage('ifscCode is required'),
+    body('bankName')
+        .exists()
+        .withMessage('bankName is required'),
+    body('bankBranch')
+        .exists()
+        .withMessage('branch name is required'),
+    body('accountHolderName')
+        .exists()
+        .withMessage('account holder  name is required'),
+    body('accountNumber')
+        .exists()
+        .withMessage('account number is required'),
+    body('passbookStatementChequeId')
+        .exists()
+        .withMessage('passbook or Statement or Cheque is required')
 
 ]

@@ -100,6 +100,23 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'last_login',
         },
+        leadSourceId:{
+            type: DataTypes.INTEGER,
+            field: 'lead_source_id',
+        },
+        source:{
+            type: DataTypes.STRING,
+            field: 'source',
+        },
+        panType:{
+            type: DataTypes.ENUM,
+            field: 'pan_type',
+            values: ['pan', 'form60'],
+        },
+        panImage:{
+            type: DataTypes.STRING,
+            field: 'pan_image',
+        }
     }, {
         freezeTableName: true,
         tableName: 'customer',
@@ -128,6 +145,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
+        Customer.belongsTo(models.lead,{foreignKey: 'leadSourceId', as: 'lead' });
     }
 
     // This hook is always run before create.

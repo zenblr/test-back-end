@@ -33,7 +33,6 @@ import { ProductEditComponent } from "../product-edit/product-edit.component";
 import { ToastrComponent } from "../../../../../../partials/components/toastr/toastr.component";
 import { DataTableService } from "../../../../../../../core/shared/services/data-table.service";
 import { SharedService } from '../../../../../../../core/shared/services/shared.service';
-
 @Component({
 	selector: "kt-product-list",
 	templateUrl: "./product-list.component.html",
@@ -73,9 +72,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
 		subCategoryId: 0,
 		priceFrom: 0,
 		priceTo: 0,
+		order: false,
 	};
 	filteredDataList = {};
-
+	sortImg = "../../../../../../../../assets/media/icons/sort.svg";
+	sortType: number = 1;
 	constructor(
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
@@ -230,7 +231,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
 	}
 
 	viewProduct(product) {
-		console.log(product);
 		const dialogRef = this.dialog.open(ProductEditComponent, {
 			data: { productId: product.id, action: "view" },
 			width: "550px",
@@ -240,6 +240,39 @@ export class ProductListComponent implements OnInit, OnDestroy {
 				console.log(res);
 			}
 		});
+	}
+
+	sortSku() {
+		this.sortType += 1;
+		if (this.sortType % 2 == 0) {
+			this.sortImg = "../../../../../../../../assets/media/icons/sort (1).svg";
+			this.productData = {
+				from: 0,
+				to: 0,
+				search: "",
+				categoryId: 0,
+				subCategoryId: 0,
+				priceFrom: 0,
+				priceTo: 0,
+				order: true,
+			};
+			this.dataSource.loadProducts(this.productData);
+
+		} else {
+			this.sortImg = "../../../../../../../../assets/media/icons/sort.svg";
+			this.productData = {
+				from: 0,
+				to: 0,
+				search: "",
+				categoryId: 0,
+				subCategoryId: 0,
+				priceFrom: 0,
+				priceTo: 0,
+				order: false,
+			}
+			this.dataSource.loadProducts(this.productData);
+
+		}
 	}
 
 	applyFilter(data) {

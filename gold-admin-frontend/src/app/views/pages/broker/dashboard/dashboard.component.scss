@@ -1,7 +1,5 @@
 :host {
-	::ng-deep {
-		ngb-tabset > .nav-tabs {
-			display: none;
-		}
-	}
+    .kt-portlet__body {
+        padding: 20px !important;
+    }
 }

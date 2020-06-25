@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
 import { ProfileService } from '../../../../../core/merchant-broker';
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
 import { ConfirmPasswordValidator } from './confirm-password.validator';
+import { AuthService } from '../../../../../core/auth/_services/auth.service'
 
 @Component({
   selector: 'kt-profile-change-pass',
@@ -20,7 +21,7 @@ export class ProfileChangePassComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private profileService: ProfileService,
     private fb: FormBuilder,
-
+    private auth: AuthService
   ) { }
 
   ngOnInit() {
@@ -70,7 +71,11 @@ export class ProfileChangePassComponent implements OnInit {
           "Password Changed Successfully"
         );
         this.dialogRef.close('reload');
+        this.auth.logout();
       }
-    });
+    },
+      err => {
+        this.toastr.errorToastr(err.error.message)
+      });
   }
 }

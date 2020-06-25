@@ -233,7 +233,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
     },
     )
     return res.status(200).json({
-        message: 'login successful', token, modules, permissions, userDetails: {
+        message: 'login successful',Token: token , modules, permissions, userDetails: {
             userTypeId: checkUser.userTypeId,
             stateId: checkUser.internalBranches[0].stateId,
             cityId: checkUser.internalBranches[0].cityId,

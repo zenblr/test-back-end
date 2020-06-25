@@ -15,7 +15,7 @@ let sms = require('../../utils/sendSMS');
 
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -42,7 +42,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, panImage, leadSourceId },
       { transaction: t }
     );
   });
@@ -147,7 +147,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId, comment } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment,source, panType, panImage, leadSourceId } = req.body;
 
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
@@ -160,7 +160,7 @@ exports.editCustomer = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panImage, leadSourceId },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -254,6 +254,11 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   {
     model: models.internalBranch,
     as: "internalBranch"
+  },
+  {
+    model: models.lead,
+    as: "lead",
+    attributes: ['id','leadName']
   }
   ]
   let internalBranchId = req.userData.internalBranchId
@@ -303,6 +308,11 @@ exports.getSingleCustomer = async (req, res, next) => {
         model: models.status,
         as: "status",
       },
+      {
+        model: models.lead,
+        as: "lead",
+        attributes: ['id','leadName']
+      }
     ],
   });
   if (check.isEmpty(singleCustomer)) {

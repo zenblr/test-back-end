@@ -99,7 +99,8 @@
                     <div class="d-block">
                         <div>Invoice Price</div>
                         <div>
-                            <h4>{{orderData.orderdetails[0].finalOrderPrice}}</h4>
+                            <h4 class="currency">{{orderData.orderdetails[0].finalOrderPrice | indianCurrencyFormat}}
+                            </h4>
                         </div>
                     </div>
                 </div>

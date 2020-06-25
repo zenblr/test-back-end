@@ -436,6 +436,7 @@ export class InterestCalculatorComponent implements OnInit {
     })
     this.controls.totalFinalInterestAmt.patchValue(this.totalinterestAmount.toFixed(2))
 
+    
   }
 
   get controls() {

@@ -10,7 +10,7 @@ exports.addPurpose = async (req, res, next) => {
     let { name } = req.body;
     let purposeExist = await models.purpose.findOne({ where: { name: name } })
     if (!check.isEmpty(purposeExist)) {
-        return res.status(404).json({ message: 'This Purpose is already Exist' });
+        return res.status(404).json({ message: 'This Purpose already Exists' });
     }
     let rating = await models.purpose.create({ name })
     return res.status(200).json({ message: `Created` })
@@ -26,11 +26,11 @@ exports.getPurpose = async (req, res, next) => {
 
         let whereCondition;
         if (getAll == "true") {
-            whereCondition = { order: [['id', 'DESC']] }
+            whereCondition = {where: { isActive: true }, order: [['id', 'DESC']] }
         } else if (getAll == "false") {
             whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
         } else if (getAll == undefined) {
-            whereCondition = { order: [['id', 'DESC']] }
+            whereCondition = { where: { isActive: true },order: [['id', 'DESC']] }
         }
         let allPurpose = await models.purpose.findAll(whereCondition)
         return res.status(200).json({ data: allPurpose, count: allPurpose.length })
@@ -44,7 +44,7 @@ exports.updatePurpose = async (req, res, next) => {
 
     let purposeExist = await models.purpose.findOne({ where: { name: name } })
     if (!check.isEmpty(purposeExist)) {
-        return res.status(404).json({ message: 'This Purpose is already Exist' });
+        return res.status(404).json({ message: 'This Purpose already Exists' });
     }
     let UpdateData = await models.purpose.update({ name }, { where: { id: id } })
     if (UpdateData[0] === 0) {

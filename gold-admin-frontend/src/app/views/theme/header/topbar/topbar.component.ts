@@ -36,7 +36,7 @@ import { MonthlyService } from "../../../../core/repayment/services/monthly.serv
 import { CustomerDetailsService } from "../../../../core/emi-management/customer-details";
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
 import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
-import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
+import { SMSAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
 import { HolidayService } from '../../../../core/holidays/services/holiday.service';
 import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
 import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
@@ -123,7 +123,7 @@ export class TopbarComponent implements OnInit {
 		private customerDetailsService: CustomerDetailsService,
 		private leadService: LeadService,
 		private emailAlertService: EmailAlertService,
-		private smsAlertService: SmsAlertService,
+		private smsAlertService: SMSAlertService,
 		private holidayService: HolidayService,
 		private packetLocation: PacketLocationService,
 		private ornamentsService: OrnamentsService,
@@ -156,17 +156,17 @@ export class TopbarComponent implements OnInit {
 				}
 			});
 
-		this.orderDetailsService.button$
-			.pipe(takeUntil(this.destroy$))
-			.subscribe((res) => {
-				if (res && res == "spot") {
-					this.button = false;
-				} else if (res && res != "spot") {
-					this.button = true;
-				} else {
-					this.button = false;
-				}
-			});
+		// this.orderDetailsService.button$
+		// 	.pipe(takeUntil(this.destroy$))
+		// 	.subscribe((res) => {
+		// 		if (res && res == "spot") {
+		// 			this.button = false;
+		// 		} else if (res && res != "spot") {
+		// 			this.button = true;
+		// 		} else {
+		// 			this.button = false;
+		// 		}
+		// 	});
 	}
 
 	ngOnInit() {
@@ -210,7 +210,12 @@ export class TopbarComponent implements OnInit {
 				.subscribe((ct) => {
 					if (ct != null) {
 						Promise.resolve(null).then(() => {
-							this.totalRecords = ct;
+							if (this.router.url.includes('/broker/customers') ||
+								this.router.url.includes('/broker/orders') ||
+								this.router.url.includes('/broker/shop') ||
+								this.router.url.includes('/broker/cart')) {
+								this.totalRecords = ct;
+							}
 						});
 					}
 				})
@@ -584,8 +589,8 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "orders") {
 			this.showInput = true;
-			this.filterName = "orderDetails";
-			this.filterWidth = "630px";
+			this.filterName = "brokerOrder";
+			this.filterWidth = "500px";
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
 		}

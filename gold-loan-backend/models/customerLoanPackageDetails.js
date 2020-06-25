@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'packet_with_weight'
         },
+        ornamentsId: {
+            type: DataTypes.INTEGER,
+            field: 'ornaments_id'
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'

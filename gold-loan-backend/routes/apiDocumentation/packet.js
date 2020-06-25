@@ -18,8 +18,11 @@
  *           properties:
  *             packetUniqueId:
  *               type: string
+ *             internalUserBranch:
+ *               type: integer
  *         required:
  *           - packetUniqueId
+ *           - internalUserBranch
  *     responses:
  *       201:
  *          description: you adeed packet successfully
@@ -96,6 +99,8 @@
  *           properties:
  *             packetUniqueId:
  *               type: string
+ *             internalUserBranch:
+ *               type: integer
  *         required:
  *           - packetUniqueId
  *     responses:

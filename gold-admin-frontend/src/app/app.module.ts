@@ -59,7 +59,7 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { CookieService } from 'ngx-cookie-service';
 // tslint:disable-next-line:class-name
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 	wheelSpeed: 0.5,
@@ -120,6 +120,7 @@ export function hljsLanguages(): HighlightLanguage[] {
 		KtDialogService,
 		DataTableService,
 		SplashScreenService,
+		CookieService,
 		{
 			provide: PERFECT_SCROLLBAR_CONFIG,
 			useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
@@ -149,4 +150,5 @@ export function hljsLanguages(): HighlightLanguage[] {
 	bootstrap: [AppComponent]
 })
 export class AppModule {
+
 }
