@@ -52,6 +52,9 @@ import * as typescript from 'highlight.js/lib/languages/typescript';
 import * as scss from 'highlight.js/lib/languages/scss';
 import * as xml from 'highlight.js/lib/languages/xml';
 import * as json from 'highlight.js/lib/languages/json';
+
+import { CookieService } from 'ngx-cookie-service';
+
 // Toastr Service
 import { ToastrModule } from 'ngx-toastr';
 
@@ -145,6 +148,7 @@ export function hljsLanguages(): HighlightLanguage[] {
 		HttpUtilsService,
 		TypesUtilsService,
 		LayoutUtilsService,
+		CookieService,
 	],
 	bootstrap: [AppComponent]
 })
