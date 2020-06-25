@@ -39,8 +39,9 @@ export class FinalLoanAmountComponent implements OnInit {
     this.globalSettingService.globalSetting$.subscribe(global=>{
       if(global){
         this.goldRateService.goldRate$.subscribe(res => {
-          this.currentLtvAmount = res;
-          this.controls.currentLtvAmount.patchValue(this.currentLtvAmount * global.ltvGoldValue);
+         if(res){
+          this.controls.currentLtvAmount.patchValue(res * (global.ltvGoldValue/100));
+         }
         })
       }
     })

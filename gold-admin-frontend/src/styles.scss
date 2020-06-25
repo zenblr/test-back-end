@@ -707,3 +707,7 @@ mat-header-row {
 .timepicker-dial__control{
 	outline: none !important;
 }
+
+.mat-slide-toggle-thumb-container{
+ z-index: unset !important;
+}

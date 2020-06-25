@@ -74,7 +74,7 @@
                             <label class="text-color kt-padding-l-10">Form 60</label>
                         </div>
                         <div class="col-6">
-                            <img [src]="controls.panImage.value" height="80" width="60" alt="">
+                            <img [src]="controls.panImage.value" (click)="preview(controls.panImage.value)" height="150" width="80" alt="">
                         </div>
                     </div>
                 </div>
