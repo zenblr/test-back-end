@@ -134,7 +134,7 @@ export class AddLeadComponent implements OnInit {
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: [, [Validators.required]],
-      panType: [],
+      panType: [''],
       form60: [''],
       panImage: [],
       comment: [''],
