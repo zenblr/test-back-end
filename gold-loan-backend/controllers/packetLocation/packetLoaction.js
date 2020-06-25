@@ -11,7 +11,7 @@ exports.addPacketLocation = async (req, res, next) => {
     let { location } = req.body;
     let pocketExist = await models.pocketLocation.findOne({ where: {isActive: true, location: location } })
     if (!check.isEmpty(pocketExist)) {
-        return res.status(404).json({ message: 'This pocket location is already Exist' });
+        return res.status(404).json({ message: 'This Packet Location already Exists' });
     }
     let pocket = await models.pocketLocation.create({ location })
     return res.status(200).json({ message: `Created` })
@@ -69,7 +69,7 @@ exports.updatePacketLocation = async (req, res, next) => {
 
     let pocketExist = await models.pocketLocation.findOne({ where: { location: location } })
     if (!check.isEmpty(pocketExist)) {
-        return res.status(404).json({ message: 'This pocket location is already Exist' });
+        return res.status(404).json({ message: 'This Packet Location already Exists' });
     }
     let UpdateData = await models.pocketLocation.update({ location }, { where: { id: id } })
     if (UpdateData[0] === 0) {
