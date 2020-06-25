@@ -49,22 +49,18 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
 
-  // ngOnChanges(change: SimpleChanges) {
-  //   if (change.ornamentType && change.ornamentType.currentValue) {
-  //     this.ornamentType = change.ornamentType.currentValue.ornamentType
-  //     this.ornamentType.map(ele => ele.disabled = false)
-  //   }
-  // }
+  ngOnChanges(change: SimpleChanges) {
+    if (change.ornamentType && change.ornamentType.currentValue) {
+      this.ornamentType = change.ornamentType.currentValue.ornamentType
+      this.ornamentType.map(ele => ele.disabled = false)
+    }
+  }
 
 
 
   ngOnInit() {
     this.initForm()
     this.getPacketsDetails()
-
-    this.ornamentType = [{ packetUniqueId: 'abc', id: 2 }, { packetUniqueId: 'xcv', id: 1 }]
-    this.ornamentType.map(ele => ele.disabled = false)
-
 
     this.url = this.router.url.split('/')[2]
     this.loanId = this.route.snapshot.params.id
