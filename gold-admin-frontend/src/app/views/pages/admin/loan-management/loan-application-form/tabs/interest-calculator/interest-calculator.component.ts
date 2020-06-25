@@ -75,9 +75,9 @@ export class InterestCalculatorComponent implements OnInit {
     }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
-        if (changes.details.currentValue && changes.details.currentValue.finalLoan) {
+        if (changes.details.currentValue && changes.details.currentValue) {
 
-          const finalLoan = changes.details.currentValue.finalLoan
+          const finalLoan = changes.details.currentValue
 
           this.finalInterestForm.patchValue(finalLoan)
 
@@ -88,7 +88,7 @@ export class InterestCalculatorComponent implements OnInit {
           this.editedDate = finalLoan.loanStartDate;
           this.currentDate = new Date(finalLoan.loanStartDate)
           this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
-          this.finalInterestForm.controls.schemeId.patchValue(finalLoan)
+          this.finalInterestForm.controls.schemeId.patchValue(finalLoan.schemeId)
           if (finalLoan.unsecuredSchemeId) {
             this.finalInterestForm.controls.isUnsecuredSchemeApplied.patchValue(true)
             var amt = finalLoan.finalLoanAmount - finalLoan.securedLoanAmount

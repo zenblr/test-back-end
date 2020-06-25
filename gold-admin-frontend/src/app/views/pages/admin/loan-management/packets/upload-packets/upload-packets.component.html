@@ -25,7 +25,7 @@
             </select> -->
 
             <kt-multi-select-search [items]="ornamentType" [multiple]="true" bindLabel="ornamentType"
-                formControlName="ornamentType" [bindValue]="'id'"></kt-multi-select-search>
+                formControlName="ornamentType" [bindValue]="'id'" [style]="true"></kt-multi-select-search>
 
             <mat-error *ngIf="packetInfo.controls.ornamentType.touched && packetInfo.controls.ornamentType.invalid">
                 <span *ngIf="packetInfo.controls.ornamentType.errors?.required">Field Required</span>
