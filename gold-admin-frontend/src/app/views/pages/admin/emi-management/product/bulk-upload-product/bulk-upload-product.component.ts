@@ -60,7 +60,7 @@ export class BulkUploadProductComponent implements OnInit {
           const fileData = {
             fileId: res['uploadFile']['id'],
             fileExtension: fileExtension,
-            path: res['uploadFile']['path']
+            path: res['uploadFile']['url']
           }
 
           if (this.editUpload) {
