@@ -78,31 +78,31 @@ export class DashboardComponent implements OnInit {
 		// @ts-ignore
 		this.widget4_2 = shuffle([
 			{
-				pic: './assets/media/users/100_4.jpg',
+				pic: '',
 				username: 'Anna Strong',
 				desc: 'Visual Designer,Google Inc.',
 				url: 'https://keenthemes.com.my/metronic',
 				buttonClass: 'btn-label-brand'
 			}, {
-				pic: './assets/media/users/100_14.jpg',
+				pic: '',
 				username: 'Milano Esco',
 				desc: 'Product Designer, Apple Inc.',
 				url: 'https://keenthemes.com.my/metronic',
 				buttonClass: 'btn-label-warning'
 			}, {
-				pic: './assets/media/users/100_11.jpg',
+				pic: '',
 				username: 'Nick Bold',
 				desc: 'Web Developer, Facebook Inc.',
 				url: 'https://keenthemes.com.my/metronic',
 				buttonClass: 'btn-label-danger'
 			}, {
-				pic: './assets/media/users/100_1.jpg',
+				pic: '',
 				username: 'Wilter Delton',
 				desc: 'Project Manager, Amazon Inc.',
 				url: 'https://keenthemes.com.my/metronic',
 				buttonClass: 'btn-label-success'
 			}, {
-				pic: './assets/media/users/100_5.jpg',
+				pic: '',
 				username: 'Nick Stone',
 				desc: 'Visual Designer, Github Inc.',
 				url: 'https://keenthemes.com.my/metronic',
