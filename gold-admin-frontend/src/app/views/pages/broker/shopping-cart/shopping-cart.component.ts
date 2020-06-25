@@ -31,10 +31,8 @@ export class ShoppingCartComponent implements OnInit {
 
   getCart() {
     this.shoppingCartService.getCart().subscribe(res => {
-      if (res) {
-        this.cartData = res;
-        this.shoppingCartService.cartCount.next(res.allCartData.length);
-      }
+      this.cartData = res;
+      this.shoppingCartService.cartCount.next(res.allCartData.length);
     });
   }
 
@@ -46,16 +44,14 @@ export class ShoppingCartComponent implements OnInit {
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.shoppingCartService.deleteCartItem(cartId).subscribe(successDelete => {
-          this.toastr.successToastr(_deleteMessage);
-          this.getCart();
-        },
-          errorDelete => {
-            this.toastr.errorToastr(errorDelete.error.message);
-          });
-      }
+      console.log(res);
+      this.shoppingCartService.deleteCartItem(cartId).subscribe(successDelete => {
+        this.toastr.successToastr(_deleteMessage);
+        this.getCart();
+      },
+        errorDelete => {
+          this.toastr.errorToastr(errorDelete.error.message);
+        });
     });
   }
 
@@ -65,9 +61,7 @@ export class ShoppingCartComponent implements OnInit {
         quantity: parseInt(cartItem.quantity)
       }
       this.shoppingCartService.updateCartItemQuantity(cartItem.cartId, qtydata).subscribe(res => {
-        if (res) {
-          this.getCart();
-        }
+        this.getCart();
       });
     }
   }
