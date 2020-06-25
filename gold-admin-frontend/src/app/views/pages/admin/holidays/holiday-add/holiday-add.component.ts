@@ -91,10 +91,11 @@ export class HolidayAddComponent implements OnInit {
         return
       }
 
+      let date = new Date(this.fillingForm.value.holidayDate)
       this.fillingForm.value.holidayDate =
         new Date(
-          this.fillingForm.value.holidayDate.getTime()
-          - this.fillingForm.value.holidayDate.getTimezoneOffset() * 60000
+          date.getTime()
+          - date.getTimezoneOffset() * 60000
         ).toISOString();
 
       if (this.data.action == 'add') {
