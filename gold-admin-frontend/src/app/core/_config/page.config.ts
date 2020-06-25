@@ -51,10 +51,10 @@ export class PageConfig {
 			},
 			"notification-setting": {
 				"email-alert": {
-					page: { title: "Email Alerts", desc: "" }
+					page: { title: "Email Template", desc: "" }
 				},
 				"sms-alert": {
-					page: { title: "SMS Alerts", desc: "" }
+					page: { title: "SMS Template", desc: "" }
 				}
 			},
 			"upload-data": {
