@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { ShopService } from '../../../../core/merchant-broker/shop/shop.service';
-import { PageEvent, MatPaginator } from '@angular/material';
+import { PageEvent, MatPaginator, MatDialog } from '@angular/material';
 import { DataTableService } from "../../../../core/shared/services/data-table.service";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { Subject } from 'rxjs';
 import { Router } from "@angular/router";
+import { ProductComponent } from './product/product.component'
 
 @Component({
   selector: 'kt-shop',
@@ -34,6 +35,8 @@ export class ShopComponent implements OnInit {
     private shopService: ShopService,
     private dataTableService: DataTableService,
     private router: Router,
+    public dialog: MatDialog,
+
 
   ) {
     this.shopService.toggle$.subscribe(res => {
@@ -98,6 +101,18 @@ export class ShopComponent implements OnInit {
 
   action(id) {
     this.router.navigate(["/broker/shop/product/", id]);
+  }
+
+  view(id) {
+    const dialogRef = this.dialog.open(ProductComponent, {
+      data: { productId: id, action: "view" },
+      width: "80%",
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        console.log(res);
+      }
+    });
   }
 
   ngOnDestroy() {

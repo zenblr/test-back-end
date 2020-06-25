@@ -17,6 +17,7 @@ import { HtmlClassService } from '../html-class.service';
 import { AuthService } from '../../../core/auth';
 import { SharedService } from '../../../core/shared/services/shared.service';
 import { ShoppingCartService } from '../../../core/merchant-broker';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
 	selector: 'kt-aside-left',
@@ -84,7 +85,8 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		private auth: AuthService,
 		private sharedService: SharedService,
 		public shoppingCartService: ShoppingCartService,
-		private ref: ChangeDetectorRef
+		private ref: ChangeDetectorRef,
+		private cookieService: CookieService,
 	) {
 		this.router.events.subscribe(event => {
 			if (event instanceof NavigationEnd) {
@@ -247,10 +249,12 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 
 		return toggle;
 	}
+
 	logout() {
 		this.auth.logout().pipe(map(
 			res => {
 				localStorage.clear();
+				this.cookieService.deleteAll();
 				this.sharedService.role.next(null);
 				this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl } });
 			}

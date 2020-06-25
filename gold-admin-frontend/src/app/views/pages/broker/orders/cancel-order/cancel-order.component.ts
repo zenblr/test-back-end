@@ -37,7 +37,7 @@ export class CancelOrderComponent implements OnInit {
   formInitialize() {
     this.cancelForm = this.fb.group({
       customerBankName: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')])],
-      customerAccountNo: ['', Validators.required],
+      customerAccountNo: ['', Validators.compose([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')])],
       ifscCode: ['', Validators.compose([Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')])],
       passbookId: [null],
       checkCopyId: [null],

@@ -33,7 +33,7 @@ export class CustomerGridComponent implements OnInit, OnChanges {
 
   @HostListener('window:scroll', [])
   onWindowScoll() {
-    console.log(Math.floor(this.getScrollXY()[1] + window.innerHeight))
+    // console.log(Math.floor(this.getScrollXY()[1] + window.innerHeight))
     if (this.getDocHeight() === Math.floor(this.getScrollXY()[1] + window.innerHeight)) {
       if (this.count < this.page.to) {
         let data = {
@@ -48,7 +48,7 @@ export class CustomerGridComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.page) {
-      console.log(this.page)
+      // console.log(this.page)
     }
     if (changes.data) {
       this.customers = [];
@@ -68,7 +68,7 @@ export class CustomerGridComponent implements OnInit, OnChanges {
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
-        console.log(res)
+        // console.log(res)
         this.searchValue = res;
 
         let data = {
@@ -87,11 +87,7 @@ export class CustomerGridComponent implements OnInit, OnChanges {
 
   getDocHeight() {
     const D = document;
-    console.log(Math.max(
-      D.body.scrollHeight, D.documentElement.scrollHeight,
-      D.body.offsetHeight, D.documentElement.offsetHeight,
-      D.body.clientHeight, D.documentElement.clientHeight
-    ))
+  
     return Math.max(
       D.body.scrollHeight, D.documentElement.scrollHeight,
       D.body.offsetHeight, D.documentElement.offsetHeight,
@@ -111,7 +107,6 @@ export class CustomerGridComponent implements OnInit, OnChanges {
       scrOfY = document.documentElement.scrollTop;
       scrOfX = document.documentElement.scrollLeft;
     }
-    console.log(scrOfY)
     return [scrOfX, scrOfY];
   }
 

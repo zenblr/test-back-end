@@ -54,7 +54,8 @@ export class HolidayAddComponent implements OnInit {
     this.fillingForm = this.fb.group({
       holidayDate: [, Validators.required],
       description: [, Validators.required],
-      year: []
+      year: [],
+      id: []
     })
 
     this.csvForm = this.fb.group({
@@ -90,14 +91,33 @@ export class HolidayAddComponent implements OnInit {
         return
       }
 
-      this.holidayService.addHoliday(this.fillingForm.value).pipe(
-        map((res) => {
-          this.toastr.success('Holiday Created Sucessfully');
-          this.dialogRef.close(res);
-        }), catchError(err => {
-          this.ref.detectChanges();
-          throw (err)
-        })).subscribe()
+      this.fillingForm.value.holidayDate =
+        new Date(
+          this.fillingForm.value.holidayDate.getTime()
+          - this.fillingForm.value.holidayDate.getTimezoneOffset() * 60000
+        ).toISOString();
+
+      if (this.data.action == 'add') {
+        this.holidayService.addHoliday(this.fillingForm.value).pipe(
+          map((res) => {
+            this.toastr.success('Holiday Created Sucessfully');
+            this.dialogRef.close(res);
+          }), catchError(err => {
+            this.ref.detectChanges();
+            throw (err)
+          })).subscribe()
+      }
+      else {
+
+        this.holidayService.editHoliday(this.fillingForm.value).pipe(
+          map((res) => {
+            this.toastr.success('Holiday Created Sucessfully');
+            this.dialogRef.close(res);
+          }), catchError(err => {
+            this.ref.detectChanges();
+            throw (err)
+          })).subscribe()
+      }
     } else if (this.tabGroup.selectedIndex == 1) {
       if (this.csvForm.invalid) {
         this.csvForm.markAllAsTouched()

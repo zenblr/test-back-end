@@ -1,1 +1,204 @@
-<p>dashboard works!</p>
+<kt-portlet>
+    <kt-portlet-body [class]="'kt-portlet__body--fit'" *ngIf="dashboardDetails$ | async as details">
+        <div>
+            <h4>Today's Booked Orders</h4>
+            <hr>
+            <div class="row">
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Orders</p>
+                    <h3>{{details?.emiTodaysOrders?.totalOrder ? details?.emiTodaysOrders?.totalOrder : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Jewellery Orders</p>
+                    <h3>{{details?.emiTodaysOrders?.Jewellerycount ? details?.emiTodaysOrders?.Jewellerycount : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Gold Orders</p>
+                    <h3>{{details?.emiTodaysOrders?.Goldcount ? details?.emiTodaysOrders?.Goldcount : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Silver Orders</p>
+                    <h3>{{details?.emiTodaysOrders?.Silvercount ? details?.emiTodaysOrders?.Silvercount : '00'}}</h3>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-3">
+                    <p class="font-weight-500">Weight (grams)</p>
+                    <h3>{{details?.emiTodaysOrders?.totalOrderWeight ? details?.emiTodaysOrders?.totalOrderWeight : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Jewellery Weight (grams)</p>
+                    <h3>{{details?.emiTodaysOrders?.Jewelleryweight ? details?.emiTodaysOrders?.Jewelleryweight : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Gold Weight (grams)</p>
+                    <h3>{{details?.emiTodaysOrders?.Goldweight ? details?.emiTodaysOrders?.Goldweight : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Silver Weight (grams)</p>
+                    <h3>{{details?.emiTodaysOrders?.Silverweight ? details?.emiTodaysOrders?.Silverweight : '00'}}</h3>
+                </div>
+            </div>
+            <h4 class="mt-5">Last Month Orders
+                ({{details.emilastMonthsOrders.date.fromDate | date:'mediumDate'}}&nbsp;to&nbsp;{{details.emilastMonthsOrders.date.toDate | date:'mediumDate'}})
+            </h4>
+            <hr>
+            <div class="row">
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Orders</p>
+                    <h3>{{details?.emilastMonthsOrders?.totalOrder ? details?.emilastMonthsOrders?.totalOrder : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Jewellery Orders</p>
+                    <h3>{{details?.emilastMonthsOrders?.Jewellerycount ? details?.emilastMonthsOrders?.Jewellerycount : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Gold Orders</p>
+                    <h3>{{details?.emilastMonthsOrders?.Goldcount ? details?.emilastMonthsOrders?.Goldcount : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Silver Orders</p>
+                    <h3>{{details?.emilastMonthsOrders?.Silvercount ? details?.emilastMonthsOrders?.Silvercount : '00'}}
+                    </h3>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-3">
+                    <p class="font-weight-500">Weight (grams)</p>
+                    <h3>{{details?.emilastMonthsOrders?.totalOrderWeight ? details?.emilastMonthsOrders?.totalOrderWeight : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Jewellery Weight (grams)</p>
+                    <h3>{{details?.emilastMonthsOrders?.Jewelleryweight ? details?.emilastMonthsOrders?.Jewelleryweight : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Gold Weight (grams)</p>
+                    <h3>{{details?.emilastMonthsOrders?.Goldweight ? details?.emilastMonthsOrders?.Goldweight : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Silver Weight (grams)</p>
+                    <h3>{{details?.emilastMonthsOrders?.Silverweight ? details?.emilastMonthsOrders?.Silverweight : '00'}}
+                    </h3>
+                </div>
+            </div>
+            <h4 class="mt-5">Till Date Orders</h4>
+            <hr>
+            <div class="row">
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Orders</p>
+                    <h3>{{details?.emitillDateOrders?.totalOrder ? details?.emitillDateOrders?.totalOrder : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Jewellery Orders</p>
+                    <h3>{{details?.emitillDateOrders?.Jewellerycount ? details?.emitillDateOrders?.Jewellerycount : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Gold Orders</p>
+                    <h3>{{details?.emitillDateOrders?.Goldcount ? details?.emitillDateOrders?.Goldcount : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Silver Orders</p>
+                    <h3>{{details?.emitillDateOrders?.Silvercount ? details?.emitillDateOrders?.Silvercount : '00'}}
+                    </h3>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-3">
+                    <p class="font-weight-500">Weight (grams)</p>
+                    <h3>{{details?.emitillDateOrders?.totalOrderWeight ? details?.emitillDateOrders?.totalOrderWeight : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Jewellery Weight (grams)</p>
+                    <h3>{{details?.emitillDateOrders?.Jewelleryweight ? details?.emitillDateOrders?.Jewelleryweight : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Gold Weight (grams)</p>
+                    <h3>{{details?.emitillDateOrders?.Goldweight ? details?.emitillDateOrders?.Goldweight : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Silver Weight (grams)</p>
+                    <h3>{{details?.emitillDateOrders?.Silverweight ? details?.emitillDateOrders?.Silverweight : '00'}}
+                    </h3>
+                </div>
+            </div>
+            <h4 class="mt-5">Total Booked Orders</h4>
+            <hr>
+            <div class="row">
+                <div class="col-3">
+                    <p class="font-weight-500">No. of Orders</p>
+                    <h3>{{details?.emiTotalOrders?.noOfOrders ? details?.emiTotalOrders?.noOfOrders : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Booked</p>
+                    <h3>{{details?.emiTotalOrders?.booked ? details?.emiTotalOrders?.booked : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Processing</p>
+                    <h3>{{details?.emiTotalOrders?.processing ? details?.emiTotalOrders?.processing : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Payment Completed</p>
+                    <h3>{{details?.emiTotalOrders?.paymentComplete ? details?.emiTotalOrders?.paymentComplete : '00'}}
+                    </h3>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-3">
+                    <p class="font-weight-500">Defaulters</p>
+                    <h3>{{details?.emiTotalOrders?.defaulter ? details?.emiTotalOrders?.defaulter : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Dispatched to Client</p>
+                    <h3>{{details?.emiTotalOrders?.dispatchToClint ? details?.emiTotalOrders?.dispatchToClint : '00'}}
+                    </h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Delivered to Client</p>
+                    <h3>{{details?.emiTotalOrders?.delivered ? details?.emiTotalOrders?.delivered : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Cancel Order</p>
+                    <h3>{{details?.emiTotalOrders?.cancel ? details?.emiTotalOrders?.cancel : '00'}}</h3>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-3">
+                    <p class="font-weight-500">Active Order</p>
+                    <h3>{{details?.emiTotalOrders?.active ? details?.emiTotalOrders?.active : '00'}}</h3>
+                </div>
+            </div>
+            <h4 class="mt-5">Customers</h4>
+            <hr>
+            <div class="row">
+                <div class="col-3">
+                    <p class="font-weight-500">Total</p>
+                    <h3>{{details?.emiCustomer?.totalCustomer ? details?.emiCustomer?.totalCustomer : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Defaulters</p>
+                    <h3>{{details?.emiCustomer?.defaulterData ? details?.emiCustomer?.defaulterData : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Overdue</p>
+                    <h3>{{details?.emiCustomer?.overDuedata ? details?.emiCustomer?.overDuedata : '00'}}</h3>
+                </div>
+                <div class="col-3">
+                    <p class="font-weight-500">Overdue Amount</p>
+                    <h3>{{details?.emiCustomer?.overDueAmount ? details?.emiCustomer?.overDueAmount : '00'}}</h3>
+                </div>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>
