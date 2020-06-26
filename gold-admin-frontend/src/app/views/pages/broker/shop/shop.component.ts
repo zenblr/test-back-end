@@ -36,8 +36,6 @@ export class ShopComponent implements OnInit {
     private dataTableService: DataTableService,
     private router: Router,
     public dialog: MatDialog,
-
-
   ) {
     this.shopService.toggle$.subscribe(res => {
       this.toogler = res;

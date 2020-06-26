@@ -45,15 +45,15 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private ref: ChangeDetectorRef,
     private dilaog: MatDialog
   ) {
-    
-   }
+
+  }
 
 
   ngOnChanges(change: SimpleChanges) {
-    if (change.ornamentType && change.ornamentType.currentValue) {
-      this.ornamentType = change.ornamentType.currentValue.ornamentType
-      this.ornamentType.map(ele => ele.disabled = false)
-    }
+  //   if (change.ornamentType && change.ornamentType.currentValue) {
+  //     this.ornamentType = change.ornamentType.currentValue.ornamentType
+  //     this.ornamentType.map(ele => ele.disabled = false)
+  //   }
   }
 
 
@@ -62,7 +62,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.initForm()
     this.getPacketsDetails()
 
-   
+    this.ornamentType = [{ ornamentType: 'abc', id: 2 }, { ornamentType: 'xcv', id: 1 }]
+    this.ornamentType.map(ele => ele.disabled = false)
+
 
     this.url = this.router.url.split('/')[2]
     this.loanId = this.route.snapshot.params.id
@@ -157,7 +159,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       packetId: [this.controls.packetId.value],
       ornamentsId: [this.controls.ornamentType.value],
       packetsName: [this.packetsName],
-      ornamentsName:[this.ornamentName]
+      ornamentsName: [this.ornamentName]
     }))
 
     this.form.resetForm()
@@ -218,7 +220,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       return ele.id == this.controls.ornamentType.value;
     })
     this.ornamentName = this.ornamentType[ornamnetsIndex]
-    this.ornamentType[index].disabled = true    
+    this.ornamentType[index].disabled = true
     console.log(this.controls.packetId.value)
 
     // this.packetsDetails.splice(index, 1)
