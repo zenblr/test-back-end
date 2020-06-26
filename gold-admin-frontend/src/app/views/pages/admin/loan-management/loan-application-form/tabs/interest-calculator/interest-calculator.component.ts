@@ -197,19 +197,29 @@ export class InterestCalculatorComponent implements OnInit {
     if (this.controls.partnerId.valid && this.controls.finalLoanAmount.value && this.selectedScheme.length) {
       let amt = this.controls.finalLoanAmount.value;
 
-      if (amt < this.globalValue.minimumLoanAmountAllowed) {
+
+      if (amt > this.totalAmt) {
+        this.controls.finalLoanAmount.setErrors({ eligible: true })
+        return
+      } else {
+        this.controls.finalLoanAmount.setErrors(null)
+      }
+
+      if (amt >= this.globalValue.minimumLoanAmountAllowed) {
         this.controls.finalLoanAmount.setErrors(null)
       } else {
         this.controls.finalLoanAmount.setErrors({ mimimumAmt: true })
         return
       }
 
-      if (amt <= scheme.schemeAmountEnd && amt >= scheme.schemeAmountStart) {
-        this.controls.finalLoanAmount.setErrors(null)
-      } else {
-        this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
+      let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
+      if (amt > this.totalAmt * rbiLoanPercent) {
+        this.controls.finalLoanAmount.setErrors({ rbi: true })
         return
+      } else {
+        this.controls.finalLoanAmount.setErrors(null)
       }
+      
 
       let maximumAmtAllowed = (scheme.maximumPercentageAllowed / 100)
       console.log(this.totalAmt * maximumAmtAllowed)
@@ -221,24 +231,13 @@ export class InterestCalculatorComponent implements OnInit {
 
       } else {
 
-        this.isUnSecuredSchemeApplied = false
+        this.controls.isUnsecuredSchemeApplied.patchValue(false)
         this.controls.finalLoanAmount.setErrors(null)
 
       }
 
-      let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
-      if (amt > this.totalAmt * rbiLoanPercent) {
-        this.controls.finalLoanAmount.setErrors({ rbi: true })
-        return
-      } else {
-        this.controls.finalLoanAmount.setErrors(null)
-      }
-      if (amt > this.totalAmt) {
-        this.controls.finalLoanAmount.setErrors({ eligible: true })
-        return
-      } else {
-        this.controls.finalLoanAmount.setErrors(null)
-      }
+      
+      
 
     } else {
       this.controls.schemeId.markAsTouched()
