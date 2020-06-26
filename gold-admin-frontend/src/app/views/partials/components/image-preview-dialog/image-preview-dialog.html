@@ -1,6 +1,6 @@
 <div *ngIf="type != 'view'" class="position-relative">
-  <img src="assets/media/icons/cancel.svg" class="cancel" alt="" (click)="close()">
-  <div class="row" [class.kt-padding-l-40,.kt-padding-r-40]="data.modal">
+  <img src="../../../../../assets/media/icons/cancel.svg" class="cancel" alt="" (click)="close()">
+  <div class="row" [class.px-40]="!removePadding" >
     <div class="col-12">
       <ngb-carousel *ngIf="images.length" [showNavigationArrows]="images?.length > 1">
         <ng-template ngbSlide *ngFor="let img of images">

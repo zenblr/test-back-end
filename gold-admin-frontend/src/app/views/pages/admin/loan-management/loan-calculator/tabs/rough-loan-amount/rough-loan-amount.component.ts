@@ -25,7 +25,7 @@ export class RoughLoanAmountComponent implements OnInit {
     this.globalSettingService.globalSetting$.subscribe(global => {
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
-          this.controls.currentLTV.patchValue(res * res.ltvGoldValue);
+          this.controls.currentLTV.patchValue(res * (global.ltvGoldValue/100));
         })
       }
     })

@@ -8,6 +8,7 @@
                     *ngFor="let packet of packetsDetails; index as idx">
                     {{packet.packetUniqueId | uppercase}}</option>
             </select>
+
             <mat-error *ngIf="packetInfo.controls.packetId.invalid && packetInfo.controls.packetId.touched">
                 <small>
                     Field Required
@@ -15,13 +16,17 @@
             </mat-error>
         </div>
         <div class="col-3">
-            <select class="form-control packet-dropdown" formControlName="ornamentType"
+            <!-- <select class="form-control packet-dropdown" formControlName="ornamentType"
                 [class.isError]="packetInfo.controls.ornamentType.touched && packetInfo.controls.ornamentType.invalid">
                 <option value="null" [disabled]="true" [selected]="true">Select Ornament</option>
                 <option [value]="ornament.id" [disabled]="ornament.disabled" *ngFor="let ornament of ornamentType">
                     {{ornament.ornamentType | titlecase}}
                 </option>
-            </select>
+            </select> -->
+
+            <kt-multi-select-search [items]="ornamentType" [multiple]="true" bindLabel="ornamentType"
+                formControlName="ornamentType" [bindValue]="'id'" [style]="true"></kt-multi-select-search>
+
             <mat-error *ngIf="packetInfo.controls.ornamentType.touched && packetInfo.controls.ornamentType.invalid">
                 <span *ngIf="packetInfo.controls.ornamentType.errors?.required">Field Required</span>
             </mat-error>

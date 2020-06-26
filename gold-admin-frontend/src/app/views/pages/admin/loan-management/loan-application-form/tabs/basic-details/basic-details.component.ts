@@ -6,6 +6,8 @@ import { LoanApplicationFormService } from '../../../../../../../core/loan-manag
 import { catchError, map, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { PurposeService } from '../../../../../../../core/masters/purposes/service/purpose.service';
+import { ImagePreviewDialogComponent } from '../../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'kt-basic-details',
@@ -40,6 +42,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     public loanApplicationFormService: LoanApplicationFormService,
     public toast: ToastrService,
     public purposeService: PurposeService,
+    private dilaog:MatDialog
   ) {
     this.initForm()
     this.getPurposeInfo()
@@ -73,13 +76,14 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.basicForm.controls.panImage.patchValue(changes.details.currentValue.panImage)
         this.basicForm.controls.customerId.patchValue(changes.details.currentValue.id)
         this.basicForm.controls.customerUniqueId.enable()
+        this.ref.detectChanges()
       } else if (changes.action.currentValue == 'edit') {
 
         this.controls.customerId.patchValue(changes.details.currentValue.customerId)
         this.basicForm.patchValue(changes.details.currentValue.loanPersonalDetail)
         this.currentDate = new Date(changes.details.currentValue.loanPersonalDetail.startDate)
         this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
-        this.basicForm.controls.panImage.patchValue(changes.details.currentValue.panImage)
+        this.basicForm.patchValue(changes.details.currentValue.customer)
 
         // this.basicFormEmit.emit(this.basicForm)
         this.basicForm.controls.loanId.patchValue(changes.details.currentValue.id)
@@ -181,5 +185,14 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       })).subscribe()
   }
 
+  preview(images){
+    this.dilaog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: [images],
+        index: 0
+      },
+      width: "auto"
+    })
+  }
 
 }
