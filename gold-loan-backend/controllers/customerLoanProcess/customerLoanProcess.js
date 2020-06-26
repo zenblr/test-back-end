@@ -277,7 +277,17 @@ exports.loanBankDetails = async (req, res, next) => {
         let loanData = await sequelize.transaction(async t => {
             await models.customerLoan.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: loanId }, transaction: t })
 
-            let loan = await models.customerLoanBankDetail.create({ loanId, paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { transaction: t });
+            let loan = await models.customerLoanBankDetail.create({ loanId, paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, createdBy, modifiedBy }, { transaction: t });
+
+            let data = [];
+            for (let ele of passbookProof) {
+                let single = {}
+                single["customerLoanBankDetailId"] = loan.id;
+                single["passbookProofId"] = ele;
+                data.push(single);
+            }
+            await models.passbookProofImage.bulkCreate(data, { transaction: t });
+
             return loan
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '6' })
@@ -290,6 +300,18 @@ exports.loanBankDetails = async (req, res, next) => {
                 await models.customerLoan.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: loanId }, transaction: t })
             }
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
+
+            await models.passbookProofImage.distroy({ where: { customerLoanBankDetailId: checkBank.id } });
+
+            let data = [];
+            for (let ele of identityProof) {
+                let single = {}
+                single["customerLoanBankDetailId"] = checkBank.id;
+                single["passbookProofId"] = ele;
+                data.push(single);
+            }
+            await models.passbookProofImage.bulkCreate(data, { transaction: t });
+
             return loan
         })
         return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '6' })
@@ -420,11 +442,11 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             include: [{
                 model: models.purityTest,
                 as: "purityTest",
-                include:{
+                include: {
                     model: models.fileUpload,
                     as: "purityTest"
                 }
-            },{
+            }, {
                 model: models.fileUpload,
                 as: "acidTestData"
             },
@@ -432,11 +454,11 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.fileUpload,
                 as: "weightMachineZeroWeightData"
             },
-             {
+            {
                 model: models.fileUpload,
                 as: "withOrnamentWeightData"
             },
-             {
+            {
                 model: models.fileUpload,
                 as: "stoneTouchData"
             },
@@ -444,7 +466,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.fileUpload,
                 as: "ornamentImageData"
             }
-        ]
+            ]
         },
         {
             model: models.customerLoanIntrestCalculator,
@@ -457,7 +479,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             model: models.scheme,
             as: 'unsecuredScheme'
         },
-         {
+        {
             model: models.customerLoan,
             as: 'unsecuredLoan'
         },

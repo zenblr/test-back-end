@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycPersonalDetail = sequelize.define('customerKycPersonalDetail', {
         // attributes
@@ -123,7 +125,33 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycPersonalDetail.belongsTo(models.fileUpload, { foreignKey: 'profileImage', as: 'profileImageData' });
         CustomerKycPersonalDetail.belongsTo(models.fileUpload, { foreignKey: 'signatureProof', as: 'signatureProofData' });
 
-        CustomerKycPersonalDetail.hasMany(models.identityProof, { foreignKey: 'customerKycPersonalDetailID', as: 'identityProof' });
+        CustomerKycPersonalDetail.hasMany(models.identityProofImage, { foreignKey: 'customerKycPersonalDetailId', as: 'identityProofImage' });
+    }
+
+    CustomerKycPersonalDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.identityProofImages) {
+            for (image of values.identityProofImages) {
+                image.URL = baseUrlConfig.BASEURL + image.url;
+                let filePath = image.url;
+                let pathToadd = filePath.replace('public/', '');
+                image.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+        }
+        if (values.profileImageData) {
+            values.profileImageData.URL = baseUrlConfig.BASEURL + values.profileImageData.url;
+            let filePath = values.profileImageData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.profileImageData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
+        if (values.signatureProofData) {
+            values.signatureProofData.URL = baseUrlConfig.BASEURL + values.signatureProofData.url;
+            let filePath = values.signatureProofData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.signatureProofData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
+        
+        return values;
     }
 
 

@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
     const Banner = sequelize.define('banner', {
         // attributes
-        images: {
-            type: DataTypes.ARRAY(DataTypes.TEXT),
-            field: 'images'
+        // images: {
+        //     type: DataTypes.ARRAY(DataTypes.TEXT),
+        //     field: 'images'
 
-        },
+        // },
         userId: {
             type: DataTypes.INTEGER,
             field: 'user_id'
@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true,
         tableName: 'loan_banner',
     });
+
+    Banner.associate = function (models) {
+        Banner.hasMany(models.bannerImages, { foreignKey: 'bannerId', as: 'bannerImage' });
+    }
 
     
     //Add_Banner

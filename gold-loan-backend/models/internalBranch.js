@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const InternalBranch = sequelize.define('internalBranch', {
         internalBranchUniqueId: {
@@ -36,27 +38,27 @@ module.exports = (sequelize, DataTypes) => {
         },
         ifscCode: {
             type: DataTypes.STRING,
-            field:'ifsc_code'
+            field: 'ifsc_code'
         },
         bankName: {
             type: DataTypes.STRING,
-            field:'bank_name'
+            field: 'bank_name'
         },
         bankBranch: {
             type: DataTypes.STRING,
-            field:'bank_branch'
+            field: 'bank_branch'
         },
         accountHolderName: {
             type: DataTypes.STRING,
-            field:'account_holder_name'
+            field: 'account_holder_name'
         },
         accountNumber: {
             type: DataTypes.BIGINT,
-            field:'account_number'
+            field: 'account_number'
         },
         passbookStatementChequeId: {
             type: DataTypes.INTEGER,
-            field:'passbook_statement_cheque_id'
+            field: 'passbook_statement_cheque_id'
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -83,8 +85,22 @@ module.exports = (sequelize, DataTypes) => {
         InternalBranch.belongsToMany(models.user, { through: models.userInternalBranch });
         InternalBranch.belongsToMany(models.partner, { through: models.internalBranchPartner })
 
-        InternalBranch.belongsTo(models.fileUpload, {foreignKey: 'passbookStatementChequeId', as: 'passbookStatementCheque'})
+        InternalBranch.belongsTo(models.fileUpload, { foreignKey: 'passbookStatementChequeId', as: 'passbookStatementCheque' })
 
     }
+
+    InternalBranch.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.passbookStatementCheque) {
+
+            values.passbookStatementCheque.URL = baseUrlConfig.BASEURL + values.passbookStatementCheque.url;
+            let filePath = values.passbookStatementCheque.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.passbookStatementCheque.URL = baseUrlConfig.BASEURL + pathToadd;
+
+        }
+        return values;
+    }
+
     return InternalBranch;
 }

@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const PurityTest = sequelize.define('purityTest', {
+    const PurityTestImage = sequelize.define('purityTestImage', {
         // attributes
         customerLoanOrnamentsDetailId: {
             type: DataTypes.INTEGER,
@@ -12,13 +12,13 @@ module.exports = (sequelize, DataTypes) => {
         
     }, {
         freezeTableName: true,
-        tableName: 'loan_purity_test',
+        tableName: 'loan_purity_test_image',
     });
 
-    PurityTest.associate = function (models) {
-        PurityTest.belongsTo(models.fileUpload, { foreignKey: 'purityTestId', as: 'purityTest' });
+    PurityTestImage.associate = function (models) {
+        PurityTestImage.belongsTo(models.fileUpload, { foreignKey: 'purityTestId', as: 'purityTest' });
 
     }
 
-    return PurityTest;
+    return PurityTestImage;
 }

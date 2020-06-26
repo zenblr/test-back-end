@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const IdentityProof = sequelize.define('identityProof', {
+    const IdentityProofImage = sequelize.define('identityProofImage', {
         // attributes
         customerKycPersonalDetailId: {
             type: DataTypes.INTEGER,
@@ -12,13 +12,13 @@ module.exports = (sequelize, DataTypes) => {
         
     }, {
         freezeTableName: true,
-        tableName: 'loan_identity_proof',
+        tableName: 'loan_identity_proof_image',
     });
 
-    IdentityProof.associate = function (models) {
-        IdentityProof.belongsTo(models.fileUpload, { foreignKey: 'identityProofId', as: 'identityProof' });
+    IdentityProofImage.associate = function (models) {
+        IdentityProofImage.belongsTo(models.fileUpload, { foreignKey: 'identityProofId', as: 'identityProof' });
 
     }
 
-    return IdentityProof;
+    return IdentityProofImage;
 }

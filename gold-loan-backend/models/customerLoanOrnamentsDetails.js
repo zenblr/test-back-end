@@ -116,14 +116,44 @@ module.exports = (sequelize, DataTypes) => {
         customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'ornamentImage', as: 'ornamentImageData' });
 
 
-        customerLoanOrnamentsDetail.hasMany(models.purityTest, { foreignKey: 'customerLoanOrnamentsDetailId', as: 'purityTest' });
+        customerLoanOrnamentsDetail.hasMany(models.purityTestImage, { foreignKey: 'customerLoanOrnamentsDetailId', as: 'purityTestImage' });
 
     }
 
     customerLoanOrnamentsDetail.prototype.toJSON = function () {
-        var values = Object.assign({}, this.get({plain: true}));
-        if(values.purityTest.purityTest){
-            values.purityTest.purityTest.URL = baseUrlConfig.baseUrl + values.purityTest.purityTest.url;
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.withOrnamentWeightData) {
+            values.withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.withOrnamentWeightData.url;
+            let filePath = values.withOrnamentWeightData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.withOrnamentWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
+        if (values.stoneTouchData) {
+            values.stoneTouchData.URL = baseUrlConfig.BASEURL + values.stoneTouchData.url;
+            let filePath = values.stoneTouchData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.stoneTouchData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
+        if (values.acidTestData) {
+            values.acidTestData.URL = baseUrlConfig.BASEURL + values.acidTestData.url;
+            let filePath = values.acidTestData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.acidTestData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
+        if (values.ornamentImageData) {
+            values.ornamentImageData.URL = baseUrlConfig.BASEURL + values.ornamentImageData.url;
+            let filePath = values.ornamentImageData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.ornamentImageData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
+
+        if (values.purityTestImages) {
+            for (image of values.purityTestImages) {
+                image.URL = baseUrlConfig.BASEURL + image.url;
+                let filePath = image.url;
+                let pathToadd = filePath.replace('public/', '');
+                image.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
         }
 
         return values;

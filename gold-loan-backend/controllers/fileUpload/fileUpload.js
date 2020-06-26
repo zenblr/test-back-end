@@ -4,7 +4,6 @@ const models = require('../../models'); // importing models.
 
 const { BASEURL } = require('../../config/baseUrl');
 const fs = require('fs');
-const testTable = require('../../models/testTable');
 
 // File Upload.
 exports.uploadFile =

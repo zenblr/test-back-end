@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const customerLoanBankDetail = sequelize.define('customerLoanBankDetail', {
         // attributes
@@ -34,10 +36,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'ifsc_code'
         },
-        passbookProof: {
-            type: DataTypes.ARRAY(DataTypes.TEXT),
-            field: 'passbook_proof'
-        },
+        // passbookProof: {
+        //     type: DataTypes.ARRAY(DataTypes.TEXT),
+        //     field: 'passbook_proof'
+        // },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -62,6 +64,22 @@ module.exports = (sequelize, DataTypes) => {
 
         customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        customerLoanBankDetail.hasMany(models.passbookProofImage, { foreignKey: 'customerLoanBankDetailId', as: 'passbookProofImage' });
+
+    }
+    
+    customerLoanBankDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.identityProofImages) {
+            for (image of values.identityProofImages) {
+                image.URL = baseUrlConfig.BASEURL + image.url;
+                let filePath = image.url;
+                let pathToadd = filePath.replace('public/', '');
+                image.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+        }
+        return values;
     }
 
     // FUNCTION TO ADD CUSTOMER BANK DETAIL

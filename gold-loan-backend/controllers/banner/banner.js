@@ -8,7 +8,18 @@ exports.addUpdateBanner = async (req, res, next) => {
     let userId = req.userData.id
     let banner = await models.banner.readBanner()
     if (banner.length == 0) {
-        let CreatedBanner = await models.banner.addBanner(images, userId);
+
+        let CreatedBanner = await models.banner.create({ userId });
+
+        let data = [];
+        for (let ele of images) {
+            let single = {}
+            single["bannerId"] = CreatedBanner.id;
+            single["bannerImageId"] = ele;
+            data.push(single);
+        }
+        await models.bannerImages.bulkCreate(data, { transaction: t });
+
         if (!CreatedBanner) {
             res.status(422).json({ message: 'Banner not added' });
         } else {
@@ -16,7 +27,19 @@ exports.addUpdateBanner = async (req, res, next) => {
         }
     } else {
         let id = banner[0].id;
-        let UpdateData = await models.banner.updateBanner(id, images, userId)
+        let UpdateData = await models.banner.update({ userId }, { where: { id } })
+
+        await models.bannerImages.distroy({ where: { bannerId: id } });
+
+        let data = [];
+        for (let ele of images) {
+            let single = {}
+            single["bannerId"] = id;
+            single["bannerImageId"] = ele;
+            data.push(single);
+        }
+        await models.bannerImages.bulkCreate(data, { transaction: t });
+
         if (UpdateData[0] === 0) {
             return res.status(404).json({ message: 'Data not updated' });
         }
