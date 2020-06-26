@@ -58,13 +58,13 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 	}
 
 	ngOnChanges(changes:SimpleChanges) {
-		if (this.isClear) {
+		if (changes.isClear && changes.isClear.currentValue) {
 			this.form.reset();
+
 		}
-		this.isClear = false;
-		if(changes.style && changes.style.currentValue){
+		// if(changes.style && changes.style.currentValue){
 			
-		}
+		// }
 
 	}
 

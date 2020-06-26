@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
@@ -12,7 +12,8 @@ import { MatDialog } from '@angular/material';
 @Component({
   selector: 'kt-upload-packets',
   templateUrl: './upload-packets.component.html',
-  styleUrls: ['./upload-packets.component.scss']
+  styleUrls: ['./upload-packets.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges {
 
@@ -32,6 +33,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   url: string;
   @Input() ornamentType
   ornamentName: any;
+  clearData: boolean;
 
   constructor(
     private sharedService: SharedService,
@@ -50,10 +52,10 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
 
   ngOnChanges(change: SimpleChanges) {
-  //   if (change.ornamentType && change.ornamentType.currentValue) {
-  //     this.ornamentType = change.ornamentType.currentValue.ornamentType
-  //     this.ornamentType.map(ele => ele.disabled = false)
-  //   }
+    //   if (change.ornamentType && change.ornamentType.currentValue) {
+    //     this.ornamentType = change.ornamentType.currentValue.ornamentType
+    //     this.ornamentType.map(ele => ele.disabled = false)
+    //   }
   }
 
 
@@ -62,7 +64,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.initForm()
     this.getPacketsDetails()
 
-    this.ornamentType = [{ ornamentType: 'abc', id: 2 }, { ornamentType: 'xcv', id: 1 }]
+    this.ornamentType = [{ ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 },{ ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 }]
     this.ornamentType.map(ele => ele.disabled = false)
 
 
@@ -70,8 +72,14 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.loanId = this.route.snapshot.params.id
 
     this.packetImg = this.fb.group({
+      emptyPacketWithNoOrnament: ['', Validators.required],
+      packetWithAllOrnaments: ['', Validators.required],
+      packetWithSealing: ['', Validators.required],
+      packetWithWeight: ['', Validators.required],
       packetsArray: this.fb.array([])
     })
+
+    this.addmore()
 
     if (this.viewpacketsDetails) {
       const array = this.viewpacketsDetails.loanPacketDetails
@@ -114,9 +122,11 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.packetService.getPacketsAvailable().pipe(
       map(res => {
         this.packetsDetails = res.data;
-        this.packetsDetails.map(ele => ele.disabled = false)
+
       })
     ).subscribe()
+    this.packetsDetails = [{ packetUniqueId: 'PAC-2', id: 2 }, { packetUniqueId: 'PAC-2', id: 1 }]
+    this.packetsDetails.map(ele => ele.disabled = false)
   }
 
   ngAfterViewInit() {
@@ -148,21 +158,26 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     //   width.style.maxWidth = '680px'
 
     // }
+    console.log(this.controls.ornamentType.value)
+
     if (this.url != 'view-loan')
       this.removePackets()
-
     this.packets.push(this.fb.group({
-      emptyPacketWithNoOrnament: ['', Validators.required],
-      packetWithAllOrnaments: ['', Validators.required],
-      packetWithSealing: ['', Validators.required],
-      packetWithWeight: ['', Validators.required],
+
       packetId: [this.controls.packetId.value],
       ornamentsId: [this.controls.ornamentType.value],
       packetsName: [this.packetsName],
       ornamentsName: [this.ornamentName]
     }))
 
+
+    setTimeout(()=>{
+    this.clearData = false;
     this.form.resetForm()
+    this.ref.detectChanges();
+  })
+
+
 
   }
 
@@ -213,15 +228,18 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     let index = this.packetsDetails.findIndex(ele => {
       return ele.id == this.controls.packetId.value;
     })
-    this.packetsName = this.packetsDetails[index]
+    this.packetsName = this.packetsDetails[index].packetUniqueId
     this.packetsDetails[index].disabled = true
 
-    let ornamnetsIndex = this.ornamentType.findIndex(ele => {
-      return ele.id == this.controls.ornamentType.value;
-    })
-    this.ornamentName = this.ornamentType[ornamnetsIndex]
+    // let ornamnetsIndex = this.ornamentType.findIndex(ele => {
+    //   return ele.id == this.controls.ornamentType.value.multiSelect;
+    // })
+    let ornamentTypeObject = this.controls.ornamentType.value.multiSelect
+    this.ornamentName = ornamentTypeObject.map(e => e.ornamentType).toString();
     this.ornamentType[index].disabled = true
     console.log(this.controls.packetId.value)
+    this.clearData = true;
+
 
     // this.packetsDetails.splice(index, 1)
   }
