@@ -32,17 +32,11 @@ export class ImageFunctionalityDialogComponent implements OnInit {
     imgContainer.style.maxWidth = "unset";
     imgContainer.style.display = "unset";
     imgContainer.style.backgroundColor = "transparent";
-    // height: 150px;
-    // min-width: 230px;
-    // max-width: 250px;
-    // background-color: #f2f3f7;
-    // border-radius: 15px;
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
-    // overflow: hidden;
-    // position: relative;
-    // cursor: pointer;
+
+    const imgParentContainer = (this.ele.nativeElement.querySelector('.img-container img') as HTMLElement)
+    imgParentContainer.style.maxWidth = "100%";
+    imgParentContainer.style.maxHeight = "100%";
+
   }
   config: ImageViewerConfig = { btnIcons: { rotateClockwise: 'fa fa-undo rotate' } };
 }

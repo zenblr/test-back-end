@@ -19,7 +19,8 @@
       <ngb-carousel *ngIf="viewImages.length" [showNavigationArrows]="viewImages?.length > 1">
         <ng-template ngbSlide *ngFor="let img of viewImages;index as i">
           <div class="picsum-img-wrapper">
-            <img [src]="img?.URL" alt="Random first slide" (click)="zoom(i)" class="viewImage text-center">
+            <img [src]="img?.URL" alt="Random first slide" (click)="zoom(i)" class="viewImage text-center"
+              [ngStyle]="{'max-width': clickable ? '100%':'300px','max-height': clickable ? '100%':'300px' }">
           </div>
         </ng-template>
       </ngb-carousel>
