@@ -42,10 +42,10 @@ export class ShoppingCartComponent implements OnInit {
   }
 
   removeCartItem(cartId) {
-    const _title = 'Delete Cart Item';
-    const _description = 'Are you sure you want to delete this cart item?';
-    const _waitDesciption = 'Cart Item is deleting...';
-    const _deleteMessage = `Cart Item has been deleted`;
+    const _title = 'Remove Cart Item';
+    const _description = 'Are you sure you want to remove this cart item?';
+    const _waitDesciption = 'Cart Item is removing...';
+    const _deleteMessage = `Cart Item has been removed`;
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
