@@ -32,6 +32,11 @@ export class ShoppingCartComponent implements OnInit {
   getCart() {
     this.shoppingCartService.getCart().subscribe(res => {
       this.cartData = res;
+      if (this.cartData.allCartData.length) {
+        for (const iterator of this.cartData.allCartData) {
+          iterator.showUpdateQuantity = false;
+        }
+      }
       this.shoppingCartService.cartCount.next(res.allCartData.length);
     });
   }
@@ -74,8 +79,8 @@ export class ShoppingCartComponent implements OnInit {
     this.router.navigate(['/broker/shop']);
   }
 
-  updateInput(event) {
+  updateInput(event, cartItem) {
     console.log(event);
-
+    cartItem.showUpdateQuantity = true;
   }
 }
