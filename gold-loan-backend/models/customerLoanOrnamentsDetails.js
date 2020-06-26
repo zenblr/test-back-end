@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const customerLoanOrnamentsDetail = sequelize.define('customerLoanOrnamentsDetail', {
         // attributes
@@ -27,25 +29,25 @@ module.exports = (sequelize, DataTypes) => {
             field: 'deduction_weight'
         },
         weightMachineZeroWeight: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'weight_machine_zero_weight'
         },
         withOrnamentWeight: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'with_ornament_weight'
         },
         stoneTouch: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'stone_touch'
         },
         acidTest: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'acid_test'
         },
-        purityTest: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
-            field: 'purity_test'
-        },
+        // purityTest: {
+        //     type: DataTypes.ARRAY(DataTypes.INTEGER),
+        //     field: 'purity_test'
+        // },
         karat: {
             type: DataTypes.STRING,
             field: 'karat'
@@ -59,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'ltv_range'
         },
         ornamentImage: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'ornament_image'
         },
         ltvPercent: {
@@ -67,11 +69,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'ltv_percent'
         },
         ltvAmount: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.FLOAT,
             field: 'ltv_amount'
         },
         currentLtvAmount: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.FLOAT,
             field: 'current_ltv_amount'
         },
         loanAmount: {
@@ -106,7 +108,27 @@ module.exports = (sequelize, DataTypes) => {
 
         customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'weightMachineZeroWeight', as: 'weightMachineZeroWeightData' });
+        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'withOrnamentWeight', as: 'withOrnamentWeightData' });
+        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'stoneTouch', as: 'stoneTouchData' });
+        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'acidTest', as: 'acidTestData' });
+        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'ornamentImage', as: 'ornamentImageData' });
+
+
+        customerLoanOrnamentsDetail.hasMany(models.purityTest, { foreignKey: 'customerLoanOrnamentsDetailId', as: 'purityTest' });
+
     }
+
+    customerLoanOrnamentsDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({plain: true}));
+        if(values.purityTest.purityTest){
+            values.purityTest.purityTest.URL = baseUrlConfig.baseUrl + values.purityTest.purityTest.url;
+        }
+
+        return values;
+    }
+
 
     // FUNCTION TO ADD CUSTOMER ORNAMENTS DETAIL
     customerLoanOrnamentsDetail.addCustomerOrnamentsDetail =

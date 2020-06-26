@@ -12,19 +12,19 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         emptyPacketWithNoOrnament: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'empty_packet_with_no_ornament'
         },
         packetWithAllOrnaments: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'packet_with_all_ornaments'
         },
         packetWithSealing: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'packet_with_sealing'
         },
         packetWithWeight: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'packet_with_weight'
         },
         ornamentsId: {
@@ -52,6 +52,12 @@ module.exports = (sequelize, DataTypes) => {
     CustomerLoanPackageDetails.associate = function (models) {
         CustomerLoanPackageDetails.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanPackageDetails.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
+
+        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'emptyPacketWithNoOrnament', as: 'emptyPacketWithNoOrnamentData' });
+        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'packetWithAllOrnaments', as: 'packetWithAllOrnamentsData' });
+        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'packetWithSealing', as: 'packetWithSealingData' });
+        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'packetWithWeight', as: 'packetWithWeightData' });
+
     }
 
     // FUNCTION TO ADD PACKAGE IMAGE UPLOAD
