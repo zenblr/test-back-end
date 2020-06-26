@@ -325,12 +325,17 @@ export class AddLeadComponent implements OnInit {
         return
       }
 
-      // if (this.controls.statusId.valid) {
-      //   this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
-      // }
-      // if (this.controls.pinCode.valid) {
-      //   this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
-      // }
+      if (this.controls.leadSourceId.value == "") {
+        this.leadForm.get('leadSourceId').patchValue(null);
+      } else {
+        this.leadForm.get('leadSourceId').patchValue(Number(this.controls.leadSourceId.value));
+      }
+      if (this.controls.statusId.valid) {
+        this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
+      }
+      if (this.controls.pinCode.valid) {
+        this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
+      }
       if (!this.controls.panCardNumber.value) {
         this.leadForm.get('panCardNumber').patchValue(null);
       } else {
@@ -362,12 +367,17 @@ export class AddLeadComponent implements OnInit {
         this.leadForm.get('panType').patchValue(null);
         this.controls.panImage.patchValue('')
       }
-      // if (this.controls.statusId.valid) {
-      //   this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
-      // }
-      // if (this.controls.pinCode.valid) {
-      //   this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
-      // }
+      if (this.controls.leadSourceId.value == "") {
+        this.leadForm.get('leadSourceId').patchValue(null);
+      } else {
+        this.leadForm.get('leadSourceId').patchValue(Number(this.controls.leadSourceId.value));
+      }
+      if (this.controls.statusId.valid) {
+        this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
+      }
+      if (this.controls.pinCode.valid) {
+        this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
+      }
       const leadData = this.leadForm.value;
       console.log('edit')
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {

@@ -121,6 +121,7 @@ export class UserDetailsComponent implements OnInit {
       panType: ['', Validators.required],
       form60: [''],
       panImage: [, Validators.required],
+      image: [],
       panCardNumber: [''],
     })
   }
@@ -135,6 +136,8 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
+        this.controls.panImage.patchValue(res.customerInfo.panImage.id);
+        this.controls.image.patchValue(res.customerInfo.panImage.URL);
         if (res.customerInfo.panCardNumber !== null) {
           this.controls.panCardNumber.disable();
           this.controls.panType.disable();
@@ -185,6 +188,7 @@ export class UserDetailsComponent implements OnInit {
           if (res) {
             this.controls.form60.patchValue(event.target.files[0].name)
             this.controls.panImage.patchValue(res.uploadFile.URL)
+            this.controls.image.patchValue(res.uploadFile.id)
           }
         }), catchError(err => {
           throw err
