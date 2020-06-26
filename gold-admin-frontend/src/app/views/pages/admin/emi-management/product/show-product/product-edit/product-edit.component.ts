@@ -100,7 +100,7 @@ export class ProductEditComponent implements OnInit {
     _productData.manufacturingCostPerGram = parseFloat(_productData.manufacturingCostPerGram);
     _productData.hallmarkingPackaging = parseFloat(_productData.hallmarkingPackaging);
     _productData.shipping = parseFloat(_productData.shipping);
-    _productData.productImage = _productData.productImage.replace(API_ENDPOINT, '');
+    _productData.productImage = _productData.productImage.replace(API_ENDPOINT, 'public/');
 
     delete _productData.id;
     delete _productData.sku;
@@ -135,7 +135,7 @@ export class ProductEditComponent implements OnInit {
         if (this.data.action == 'view') {
           if (res.productImage != '0') {
             const prodImage = {
-              url: res.productImage
+              URL: res.productImage
             }
             res.productImages.push(prodImage);
           }
