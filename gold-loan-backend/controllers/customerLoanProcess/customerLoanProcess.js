@@ -172,7 +172,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
             for (let ele of allOrnmanets) {
 
-                await models.purityTest.distroy({ where: { customerLoanOrnamentsDetailId: ele.id } });
+                await models.purityTest.destroy({ where: { customerLoanOrnamentsDetailId: ele.id } });
 
                 let data = [];
                 for (let single of ele.purityTest) {
@@ -301,7 +301,7 @@ exports.loanBankDetails = async (req, res, next) => {
             }
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
 
-            await models.passbookProofImage.distroy({ where: { customerLoanBankDetailId: checkBank.id } });
+            await models.passbookProofImage.destroy({ where: { customerLoanBankDetailId: checkBank.id } });
 
             let data = [];
             for (let ele of identityProof) {

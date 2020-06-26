@@ -29,7 +29,7 @@ exports.addUpdateBanner = async (req, res, next) => {
         let id = banner[0].id;
         let UpdateData = await models.banner.update({ userId }, { where: { id } })
 
-        await models.bannerImages.distroy({ where: { bannerId: id } });
+        await models.bannerImages.destroy({ where: { bannerId: id } });
 
         let data = [];
         for (let ele of images) {

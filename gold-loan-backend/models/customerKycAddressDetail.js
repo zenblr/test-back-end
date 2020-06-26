@@ -84,19 +84,19 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        CustomerKycAddressDetail.hasMany(models.addressProofImage, { foreignKey: 'customerLoanOrnamentsDetailId', as: 'addressProofImage' });
+        CustomerKycAddressDetail.hasMany(models.addressProofImage, { foreignKey: 'customerKycAddressDetailId', as: 'addressProofImage' });
 
     }
 
 
     CustomerKycAddressDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.addressProofImages) {
-            for (image of values.addressProofImages) {
-                image.URL = baseUrlConfig.BASEURL + image.url;
-                let filePath = image.url;
-                let pathToadd = filePath.replace('public/', '');
-                image.URL = baseUrlConfig.BASEURL + pathToadd;
+        if (values.addressProofImage) {
+            for (image of values.addressProofImage) {
+                image.addressProof.URL = baseUrlConfig.BASEURL + image.addressProof.url;
+                    let filePath = image.addressProof.url;
+                    let pathToadd = filePath.replace('public/', '');
+                    image.addressProof.URL = baseUrlConfig.BASEURL + pathToadd;
             }
         }
         return values;

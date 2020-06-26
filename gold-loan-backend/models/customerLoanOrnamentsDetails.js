@@ -149,10 +149,11 @@ module.exports = (sequelize, DataTypes) => {
 
         if (values.purityTestImages) {
             for (image of values.purityTestImages) {
-                image.URL = baseUrlConfig.BASEURL + image.url;
-                let filePath = image.url;
+
+                image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.url;
+                let filePath = image.purityTest.url;
                 let pathToadd = filePath.replace('public/', '');
-                image.URL = baseUrlConfig.BASEURL + pathToadd;
+                image.purityTest.URL = baseUrlConfig.BASEURL + pathToadd;
             }
         }
 
