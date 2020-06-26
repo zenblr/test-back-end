@@ -144,7 +144,7 @@
                                         (change)="uploadFile(idx,$event,'weightMachineZeroWeight')">
                                     <kt-button *ngIf="!ornament.controls.weightMachineZeroWeight.value"
                                         [type]="'button'" [value]="'Attach'"
-                                        (click)="webcam(idx,$event,'weightMachineZeroWeight')">
+                                        (click)="webcam(idx,$event,'weightMachineZeroWeightData')">
                                     </kt-button>
 
                                     <div class="form-label">
@@ -178,7 +178,7 @@
                                     <input type="file" #withOrnamentWeight class="d-none"
                                         (change)="uploadFile(idx,$event,'withOrnamentWeight')">
                                     <kt-button *ngIf="!ornament.controls.withOrnamentWeight.value" [type]="'button'"
-                                        [value]="'Attach'" (click)="webcam(idx,$event,'withOrnamentWeight')">
+                                        [value]="'Attach'" (click)="webcam(idx,$event,'withOrnamentWeightData')">
                                     </kt-button>
                                     <div class="form-label">
                                         <label *ngIf="ornament.controls.withOrnamentWeight.value && !disable"
@@ -206,7 +206,7 @@
                                     <input type="file" #stoneTouch class="d-none"
                                         (change)="uploadFile(idx,$event,'stoneTouch')">
                                     <kt-button *ngIf="!ornament.controls.stoneTouch.value" [type]="'button'"
-                                        [value]="'Attach'" (click)="webcam(idx,$event,'stoneTouch')">
+                                        [value]="'Attach'" (click)="webcam(idx,$event,'stoneTouchData')">
                                     </kt-button>
                                     <div class="form-label">
                                         <label *ngIf="ornament.controls.stoneTouch.value && !disable"
@@ -237,7 +237,7 @@
                                     <input type="file" #acidTest class="d-none"
                                         (change)="uploadFile(idx,$event,'acidTest')">
                                     <kt-button *ngIf="!ornament.controls.acidTest.value" [type]="'button'"
-                                        [value]="'Attach'" (click)="webcam(idx,$event,'acidTest')"></kt-button>
+                                        [value]="'Attach'" (click)="webcam(idx,$event,'acidTestData')"></kt-button>
                                     <div class="form-label">
                                         <label *ngIf="ornament.controls.acidTest.value && !disable"
                                             class="my-auto text-danger text-center kt-padding-l-15 kt-pointer"
@@ -366,7 +366,8 @@
                     </div>
                 </div>
                 <div class="col-3 ">
-                    <input type="file" #ornamentImage class="d-none" (change)="uploadFile(idx,$event,'ornamentImage')">
+                    <input type="file" #ornamentImage class="d-none"
+                        (change)="uploadFile(idx,$event,'ornamentImageData')">
                     <div class="img-container height220 kt-pointer" *ngIf="!ornament.controls.ornamentImage.value"
                         (click)="webcam(idx,$event,'ornamentImage')">
                         <img class="placeholder-image" src="../../../../../../assets/media/icons/image-placeholder.png"
