@@ -19,6 +19,7 @@ export class UplodPreviewImageComponent implements OnInit {
   @Input() formFieldName: any;
   @Input() fileAcceptType: any;
   @Input() reason: string;
+  @Input() validate: boolean;
   @Output() upload = new EventEmitter();
   @Output() remove = new EventEmitter();
   formData: any;
@@ -34,6 +35,33 @@ export class UplodPreviewImageComponent implements OnInit {
   ) { }
 
   ngOnInit() { }
+
+  validateImage(event) {
+    if (this.validate) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      const img = new Image();
+      img.src = window.URL.createObjectURL(file);
+      reader.readAsDataURL(file);
+      reader.onload = (_event) => {
+        setTimeout(() => {
+          const width = img.naturalWidth;
+          const height = img.naturalHeight;
+          window.URL.revokeObjectURL(img.src);
+          if ((width !== 1500 || height !== 1500) || (file.size > 200000)) {
+            console.log(width, height, file.size);
+            this.toast.error('Please Upload Image of Valid Size');
+            this.file.nativeElement.value = '';
+          } else {
+            this.uploadFile(event);
+          }
+          this.ref.detectChanges();
+        }, 2000);
+      }
+    } else {
+      this.uploadFile(event);
+    }
+  }
 
   uploadFile(event) {
     this.formData = new FormData();

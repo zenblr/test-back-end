@@ -1,6 +1,6 @@
 <kt-toastr #toastr></kt-toastr>
 <div class="kt-portlet">
-    <kt-modal-header [title]='modalTitle' (action)="action($event)"></kt-modal-header>
+    <kt-modal-header [title]='modalTitle' noTitleCase="true" (action)="action($event)"></kt-modal-header>
     <div *ngIf="data.action != 'view'">
         <div class="kt-portlet__body">
             <div class="kt-form">
