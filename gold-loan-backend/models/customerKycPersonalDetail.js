@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         profileImage: {
-            type: DataTypes.TEXT,
+            type: DataTypes.INTEGER,
             field: 'profile_image'
         },
         firstName: {
@@ -70,10 +70,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'identity_type_id'
         },
-        identityProof: {
-            type: DataTypes.ARRAY(DataTypes.TEXT),
-            field: 'identity_proof'
-        },
+        // identityProof: {
+        //     type: DataTypes.ARRAY(DataTypes.INTEGER),
+        //     field: 'identity_proof'
+        // },
         identityProofNumber: {
             type: DataTypes.STRING,
             field: 'identity_proof_number',
@@ -83,7 +83,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'spouse_name',
         },
         signatureProof: {
-            type: DataTypes.TEXT,
+            type: DataTypes.INTEGER,
             field: 'signature_proof'
         },
         createdBy: {
@@ -119,6 +119,11 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        CustomerKycPersonalDetail.belongsTo(models.fileUpload, { foreignKey: 'profileImage', as: 'profileImageData' });
+        CustomerKycPersonalDetail.belongsTo(models.fileUpload, { foreignKey: 'signatureProof', as: 'signatureProofData' });
+
+        CustomerKycPersonalDetail.hasMany(models.identityProof, { foreignKey: 'customerKycPersonalDetailID', as: 'identityProof' });
     }
 
 

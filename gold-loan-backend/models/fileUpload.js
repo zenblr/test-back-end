@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         userId: {
             type: DataTypes.INTEGER,
             field: 'user_id'
+        },
+        url:{
+            type: DataTypes.TEXT,
+            field:'url'
         }
     }, {
         freezeTableName: true,

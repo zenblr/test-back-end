@@ -4,26 +4,29 @@ const models = require('../../models'); // importing models.
 
 const { BASEURL } = require('../../config/baseUrl');
 const fs = require('fs');
-
-
-const storage = multer.diskStorage({
-    filename: (req, file, cb) => {
-        const extArray = file.originalname.split('.');
-        const extension = extArray[extArray.length - 1];
-        cb(null, `${Date.now()}.${extension}`);
-    },
-    destination: 'public/uploads/images/',
-});
-
-const uploads = multer({ storage }).single('avatar');
+const testTable = require('../../models/testTable');
 
 // File Upload.
 exports.uploadFile =
     async (req, res, next) => {
+
+        const storage = multer.diskStorage({
+            filename: (req, file, cb) => {
+                const extArray = file.originalname.split('.');
+                const extension = extArray[extArray.length - 1];
+                cb(null, `${Date.now()}.${extension}`);
+            },
+            destination: 'public/uploads/images/',
+        });
+        
+        const uploads = multer({ storage }).single('avatar');
+
         uploads(req, res, async (err) => {
             if (err) {
                 res.status(500);
             }
+            req.file.url = req.file.destination + req.file.filename;
+
             req.file['userId'] = req.userData.id
             let uploadFile = await models.fileUpload.create(req.file);
             if (!uploadFile) {
