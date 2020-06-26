@@ -50,11 +50,13 @@ export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     var el = (document.querySelector('.mat-dialog-container') as HTMLElement)
-    el.style.background = "transparent";
-    el.style.boxShadow = "none";
+    if (el) {
+      el.style.background = "transparent";
+      el.style.boxShadow = "none";
+    }
   }
 
-  close(){
+  close() {
     this.dialogRef.close()
   }
 }
