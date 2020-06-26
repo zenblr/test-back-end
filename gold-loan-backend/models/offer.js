@@ -1,11 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const Offer = sequelize.define('offer', {
         // attributes
-        images: {
-            type: DataTypes.ARRAY(DataTypes.TEXT),
-            field: 'images'
-
-        },
+        // images: {
+        //     type: DataTypes.INTEGER,
+        //     field: 'images'
+        // },
         userId: {
             type: DataTypes.INTEGER,
             field: 'user_id'
@@ -15,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'loan_offer',
     });
 
+    Offer.associate = function (models) {
+
+        Offer.hasMany(models.offerImages, { foreignKey: 'offerId', as: 'offerImages' });
+
+    }
      //Add_Offer
      Offer.addOffer = (images, userId) => Offer.create({ images, userId });
 

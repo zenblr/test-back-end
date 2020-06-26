@@ -383,7 +383,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         {
             model: models.customerLoanOrnamentsDetail,
             as: 'loanOrnamentsDetail',
-            attributes: { exclude: ['weightMachineZeroWeight', 'withOrnamentWeight', 'stoneTouch', 'acidTest', 'ornamentImage'] },
+            // attributes: { exclude: ['weightMachineZeroWeight', 'withOrnamentWeight', 'stoneTouch', 'acidTest', 'ornamentImage'] },
             include: [{
                 model: models.purityTest,
                 as: "purityTest",
