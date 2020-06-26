@@ -8,6 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class ModalHeaderComponent implements OnInit {
 
   @Input() title;
+  @Input() noTitleCase: boolean;
   @Output() action = new EventEmitter();
 
 

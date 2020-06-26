@@ -1,6 +1,6 @@
 <kt-toastr #toastr></kt-toastr>
 <div class="kt-portlet">
-	<kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+	<kt-modal-header [title]="title" noTitleCase="true" (action)="action($event)"></kt-modal-header>
 	<div class="kt-portlet__body font-weight-500">
 		<form [formGroup]="registerForm">
 			<div class="row kt-padding-t-15">
