@@ -117,6 +117,9 @@ module.exports = (sequelize, DataTypes) => {
 
         customerLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        customerLoan.hasMany(models.customerLoanIntrestCalculator, { foreignKey: 'loanId', as: 'customerLoanIntrestCalculator' });
+
     }
 
     // FUNCTION TO ADD CUSTOMER BANK DETAIL

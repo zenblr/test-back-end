@@ -10,7 +10,7 @@ export class DashboardService {
 
     constructor(private http: HttpClient) { }
 
-    getBrokerDashboard(): Observable<any> {
+    getDashboard(): Observable<any> {
         return this.http.get<any>(API_ENDPOINT + `api/dashboard`);
     }
 }

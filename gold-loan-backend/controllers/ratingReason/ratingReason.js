@@ -18,18 +18,23 @@ exports.addRatingReason = async (req, res, next) => {
 
 exports.getRatingReason = async (req, res, next) => {
     let { getAll } = req.query;
+    if (req.query.from == 1 && req.query.to == -1) {
+        let allRating = await models.ratingReason.findAll({ where: { isActive: true } });
+        return res.status(200).json({ data: allRating });
+    } else {
 
-    let whereCondition;
-    if (getAll == "true") {
-        whereCondition = { order: [['id', 'DESC']] }
-    } else if (getAll == "false") {
-        whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
-    } else if (getAll == undefined) {
-        whereCondition = { order: [['id', 'DESC']] }
+        let whereCondition;
+        if (getAll == "true") {
+            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
+        } else if (getAll == "false") {
+            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
+        } else if (getAll == undefined) {
+            whereCondition = {  where: { isActive: true }, order: [['id', 'DESC']] }
+        }
+        let allRating = await models.ratingReason.findAll(whereCondition);
+        let count = await models.ratingReason.findAll(whereCondition);
+        return res.status(200).json({ data: allRating, count: count.length });
     }
-    let allRating = await models.ratingReason.findAll(whereCondition)
-    return res.status(200).json({ data: allRating })
-
 }
 
 exports.updateRatingReason = async (req, res, next) => {

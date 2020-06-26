@@ -27,7 +27,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
   unsubscribeSearch$ = new Subject()
   // Table fields
   dataSource: BrokerDatasource;
-  displayedColumns = ['merchantName', 'storeId', 'email', 'mobileNumber', 'address', 'state', 'city', 'pincode', 'approvalStatus', 'status', 'action'];
+  displayedColumns = ['merchantName','brokerId', 'storeId', 'email', 'mobileNumber', 'address', 'state', 'city', 'pincode', 'approvalStatus', 'status', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
 
@@ -198,13 +198,13 @@ export class BrokerListComponent implements OnInit, OnDestroy {
 
 
   editBroker(broker, action) {
-    let data = this.createData(broker)
-    console.log(data)
-    const _saveMessage = `Role successfully has been saved.`;
+    // let data = this.createData(broker)
+    // console.log(data)
+    const _saveMessage = `Updated successfully has been saved.`;
     const dialogRef = this.dialog.open(AddBrokerComponent, {
       data: {
         action: action,
-        broker: data,
+        broker: broker.id,
         status: this.status
       },
       width: '450px'

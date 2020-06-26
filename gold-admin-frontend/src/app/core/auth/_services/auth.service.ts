@@ -66,8 +66,6 @@ export class AuthService {
             return token.Token
     }
 
-
-
     getUserByToken(): Observable<User> {
         const userToken = localStorage.getItem(environment.authTokenKey);
         const httpHeaders = new HttpHeaders();
@@ -199,6 +197,13 @@ export class AuthService {
         const httpHeaders = new HttpHeaders();
         httpHeaders.set('Content-Type', 'application/json');
         return this.http.post<QueryResultsModel>(API_ROLES_URL + '/findRoles', queryParams, { headers: httpHeaders });
+    }
+
+    getSingleSignOn(apikey, userid): Observable<any> {
+        let httpHeaders = new HttpHeaders();
+        httpHeaders = httpHeaders.append('apikey', apikey);
+        httpHeaders = httpHeaders.append('userid', userid);
+        return this.http.get<any>(API_ENDPOINT + `api/single-sign-on`, { headers: httpHeaders });
     }
 
     /*

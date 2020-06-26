@@ -18,7 +18,7 @@
                         <!-- Lead Drop Down -->
                         <div class="row">
                             <div class="col-4 form-label">
-                                <mat-label>Lead</mat-label>
+                                <mat-label>Lead Source</mat-label>
                             </div>
 
                             <div class="col-8">
@@ -42,7 +42,7 @@
 
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <mat-label>Source</mat-label>
+                                <mat-label>Comment</mat-label>
                             </div>
 
                             <div class="col-8">
@@ -87,7 +87,7 @@
                                 <mat-label class="mandatory">Mobile Number</mat-label>
                             </div>
 
-                            <div class="col-5">
+                            <div [ngClass]="data.action == 'add' ? 'col-5' : 'col-8'">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                 <input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
                                     autocomplete="off" placeholder="Enter mobile number" margin
@@ -109,7 +109,7 @@
                                 <!-- </mat-form-field> -->
                             </div>
 
-                            <div class="col-3">
+                            <div class="col-3" *ngIf="data.action == 'add'">
                                 <div *ngIf="!otpSent">
                                     <kt-button [myClass]="'w-100'" [isDisabled]="otpButton || viewOnly"
                                         [type]="'button'" [value]="'Send OTP'" (action)="sendOTP()">
@@ -198,7 +198,7 @@
                                 <mat-label>PAN</mat-label>
                             </div>
 
-                            <div class="col-5">
+                            <div [ngClass]="data.action != 'view'?'col-5':'col-8'">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                 <input class="form-control" formControlName="panCardNumber" autocomplete="off"
                                     placeholder="PAN" maxlength="10"
@@ -218,7 +218,7 @@
                                 </mat-error>
                                 <!-- </mat-form-field> -->
                             </div>
-                            <div class="col">
+                            <div class="col" *ngIf="data.action != 'view'">
                                 <div *ngIf="!isPanVerified">
                                     <kt-button [myClass]="'w-100'" [isDisabled]="panButton || viewOnly"
                                         [type]="'button'" [value]="'Verify'" (action)="verifyPAN()">
@@ -367,7 +367,7 @@
                                 <!-- <mat-label class="mandatory">Select</mat-label> -->
                                 <select class="form-control" formControlName="statusId" (change)="commentBox()"
                                     [class.isError]="controls.statusId.touched && controls.statusId.invalid">
-                                    <option selected disabled value="">Select Status</option>
+                                    <option selected disabled value=null>Select Status</option>
                                     <option *ngFor="let stat of status" [value]="stat.id">
                                         {{stat.statusName | titlecase}}
                                     </option>

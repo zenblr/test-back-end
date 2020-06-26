@@ -7,6 +7,7 @@ import { tap, finalize, catchError } from 'rxjs/operators';
 import { AuthService } from '../../../../core/auth/_services/auth.service';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 /**
  * More information there => https://medium.com/@MetonymyQT/angular-http-interceptors-what-are-they-and-how-to-use-them-52e060321088
@@ -17,7 +18,8 @@ export class InterceptService implements HttpInterceptor {
 	constructor(
 		private authService: AuthService,
 		private sharedSerivce: SharedService,
-		private router: Router
+		private router: Router,
+		private cookieService: CookieService,
 	) {
 	}
 	// intercept request and add token
@@ -71,7 +73,8 @@ export class InterceptService implements HttpInterceptor {
 					// console.log(err.status)
 					if (err.status == 401) {
 						localStorage.clear();
-						this.router.navigate(['/auth/login'])
+						this.cookieService.deleteAll();
+						this.router.navigate(['/auth/login']);
 					}
 					throw err
 				}

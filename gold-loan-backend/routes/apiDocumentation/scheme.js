@@ -28,6 +28,18 @@
  *               type: number
  *             interestRateOneHundredEightyDaysMonthly:
  *               type: number
+ *             processingChargeFixed:
+ *               type: number
+ *             processingChargePercent:
+ *               type: number
+ *             maximumPercentageAllowed:
+ *               type: number
+ *             penalInterest:
+ *               type: number
+ *             schemeType:
+ *               type: string
+ *             isDefault:
+ *               type: string
  *             partnerId:
  *               type: number
  *         required:
@@ -37,6 +49,11 @@
  *           - interestRateThirtyDaysMonthly
  *           - interestRateNinetyDaysMonthly
  *           - interestRateOneHundredEightyDaysMonthly
+ *           - processingChargeFixed
+ *           - processingChargePercent
+ *           - maximumPercentageAllowed
+ *           - penalInterest
+ *           - schemeType
  *           - partnerId
  *     responses:
  *       201:

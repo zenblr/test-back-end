@@ -6,6 +6,7 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
   selector: 'kt-image-preview-dialog',
   templateUrl: './image-preview-dialog.html',
   styles: [`.mat-dialog-container:{background:transparent !important}
+  .px-40 {padding : 0px 40px !important}
   img{ border-radius:15px !important; }
   :focus { outline: none; }
   .viewImage { max-height: 300px; max-width: 300px; }
@@ -13,6 +14,7 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
     top: 0;
     right: 0;
     height: 30px;
+    z-index:1;
   cursor:pointer}
   `]
 })
@@ -21,6 +23,7 @@ export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {
   @Input() type = '';
   images: any[] = [];
   index: number = null;
+  removePadding = false;
   constructor(
     config: NgbCarouselConfig,
     public dialogRef: MatDialogRef<ImagePreviewDialogComponent>,
@@ -45,7 +48,13 @@ export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {
         }
       }
       Array.prototype.push.apply(this.images, temp);
+      if(this.data.modal){
+        this.removePadding = true;
+      }
     }
+
+    
+
   }
 
   ngAfterViewInit() {

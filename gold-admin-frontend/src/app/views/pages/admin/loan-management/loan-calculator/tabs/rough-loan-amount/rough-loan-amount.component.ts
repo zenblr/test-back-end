@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UploadOfferService } from '../../../../../../../core/upload-data';
 import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
+import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
 
 @Component({
   selector: 'kt-rough-loan-amount',
@@ -13,14 +14,20 @@ export class RoughLoanAmountComponent implements OnInit {
   roughLoanForm: FormGroup;
   loanAmount: number = 0;
 
-  constructor(public fb: FormBuilder, private goldRateService: GoldRateService) {
+  constructor(public fb: FormBuilder,
+    private globalSettingService: GlobalSettingService,
+    private goldRateService: GoldRateService) {
 
   }
 
   ngOnInit() {
     this.initForm();
-    this.goldRateService.goldRate$.subscribe(res => {
-      this.controls.currentLTV.patchValue(res * 0.75);
+    this.globalSettingService.globalSetting$.subscribe(global => {
+      if (global) {
+        this.goldRateService.goldRate$.subscribe(res => {
+          this.controls.currentLTV.patchValue(res * (global.ltvGoldValue/100));
+        })
+      }
     })
   }
 

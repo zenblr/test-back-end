@@ -47,9 +47,11 @@ export class ProductComponent implements OnInit {
 
       this.shopService.addToCart(params).subscribe(res => {
         this.toastr.successToastr("Added to Cart");
-        this.dialogRef.close()
+        if (this.data.productId) {
+          this.dialogRef.close();
+        }
         this.router.navigate(['/broker/cart']);
-      })
+      });
 
     } else {
       this.toastr.errorToastr("Select a Payment Type");

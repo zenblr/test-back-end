@@ -210,7 +210,12 @@ export class TopbarComponent implements OnInit {
 				.subscribe((ct) => {
 					if (ct != null) {
 						Promise.resolve(null).then(() => {
-							this.totalRecords = ct;
+							if (this.router.url.includes('/broker/customers') ||
+								this.router.url.includes('/broker/orders') ||
+								this.router.url.includes('/broker/shop') ||
+								this.router.url.includes('/broker/cart')) {
+								this.totalRecords = ct;
+							}
 						});
 					}
 				})
@@ -274,15 +279,15 @@ export class TopbarComponent implements OnInit {
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "ornaments") {
-			this.value1 = "Add Ornaments";
-			this.showInput = true;
-			this.dataSourceHeader();
+			this.value2 = "Add Ornaments";
+			this.type2 = "button";
+			this.rightButton = true;
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "reasons") {
-			this.value1 = "Add Reason";
-			this.showInput = true;
-			this.dataSourceHeader();
+			this.value2 = "Add Reason";
+			this.type2 = "button";
+			this.rightButton = true;
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "lead-management") {
@@ -375,8 +380,9 @@ export class TopbarComponent implements OnInit {
 		}
 
 		if (this.path == "purposes") {
-			this.dataSourceHeader();
-			this.value1 = "Add Purpose";
+			this.value2 = "Add Purpose";
+			this.type2 = "button";
+			this.rightButton = true;
 		}
 		if (this.path == "lead-source") {
 			this.value1 = "Add Lead Source";
@@ -587,6 +593,12 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = "500px";
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
+		}
+		if (location.href.includes('/loan-management/topup')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/repayment/part-release')) {
+			this.showBackButton = true;
 		}
 	}
 

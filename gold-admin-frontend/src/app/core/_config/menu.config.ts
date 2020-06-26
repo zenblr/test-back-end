@@ -137,12 +137,12 @@ export class MenuConfig {
 
 									submenu: [
 										{
-											title: "Email Alert",
+											title: "Email Template",
 											page: "/admin/notification-setting/email-alert",
 											permission: false,
 										},
 										{
-											title: "SMS Alert",
+											title: "SMS Template",
 											page: "/admin/notification-setting/sms-alert",
 											permission: false,
 										},
@@ -284,7 +284,7 @@ export class MenuConfig {
 									page: "/admin/loan-management/all-loan",
 									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanDetailsView'),
-								},
+								}
 							],
 						},
 						{

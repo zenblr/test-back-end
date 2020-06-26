@@ -31,14 +31,14 @@ exports.submitCustomerKycInfoValidation = [
             }
 
         }),
-    body("panCardNumber")
-        .exists()
-        .withMessage("pan card number is required")
-        .custom(async value => {
-            if (!/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/i.test(value)) {
-                return Promise.reject('Invalid Pan Card Number')
-            }
-        })
+    // body("panCardNumber")
+    //     .exists()
+    //     .withMessage("pan card number is required")
+    //     .custom(async value => {
+    //         if (!/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/i.test(value)) {
+    //             return Promise.reject('Invalid Pan Card Number')
+    //         }
+    //     })
 ]
 
 // submit customerKyc address

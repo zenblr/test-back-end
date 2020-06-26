@@ -4,54 +4,54 @@
             <div class="col-12">
                 <mat-tab-group [(selectedIndex)]="selected" (selectedTabChange)="next($event)">
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
-                        <kt-basic-details  [action]="action" (apiHit)="editId($event)"
-                            [details]="customerDetail" [disable]="disabledForm" (finalLoanAmount)="finalLoanAmount($event)"
-                            (laonId)="loan($event)" (next)="next($event)" (totalEligibleAmt)="totalEligibleAmt($event)"
-                            >
+                        <kt-basic-details [action]="action" (apiHit)="editId($event)" [details]="customerDetail"
+                            [disable]="disabledForm" (finalLoanAmount)="finalLoanAmount($event)" (laonId)="loan($event)"
+                            (next)="next($event)" (totalEligibleAmt)="totalEligibleAmt($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <!-- <mat-tab label="KYC Details" [disabled]="disabled[1]">
                         <kt-kyc-details (kycEmit)="kycEmit($event)" [action]="action" [details]="customerDetail"  [disable]="disabledForm"></kt-kyc-details>
                     </mat-tab> -->
                     <mat-tab label="Nominee Details" [disabled]="disabled[1]">
-                        <kt-nominee-details  [action]="action" (next)="next($event)"
-                            [invalid]="invalid.nominee" [disable]="disabledForm" [details]="customerDetail" [loanId]="loanId">
+                        <kt-nominee-details [action]="action" (next)="next($event)" [disable]="disabledForm"
+                            [details]="customerDetail" [loanId]="loanId">
                         </kt-nominee-details>
                     </mat-tab>
                     <mat-tab label="Ornaments" [disabled]="disabled[2]">
                         <!-- <ng-template > -->
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
                             style="padding:0px !important">
-                            <kt-ornaments [action]="action" (next)="next($event)"
-                                [invalid]="invalid.ornaments" [disable]="disabledForm" [details]="customerDetail"
-                                (totalAmt)="total($event)" [loanId]="loanId" [ornamentType]="ornamentType">
+                            <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
+                                [details]="customerDetail" (totalAmt)="total($event)" [loanId]="loanId"
+                                [ornamentType]="ornamentType">
                             </kt-ornaments>
                         </div>
                         <!-- </ng-template> -->
                     </mat-tab>
                     <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">
-                        <kt-interest-calculator  (next)="next($event)"
-                            [invalid]="invalid.intreset" [disable]="disabledForm" [action]="action" (finalLoanAmount)="finalLoanAmount($event)"
-                            [totalAmt]="totalAmount" [details]="customerDetail" [loanId]="loanId"></kt-interest-calculator>
+                        <kt-interest-calculator (next)="next($event)" [disable]="disabledForm" [action]="action"
+                            (finalLoanAmount)="finalLoanAmount($event)" [totalAmt]="totalAmount"
+                            [details]="customerDetail" [loanId]="loanId"></kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">
-                        <kt-bank-details [action]="action" [loanId]="loanId"
-                            [details]="customerDetail" [disable]="disabledForm" [finalLoanAmt]="finalLoanAmt" (next)="next($event)">
+                        <kt-bank-details [action]="action" [loanId]="loanId" [details]="customerDetail"
+                            [disable]="disabledForm" [finalLoanAmt]="finalLoanAmt" (next)="next($event)">
                         </kt-bank-details>
                     </mat-tab>
                     <mat-tab label="Loan Status Approval" [disabled]="disabled[5]">
-                        <kt-approval (apply)="apply()" [action]="action"
-                            [invalid]="invalid.approval" [disable]="disabledForm" [details]="customerDetail" [loanId]="loanId">
+                        <kt-approval [action]="action" [disable]="disabledForm" [details]="customerDetail"
+                            [loanId]="loanId">
                         </kt-approval>
                     </mat-tab>
-                    <mat-tab label="Packets" 
-                        *ngIf="url == 'packet-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)">
+                    <mat-tab label="Packets" >
+                        <!-- *ngIf="url == 'packet-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)"> -->
                         <!-- <ng-template> -->
-                            <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab"
-                            style="padding:0px !important"> 
-                            <kt-upload-packets [viewpacketsDetails]="customerDetail" [ornamentType]="customerDetail"></kt-upload-packets>
+                        <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab"
+                            style="padding:0px !important">
+                            <kt-upload-packets [viewpacketsDetails]="customerDetail" [ornamentType]="customerDetail">
+                            </kt-upload-packets>
                         </div>
-                        <!-- </ng-template> -->                        
+                        <!-- </ng-template> -->
                     </mat-tab>
                 </mat-tab-group>
             </div>

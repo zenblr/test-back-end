@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ToastrComponent } from '../../../../../partials/components/toastr/toastr.component';
 import { PartnerService } from '../../../../../../core/user-management/partner/services/partner.service';
 import { AppraiserService } from '../../../../../../core/user-management/appraiser';
+import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 
 @Component({
   selector: 'kt-add-appraiser',
@@ -23,6 +24,21 @@ export class AddAppraiserComponent implements OnInit {
   viewOnly = false;
   viewLoading: boolean = false;
   title: string;
+  minDate = new Date();
+  darkTheme: NgxMaterialTimepickerTheme = {
+    container: {
+        bodyBackgroundColor: '#fff',
+        buttonColor: '#454d67'
+    },
+    dial: {
+        dialBackgroundColor: '#5d78ff',
+    },
+    clockFace: {
+        clockFaceBackgroundColor: '#e7e9ec',
+        clockHandColor: '#5d78ff',
+        clockFaceTimeInactiveColor: '#454d67'
+    }
+};
 
   constructor(
     public dialogRef: MatDialogRef<AddAppraiserComponent>,
@@ -38,7 +54,6 @@ export class AddAppraiserComponent implements OnInit {
     this.getAllAppraiser();
     this.formInitialize();
     this.setForm()
-
   }
 
   setForm() {
@@ -71,6 +86,8 @@ export class AddAppraiserComponent implements OnInit {
       customerId: [, [Validators.required]],
       customerName: [''],
       appraiserId: ['', [Validators.required]],
+      date:[],
+      time:[]
     });
   }
 
