@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppliedLoanService } from '../../../../../core/loan-management';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { GlobalSettingService } from '../../../../../core/global-setting/services/global-setting.service';
 
 @Component({
   selector: 'kt-disburse-dialog',
@@ -15,13 +16,20 @@ export class DisburseDialogComponent implements OnInit {
   currentDate = new Date()
   disburseForm: FormGroup
   details: any;
+  globalValue: any;
   constructor(
     public dialogRef: MatDialogRef<DisburseDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     public loanService: AppliedLoanService,
-    public toast: ToastrService
-  ) { }
+    public toast: ToastrService,
+    public globalSettingService: GlobalSettingService
+  ) {
+    this.globalSettingService.globalSetting$.subscribe(res => {
+      // console.log(res)
+      this.globalValue = res;
+    })
+  }
 
   ngOnInit() {
     this.disburseForm = this.fb.group({
@@ -51,6 +59,11 @@ export class DisburseDialogComponent implements OnInit {
         this.details = res.data
         this.patchValue(res.data.paymentType)
         this.disburseForm.patchValue(res.data)
+        if(this.globalValue.cashTransactionLimit < this.disburseForm.controls.finalLoanAmount.value){
+          this.disburseForm.controls.paymentMode.patchValue('bank')
+          this.disburseForm.controls.paymentMode.disable()
+          return
+        }
         this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
 
       }
@@ -95,7 +108,7 @@ export class DisburseDialogComponent implements OnInit {
   }
 
   submit() {
-   
+
     if (this.disburseForm.invalid) {
       this.disburseForm.markAllAsTouched()
       return
@@ -109,7 +122,7 @@ export class DisburseDialogComponent implements OnInit {
       catchError(err => {
         this.toast.error(err.error.message);
         throw err
-      }),finalize(()=>{
+      }), finalize(() => {
         this.formDisable()
       })).subscribe()
   }
@@ -117,12 +130,12 @@ export class DisburseDialogComponent implements OnInit {
   generateOTP() {
     this.loanService.generateOTP('id').pipe(
       map(res => {
-        console.log(res);
+        // console.log(res);
       })).subscribe()
   }
 
   setConditionalValidation(event) {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     let selectedType = event.target.value;
     this.patchValue(selectedType)
     // if (selectedType == 'bank') {

@@ -25,7 +25,7 @@ export class LoanDetailsComponent implements OnInit {
     this.loanservice.getLoanDataById(this.loanId).subscribe(res => {
       this.loanDetails = res.data
       this.createOrnamentsImage()
-      console.log(this.images)
+      // console.log(this.images)
     })
   }
 

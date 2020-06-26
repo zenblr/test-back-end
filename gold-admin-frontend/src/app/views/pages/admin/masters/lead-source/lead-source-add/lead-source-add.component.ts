@@ -39,7 +39,7 @@ export class LeadSourceAddComponent implements OnInit {
   initForm() {
     this.leadSourceForm = this.fb.group({
       id: [],
-      leadName: ['', [Validators.required]],
+      leadName: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
       // source: ['', [Validators.required]],
     })
   }

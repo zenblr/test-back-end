@@ -240,6 +240,35 @@
           </div>
         </div>
 
+        <!-- Broker Order -->
+        <div class="kt-portlet__body" *ngIf="filterName =='brokerOrder'">
+          <div class="kt-form">
+            <form [formGroup]="filterForm">
+              <div class="form-group kt-form__group row">
+                <div class="col-12 kt-margin-bottom-20-mobile">
+                  <div class="row">
+                    <div class="col-4">
+                      <label>By Tenure(months)</label>
+                      <kt-multi-select-search [items]="paymentTypeList" [multiple]="true" bindLabel="paymentType"
+                        formControlName="paymentType" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                    <div class="col-5">
+                      <label>By Status</label>
+                      <kt-multi-select-search [items]="statusList" [multiple]="true" bindLabel="statusName"
+                        formControlName="status" [isClear]="clearData"></kt-multi-select-search>
+                    </div>
+                    <div class="col-3">
+                      <kt-button [type]="'button'" [value]="'Apply'" class="btn-absolute-bottom-right pull-right"
+                        (click)="applyFilter()">
+                      </kt-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
         <!-- Deposit Details -->
         <div class="kt-portlet__body" *ngIf="filterName =='depositDetails'">
           <div class="kt-form">

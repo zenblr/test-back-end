@@ -64,8 +64,8 @@ export class SharedService {
 		// }
 	}
 
-	fileUpload(data): Observable<any> {
-		return this.http.post<any>(API_ENDPOINT + `api/file-upload`, data);
+	fileUpload(data, reason): Observable<any> {
+		return this.http.post<any>(API_ENDPOINT + `api/file-upload?reason=` + reason, data);
 	}
 
 	getAllCategory(): Observable<any> {

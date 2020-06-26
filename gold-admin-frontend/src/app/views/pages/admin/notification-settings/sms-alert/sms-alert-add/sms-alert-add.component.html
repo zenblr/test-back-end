@@ -1,53 +1,67 @@
+<kt-toastr #toastr></kt-toastr>
 <div class="kt-portlet">
-
     <kt-modal-header [title]='modalTitle' (action)="action($event)"></kt-modal-header>
-    <div>
-        <div class="kt-form">
-            <form [formGroup]="smsForm">
-                <div class="kt-portlet__body">
-
+    <div *ngIf="data.action != 'view'">
+        <div class="kt-portlet__body">
+            <div class="kt-form">
+                <form [formGroup]="smsForm">
                     <div class="kt-portlet__body-progress">
                         <mat-spinner [diameter]="20"></mat-spinner>
                     </div>
-
-                    <div class="col-lg-12 kt-margin-bottom-20-mobile">
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <mat-label class="mandatory">Event</mat-label>
+                    <div class="col-12 kt-margin-bottom-20-mobile">
+                        <div class="row">
+                            <div class="col-3 form-label">
+                                <mat-label class="mandatory">Event:</mat-label>
                             </div>
-
-                            <div class="col-8">
-                                <input class="form-control" formControlName="event"
-                                    [class.isError]="controls.event.touched && controls.event.invalid">
-                                <mat-error *ngIf="controls.event.touched && controls.event.errors?.required">
+                            <div class="col-9 p-0">
+                                <input class="form-control" formControlName="alertFor"
+                                    [class.isError]="controls.alertFor.touched && controls.alertFor.invalid">
+                                <mat-error *ngIf="controls.alertFor.touched && controls.alertFor.errors?.required">
                                     Required field
                                 </mat-error>
                             </div>
                         </div>
-
                         <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <mat-label class="mandatory">Variable</mat-label>
+                            <div class="col-3 form-label">
+                                <mat-label class="mandatory">Text:</mat-label>
                             </div>
-
-                            <div class="col-8">
-                                <input class="form-control" formControlName="content"
+                            <div class="col-9 p-0">
+                                <!-- <quill-editor formControlName="content"
                                     [class.isError]="controls.content.touched && controls.content.invalid">
+                                </quill-editor> -->
+                                <textarea class="form-control" rows="5" formControlName="content"
+                                    [class.isError]="controls.alertFor.touched && controls.alertFor.invalid"></textarea>
                                 <mat-error *ngIf="controls.content.touched && controls.content.errors?.required">
                                     Required field
                                 </mat-error>
                             </div>
                         </div>
-
-
                     </div>
-                </div>
-
-                <div class="p-4" *ngIf="data.action != 'view'">
-                    <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)"
-                        [value]="data.action == 'add' ? data.action : 'update'">
-                    </kt-modal-footer>
-
-                </div>
-            </form>
+                    <div class="pt-3">
+                        <kt-modal-footer (action)="action($event)"
+                            [value]="data.action == 'add' ? data.action : 'update'">
+                        </kt-modal-footer>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
+    <div *ngIf="data.action == 'view'">
+        <div class="kt-portlet__body">
+            <div class="col-12 kt-margin-bottom-20-mobile">
+                <div class="row">
+                    <div class="col-3 form-label">
+                        <mat-label>Event:</mat-label>
+                    </div>
+                    <div class="col-9 p-0">{{data?.data?.alertFor}}</div>
+                </div>
+                <div class="row kt-padding-t-15">
+                    <div class="col-3 form-label">
+                        <mat-label>Text:</mat-label>
+                    </div>
+                    <div class="col-9 p-0">{{data?.data?.content}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

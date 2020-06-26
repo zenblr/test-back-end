@@ -95,7 +95,7 @@ exports.availablePacket = async (req, res, next) => {
             id: req.userData.id
         },
         include: {
-            model: models.userInternalBranch,
+            model: models.internalBranch,
             
         }
     });

@@ -18,6 +18,7 @@ export class UplodPreviewImageComponent implements OnInit {
   @Input() index: any;
   @Input() formFieldName: any;
   @Input() fileAcceptType: any;
+  @Input() reason: string;
   @Output() upload = new EventEmitter();
   @Output() remove = new EventEmitter();
   formData: any;
@@ -39,7 +40,7 @@ export class UplodPreviewImageComponent implements OnInit {
     for (const file of event.target.files) {
       this.formData.append("avatar", file);
     }
-    this.sharedService.fileUpload(this.formData).subscribe(
+    this.sharedService.fileUpload(this.formData, this.reason).subscribe(
       res => {
         if (this.index != null && this.index != undefined) {
           const data = {

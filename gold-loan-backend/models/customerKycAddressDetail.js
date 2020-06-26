@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycAddressDetail = sequelize.define('customerKycAddressDetail', {
         // attributes
@@ -35,14 +37,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'pin_code'
         },
-        addressProofTypeId:{
+        addressProofTypeId: {
             type: DataTypes.INTEGER,
             field: 'address_proof_type_id'
         },
-        addressProof: {
-            type: DataTypes.ARRAY(DataTypes.INTEGER),
-            field: 'address_proof'
-        },
+        // addressProof: {
+        //     type: DataTypes.ARRAY(DataTypes.INTEGER),
+        //     field: 'address_proof'
+        // },
         addressProofNumber: {
             type: DataTypes.STRING,
             field: 'address_proof_number',
@@ -80,7 +82,24 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycAddressDetail.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
 
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-        CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });        
+        CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        CustomerKycAddressDetail.hasMany(models.addressProofImage, { foreignKey: 'customerLoanOrnamentsDetailId', as: 'addressProofImage' });
+
+    }
+
+
+    CustomerKycAddressDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.addressProofImages) {
+            for (image of values.addressProofImages) {
+                image.URL = baseUrlConfig.BASEURL + image.url;
+                let filePath = image.url;
+                let pathToadd = filePath.replace('public/', '');
+                image.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+        }
+        return values;
     }
 
 

@@ -188,7 +188,6 @@ export class MenuConfig {
 										},
 									],
 								},
-
 							],
 						},
 						{
@@ -285,7 +284,7 @@ export class MenuConfig {
 									page: "/admin/loan-management/all-loan",
 									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanDetailsView'),
-								},
+								}
 							],
 						},
 						{
@@ -398,7 +397,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-29.svg",
 							page: "/broker",
-							permission: !(this.userType === 2 || this.userType === 3 || this.userType === 4),
+							permission: true,
 						},
 						{
 							title: "Log Out",
@@ -479,6 +478,14 @@ export class MenuConfig {
 						},
 					],
 					emiMgmtItems: [
+						{
+							title: "Dashboard",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/emi-management/dashboard",
+							translate: "MENU.DASHBOARD",
+							permission: false,
+						},
 						{
 							title: "Product",
 							root: true,

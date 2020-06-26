@@ -1,0 +1,21 @@
+:host {
+    .main {
+        min-height: 80vh;
+    }
+    table {
+        table-layout: fixed;
+
+    th,td {
+        width: 120px;
+        // overflow: hidden;
+        word-wrap: break-word;
+        }
+    .last {
+        width: 180px !important;
+        overflow: hidden;
+        }
+    }
+    .w100 {
+        width: 100px !important;
+    }
+}

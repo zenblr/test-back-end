@@ -30,7 +30,7 @@ export class PurposesListComponent implements OnInit {
     private purposeService: PurposeService,
     public dialog: MatDialog,
     private layoutUtilsService: LayoutUtilsService,
-    private toastr:ToastrService
+    private toastr: ToastrService
   ) {
     this.purposeService.openModal$.pipe(
       map(res => {
@@ -115,7 +115,7 @@ export class PurposesListComponent implements OnInit {
   deletePurpose(item) {
     const role = item;
     const _title = 'Delete Purpose';
-    const _description = 'Are you sure to permanently delete this purpose?';
+    const _description = 'Are you sure to permanently delete this Purpose?';
     const _waitDesciption = 'Purpose is deleting...';
     const _deleteMessage = `Purpose has been deleted`;
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);

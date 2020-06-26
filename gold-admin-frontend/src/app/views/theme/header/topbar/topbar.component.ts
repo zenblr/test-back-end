@@ -36,7 +36,7 @@ import { MonthlyService } from "../../../../core/repayment/services/monthly.serv
 import { CustomerDetailsService } from "../../../../core/emi-management/customer-details";
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
 import { EmailAlertService } from '../../../../core/notification-setting/services/email-alert.service';
-import { SmsAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
+import { SMSAlertService } from '../../../../core/notification-setting/services/sms-alert.service';
 import { HolidayService } from '../../../../core/holidays/services/holiday.service';
 import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
 import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
@@ -45,7 +45,7 @@ import { ReasonsService } from '../../../../core/masters/reasons/services/reason
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
 import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
-import { PacketTrackingService} from '../../../../core/loan-management'
+import { PacketTrackingService } from '../../../../core/loan-management'
 import { LoanRepaymentService } from '../../../../core/account/loan-repayment/services/loan-repayment.service';
 import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
 import { ShoppingCartService, OrdersService } from '../../../../core/merchant-broker';
@@ -123,7 +123,7 @@ export class TopbarComponent implements OnInit {
 		private customerDetailsService: CustomerDetailsService,
 		private leadService: LeadService,
 		private emailAlertService: EmailAlertService,
-		private smsAlertService: SmsAlertService,
+		private smsAlertService: SMSAlertService,
 		private holidayService: HolidayService,
 		private packetLocation: PacketLocationService,
 		private ornamentsService: OrnamentsService,
@@ -133,7 +133,7 @@ export class TopbarComponent implements OnInit {
 		private appliedLoan: AppliedLoanService,
 		private leadSourceService: LeadSourceService,
 		private shopService: ShopService,
-		private packetTrackingService:PacketTrackingService,
+		private packetTrackingService: PacketTrackingService,
 		private loanRepaymentService: LoanRepaymentService,
 		private loanDisbursementService: LoanDisbursementService,
 		private shoppingCartService: ShoppingCartService,
@@ -156,17 +156,17 @@ export class TopbarComponent implements OnInit {
 				}
 			});
 
-		this.orderDetailsService.button$
-			.pipe(takeUntil(this.destroy$))
-			.subscribe((res) => {
-				if (res && res == "spot") {
-					this.button = false;
-				} else if (res && res != "spot") {
-					this.button = true;
-				} else {
-					this.button = false;
-				}
-			});
+		// this.orderDetailsService.button$
+		// 	.pipe(takeUntil(this.destroy$))
+		// 	.subscribe((res) => {
+		// 		if (res && res == "spot") {
+		// 			this.button = false;
+		// 		} else if (res && res != "spot") {
+		// 			this.button = true;
+		// 		} else {
+		// 			this.button = false;
+		// 		}
+		// 	});
 	}
 
 	ngOnInit() {
@@ -210,7 +210,12 @@ export class TopbarComponent implements OnInit {
 				.subscribe((ct) => {
 					if (ct != null) {
 						Promise.resolve(null).then(() => {
-							this.totalRecords = ct;
+							if (this.router.url.includes('/broker/customers') ||
+								this.router.url.includes('/broker/orders') ||
+								this.router.url.includes('/broker/shop') ||
+								this.router.url.includes('/broker/cart')) {
+								this.totalRecords = ct;
+							}
 						});
 					}
 				})
@@ -274,15 +279,15 @@ export class TopbarComponent implements OnInit {
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "ornaments") {
-			this.value1 = "Add Ornaments";
-			this.showInput = true;
-			this.dataSourceHeader();
+			this.value2 = "Add Ornaments";
+			this.type2 = "button";
+			this.rightButton = true;
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "reasons") {
-			this.value1 = "Add Reason";
-			this.showInput = true;
-			this.dataSourceHeader();
+			this.value2 = "Add Reason";
+			this.type2 = "button";
+			this.rightButton = true;
 			// this.permissionType = "schemeAdd";
 		}
 		if (this.path == "lead-management") {
@@ -373,10 +378,11 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.showfilter = false;
 		}
-		
+
 		if (this.path == "purposes") {
-			this.dataSourceHeader();
-			this.value1 = "Add Purpose";
+			this.value2 = "Add Purpose";
+			this.type2 = "button";
+			this.rightButton = true;
 		}
 		if (this.path == "lead-source") {
 			this.value1 = "Add Lead Source";
@@ -583,10 +589,16 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "orders") {
 			this.showInput = true;
-			this.filterName = "orderDetails";
-			this.filterWidth = "630px";
+			this.filterName = "brokerOrder";
+			this.filterWidth = "500px";
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
+		}
+		if (location.href.includes('/loan-management/topup')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/repayment/part-release')) {
+			this.showBackButton = true;
 		}
 	}
 
@@ -684,7 +696,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'packet-location') {
 			this.packetLocation.openModal.next(true)
 		}
-		
+
 		if (this.path == 'purposes') {
 			this.purposeService.openModal.next(true)
 		}

@@ -66,7 +66,6 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKyc.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerKycId', as: 'customerKycPersonal' });
         CustomerKyc.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerKycId', as: 'customerKycAddress' });
-        CustomerKyc.hasMany(models.customerKycBankDetail, { foreignKey: 'customerKycId', as: 'customerKycBank' });
         CustomerKyc.hasOne(models.customerKycClassification, { foreignKey: 'customerKycId', as: 'customerKycClassification' });
 
         CustomerKyc.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });

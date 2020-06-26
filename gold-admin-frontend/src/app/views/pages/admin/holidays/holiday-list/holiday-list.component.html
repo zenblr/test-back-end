@@ -5,7 +5,7 @@
 
                 <ng-container matColumnDef="holidayDate">
                     <mat-header-cell *matHeaderCellDef>Holiday Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.holidayDate}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.holidayDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="description">
