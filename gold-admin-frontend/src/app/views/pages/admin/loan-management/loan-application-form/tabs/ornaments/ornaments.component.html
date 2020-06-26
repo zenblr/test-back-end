@@ -4,7 +4,7 @@
         <mat-tab formArrayName="ornamentData" *ngFor="let ornament of OrnamentsData.controls;index as idx">
             <ng-template mat-tab-label>
                 Ornaments {{idx+1}}
-                <img *ngIf="OrnamentsData.length > 1" class="removeImageSize kt-padding-l-5 kt-pointer"
+                <img *ngIf="OrnamentsData.length > 1 && disable" class="removeImageSize kt-padding-l-5 kt-pointer"
                     [src]="'assets/media/icons/cancel.png'" (click)="deleteOrnaments(idx)" />
             </ng-template>
             <ng-template mat-tab-body>

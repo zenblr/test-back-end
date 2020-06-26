@@ -59,29 +59,11 @@
                 </div>
             </div>
             <div class="row kt-margin-t-15">
-                <div class="col-6">
-                    <div class="row" *ngIf="controls.panType.value=='pan'">
-                        <div class="col-4 form-label">
-                            <label class="text-color kt-padding-l-10">PAN Number</label>
-                        </div>
-                        <div class="col-6">
-                            <input type="text" class="form-control" placeholder="qwert1234q"
-                                formControlName="panCardNumber" readonly>
-                        </div>
-                    </div>
-                    <div class="row" *ngIf="controls.panType.value=='form60'">
-                        <div class="col-4 form-label">
-                            <label class="text-color kt-padding-l-10">Form 60</label>
-                        </div>
-                        <div class="col-6">
-                            <img [src]="controls.panImage.value" (click)="preview(controls.panImage.value)" height="150" width="80" alt="">
-                        </div>
-                    </div>
-                </div>
+               
                 
                 <div class="col-6">
                     <div class="row">
-                        <div class="col-4 offset-2 form-label">
+                        <div class="col-4  form-label">
                             <label class="text-color kt-padding-l-10 mandatory">Loan Purpose</label>
                         </div>
                         <div class="col-6">
@@ -95,6 +77,17 @@
                                 Field is Required
                             </mat-error>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row" *ngIf="controls.panType.value=='pan'">
+                        <div class="col-4 offset-2 form-label">
+                            <label class="text-color kt-padding-l-10">PAN Number</label>
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control" placeholder="qwert1234q"
+                                formControlName="panCardNumber" readonly>
                         </div>
                     </div>
                 </div>

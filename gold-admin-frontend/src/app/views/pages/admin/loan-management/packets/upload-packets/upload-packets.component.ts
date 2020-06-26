@@ -137,27 +137,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       this.packetInfo.markAllAsTouched();
       return;
     }
-    // if (this.left < 650) {
-    //   this.width = this.width + 130
 
-    //   if (this.left == 0)
-    //     this.left = this.left + 150
-    //   else if (this.left > 0)
-    //     this.left = this.left + 130
-
-    //   const left = (this.left).toString() + 'px'
-    //   const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-    //   const addmore = (this.ele.nativeElement.querySelector('.addMore') as HTMLElement);
-    //   width.style.maxWidth = left
-    //   addmore.style.left = left
-
-    // } else {
-    //   const addmore = (this.ele.nativeElement.querySelector('.addMore') as HTMLElement);
-    //   addmore.style.left = '670px'
-    //   const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-    //   width.style.maxWidth = '680px'
-
-    // }
     console.log(this.controls.ornamentType.value)
 
     if (this.url != 'view-loan')
@@ -263,8 +243,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           })
         ).subscribe()
       }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
     });
 
   }
@@ -285,8 +263,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.packets.removeAt(idx);
         this.ref.detectChanges()
       }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
     });
   }
 
@@ -300,14 +276,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       if (res) {
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
-          const packet = this.packets.at(index) as FormArray
-          packet.controls[value].patchValue(res.uploadFile.URL)
-          console.log(this.packets.value)
-          // this.profile = res.uploadFile.URL
-          // this.personalForm.get('profileImage').patchValue(this.profile);
+          this.packetImg.controls[value].patchValue(res.uploadFile.URL)
           this.ref.detectChanges()
         })
-        // this.controls.
       }
     });
   }
