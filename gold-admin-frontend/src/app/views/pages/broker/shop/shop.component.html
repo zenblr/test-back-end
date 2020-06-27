@@ -99,8 +99,8 @@
                 <p class="text-center">No Records Found</p>
             </div>
 
-            <mat-paginator class="paginator--centered" [length]="count" [pageSize]="25" [pageSizeOptions]="[5, 10, 25]"
-                (page)="getServerData($event)">
+            <mat-paginator class="paginator--centered" [length]="count" [pageSize]="25"
+                [pageSizeOptions]="[25, 50, 100]" (page)="getServerData($event)">
             </mat-paginator>
         </kt-portlet-body>
     </kt-portlet>
