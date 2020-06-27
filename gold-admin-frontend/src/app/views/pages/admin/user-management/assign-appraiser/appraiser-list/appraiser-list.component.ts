@@ -60,7 +60,7 @@ export class AppraiserListComponent implements OnInit {
       .subscribe(res => {
         this.searchValue = res;
         this.paginator.pageIndex = 0;
-        this.loadBranchPage();
+        this.loadPage();
       });
 
     // Init DataSource
@@ -74,7 +74,7 @@ export class AppraiserListComponent implements OnInit {
     this.subscriptions.push(entitiesSubscription);
 
     // First load
-    // this.loadBranchPage();
+    // this.loadPage();
 
     this.dataSource.loadBranches(this.searchValue, 1, 25);
   }
@@ -91,7 +91,7 @@ export class AppraiserListComponent implements OnInit {
   }
 
 
-  loadBranchPage() {
+  loadPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
@@ -104,12 +104,12 @@ export class AppraiserListComponent implements OnInit {
 
   addAppraiser() {
     const dialogRef = this.dialog.open(AddAppraiserComponent, {
-      data: { action: 'add' },
+      data: { action: 'add',from:'appraiser' },
       width: '450px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.loadBranchPage();
+        this.loadPage();
       }
     });
     this.appraiserService.openModal.next(false)
@@ -131,7 +131,7 @@ export class AppraiserListComponent implements OnInit {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.loadBranchPage();
+        this.loadPage();
       }
     });
   }

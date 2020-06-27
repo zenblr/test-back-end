@@ -107,11 +107,15 @@
                             </div>
                             <div class="col-6">
                                 <input type="text" class="form-control" placeholder="10234501203203"
-                                    formControlName="accountNumber" numbersOnly maxlength="18" minlength="8"
+                                    formControlName="accountNumber" numbersOnly maxlength="18"
                                     [class.isError]="controls.accountNumber.touched && controls.accountNumber.invalid">
                                 <mat-error
                                     *ngIf="controls.accountNumber.errors?.required && controls.accountNumber.touched">
                                     Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.accountNumber.errors?.minlength && controls.accountNumber.touched">
+                                    'Minimum 9 or maximum 18 digits required"
                                 </mat-error>
                             </div>
                         </div>

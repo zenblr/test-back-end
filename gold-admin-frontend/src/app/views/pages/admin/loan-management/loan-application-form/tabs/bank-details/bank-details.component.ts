@@ -64,7 +64,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     this.bankForm = this.fb.group({
       paymentType: ['', Validators.required],
       bankName: [, [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
-      accountNumber: [, [Validators.required]],
+      accountNumber: [, [Validators.required,Validators.minLength(8),Validators.maxLength(18)]],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       accountType: [],
       accountHolderName: [, [Validators.required]],
