@@ -40,6 +40,7 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() loanId
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
 
+  @ViewChild('calculation', { static: false }) calculation: ElementRef
   @ViewChild('print', { static: false }) print: ElementRef
   editedDate: any;
   paymentType: string;
@@ -328,6 +329,14 @@ export class InterestCalculatorComponent implements OnInit {
       this.finalInterestForm.markAllAsTouched();
       return;
     }
+
+
+
+    const dom = this.eleRef.nativeElement.querySelectorAll('#calculation') as HTMLElement
+    dom.scrollIntoView({ behavior: "smooth", block: "end" })
+
+    // const cell = dom.querySelectorAll('#calculation')
+    // cell.scrollIntoView({behavior: "smooth", block: "end"})
 
     if (this.controls.isUnsecuredSchemeApplied.value) {
 
