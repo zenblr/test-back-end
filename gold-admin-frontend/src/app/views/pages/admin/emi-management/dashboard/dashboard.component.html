@@ -5,6 +5,36 @@
                 <h4>Today's Booked Orders</h4>
                 <hr>
                 <div class="row">
+                    <div class="col-6 pb-3">
+                        <div class="row">
+                            <div class="col">
+                                <p class="font-weight-500">No. of Orders</p>
+                                <h3>{{dashboardDetails?.emiTodaysOrders?.totalOrderCount ? dashboardDetails?.emiTodaysOrders?.totalOrderCount : '00'}}
+                                </h3>
+                            </div>
+                            <div class="col">
+                                <p class="font-weight-500">Weight (grams)</p>
+                                <h3>{{dashboardDetails?.emiTodaysOrders?.totalOrderWeight ? (dashboardDetails?.emiTodaysOrders?.totalOrderWeight | number:'1.0-2' | removeComma) : '00'}}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 pb-3" *ngFor="let category of dashboardDetails?.emiTodaysOrders?.categoryData">
+                        <div class="row">
+                            <div class="col">
+                                <p class="font-weight-500">No. of {{category?.name}} Orders</p>
+                                <h3>{{category?.count ? category?.count : '00'}}
+                                </h3>
+                            </div>
+                            <div class="col">
+                                <p class="font-weight-500">{{category?.name}} Weight (grams)</p>
+                                <h3>{{category?.weight ? (category?.weight | number:'1.0-2' | removeComma) : '00'}}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row">
                     <div class="col-3">
                         <p class="font-weight-500">No. of Orders</p>
                         <h3>{{dashboardDetails?.emiTodaysOrders?.totalOrder ? dashboardDetails?.emiTodaysOrders?.totalOrder : '00'}}
@@ -47,15 +77,46 @@
                         <h3>{{dashboardDetails?.emiTodaysOrders?.Silverweight ? dashboardDetails?.emiTodaysOrders?.Silverweight : '00'}}
                         </h3>
                     </div>
-                </div>
+                </div> -->
             </div>
-            <div class="col-12">
-                <h4 class="mt-5">Last Month Orders
+            <div class="col-12 pt-5">
+                <h4>Last Month Orders
                     ({{dashboardDetails?.emilastMonthsOrders?.date?.fromDate | date:'mediumDate'}} to
                     {{dashboardDetails?.emilastMonthsOrders?.date?.toDate | date:'mediumDate'}})
                 </h4>
                 <hr>
                 <div class="row">
+                    <div class="col-6 pb-3">
+                        <div class="row">
+                            <div class="col">
+                                <p class="font-weight-500">No. of Orders</p>
+                                <h3>{{dashboardDetails?.emilastMonthsOrders?.totalOrderCount ? dashboardDetails?.emilastMonthsOrders?.totalOrderCount : '00'}}
+                                </h3>
+                            </div>
+                            <div class="col">
+                                <p class="font-weight-500">Weight (grams)</p>
+                                <h3>{{dashboardDetails?.emilastMonthsOrders?.totalOrderWeight ? (dashboardDetails?.emilastMonthsOrders?.totalOrderWeight | number:'1.0-2' | removeComma) : '00'}}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 pb-3"
+                        *ngFor="let category of dashboardDetails?.emilastMonthsOrders?.categoryData">
+                        <div class="row">
+                            <div class="col">
+                                <p class="font-weight-500">No. of {{category?.name}} Orders</p>
+                                <h3>{{category?.count ? category?.count : '00'}}
+                                </h3>
+                            </div>
+                            <div class="col">
+                                <p class="font-weight-500">{{category?.name}} Weight (grams)</p>
+                                <h3>{{category?.weight ? (category?.weight | number:'1.0-2' | removeComma) : '00'}}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row">
                     <div class="col-3">
                         <p class="font-weight-500">No. of Orders</p>
                         <h3>{{dashboardDetails?.emilastMonthsOrders?.totalOrder ? dashboardDetails?.emilastMonthsOrders?.totalOrder : '00'}}
@@ -98,12 +159,42 @@
                         <h3>{{dashboardDetails?.emilastMonthsOrders?.Silverweight ? dashboardDetails?.emilastMonthsOrders?.Silverweight : '00'}}
                         </h3>
                     </div>
-                </div>
+                </div> -->
             </div>
-            <div class="col-12">
-                <h4 class="mt-5">Till Date Orders</h4>
+            <div class="col-12 pt-5">
+                <h4>Till Date Orders</h4>
                 <hr>
                 <div class="row">
+                    <div class="col-6 pb-3">
+                        <div class="row">
+                            <div class="col">
+                                <p class="font-weight-500">No. of Orders</p>
+                                <h3>{{dashboardDetails?.emitillDateOrders?.totalOrderCount ? dashboardDetails?.emitillDateOrders?.totalOrderCount : '00'}}
+                                </h3>
+                            </div>
+                            <div class="col">
+                                <p class="font-weight-500">Weight (grams)</p>
+                                <h3>{{dashboardDetails?.emitillDateOrders?.totalOrderWeight ? (dashboardDetails?.emitillDateOrders?.totalOrderWeight | number:'1.0-2' | removeComma) : '00'}}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 pb-3" *ngFor="let category of dashboardDetails?.emitillDateOrders?.categoryData">
+                        <div class="row">
+                            <div class="col">
+                                <p class="font-weight-500">No. of {{category?.name}} Orders</p>
+                                <h3>{{category?.count ? category?.count : '00'}}
+                                </h3>
+                            </div>
+                            <div class="col">
+                                <p class="font-weight-500">{{category?.name}} Weight (grams)</p>
+                                <h3>{{category?.weight ? (category?.weight | number:'1.0-2' | removeComma) : '00'}}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row">
                     <div class="col-3">
                         <p class="font-weight-500">No. of Orders</p>
                         <h3>{{dashboardDetails?.emitillDateOrders?.totalOrder ? dashboardDetails?.emitillDateOrders?.totalOrder : '00'}}
@@ -146,10 +237,10 @@
                         <h3>{{dashboardDetails?.emitillDateOrders?.Silverweight ? dashboardDetails?.emitillDateOrders?.Silverweight : '00'}}
                         </h3>
                     </div>
-                </div>
+                </div> -->
             </div>
-            <div class="col-12">
-                <h4 class="mt-5">Total Booked Orders</h4>
+            <div class="col-12 pt-5">
+                <h4>Total Booked Orders</h4>
                 <hr>
                 <div class="row">
                     <div class="col-3">
@@ -203,8 +294,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12">
-                <h4 class="mt-5">Customers</h4>
+            <div class="col-12 pt-5">
+                <h4>Customers</h4>
                 <hr>
                 <div class="row">
                     <div class="col-3">
@@ -224,13 +315,14 @@
                     </div>
                     <div class="col-3">
                         <p class="font-weight-500">Overdue Amount</p>
-                        <h3>{{dashboardDetails?.emiCustomer?.overDueAmount ? dashboardDetails?.emiCustomer?.overDueAmount : '00'}}
+                        <h3 class="currency">
+                            {{dashboardDetails?.emiCustomer?.overDueAmount ? (dashboardDetails?.emiCustomer?.overDueAmount | indianCurrencyFormat) : '00'}}
                         </h3>
                     </div>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="row pt-5">
+            <div class="col-12 pt-5">
+                <div class="row">
                     <div class="col-12">
                         <h4>Top Selling SKU's</h4>
                         <hr>
@@ -241,8 +333,8 @@
                                 <tr>
                                     <th scope="col">SKU Code</th>
                                     <th scope="col">Product Name</th>
-                                    <th scope="col" class="text-right">Total Weight Today</th>
-                                    <th scope="col" class="text-right">Total Weight Till Date</th>
+                                    <th scope="col" class="text-right">Total Weight Today (grams)</th>
+                                    <th scope="col" class="text-right">Total Weight Till Date (grams)</th>
                                 </tr>
                             </thead>
                             <tbody class="font-weight-normal">
@@ -256,7 +348,7 @@
                                             {{prod?.product_name ? prod?.product_name : '-'}}
                                         </td>
                                         <td class="text-right">
-                                            {{prod?.todaysTotalOrderWeight}}
+                                            {{prod?.todaysTotalOrderWeight | number:'1.0-2' | removeComma}}
                                         </td>
                                         <td class="text-right">
                                             {{prod?.totalWeight | number:'1.0-2' | removeComma}}

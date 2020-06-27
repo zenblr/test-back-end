@@ -30,7 +30,7 @@ export class ImageFunctionalityDialogComponent implements OnInit {
     imgContainer.style.position = "unset";
     imgContainer.style.height = "unset";
     imgContainer.style.maxWidth = "unset";
-    imgContainer.style.display = "unset";
+    // imgContainer.style.display = "unset";
     imgContainer.style.backgroundColor = "transparent";
 
     const imgParentContainer = (this.ele.nativeElement.querySelector('.img-container img') as HTMLElement)

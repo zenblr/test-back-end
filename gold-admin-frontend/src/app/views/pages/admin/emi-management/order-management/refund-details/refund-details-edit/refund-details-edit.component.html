@@ -216,7 +216,12 @@
                             <label class="font-weight-500 text-color">UTR Number</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="utrNumber" class="form-control">
+                            <input type="text" formControlName="utrNumber" class="form-control"
+                                [class.isError]="controls.utrNumber.touched && controls.utrNumber.invalid">
+                            <div *ngIf="controls.utrNumber.touched && controls.utrNumber.invalid">
+                                <mat-error *ngIf="controls.utrNumber.touched && controls.utrNumber.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15" *ngIf="hiddenFlag">

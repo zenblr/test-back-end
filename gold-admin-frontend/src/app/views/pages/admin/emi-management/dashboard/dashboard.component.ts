@@ -28,9 +28,7 @@ export class DashboardComponent implements OnInit {
 	getDashboard() {
 		this.dashboardService.getDashboard(this.productsData).subscribe(res => {
 			this.dashboardDetails = res;
-			if (res.topSellingSkus) {
-				this.totalRecords = res.topSellingSkus.count;
-			}
+			this.totalRecords = res.topSellingSkus.count;
 			this.ref.detectChanges();
 		});
 	}
