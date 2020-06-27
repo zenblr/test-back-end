@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const Offer = sequelize.define('offer', {
         // attributes
@@ -19,6 +21,24 @@ module.exports = (sequelize, DataTypes) => {
         Offer.hasMany(models.offerImages, { foreignKey: 'offerId', as: 'offerImages' });
 
     }
+
+    Offer.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.offerImages) {
+            for (image of values.offerImages) {
+
+                image.offerImages.URL = baseUrlConfig.BASEURL + image.offerImages.url;
+                let filePath = image.offerImages.url;
+                let pathToadd = filePath.replace('public/', '');
+                image.offerImages.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+        }
+        return values;
+    }
+
+
+
+
      //Add_Offer
      Offer.addOffer = (images, userId) => Offer.create({ images, userId });
 

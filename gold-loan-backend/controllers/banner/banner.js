@@ -51,7 +51,16 @@ exports.addUpdateBanner = async (req, res, next) => {
 // Read Banner.
 
 exports.readBanner = async (req, res, next) => {
-    let banner = await models.banner.readBanner()
+    let banner = await models.banner.readBanner({
+        include: {
+            model: models.bannerImages,
+            as: 'bannerImage',
+            include: {
+                model: models.fileUpload,
+                as: 'bannerImage'
+            }
+        }
+    })
     // const id = banner[0].id;
     // return res.json(banner[0])
     // let bannerData = await models.banner.findOne({ where: { id } });

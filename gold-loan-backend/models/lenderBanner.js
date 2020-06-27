@@ -21,6 +21,20 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
+    LenderBanner.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.lenderBannerImages) {
+            for (image of values.lenderBannerImages) {
+
+                image.lenderBannerImages.URL = baseUrlConfig.BASEURL + image.lenderBannerImages.url;
+                let filePath = image.lenderBannerImages.url;
+                let pathToadd = filePath.replace('public/', '');
+                image.lenderBannerImages.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+        }
+        return values;
+    }
+
     //Add_LenderBanner
     LenderBanner.addLenderBanner = (images, userId) => LenderBanner.create({ images, userId });
 

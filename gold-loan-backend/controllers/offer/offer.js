@@ -18,7 +18,7 @@ exports.addUpdateOffer = async (req, res, next) => {
             single["offerImagesId"] = ele;
             data.push(single);
         }
-        await models.offerImages.bulkCreate(data, { transaction: t });
+        await models.offerImages.bulkCreate(data);
 
 
         if (!CreatedOffer) {
@@ -37,7 +37,7 @@ exports.addUpdateOffer = async (req, res, next) => {
             single["offerImagesId"] = ele;
             data.push(single);
         }
-        await models.offerImages.bulkCreate(data, { transaction: t });
+        await models.offerImages.bulkCreate(data);
 
         if (UpdateData[0] === 0) {
             return res.status(404).json({ message: 'Data not updated' });
@@ -49,7 +49,16 @@ exports.addUpdateOffer = async (req, res, next) => {
 // Read Offer.
 
 exports.readOffer = async (req, res, next) => {
-    let offer = await models.offer.readOffer()
+    let offer = await models.offer.readOffer({
+        include: {
+            model: models.offerImages,
+            as: 'offerImages',
+            include: {
+                model: models.fileUpload,
+                as: 'offerImages'
+            }
+        }
+    })
     if (!offer[0]) {
         res.status(400).json({ message: 'Data not found' });
     } else {

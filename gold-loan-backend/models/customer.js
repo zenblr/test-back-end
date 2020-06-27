@@ -113,9 +113,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_type',
             values: ['pan', 'form60'],
         },
-        panImage:{
-            type: DataTypes.STRING,
-            field: 'pan_image',
+        panImageId:{
+            type: DataTypes.INTEGER,
+            field: 'pan_image_id',
         }
     }, {
         freezeTableName: true,
@@ -145,6 +145,9 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         Customer.belongsTo(models.lead,{foreignKey: 'leadSourceId', as: 'lead' });
+
+        Customer.belongsTo(models.fileUpload,{foreignKey: 'panImageId', as: 'panImage' });
+
     }
 
     // This hook is always run before create.

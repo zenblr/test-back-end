@@ -19,6 +19,19 @@ module.exports = (sequelize, DataTypes) => {
         Banner.hasMany(models.bannerImages, { foreignKey: 'bannerId', as: 'bannerImage' });
     }
 
+    Banner.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.bannerImages) {
+            for (image of values.bannerImages) {
+
+                image.bannerImages.URL = baseUrlConfig.BASEURL + image.bannerImages.url;
+                let filePath = image.bannerImages.url;
+                let pathToadd = filePath.replace('public/', '');
+                image.bannerImages.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+        }
+        return values;
+    }
     
     //Add_Banner
     Banner.addBanner = (images, userId) => Banner.create({ images, userId });

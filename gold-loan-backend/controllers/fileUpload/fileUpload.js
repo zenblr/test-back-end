@@ -8,14 +8,38 @@ const fs = require('fs');
 // File Upload.
 exports.uploadFile =
     async (req, res, next) => {
-
+    const fileFor = req.query.reason;
+    const loanId = req.query.loanId;
+    const customerId = req.query.customerId;
+    const partnerId = req.query.partnerId
+    
+    let destination;
+    if(fileFor == "loan"){
+       destination = `public/uploads/loan/${loanId}`;
+    }else if(fileFor == "customer"){
+        destination = `public/uploads/customer/${customerId}`;
+    }else if(fileFor == "lead"){
+        destination = `public/uploads/lead/`;
+    }else if(fileFor == "banner"){
+        destination = 'public/uploads/banner/';
+    }else if(fileFor == "offer"){
+        destination = 'public/uploads/offer/';
+    }else if(fileFor == "lenderBanner"){
+        destination = 'public/uploads/lenderBanner/';
+    }else if(fileFor == "scheme"){
+        destination = `public/uploads/scheme/${partnerId}`;
+    }else if(fileFor == "holiday"){
+        destination = `public/uploads/holiday/`
+    }else{
+        return res.status(422).json({ message: 'reason not found' });
+    }
         const storage = multer.diskStorage({
             filename: (req, file, cb) => {
                 const extArray = file.originalname.split('.');
                 const extension = extArray[extArray.length - 1];
                 cb(null, `${Date.now()}.${extension}`);
             },
-            destination: 'public/uploads/images/',
+            destination: destination,
         });
         
         const uploads = multer({ storage }).single('avatar');
