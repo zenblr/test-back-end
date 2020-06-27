@@ -4,7 +4,7 @@ import { MatSnackBar, MatDialog, MatPaginator, MatSort } from '@angular/material
 import { AppraiserDatasource, AppraiserService } from '../../../../../../core/user-management/appraiser';
 import { Subscription, merge, Subject } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
-import { AddAppraiserComponent } from '../add-appraiser/add-appraiser.component';
+import { AssignAppraiserComponent } from '../assign-appraiser/assign-appraiser.component';
 import { ToastrComponent } from '../../../../../partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { Router } from '@angular/router';
@@ -103,7 +103,7 @@ export class AppraiserListComponent implements OnInit {
 
 
   addAppraiser() {
-    const dialogRef = this.dialog.open(AddAppraiserComponent, {
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, {
       data: { action: 'add',from:'appraiser' },
       width: '450px'
     });
@@ -124,7 +124,7 @@ export class AppraiserListComponent implements OnInit {
     console.log(appraiser);
     // const _saveMessage = `appraiser successfully has been saved.`;
     // const _messageType = appraiser.id ? MessageType.Update : MessageType.Create;
-    const dialogRef = this.dialog.open(AddAppraiserComponent,
+    const dialogRef = this.dialog.open(AssignAppraiserComponent,
       {
         data: { appraiser: appraiser, customer: appraiser.customer, action: action },
         width: '450px'

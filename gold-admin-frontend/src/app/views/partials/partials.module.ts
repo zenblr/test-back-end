@@ -76,7 +76,7 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { UserReviewComponent } from "../pages/admin/kyc-settings/tabs/user-review/user-review.component";
 import { NgxPermissionsModule } from "ngx-permissions";
 import { MultiSelectSearchComponent } from "./components/multi-select-search/multi-select-search.component";
-import { AddAppraiserComponent } from '../pages/admin/user-management/assign-appraiser/add-appraiser/add-appraiser.component';
+import { AssignAppraiserComponent } from '../pages/admin/user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 
 import { WebcamModule } from "ngx-webcam";
 import { WebcamDialogComponent } from '../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
@@ -144,14 +144,14 @@ import { OrnamentsComponent } from '../pages/admin/loan-management/loan-applicat
 		UplodPreviewImageComponent,
 
 		UserReviewComponent,
-		AddAppraiserComponent,
+		AssignAppraiserComponent,
 		WebcamDialogComponent,
 
 		FilteredDataComponent,
 
 		MultiSelectSearchComponent,
 
-		AddAppraiserComponent,
+		AssignAppraiserComponent,
 		OrnamentsComponent,
 	],
 	exports: [
@@ -205,7 +205,7 @@ import { OrnamentsComponent } from '../pages/admin/loan-management/loan-applicat
 		UplodPreviewImageComponent,
 		UserReviewComponent,
 		FilteredDataComponent,
-		AddAppraiserComponent,
+		AssignAppraiserComponent,
 		WebcamDialogComponent,
 		// spinner
 		NgbDropdownModule,
