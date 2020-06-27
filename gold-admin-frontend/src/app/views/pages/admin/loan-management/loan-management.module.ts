@@ -33,6 +33,7 @@ import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dial
 import { PacketTrackingComponent } from './packets/packet-tracking/packet-tracking.component';
 import { UpdateLocationComponent } from './packets/update-location/update-location.component';
 import { TopUpComponent } from './top-up/top-up.component';
+import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -130,7 +131,8 @@ const rout: Routes = [
     UnSecuredSchemeComponent,
     WebcamDialogComponent,
     UpdateLocationComponent,
-    OrnamentsComponent
+    OrnamentsComponent,
+    UserReviewComponent
   ]
 })
 export class LoanManagementModule { }

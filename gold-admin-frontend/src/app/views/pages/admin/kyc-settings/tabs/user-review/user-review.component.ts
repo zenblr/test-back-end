@@ -145,12 +145,274 @@ export class UserReviewComponent implements OnInit {
   //   "customerId": 1,
   //   "customerKycId": 1
   // }
+
+  // data = {
+  //   "customerId": 1,
+  //   "customerKycId": 1,
+  //   "customerKycCurrentStage": "4",
+  //   "customerKycReview": {
+  //     "id": 1,
+  //     "firstName": "bhushan",
+  //     "lastName": "madaye",
+  //     "panCardNumber": "ASDAS1234A",
+  //     "mobileNumber": "8424004296",
+  //     "panType": "pan",
+  //     "panImage": "http://78fd98a3462d.ngrok.io//uploads/images/1593169195056.png",
+  //     "customerKycPersonal": {
+  //       "id": 1,
+  //       "customerId": 1,
+  //       "firstName": "bhushan",
+  //       "lastName": "madaye",
+  //       "profileImage": 1497,
+  //       "dateOfBirth": "1997-01-04T18:30:00.000Z",
+  //       "alternateMobileNumber": "9834832743",
+  //       "panCardNumber": "ASDAS1234A",
+  //       "gender": "m",
+  //       "age": "23",
+  //       "martialStatus": "divorced",
+  //       "occupationId": 3,
+  //       "identityTypeId": 2,
+  //       "identityProofNumber": "voter123",
+  //       "spouseName": "kane",
+  //       "signatureProof": 1498,
+  //       "occupation": {
+  //         "id": 3,
+  //         "name": "Employee",
+  //         "isActive": true,
+  //         "createdAt": "2020-05-04T13:51:06.606Z",
+  //         "updatedAt": "2020-05-04T13:51:06.606Z"
+  //       },
+  //       "identityType": {
+  //         "id": 2,
+  //         "name": "Voter ID",
+  //         "isActive": true,
+  //         "createdAt": "2020-05-04T13:49:55.636Z",
+  //         "updatedAt": "2020-05-04T13:49:55.636Z"
+  //       },
+  //       "profileImageData": {
+  //         "id": 1497,
+  //         "filename": "1593176955515.jpeg",
+  //         "mimetype": "image/jpeg",
+  //         "encoding": "7Bit",
+  //         "originalname": null,
+  //         "userId": 1,
+  //         "url": "public/uploads/images/1593176955515",
+  //         "createdAt": "2020-06-26T13:09:15.516Z",
+  //         "updatedAt": "2020-06-26T13:09:15.516Z",
+  //         "URL": "http://78fd98a3462d.ngrok.io/uploads/images/1593176955515"
+  //       },
+  //       "signatureProofData": {
+  //         "id": 1498,
+  //         "filename": "1593176979300.png",
+  //         "mimetype": "image/png",
+  //         "encoding": "7bit",
+  //         "originalname": "Artboard – 1 (1).png",
+  //         "userId": 1,
+  //         "url": "public/uploads/images/1593176979300.png",
+  //         "createdAt": "2020-06-26T13:09:43.255Z",
+  //         "updatedAt": "2020-06-26T13:09:43.255Z",
+  //         "URL": "http://78fd98a3462d.ngrok.io/uploads/images/1593176979300.png"
+  //       },
+  //       "identityProofImage": [
+  //         {
+  //           "id": 1,
+  //           "customerKycPersonalDetai": 1,
+  //           "identityProofId": 1491,
+  //           "createdAt": "2020-06-26T13:08:56.616Z",
+  //           "updatedAt": "2020-06-26T13:08:56.616Z",
+  //           "identityProof": {
+  //             "id": 1491,
+  //             "filename": "1593176792329.png",
+  //             "mimetype": "image/png",
+  //             "encoding": "7bit",
+  //             "originalna": "Artboard – 5.png",
+  //             "userId": 1,
+  //             "url": "public/uploads/images/1593176792329.png",
+  //             "createdAt": "2020-06-26T13:06:34.247Z",
+  //             "updatedAt": "2020-06-26T13:06:34.247Z",
+  //             "URL": "http://78fd98a3462d.ngrok.io/uploads/images/1593176792329.png"
+  //           }
+  //         },
+  //         {
+  //           "id": 2,
+  //           "customerKycPersonalDetai": 1,
+  //           "identityProofId": 1492,
+  //           "createdAt": "2020-06-26T13:08:56.616Z",
+  //           "updatedAt": "2020-06-26T13:08:56.616Z",
+  //           "identityProof": {
+  //             "id": 1492,
+  //             "filename": "1593176799486.png",
+  //             "mimetype": "image/png",
+  //             "encoding": "7bit",
+  //             "originalna": "Artboard – 6.png",
+  //             "userId": 1,
+  //             "url": "public/uploads/images/1593176799486.png",
+  //             "createdAt": "2020-06-26T13:06:40.365Z",
+  //             "updatedAt": "2020-06-26T13:06:40.365Z",
+  //             "URL": "http://78fd98a3462d.ngrok.io/uploads/images/1593176799486.png"
+  //           }
+  //         }
+  //       ]
+  //     },
+  //     "customerKycAddress": [
+  //       {
+  //         "id": 1,
+  //         "customerKycId": 1,
+  //         "customerId": 1,
+  //         "addressType": "permanent",
+  //         "address": "add 1",
+  //         "stateId": 22,
+  //         "cityId": 2726,
+  //         "pinCode": 500000,
+  //         "addressProofTypeId": 3,
+  //         "addressProofNumber": "driv2345",
+  //         "state": {
+  //           "id": 22,
+  //           "name": "Maharashtra",
+  //           "isActive": true
+  //         },
+  //         "city": {
+  //           "id": 2726,
+  //           "name": "Navi Mumbai",
+  //           "stateId": 22,
+  //           "slug": null,
+  //           "isActive": true
+  //         },
+  //         "addressProofType": {
+  //           "id": 3,
+  //           "name": "Driving license",
+  //           "isActive": true,
+  //           "createdAt": "2020-05-04T13:48:00.807Z",
+  //           "updatedAt": "2020-05-04T13:48:00.807Z"
+  //         },
+  //         "addressProofImage": [
+  //           {
+  //             "id": 1,
+  //             "customerKycAddressDetailId": 1,
+  //             "addressProofId": 1493,
+  //             "createdAt": "2020-06-26T13:08:56.646Z",
+  //             "updatedAt": "2020-06-26T13:08:56.646Z",
+  //             "addressProof": {
+  //               "id": 1493,
+  //               "filename": "1593176881680.png",
+  //               "mimetype": "image/png",
+  //               "encoding": "7bit",
+  //               "originalname": "Artboard – 7.png",
+  //               "userId": 1,
+  //               "url": "public/uploads/images/1593176881680.png",
+  //               "createdAt": "2020-06-26T13:08:01.926Z",
+  //               "updatedAt": "2020-06-26T13:08:01.926Z",
+  //               "URL": "http://78fd98a3462d.ngrok.io/uploads/images/1593176881680.png"
+  //             }
+  //           },
+  //           {
+  //             "id": 2,
+  //             "customerKycAddressDetailId": 1,
+  //             "addressProofId": 1494,
+  //             "createdAt": "2020-06-26T13:08:56.646Z",
+  //             "updatedAt": "2020-06-26T13:08:56.646Z",
+  //             "addressProof": {
+  //               "id": 1494,
+  //               "filename": "1593176887753.png",
+  //               "mimetype": "image/png",
+  //               "encoding": "7bit",
+  //               "originalname": "Artboard – 2.png",
+  //               "userId": 1,
+  //               "url": "public/uploads/images/1593176887753.png",
+  //               "createdAt": "2020-06-26T13:08:13.105Z",
+  //               "updatedAt": "2020-06-26T13:08:13.105Z",
+  //               "URL": "http://78fd98a3462d.ngrok.io/uploads/images/1593176887753.png"
+  //             }
+  //           }
+  //         ]
+  //       },
+  //       {
+  //         "id": 2,
+  //         "customerKycId": 1,
+  //         "customerId": 1,
+  //         "addressType": "residential",
+  //         "address": "add 2",
+  //         "stateId": 1,
+  //         "cityId": 1,
+  //         "pinCode": 900000,
+  //         "addressProofTypeId": 5,
+  //         "addressProofNumber": "bak4567",
+  //         "state": {
+  //           "id": 1,
+  //           "name": "Andaman and Nicobar Islands",
+  //           "isActive": true
+  //         },
+  //         "city": {
+  //           "id": 1,
+  //           "name": "Bombuflat",
+  //           "stateId": 1,
+  //           "slug": null,
+  //           "isActive": true
+  //         },
+  //         "addressProofType": {
+  //           "id": 5,
+  //           "name": "Bank passbook",
+  //           "isActive": true,
+  //           "createdAt": "2020-05-18T11:41:50.724Z",
+  //           "updatedAt": "2020-05-18T11:41:50.724Z"
+  //         },
+  //         "addressProofImage": [
+  //           {
+  //             "id": 3,
+  //             "customerKycAddressDetailId": 2,
+  //             "addressProofId": 1495,
+  //             "createdAt": "2020-06-26T13:08:56.658Z",
+  //             "updatedAt": "2020-06-26T13:08:56.658Z",
+  //             "addressProof": {
+  //               "id": 1495,
+  //               "filename": "1593176921512.png",
+  //               "mimetype": "image/png",
+  //               "encoding": "7bit",
+  //               "originalname": "Artboard – 3.png",
+  //               "userId": 1,
+  //               "url": "public/uploads/images/1593176921512.png",
+  //               "createdAt": "2020-06-26T13:08:44.097Z",
+  //               "updatedAt": "2020-06-26T13:08:44.097Z",
+  //               "URL": "http://78fd98a3462d.ngrok.io/uploads/images/1593176921512.png"
+  //             }
+  //           },
+  //           {
+  //             "id": 4,
+  //             "customerKycAddressDetailId": 2,
+  //             "addressProofId": 1496,
+  //             "createdAt": "2020-06-26T13:08:56.658Z",
+  //             "updatedAt": "2020-06-26T13:08:56.658Z",
+  //             "addressProof": {
+  //               "id": 1496,
+  //               "filename": "1593176930526.png",
+  //               "mimetype": "image/png",
+  //               "encoding": "7bit",
+  //               "originalname": "Artboard – 4.png",
+  //               "userId": 1,
+  //               "url": "public/uploads/images/1593176930526.png",
+  //               "createdAt": "2020-06-26T13:08:52.775Z",
+  //               "updatedAt": "2020-06-26T13:08:52.775Z",
+  //               "URL": "http://78fd98a3462d.ngrok.io/uploads/images/1593176930526.png"
+  //             }
+  //           }
+  //         ]
+  //       }
+  //     ]
+  //   }
+  // }
+
   file: any;
   occupations = [];
 
   data: any = {};
   viewOnly = true;
   userType: any;
+  identityImageArray = [];
+  addressImageArray1 = [];
+  addressImageArray2 = [];
+  identityIdArray = [];
+  addressIdArray1 = [];
+  addressIdArray2 = [];
 
 
   constructor(private userAddressService:
@@ -191,6 +453,33 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.initForm();
+
+    let identityArray = this.data.customerKycReview.customerKycPersonal.identityProofImage
+    identityArray.forEach(element => {
+      this.identityImageArray.push(element.identityProof.URL)
+      this.identityIdArray.push(element.identityProof.id)
+    });
+    this.reviewForm.controls.identityProof.patchValue(this.identityIdArray);
+    this.customerKycPersonal.controls.identityProof.patchValue(this.identityIdArray);
+
+
+    let addressArray1 = this.data.customerKycReview.customerKycAddress[0].addressProofImage
+    addressArray1.forEach(element => {
+      this.addressImageArray1.push(element.addressProof.URL)
+      this.addressIdArray1.push(element.addressProof.id)
+    });
+    this.customerKycAddressOne.controls.addressProof.patchValue(this.addressIdArray1);
+
+
+    let addressArray2 = this.data.customerKycReview.customerKycAddress[1].addressProofImage
+    addressArray2.forEach(element => {
+      this.addressImageArray2.push(element.addressProof.URL)
+      this.addressIdArray2.push(element.addressProof.id)
+    });
+    this.customerKycAddressTwo.controls.addressProof.patchValue(this.addressIdArray2);
+
+
+
     if (!this.viewOnly || this.userType == 5) {
       this.reviewForm.disable();
       this.customerKycPersonal.disable();
@@ -202,19 +491,17 @@ export class UserReviewComponent implements OnInit {
     this.getIdentityType();
     this.getAddressProofType();
     this.getOccupation();
-    // this.getCities();
-    // this.submit()
   }
 
   initForm() {
     this.reviewForm = this.fb.group({
-      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
+      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImageData.id, [Validators.required]],
       firstName: [this.data.customerKycReview.firstName, [Validators.required]],
       lastName: [this.data.customerKycReview.lastName, [Validators.required]],
       mobileNumber: [this.data.customerKycReview.mobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
-      identityProof: [this.data.customerKycReview.customerKycPersonal.identityProof, [Validators.required]],
+      identityProof: [, [Validators.required]],
       identityProofFileName: [],
       identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
     })
@@ -227,7 +514,7 @@ export class UserReviewComponent implements OnInit {
       stateId: [this.data.customerKycReview.customerKycAddress[0].state.id, [Validators.required]],
       cityId: [this.data.customerKycReview.customerKycAddress[0].city.id, [Validators.required]],
       pinCode: [this.data.customerKycReview.customerKycAddress[0].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-      addressProof: [this.data.customerKycReview.customerKycAddress[0].addressProof, [Validators.required]],
+      addressProof: [, [Validators.required]],
       addressProofFileName: [],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[0].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[0].addressProofNumber, [Validators.required]],
@@ -242,42 +529,27 @@ export class UserReviewComponent implements OnInit {
       stateId: [this.data.customerKycReview.customerKycAddress[1].state.id, [Validators.required]],
       cityId: [this.data.customerKycReview.customerKycAddress[1].city.id, [Validators.required]],
       pinCode: [this.data.customerKycReview.customerKycAddress[1].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-      addressProof: [this.data.customerKycReview.customerKycAddress[1].addressProof, [Validators.required]],
+      addressProof: [, [Validators.required]],
       addressProofFileName: [],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
     })
     this.customerKycPersonal = this.fb.group({
-      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
+      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImageData.id, [Validators.required]],
       alternateMobileNumber: [this.data.customerKycReview.customerKycPersonal.alternateMobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       gender: [this.data.customerKycReview.customerKycPersonal.gender, [Validators.required]],
       spouseName: [this.data.customerKycReview.customerKycPersonal.spouseName, [Validators.required]],
       martialStatus: [this.data.customerKycReview.customerKycPersonal.martialStatus, [Validators.required]],
-      signatureProof: [this.data.customerKycReview.customerKycPersonal.signatureProof],
+      signatureProof: [this.data.customerKycReview.customerKycPersonal.signatureProofData.id],
       signatureProofFileName: [],
       occupationId: [],
       dateOfBirth: [this.data.customerKycReview.customerKycPersonal.dateOfBirth, [Validators.required]],
       age: [this.data.customerKycReview.customerKycPersonal.age, [Validators.required]],
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
-      identityProof: [this.data.customerKycReview.customerKycPersonal.identityProof, [Validators.required]],
+      identityProof: [, [Validators.required]],
       identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
 
     })
-
-    // this.customerKycBank = this.fb.group({
-    //   id: this.data.customerKycReview.customerKycBank[0].id,
-    //   customerKycId: this.data.customerKycReview.customerKycBank[0].customerKycId,
-    //   customerId: this.data.customerKycReview.customerKycBank[0].customerId,
-    //   bankName: [this.data.customerKycReview.customerKycBank[0].bankName, [Validators.required]],
-    //   bankBranchName: [this.data.customerKycReview.customerKycBank[0].bankBranchName, [Validators.required]],
-    //   accountType: [this.data.customerKycReview.customerKycBank[0].accountType, [Validators.required]],
-    //   accountHolderName: [this.data.customerKycReview.customerKycBank[0].accountHolderName, [Validators.required]],
-    //   accountNumber: [this.data.customerKycReview.customerKycBank[0].accountNumber, [Validators.required]],
-    //   ifscCode: [this.data.customerKycReview.customerKycBank[0].ifscCode, [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
-    //   passbookProof: [this.data.customerKycReview.customerKycBank[0].passbookProof, [Validators.required]],
-    //   passbookProofFileName: []
-    // })
-
     if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
       this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
     }
@@ -320,17 +592,12 @@ export class UserReviewComponent implements OnInit {
     let customerKycAddress = [];
     customerKycAddress.push(this.customerKycAddressOne.value, this.customerKycAddressTwo.value);
 
-    // let customerKycBank = [];
-    // customerKycBank.push(this.customerKycBank.value);
-
     const data = {
       customerId: this.data.customerId,
       customerKycId: this.data.customerKycId,
       customerKycPersonal: this.customerKycPersonal.value,
       customerKycAddress: customerKycAddress,
-      // customerKycBank: customerKycBank
     }
-    console.log(data)
 
     if (this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid) {
       this.customerKycPersonal.markAllAsTouched();
@@ -363,16 +630,9 @@ export class UserReviewComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().subscribe(res => {
       this.states = res.message;
-      // this.ref.detectChanges();
     });
-    // if (this.customerKycAddressOne.controls.addressType.value == 'permanent') {
     this.getCities('permanent');
-    // } else if (this.customerKycAddressTwo.controls.addressType.value == 'residential') {
     this.getCities('residential');
-    // }
-
-    // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressOne.controls.stateId.value, cityId: this.customerKycAddressOne.controls.cityId.value });
-    // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressTwo.controls.stateId.value, cityId: this.customerKycAddressTwo.controls.cityId.value });
   }
 
   getCities(type?) {
@@ -393,16 +653,12 @@ export class UserReviewComponent implements OnInit {
 
       }
     });
-
-    // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressOne.controls.stateId.value, cityId: this.customerKycAddressOne.controls.cityId.value });
-    // this.customerKycAddressOne.patchValue({ stateId: this.customerKycAddressTwo.controls.stateId.value, cityId: this.customerKycAddressTwo.controls.cityId.value });  
   }
 
   getOccupation() {
     this.userPersonalService.getOccupation().subscribe(res => {
       this.occupations = res;
     }, err => {
-      // console.log(err);
     })
   }
 
@@ -412,17 +668,20 @@ export class UserReviewComponent implements OnInit {
       return;
     }
     if (type == 'identityProof') {
-      this.data.customerKycReview.customerKycPersonal.identityProof.splice(index, 1)
-      this.reviewForm.patchValue({ identityProofFileName: '' });
+      this.identityImageArray.splice(index, 1)
+      this.identityIdArray.splice(index, 1)
+      this.reviewForm.patchValue({ identityProof: this.identityIdArray });
     } else if (type == 'residential') {
-      this.data.customerKycReview.customerKycAddress[1].addressProof.splice(index, 1)
-      this.customerKycAddressTwo.patchValue({ addressProofFileName: '' });
+      this.addressImageArray2.splice(index, 1)
+      this.addressIdArray2.splice(index, 1)
+      this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 });
     } else if (type == 'permanent') {
-      this.data.customerKycReview.customerKycAddress[0].addressProof.splice(index, 1)
-      this.customerKycAddressOne.patchValue({ addressProofFileName: '' });
+      this.addressImageArray1.splice(index, 1)
+      this.addressIdArray1.splice(index, 1)
+      this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
     } else if (type == 'passbook') {
       this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
-      this.customerKycBank.patchValue({ passbookProofFileName: '' });
+      // this.customerKycBank.patchValue({ passbookProofFileName: '' });
     }
   }
 
@@ -431,8 +690,6 @@ export class UserReviewComponent implements OnInit {
       return;
     }
     this.file = event.target.files[0];
-    // console.log(type);
-    // console.log(this.addressControls)
     var name = event.target.files[0].name
     console.log(name)
     var ext = name.split('.')
@@ -440,30 +697,33 @@ export class UserReviewComponent implements OnInit {
       this.sharedService.uploadFile(this.file).pipe(
         map(res => {
 
-          if (type == "identityProof" && this.data.customerKycReview.customerKycPersonal.identityProof.length < 2) {
-            this.data.customerKycReview.customerKycPersonal.identityProof.push(res.uploadFile.URL)
-            this.customerKycPersonal.patchValue({ identityProof: this.data.customerKycReview.customerKycPersonal.identityProof })
+          if (type == "identityProof" && this.identityImageArray.length < 2) {
+            this.identityImageArray.push(res.uploadFile.URL)
+            this.identityIdArray.push(res.uploadFile.id)
+            this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
             this.reviewForm.patchValue({ identityProofFileName: event.target.files[0].name });
           } else
-            if (type == 'permanent' && this.data.customerKycReview.customerKycAddress[0].addressProof.length < 2) {
-              this.data.customerKycReview.customerKycAddress[0].addressProof.push(res.uploadFile.URL)
-              this.customerKycAddressOne.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[0].addressProof })
+            if (type == 'permanent' && this.addressImageArray1.length < 2) {
+              this.addressImageArray1.push(res.uploadFile.URL)
+              this.addressIdArray1.push(res.uploadFile.id)
+              this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 })
               this.customerKycAddressOne.patchValue({ addressProofFileName: event.target.files[0].name });
             } else
-              if (type == 'residential' && this.data.customerKycReview.customerKycAddress[1].addressProof.length < 2) {
-                this.data.customerKycReview.customerKycAddress[1].addressProof.push(res.uploadFile.URL)
-                this.customerKycAddressTwo.patchValue({ addressProof: this.data.customerKycReview.customerKycAddress[1].addressProof })
+              if (type == 'residential' && this.addressImageArray2.length < 2) {
+                this.addressImageArray2.push(res.uploadFile.URL)
+                this.addressIdArray2.push(res.uploadFile.id)
+                this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 })
                 this.customerKycAddressTwo.patchValue({ addressProofFileName: event.target.files[0].name });
               } else
                 if (type == "signature") {
-                  this.data.customerKycReview.customerKycPersonal.signatureProof = res.uploadFile.URL;
-                  this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.URL })
+                  this.data.customerKycReview.customerKycPersonal.signatureProofData.URL = res.uploadFile.URL;
+                  this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.id })
                   this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
                   this.ref.markForCheck();
                 }
                 else if (type == "profile") {
                   this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
-                  this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.URL })
+                  this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.id })
                   this.ref.markForCheck();
                 }
                 else {
@@ -472,7 +732,6 @@ export class UserReviewComponent implements OnInit {
 
 
           this.ref.detectChanges();
-          // console.log(this.addressControls)
         }), catchError(err => {
           this.toastr.error(err.error.message);
           throw err
@@ -512,8 +771,8 @@ export class UserReviewComponent implements OnInit {
       if (res) {
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
-          this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL
-          this.customerKycPersonal.get('profileImage').patchValue(this.data.customerKycReview.customerKycPersonal.profileImage);
+          this.data.customerKycReview.customerKycPersonal.profileImageData.URL = res.uploadFile.URL
+          this.customerKycPersonal.get('profileImage').patchValue(this.data.customerKycReview.customerKycPersonal.profileImageData.id);
           this.ref.detectChanges()
         })
       }

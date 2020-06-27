@@ -44,9 +44,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     public loanApplicationFormService: LoanApplicationFormService,
     public toast: ToastrService,
     public purposeService: PurposeService,
-    private dilaog:MatDialog,
-    private appliedKycService:AppliedKycService,
-    private dialog:MatDialog
+    private dilaog: MatDialog,
+    private appliedKycService: AppliedKycService,
+    private dialog: MatDialog
   ) {
     this.initForm()
     this.getPurposeInfo()
@@ -158,7 +158,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       purpose: ["", Validators.required],
       panType: [],
       loanId: [],
-      panImage: []
+      panImage: [],
     })
   }
 
@@ -189,7 +189,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       })).subscribe()
   }
 
-  preview(images){
+  preview(images) {
     this.dilaog.open(ImagePreviewDialogComponent, {
       data: {
         images: [images],
@@ -200,8 +200,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   viewKYC(data) {
+    // console.log(this.basicForm.value)
     // this.dialog.open(UserReviewComponent)
-    const params = { customerId: data.customerId, customerKycId: data.id };
+    const params = { customerId: this.controls.customerId.value };
     this.appliedKycService.editKycDetails(params).subscribe(res => {
       // console.log(res)
       const dialogRef = this.dialog.open(UserReviewComponent, { data: { action: 'view' }, width: '900px' });

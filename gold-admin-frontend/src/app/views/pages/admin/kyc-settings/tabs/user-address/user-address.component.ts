@@ -117,18 +117,18 @@ export class UserAddressComponent implements OnInit {
 
 
           if (type == "identityProof" && this.images.identityProof.length < 2) {
-            this.images.identityProof.push(res.uploadFile.URL)
+            this.images.identityProof.push(res.uploadFile.id)
             this.identityForm.patchValue({ identityProof: this.images.identityProof });
             this.identityForm.get('identityProofFileName').patchValue(event.target.files[0].name);
-          } else if (type == 0 && this.images.residential.length  < 2) {
-            this.images.residential.push(res.uploadFile.URL)
+          } else if (type == 0 && this.images.residential.length < 2) {
+            this.images.residential.push(res.uploadFile.id)
             this.addressControls.controls[0].patchValue({ addressProof: this.images.residential });
             this.addressControls.at(0)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
-          }else  if (type == 1 && this.images.permanent.length  < 2) {
-            this.images.permanent.push(res.uploadFile.URL)
+          } else if (type == 1 && this.images.permanent.length < 2) {
+            this.images.permanent.push(res.uploadFile.id)
             this.addressControls.controls[1].patchValue({ addressProof: this.images.permanent });
             this.addressControls.at(1)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
-          }else{
+          } else {
             this.toastr.error("Cannot upload more than two images")
           }
           this.ref.detectChanges();
@@ -234,8 +234,8 @@ export class UserAddressComponent implements OnInit {
     } else if (type == 'residential') {
       this.images.residential.splice(index, 1);
       this.addressControls.at(0)['controls'].addressProofFileName.patchValue('')
-      if(this.sameAdd){
-      this.addressControls.at(1)['controls'].addressProofFileName.patchValue('')
+      if (this.sameAdd) {
+        this.addressControls.at(1)['controls'].addressProofFileName.patchValue('')
       }
     } else if (type == 'permanent') {
       this.images.permanent.splice(index, 1);

@@ -225,7 +225,7 @@
         </div>
     </div>
     
-    <div class="row justify-content-center kt-margin-b-20" *ngIf="dateOfPayment.length > 0">
+    <div #calculation id="calculation" class="row justify-content-center kt-margin-b-20" *ngIf="dateOfPayment.length > 0">
         <div class="col-8">
             <div class="row justify-content-center">
                 <div [ngClass]="controls.isUnsecuredSchemeApplied.value?'col-12':'col-9'">

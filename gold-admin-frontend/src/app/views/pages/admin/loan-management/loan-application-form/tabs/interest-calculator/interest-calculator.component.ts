@@ -40,6 +40,7 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() loanId
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
 
+  @ViewChild('calculation', { static: false }) calculation: ElementRef
   @ViewChild('print', { static: false }) print: ElementRef
   editedDate: any;
   paymentType: string;
@@ -159,7 +160,7 @@ export class InterestCalculatorComponent implements OnInit {
       unsecuredSchemeId: [],
       securedLoanAmount: [],
       unsecuredLoanAmount: [],
-      isUnsecuredSchemeApplied:[false]
+      isUnsecuredSchemeApplied: [false]
     })
 
 
@@ -219,7 +220,7 @@ export class InterestCalculatorComponent implements OnInit {
       } else {
         this.controls.finalLoanAmount.setErrors(null)
       }
-      
+
 
       let maximumAmtAllowed = (scheme.maximumPercentageAllowed / 100)
       console.log(this.totalAmt * maximumAmtAllowed)
@@ -236,8 +237,8 @@ export class InterestCalculatorComponent implements OnInit {
 
       }
 
-      
-      
+
+
 
     } else {
       this.controls.schemeId.markAsTouched()
@@ -250,35 +251,35 @@ export class InterestCalculatorComponent implements OnInit {
 
 
   unSecuredSchemeCheck(amt, securedPercentage?) {
+    if (this.controls.finalLoanAmount.valid) {
+      let enterAmount = this.controls.finalLoanAmount.value;
+      this.partnerService.getUnsecuredSchemeByParnter(this.controls.partnerId.value, Math.round(amt)).subscribe(
+        res => {
+          if (Object.values(res.data).length) {
 
-    let enterAmount = this.controls.finalLoanAmount.value;
-    this.partnerService.getUnsecuredSchemeByParnter(this.controls.partnerId.value, Math.round(amt)).subscribe(
-      res => {
-        if (Object.values(res.data).length) {
+            this.unSecuredScheme = res.data
+            this.selectedUnsecuredscheme = this.unSecuredScheme.schemes.filter(scheme => { return scheme.default })
+            const scheme = this.selectedUnsecuredscheme[0]
 
-          this.unSecuredScheme = res.data
-          this.selectedUnsecuredscheme = this.unSecuredScheme.schemes.filter(scheme => { return scheme.default })
-          const scheme = this.selectedUnsecuredscheme[0]
+            if (scheme &&
+              amt <= scheme.schemeAmountEnd &&
+              amt >= scheme.schemeAmountStart &&
+              enterAmount <= (this.totalAmt * (securedPercentage + (scheme.maximumPercentageAllowed / 100)))
+            ) {
 
-          if (scheme &&
-            amt <= scheme.schemeAmountEnd &&
-            amt >= scheme.schemeAmountStart &&
-            enterAmount <= (this.totalAmt * (securedPercentage + (scheme.maximumPercentageAllowed / 100)))
-          ) {
+              this.controls.isUnsecuredSchemeApplied.patchValue(true);
+              this.controls.unsecuredSchemeId.patchValue(scheme.id)
+              this.getIntrest();
+              this.CheckProcessingCharge()
 
-            this.controls.isUnsecuredSchemeApplied.patchValue(true);
-            this.controls.unsecuredSchemeId.patchValue(scheme.id)
-            this.getIntrest();
-            this.CheckProcessingCharge()
-
+            }
+          } else {
+            this.controls.finalLoanAmount.setErrors({ maximumAmtAllowed: true })
+            return
           }
-        } else {
-          this.controls.finalLoanAmount.setErrors({ maximumAmtAllowed: true })
-          return
         }
-      }
-    )
-
+      )
+    }
   }
 
   getIntrest() {
@@ -328,6 +329,14 @@ export class InterestCalculatorComponent implements OnInit {
       this.finalInterestForm.markAllAsTouched();
       return;
     }
+
+
+
+    const dom = this.eleRef.nativeElement.querySelectorAll('#calculation') as HTMLElement
+    dom.scrollIntoView({ behavior: "smooth", block: "end" })
+
+    // const cell = dom.querySelectorAll('#calculation')
+    // cell.scrollIntoView({behavior: "smooth", block: "end"})
 
     if (this.controls.isUnsecuredSchemeApplied.value) {
 
@@ -435,7 +444,7 @@ export class InterestCalculatorComponent implements OnInit {
     })
     this.controls.totalFinalInterestAmt.patchValue(this.totalinterestAmount.toFixed(2))
 
-    
+
   }
 
   get controls() {
