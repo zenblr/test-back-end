@@ -122,6 +122,12 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanOrnamentsDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
+        if (values.weightMachineZeroWeightData) {
+            values.weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + values.weightMachineZeroWeightData.url;
+            let filePath = values.weightMachineZeroWeightData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
         if (values.withOrnamentWeightData) {
             values.withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.withOrnamentWeightData.url;
             let filePath = values.withOrnamentWeightData.url;

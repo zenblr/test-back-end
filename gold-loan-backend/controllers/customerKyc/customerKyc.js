@@ -96,9 +96,9 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
                 where: { id: KycStage.customerId },
                 attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImageId'],
                 include: [{
-            model: models.fileUpload,
-            as: 'panImage'
-        }, {
+                    model: models.fileUpload,
+                    as: 'panImage'
+                }, {
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
                     attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'spouseName', 'signatureProof'],
@@ -667,22 +667,38 @@ exports.getReviewAndSubmit = async (req, res, next) => {
 
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImageId'],
         include: [{
+            model: models.fileUpload,
+            as: 'panImage'
+        }, {
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
-            attributes: ['id', 'customerId', 'customerKycId', 'profileImage', 'firstName', 'lastName', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'age', 'gender', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProof', 'identityProofNumber', 'spouseName', 'signatureProof'],
+            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'spouseName', 'signatureProof'],
             include: [{
                 model: models.occupation,
                 as: 'occupation'
             }, {
                 model: models.identityType,
                 as: 'identityType'
+            }, {
+                model: models.fileUpload,
+                as: 'profileImageData'
+            }, {
+                model: models.fileUpload,
+                as: 'signatureProofData'
+            }, {
+                model: models.identityProofImage,
+                as: 'identityProofImage',
+                include: [{
+                    model: models.fileUpload,
+                    as: 'identityProof'
+                }]
             }]
         }, {
             model: models.customerKycAddressDetail,
             as: 'customerKycAddress',
-            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId', 'addressProofNumber'],
+            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber'],
             include: [{
                 model: models.state,
                 as: 'state'
@@ -692,6 +708,13 @@ exports.getReviewAndSubmit = async (req, res, next) => {
             }, {
                 model: models.addressProofType,
                 as: 'addressProofType'
+            }, {
+                model: models.addressProofImage,
+                as: 'addressProofImage',
+                include: [{
+                    model: models.fileUpload,
+                    as: 'addressProof'
+                }]
             }],
             order: [["id", "ASC"]]
         }]

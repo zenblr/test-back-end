@@ -33,7 +33,11 @@ exports.customerDetails = async (req, res, next) => {
 
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage']
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImageId'],
+        include: [{
+            model: models.fileUpload,
+            as: 'panImage'
+        }]
     })
 
     let customerLoanStage = await models.customerLoan.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false } })
@@ -407,12 +411,9 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
 //get single customer loan details
 exports.getSingleLoanDetails = async (req, res, next) => {
-    // try{
 
-    // }catch(err){
-    //     console.log(err)
-    // }
     let { customerLoanId } = req.query
+    console.log(customerLoanId)
 
     let customerLoan = await models.customerLoan.findOne({
         where: { id: customerLoanId },
@@ -420,47 +421,70 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         include: [{
             model: models.loanStage,
             as: 'loanStage',
+            required: false,
             attributes: ['id', 'name']
         }, {
             model: models.customerLoanPersonalDetail,
             as: 'loanPersonalDetail',
+            required: false,
             // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-        }, {
+        },
+         {
             model: models.customerLoanBankDetail,
             as: 'loanBankDetail',
+            required: false,
+            include:[{
+                model: models.passbookProofImage,
+                as:'passbookProofImage',
+                required: false,
+                include: {
+                    model: models.fileUpload,
+                    as: "passbookProof",
+                    required: false,
+                }
+            }]
             // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
         },
         {
             model: models.customerLoanNomineeDetail,
             as: 'loanNomineeDetail',
+            required: false,
             // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
         },
         {
             model: models.customerLoanOrnamentsDetail,
             as: 'loanOrnamentsDetail',
+            required: false,
             attributes: { exclude: ['weightMachineZeroWeight', 'withOrnamentWeight', 'stoneTouch', 'acidTest', 'ornamentImage'] },
-            include: [{
-                model: models.purityTest,
-                as: "purityTest",
+            include: [
+                {
+                model: models.purityTestImage,
+                as: "purityTestImage",
+                required: false,
                 include: {
                     model: models.fileUpload,
-                    as: "purityTest"
+                    as: "purityTest",
+                    required: false,
                 }
-            }, {
+            }, 
+            {
+                model: models.fileUpload,
+                as: "weightMachineZeroWeightData",
+                required: false,
+            },
+            {
+                model: models.fileUpload,
+                as: "withOrnamentWeightData",
+                required: false,
+            },
+            {
+                model: models.fileUpload,
+                as: "stoneTouchData",
+                required: false,
+            },
+            {
                 model: models.fileUpload,
                 as: "acidTestData"
-            },
-            {
-                model: models.fileUpload,
-                as: "weightMachineZeroWeightData"
-            },
-            {
-                model: models.fileUpload,
-                as: "withOrnamentWeightData"
-            },
-            {
-                model: models.fileUpload,
-                as: "stoneTouchData"
             },
             {
                 model: models.fileUpload,
@@ -483,20 +507,6 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             model: models.customerLoan,
             as: 'unsecuredLoan'
         },
-        // {
-        //     model: models.customerFinalLoan,
-        //     as: 'finalLoan',
-        //     // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        //     include: [
-        //         {
-        //             model: models.scheme,
-        //             as: 'scheme'
-        //         }, {
-        //             model: models.scheme,
-        //             as: 'unsecuredScheme'
-        //         }
-        //     ]
-        // },
         {
             model: models.customerLoanPackageDetails,
             as: 'loanPacketDetails',
@@ -505,11 +515,31 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.packet,
                 as: 'packet',
                 attributes: ['id', 'packetUniqueId'],
+            }, {
+                model: models.fileUpload,
+                as: "emptyPacketWithNoOrnamentData"
+            },
+            {
+                model: models.fileUpload,
+                as: "packetWithAllOrnamentsData"
+            },
+            {
+                model: models.fileUpload,
+                as: "packetWithSealingData"
+            },
+            {
+                model: models.fileUpload,
+                as: "packetWithWeightData"
             }]
-        }, {
+        }, 
+        {
             model: models.customer,
             as: 'customer',
-            attributes: ['id', 'firstName', 'lastName', 'panType', 'panImage']
+            attributes: ['id', 'firstName', 'lastName', 'panType', 'panImageId'],
+            include:[{
+                model: models.fileUpload,
+                as:'panImage'
+            }]
         },
         {
             model: models.customerLoanIntrestCalculator,
