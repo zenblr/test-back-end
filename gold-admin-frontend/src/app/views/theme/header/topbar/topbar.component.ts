@@ -44,11 +44,10 @@ import { PurposeService } from '../../../../core/masters/purposes/service/purpos
 import { ReasonsService } from '../../../../core/masters/reasons/services/reasons.service';
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
-import { ShopService } from '../../../../core/merchant-broker/shop/shop.service'
-import { PacketTrackingService } from '../../../../core/loan-management'
+import { PacketTrackingService } from '../../../../core/loan-management';
 import { LoanRepaymentService } from '../../../../core/account/loan-repayment/services/loan-repayment.service';
 import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
-import { ShoppingCartService, OrdersService } from '../../../../core/merchant-broker';
+import { ShopService, ShoppingCartService, OrdersService } from '../../../../core/broker';
 
 @Component({
 	selector: "kt-topbar",

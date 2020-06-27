@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
-import { ShopService } from '../../../../core/merchant-broker/shop/shop.service';
+import { ShopService } from '../../../../core/broker/shop/shop.service';
 import { PageEvent, MatPaginator, MatDialog } from '@angular/material';
 import { DataTableService } from "../../../../core/shared/services/data-table.service";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";

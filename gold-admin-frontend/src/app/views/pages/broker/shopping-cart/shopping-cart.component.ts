@@ -3,7 +3,7 @@ import { ToastrComponent } from '../../../partials/components/toastr/toastr.comp
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ShoppingCartService } from '../../../../core/merchant-broker';
+import { ShoppingCartService } from '../../../../core/broker';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 
 @Component({

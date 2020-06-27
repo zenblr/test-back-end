@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Inject, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
-import { ShopService } from '../../../../../core/merchant-broker/shop/shop.service';
+import { ShopService } from '../../../../../core/broker/shop/shop.service';
 import { ToastrComponent } from "../../../../partials/components";
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 

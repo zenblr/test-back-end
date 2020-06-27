@@ -12,7 +12,7 @@ import {
   CustomersDatasource,
   CustomersModel,
   CustomersService
-} from "../../../../../core/merchant-broker";
+} from "../../../../../core/broker";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { SharedService } from "../../../../../core/shared/services/shared.service";
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
