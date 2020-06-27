@@ -45,10 +45,10 @@ export class SharedService {
 		return this.http.get(`/api/city?stateId=${id}`);
 	}
 
-	uploadFile(files): Observable<any> {
+	uploadFile(files,reason?): Observable<any> {
 		var fd = new FormData();
 		fd.append("avatar", files);
-		return this.http.post<any>(`/api/upload-file`, fd);
+		return this.http.post<any>(`/api/upload-file?reason=${reason}`, fd);
 	}
 
 	uploadBase64File(avatar): Observable<any> {
