@@ -111,7 +111,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           group.patchValue(array[index])
           this.calcGoldDeductionWeight(index)
           Object.keys(group.value).forEach(key => {
-            this.patchUrlIntoForm(key, group.value[key], index)
+            this.patchUrlIntoForm(key, group.value[key].id, group.value[key].URL, index)
           })
           this.ref.detectChanges()
         }
@@ -216,24 +216,24 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ornamentImage: [, Validators.required],
-      weightMachineZeroWeight: [, Validators.required],
-      withOrnamentWeight: [, Validators.required],
-      stoneTouch: [, Validators.required],
-      acidTest: [, Validators.required],
+      weightMachineZeroWeight: [],
+      withOrnamentWeight: [],
+      stoneTouch: [],
+      acidTest: [],
       karat: ['', Validators.required],
       ltvRange: [[]],
-      purityTest: [[], Validators.required],
+      purityTest: [[]],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
       loanAmount: [''],
       id: [],
       currentLtvAmount: [this.goldRate],
       ornamentImageData: [, Validators.required],
-      weightMachineZeroWeightData: [, Validators.required],
-      withOrnamentWeightData: [, Validators.required],
-      stoneTouchData: [, Validators.required],
-      acidTestData: [, Validators.required],
-      purityTestData: [[], Validators.required],
+      weightMachineZeroWeightData: [],
+      withOrnamentWeightData: [],
+      stoneTouchData: [],
+      acidTestData: [],
+      purityTestImage: [[]],
     }))
     this.createImageArray()
   }
@@ -305,9 +305,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0],'loan').pipe(
+      this.sharedService.uploadFile(event.target.files[0], 'loan').pipe(
         map(res => {
-          this.patchUrlIntoForm(string, res.uploadFile.id, index)
+          this.patchUrlIntoForm(string, res.uploadFile.id, res.uploadFile.URL, index)
         }),
         catchError(err => {
           this.toast.error(err.error)
@@ -318,65 +318,70 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  patchUrlIntoForm(key, url, index) {
+  patchUrlIntoForm(key, id, url, index) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
     switch (key) {
       case 'withOrnamentWeightData':
-        controls.controls.withOrnamentWeight.patchValue(url.id)
-        controls.controls.withOrnamentWeightData.patchValue(url.url)
+        controls.controls.withOrnamentWeight.patchValue(id)
+        controls.controls.withOrnamentWeightData.patchValue(url)
         this.withOrnamentWeight.nativeElement.value = ''
         // this.images[index].withOrnamentWeight = url
         this.images[index].withOrnamentWeight = controls.controls.withOrnamentWeightData.value
         break;
       case 'acidTestData':
-        controls.controls.acidTest.patchValue(url)
+        controls.controls.acidTest.patchValue(id)
+        controls.controls.acidTestData.patchValue(url)
         this.acidTest.nativeElement.value = ''
         // this.images[index].acidTest = url
-        this.images[index].acidTest = controls.controls.acidTestData.value.url
+        this.images[index].acidTest = controls.controls.acidTestData.value
         break;
       case 'weightMachineZeroWeightData':
-        controls.controls.weightMachineZeroWeight.patchValue(url.id)
-        controls.controls.weightMachineZeroWeightData.patchValue(url.url)
+        controls.controls.weightMachineZeroWeight.patchValue(id)
+        controls.controls.weightMachineZeroWeightData.patchValue(url)
         this.weightMachineZeroWeight.nativeElement.value = ''
         // this.images[index].weightMachineZeroWeight = url
         this.images[index].weightMachineZeroWeight = controls.controls.weightMachineZeroWeightData.value
         break;
       case 'stoneTouchData':
-        controls.controls.stoneTouch.patchValue(url.id)
-        controls.controls.stoneTouchData.patchValue(url.url)
+        controls.controls.stoneTouch.patchValue(id)
+        controls.controls.stoneTouchData.patchValue(url)
         this.stoneTouch.nativeElement.value = ''
         // this.images[index].stoneTouch = url
         this.images[index].stoneTouch = controls.controls.stoneTouchData.value
         break;
-      case 'purityTest':
-        let temp = []
-        if (controls.controls.purityTest.value.length > 0)
-          temp = controls.controls.purityTest.value
-
+      case 'purityTestImage':
+        let temp = []; let tempId = [];
+        if (controls.controls.purityTest.value.length > 0) {
+          tempId = controls.controls.purityTest.value
+          temp = controls.controls.purityTestImage.value
+        }
         if (!temp.includes(url))
 
           if (typeof url == "object") {
             temp = url
+            tempId = id
             // url.forEach(element => {
             //   temp.push(element.purityTest.url)
             // });
           } else {
             temp.push(url)
+            tempId.push(id)
           }
         this.images[index].purity = temp
-        controls.controls.purityTest.patchValue(this.images[index].purity)
+        controls.controls.purityTest.patchValue(tempId)
+        controls.controls.purityTestImage.patchValue(temp)
         this.purity.nativeElement.value = ''
         break;
 
       case 'ornamentImageData':
-        controls.controls.ornamentImage.patchValue(url.id)
-        controls.controls.ornamentImageData.patchValue(url.url)
+        controls.controls.ornamentImage.patchValue(id)
+        controls.controls.ornamentImageData.patchValue(url)
         this.ornamentImage.nativeElement.value = ''
         // this.images[index].ornamentImage = url
-        this.images[index].ornamentImage = controls.controls.ornamentImageData.value.url
+        this.images[index].ornamentImage = controls.controls.ornamentImageData.value
         break;
     }
-
+    console.log(controls.value)
 
   }
 
@@ -385,33 +390,41 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     switch (key) {
       case 'withOrnamentWeight':
         controls.controls.withOrnamentWeight.patchValue(null)
+        controls.controls.withOrnamentWeightData.patchValue(null)
         this.images[index].withOrnamentWeight = ''
 
         break;
       case 'acidTest':
         controls.controls.acidTest.patchValue(null)
+        controls.controls.acidTestData.patchValue(null)
         this.images[index].acidTest = ''
 
         break;
       case 'weightMachineZeroWeight':
         controls.controls.weightMachineZeroWeight.patchValue(null)
+        controls.controls.weightMachineZeroWeightData.patchValue(null)
         this.images[index].weightMachineZeroWeight = ''
 
         break;
       case 'stoneTouch':
         controls.controls.stoneTouch.patchValue(null)
+        controls.controls.stoneTouchData.patchValue(null)
         this.images[index].stoneTouch = ''
 
         break;
       case 'purityTest':
         let temp = controls.controls.purityTest.value
+        let tempUrl = controls.controls.purityTestImage.value
         temp.splice(purityIndex, 1)
+        tempUrl.splice(purityIndex, 1)
         controls.controls.purityTest.patchValue(temp)
-        this.images[index].purity = temp
+        controls.controls.purityTestImage.patchValue(tempUrl)
+        this.images[index].purity = tempUrl
 
         break;
       case 'ornamentImage':
         controls.controls.ornamentImage.patchValue(null)
+        controls.controls.ornamentImageData.patchValue(null)
         this.images[index].ornamentImage = ''
 
         break;
@@ -494,7 +507,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (res) {
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
-          this.patchUrlIntoForm(string, res.uploadFile, index)
+          this.patchUrlIntoForm(string, res.uploadFile.id, res.uploadFile.URL, index)
         })
       }
     });
