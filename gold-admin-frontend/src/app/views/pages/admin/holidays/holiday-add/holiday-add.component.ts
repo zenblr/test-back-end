@@ -90,7 +90,6 @@ export class HolidayAddComponent implements OnInit {
         this.fillingForm.markAllAsTouched()
         return
       }
-
       let date = new Date(this.fillingForm.value.holidayDate)
       this.fillingForm.value.holidayDate =
         new Date(

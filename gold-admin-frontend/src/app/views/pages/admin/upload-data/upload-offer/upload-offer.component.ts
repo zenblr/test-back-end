@@ -13,6 +13,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class UploadOfferComponent implements OnInit {
   images: any[] = []
+  imgId: any[] = []
   index: number = null
   viewLoading: boolean = false;
   @ViewChild("file", { static: false }) file;
@@ -41,10 +42,9 @@ export class UploadOfferComponent implements OnInit {
   getData() {
     this.uploadOfferService.getOffers().pipe(
       map(res => {
-        // this.goldRate.patchValue(res.goldRate)
-        // this.uploadOfferService.goldRate.next(res.goldRate);
         if (res.images.length > 0) {
           Array.prototype.push.apply(this.images, res.images)
+          Array.prototype.push.apply(this.imgId, res.images)
         }
         this.ref.detectChanges();
       })).subscribe()
@@ -56,7 +56,7 @@ export class UploadOfferComponent implements OnInit {
 
   save() {
 
-    this.uploadOfferService.uploadOffers(this.images).pipe(
+    this.uploadOfferService.uploadOffers(this.imgId).pipe(
       (map(res => {
         this.toastr.successToastr('Uploaded Sucessfully');
         // this.uploadOfferService.goldRate.next(this.goldRate.value);

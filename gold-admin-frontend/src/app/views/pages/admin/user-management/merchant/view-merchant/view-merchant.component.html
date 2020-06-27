@@ -95,7 +95,7 @@
                 <h5 class="text-color kt-padding-b-15 kt-padding-t-15">Commission Details</h5>
                 <div class="row kt-margin-t-10">
                     <div [ngClass]="idx%2==0 ? 'col-7' :'col-5'"
-                     *ngFor="let commisson of merchant.commissionData;index as idx">
+                     *ngFor="let commisson of merchant?.commissionData;index as idx">
                         <div class="row">
                             <div [ngClass]="idx%2==0 ? 'col-5' :'col-6'">
                                 <label class=" kt-padding-t-5 kt-padding-b-5 text-gray font-weight-500">{{commisson.category.categoryName}}</label>
@@ -111,7 +111,7 @@
         <div class="row">
             <div class="col-12">
                 <h5 class="text-color kt-padding-b-15 kt-padding-t-15">Permission Details</h5>
-                <div class="row kt-margin-t-10" *ngFor="let category of merchant.catlogData">
+                <div class="row kt-margin-t-10" *ngFor="let category of merchant?.catlogData">
                     <div class="col-3">
                         <label class=" kt-padding-t-5 kt-padding-b-5 text-color font-weight-500">{{category.categoryName |titlecase}}</label>
                     </div>

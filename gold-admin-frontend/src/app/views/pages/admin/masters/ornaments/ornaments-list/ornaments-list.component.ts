@@ -114,7 +114,7 @@ export class OrnamentsListComponent implements OnInit {
   deleteOrnament(_item) {
     const role = _item;
     const _title = 'Delete Ornament';
-    const _description = 'Are you sure to permanently delete this Ornament?';
+    const _description = 'Are you sure you want to permanently delete this Ornament?';
     const _waitDesciption = 'Ornament is deleting...';
     const _deleteMessage = `Ornament has been deleted`;
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);

@@ -251,10 +251,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   deleteOrnaments(idx) {
-    const _title = 'Delete Packet';
-    const _description = 'Are you sure to permanently delete this packet?';
-    const _waitDesciption = 'Packet is deleting...';
-    const _deleteMessage = `Packet has been deleted`;
+    const _title = 'Delete Ornament';
+    const _description = 'Are you sure you want to permanently delete this Ornament?';
+    const _waitDesciption = 'Ornament is deleting...';
+    const _deleteMessage = `Ornament has been deleted`;
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -305,7 +305,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0]).pipe(
+      this.sharedService.uploadFile(event.target.files[0],'loan').pipe(
         map(res => {
           this.patchUrlIntoForm(string, res.uploadFile.id, index)
         }),

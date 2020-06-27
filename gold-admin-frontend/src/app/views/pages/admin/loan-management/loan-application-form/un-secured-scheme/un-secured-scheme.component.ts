@@ -37,7 +37,7 @@ export class UnSecuredSchemeComponent implements OnInit {
     this.unsecuredSchemeForm = this.fb.group({
       unsecuredSchemeName: [''],
       unsecuredSchemeAmount: [''],
-      unsceuredInterestRate: [''],
+      unsecuredSchemeInterest: [''],
     });
   }
 
@@ -69,7 +69,7 @@ export class UnSecuredSchemeComponent implements OnInit {
     switch (this.details.paymentType) {
       case "30":
         if (scheme.length > 0)
-          this.controls.unsceuredInterestRate.patchValue(scheme[0].interestRateThirtyDaysMonthly)
+          this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateThirtyDaysMonthly)
 
         this.paymentType = "Month"
         this.colJoin = 1
@@ -77,7 +77,7 @@ export class UnSecuredSchemeComponent implements OnInit {
         break;
       case "90":
         if (scheme.length > 0)
-          this.controls.unsceuredInterestRate.patchValue(scheme[0].interestRateNinetyDaysMonthly)
+          this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateNinetyDaysMonthly)
 
         this.paymentType = "Quater"
         this.colJoin = 3
@@ -85,7 +85,7 @@ export class UnSecuredSchemeComponent implements OnInit {
         break;
       case "180":
         if (scheme.length > 0)
-          this.controls.unsceuredInterestRate.patchValue(scheme[0].interestRateOneHundredEightyDaysMonthly)
+          this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateOneHundredEightyDaysMonthly)
 
         this.paymentType = "Half Yearly"
         this.colJoin = 6
@@ -96,7 +96,7 @@ export class UnSecuredSchemeComponent implements OnInit {
 
   calculate() {
     this.unSecuredInterestAmount = (this.details.unsecuredSchemeAmount *
-      (this.controls.unsceuredInterestRate.value * 12 / 100)) * this.details.paymentType
+      (this.controls.unsecuredSchemeInterest.value * 12 / 100)) * this.details.paymentType
       / 360
     this.isUnsecuredSchemeChanged = false;
     this.genrateTable()

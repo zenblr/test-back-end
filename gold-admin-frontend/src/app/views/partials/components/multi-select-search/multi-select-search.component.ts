@@ -1,5 +1,5 @@
 // Angular
-import { Component, ChangeDetectionStrategy, Input, forwardRef, OnDestroy, } from "@angular/core";
+import { Component, ChangeDetectionStrategy, Input, forwardRef, OnDestroy, SimpleChanges, } from "@angular/core";
 import { FormGroup, FormBuilder, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormControl, ControlValueAccessor, } from "@angular/forms";
 import { Subscription } from "rxjs";
 
@@ -28,6 +28,7 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 	@Input() bindValue: string;
 	@Input() isClear: boolean = false;
 	@Input() placeholder:String;
+	@Input() style:boolean = false;
 	form: FormGroup;
 	subscriptions: Subscription[] = [];
 
@@ -56,11 +57,15 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 		);
 	}
 
-	ngOnChanges() {
-		if (this.isClear) {
+	ngOnChanges(changes:SimpleChanges) {
+		if (changes.isClear && changes.isClear.currentValue) {
 			this.form.reset();
+
 		}
-		this.isClear = false;
+		// if(changes.style && changes.style.currentValue){
+			
+		// }
+
 	}
 
 	ngOnDestroy() {

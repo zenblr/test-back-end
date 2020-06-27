@@ -137,6 +137,7 @@ export class AddLeadComponent implements OnInit {
       panType: [''],
       form60: [''],
       panImage: [],
+      panImg:[],
       comment: [''],
       leadSourceId: [''],
       source: [''],
@@ -282,11 +283,12 @@ export class AddLeadComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0]).pipe(
+      this.sharedService.uploadFile(event.target.files[0],'lead').pipe(
         map(res => {
           if (res) {
             // this.controls.form60.patchValue(event.target.files[0].name)
-            this.controls.panImage.patchValue(res.uploadFile.URL)
+            this.controls.panImg.patchValue(res.uploadFile.URL)
+            this.controls.panImage.patchValue(res.uploadFile.id)
           }
         }), catchError(err => {
           throw err
@@ -310,6 +312,7 @@ export class AddLeadComponent implements OnInit {
 
   remove() {
     this.controls.panImage.patchValue('')
+    this.controls.panImg.patchValue('')
   }
 
   onSubmit() {
