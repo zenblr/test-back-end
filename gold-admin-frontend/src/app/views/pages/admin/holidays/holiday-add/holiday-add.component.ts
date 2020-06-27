@@ -111,7 +111,7 @@ export class HolidayAddComponent implements OnInit {
 
         this.holidayService.editHoliday(this.fillingForm.value).pipe(
           map((res) => {
-            this.toastr.success('Holiday Created Sucessfully');
+            this.toastr.success('Holiday Updated Sucessfully');
             this.dialogRef.close(res);
           }), catchError(err => {
             this.ref.detectChanges();
@@ -127,7 +127,7 @@ export class HolidayAddComponent implements OnInit {
       fb.append('holidaylist', this.file)
       this.holidayService.uploadCSV(fb).pipe(
         map((res) => {
-          this.toastr.success('Holiday uploaded Sucessfully');
+          this.toastr.success('Holiday Uploaded Sucessfully');
           this.dialogRef.close(res);
         }), catchError(err => {
 

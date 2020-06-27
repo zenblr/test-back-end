@@ -63,6 +63,7 @@ export class AddInternalUserBranchComponent implements OnInit {
       this.getCites()
       this.addInternalBranchForm.disable();
     }
+    console.log(this.addInternalBranchForm.value)
   }
 
   initForm() {
