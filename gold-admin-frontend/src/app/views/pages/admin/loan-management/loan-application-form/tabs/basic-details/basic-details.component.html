@@ -41,10 +41,10 @@
                         <div class="col-4 form-label">
                             <label class="text-color kt-padding-l-10">KYC Status</label>
                         </div>
-                        <div class="col-3">
-                            <input type="text" class="form-control text-capitalize" formControlName="kycStatus" readonly>
+                        <div class="col-3 form-label">
+                            <label class="text-color">{{controls.kycStatus.value | titlecase}}</label>
                         </div>
-                        <div class="col-3">
+                        <div class="col-3 form-label">
                             <label class="text-color kt-padding-l-10" (click)="viewKYC(26)">View</label>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <!-- <div class="col-6">
                     <div class="row" *ngIf="controls.panType.value=='pan'">
                         <div class="col-4 offset-2 form-label">
                             <label class="text-color kt-padding-l-10">PAN Number</label>
@@ -93,7 +93,7 @@
                                 formControlName="panCardNumber" readonly>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="text-right py-3 col-12" *ngIf="!disable">
