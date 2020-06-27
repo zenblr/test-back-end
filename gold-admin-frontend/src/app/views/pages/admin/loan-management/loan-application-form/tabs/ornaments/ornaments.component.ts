@@ -14,6 +14,7 @@ import { OrnamentsService } from '../../../../../../../core/masters/ornaments/se
 import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
+import { iif } from 'rxjs';
 
 
 @Component({
@@ -111,7 +112,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           group.patchValue(array[index])
           this.calcGoldDeductionWeight(index)
           Object.keys(group.value).forEach(key => {
-            this.patchUrlIntoForm(key, group.value[key].id, group.value[key].URL, index)
+
+            if (key == 'purityTestImage') {
+              let data = this.createPurityImageArray(group.value.purityTestImage)
+              this.patchUrlIntoForm(key, data.id, data.url, index)
+
+            } else {
+              this.patchUrlIntoForm(key, group.value[key].id, group.value[key].URL, index)
+
+            }
+
           })
           this.ref.detectChanges()
         }
@@ -155,6 +165,17 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   get OrnamentsData() {
     if (this.ornamentsForm)
       return this.ornamentsForm.controls.ornamentData as FormArray;
+  }
+
+  createPurityImageArray(purity) {
+    let data = { url: [], id: [] }
+    console.log(purity)
+    purity.forEach(pure => {
+      data.url.push(pure.purityTest.URL)
+      data.id.push(pure.purityTest.id)
+    });
+
+    return data
   }
 
   weightCheck(index) {
@@ -301,7 +322,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string, ) {
+  uploadFile(index, event, string,) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
@@ -412,7 +433,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.images[index].stoneTouch = ''
 
         break;
-      case 'purityTest':
+      case 'purityTestImage':
         let temp = controls.controls.purityTest.value
         let tempUrl = controls.controls.purityTestImage.value
         temp.splice(purityIndex, 1)
