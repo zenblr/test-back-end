@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_card_number',
             allowNull: false
         },
-        age:{
+        age: {
             type: DataTypes.STRING,
             field: 'age'
         },
@@ -130,12 +130,14 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerKycPersonalDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.identityProofImages) {
-            for (image of values.identityProofImages) {
-                image.URL = baseUrlConfig.BASEURL + image.url;
-                let filePath = image.url;
-                let pathToadd = filePath.replace('public/', '');
-                image.URL = baseUrlConfig.BASEURL + pathToadd;
+        if (values.identityProofImage) {
+            for (image of values.identityProofImage) {
+                // for (ele of image.identityProof) {
+                    image.identityProof.URL = baseUrlConfig.BASEURL + image.identityProof.url;
+                    let filePath = image.identityProof.url;
+                    let pathToadd = filePath.replace('public/', '');
+                    image.identityProof.URL = baseUrlConfig.BASEURL + pathToadd;
+                // }
             }
         }
         if (values.profileImageData) {
@@ -150,7 +152,7 @@ module.exports = (sequelize, DataTypes) => {
             let pathToadd = filePath.replace('public/', '');
             values.signatureProofData.URL = baseUrlConfig.BASEURL + pathToadd;
         }
-        
+
         return values;
     }
 

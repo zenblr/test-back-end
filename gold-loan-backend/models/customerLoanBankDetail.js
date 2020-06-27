@@ -71,12 +71,13 @@ module.exports = (sequelize, DataTypes) => {
     
     customerLoanBankDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.identityProofImages) {
-            for (image of values.identityProofImages) {
-                image.URL = baseUrlConfig.BASEURL + image.url;
-                let filePath = image.url;
+        if (values.passbookProofImage) {
+            for (image of values.passbookProofImage) {
+
+                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.url;
+                let filePath = image.passbookProof.url;
                 let pathToadd = filePath.replace('public/', '');
-                image.URL = baseUrlConfig.BASEURL + pathToadd;
+                image.passbookProof.URL = baseUrlConfig.BASEURL + pathToadd;
             }
         }
         return values;

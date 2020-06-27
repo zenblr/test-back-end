@@ -122,6 +122,12 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanOrnamentsDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
+        if (values.weightMachineZeroWeightData) {
+            values.weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + values.weightMachineZeroWeightData.url;
+            let filePath = values.weightMachineZeroWeightData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
         if (values.withOrnamentWeightData) {
             values.withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.withOrnamentWeightData.url;
             let filePath = values.withOrnamentWeightData.url;
@@ -149,10 +155,11 @@ module.exports = (sequelize, DataTypes) => {
 
         if (values.purityTestImages) {
             for (image of values.purityTestImages) {
-                image.URL = baseUrlConfig.BASEURL + image.url;
-                let filePath = image.url;
+
+                image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.url;
+                let filePath = image.purityTest.url;
                 let pathToadd = filePath.replace('public/', '');
-                image.URL = baseUrlConfig.BASEURL + pathToadd;
+                image.purityTest.URL = baseUrlConfig.BASEURL + pathToadd;
             }
         }
 

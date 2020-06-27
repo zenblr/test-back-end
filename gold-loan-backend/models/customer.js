@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('customer', {
         // attributes
@@ -100,20 +102,20 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'last_login',
         },
-        leadSourceId:{
+        leadSourceId: {
             type: DataTypes.INTEGER,
             field: 'lead_source_id',
         },
-        source:{
+        source: {
             type: DataTypes.STRING,
             field: 'source',
         },
-        panType:{
+        panType: {
             type: DataTypes.ENUM,
             field: 'pan_type',
             values: ['pan', 'form60'],
         },
-        panImageId:{
+        panImageId: {
             type: DataTypes.INTEGER,
             field: 'pan_image_id',
         }
@@ -135,6 +137,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.hasMany(models.customerLoan, { foreignKey: 'customerId', as: 'customerLoan' });
 
+        Customer.belongsTo(models.fileUpload, { foreignKey: 'panImageId', as: 'panImage' });
 
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
@@ -205,6 +208,12 @@ module.exports = (sequelize, DataTypes) => {
     // This will not return password, refresh token and access token.
     Customer.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
+        if (values.panImage) {
+            values.panImage.URL = baseUrlConfig.BASEURL + values.panImage.url;
+            let filePath = values.panImage.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.panImage.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
         delete values.password;
         return values;
     }

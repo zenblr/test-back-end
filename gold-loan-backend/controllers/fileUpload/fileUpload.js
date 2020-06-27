@@ -41,7 +41,7 @@ exports.uploadFile =
             },
             destination: destination,
         });
-        
+
         const uploads = multer({ storage }).single('avatar');
 
         uploads(req, res, async (err) => {
@@ -74,16 +74,20 @@ exports.getFile = async (req, res, next) => {
 }
 
 exports.base64Convertor = async (req, res, next) => {
-    baseImage = req.body.avatar.split(',')
+
+    let destination = 'public/uploads/images/',
+
+        baseImage = req.body.avatar.split(',')
     let mimetype = baseImage[0].split(';')[0].split(':')[1]
     let fileName = Date.now();
     let encoding = '7Bit';
     let userId = req.userData.id
+    let url = destination + `${fileName}.jpeg`;
 
     let bitmap = await new Buffer.from(baseImage[1], 'base64')
     fs.writeFileSync(`public/uploads/images/${fileName}.jpeg`, bitmap)
 
-    let uploadFile = await models.fileUpload.create({ filename: `${fileName}.jpeg`, mimetype: mimetype, encoding: encoding, userId: userId });
+    let uploadFile = await models.fileUpload.create({ filename: `${fileName}.jpeg`, url: url, mimetype: mimetype, encoding: encoding, userId: userId });
 
     return res.status(200).json({
         imgUrl: `${BASEURL}/uploads/images/${fileName}.jpeg`, uploadFile
