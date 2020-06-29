@@ -38,7 +38,7 @@
 				</div>
 				<div class="col-8">
 					<input type="text" aria-label="Mobile Number" placeholder="Mobile Number" class="form-control"
-						formControlName="mobileNumber"
+						formControlName="mobileNumber" maxlength="10"
 						[class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid" numbersOnly>
 					<mat-error *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
 						Field is required
@@ -117,7 +117,7 @@
 				</div>
 				<div class="col-8">
 					<input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
-						formControlName="pinCode" numbersOnly
+						formControlName="pinCode" numbersOnly maxlength="6"
 						[class.isError]="controls.pinCode.touched && controls.pinCode.invalid">
 					<mat-error *ngIf=" controls.pinCode.errors?.required && controls.pinCode.touched">
 						Field is required
