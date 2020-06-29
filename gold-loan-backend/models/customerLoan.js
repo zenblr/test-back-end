@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const customerLoan = sequelize.define('customerLoan', {
         // attributes
@@ -125,7 +127,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'loan_type'
         },
-        unsecuredLoanId:{
+        unsecuredLoanId: {
             type: DataTypes.INTEGER,
             field: 'unsecured_loan_id'
         },
@@ -178,7 +180,7 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
         customerLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
 
-        customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan', useJunctionTable: false  });
+        customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan', useJunctionTable: false });
 
         customerLoan.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
         customerLoan.belongsTo(models.user, { foreignKey: 'bmId', as: 'bm' });
@@ -190,17 +192,97 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
-    // FUNCTION TO ADD CUSTOMER BANK DETAIL
-    customerLoan.addCustomerLoan =
-        (customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, t) => customerLoan.create({
-            customerId, applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, totalEligibleAmt, totalFinalInterestAmt, createdBy, modifiedBy, isActive: true
-        }, { t });
+    customerLoan.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
 
-    // FUNCTION TO GET APPROVAL FROM BM
-    customerLoan.approvalFromBM =
-        (id, applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId, modifiedBy) => customerLoan.update({
-            applicationFormForBM, goldValuationForBM, loanStatusForBM, loanUniqueId, modifiedBy
-        }, { where: { id, isActive: true } });
+        var resOrna = []
+        for (let i = 0; i < values.loanOrnamentsDetail.length; i++) {
+            if (values.loanOrnamentsDetail[i].weightMachineZeroWeightData) {
+                values.loanOrnamentsDetail[i].weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeightData.url;
+                let filePath = values.loanOrnamentsDetail[i].weightMachineZeroWeightData.url;
+                let pathToadd = filePath.replace('public/', '');
+                values.loanOrnamentsDetail[i].weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+            if (values.loanOrnamentsDetail[i].withOrnamentWeightData) {
+                values.loanOrnamentsDetail[i].withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].withOrnamentWeightData.url;
+                let filePath = values.loanOrnamentsDetail[i].withOrnamentWeightData.url;
+                let pathToadd = filePath.replace('public/', '');
+                values.loanOrnamentsDetail[i].withOrnamentWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+            if (values.loanOrnamentsDetail[i].stoneTouchData) {
+                values.loanOrnamentsDetail[i].stoneTouchData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].stoneTouchData.url;
+                let filePath = values.loanOrnamentsDetail[i].stoneTouchData.url;
+                let pathToadd = filePath.replace('public/', '');
+                values.loanOrnamentsDetail[i].stoneTouchData.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+            if (values.loanOrnamentsDetail[i].acidTestData) {
+                values.loanOrnamentsDetail[i].acidTestData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].acidTestData.url;
+                let filePath = values.loanOrnamentsDetail[i].acidTestData.url;
+                let pathToadd = filePath.replace('public/', '');
+                values.loanOrnamentsDetail[i].acidTestData.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+            if (values.loanOrnamentsDetail[i].ornamentImageData) {
+                values.loanOrnamentsDetail[i].ornamentImageData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].ornamentImageData.url;
+                let filePath = values.loanOrnamentsDetail[i].ornamentImageData.url;
+                let pathToadd = filePath.replace('public/', '');
+                values.loanOrnamentsDetail[i].ornamentImageData.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+            if (values.loanOrnamentsDetail[i].purityTestImage) {
+                for (image of values.loanOrnamentsDetail[i].purityTestImage) {
+                    image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.url;
+                    let filePath = image.purityTest.url;
+                    let pathToadd = filePath.replace('public/', '');
+                    image.purityTest.URL = baseUrlConfig.BASEURL + pathToadd;
+                }
+            }
+            resOrna.push(values.loanOrnamentsDetail[i])
+        }
+
+        if (values.loanBankDetail) {
+            for (image of values.loanBankDetail.passbookProofImage) {
+                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.url;
+                let filePath = image.passbookProof.url;
+                let pathToadd = filePath.replace('public/', '');
+                image.passbookProof.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+        }
+
+        resPac = []
+        for (let i = 0; i < values.loanPacketDetails.length; i++) {
+
+            if (values.loanPacketDetails[i].emptyPacketWithNoOrnamentData) {
+                values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.url;
+                let filePath = values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.url;
+                let pathToadd = filePath.replace('public/', '');
+                values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+            if (values.loanPacketDetails[i].packetWithAllOrnamentsData) {
+                values.loanPacketDetails[i].packetWithAllOrnamentsData = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithAllOrnamentsData;
+                let filePath = values.loanPacketDetails[i].packetWithAllOrnamentsData;
+                let pathToadd = filePath.replace('public/', '');
+                values.loanPacketDetails[i].packetWithAllOrnamentsData = baseUrlConfig.BASEURL + pathToadd;
+            }
+
+            if (values.loanPacketDetails[i].packetWithSealingData) {
+                values.loanPacketDetails[i].packetWithSealingData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithSealingData.url;
+                let filePath = values.loanPacketDetails[i].packetWithSealingData.url;
+                let pathToadd = filePath.replace('public/', '');
+                values.loanPacketDetails[i].packetWithSealingData.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+            if (values.loanPacketDetails[i].packetWithWeightData) {
+                values.loanPacketDetails[i].packetWithWeightData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithWeightData.url;
+                let filePath = values.loanPacketDetails[i].packetWithWeightData.url;
+                let pathToadd = filePath.replace('public/', '');
+                values.loanPacketDetails[i].packetWithWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+            }
+            resPac.push(values.loanPacketDetails[i])
+        }
+
+        values.loanOrnamentsDetail = resOrna
+        values.loanPacketDetails = resPac
+
+        return values;
+    }
 
     // FUNCTION TO GET LOAN DETAIL BY ID
     customerLoan.getLoanDetailById =

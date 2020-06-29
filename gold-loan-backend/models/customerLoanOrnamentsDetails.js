@@ -153,8 +153,8 @@ module.exports = (sequelize, DataTypes) => {
             values.ornamentImageData.URL = baseUrlConfig.BASEURL + pathToadd;
         }
 
-        if (values.purityTestImages) {
-            for (image of values.purityTestImages) {
+        if (values.purityTestImage) {
+            for (image of values.purityTestImage) {
 
                 image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.url;
                 let filePath = image.purityTest.url;
