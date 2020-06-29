@@ -17,7 +17,7 @@ exports.addUpdateLenderBanner = async (req, res, next) => {
             single["lenderBannerImagesId"] = ele;
             data.push(single);
         }
-        await models.lenderBannerImages.bulkCreate(data, { transaction: t });
+        await models.lenderBannerImages.bulkCreate(data);
 
 
         if (!createdLenderBanner) {
@@ -27,7 +27,9 @@ exports.addUpdateLenderBanner = async (req, res, next) => {
         }
     } else {
         let id = lenderBanner[0].id;
-        let UpdateData = await models.lenderBanner.updateLenderBanner(id, images, userId);
+        let UpdateData = await models.lenderBanner.updateLenderBanner(id, userId);
+
+        await models.lenderBannerImages.destroy({ where: { lenderBannerId: id } });
 
         let data = [];
         for (let ele of images) {
@@ -36,7 +38,7 @@ exports.addUpdateLenderBanner = async (req, res, next) => {
             single["lenderBannerImagesId"] = ele;
             data.push(single);
         }
-        await models.lenderBannerImages.bulkCreate(data, { transaction: t });
+        await models.lenderBannerImages.bulkCreate(data);
 
         if (UpdateData[0] === 0) {
             return res.status(404).json({ message: 'Data not updated' });
@@ -49,7 +51,7 @@ exports.addUpdateLenderBanner = async (req, res, next) => {
 // Read Offer.
 
 exports.readLenderBanner = async (req, res, next) => {
-    let lenderBanner = await models.lenderBanner.readLenderBanner({
+    let lenderBanner = await models.lenderBanner.findAll({
         include: {
             model: models.lenderBannerImages,
             as: 'lenderBannerImages',

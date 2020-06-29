@@ -149,7 +149,7 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.lead,{foreignKey: 'leadSourceId', as: 'lead' });
 
-        Customer.belongsTo(models.fileUpload,{foreignKey: 'panImageId', as: 'panImage' });
+        // Customer.belongsTo(models.fileUpload,{foreignKey: 'panImageId', as: 'panImage' });
 
     }
 

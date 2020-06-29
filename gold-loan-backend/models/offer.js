@@ -36,17 +36,14 @@ module.exports = (sequelize, DataTypes) => {
         return values;
     }
 
-
-
-
      //Add_Offer
-     Offer.addOffer = (images, userId) => Offer.create({ images, userId });
+     Offer.addOffer = ( userId) => Offer.create({ userId });
 
      //Update_Offer
-     Offer.updateOffer = (id, images, userId) => Offer.update({ images, userId }, { where: { id } })
+     Offer.updateOffer = (id, userId) => Offer.update({ userId }, { where: { id } })
  
      //Read_Offer
-     Offer.readOffer = () => Offer.findAll({attributes: ['id', 'images']});
+     Offer.readOffer = () => Offer.findAll();
      
     return Offer;
 }

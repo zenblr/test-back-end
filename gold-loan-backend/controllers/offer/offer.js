@@ -28,7 +28,9 @@ exports.addUpdateOffer = async (req, res, next) => {
         }
     } else {
         let id = offer[0].id;
-        let UpdateData = await models.offer.updateOffer(id, images, userId)
+        let UpdateData = await models.offer.updateOffer(id, userId);
+
+        await models.offerImages.destroy({ where: { offerId: id } });
 
         let data = [];
         for (let ele of images) {
@@ -49,20 +51,21 @@ exports.addUpdateOffer = async (req, res, next) => {
 // Read Offer.
 
 exports.readOffer = async (req, res, next) => {
-    let offer = await models.offer.readOffer({
-        include: {
-            model: models.offerImages,
-            as: 'offerImages',
+        let offer = await models.offer.findAll({
             include: {
-                model: models.fileUpload,
-                as: 'offerImages'
+                model: models.offerImages,
+                as: 'offerImages',
+                include: {
+                    model: models.fileUpload,
+                    as: 'offerImages'
+                }
             }
+        })
+        if (!offer[0]) {
+            res.status(400).json({ message: 'Data not found' });
+        } else {
+            res.status(200).json(offer[0]);
         }
-    })
-    if (!offer[0]) {
-        res.status(400).json({ message: 'Data not found' });
-    } else {
-        res.status(200).json(offer[0]);
-    }
+    
 };
 

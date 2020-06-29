@@ -18,7 +18,7 @@ exports.addUpdateBanner = async (req, res, next) => {
             single["bannerImageId"] = ele;
             data.push(single);
         }
-        await models.bannerImages.bulkCreate(data, { transaction: t });
+        await models.bannerImages.bulkCreate(data);
 
         if (!CreatedBanner) {
             res.status(422).json({ message: 'Banner not added' });
@@ -38,7 +38,7 @@ exports.addUpdateBanner = async (req, res, next) => {
             single["bannerImageId"] = ele;
             data.push(single);
         }
-        await models.bannerImages.bulkCreate(data, { transaction: t });
+        await models.bannerImages.bulkCreate(data);
 
         if (UpdateData[0] === 0) {
             return res.status(404).json({ message: 'Data not updated' });
@@ -51,24 +51,25 @@ exports.addUpdateBanner = async (req, res, next) => {
 // Read Banner.
 
 exports.readBanner = async (req, res, next) => {
-    let banner = await models.banner.readBanner({
-        include: {
-            model: models.bannerImages,
-            as: 'bannerImage',
+        let banner = await models.banner.findAll({
             include: {
-                model: models.fileUpload,
-                as: 'bannerImage'
+                model: models.bannerImages,
+                as: 'bannerImage',
+                include: {
+                    model: models.fileUpload,
+                    as: 'bannerImage'
+                }
             }
+        })
+        // const id = banner[0].id;
+        // return res.json(banner[0])
+        // let bannerData = await models.banner.findOne({ where: { id } });
+        if (!banner) {
+            res.status(404).json({ message: 'Data not found' });
+        } else {
+            res.status(200).json(banner[0]);
         }
-    })
-    // const id = banner[0].id;
-    // return res.json(banner[0])
-    // let bannerData = await models.banner.findOne({ where: { id } });
-    if (!banner) {
-        res.status(404).json({ message: 'Data not found' });
-    } else {
-        res.status(200).json(banner[0]);
-    }
+  
 };
 
 // //Delete Banner.

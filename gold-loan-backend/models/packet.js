@@ -45,6 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         packet.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         packet.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         packet.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranch', as: 'internalBranch' });
+        packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packet' });
         
     }
 

@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const Banner = sequelize.define('banner', {
         // attributes
@@ -21,13 +23,12 @@ module.exports = (sequelize, DataTypes) => {
 
     Banner.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.bannerImages) {
-            for (image of values.bannerImages) {
-
-                image.bannerImages.URL = baseUrlConfig.BASEURL + image.bannerImages.url;
-                let filePath = image.bannerImages.url;
+        if (values.bannerImage) {
+            for (image of values.bannerImage) {
+                image.bannerImage.URL = baseUrlConfig.BASEURL + image.bannerImage.url;
+                let filePath = image.bannerImage.url;
                 let pathToadd = filePath.replace('public/', '');
-                image.bannerImages.URL = baseUrlConfig.BASEURL + pathToadd;
+                image.bannerImage.URL = baseUrlConfig.BASEURL + pathToadd;
             }
         }
         return values;
@@ -40,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     Banner.updateBanner = (id, images, userId) => Banner.update({ images, userId }, { where: { id } })
 
     //Read_Banner
-    Banner.readBanner = () => Banner.findAll({attributes: ['id', 'images']});
+    Banner.readBanner = () => Banner.findAll();
 
 
     return Banner;

@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const LenderBanner = sequelize.define('lenderBanner', {
         // attributes
@@ -36,13 +38,13 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     //Add_LenderBanner
-    LenderBanner.addLenderBanner = (images, userId) => LenderBanner.create({ images, userId });
+    LenderBanner.addLenderBanner = ( userId) => LenderBanner.create({ userId });
 
     //Update_LenderBanner
-    LenderBanner.updateLenderBanner = (id, images, userId) => LenderBanner.update({ images, userId }, { where: { id } })
+    LenderBanner.updateLenderBanner = (id, userId) => LenderBanner.update({ userId }, { where: { id } });
 
     //Read_LenderBanner
-    LenderBanner.readLenderBanner = () => LenderBanner.findAll({attributes: ['id', 'images']});
+    LenderBanner.readLenderBanner = () => LenderBanner.findAll();
 
     return LenderBanner;
 }
