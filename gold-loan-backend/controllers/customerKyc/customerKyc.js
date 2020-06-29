@@ -543,7 +543,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
 exports.appliedKyc = async (req, res, next) => {
 
     // let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
-    // console.log(roleName)
+
 
     const { search, offset, pageSize } = paginationWithFromTo(
         req.query.search,
@@ -613,6 +613,10 @@ exports.appliedKyc = async (req, res, next) => {
     } else {
         internalBranchWhere = { isActive: true }
     }
+    let assignAppraiser;
+    if (req.userData.userTypeId == 7) {
+        assignAppraiser = { appraiserId: req.userData.id }
+    }
 
     const includeArray = [
         {
@@ -628,6 +632,7 @@ exports.appliedKyc = async (req, res, next) => {
             include: [{
                 model: models.customerAssignAppraiser,
                 as: 'customerAssignAppraiser',
+                where: assignAppraiser,
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                 include: [{
                     model: models.user,
@@ -655,6 +660,9 @@ exports.appliedKyc = async (req, res, next) => {
         where: searchQuery,
         include: includeArray,
     });
+    if(getAppliedKyc.length == 0){
+        return res.status(200).json({data: []})
+    }
     return res.status(200).json({ data: getAppliedKyc, count })
 
 
