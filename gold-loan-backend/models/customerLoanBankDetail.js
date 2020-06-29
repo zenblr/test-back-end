@@ -73,7 +73,6 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.passbookProofImage) {
             for (image of values.passbookProofImage) {
-
                 image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.url;
                 let filePath = image.passbookProof.url;
                 let pathToadd = filePath.replace('public/', '');
@@ -83,11 +82,6 @@ module.exports = (sequelize, DataTypes) => {
         return values;
     }
 
-    // FUNCTION TO ADD CUSTOMER BANK DETAIL
-    customerLoanBankDetail.addCustomerBankDetail =
-        (loanId, name, accountNumber, ifscCode, createdBy, modifiedBy, t) => customerLoanBankDetail.create({
-            loanId, name, accountNumber, ifscCode, createdBy, modifiedBy, isActive: true
-        }, { t });
 
     return customerLoanBankDetail;
 }

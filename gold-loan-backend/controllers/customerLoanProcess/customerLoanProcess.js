@@ -156,7 +156,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
                     singlePurity["purityTestId"] = ele;
                     data.push(singlePurity);
                 }
-                await models.purityTest.bulkCreate(data, { transaction: t });
+                await models.purityTestImage.bulkCreate(data, { transaction: t });
             }
 
             return ornaments
@@ -176,7 +176,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
             for (let ele of allOrnmanets) {
 
-                await models.purityTest.destroy({ where: { customerLoanOrnamentsDetailId: ele.id } });
+                await models.purityTestImage.destroy({ where: { customerLoanOrnamentsDetailId: ele.id } });
 
                 let data = [];
                 for (let single of ele.purityTest) {
@@ -185,7 +185,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
                     singlePurity["purityTestId"] = single;
                     data.push(singlePurity);
                 }
-                await models.purityTest.bulkCreate(data, { transaction: t });
+                await models.purityTestImage.bulkCreate(data, { transaction: t });
             }
 
             return ornaments
@@ -308,7 +308,7 @@ exports.loanBankDetails = async (req, res, next) => {
             await models.passbookProofImage.destroy({ where: { customerLoanBankDetailId: checkBank.id } });
 
             let data = [];
-            for (let ele of identityProof) {
+            for (let ele of passbookProof) {
                 let single = {}
                 single["customerLoanBankDetailId"] = checkBank.id;
                 single["passbookProofId"] = ele;
@@ -421,26 +421,21 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         include: [{
             model: models.loanStage,
             as: 'loanStage',
-            required: false,
             attributes: ['id', 'name']
         }, {
             model: models.customerLoanPersonalDetail,
             as: 'loanPersonalDetail',
-            required: false,
             // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
         },
-         {
+        {
             model: models.customerLoanBankDetail,
             as: 'loanBankDetail',
-            required: false,
-            include:[{
+            include: [{
                 model: models.passbookProofImage,
-                as:'passbookProofImage',
-                required: false,
+                as: 'passbookProofImage',
                 include: {
                     model: models.fileUpload,
                     as: "passbookProof",
-                    required: false,
                 }
             }]
             // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
@@ -448,48 +443,40 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         {
             model: models.customerLoanNomineeDetail,
             as: 'loanNomineeDetail',
-            required: false,
             // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
         },
         {
             model: models.customerLoanOrnamentsDetail,
             as: 'loanOrnamentsDetail',
-            required: false,
-            attributes: { exclude: ['weightMachineZeroWeight', 'withOrnamentWeight', 'stoneTouch', 'acidTest', 'ornamentImage'] },
             include: [
                 {
-                model: models.purityTestImage,
-                as: "purityTestImage",
-                required: false,
-                include: {
+                    model: models.purityTestImage,
+                    as: "purityTestImage",
+                    include: {
+                        model: models.fileUpload,
+                        as: "purityTest",
+                    }
+                },
+                {
                     model: models.fileUpload,
-                    as: "purityTest",
-                    required: false,
+                    as: "weightMachineZeroWeightData",
+                },
+                {
+                    model: models.fileUpload,
+                    as: "withOrnamentWeightData",
+                },
+                {
+                    model: models.fileUpload,
+                    as: "stoneTouchData",
+                },
+                {
+                    model: models.fileUpload,
+                    as: "acidTestData"
+                },
+                {
+                    model: models.fileUpload,
+                    as: "ornamentImageData"
                 }
-            }, 
-            {
-                model: models.fileUpload,
-                as: "weightMachineZeroWeightData",
-                required: false,
-            },
-            {
-                model: models.fileUpload,
-                as: "withOrnamentWeightData",
-                required: false,
-            },
-            {
-                model: models.fileUpload,
-                as: "stoneTouchData",
-                required: false,
-            },
-            {
-                model: models.fileUpload,
-                as: "acidTestData"
-            },
-            {
-                model: models.fileUpload,
-                as: "ornamentImageData"
-            }
             ]
         },
         {
@@ -531,14 +518,14 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.fileUpload,
                 as: "packetWithWeightData"
             }]
-        }, 
+        },
         {
             model: models.customer,
             as: 'customer',
             attributes: ['id', 'firstName', 'lastName', 'panType', 'panImageId'],
-            include:[{
+            include: [{
                 model: models.fileUpload,
-                as:'panImage'
+                as: 'panImage'
             }]
         },
         {
@@ -902,4 +889,46 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
     }
 }
 
+
+exports.getOrna = async (req, res, next) => {
+
+    let { customerId, customerKycId } = req.query;
+
+    let data = await models.customerLoanOrnamentsDetail.findOne({
+        include: [
+            {
+                model: models.purityTestImage,
+                as: "purityTestImage",
+                include: {
+                    model: models.fileUpload,
+                    as: "purityTest",
+                }
+            },
+            {
+                model: models.fileUpload,
+                as: "weightMachineZeroWeightData",
+            },
+            {
+                model: models.fileUpload,
+                as: "withOrnamentWeightData",
+            },
+            {
+                model: models.fileUpload,
+                as: "stoneTouchData",
+            },
+            {
+                model: models.fileUpload,
+                as: "acidTestData"
+            },
+            {
+                model: models.fileUpload,
+                as: "ornamentImageData"
+            }
+        ]
+       
+    })
+
+    return res.json({ message: data })
+
+}
 
