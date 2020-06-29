@@ -26,7 +26,7 @@
                             <div class="col-8">
 
                                 <input class="form-control" formControlName="customerUniqueId" autocomplete="off"
-                                *ngIf="controls.customerUniqueId.value" readonly>
+                                    *ngIf="controls.customerUniqueId.value" readonly>
                                 <ng-select formControlName="customerId" [items]="customers" bindLabel="customerUniqueId"
                                     bindValue="id" *ngIf="!controls.customerUniqueId.value"
                                     (change)="bindCustomerName($event)" placeholder="Select Customer ID"
@@ -68,30 +68,32 @@
                                 </mat-error>
                             </div>
                         </div>
-                         <div class="row kt-padding-t-15">
+                        <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
                                 <label class="mandatory kt-padding-l-10">Appointment</label>
                             </div>
 
                             <div class="col-8">
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                    formControlName="date"
-                                    [class.isError]="controls.date.touched && controls.date.invalid" readonly
-                                    placeholder="4/5/2020" [min]="minDate">
+                                    formControlName="appoinmentDate"
+                                    [class.isError]="controls.appoinmentDate.touched && controls.appoinmentDate.invalid"
+                                    readonly placeholder="4/5/2020" [min]="minDate">
                                 <mat-datepicker #picker></mat-datepicker>
                             </div>
-                        </div> 
+                        </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
                                 <label class="mandatory kt-padding-l-10">Time</label>
                             </div>
 
                             <div class="col-4">
-                                <input [ngxTimepicker]="picker1" class="form-control" placeholder="From">
+                                <input [ngxTimepicker]="picker1" class="form-control" formControlName="startTime"
+                                    placeholder="From">
                                 <ngx-material-timepicker #picker1></ngx-material-timepicker>
                             </div>
                             <div class="col-4">
-                                <input [ngxTimepicker]="picker2" class="form-control" placeholder="To">
+                                <input [ngxTimepicker]="picker2" class="form-control" formControlName="endTime"
+                                    placeholder="To">
                                 <ngx-material-timepicker #picker2></ngx-material-timepicker>
                             </div>
                         </div>

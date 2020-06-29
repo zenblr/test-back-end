@@ -8,10 +8,10 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="offset-1 kt-margin-r-25 profile-div">
-                                        <img *ngIf="profile == ''" class=""
+                                        <img *ngIf="!controls.profileImg.value" class=""
                                             src="../../../../../../assets/media/icons/user.png" alt="" />
-                                        <img *ngIf="profile !== ''" class="profile-pic" [src]="profile" alt=""
-                                            (click)="previewImage(profile)" />
+                                        <img *ngIf="controls.profileImg.value" class="profile-pic"
+                                            [src]="controls.profileImg.value" alt="" (click)="previewImage(profile)" />
                                     </div>
 
                                     <div class="col align-self-center">
@@ -219,15 +219,13 @@
                         </div>
 
                         <div class="row kt-margin-t-20 kt-margin-b-20">
-                            <!-- <div class="col"> -->
                             <div class="col offset-2">
                                 <div class="img-container">
-                                    <!-- <div class=""> -->
-                                    <img *ngIf="!signatureJSON.isImage" class=""
+                                    <img *ngIf="!controls.signatureProof.value" class=""
                                         src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                                    <img class="fetched-image" *ngIf="signatureJSON.isImage" [src]="signatureJSON.url"
-                                        style="border-radius: 15px;" alt="" (click)="previewImage(signatureJSON.url)" />
-                                    <!-- </div> -->
+                                    <img class="fetched-image" *ngIf="controls.signatureProof.value"
+                                        [src]="controls.signatureProofImg.value" style="border-radius: 15px;" alt=""
+                                        (click)="previewImage(controls.signatureProofImg.value)" />
                                 </div>
                                 <div class="kt-margin-t-20 text-color font-11">
                                     (Please verify the detail before moving forward)
@@ -236,7 +234,6 @@
                                     <kt-button [value]="'Next'" [type]="'button'" (action)="submit()"></kt-button>
                                 </div>
                             </div>
-                            <!-- </div> -->
                         </div>
                     </div>
                 </div>

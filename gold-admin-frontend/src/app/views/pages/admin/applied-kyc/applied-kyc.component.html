@@ -52,10 +52,9 @@
                             *ngIf="role.customerKycClassification?.kycStatusFromBm == 'incomplete'">
                             {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
                         </span>
-                        <span class="text-warning"
-                        *ngIf="role.customerKycClassification?.kycStatusFromBm == 'pending'">
-                        {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
-                    </span>
+                        <span class="text-warning" *ngIf="role.customerKycClassification?.kycStatusFromBm == 'pending'">
+                            {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
+                        </span>
                         <span class="text-danger" *ngIf="role.customerKycClassification?.kycStatusFromBm == 'rejected'">
                             {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
                         </span>
@@ -68,8 +67,7 @@
                         <div [ngStyle]="{'display': 'inherit'}"
                             *ngxPermissionsOnly="['appliedKycEdit','customerClassificationEdit']">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
-                                <span
-                                    *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'pending') 
+                                <span *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'pending') 
                                     || (userType == 5 && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
                                     role.customerKycClassification?.kycStatusFromBm == 'pending')">
                                     <!-- <img src="../../../../assets/media/icons/action.svg"> -->
@@ -118,6 +116,24 @@
                     <mat-header-cell *matHeaderCellDef>Cutomer ID</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         {{role.customer.customerUniqueId | uppercase}}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container>
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <button mat-icon-button class="btn-transparent" ngbDropdown>
+                            <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2"
+                                role="button">
+                                <!-- <img src="../../../../../../assets/media/icons/options.svg" alt=""> -->
+                                <mat-icon>more_vert</mat-icon>
+                            </a>
+                            <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
+                                class="dropdown-menu dropdown-menu-right">
+                                <a ngbDropdownItem (click)="viewLoan(loan)">Apply Loan</a>
+                                <a ngbDropdownItem (click)="interestEmi(loan)">Transfer Loan</a>
+                            </div>
+                        </button>
                     </mat-cell>
                 </ng-container>
 

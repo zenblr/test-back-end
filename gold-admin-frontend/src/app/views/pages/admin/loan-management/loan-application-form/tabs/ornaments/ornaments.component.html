@@ -26,7 +26,7 @@
                                     <select class="form-control" formControlName="ornamentType"
                                         [class.isError]="ornament.controls.ornamentType.touched && ornament.controls.ornamentType.invalid">
                                         <option value=null [disabled]="true" [selected]="true">Select Ornament</option>
-                                        <option [value]="ornament.name" *ngFor="let ornament of ornamentType">
+                                        <option [value]="ornament.id" *ngFor="let ornament of ornamentType">
                                             {{ornament.name | titlecase}}
                                         </option>
                                     </select>

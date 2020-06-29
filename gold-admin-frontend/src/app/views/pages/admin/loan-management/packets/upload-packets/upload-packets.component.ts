@@ -64,7 +64,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.initForm()
     this.getPacketsDetails()
 
-    this.ornamentType = [{ ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 },{ ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 }]
+    this.ornamentType = [{ ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 }, { ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 }]
     this.ornamentType.map(ele => ele.disabled = false)
 
 
@@ -151,11 +151,11 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     }))
 
 
-    setTimeout(()=>{
-    this.clearData = false;
-    this.form.resetForm()
-    this.ref.detectChanges();
-  })
+    setTimeout(() => {
+      this.clearData = false;
+      this.form.resetForm()
+      this.ref.detectChanges();
+    })
 
 
 
