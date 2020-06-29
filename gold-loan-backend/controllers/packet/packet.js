@@ -138,7 +138,7 @@ exports.assignPacket = async (req, res, next) => {
         single["ornamentTypeId"] = ornament;
         data.push(single);
     }
-    await models.bannerImages.bulkCreate(data);
+    await models.packetOrnament.bulkCreate(data);
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "not assigned packet" });

@@ -8,9 +8,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
-        ornamentType: {
-            type: DataTypes.STRING,
-            field: 'ornament_type'
+        ornamentTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'ornament_type_id'
         },
         quantity: {
             type: DataTypes.STRING,
@@ -115,6 +115,7 @@ module.exports = (sequelize, DataTypes) => {
         customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'acidTest', as: 'acidTestData' });
         customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'ornamentImage', as: 'ornamentImageData' });
 
+        customerLoanOrnamentsDetail.belongsTo(models.ornamentType, { foreignKey: 'ornamentTypeId', as: 'ornamentType' });
 
         customerLoanOrnamentsDetail.hasMany(models.purityTestImage, { foreignKey: 'customerLoanOrnamentsDetailId', as: 'purityTestImage' });
 

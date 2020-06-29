@@ -15,9 +15,9 @@ exports.uploadFile =
     
     let destination;
     if(fileFor == "loan"){
-       destination = `public/uploads/loan/${loanId}`;
+       destination = `public/uploads/loan/${loanId}/`;
     }else if(fileFor == "customer"){
-        destination = `public/uploads/customer/${customerId}`;
+        destination = `public/uploads/customer/${customerId}/`;
     }else if(fileFor == "lead"){
         destination = `public/uploads/lead/`;
     }else if(fileFor == "banner"){
@@ -27,7 +27,7 @@ exports.uploadFile =
     }else if(fileFor == "lenderBanner"){
         destination = 'public/uploads/lenderBanner/';
     }else if(fileFor == "scheme"){
-        destination = `public/uploads/scheme/${partnerId}`;
+        destination = `public/uploads/scheme/${partnerId}/`;
     }else if(fileFor == "holiday"){
         destination = `public/uploads/holiday/`
     }else{

@@ -8,7 +8,7 @@ const check = require('../../lib/checkLib');
 
 exports.addPurpose = async (req, res, next) => {
     let { name } = req.body;
-    let purposeExist = await models.purpose.findOne({ where: { name: name } })
+    let purposeExist = await models.purpose.findOne({ where: { name: name, isActive: true } })
     if (!check.isEmpty(purposeExist)) {
         return res.status(404).json({ message: 'This Purpose already Exists' });
     }
@@ -42,7 +42,7 @@ exports.updatePurpose = async (req, res, next) => {
     let { name } = req.body;
     let { id } = req.params;
 
-    let purposeExist = await models.purpose.findOne({ where: { name: name } })
+    let purposeExist = await models.purpose.findOne({ where: { name: name, isActive: true } })
     if (!check.isEmpty(purposeExist)) {
         return res.status(404).json({ message: 'This Purpose already Exists' });
     }

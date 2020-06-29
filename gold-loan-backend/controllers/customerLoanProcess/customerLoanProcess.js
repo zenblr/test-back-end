@@ -171,7 +171,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
                 await models.customerLoan.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt }, { where: { id: loanId }, transaction: t })
             }
             var ornaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, {
-                updateOnDuplicate: ["loanId", "ornamentType", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "ltvPercent", "ltvAmount", "loanAmount", "finalNetWeight", "currentLtvAmount", "modifiedBy"]
+                updateOnDuplicate: ["loanId", "ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "ornamentImage", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "karat", "purity", "ltvRange", "ltvPercent", "ltvAmount", "loanAmount", "finalNetWeight", "currentLtvAmount", "modifiedBy"]
             }, { transaction: t })
 
             for (let ele of allOrnmanets) {
@@ -476,6 +476,10 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 {
                     model: models.fileUpload,
                     as: "ornamentImageData"
+                },
+                {
+                    model: models.ornamentType,
+                    as: "ornamentType"
                 }
             ]
         },
@@ -535,7 +539,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
     });
 
     let ornamentType = [];
-    for (let ornamentsDetail of customerLoan.loanOrnamentsDetail) {
+    for (let ornamentsDetail of customerLoan.loanOrnamentsDetail.ornamentType) {
         ornamentType.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
     }
     customerLoan.dataValues.ornamentType = ornamentType;

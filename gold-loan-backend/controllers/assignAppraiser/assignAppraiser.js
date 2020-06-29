@@ -12,7 +12,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 
 exports.addAssignAppraiser = async (req, res, next) => {
 
-    let { customerUniqueId, appraiserId, customerId } = req.body;
+    let { customerUniqueId, appraiserId, customerId, appoinmentDate, startTime, endTime } = req.body;
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -22,7 +22,7 @@ exports.addAssignAppraiser = async (req, res, next) => {
         return res.status(400).json({ message: `This customer already assign to the appraiser` })
     }
 
-    await models.customerAssignAppraiser.create({ customerId, customerUniqueId, appraiserId, createdBy, modifiedBy });
+    await models.customerAssignAppraiser.create({ customerId, customerUniqueId, appraiserId, createdBy, modifiedBy, appoinmentDate, startTime, endTime });
 
     let { mobileNumber } = await models.user.findOne({ where: { id: appraiserId } })
 
@@ -39,7 +39,7 @@ exports.editAssignAppraiser = async (req, res, next) => {
 
     let getAssignCustomer = await models.customerAssignAppraiser.findOne({ where: { id: id } })
 
-    await models.customerAssignAppraiser.update({ appraiserId, modifiedBy }, { where: { id: id } });
+    await models.customerAssignAppraiser.update({ appraiserId, modifiedBy, appoinmentDate, startTime, endTime }, { where: { id: id } });
 
     if (getAssignCustomer.appraiserId != appraiserId) {
         let { mobileNumber } = await models.user.findOne({ where: { id: appraiserId } })
