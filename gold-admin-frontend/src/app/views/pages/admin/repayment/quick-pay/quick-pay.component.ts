@@ -3,11 +3,11 @@ import { MatDialog } from '@angular/material';
 import { EmiLogsDialogComponent } from '../emi-logs-dialog/emi-logs-dialog.component';
 
 @Component({
-  selector: 'kt-pay-interset-emi',
-  templateUrl: './pay-interset-emi.component.html',
-  styleUrls: ['./pay-interset-emi.component.scss']
+  selector: 'kt-quick-pay',
+  templateUrl: './quick-pay.component.html',
+  styleUrls: ['./quick-pay.component.scss']
 })
-export class PayIntersetEmiComponent implements OnInit {
+export class QuickPayComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog

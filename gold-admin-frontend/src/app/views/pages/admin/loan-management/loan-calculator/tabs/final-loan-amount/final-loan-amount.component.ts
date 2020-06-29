@@ -50,9 +50,9 @@ export class FinalLoanAmountComponent implements OnInit {
 
   initForm() {
     this.finalLoanForm = this.fb.group({
-      goldGrossWeight: [, Validators.required],
-      goldNetWeight: [, Validators.required],
-      goldDeductionWeight: [, Validators.required],
+      goldGrossWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      goldNetWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      goldDeductionWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       karat: ['', [Validators.required]],
       purity: [],
       finalNetWeight: [],
@@ -113,12 +113,10 @@ export class FinalLoanAmountComponent implements OnInit {
   }
 
   weightCheck() {
-    if (this.controls.goldGrossWeight.valid) {
+    if (this.controls.goldGrossWeight.valid && this.controls.goldDeductionWeight.valid) {
       if (this.controls.goldGrossWeight.value < this.controls.goldDeductionWeight.value) {
         this.controls.goldDeductionWeight.setErrors({ weight: true })
-      } else {
-        this.controls.goldDeductionWeight.setErrors(null)
-      }
+      } 
     }
   }
   // calFinalNetWeight() {

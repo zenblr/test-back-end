@@ -42,9 +42,12 @@ export class UploadOfferComponent implements OnInit {
   getData() {
     this.uploadOfferService.getOffers().pipe(
       map(res => {
-        if (res.images.length > 0) {
-          Array.prototype.push.apply(this.images, res.images)
-          Array.prototype.push.apply(this.imgId, res.images)
+        if (res.offerImages.length > 0) {
+          res.offerImages.forEach(element => {
+            this.images.push(element.offerImages.URL)
+            this.imgId.push(element.offerImages.id)
+          });
+         
         }
         this.ref.detectChanges();
       })).subscribe()

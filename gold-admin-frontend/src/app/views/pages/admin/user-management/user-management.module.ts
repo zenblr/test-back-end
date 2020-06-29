@@ -42,7 +42,7 @@ import { AddBrokerComponent } from './broker/add-broker/add-broker.component';
 import { MerchantListComponent } from './merchant/merchant-list/merchant-list.component';
 import { InternalUserListComponent } from './internal-user/internal-user-list/internal-user-list.component';
 import { AddInternalUserComponent } from './internal-user/add-internal-user/add-internal-user.component';
-import { AddAppraiserComponent } from './assign-appraiser/add-appraiser/add-appraiser.component';
+import { AssignAppraiserComponent } from './assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { AppraiserListComponent } from './assign-appraiser/appraiser-list/appraiser-list.component';
 import { ViewMerchantComponent } from './merchant/view-merchant/view-merchant.component';
 import { ApiKeyComponent } from './merchant/api-key/api-key.component';
@@ -153,7 +153,7 @@ const routes: Routes = [
 		PartnerAddComponent,
 		AddBrokerComponent,
 		AddInternalUserComponent,
-		AddAppraiserComponent,
+		AssignAppraiserComponent,
 		ViewMerchantComponent,
 		ApiKeyComponent,
 		AddInternalUserBranchComponent,
