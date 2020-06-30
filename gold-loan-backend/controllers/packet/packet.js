@@ -103,7 +103,7 @@ exports.availablePacket = async (req, res, next) => {
             id: req.userData.id
         },
         include: {
-            model: models.internalBranch,
+            model: models.userInternalBranch,
             
         }
     });

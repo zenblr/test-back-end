@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { LeadManagementDatasource } from '../../../../core/lead-management/datasources/lead.datasources';
 import { LeadService } from '../../../../core/lead-management/services/lead.service';
 import { SharedService } from '../../../../core/shared/services/shared.service';
-import { AddAppraiserComponent } from '../user-management/assign-appraiser/add-appraiser/add-appraiser.component';
+import { AssignAppraiserComponent } from '../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 
 @Component({
   selector: 'kt-lead-management',
@@ -183,7 +183,7 @@ export class LeadManagementComponent implements OnInit {
   assign(item) {
     // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
     item.customer = {firstName:item.firstName,lastName:item.lastName}
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();

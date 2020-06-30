@@ -27,6 +27,7 @@ module.exports = async (req, res, next) => {
         "/api/customer/scheme-based-on-price",
         "/api/customer/loan-detail",
         "/api/customer/customer-feedback",
+        "/api/single-sign-on",
 
 
 

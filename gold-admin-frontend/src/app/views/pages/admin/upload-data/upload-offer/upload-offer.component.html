@@ -10,7 +10,7 @@
                     .png</label>
             </div>
         </div>
-        <kt-uplod-data-image *ngxPermissionsOnly="['offerBannerView']" [images]="images"></kt-uplod-data-image>
+        <kt-uplod-data-image *ngxPermissionsOnly="['offerBannerView']" [images]="images" [imgId]="imgId"  [reason]="'offer'"></kt-uplod-data-image>
 
     </kt-portlet-body>
     <kt-portlet-footer *ngxPermissionsOnly="['offerBannerAdd']">

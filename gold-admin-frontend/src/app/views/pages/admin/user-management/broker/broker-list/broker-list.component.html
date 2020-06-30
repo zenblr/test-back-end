@@ -13,6 +13,14 @@
                         </div>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="brokerId">
+                    <mat-header-cell *matHeaderCellDef >Broker ID</mat-header-cell>
+                    <mat-cell *matCellDef="let broker">
+                        <div class="text-color">
+                            {{broker.user.userUniqueId | uppercase}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="storeId">
 
                     <mat-header-cell *matHeaderCellDef >Store Id</mat-header-cell>
@@ -82,7 +90,7 @@
                 <ng-container matColumnDef="approvalStatus">
                     <mat-header-cell *matHeaderCellDef >Approval Status</mat-header-cell>
                     <mat-cell *matCellDef="let broker">
-                        <div [ngClass]="broker.approvalStatusId == 1 ? 'text-success' :broker.approvalStatusId == 2 ? 'text-warning' : 'text-danger'"
+                        <div [ngClass]="broker.approvalStatusId == 2 ? 'text-success' :broker.approvalStatusId == 1 ? 'text-warning' : 'text-danger'"
                             *ngFor="let approval of status">
                             <div *ngIf="broker.approvalStatusId == approval.id"> {{approval.statusName | uppercase}}
                             </div>
@@ -114,9 +122,9 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '120%'}"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="displayedColumns" [ngStyle]="{'width': '125%'}"></mat-header-row>
 
-                <mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'width': '120%'}"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns" [ngStyle]="{'width': '125%'}"></mat-row>
             </mat-table>
 
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>

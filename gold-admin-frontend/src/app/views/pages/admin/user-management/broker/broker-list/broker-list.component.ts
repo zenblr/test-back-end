@@ -27,7 +27,7 @@ export class BrokerListComponent implements OnInit, OnDestroy {
   unsubscribeSearch$ = new Subject()
   // Table fields
   dataSource: BrokerDatasource;
-  displayedColumns = ['merchantName', 'storeId', 'email', 'mobileNumber', 'address', 'state', 'city', 'pincode', 'approvalStatus', 'status', 'action'];
+  displayedColumns = ['merchantName','brokerId', 'storeId', 'email', 'mobileNumber', 'address', 'state', 'city', 'pincode', 'approvalStatus', 'status', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
 

@@ -30,10 +30,12 @@
                         <span class="text-success"
                             *ngIf="role.customerKycClassification?.kycStatusFromCce == 'approved'">
                             {{role.customerKycClassification?.kycStatusFromCce | titlecase}} </span>
-                        <span class="text-warning" *ngIf="role.customerKycClassification?.kycStatusFromCce == 'pending'">
+                        <span class="text-warning"
+                            *ngIf="role.customerKycClassification?.kycStatusFromCce == 'pending'">
                             {{role.customerKycClassification?.kycStatusFromCce | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="role.customerKycClassification?.kycStatusFromCce == 'rejected'">
+                        <span class="text-danger"
+                            *ngIf="role.customerKycClassification?.kycStatusFromCce == 'rejected'">
                             {{role.customerKycClassification?.kycStatusFromCce | titlecase}}
                         </span>
                     </mat-cell>
@@ -42,11 +44,15 @@
                 <ng-container matColumnDef="kycStatus">
                     <mat-header-cell *matHeaderCellDef>KYC Status</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span class="text-success" *ngIf="role.customerKycClassification?.kycStatusFromBm == 'approved'">
+                        <span class="text-success"
+                            *ngIf="role.customerKycClassification?.kycStatusFromBm == 'approved'">
                             {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
                         </span>
                         <span class="text-warning"
                             *ngIf="role.customerKycClassification?.kycStatusFromBm == 'incomplete'">
+                            {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
+                        </span>
+                        <span class="text-warning" *ngIf="role.customerKycClassification?.kycStatusFromBm == 'pending'">
                             {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
                         </span>
                         <span class="text-danger" *ngIf="role.customerKycClassification?.kycStatusFromBm == 'rejected'">
@@ -61,16 +67,13 @@
                         <div [ngStyle]="{'display': 'inherit'}"
                             *ngxPermissionsOnly="['appliedKycEdit','customerClassificationEdit']">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
-                                <span
-                                    *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'pending') || (userType == 5 && role.customerKycClassification?.kycStatusFromCce == 'approved' && (role.customer.kycStatus == 'rejected' || role.customer.kycStatus == 'pending'))">
+                                <span *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'pending') 
+                                    || (userType == 5 && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
+                                    role.customerKycClassification?.kycStatusFromBm == 'pending')">
                                     <!-- <img src="../../../../assets/media/icons/action.svg"> -->
                                     <strong>Action ></strong>
                                 </span>
                             </div>
-                            <span
-                                *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'approved') || (userType == 5 && role.kycStatus == 'approved')"></span>
-
-
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -113,6 +116,24 @@
                     <mat-header-cell *matHeaderCellDef>Cutomer ID</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         {{role.customer.customerUniqueId | uppercase}}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container>
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <button mat-icon-button class="btn-transparent" ngbDropdown>
+                            <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2"
+                                role="button">
+                                <!-- <img src="../../../../../../assets/media/icons/options.svg" alt=""> -->
+                                <mat-icon>more_vert</mat-icon>
+                            </a>
+                            <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
+                                class="dropdown-menu dropdown-menu-right">
+                                <a ngbDropdownItem (click)="viewLoan(loan)">Apply Loan</a>
+                                <a ngbDropdownItem (click)="interestEmi(loan)">Transfer Loan</a>
+                            </div>
+                        </button>
                     </mat-cell>
                 </ng-container>
 

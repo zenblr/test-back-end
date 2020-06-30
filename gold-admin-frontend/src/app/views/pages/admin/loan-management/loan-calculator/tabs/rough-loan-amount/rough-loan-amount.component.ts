@@ -25,7 +25,7 @@ export class RoughLoanAmountComponent implements OnInit {
     this.globalSettingService.globalSetting$.subscribe(global => {
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
-          this.controls.currentLTV.patchValue(res * res.ltvGoldValue);
+          this.controls.currentLTV.patchValue(res * (global.ltvGoldValue/100));
         })
       }
     })
@@ -33,9 +33,9 @@ export class RoughLoanAmountComponent implements OnInit {
 
   initForm() {
     this.roughLoanForm = this.fb.group({
-      grossWeight: [, [Validators.required]],
-      netWeight: [, [Validators.required]],
-      deductionWeight: [, Validators.required],
+      grossWeight: [,  [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      netWeight: [,  [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      deductionWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       currentLTV: [, Validators.required]
     })
 
@@ -48,12 +48,10 @@ export class RoughLoanAmountComponent implements OnInit {
   }
 
   weightCheck() {
-    if (this.controls.grossWeight.valid) {
+    if (this.controls.grossWeight.valid && this.controls.deductionWeight.valid ) {
       if (this.controls.grossWeight.value < this.controls.deductionWeight.value) {
         this.controls.deductionWeight.setErrors({ weight: true })
-      } else {
-        this.controls.deductionWeight.setErrors(null)
-      }
+      } 
     }
   }
 
@@ -67,7 +65,8 @@ export class RoughLoanAmountComponent implements OnInit {
   }
 
   calcGoldDeductionWeight() {
-    if (this.controls.grossWeight.value && this.controls.deductionWeight.value) {
+    if (this.controls.grossWeight.value && this.controls.deductionWeight.value &&
+      this.controls.grossWeight.valid && this.controls.deductionWeight.valid) {
       const netWeight = this.controls.grossWeight.value - this.controls.deductionWeight.value;
       this.controls.netWeight.patchValue(netWeight.toFixed());
       // console.log(goldDeductionWeight)

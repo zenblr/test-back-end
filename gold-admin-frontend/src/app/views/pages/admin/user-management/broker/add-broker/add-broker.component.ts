@@ -52,9 +52,7 @@ export class AddBrokerComponent implements OnInit {
       this.getBrokerById()
     } else {
       this.title = 'View Broker';
-      this.brokerFrom.patchValue(this.data.broker)
-      this.getCities()
-      this.getStore()
+      this.getBrokerById()
       this.brokerFrom.disable();
     }
     console.log(this.controls.approvalStatusId.value)

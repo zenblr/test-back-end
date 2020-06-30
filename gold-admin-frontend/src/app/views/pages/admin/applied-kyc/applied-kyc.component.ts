@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { AddAppraiserComponent } from '../user-management/assign-appraiser/add-appraiser/add-appraiser.component';
+import { AssignAppraiserComponent } from '../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 
 @Component({
   selector: 'kt-applied-kyc',
@@ -142,7 +142,7 @@ export class AppliedKycComponent implements OnInit {
 
   assign(item) {
     // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -151,7 +151,7 @@ export class AppliedKycComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-    const dialogRef = this.dialog.open(AddAppraiserComponent, { data: { action: 'edit', appraiser: item.customer.customerAssignAppraiser, customer: item.customer }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', appraiser: item.customer.customerAssignAppraiser, customer: item.customer }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

@@ -12,10 +12,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'loan_unique_id'
         },
-        masterLoan: {
-            type: DataTypes.STRING,
-            field: 'master_loan'
-        },
         applicationFormForAppraiser: {
             type: DataTypes.BOOLEAN,
             field: 'application_form_for_appraiser',
@@ -62,18 +58,6 @@ module.exports = (sequelize, DataTypes) => {
         bmId: {
             type: DataTypes.INTEGER,
             field: 'bm_id'
-        },
-        partnerId: {
-            type: DataTypes.INTEGER,
-            field: 'partner_id'
-        },
-        schemeId: {
-            type: DataTypes.INTEGER,
-            field: 'scheme_id'
-        },
-        unsecuredSchemeId: {
-            type: DataTypes.INTEGER,
-            field: 'unsecured_scheme_id'
         },
         totalEligibleAmt: {
             type: DataTypes.STRING,

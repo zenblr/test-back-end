@@ -20,7 +20,7 @@
 <!--begin::Form-->
 <form class="kt-form" [formGroup]="loginForm" autocomplete="off">
 	<div class="form-group mb-0">
-		<div class="kt-margin-t-40 kt-margin-b-15">
+		<div class="kt-margin-b-15">
 			<input type="text" class="login-form-input" placeholder="Email ID / Mobile Number"
 				formControlName="mobileNo" autocomplete="off" />
 			<div *ngIf="loginForm.controls.mobileNo.touched && loginForm.controls.mobileNo.invalid">
@@ -53,7 +53,7 @@
 			<button class="btn btn-login w-100" (click)="submit()"
 				[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">Login</button>
 		</div>
-		<div class="kt-margin-b-30">
+		<div>
 			<p class="text-center forgot kt-pointer" routerLink="/auth/forgot-password">Forgot Password?</p>
 		</div>
 		<div class=" kt-margin-b-15">

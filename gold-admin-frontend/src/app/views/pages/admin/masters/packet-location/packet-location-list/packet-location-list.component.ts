@@ -113,7 +113,7 @@ export class PacketLocationListComponent implements OnInit {
   deleteLocation(_item) {
     const role = _item;
     const _title = 'Delete Packet Location';
-    const _description = 'Are you sure to permanently delete this Packet Location?';
+    const _description = 'Are you sure you want to permanently delete this Packet Location?';
     const _waitDesciption = 'Packet Location is deleting...';
     const _deleteMessage = `Packet Location has been deleted`;
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
