@@ -150,7 +150,7 @@ export class AddInternalUserBranchComponent implements OnInit {
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       // this.formData = new FormData();
       // this.formData.append("avatar", event.target.files[0]);
-      this.sharedService.uploadFile(event.target.files[0]).pipe(
+      this.sharedService.uploadFile(event.target.files[0], 'user').pipe(
         map(res => {
 
           // if (type == 'pan') {
