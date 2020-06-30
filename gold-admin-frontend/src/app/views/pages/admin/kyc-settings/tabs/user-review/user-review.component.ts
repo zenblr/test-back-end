@@ -694,7 +694,11 @@ export class UserReviewComponent implements OnInit {
     console.log(name)
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(this.file).pipe(
+      const params = {
+        reason: 'customer',
+        customerId: this.controls.customerId.value
+      }
+      this.sharedService.uploadFile(this.file, params).pipe(
         map(res => {
 
           if (type == "identityProof" && this.identityImageArray.length < 2) {

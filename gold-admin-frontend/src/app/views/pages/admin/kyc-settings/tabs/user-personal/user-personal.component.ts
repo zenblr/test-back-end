@@ -92,8 +92,11 @@ export class UserPersonalComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      console.log(this.file, type);
-      this.sharedService.uploadFile(this.file, 'customer', 'customerId', this.controls.customerId.value).pipe(
+      const params = {
+        reason: 'customer',
+        customerId: this.controls.customerId.value
+      }
+      this.sharedService.uploadFile(this.file, params).pipe(
         map(res => {
           if (type == "profile") {
             // this.profile = res.uploadFile.id;
