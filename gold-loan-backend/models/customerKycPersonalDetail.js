@@ -133,24 +133,15 @@ module.exports = (sequelize, DataTypes) => {
         if (values.identityProofImage) {
             for (image of values.identityProofImage) {
                 // for (ele of image.identityProof) {
-                    image.identityProof.URL = baseUrlConfig.BASEURL + image.identityProof.url;
-                    let filePath = image.identityProof.url;
-                    let pathToadd = filePath.replace('public/', '');
-                    image.identityProof.URL = baseUrlConfig.BASEURL + pathToadd;
+                    image.identityProof.URL = baseUrlConfig.BASEURL + image.identityProof.path;
                 // }
             }
         }
         if (values.profileImageData) {
-            values.profileImageData.URL = baseUrlConfig.BASEURL + values.profileImageData.url;
-            let filePath = values.profileImageData.url;
-            let pathToadd = filePath.replace('public/', '');
-            values.profileImageData.URL = baseUrlConfig.BASEURL + pathToadd;
+            values.profileImageData.URL = baseUrlConfig.BASEURL + values.profileImageData.path;
         }
         if (values.signatureProofData) {
-            values.signatureProofData.URL = baseUrlConfig.BASEURL + values.signatureProofData.url;
-            let filePath = values.signatureProofData.url;
-            let pathToadd = filePath.replace('public/', '');
-            values.signatureProofData.URL = baseUrlConfig.BASEURL + pathToadd;
+            values.signatureProofData.URL = baseUrlConfig.BASEURL + values.signatureProofData.path;
         }
 
         return values;

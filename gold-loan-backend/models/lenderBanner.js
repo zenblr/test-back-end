@@ -27,11 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.lenderBannerImages) {
             for (image of values.lenderBannerImages) {
-
-                image.lenderBannerImages.URL = baseUrlConfig.BASEURL + image.lenderBannerImages.url;
-                let filePath = image.lenderBannerImages.url;
-                let pathToadd = filePath.replace('public/', '');
-                image.lenderBannerImages.URL = baseUrlConfig.BASEURL + pathToadd;
+                image.lenderBannerImages.URL = baseUrlConfig.BASEURL + image.lenderBannerImages.path;
             }
         }
         return values;
