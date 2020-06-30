@@ -45,11 +45,13 @@ export class UserPersonalComponent implements OnInit {
       customerId: [this.customerDetails.customerId],
       customerKycId: [this.customerDetails.customerKycId],
       profileImage: ['', [Validators.required]],
+      profileImg: ['', [Validators.required]],
       alternateMobileNumber: ['', [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       gender: ['', [Validators.required]],
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
       signatureProof: [''],
+      signatureProofImg: [''],
       signatureProofFileName: [''],
       occupationId: [null],
       dateOfBirth: ['', [Validators.required]],
@@ -75,8 +77,9 @@ export class UserPersonalComponent implements OnInit {
       if (res) {
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
-          this.profile = res.uploadFile.URL
-          this.personalForm.get('profileImage').patchValue(this.profile);
+          // this.profile = res.uploadFile.id
+          this.personalForm.controls.profileImage.patchValue(res.uploadFile.id);
+          this.personalForm.controls.profileImg.patchValue(res.uploadFile.URL);
           this.ref.detectChanges()
         })
         // this.controls.
@@ -90,19 +93,21 @@ export class UserPersonalComponent implements OnInit {
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       console.log(this.file, type);
-      this.sharedService.uploadFile(this.file).pipe(
+      this.sharedService.uploadFile(this.file, 'customer', 'customerId', this.controls.customerId.value).pipe(
         map(res => {
           if (type == "profile") {
-            this.profile = res.uploadFile.URL;
+            // this.profile = res.uploadFile.id;
             // this.personalForm.get('profileImage').patchValue(event.target.files[0].name);
-            this.personalForm.get('profileImage').patchValue(this.profile);
+            this.personalForm.controls.profileImage.patchValue(res.uploadFile.id);
+            this.personalForm.controls.profileImg.patchValue(res.uploadFile.URL);
 
           } else if (type == "signature") {
-            this.signatureJSON = { url: null, isImage: false };
-            this.signatureJSON.url = res.uploadFile.URL;
-            this.signatureJSON.isImage = true;
+            // this.signatureJSON = { url: null, isImage: false };
+            // this.signatureJSON.url = res.uploadFile.id;
+            // this.signatureJSON.isImage = true;
             this.personalForm.get('signatureProofFileName').patchValue(event.target.files[0].name);
-            this.personalForm.get('signatureProof').patchValue(this.signatureJSON.url);
+            this.personalForm.get('signatureProof').patchValue(res.uploadFile.id);
+            this.personalForm.get('signatureProofImg').patchValue(res.uploadFile.URL);
 
             this.ref.detectChanges();
           }

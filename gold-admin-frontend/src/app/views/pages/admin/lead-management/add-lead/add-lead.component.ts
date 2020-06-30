@@ -137,6 +137,7 @@ export class AddLeadComponent implements OnInit {
       panType: [''],
       form60: [''],
       panImage: [],
+      panImg: [],
       comment: [''],
       leadSourceId: [''],
       source: [''],
@@ -195,6 +196,8 @@ export class AddLeadComponent implements OnInit {
     this.leadService.getLeadById(id).subscribe(res => {
       // console.log(res);
       this.leadForm.patchValue(res.singleCustomer);
+      this.leadForm.patchValue({ panImage: res.singleCustomer.panImage.id })
+      this.leadForm.patchValue({ panImg: res.singleCustomer.panImage.URL })
       this.getCities();
       this.commentBox()
     },
@@ -282,11 +285,12 @@ export class AddLeadComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0]).pipe(
+      this.sharedService.uploadFile(event.target.files[0], 'lead').pipe(
         map(res => {
           if (res) {
             // this.controls.form60.patchValue(event.target.files[0].name)
-            this.controls.panImage.patchValue(res.uploadFile.URL)
+            this.controls.panImg.patchValue(res.uploadFile.URL)
+            this.controls.panImage.patchValue(res.uploadFile.id)
           }
         }), catchError(err => {
           throw err
@@ -297,7 +301,8 @@ export class AddLeadComponent implements OnInit {
   }
 
   preview() {
-    let img = [this.controls.panImage.value]
+    console.log(this.controls.panImg.value)
+    let img = [this.controls.panImg.value]
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
         images: img,
@@ -310,6 +315,7 @@ export class AddLeadComponent implements OnInit {
 
   remove() {
     this.controls.panImage.patchValue('')
+    this.controls.panImg.patchValue('')
   }
 
   onSubmit() {
@@ -325,12 +331,17 @@ export class AddLeadComponent implements OnInit {
         return
       }
 
-      // if (this.controls.statusId.valid) {
-      //   this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
-      // }
-      // if (this.controls.pinCode.valid) {
-      //   this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
-      // }
+      if (this.controls.leadSourceId.value == "") {
+        this.leadForm.get('leadSourceId').patchValue(null);
+      } else {
+        this.leadForm.get('leadSourceId').patchValue(Number(this.controls.leadSourceId.value));
+      }
+      if (this.controls.statusId.valid) {
+        this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
+      }
+      if (this.controls.pinCode.valid) {
+        this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
+      }
       if (!this.controls.panCardNumber.value) {
         this.leadForm.get('panCardNumber').patchValue(null);
       } else {
@@ -362,12 +373,17 @@ export class AddLeadComponent implements OnInit {
         this.leadForm.get('panType').patchValue(null);
         this.controls.panImage.patchValue('')
       }
-      // if (this.controls.statusId.valid) {
-      //   this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
-      // }
-      // if (this.controls.pinCode.valid) {
-      //   this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
-      // }
+      if (this.controls.leadSourceId.value == "") {
+        this.leadForm.get('leadSourceId').patchValue(null);
+      } else {
+        this.leadForm.get('leadSourceId').patchValue(Number(this.controls.leadSourceId.value));
+      }
+      if (this.controls.statusId.valid) {
+        this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
+      }
+      if (this.controls.pinCode.valid) {
+        this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
+      }
       const leadData = this.leadForm.value;
       console.log('edit')
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {
@@ -406,4 +422,5 @@ export class AddLeadComponent implements OnInit {
       this.closeModal();
     }
   }
+
 }

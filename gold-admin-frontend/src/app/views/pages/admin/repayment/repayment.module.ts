@@ -11,7 +11,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 import { MonthlyPaymentAddComponent } from './monthly-payment-add/monthly-payment-add.component';
-import { PayIntersetEmiComponent } from './pay-interset-emi/pay-interset-emi.component';
+import { QuickPayComponent } from './quick-pay/quick-pay.component';
 import { PartReleaseComponent } from './part-release/part-release.component';
 import { EmiLogsDialogComponent } from './emi-logs-dialog/emi-logs-dialog.component';
 
@@ -22,7 +22,7 @@ const routes: Routes = [
   },
   {
     path: 'interest-emi',
-    component: PayIntersetEmiComponent,
+    component: QuickPayComponent,
   },
   {
     path: 'part-release',
@@ -34,7 +34,7 @@ const routes: Routes = [
   declarations: [
     MonthlyPaymentComponent,
     MonthlyPaymentAddComponent,
-    PayIntersetEmiComponent,
+    QuickPayComponent,
     EmiLogsDialogComponent,
     PartReleaseComponent
   ],

@@ -18,44 +18,29 @@
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
 
 
-                        <div class="row" *ngIf="data.from != 'lead'">
+                        <div class="row" *ngIf="data?.from != 'lead'">
                             <!-- Partner Name -->
                             <div class="col-4 form-label">
                                 <label class="mandatory kt-padding-l-10">Customer Id</label>
                             </div>
                             <div class="col-8">
 
-                                <!-- <select class="form-control" name="" id="" formControlName="customerId"
-                                    [class.isError]="controls.customerId.touched && controls.customerId.invalid"
-                                    *ngIf="data.action =='add'">
-                                    <option [selected]="true" [disabled]="true" value="">Select Appraiser</option>
-                                    <option *ngFor="let customer of customers" [value]="customer.id">
-                                        {{customer .customerUniqueId}}</option>
-                                </select> -->
-                                <!-- <kt-select-with-search [options]="customer"></kt-select-with-search> -->
                                 <input class="form-control" formControlName="customerUniqueId" autocomplete="off"
                                     *ngIf="controls.customerUniqueId.value" readonly>
                                 <ng-select formControlName="customerId" [items]="customers" bindLabel="customerUniqueId"
                                     bindValue="id" *ngIf="!controls.customerUniqueId.value"
                                     (change)="bindCustomerName($event)" placeholder="Select Customer ID"
                                     [class.isError]="controls.customerId.touched && controls.customerId.invalid">
-                                    <!-- <ng-template ng-multi-label-tmp>
-                                                <span style="display:block" class="ng-placeholder">Select items</span>
-                                            </ng-template> -->
-                                    <!-- <ng-template ng-header-tmp>
-                                                <input style="width: 100%; line-height: 24px" type="text"
-                                                    (input)="select.filter($event.target.value)" />
-                                            </ng-template> -->
                                 </ng-select>
                                 <mat-error *ngIf="controls.customerId.touched && controls.customerId.errors?.required">
                                     Required field
                                 </mat-error>
                             </div>
                         </div>
-
-                        <div class="row "[class.kt-padding-t-15]="data.from != 'lead'">
+                        <div class="row " [class.kt-padding-t-15]="data?.from != 'lead'">
                             <div class="col-4 form-label">
-                                <label class="mandatory kt-padding-l-10">Customer Name</label>
+                                <label class="mandatory kt-padding-l-10">Customer Name
+                                </label>
                             </div>
                             <div class="col-8">
                                 <input style="text-transform: capitalize;" class="form-control"
@@ -85,34 +70,31 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label class="mandatory kt-padding-l-10">From Date & Time</label>
+                                <label class="mandatory kt-padding-l-10">Appointment</label>
                             </div>
 
                             <div class="col-8">
-                                <div class="d-inline-flex">
-                                    <input type="text" formControlName="date" [matDatepicker]="picker" class="form-control border-right-custom" (click)="picker.open()" readonly
-                                        placeholder="4/5/2020" [min]="minDate" (dateChange)="timer.open()">
-                                    <mat-datepicker #picker></mat-datepicker>
-                                    <input type="text" formControlName="time" class="form-control border-left-custom" [ngxTimepicker]="timer" >
-                                    <ngx-material-timepicker #timer [theme]="darkTheme"></ngx-material-timepicker>
-                                </div>
-
+                                <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                    formControlName="appoinmentDate"
+                                    [class.isError]="controls.appoinmentDate.touched && controls.appoinmentDate.invalid"
+                                    readonly placeholder="4/5/2020" [min]="minDate">
+                                <mat-datepicker #picker></mat-datepicker>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label class="mandatory kt-padding-l-10">To Date & Time</label>
+                                <label class="mandatory kt-padding-l-10">Time</label>
                             </div>
 
-                            <div class="col-8">
-                                <div class="d-inline-flex">
-                                    <input type="text" formControlName="date" [matDatepicker]="picker1" class="form-control border-right-custom" (click)="picker1.open()" readonly
-                                        placeholder="4/5/2020" [min]="minDate" (dateChange)="timer1.open()">
-                                    <mat-datepicker #picker1></mat-datepicker>
-                                    <input type="text" formControlName="time" class="form-control border-left-custom" [ngxTimepicker]="timer1" >
-                                    <ngx-material-timepicker #timer1 [theme]="darkTheme"></ngx-material-timepicker>
-                                </div>
-
+                            <div class="col-4">
+                                <input [ngxTimepicker]="picker1" class="form-control" formControlName="startTime"
+                                    placeholder="From">
+                                <ngx-material-timepicker #picker1></ngx-material-timepicker>
+                            </div>
+                            <div class="col-4">
+                                <input [ngxTimepicker]="picker2" class="form-control" formControlName="endTime"
+                                    placeholder="To">
+                                <ngx-material-timepicker #picker2></ngx-material-timepicker>
                             </div>
                         </div>
                     </div>

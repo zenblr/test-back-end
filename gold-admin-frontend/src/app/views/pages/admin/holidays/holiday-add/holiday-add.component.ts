@@ -67,7 +67,7 @@ export class HolidayAddComponent implements OnInit {
     this.file = event.target.files[0];
     var ext = event.target.files[0].name.split('.');
     if (ext[ext.length - 1] != 'csv') {
-      this.toastr.error('Please upload csv file');
+      this.toastr.error('Please upload CSV file');
       this.csvForm.controls.csv.markAsTouched()
       return
     }
@@ -111,7 +111,7 @@ export class HolidayAddComponent implements OnInit {
 
         this.holidayService.editHoliday(this.fillingForm.value).pipe(
           map((res) => {
-            this.toastr.success('Holiday Created Sucessfully');
+            this.toastr.success('Holiday Updated Sucessfully');
             this.dialogRef.close(res);
           }), catchError(err => {
             this.ref.detectChanges();
@@ -127,7 +127,7 @@ export class HolidayAddComponent implements OnInit {
       fb.append('holidaylist', this.file)
       this.holidayService.uploadCSV(fb).pipe(
         map((res) => {
-          this.toastr.success('Holiday uploaded Sucessfully');
+          this.toastr.success('Holiday Uploaded Sucessfully');
           this.dialogRef.close(res);
         }), catchError(err => {
 

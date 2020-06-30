@@ -14,7 +14,9 @@ exports.uploadFile =
     const partnerId = req.query.partnerId
     
     let destination;
-    if(fileFor == "loan"){
+    if(fileFor == "user"){
+        destination = `public/uploads/user/`
+    }else if(fileFor == "loan"){
        destination = `public/uploads/loan/${loanId}/`;
     }else if(fileFor == "customer"){
         destination = `public/uploads/customer/${customerId}/`;

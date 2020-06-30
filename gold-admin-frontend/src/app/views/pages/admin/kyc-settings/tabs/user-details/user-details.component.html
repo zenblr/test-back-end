@@ -210,13 +210,13 @@
 					<div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value">
 						<div class="col offset-4">
 							<div class="img-container">
-								<img *ngIf="!controls.panImage.value" class=""
+								<img *ngIf="!controls.image.value" class=""
 									src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-								<img class="fetched-image" *ngIf="controls.panImage.value" [src]="controls.panImage.value"
+								<img class="fetched-image" *ngIf="controls.image.value" [src]="controls.image.value"
 									style="border-radius: 15px;" alt="" />
 								<img src="../../../../../assets/media/icons/edit.svg" alt=""
 									class="kt-pointer remove-icon" (click)="form60.click()"
-									*ngIf="controls.panImage.value && !(controls.panType.status == 'DISABLED')">
+									*ngIf="controls.image.value && !(controls.panType.status == 'DISABLED')">
 								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
 									(input)="getFileInfo($event)">
 							</div>

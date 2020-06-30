@@ -21,8 +21,8 @@
                                 <div class="profile-div">
                                     <!-- <img class="" src="../../../../../../assets/media/icons/user.png" alt="" /> -->
                                     <img *ngIf="data" class="profile-pic"
-                                        [src]="data.customerKycReview.customerKycPersonal.profileImage" alt=""
-                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.profileImage)" />
+                                        [src]="data.customerKycReview.customerKycPersonal.profileImageData.URL" alt=""
+                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.profileImageData.URL)" />
                                 </div>
                             </div>
                             <div class="col-7 d-flex" *ngIf="viewOnly">
@@ -106,9 +106,9 @@
                         <div class="col offset-4 kt-margin-t-25">
                             <div class="img-container ">
                                 <ng-container>
-                                    <img class="fetched-image" [src]="data.customerKycReview.panImage"
+                                    <img class="fetched-image" [src]="data.customerKycReview.panImage.URL"
                                         style="border-radius: 15px;" alt=""
-                                        (click)="previewImage(data.customerKycReview.panImage)" />
+                                        (click)="previewImage(data.customerKycReview.panImage.URL)" />
                                 </ng-container>
                             </div>
                         </div>
@@ -201,7 +201,7 @@
                 </div> -->
 
                 <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
-                    <ng-container *ngIf="data.customerKycReview.customerKycPersonal.identityProof.length == 0">
+                    <ng-container *ngIf="identityImageArray?.length == 0">
                         <div class="col-4">
                             <div class="img-container">
                                 <img class="placeholder-image" src="assets/media/icons/image-placeholder.png"
@@ -209,9 +209,8 @@
                             </div>
                         </div>
                     </ng-container>
-                    <ng-container *ngIf="data.customerKycReview.customerKycPersonal.identityProof.length > 0">
-                        <div class="col-4"
-                            *ngFor="let pass of data.customerKycReview.customerKycPersonal.identityProof, index as idx">
+                    <ng-container *ngIf="identityImageArray?.length > 0">
+                        <div class="col-4" *ngFor="let pass of identityImageArray, index as idx">
                             <div class="img-container">
                                 <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
                                     (click)="previewImage(pass)" />
@@ -388,7 +387,7 @@
                 </div>
 
                 <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
-                    <ng-container *ngIf="data.customerKycReview.customerKycAddress[0].addressProof.length == 0">
+                    <ng-container *ngIf="addressImageArray1?.length == 0">
                         <div class="col-4">
                             <div class="img-container">
                                 <img class="placeholder-image" src="assets/media/icons/image-placeholder.png"
@@ -396,9 +395,8 @@
                             </div>
                         </div>
                     </ng-container>
-                    <ng-container *ngIf="data.customerKycReview.customerKycAddress[0].addressProof.length > 0">
-                        <div class="col-4"
-                            *ngFor="let pass of data.customerKycReview.customerKycAddress[0].addressProof, index as idx">
+                    <ng-container *ngIf="addressImageArray1?.length > 0">
+                        <div class="col-4" *ngFor="let pass of addressImageArray1, index as idx">
                             <div class="img-container">
                                 <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
                                     (click)="previewImage(pass)" />
@@ -590,7 +588,7 @@
                 </div>
 
                 <div class="offset-2 row kt-margin-t-20 kt-margin-b-20">
-                    <ng-container *ngIf="data.customerKycReview.customerKycAddress[1].addressProof.length == 0">
+                    <ng-container *ngIf="addressImageArray2?.length == 0">
                         <div class="col-4">
                             <div class="img-container">
                                 <img class="placeholder-image" src="assets/media/icons/image-placeholder.png"
@@ -598,9 +596,8 @@
                             </div>
                         </div>
                     </ng-container>
-                    <ng-container *ngIf="data.customerKycReview.customerKycAddress[1].addressProof.length > 0">
-                        <div class="col-4"
-                            *ngFor="let pass of data.customerKycReview.customerKycAddress[1].addressProof, index as idx">
+                    <ng-container *ngIf="addressImageArray2?.length > 0">
+                        <div class="col-4" *ngFor="let pass of addressImageArray2, index as idx">
                             <div class="img-container">
                                 <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
                                     (click)="previewImage(pass)" />
@@ -825,15 +822,15 @@
                 </div>
 
                 <div class="row kt-margin-t-20 kt-margin-b-20"
-                    *ngIf="data.customerKycReview.customerKycPersonal.signatureProof">
+                    *ngIf="data.customerKycReview.customerKycPersonal.signatureProofData.URL">
                     <div class="col-6">
                         <div class="col-8 offset-4">
                             <div class="img-container kt-margin-r-15">
                                 <ng-container>
                                     <img class="fetched-image"
-                                        [src]="data.customerKycReview.customerKycPersonal.signatureProof"
+                                        [src]="data.customerKycReview.customerKycPersonal.signatureProofData.URL"
                                         style="border-radius: 15px;" alt=""
-                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.signatureProof)" />
+                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.signatureProofData.URL)" />
                                 </ng-container>
                             </div>
                         </div>

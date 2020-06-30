@@ -13,7 +13,8 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 })
 export class UploadBannerComponent implements OnInit {
   images: any[] = []
-  
+  imgId: any[] = []
+
   viewLoading = false;
   clearImage: boolean;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -30,19 +31,19 @@ export class UploadBannerComponent implements OnInit {
   getData() {
     this.UploadBannerService.getBanners().pipe(
       map(res => {
-        if (res.images.length > 0) {
-          Array.prototype.push.apply(this.images, res.images)
-          this.ref.detectChanges();
+        if (res.bannerImage.length > 0) {
+          res.bannerImage.forEach(element => {
+            this.images.push(element.bannerImage.URL)
+            this.imgId.push(element.bannerImage.id)
+          });
         }
-      }),
-      finalize(() => {
       })).subscribe()
   }
 
-  
+
 
   uploadBanners() {
-    this.UploadBannerService.uploadBanners(this.images).pipe(
+    this.UploadBannerService.uploadBanners(this.imgId).pipe(
       (map(res => {
         this.toastr.successToastr('Uploaded Sucessfully');
       })),
@@ -55,6 +56,6 @@ export class UploadBannerComponent implements OnInit {
     ).subscribe();
 
   }
- 
+
 }
 

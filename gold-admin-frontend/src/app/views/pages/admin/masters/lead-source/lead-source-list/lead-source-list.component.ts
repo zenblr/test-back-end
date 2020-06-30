@@ -114,7 +114,7 @@ export class LeadSourceListComponent implements OnInit {
   deleteLeadSource(_item) {
     const role = _item;
     const _title = 'Delete Lead Source';
-    const _description = 'Are you sure to permanently delete this Lead Source?';
+    const _description = 'Are you sure you want to permanently delete this Lead Source?';
     const _waitDesciption = 'Lead Source is deleting...';
     const _deleteMessage = `Lead Source has been deleted`;
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
