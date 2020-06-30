@@ -27,18 +27,18 @@ export class AssignAppraiserComponent implements OnInit {
   minDate = new Date();
   darkTheme: NgxMaterialTimepickerTheme = {
     container: {
-        bodyBackgroundColor: '#fff',
-        buttonColor: '#454d67'
+      bodyBackgroundColor: '#fff',
+      buttonColor: '#454d67'
     },
     dial: {
-        dialBackgroundColor: '#5d78ff',
+      dialBackgroundColor: '#5d78ff',
     },
     clockFace: {
-        clockFaceBackgroundColor: '#e7e9ec',
-        clockHandColor: '#5d78ff',
-        clockFaceTimeInactiveColor: '#454d67'
+      clockFaceBackgroundColor: '#e7e9ec',
+      clockHandColor: '#5d78ff',
+      clockFaceTimeInactiveColor: '#454d67'
     }
-};
+  };
 
   constructor(
     public dialogRef: MatDialogRef<AssignAppraiserComponent>,
@@ -86,8 +86,9 @@ export class AssignAppraiserComponent implements OnInit {
       customerId: [, [Validators.required]],
       customerName: [''],
       appraiserId: ['', [Validators.required]],
-      date:[],
-      time:[]
+      appoinmentDate: [],
+      startTime: [],
+      endTime: []
     });
   }
 

@@ -29,6 +29,7 @@ export class UserAddressComponent implements OnInit {
   addressProofs = [];
   identityProofs = [];
   images = { identityProof: [], residential: [], permanent: [] };
+  imageId = { identityProof: [], residential: [], permanent: [] };
   customerDetails = this.userDetailsService.userData;
   sameAdd: boolean;
   // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
@@ -56,7 +57,8 @@ export class UserAddressComponent implements OnInit {
       customerId: [this.customerDetails.customerId],
       customerKycId: [this.customerDetails.customerKycId],
       identityTypeId: ['', [Validators.required]],
-      identityProof: ['', [Validators.required]],
+      identityProof: [[], [Validators.required]],
+      identityProofImg: [[]],
       identityProofFileName: ['', [Validators.required]],
       identityProofNumber: [''],
       address: this.fb.array([
@@ -69,6 +71,7 @@ export class UserAddressComponent implements OnInit {
           cityId: [this.customerDetails.cityId, [Validators.required]],
           pinCode: [this.customerDetails.pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
           addressProof: ['', [Validators.required]],
+          addressProofImg: [],
           addressProofFileName: ['', [Validators.required]]
         }),
         this.fb.group({
@@ -80,6 +83,7 @@ export class UserAddressComponent implements OnInit {
           cityId: ['', [Validators.required]],
           pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
           addressProof: ['', [Validators.required]],
+          addressProofImg: [],
           addressProofFileName: ['', [Validators.required]]
         })
       ])
@@ -112,21 +116,28 @@ export class UserAddressComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(this.files).pipe(
+      this.sharedService.uploadFile(this.files, 'customer', 'customerId', this.controls.customerId.value).pipe(
         map(res => {
 
 
           if (type == "identityProof" && this.images.identityProof.length < 2) {
-            this.images.identityProof.push(res.uploadFile.id)
-            this.identityForm.patchValue({ identityProof: this.images.identityProof });
+            this.images.identityProof.push(res.uploadFile.URL)
+            this.imageId.identityProof.push(res.uploadFile.id)
+            // identityProofImg
+            this.identityForm.patchValue({ identityProofImg: this.images.identityProof });
+            this.identityForm.patchValue({ identityProof: this.imageId.identityProof });
             this.identityForm.get('identityProofFileName').patchValue(event.target.files[0].name);
           } else if (type == 0 && this.images.residential.length < 2) {
-            this.images.residential.push(res.uploadFile.id)
-            this.addressControls.controls[0].patchValue({ addressProof: this.images.residential });
+            this.imageId.residential.push(res.uploadFile.id)
+            this.images.residential.push(res.uploadFile.URL)
+            this.addressControls.controls[0].patchValue({ addressProof: this.imageId.residential });
+            this.addressControls.controls[0].patchValue({ addressProofImg: this.images.residential });
             this.addressControls.at(0)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
           } else if (type == 1 && this.images.permanent.length < 2) {
-            this.images.permanent.push(res.uploadFile.id)
-            this.addressControls.controls[1].patchValue({ addressProof: this.images.permanent });
+            this.images.permanent.push(res.uploadFile.URL)
+            this.imageId.permanent.push(res.uploadFile.id)
+            this.addressControls.controls[1].patchValue({ addressProof: this.imageId.permanent });
+            this.addressControls.controls[1].patchValue({ addressProofImg: this.images.permanent });
             this.addressControls.at(1)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
           } else {
             this.toastr.error("Cannot upload more than two images")
@@ -230,15 +241,18 @@ export class UserAddressComponent implements OnInit {
     // console.log(index, type)
     if (type == 'identityProof') {
       this.images.identityProof.splice(index, 1);
+      this.imageId.identityProof.splice(index, 1);
       this.identityForm.get('identityProofFileName').patchValue('');
     } else if (type == 'residential') {
       this.images.residential.splice(index, 1);
+      this.imageId.residential.splice(index, 1);
       this.addressControls.at(0)['controls'].addressProofFileName.patchValue('')
       if (this.sameAdd) {
         this.addressControls.at(1)['controls'].addressProofFileName.patchValue('')
       }
     } else if (type == 'permanent') {
       this.images.permanent.splice(index, 1);
+      this.imageId.permanent.splice(index, 1);
       this.addressControls.at(1)['controls'].addressProofFileName.patchValue('')
     }
   }

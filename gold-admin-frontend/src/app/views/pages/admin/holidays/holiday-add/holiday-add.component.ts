@@ -67,7 +67,7 @@ export class HolidayAddComponent implements OnInit {
     this.file = event.target.files[0];
     var ext = event.target.files[0].name.split('.');
     if (ext[ext.length - 1] != 'csv') {
-      this.toastr.error('Please upload csv file');
+      this.toastr.error('Please upload CSV file');
       this.csvForm.controls.csv.markAsTouched()
       return
     }

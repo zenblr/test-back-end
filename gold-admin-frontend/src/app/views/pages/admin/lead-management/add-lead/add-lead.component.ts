@@ -137,7 +137,7 @@ export class AddLeadComponent implements OnInit {
       panType: [''],
       form60: [''],
       panImage: [],
-      panImg:[],
+      panImg: [],
       comment: [''],
       leadSourceId: [''],
       source: [''],
@@ -196,6 +196,8 @@ export class AddLeadComponent implements OnInit {
     this.leadService.getLeadById(id).subscribe(res => {
       // console.log(res);
       this.leadForm.patchValue(res.singleCustomer);
+      this.leadForm.patchValue({ panImage: res.singleCustomer.panImage.id })
+      this.leadForm.patchValue({ panImg: res.singleCustomer.panImage.URL })
       this.getCities();
       this.commentBox()
     },
@@ -283,7 +285,7 @@ export class AddLeadComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0],'lead').pipe(
+      this.sharedService.uploadFile(event.target.files[0], 'lead').pipe(
         map(res => {
           if (res) {
             // this.controls.form60.patchValue(event.target.files[0].name)
@@ -299,7 +301,8 @@ export class AddLeadComponent implements OnInit {
   }
 
   preview() {
-    let img = [this.controls.panImage.value]
+    console.log(this.controls.panImg.value)
+    let img = [this.controls.panImg.value]
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
         images: img,
@@ -419,4 +422,5 @@ export class AddLeadComponent implements OnInit {
       this.closeModal();
     }
   }
+
 }
