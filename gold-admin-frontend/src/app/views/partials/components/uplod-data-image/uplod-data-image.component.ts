@@ -74,7 +74,10 @@ export class UplodDataImageComponent implements OnInit {
             if (width !== 600 || height !== 300) {
               this.toastrService.error('Please Upload Image of Valid Size');
             } else {
-              this.sharedService.uploadFile(details[0],this.reason).pipe(map(res => {
+              const params = {
+                reason: this.reason
+              }
+              this.sharedService.uploadFile(details[0], params).pipe(map(res => {
                 if (this.index != null) {
                   this.images.splice(this.index, 1, res.uploadFile.URL)
                   this.imgId.splice(this.index, 1, res.uploadFile.id)
@@ -170,6 +173,6 @@ export class UplodDataImageComponent implements OnInit {
       if (permission.partnerBannerDelete)
         this.deleteBanner = true
     }
-    console.log(this.add,this.editBanner,this.deleteBanner)
+    console.log(this.add, this.editBanner, this.deleteBanner)
   }
 }

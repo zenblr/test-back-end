@@ -113,7 +113,11 @@ export class UserAddressComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(this.files, 'customer', 'customerId', this.controls.customerId.value).pipe(
+      const params = {
+        reason: 'customer',
+        customerId: this.controls.customerId.value
+      }
+      this.sharedService.uploadFile(this.files, params).pipe(
         map(res => {
 
 
