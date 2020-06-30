@@ -83,6 +83,8 @@ import { WebcamDialogComponent } from '../pages/admin/kyc-settings/webcam-dialog
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { OrnamentsComponent } from '../pages/admin/loan-management/loan-application-form/tabs/ornaments/ornaments.component';
 
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
 
 
 @NgModule({
@@ -153,6 +155,7 @@ import { OrnamentsComponent } from '../pages/admin/loan-management/loan-applicat
 
 		AssignAppraiserComponent,
 		OrnamentsComponent,
+		PdfViewerComponent
 	],
 	exports: [
 		WidgetModule,
@@ -213,9 +216,11 @@ import { OrnamentsComponent } from '../pages/admin/loan-management/loan-applicat
 		WebcamModule,
 		NgxMaterialTimepickerModule,
 		MultiSelectSearchComponent,
-		OrnamentsComponent
+		OrnamentsComponent,
+		PdfViewerComponent
 	],
 	imports: [
+		PdfViewerModule,
 		NgbModule,
 		CommonModule,
 		RouterModule,
@@ -238,6 +243,8 @@ import { OrnamentsComponent } from '../pages/admin/loan-management/loan-applicat
 		WebcamModule,
 		NgxMaterialTimepickerModule.setLocale('en-IN')
 	],
-	entryComponents: [ImagePreviewDialogComponent],
+	entryComponents: [
+		PdfViewerComponent,ImagePreviewDialogComponent],
 })
-export class PartialsModule { }
+export class PartialsModule { 
+}
