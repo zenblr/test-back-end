@@ -35,6 +35,7 @@ exports.uploadFile =
     }else{
         return res.status(422).json({ message: 'reason not found' });
     }
+
         const storage = multer.diskStorage({
             filename: (req, file, cb) => {
                 const extArray = file.originalname.split('.');
@@ -50,6 +51,8 @@ exports.uploadFile =
             if (err) {
                 res.status(500);
             }
+            let pathToadd = destination.replace('public/', '');
+            req.file.path = pathToadd + req.file.filename;
             req.file.url = req.file.destination + req.file.filename;
 
             req.file['userId'] = req.userData.id
@@ -86,10 +89,13 @@ exports.base64Convertor = async (req, res, next) => {
     let userId = req.userData.id
     let url = destination + `${fileName}.jpeg`;
 
+    let pathToadd = destination.replace('public/', '');
+    let path = pathToadd  + `${fileName}.jpeg`;
+
     let bitmap = await new Buffer.from(baseImage[1], 'base64')
     fs.writeFileSync(`public/uploads/images/${fileName}.jpeg`, bitmap)
 
-    let uploadFile = await models.fileUpload.create({ filename: `${fileName}.jpeg`, url: url, mimetype: mimetype, encoding: encoding, userId: userId });
+    let uploadFile = await models.fileUpload.create({ filename: `${fileName}.jpeg`, url: url, mimetype: mimetype, encoding: encoding,path: path, userId: userId });
 
     return res.status(200).json({
         imgUrl: `${BASEURL}/uploads/images/${fileName}.jpeg`, uploadFile

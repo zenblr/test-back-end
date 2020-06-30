@@ -73,10 +73,7 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.passbookProofImage) {
             for (image of values.passbookProofImage) {
-                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.url;
-                let filePath = image.passbookProof.url;
-                let pathToadd = filePath.replace('public/', '');
-                image.passbookProof.URL = baseUrlConfig.BASEURL + pathToadd;
+                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.path;
             }
         }
         return values;

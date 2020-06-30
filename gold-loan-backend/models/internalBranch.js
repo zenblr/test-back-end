@@ -92,12 +92,7 @@ module.exports = (sequelize, DataTypes) => {
     InternalBranch.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.passbookStatementCheque) {
-
-            values.passbookStatementCheque.URL = baseUrlConfig.BASEURL + values.passbookStatementCheque.url;
-            let filePath = values.passbookStatementCheque.url;
-            let pathToadd = filePath.replace('public/', '');
-            values.passbookStatementCheque.URL = baseUrlConfig.BASEURL + pathToadd;
-
+            values.passbookStatementCheque.URL = baseUrlConfig.BASEURL + values.passbookStatementCheque.path;
         }
         return values;
     }

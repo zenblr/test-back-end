@@ -26,11 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.offerImages) {
             for (image of values.offerImages) {
-
-                image.offerImages.URL = baseUrlConfig.BASEURL + image.offerImages.url;
-                let filePath = image.offerImages.url;
-                let pathToadd = filePath.replace('public/', '');
-                image.offerImages.URL = baseUrlConfig.BASEURL + pathToadd;
+                image.offerImages.URL = baseUrlConfig.BASEURL + image.offerImages.path;
             }
         }
         return values;

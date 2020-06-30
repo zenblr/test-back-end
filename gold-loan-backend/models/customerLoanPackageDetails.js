@@ -65,28 +65,16 @@ module.exports = (sequelize, DataTypes) => {
     CustomerLoanPackageDetails.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.emptyPacketWithNoOrnamentData) {
-            values.emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + values.emptyPacketWithNoOrnamentData.url;
-            let filePath = values.emptyPacketWithNoOrnamentData.url;
-            let pathToadd = filePath.replace('public/', '');
-            values.emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + pathToadd;
+            values.emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + values.emptyPacketWithNoOrnamentData.path;
         }
         if (values.packetWithAllOrnamentsData) {
-            values.packetWithAllOrnamentsData.URL = baseUrlConfig.BASEURL + values.packetWithAllOrnamentsData.url;
-            let filePath = values.packetWithAllOrnamentsData.url;
-            let pathToadd = filePath.replace('public/', '');
-            values.packetWithAllOrnamentsData.URL = baseUrlConfig.BASEURL + pathToadd;
+            values.packetWithAllOrnamentsData.URL = baseUrlConfig.BASEURL + values.packetWithAllOrnamentsData.path;
         }
         if (values.packetWithSealingData) {
-            values.packetWithSealingData.URL = baseUrlConfig.BASEURL + values.packetWithSealingData.url;
-            let filePath = values.packetWithSealingData.url;
-            let pathToadd = filePath.replace('public/', '');
-            values.packetWithSealingData.URL = baseUrlConfig.BASEURL + pathToadd;
+            values.packetWithSealingData.URL = baseUrlConfig.BASEURL + values.packetWithSealingData.path;
         }
         if (values.packetWithWeightData) {
-            values.packetWithWeightData.URL = baseUrlConfig.BASEURL + values.packetWithWeightData.url;
-            let filePath = values.packetWithWeightData.url;
-            let pathToadd = filePath.replace('public/', '');
-            values.packetWithWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+            values.packetWithWeightData.URL = baseUrlConfig.BASEURL + values.packetWithWeightData.path;
         }
 
         return values;

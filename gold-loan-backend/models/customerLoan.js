@@ -182,41 +182,23 @@ module.exports = (sequelize, DataTypes) => {
         var resOrna = []
         for (let i = 0; i < values.loanOrnamentsDetail.length; i++) {
             if (values.loanOrnamentsDetail[i].weightMachineZeroWeightData) {
-                values.loanOrnamentsDetail[i].weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeightData.url;
-                let filePath = values.loanOrnamentsDetail[i].weightMachineZeroWeightData.url;
-                let pathToadd = filePath.replace('public/', '');
-                values.loanOrnamentsDetail[i].weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+                values.loanOrnamentsDetail[i].weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeightData.path;
             }
             if (values.loanOrnamentsDetail[i].withOrnamentWeightData) {
-                values.loanOrnamentsDetail[i].withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].withOrnamentWeightData.url;
-                let filePath = values.loanOrnamentsDetail[i].withOrnamentWeightData.url;
-                let pathToadd = filePath.replace('public/', '');
-                values.loanOrnamentsDetail[i].withOrnamentWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+                values.loanOrnamentsDetail[i].withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].withOrnamentWeightData.path;
             }
             if (values.loanOrnamentsDetail[i].stoneTouchData) {
-                values.loanOrnamentsDetail[i].stoneTouchData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].stoneTouchData.url;
-                let filePath = values.loanOrnamentsDetail[i].stoneTouchData.url;
-                let pathToadd = filePath.replace('public/', '');
-                values.loanOrnamentsDetail[i].stoneTouchData.URL = baseUrlConfig.BASEURL + pathToadd;
+                values.loanOrnamentsDetail[i].stoneTouchData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].stoneTouchData.path;
             }
             if (values.loanOrnamentsDetail[i].acidTestData) {
-                values.loanOrnamentsDetail[i].acidTestData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].acidTestData.url;
-                let filePath = values.loanOrnamentsDetail[i].acidTestData.url;
-                let pathToadd = filePath.replace('public/', '');
-                values.loanOrnamentsDetail[i].acidTestData.URL = baseUrlConfig.BASEURL + pathToadd;
+                values.loanOrnamentsDetail[i].acidTestData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].acidTestData.path;
             }
             if (values.loanOrnamentsDetail[i].ornamentImageData) {
-                values.loanOrnamentsDetail[i].ornamentImageData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].ornamentImageData.url;
-                let filePath = values.loanOrnamentsDetail[i].ornamentImageData.url;
-                let pathToadd = filePath.replace('public/', '');
-                values.loanOrnamentsDetail[i].ornamentImageData.URL = baseUrlConfig.BASEURL + pathToadd;
+                values.loanOrnamentsDetail[i].ornamentImageData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].ornamentImageData.path;
             }
             if (values.loanOrnamentsDetail[i].purityTestImage) {
                 for (image of values.loanOrnamentsDetail[i].purityTestImage) {
-                    image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.url;
-                    let filePath = image.purityTest.url;
-                    let pathToadd = filePath.replace('public/', '');
-                    image.purityTest.URL = baseUrlConfig.BASEURL + pathToadd;
+                    image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.path;
                 }
             }
             resOrna.push(values.loanOrnamentsDetail[i])
@@ -224,10 +206,7 @@ module.exports = (sequelize, DataTypes) => {
 
         if (values.loanBankDetail) {
             for (image of values.loanBankDetail.passbookProofImage) {
-                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.url;
-                let filePath = image.passbookProof.url;
-                let pathToadd = filePath.replace('public/', '');
-                image.passbookProof.URL = baseUrlConfig.BASEURL + pathToadd;
+                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.path;
             }
         }
 
@@ -235,29 +214,16 @@ module.exports = (sequelize, DataTypes) => {
         for (let i = 0; i < values.loanPacketDetails.length; i++) {
 
             if (values.loanPacketDetails[i].emptyPacketWithNoOrnamentData) {
-                values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.url;
-                let filePath = values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.url;
-                let pathToadd = filePath.replace('public/', '');
-                values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + pathToadd;
+                values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.path;
             }
             if (values.loanPacketDetails[i].packetWithAllOrnamentsData) {
-                values.loanPacketDetails[i].packetWithAllOrnamentsData = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithAllOrnamentsData;
-                let filePath = values.loanPacketDetails[i].packetWithAllOrnamentsData;
-                let pathToadd = filePath.replace('public/', '');
-                values.loanPacketDetails[i].packetWithAllOrnamentsData = baseUrlConfig.BASEURL + pathToadd;
+                values.loanPacketDetails[i].packetWithAllOrnamentsData = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithAllOrnamentsData.path;
             }
-
             if (values.loanPacketDetails[i].packetWithSealingData) {
-                values.loanPacketDetails[i].packetWithSealingData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithSealingData.url;
-                let filePath = values.loanPacketDetails[i].packetWithSealingData.url;
-                let pathToadd = filePath.replace('public/', '');
-                values.loanPacketDetails[i].packetWithSealingData.URL = baseUrlConfig.BASEURL + pathToadd;
+                values.loanPacketDetails[i].packetWithSealingData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithSealingData.path;
             }
             if (values.loanPacketDetails[i].packetWithWeightData) {
-                values.loanPacketDetails[i].packetWithWeightData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithWeightData.url;
-                let filePath = values.loanPacketDetails[i].packetWithWeightData.url;
-                let pathToadd = filePath.replace('public/', '');
-                values.loanPacketDetails[i].packetWithWeightData.URL = baseUrlConfig.BASEURL + pathToadd;
+                values.loanPacketDetails[i].packetWithWeightData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithWeightData.path;
             }
             resPac.push(values.loanPacketDetails[i])
         }

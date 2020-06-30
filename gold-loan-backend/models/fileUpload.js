@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         url:{
             type: DataTypes.TEXT,
             field:'url'
+        },
+        path:{
+            type: DataTypes.TEXT,
+            field:'path'
         }
     }, {
         freezeTableName: true,
@@ -40,10 +44,7 @@ module.exports = (sequelize, DataTypes) => {
 
     FileUpload.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
-        values.URL = baseUrlConfig.BASEURL + values.url;
-        let filePath = values.url;
-        let pathToadd = filePath.replace('public/','');
-        values.URL = baseUrlConfig.BASEURL + pathToadd;
+        values.URL = baseUrlConfig.BASEURL + values.path;
         delete values.encoding;
         return values;
     }

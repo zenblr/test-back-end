@@ -93,10 +93,7 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.addressProofImage) {
             for (image of values.addressProofImage) {
-                image.addressProof.URL = baseUrlConfig.BASEURL + image.addressProof.url;
-                    let filePath = image.addressProof.url;
-                    let pathToadd = filePath.replace('public/', '');
-                    image.addressProof.URL = baseUrlConfig.BASEURL + pathToadd;
+                image.addressProof.URL = baseUrlConfig.BASEURL + image.addressProof.path;
             }
         }
         return values;
