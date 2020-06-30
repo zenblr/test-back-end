@@ -176,6 +176,11 @@ export class MenuConfig {
 											permission: false,
 										},
 										{
+											title: "Occupations",
+											page: "/admin/masters/occupation",
+											permission: false,
+										},
+										{
 											title: "Packet Location",
 											page: "/admin/masters/packet-location",
 											permission: false,
