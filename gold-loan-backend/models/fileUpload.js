@@ -40,10 +40,10 @@ module.exports = (sequelize, DataTypes) => {
 
     FileUpload.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
-        values.URL = baseUrlConfig.baseUrl + values.url;
+        values.URL = baseUrlConfig.BASEURL + values.url;
         let filePath = values.url;
         let pathToadd = filePath.replace('public/','');
-        values.URL = baseUrlConfig.baseUrl + pathToadd;
+        values.URL = baseUrlConfig.BASEURL + pathToadd;
         delete values.encoding;
         return values;
     }
