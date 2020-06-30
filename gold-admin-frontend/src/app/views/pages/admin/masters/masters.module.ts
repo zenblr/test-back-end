@@ -18,6 +18,8 @@ import { ReasonListComponent } from './reasons/reason-list/reason-list.component
 import { ReasonAddComponent } from './reasons/reason-add/reason-add.component';
 import { LeadSourceListComponent } from './lead-source/lead-source-list/lead-source-list.component';
 import { LeadSourceAddComponent } from './lead-source/lead-source-add/lead-source-add.component';
+import { OccupationAddComponent } from './occupation/occupation-add/occupation-add.component';
+import { OccupationListComponent } from './occupation/occupation-list/occupation-list.component';
 
 const routes: Routes = [
   {
@@ -40,6 +42,10 @@ const routes: Routes = [
     path: 'packet-location',
     component: PacketLocationListComponent
   },
+  {
+    path: 'occupation',
+    component: OccupationListComponent
+  },
 ]
 
 
@@ -54,7 +60,9 @@ const routes: Routes = [
     ReasonListComponent,
     ReasonAddComponent,
     LeadSourceListComponent,
-    LeadSourceAddComponent
+    LeadSourceAddComponent,
+    OccupationAddComponent,
+    OccupationListComponent
   ],
   imports: [
     CommonModule,
@@ -84,7 +92,8 @@ const routes: Routes = [
     OrnamentsAddComponent,
     AddPurposeComponent,
     ReasonAddComponent,
-    LeadSourceAddComponent
+    LeadSourceAddComponent,
+    OccupationAddComponent
   ]
 })
 export class MastersModule { }

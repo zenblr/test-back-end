@@ -33,7 +33,10 @@ export class PageConfig {
 				},
 				'lead-source': {
 					page: { title: "Lead Source", desc: "" },
-				}
+				},
+				occupation: {
+					page: { title: "Occupations", desc: "" },
+				},
 			},
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },

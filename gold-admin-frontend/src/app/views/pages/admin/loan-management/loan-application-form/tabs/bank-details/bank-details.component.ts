@@ -22,7 +22,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   @Output() next: EventEmitter<any> = new EventEmitter();
   bankForm: FormGroup;
   passbookImg: any = [];
-  passbookImgId:any = []
+  passbookImgId: any = []
   constructor(
     public toastr: ToastrService,
     public ref: ChangeDetectorRef,
@@ -106,7 +106,10 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       var name = event.target.files[0].name
       var ext = name.split('.')
       if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-        this.sharedService.uploadFile(event.target.files[0]).pipe(
+        const params = {
+          reason: 'loan'
+        }
+        this.sharedService.uploadFile(event.target.files[0], params).pipe(
           map(res => {
             this.passbookImg.push(res.uploadFile.URL);
             this.passbookImgId.push(res.uploadFile.id);
