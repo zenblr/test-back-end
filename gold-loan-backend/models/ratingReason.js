@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'ratingReason',
+        tableName: 'rating_reason',
     });
 
     return RatingReason;

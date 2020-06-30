@@ -1,4 +1,5 @@
 const BaseUrl = require('../config/baseUrl').BASEURL;
+const baseUrlConfig = require('../config/baseUrl');
 
 
 module.exports = (sequelize, DataTypes) => {
@@ -27,22 +28,26 @@ module.exports = (sequelize, DataTypes) => {
         userId: {
             type: DataTypes.INTEGER,
             field: 'user_id'
+        },
+        url:{
+            type: DataTypes.TEXT,
+            field:'url'
         }
     }, {
         freezeTableName: true,
         tableName: 'loan_file_upload',
     });
 
-
-    // This will return required JSON.
-
-    FileUpload.prototype.toJSON = function() {
+    FileUpload.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
-        values.URL = BaseUrl + '/uploads/images/' + values.filename
-        values.path = `public/uploads/images/${values.filename}`;
+        values.URL = baseUrlConfig.baseUrl + values.url;
+        let filePath = values.url;
+        let pathToadd = filePath.replace('public/','');
+        values.URL = baseUrlConfig.baseUrl + pathToadd;
         delete values.encoding;
         return values;
     }
+
 
     return FileUpload;
 }

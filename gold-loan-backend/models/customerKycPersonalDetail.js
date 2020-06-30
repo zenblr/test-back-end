@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycPersonalDetail = sequelize.define('customerKycPersonalDetail', {
         // attributes
@@ -12,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         profileImage: {
-            type: DataTypes.TEXT,
+            type: DataTypes.INTEGER,
             field: 'profile_image'
         },
         firstName: {
@@ -48,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_card_number',
             allowNull: false
         },
-        age:{
+        age: {
             type: DataTypes.STRING,
             field: 'age'
         },
@@ -70,10 +72,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'identity_type_id'
         },
-        identityProof: {
-            type: DataTypes.ARRAY(DataTypes.TEXT),
-            field: 'identity_proof'
-        },
+        // identityProof: {
+        //     type: DataTypes.ARRAY(DataTypes.INTEGER),
+        //     field: 'identity_proof'
+        // },
         identityProofNumber: {
             type: DataTypes.STRING,
             field: 'identity_proof_number',
@@ -83,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'spouse_name',
         },
         signatureProof: {
-            type: DataTypes.TEXT,
+            type: DataTypes.INTEGER,
             field: 'signature_proof'
         },
         createdBy: {
@@ -119,6 +121,39 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        CustomerKycPersonalDetail.belongsTo(models.fileUpload, { foreignKey: 'profileImage', as: 'profileImageData' });
+        CustomerKycPersonalDetail.belongsTo(models.fileUpload, { foreignKey: 'signatureProof', as: 'signatureProofData' });
+
+        CustomerKycPersonalDetail.hasMany(models.identityProofImage, { foreignKey: 'customerKycPersonalDetailId', as: 'identityProofImage' });
+    }
+
+    CustomerKycPersonalDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.identityProofImage) {
+            for (image of values.identityProofImage) {
+                // for (ele of image.identityProof) {
+                    image.identityProof.URL = baseUrlConfig.BASEURL + image.identityProof.url;
+                    let filePath = image.identityProof.url;
+                    let pathToadd = filePath.replace('public/', '');
+                    image.identityProof.URL = baseUrlConfig.BASEURL + pathToadd;
+                // }
+            }
+        }
+        if (values.profileImageData) {
+            values.profileImageData.URL = baseUrlConfig.BASEURL + values.profileImageData.url;
+            let filePath = values.profileImageData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.profileImageData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
+        if (values.signatureProofData) {
+            values.signatureProofData.URL = baseUrlConfig.BASEURL + values.signatureProofData.url;
+            let filePath = values.signatureProofData.url;
+            let pathToadd = filePath.replace('public/', '');
+            values.signatureProofData.URL = baseUrlConfig.BASEURL + pathToadd;
+        }
+
+        return values;
     }
 
 

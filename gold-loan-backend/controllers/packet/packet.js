@@ -66,6 +66,14 @@ exports.viewPacket = async (req, res, next) => {
             as: 'internalBranch',
             where: { isActive: true },
             attributes: ['id', 'internalBranchUniqueId', 'name']
+    },
+    {
+        model: models.packetOrnament,
+        as: 'packet',
+        include: {
+            model: models.ornamentType,
+            as: 'ornamentType'
+        }
     }];
 
     let packetDetails = await models.packet.findAll({
@@ -118,10 +126,19 @@ exports.availablePacket = async (req, res, next) => {
 // FUNCTION TO ASSIGN PACKET
 exports.assignPacket = async (req, res, next) => {
     let id = req.params.id;
-    let { customerId, loanId } = req.body;
+    let { customerId, loanId, ornamentTypeId } = req.body;
     let modifiedBy = req.userData.id;
 
     let packet = await models.packet.assignPacket(customerId, loanId, modifiedBy, id);
+
+    let data = [];
+    for (let ornament of ornamentTypeId) {
+        let single = {}
+        single["packetId"] = id;
+        single["ornamentTypeId"] = ornament;
+        data.push(single);
+    }
+    await models.packetOrnament.bulkCreate(data);
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "not assigned packet" });
