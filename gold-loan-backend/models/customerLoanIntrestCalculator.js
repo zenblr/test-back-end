@@ -6,6 +6,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
+        masterLoanId: {
+            type: DataTypes.INTEGER,
+            field: 'master_loan_id',
+            allowNull: false
+        },
         emiDueDate: {
             type: DataTypes.DATEONLY,
             field: 'emi_due_date'
@@ -43,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
     CustomerLoanIntrestCalculator.associate = function (models) {
 
         CustomerLoanIntrestCalculator.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
+        CustomerLoanIntrestCalculator.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         
         CustomerLoanIntrestCalculator.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanIntrestCalculator.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });

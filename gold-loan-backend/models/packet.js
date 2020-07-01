@@ -5,6 +5,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'loan_id',
         },
+        masterLoanId: {
+            type: DataTypes.INTEGER,
+            field: 'master_loan_id',
+            allowNull: false
+        },
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id'
@@ -43,7 +48,9 @@ module.exports = (sequelize, DataTypes) => {
     // PACKET ASSOCIATION WITH MODULES
     packet.associate = function (models) {
         packet.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
+        packet.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         packet.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        
         packet.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranch', as: 'internalBranch' });
         packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packet' });
         

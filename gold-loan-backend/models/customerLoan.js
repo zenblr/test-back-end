@@ -8,96 +8,26 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false
         },
+        masterLoanId: {
+            type: DataTypes.INTEGER,
+            field: 'master_loan_id',
+            allowNull: false
+        },
         loanUniqueId: {
             type: DataTypes.STRING,
             field: 'loan_unique_id'
         },
-        applicationFormForAppraiser: {
-            type: DataTypes.BOOLEAN,
-            field: 'application_form_for_appraiser',
-            defaultValue: false
-        },
-        goldValuationForAppraiser: {
-            type: DataTypes.BOOLEAN,
-            field: 'gold_valuation_for_appraiser',
-            defaultValue: false
-        },
-        loanStatusForAppraiser: {
-            type: DataTypes.ENUM,
-            field: 'loan_status_for_appraiser',
-            values: ['approved', 'pending', 'rejected'],
-        },
-        commentByAppraiser: {
-            type: DataTypes.TEXT,
-            field: 'comment_by_appraiser'
-        },
-        appraiserId: {
+        partnerId: {
             type: DataTypes.INTEGER,
-            field: 'appraiser_id'
+            field: 'partner_id'
         },
-        applicationFormForBM: {
-            type: DataTypes.BOOLEAN,
-            field: 'application_form_for_bm',
-            defaultValue: false
-        },
-        goldValuationForBM: {
-            type: DataTypes.BOOLEAN,
-            field: 'gold_valuation_for_bm',
-            defaultValue: false
-        },
-        loanStatusForBM: {
-            type: DataTypes.ENUM,
-            field: 'loan_status_for_bm',
-            values: ['approved', 'pending', 'incomplete', 'rejected'],
-            defaultValue: 'pending'
-        },
-        commentByBM: {
-            type: DataTypes.TEXT,
-            field: 'comment_by_bm'
-        },
-        bmId: {
+        schemeId: {
             type: DataTypes.INTEGER,
-            field: 'bm_id'
+            field: 'scheme_id'
         },
-        totalEligibleAmt: {
-            type: DataTypes.STRING,
-            field: 'total_eligible_amt'
-        },
-        totalFinalInterestAmt: {
-            type: DataTypes.STRING,
-            field: 'total_final_interest_amt'
-        },
-        finalLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'final_loan_amount',
-        },
-        securedLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'secured_loan_amount',
-        },
-        unsecuredLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'unsecured_loan_amount',
-        },
-        tenure: {
+        unsecuredSchemeId: {
             type: DataTypes.INTEGER,
-            field: 'tenure',
-        },
-        loanStartDate: {
-            type: DataTypes.DATEONLY,
-            field: 'loan_start_date'
-        },
-        loanEndDate: {
-            type: DataTypes.DATEONLY,
-            field: 'loan_end_date'
-        },
-        paymentFrequency: {
-            type: DataTypes.STRING,
-            field: 'payment_frequency'
-        },
-        processingCharge: {
-            type: DataTypes.STRING,
-            field: 'processing_charge'
+            field: 'unsecured_scheme_id'
         },
         interestRate: {
             type: DataTypes.STRING,
@@ -114,20 +44,6 @@ module.exports = (sequelize, DataTypes) => {
         unsecuredLoanId: {
             type: DataTypes.INTEGER,
             field: 'unsecured_loan_id'
-        },
-        customerLoanCurrentStage: {
-            type: DataTypes.ENUM,
-            field: 'customer_loan_current_stage',
-            values: ['1', '2', '3', '4', '5', '6']
-        },
-        loanStageId: {
-            type: DataTypes.INTEGER,
-            field: 'loan_stage_id'
-        },
-        isLoanSubmitted: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_loan_submitted',
-            defaultValue: false
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -150,6 +66,8 @@ module.exports = (sequelize, DataTypes) => {
     // CUSTOMER LOAN ASSOCIATION WITH MODULES
     customerLoan.associate = function (models) {
         customerLoan.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        customerLoan.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
+
 
         customerLoan.hasOne(models.customerLoanBankDetail, { foreignKey: 'loanId', as: 'loanBankDetail' });
         customerLoan.hasMany(models.customerLoanNomineeDetail, { foreignKey: 'loanId', as: 'loanNomineeDetail' });
@@ -157,6 +75,9 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasOne(models.customerLoanPersonalDetail, { foreignKey: 'loanId', as: 'loanPersonalDetail' });
         customerLoan.hasMany(models.customerLoanPackageDetails, { foreignKey: 'loanId', as: 'loanPacketDetails' });
         customerLoan.hasMany(models.packet, { foreignKey: 'loanId', as: 'packet' });
+        customerLoan.hasMany(models.customerLoanIntrestCalculator, { foreignKey: 'loanId', as: 'customerLoanIntrestCalculator' });
+        customerLoan.hasMany(models.customerLoanDisbursement, { foreignKey: 'loanId', as: 'customerLoanDisbursement' });
+
 
         customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 
@@ -164,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
         customerLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
 
-        customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan', useJunctionTable: false });
+        customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan' });
 
         customerLoan.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
         customerLoan.belongsTo(models.user, { foreignKey: 'bmId', as: 'bm' });
@@ -172,7 +93,6 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        customerLoan.hasMany(models.customerLoanIntrestCalculator, { foreignKey: 'loanId', as: 'customerLoanIntrestCalculator' });
 
     }
 
