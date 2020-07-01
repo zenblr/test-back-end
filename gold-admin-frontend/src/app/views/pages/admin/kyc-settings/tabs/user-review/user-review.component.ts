@@ -486,6 +486,7 @@ export class UserReviewComponent implements OnInit {
       this.addressIdArray2.push(element.addressProof.id)
       // this.addressFileNameArray2.push(element.addressProof.originalname)
     });
+    this.customerKycAddressTwo.controls.addressProof.patchValue(this.addressIdArray2);
     // this.customerKycAddressTwo.controls.addressProofFileName.patchValue(this.addressFileNameArray2[this.addressFileNameArray2.length - 1]);
 
 

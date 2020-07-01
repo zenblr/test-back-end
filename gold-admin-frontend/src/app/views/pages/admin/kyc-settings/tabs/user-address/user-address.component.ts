@@ -181,9 +181,9 @@ export class UserAddressComponent implements OnInit {
     });
   }
 
-  selectAadhar(){
-    this.identityProofs.forEach(proof=>{
-      if(proof.name == "Aadhar Card"){
+  selectAadhar() {
+    this.identityProofs.forEach(proof => {
+      if (proof.name == "Aadhar Card") {
         this.controls.identityTypeId.patchValue(proof.id)
       }
     })
@@ -322,6 +322,7 @@ export class UserAddressComponent implements OnInit {
       this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
       this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
       this.addressControls.controls[0].patchValue({ addressProofNumber: '' });
+      this.addressControls.controls[0].patchValue({ addressProofFileName: '' });
     }
     console.log(this.addressControls.at(0).value)
   }
