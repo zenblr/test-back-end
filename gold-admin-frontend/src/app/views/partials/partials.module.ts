@@ -88,6 +88,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
 
 import { AngularImageViewerModule } from 'angular-x-image-viewer';
+import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 @NgModule({
 	declarations: [
@@ -159,6 +160,7 @@ import { AngularImageViewerModule } from 'angular-x-image-viewer';
 		OrnamentsComponent,
 		PdfViewerComponent,
 		ImageFunctionalityDialogComponent,
+		DropdownComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -223,6 +225,7 @@ import { AngularImageViewerModule } from 'angular-x-image-viewer';
 		PdfViewerComponent,
 
 		AngularImageViewerModule,
+		DropdownComponent,
 	],
 	imports: [
 		PdfViewerModule,
