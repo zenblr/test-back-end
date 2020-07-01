@@ -38,7 +38,7 @@ export class OccupationAddComponent implements OnInit {
   initForm() {
     this.occupationForm = this.fb.group({
       id: [],
-      name: ['', [Validators.required]]
+      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]]
     })
   }
 
