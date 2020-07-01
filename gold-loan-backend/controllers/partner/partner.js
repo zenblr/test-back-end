@@ -102,7 +102,7 @@ exports.readPartner = async (req, res, next) => {
     });
 
     if (!readPartnerData) {
-      return res.status(404).json({ message: "data not found" });
+      return res.status(200).json({ message: "data not found" });
     }
     return res.status(200).json({ data: readPartnerData, count: count });
   }

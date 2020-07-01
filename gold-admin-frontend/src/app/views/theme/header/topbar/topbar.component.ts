@@ -92,7 +92,8 @@ export class TopbarComponent implements OnInit {
 	isDisabled = false;
 	button: boolean = false;
 	clear: boolean;
-
+	dropdownValue = [];
+	dropdownTitle: string;
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -246,6 +247,8 @@ export class TopbarComponent implements OnInit {
 		this.toogle = false;
 		this.showBackButton = false;
 		this.showDropdown = false;
+		this.dropdownTitle = "";
+		this.dropdownValue = [];
 		this.permissionType = "";
 		this.filterName = "";
 		this.filterWidth = "";
@@ -482,6 +485,13 @@ export class TopbarComponent implements OnInit {
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
 			this.showDropdown = true;
+			this.dropdownTitle = "Generate";
+			this.dropdownValue = [
+				{ label: "Label", value: "label" },
+				{ label: "Manifest", value: "mainfest" },
+				{ label: "Deli Manifest", value: "deliMainfest" },
+				{ label: "Uninsured Manifest", value: "uninsuredMainfest" },
+			]
 		}
 		if (this.path == "cancel-order-details") {
 			this.showInput = true;
@@ -734,7 +744,9 @@ export class TopbarComponent implements OnInit {
 	}
 
 	selectedValue(value: string) {
-		this.orderDetailsService.dropdownValue.next(value);
+		if (this.path == "order-details") {
+			this.orderDetailsService.dropdownValue.next(value);
+		}
 	}
 
 	buttonValue(value) {

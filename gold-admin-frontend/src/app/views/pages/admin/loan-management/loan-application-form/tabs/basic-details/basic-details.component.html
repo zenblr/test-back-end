@@ -41,14 +41,14 @@
                         <div class="col-4 form-label">
                             <label class="text-color kt-padding-l-10">KYC Status</label>
                         </div>
-                        <div class="col-3 form-label">
-                            <label class="text-color">{{controls.kycStatus.value | titlecase}}</label>
-                        </div>
-                        <div class="col-3 form-label">
-                            <label class="text-color kt-padding-l-10" (click)="viewKYC(26)">View</label>
+                        <div class="col-6">
+                           <input type="text" class="form-control position-relative" formControlName="kycStatus">
+                           <span class="inside-input" (click)="viewKYC()">View KYC</span>
                         </div>
                     </div>
                 </div>
+               
+               
                 <div class="col-6">
                     <div class="row">
                         <div class="col-4 offset-2 form-label">
@@ -63,7 +63,6 @@
             </div>
             <div class="row kt-margin-t-15">
                
-                
                 <div class="col-6">
                     <div class="row">
                         <div class="col-4  form-label">
@@ -83,6 +82,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <!-- <div class="col-6">
                     <div class="row" *ngIf="controls.panType.value=='pan'">
                         <div class="col-4 offset-2 form-label">
