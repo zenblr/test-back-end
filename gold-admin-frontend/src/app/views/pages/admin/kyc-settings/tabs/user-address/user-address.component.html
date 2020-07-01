@@ -13,7 +13,7 @@
                                     [class.isError]="controls.identityTypeId.invalid && controls.identityTypeId.touched">
                                     <option value="" [disabled]="true"> Select Proof</option>
                                     <option *ngFor="let proof of identityProofs"
-                                        [selected]="proof.name == 'Aadhar Card'" [value]="proof.id">
+                                        [selected]="selectAadhar()" [value]="proof.id">
                                         {{ proof.name | titlecase}}
                                     </option>
                                 </select>
@@ -32,11 +32,15 @@
                             </div>
                             <div class="col-7">
                                 <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
-                                    placeholder="Aadhar Number" class="form-control"
+                                    placeholder="Aadhar Number" class="form-control" numbersOnly maxlength="12"
                                     [class.isError]="controls.identityProofNumber.touched && controls.identityProofNumber.invalid">
                                 <mat-error
                                     *ngIf="controls.identityProofNumber.errors?.required && controls.identityProofNumber.touched">
                                     Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.identityProofNumber.errors?.minlength && controls.identityProofNumber.touched">
+                                    Invalid Input
                                 </mat-error>
                             </div>
                         </div>
