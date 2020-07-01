@@ -1,140 +1,184 @@
-<!-- <div class="row justify-content-center">
-    <div class="col-6 offset-1">
-        <div class="row">
-            <div class="col-6 form-label">
-                <label class="">Loan Agreement Copy</label>
+<div class="row justify-content-around">
+    <div class="col-11">
+        <div class="row kt-padding-t-15 kt-padding-b-20 justify-content-around">
+            <div class="col-4 form-label" *ngIf="!show">
+                <label class="kt-padding-l-10">Loan Agreement Copy</label>
             </div>
-            <div class="col-6">
-                <kt-button [type]="'button'" [value]="'Attach'" (click)="file.click()"
-                    *ngIf="!documentsForm.controls.loanAgreementCopy.value"></kt-button>
-                <input type="file" #file class="d-none" (change)="fileUpload($event,'loanAgreementCopy')">
-                <label for="" class="text-primary" (click)="preview(documentsForm.controls.loanAgreementCopy.value)"
-                    *ngIf="documentsForm.controls.loanAgreementCopy.value">View Image</label>
+            <div class="col-4 form-label" >
+                <label class="kt-padding-l-10">Pawn Ticket/Copy of pledge</label>
             </div>
-        </div>
-        <div class="row kt-padding-t-15">
-            <div class="col-6 form-label">
-                <label class="">Pawn Ticket/Copy of pledge</label>
+            <div class="col-4 form-label" *ngIf="!show">
+                <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
             </div>
-            <div class="col-6">
-                <kt-button [type]="'button'" [value]="'Attach'" (click)="file1.click()"
-                    *ngIf="!documentsForm.controls.pawnTicket.value"></kt-button>
-                <input type="file" #file1 class="d-none" (change)="fileUpload($event,'pawnTicket')">
-                <label for="" class="text-primary" (click)="preview(documentsForm.controls.pawnTicket.value)"
-                    *ngIf="documentsForm.controls.pawnTicket.value">View Image</label>
-
+            <div class="col-4 form-label" *ngIf="show">
+                <label class="kt-padding-l-10">Signed Cheque Copy</label>
+            </div>
+            <div class="col-4 form-label" *ngIf="show">
+                <label class="kt-padding-l-10" >Declaration Copy</label>
             </div>
         </div>
-        <div class="row kt-padding-t-15 kt-padding-b-15">
-            <div class="col-6 form-label">
-                <label class="">Scheme Confirmation Copy</label>
-            </div>
-            <div class="col-6">
-                <kt-button [type]="'button'" [value]="'Attach'" (click)="file2.click()"
-                    *ngIf="!documentsForm.controls.schemeConfirmation.value"></kt-button>
-                <input type="file" #file2 class="d-none" (change)="fileUpload($event,'schemeConfirmation')">
-                <label for="" class="text-primary" (click)="preview(documentsForm.controls.schemeConfirmation.value)"
-                    *ngIf="documentsForm.controls.schemeConfirmation.value">View Image</label>
-            </div>
-        </div>
-    </div>
-</div> -->
-<div class="row">
-    <div class="col-12">
-        <div class="row">
-            <div class="col">
+        <div class="row justify-content-between">
+            <div class="col-4"  *ngIf="!show">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="passbook.click()">Attach</span>
+                            (click)="file1.click()">Attach</span>
                     </div>
-                    <input type="file" class="d-none" accept="image/png, image/jpeg" #passbook
-                        (input)="getFileInfo($event)">
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file1
+                        (change)="fileUpload($event,'loanAgreementCopy')">
                 </div>
             </div>
-            <div class="col">
+            <div class="col-4"  >
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="passbook.click()">Attach</span>
+                            (click)="file2.click()">Attach</span>
                     </div>
-                    <input type="file" class="d-none" accept="image/png, image/jpeg" #passbook
-                        (input)="getFileInfo($event)">
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file2
+                        (change)="fileUpload($event,'pawnTicket')">
                 </div>
             </div>
-            <div class="col">
+            <div class="col-4" *ngIf="!show">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="passbook.click()">Attach</span>
+                            (click)="file3.click()">Attach</span>
                     </div>
-                    <input type="file" class="d-none" accept="image/png, image/jpeg" #passbook
-                        (input)="getFileInfo($event)">
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file3
+                        (change)="fileUpload($event,'schemeConfirmation')">
+                </div>
+            </div>
+            <div class="col-4" *ngIf="show">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="file3.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file3
+                        (change)="fileUpload($event,'schemeConfirmation')">
+                </div>
+            </div>
+            <div class="col-4" *ngIf="show">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="file3.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file3
+                        (change)="fileUpload($event,'schemeConfirmation')">
                 </div>
             </div>
         </div>
-
-    </div>
-</div>
-<div class="row">
-    <div class="col">
         <div class="row">
-            <div class="col-8">
-                <div class="img-container" style="width: 250px;">
-                    <img src="../../../../../../../assets/media/icons/image-placeholder.png" class="placeholder-image">
+            <div class="col"  *ngIf="!show">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container" style="width: 250px;"
+                            *ngIf="!documentsForm.controls.loanAgreementCopy.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.loanAgreementCopy.value">
+                            <div class="d-inline-block img-container kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.loanAgreementCopy.value">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="">
-                    <!-- <div class="d-inline-block img-container kt-margin-r-15"
-                            *ngFor="let proof of controls.passbookProofImage.value; index as idx;">
-                            <img class="fetched-image" [src]="proof">
-                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                class="kt-pointer remove-icon" (click)="removeImages(idx);"> -->
+            </div>
+            <div class="col"  >
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container" style="width: 250px;"
+                            *ngIf="!documentsForm.controls.pawnTicket.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.pawnTicket.value">
+                            <div class="d-inline-block img-container kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.pawnTicket.value">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col" *ngIf="!show">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container" style="width: 250px;"
+                            *ngIf="!documentsForm.controls.schemeConfirmation.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.schemeConfirmation.value">
+                            <div class="d-inline-block img-container kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.schemeConfirmation.value">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col" *ngIf="show">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container" style="width: 250px;"
+                            *ngIf="!documentsForm.controls.schemeConfirmation.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.schemeConfirmation.value">
+                            <div class="d-inline-block img-container kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.schemeConfirmation.value">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col" *ngIf="show">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container" style="width: 250px;"
+                            *ngIf="!documentsForm.controls.schemeConfirmation.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.schemeConfirmation.value">
+                            <div class="d-inline-block img-container kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.schemeConfirmation.value">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-
     </div>
-    <div class="col">
-        <div class="row">
-            <div class="col-8">
-                <div class="img-container" style="width: 250px;">
-                    <img src="../../../../../../../assets/media/icons/image-placeholder.png" class="placeholder-image">
-                </div>
-
-                <div class="">
-                    <!-- <div class="d-inline-block img-container kt-margin-r-15"
-                            *ngFor="let proof of controls.passbookProofImage.value; index as idx;">
-                            <img class="fetched-image" [src]="proof">
-                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                class="kt-pointer remove-icon" (click)="removeImages(idx);"> -->
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <div class="col">
-        <div class="row">
-            <div class="col-8">
-                <div class="img-container" style="width: 250px;">
-                    <img src="../../../../../../../assets/media/icons/image-placeholder.png" class="placeholder-image">
-                </div>
-
-                <div class="">
-                    <!-- <div class="d-inline-block img-container kt-margin-r-15"
-                            *ngFor="let proof of controls.passbookProofImage.value; index as idx;">
-                            <img class="fetched-image" [src]="proof">
-                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                class="kt-pointer remove-icon" (click)="removeImages(idx);"> -->
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>

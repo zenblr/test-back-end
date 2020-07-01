@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ImagePreviewDialogComponent } from '../../../../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
 import { MatDialog } from '@angular/material';
 import { PdfViewerComponent } from '../../../../../../../views/partials/components/pdf-viewer/pdf-viewer.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-upload-loan-documents',
@@ -15,12 +16,20 @@ import { PdfViewerComponent } from '../../../../../../../views/partials/componen
 export class UploadLoanDocumentsComponent implements OnInit {
 
   documentsForm: FormGroup
+  show: boolean;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
     private toastr:ToastrService,
-    public dialog:MatDialog
-  ) { }
+    public dialog:MatDialog,
+    public router:Router
+  ) {
+    if(this.router.url == "/admin/loan-management/loan-transfer"){
+      this.show = true
+    }else{
+      this.show = false
+    }
+   }
 
   @Input() loanId;
 

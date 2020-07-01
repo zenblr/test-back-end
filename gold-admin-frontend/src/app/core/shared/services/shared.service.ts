@@ -46,6 +46,7 @@ export class SharedService {
 	}
 
 	uploadFile(files, reason?, key?, value?): Observable<any> {
+		const reqParams: any = {};
 		var fd = new FormData();
 		fd.append("avatar", files);
 		return this.http.post<any>(`/api/upload-file?reason=${reason}&${key}=${value}`, fd);
