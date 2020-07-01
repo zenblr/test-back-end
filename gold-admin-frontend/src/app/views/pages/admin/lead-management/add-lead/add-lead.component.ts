@@ -194,10 +194,10 @@ export class AddLeadComponent implements OnInit {
 
   getLeadById(id) {
     this.leadService.getLeadById(id).subscribe(res => {
-      // console.log(res);
       this.leadForm.patchValue(res.singleCustomer);
       this.leadForm.patchValue({ panImage: res.singleCustomer.panImage.id })
       this.leadForm.patchValue({ panImg: res.singleCustomer.panImage.URL })
+      // console.log(this.leadForm.value)
       this.getCities();
       this.commentBox()
     },
