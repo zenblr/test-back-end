@@ -3,7 +3,7 @@ services:
     web:
       build: ./gold-loan-backend/
       container_name: gold-loan-nodejs-uat
-      image: maishafruits/maisha:node_loan
+      image: maishafruits/maisha:node_loan_uat
       environment:
         - NODE_ENV=uat
       links:
