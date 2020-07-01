@@ -24,12 +24,16 @@ exports.uploadHolidayMaster = async (req, res, next) => {
 
         var repeatHolidayListData = _.filter(holidayList, (val, i, iteratee) => _.includes(iteratee, val, i + 1));
         if (repeatHolidayListData.length > 0) {
-            return res.status(400).json({ message: `In your csv file there holiday date is dublicate` })
+            return res.status(400).json({ message: `The CSV file contains a duplicate date` })
         }
-        var contain = await models.holidayMaster.findAll({ where: { holidayDate: { [Op.in]: holidayList } } })
+        var contain = await models.holidayMaster.findAll({ where: { holidayDate: { [Op.in]: holidayList }, isActive: true } })
         if (contain.length > 0) {
-            let existHolidayDate = await contain.map(value => { return value.holidayDate })
-            return res.status(400).json({ message: `${existHolidayDate} this holiday date is already exist` })
+            let existHolidayDate = await contain.map(value => { return value.holidayDate });
+            if(existHolidayDate.length > 1){
+                return res.status(400).json({ message: `${existHolidayDate} these holiday dates already Exists` })
+            }else{
+                return res.status(400).json({ message: `${existHolidayDate} this holiday date already Exists` });
+            }
         }
         await sequelize.transaction(async t => {
 

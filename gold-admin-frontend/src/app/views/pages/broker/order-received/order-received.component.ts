@@ -3,7 +3,7 @@ import { ToastrComponent } from '../../../partials/components/toastr/toastr.comp
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrderReceivedService } from '../../../../core/merchant-broker';
+import { OrderReceivedService } from '../../../../core/broker';
 import { OrderDetailsService } from "../../../../core/emi-management/order-management/order-details/services/order-details.service";
 
 @Component({

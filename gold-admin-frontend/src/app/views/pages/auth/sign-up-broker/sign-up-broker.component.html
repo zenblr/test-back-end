@@ -1,6 +1,6 @@
 <kt-toastr #toastr></kt-toastr>
 <div class="kt-portlet">
-	<kt-modal-header [title]="title" (action)="action($event)"></kt-modal-header>
+	<kt-modal-header [title]="title" noTitleCase="true" (action)="action($event)"></kt-modal-header>
 	<div class="kt-portlet__body font-weight-500">
 		<form [formGroup]="registerForm">
 			<div class="row kt-padding-t-15">
@@ -38,7 +38,7 @@
 				</div>
 				<div class="col-8">
 					<input type="text" aria-label="Mobile Number" placeholder="Mobile Number" class="form-control"
-						formControlName="mobileNumber"
+						formControlName="mobileNumber" maxlength="10"
 						[class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid" numbersOnly>
 					<mat-error *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
 						Field is required
@@ -117,7 +117,7 @@
 				</div>
 				<div class="col-8">
 					<input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
-						formControlName="pinCode" numbersOnly
+						formControlName="pinCode" numbersOnly maxlength="6"
 						[class.isError]="controls.pinCode.touched && controls.pinCode.invalid">
 					<mat-error *ngIf=" controls.pinCode.errors?.required && controls.pinCode.touched">
 						Field is required
@@ -126,7 +126,7 @@
 			</div>
 			<div class="row kt-padding-t-15">
 				<div class="col-4">
-					<label class="font-weight-500 text-color">Store Id</label>
+					<label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Store Id</label>
 				</div>
 				<div class="col-8">
 					<input type="text" aria-label="Store ID" placeholder="Store ID" class="form-control"

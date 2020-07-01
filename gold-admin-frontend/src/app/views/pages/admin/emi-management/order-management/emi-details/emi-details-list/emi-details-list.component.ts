@@ -31,6 +31,7 @@ export class EmiDetailsListComponent implements OnInit {
 		"mobileNumber",
 		"orderId",
 		"emiDate",
+		"emiInitialAmount",
 		"emiPaidAmount",
 		"emiAmount",
 		"emiPendingAmount",

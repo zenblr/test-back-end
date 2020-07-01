@@ -67,7 +67,7 @@ exports.updatePacketLocation = async (req, res, next) => {
     let { location } = req.body;
     let { id } = req.params;
 
-    let pocketExist = await models.pocketLocation.findOne({ where: { location: location } })
+    let pocketExist = await models.pocketLocation.findOne({ where: { location: location, isActive: true } })
     if (!check.isEmpty(pocketExist)) {
         return res.status(404).json({ message: 'This Packet Location already Exists' });
     }

@@ -12,7 +12,7 @@ import {
   OrdersDatasource,
   OrdersModel,
   OrdersService
-} from "../../../../../core/merchant-broker";
+} from "../../../../../core/broker";
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { SharedService } from "../../../../../core/shared/services/shared.service";
 import { OrderDetailsService } from "../../../../../core/emi-management/order-management/order-details/services/order-details.service";

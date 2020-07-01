@@ -285,7 +285,10 @@ export class AddLeadComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0], 'lead').pipe(
+      const params = {
+        reason: 'lead'
+      }
+      this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
           if (res) {
             // this.controls.form60.patchValue(event.target.files[0].name)

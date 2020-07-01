@@ -1,13 +1,14 @@
 <kt-toastr #toastr></kt-toastr>
-
 <kt-portlet>
     <kt-portlet-body [class]="'kt-portlet__body--fit'">
         <div class="row card-container mt-4" *ngIf="product">
             <div class="col-md-4">
-                <div class="card p-2">
-                    <img class="mx-auto"
-                        [src]="product.productImage != '0' ? product?.productImage: 'assets/media/icons/image-placeholder.png'"
-                        alt="test" width="275px" height="315px">
+                <div class="card p-2 justify-content-center">
+                    <img class="mx-auto" *ngIf="product?.productImages.length == 0"
+                        src="assets/media/icons/image-placeholder.png" alt="test" width="275px" height="315px">
+                    <kt-image-preview-dialog *ngIf="product?.productImages.length" [viewImages]="imageArray"
+                        [type]="'view'" clickable="true">
+                    </kt-image-preview-dialog>
                 </div>
             </div>
             <div class="col-md-8">

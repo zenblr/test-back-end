@@ -8,9 +8,9 @@ const check = require('../../lib/checkLib');
 
 exports.addRatingReason = async (req, res, next) => {
     let { description } = req.body;
-    let ratingExist = await models.ratingReason.findOne({ where: { description: description } })
+    let ratingExist = await models.ratingReason.findOne({ where: { description: description, isActive: true } })
     if (!check.isEmpty(ratingExist)) {
-        return res.status(404).json({ message: 'This Rating Reason is already Exist' });
+        return res.status(404).json({ message: 'This Rating Reason already Exists' });
     }
     let rating = await models.ratingReason.create({ description })
     return res.status(200).json({ message: `Created` })
@@ -41,7 +41,7 @@ exports.updateRatingReason = async (req, res, next) => {
     let { description } = req.body;
     let { id } = req.params;
 
-    let ratingExist = await models.ratingReason.findOne({ where: { description: description } })
+    let ratingExist = await models.ratingReason.findOne({ where: { description: description, isActive: true } })
     if (!check.isEmpty(ratingExist)) {
         return res.status(404).json({ message: 'This Rating is already Exist' });
     }

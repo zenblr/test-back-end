@@ -25,7 +25,11 @@ exports.getCustomerDetails = async (req, res, next) => {
     let statusId = status.id
     let checkStatusCustomer = await models.customer.findOne({
         where: { statusId, id: numberExistInCustomer.id },
-        attributes: ['firstName', 'lastName', 'panCardNumber','panType','panCardNumber','panImage']
+        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImageId'],
+        include: [{
+            model: models.fileUpload,
+            as: 'panImage'
+        }]
     })
     if (check.isEmpty(checkStatusCustomer)) {
         return res.status(400).json({ message: "Please proceed after confirm your lead stage status" });
@@ -36,7 +40,7 @@ exports.getCustomerDetails = async (req, res, next) => {
 
 exports.submitCustomerKycinfo = async (req, res, next) => {
 
-    let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage} = req.body
+    let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage } = req.body
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
@@ -45,7 +49,11 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let statusId = status.id
     let getCustomerInfo = await models.customer.findOne({
         where: { mobileNumber: mobileNumber, statusId },
-        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage']
+        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImageId'],
+        include: [{
+            model: models.fileUpload,
+            as: 'panImage'
+        }]
     })
     if (check.isEmpty(getCustomerInfo)) {
         return res.status(404).json({ message: "Your status is not confirm" });
@@ -86,22 +94,38 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         } else if (KycStage.customerKycCurrentStage == "4") {
             let customerKycReview = await models.customer.findOne({
                 where: { id: KycStage.customerId },
-                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber','panType', 'panImage'],
+                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImageId'],
                 include: [{
+                    model: models.fileUpload,
+                    as: 'panImage'
+                }, {
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
-                    attributes: ['id', 'customerId', 'profileImage', 'firstName', 'lastName', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProof', 'identityProofNumber', 'spouseName', 'signatureProof'],
+                    attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'spouseName', 'signatureProof'],
                     include: [{
                         model: models.occupation,
                         as: 'occupation'
                     }, {
                         model: models.identityType,
                         as: 'identityType'
+                    }, {
+                        model: models.fileUpload,
+                        as: 'profileImageData'
+                    }, {
+                        model: models.fileUpload,
+                        as: 'signatureProofData'
+                    }, {
+                        model: models.identityProofImage,
+                        as: 'identityProofImage',
+                        include: [{
+                            model: models.fileUpload,
+                            as: 'identityProof'
+                        }]
                     }]
                 }, {
                     model: models.customerKycAddressDetail,
                     as: 'customerKycAddress',
-                    attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId', 'addressProofNumber'],
+                    attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber'],
                     include: [{
                         model: models.state,
                         as: 'state'
@@ -111,6 +135,13 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
                     }, {
                         model: models.addressProofType,
                         as: 'addressProofType'
+                    }, {
+                        model: models.addressProofImage,
+                        as: 'addressProofImage',
+                        include: [{
+                            model: models.fileUpload,
+                            as: 'addressProof'
+                        }]
                     }],
                     order: [["id", "ASC"]]
                 }]
@@ -193,7 +224,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" })
 
-        await models.customer.update({ panCardNumber: panCardNumber,  panType, panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
+        await models.customer.update({ panCardNumber: panCardNumber, panType, panImageId: panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
 
         let createCustomerKyc = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
@@ -244,7 +275,7 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
         address[i]['modifiedBy'] = modifiedBy
         addressArray.push(address[i])
     }
-    let { firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
+    let { id, firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
     let name = `${firstName} ${lastName}`;
 
     await sequelize.transaction(async t => {
@@ -255,8 +286,29 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
             modifiedBy: modifiedBy
         }, { where: { id: customerKycId }, transaction: t });
 
+        let dataIdentity = [];
+        for (let ele of identityProof) {
+            let single = {}
+            single["customerKycPersonalDetailId"] = id;
+            single["identityProofId"] = ele;
+            dataIdentity.push(single);
+        }
+        await models.identityProofImage.bulkCreate(dataIdentity, { transaction: t });
+
         await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
-        await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
+        // await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
+
+        for (let address of addressArray) {
+            var singleAddress = await models.customerKycAddressDetail.create(address, { transaction: t })
+            let data = [];
+            for (let ele of address.addressProof) {
+                let single = {}
+                single["customerKycAddressDetailId"] = singleAddress.id;
+                single["addressProofId"] = ele;
+                data.push(single);
+            }
+            await models.addressProofImage.bulkCreate(data, { transaction: t });
+        }
     })
 
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
@@ -303,22 +355,38 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     })
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber','panType', 'panImage'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImageId'],
         include: [{
+            model: models.fileUpload,
+            as: 'panImage'
+        }, {
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
-            attributes: ['id', 'customerId', 'profileImage', 'firstName', 'lastName', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProof', 'identityProofNumber', 'spouseName', 'signatureProof'],
+            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'spouseName', 'signatureProof'],
             include: [{
                 model: models.occupation,
                 as: 'occupation'
             }, {
                 model: models.identityType,
                 as: 'identityType'
+            }, {
+                model: models.fileUpload,
+                as: 'profileImageData'
+            }, {
+                model: models.fileUpload,
+                as: 'signatureProofData'
+            }, {
+                model: models.identityProofImage,
+                as: 'identityProofImage',
+                include: [{
+                    model: models.fileUpload,
+                    as: 'identityProof'
+                }]
             }]
         }, {
             model: models.customerKycAddressDetail,
             as: 'customerKycAddress',
-            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId', 'addressProofNumber'],
+            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber'],
             include: [{
                 model: models.state,
                 as: 'state'
@@ -328,12 +396,15 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
             }, {
                 model: models.addressProofType,
                 as: 'addressProofType'
+            }, {
+                model: models.addressProofImage,
+                as: 'addressProofImage',
+                include: [{
+                    model: models.fileUpload,
+                    as: 'addressProof'
+                }]
             }],
             order: [["id", "ASC"]]
-        }, {
-            model: models.customerKycBankDetail,
-            as: 'customerKycBank',
-            attributes: ['id', 'customerKycId', 'customerId', 'bankName', 'bankBranchName', 'accountType', 'accountHolderName', 'accountNumber', 'ifscCode', 'passbookProof']
         }]
     })
 
@@ -426,11 +497,36 @@ exports.submitAllKycInfo = async (req, res, next) => {
     }
 
     await sequelize.transaction(async (t) => {
-        // await models.customer.update({ isKycSubmitted: true }, { where: { id: customerId }, transaction: t });
+        let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
-        await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t })
+        await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
 
-        await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProof", "addressProofTypeId", "addressProofNumber", "modifiedBy"] }, { transaction: t })
+        await models.identityProofImage.destroy({ where: { customerKycPersonalDetailId: personalId.id } });
+
+        let dataIdentity = [];
+        for (let ele of customerKycPersonal.identityProof) {
+            let single = {}
+            single["customerKycPersonalDetailId"] = personalId.id;
+            single["identityProofId"] = ele;
+            dataIdentity.push(single);
+        }
+        await models.identityProofImage.bulkCreate(dataIdentity, { transaction: t });
+
+        await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProofTypeId", "addressProofNumber", "modifiedBy"] }, { transaction: t })
+
+        for (let ele of addressArray) {
+
+            await models.addressProofImage.destroy({ where: { customerKycAddressDetailId: ele.id } });
+
+            let data = [];
+            for (let singleEle of ele.addressProof) {
+                let single = {}
+                single["customerKycAddressDetailId"] = ele.id;
+                single["addressProofId"] = singleEle;
+                data.push(single);
+            }
+            await models.addressProofImage.bulkCreate(data, { transaction: t });
+        }
 
         await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
 
@@ -447,7 +543,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
 exports.appliedKyc = async (req, res, next) => {
 
     // let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
-    // console.log(roleName)
+
 
     const { search, offset, pageSize } = paginationWithFromTo(
         req.query.search,
@@ -517,6 +613,10 @@ exports.appliedKyc = async (req, res, next) => {
     } else {
         internalBranchWhere = { isActive: true }
     }
+    let assignAppraiser;
+    if (req.userData.userTypeId == 7) {
+        assignAppraiser = { appraiserId: req.userData.id }
+    }
 
     const includeArray = [
         {
@@ -527,16 +627,17 @@ exports.appliedKyc = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['firstName', 'lastName', 'panCardNumber', 'kycStatus','customerUniqueId'],
+            attributes: ['firstName', 'lastName', 'panCardNumber', 'kycStatus', 'customerUniqueId'],
             where: internalBranchWhere,
             include: [{
                 model: models.customerAssignAppraiser,
                 as: 'customerAssignAppraiser',
+                where: assignAppraiser,
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include:[{
+                include: [{
                     model: models.user,
                     as: 'appraiser',
-                    attributes:['id','firstName','lastName']
+                    attributes: ['id', 'firstName', 'lastName']
                 }]
             }]
         }
@@ -559,6 +660,9 @@ exports.appliedKyc = async (req, res, next) => {
         where: searchQuery,
         include: includeArray,
     });
+    if(getAppliedKyc.length == 0){
+        return res.status(200).json({data: []})
+    }
     return res.status(200).json({ data: getAppliedKyc, count })
 
 
@@ -571,22 +675,38 @@ exports.getReviewAndSubmit = async (req, res, next) => {
 
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber','panType', 'panImage'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImageId'],
         include: [{
+            model: models.fileUpload,
+            as: 'panImage'
+        }, {
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
-            attributes: ['id', 'customerId', 'customerKycId', 'profileImage', 'firstName', 'lastName', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'age', 'gender', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProof', 'identityProofNumber', 'spouseName', 'signatureProof'],
+            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'spouseName', 'signatureProof'],
             include: [{
                 model: models.occupation,
                 as: 'occupation'
             }, {
                 model: models.identityType,
                 as: 'identityType'
+            }, {
+                model: models.fileUpload,
+                as: 'profileImageData'
+            }, {
+                model: models.fileUpload,
+                as: 'signatureProofData'
+            }, {
+                model: models.identityProofImage,
+                as: 'identityProofImage',
+                include: [{
+                    model: models.fileUpload,
+                    as: 'identityProof'
+                }]
             }]
         }, {
             model: models.customerKycAddressDetail,
             as: 'customerKycAddress',
-            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProof', 'addressProofTypeId', 'addressProofNumber'],
+            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber'],
             include: [{
                 model: models.state,
                 as: 'state'
@@ -596,6 +716,13 @@ exports.getReviewAndSubmit = async (req, res, next) => {
             }, {
                 model: models.addressProofType,
                 as: 'addressProofType'
+            }, {
+                model: models.addressProofImage,
+                as: 'addressProofImage',
+                include: [{
+                    model: models.fileUpload,
+                    as: 'addressProof'
+                }]
             }],
             order: [["id", "ASC"]]
         }]

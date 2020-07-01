@@ -28,6 +28,7 @@ import { SchemeAmountPipe } from "./_base/layout/pipes/scheme-amount.pipe";
 import { ExcelService, PdfService } from "./_base/crud";
 import { IndianCurrencyFormatPipe } from './_base/layout/pipes/indian-currency-format.pipe';
 import { TruncatePipe } from './_base/layout/pipes/truncate-text.pipe';
+import { RemoveCommaPipe } from './_base/layout/pipes/remove-comma.pipe';
 
 @NgModule({
 	imports: [CommonModule],
@@ -54,6 +55,7 @@ import { TruncatePipe } from './_base/layout/pipes/truncate-text.pipe';
 		SchemeAmountPipe,
 		IndianCurrencyFormatPipe,
 		TruncatePipe,
+		RemoveCommaPipe,
 	],
 	exports: [
 		// directives
@@ -77,8 +79,9 @@ import { TruncatePipe } from './_base/layout/pipes/truncate-text.pipe';
 		AlphabetsDirective,
 		DecimalOnlyDirective,
 		IndianCurrencyFormatPipe,
-		TruncatePipe
+		TruncatePipe,
+		RemoveCommaPipe,
 	],
 	providers: [AuthService, ExcelService, PdfService],
 })
-export class CoreModule {}
+export class CoreModule { }

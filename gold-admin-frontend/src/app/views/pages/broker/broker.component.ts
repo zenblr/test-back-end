@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ShoppingCartService } from '../../../core/merchant-broker';
+import { ShoppingCartService } from '../../../core/broker';
 
 @Component({
   selector: 'kt-broker',

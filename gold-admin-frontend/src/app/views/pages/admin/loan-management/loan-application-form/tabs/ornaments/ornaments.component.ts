@@ -322,11 +322,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string,) {
+  uploadFile(index, event, string, ) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0], 'loan').pipe(
+      const params = {
+        reason: 'loan'
+      }
+      this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
           this.patchUrlIntoForm(string, res.uploadFile.id, res.uploadFile.URL, index)
         }),

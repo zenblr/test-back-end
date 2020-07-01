@@ -82,10 +82,12 @@ import { WebcamModule } from "ngx-webcam";
 import { WebcamDialogComponent } from '../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { OrnamentsComponent } from '../pages/admin/loan-management/loan-application-form/tabs/ornaments/ornaments.component';
+import { ImageFunctionalityDialogComponent } from './components/image-functionality-dialog/image-functionality-dialog.component';
 
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
 
+import { AngularImageViewerModule } from 'angular-x-image-viewer';
 
 @NgModule({
 	declarations: [
@@ -155,7 +157,8 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
 
 		AssignAppraiserComponent,
 		OrnamentsComponent,
-		PdfViewerComponent
+		PdfViewerComponent,
+		ImageFunctionalityDialogComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -217,7 +220,9 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
 		NgxMaterialTimepickerModule,
 		MultiSelectSearchComponent,
 		OrnamentsComponent,
-		PdfViewerComponent
+		PdfViewerComponent,
+
+		AngularImageViewerModule,
 	],
 	imports: [
 		PdfViewerModule,
@@ -241,10 +246,14 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
 		NgbModule,
 		NgSelectModule,
 		WebcamModule,
-		NgxMaterialTimepickerModule.setLocale('en-IN')
+		NgxMaterialTimepickerModule.setLocale('en-IN'),
+		AngularImageViewerModule,
 	],
+
 	entryComponents: [
-		PdfViewerComponent,ImagePreviewDialogComponent],
+		PdfViewerComponent, 
+		ImagePreviewDialogComponent, 
+		ImageFunctionalityDialogComponent],
 })
-export class PartialsModule { 
+export class PartialsModule {
 }
