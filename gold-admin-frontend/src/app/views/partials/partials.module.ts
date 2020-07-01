@@ -84,7 +84,11 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { OrnamentsComponent } from '../pages/admin/loan-management/loan-application-form/tabs/ornaments/ornaments.component';
 import { ImageFunctionalityDialogComponent } from './components/image-functionality-dialog/image-functionality-dialog.component';
 
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
+
 import { AngularImageViewerModule } from 'angular-x-image-viewer';
+import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 @NgModule({
 	declarations: [
@@ -154,7 +158,9 @@ import { AngularImageViewerModule } from 'angular-x-image-viewer';
 
 		AssignAppraiserComponent,
 		OrnamentsComponent,
+		PdfViewerComponent,
 		ImageFunctionalityDialogComponent,
+		DropdownComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -216,10 +222,13 @@ import { AngularImageViewerModule } from 'angular-x-image-viewer';
 		NgxMaterialTimepickerModule,
 		MultiSelectSearchComponent,
 		OrnamentsComponent,
+		PdfViewerComponent,
 
 		AngularImageViewerModule,
+		DropdownComponent,
 	],
 	imports: [
+		PdfViewerModule,
 		NgbModule,
 		CommonModule,
 		RouterModule,
@@ -243,6 +252,11 @@ import { AngularImageViewerModule } from 'angular-x-image-viewer';
 		NgxMaterialTimepickerModule.setLocale('en-IN'),
 		AngularImageViewerModule,
 	],
-	entryComponents: [ImagePreviewDialogComponent, ImageFunctionalityDialogComponent],
+
+	entryComponents: [
+		PdfViewerComponent, 
+		ImagePreviewDialogComponent, 
+		ImageFunctionalityDialogComponent],
 })
-export class PartialsModule { }
+export class PartialsModule {
+}

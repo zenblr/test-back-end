@@ -14,16 +14,9 @@
         </div>
         <div class="col-6 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
-            <div *ngIf="showDropdown" ngbDropdown class="d-inline-block" (autoClose)="true">
-                <button class="btn-custom kt-margin-r-10 kt-margin-l-10" mat-raised-button id="dropdownBasic1"
-                    ngbDropdownToggle [disabled]="isDisabled">Generate</button>
-                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                    <button ngbDropdownItem (click)="selectedValue('label')">Label</button>
-                    <button ngbDropdownItem (click)="selectedValue('mainfest')">Manifest</button>
-                    <button ngbDropdownItem (click)="selectedValue('deliMainfest')">Deli Manifest</button>
-                    <button ngbDropdownItem (click)="selectedValue('uninsuredMainfest')">Uninsured Manifest</button>
-                </div>
-            </div>
+            <kt-dropdown *ngIf="showDropdown" [dropdownValue]="dropdownValue" [isDisabled]="isDisabled"
+                [title]="dropdownTitle" (dropdownResult)="selectedValue($event)">
+            </kt-dropdown>
             <div *ngxPermissionsOnly="permissionType; then elseBlock"></div>
             <kt-button *ngIf="value4" [value]='value4' [type]='type4' (click)="action($event)"
                 (action)="buttonValue($event)" class="kt-margin-r-10 kt-margin-l-10">

@@ -61,7 +61,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="row">
-                                    <div class="col-8">
+                                    <div [ngClass]="viewOnly ? 'col-8': 'col'">
                                         <input type="text" class="form-control" placeholder="Mobile Number"
                                             formControlName="mobileNumber"
                                             value="{{ this.data.customerKycReview.mobileNumber | titlecase }}"
@@ -89,7 +89,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="row" *ngIf="data.customerKycReview.panType == 'pan'">
-                                    <div class="col-8">
+                                    <div [ngClass]="viewOnly ? 'col-8': 'col'">
                                         <input type="text" class="form-control" placeholder="PAN"
                                             formControlName="panCardNumber"
                                             value="{{ this.data.customerKycReview.panCardNumber | uppercase }}"
@@ -130,15 +130,16 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
-                                <label [class.mandatory]="viewOnly" class="">Address & Identity</label>
+                                <label [class.mandatory]="viewOnly" class="">Identity Proof</label>
                             </div>
                             <div class="col-7">
                                 <!-- <input class="form-control"
                                     value="{{ data.customerKycReview.customerKycPersonal.identityType.name | titlecase }}" /> -->
                                 <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof"
                                     [class.isError]="reviewForm.controls.identityTypeId.invalid && reviewForm.controls.identityTypeId.touched">
-                                    <option value="" [disabled]="true" [selected]="true"> Select Proof</option>
-                                    <option *ngFor="let proof of identityProofs" [value]="proof.id">{{ proof.name }}
+                                    <option value="" [disabled]="true"> Select Proof</option>
+                                    <option *ngFor="let proof of identityProofs"
+                                        [selected]="proof.name == 'Aadhar Card'" [value]="proof.id">{{ proof.name }}
                                     </option>
                                 </select>
                             </div>
@@ -147,7 +148,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
-                                <label [class.mandatory]="viewOnly" class="">Unique Identity No.</label>
+                                <label [class.mandatory]="viewOnly" class="">Aadhar No.</label>
                             </div>
                             <div class="col-7">
                                 <input formControlName="identityProofNumber" type="text"
@@ -328,6 +329,7 @@
                             </div>
                             <div class="col-7 kt-margin-t-20">
                                 <select formControlName="addressProofTypeId" class="form-control"
+                                    (change)="checkForAadhar()"
                                     [class.isError]="customerKycAddressOne.controls.addressProofTypeId.touched && customerKycAddressOne.controls.addressProofTypeId.invalid">
                                     <option value="" selected disabled> Select Proof
                                     </option>
