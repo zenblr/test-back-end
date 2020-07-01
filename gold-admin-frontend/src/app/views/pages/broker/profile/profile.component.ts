@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrComponent } from "../../../partials/components/toastr/toastr.component";
-import { ProfileService } from '../../../../core/merchant-broker';
+import { ProfileService } from '../../../../core/broker';
 import { ProfileChangePassComponent } from './profile-change-pass/profile-change-pass.component';
 import { ProfileChangePanComponent } from './profile-change-pan/profile-change-pan.component';
 import { MatDialog } from "@angular/material";

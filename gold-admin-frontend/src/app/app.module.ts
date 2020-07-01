@@ -150,5 +150,6 @@ export function hljsLanguages(): HighlightLanguage[] {
 	bootstrap: [AppComponent]
 })
 export class AppModule {
+	// platformBrowserDynamic().bootstrapModule(AppModule);
 
 }

@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const customerLoanBankDetail = sequelize.define('customerLoanBankDetail', {
         // attributes
@@ -34,10 +36,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'ifsc_code'
         },
-        passbookProof: {
-            type: DataTypes.ARRAY(DataTypes.TEXT),
-            field: 'passbook_proof'
-        },
+        // passbookProof: {
+        //     type: DataTypes.ARRAY(DataTypes.TEXT),
+        //     field: 'passbook_proof'
+        // },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -62,13 +64,21 @@ module.exports = (sequelize, DataTypes) => {
 
         customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        customerLoanBankDetail.hasMany(models.passbookProofImage, { foreignKey: 'customerLoanBankDetailId', as: 'passbookProofImage' });
+
+    }
+    
+    customerLoanBankDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.passbookProofImage) {
+            for (image of values.passbookProofImage) {
+                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.path;
+            }
+        }
+        return values;
     }
 
-    // FUNCTION TO ADD CUSTOMER BANK DETAIL
-    customerLoanBankDetail.addCustomerBankDetail =
-        (loanId, name, accountNumber, ifscCode, createdBy, modifiedBy, t) => customerLoanBankDetail.create({
-            loanId, name, accountNumber, ifscCode, createdBy, modifiedBy, isActive: true
-        }, { t });
 
     return customerLoanBankDetail;
 }

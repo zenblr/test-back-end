@@ -8,7 +8,18 @@ exports.addUpdateBanner = async (req, res, next) => {
     let userId = req.userData.id
     let banner = await models.banner.readBanner()
     if (banner.length == 0) {
-        let CreatedBanner = await models.banner.addBanner(images, userId);
+
+        let CreatedBanner = await models.banner.create({ userId });
+
+        let data = [];
+        for (let ele of images) {
+            let single = {}
+            single["bannerId"] = CreatedBanner.id;
+            single["bannerImageId"] = ele;
+            data.push(single);
+        }
+        await models.bannerImages.bulkCreate(data);
+
         if (!CreatedBanner) {
             res.status(422).json({ message: 'Banner not added' });
         } else {
@@ -16,7 +27,19 @@ exports.addUpdateBanner = async (req, res, next) => {
         }
     } else {
         let id = banner[0].id;
-        let UpdateData = await models.banner.updateBanner(id, images, userId)
+        let UpdateData = await models.banner.update({ userId }, { where: { id } })
+
+        await models.bannerImages.destroy({ where: { bannerId: id } });
+
+        let data = [];
+        for (let ele of images) {
+            let single = {}
+            single["bannerId"] = id;
+            single["bannerImageId"] = ele;
+            data.push(single);
+        }
+        await models.bannerImages.bulkCreate(data);
+
         if (UpdateData[0] === 0) {
             return res.status(404).json({ message: 'Data not updated' });
         }
@@ -28,15 +51,25 @@ exports.addUpdateBanner = async (req, res, next) => {
 // Read Banner.
 
 exports.readBanner = async (req, res, next) => {
-    let banner = await models.banner.readBanner()
-    // const id = banner[0].id;
-    // return res.json(banner[0])
-    // let bannerData = await models.banner.findOne({ where: { id } });
-    if (!banner) {
-        res.status(404).json({ message: 'Data not found' });
-    } else {
-        res.status(200).json(banner[0]);
-    }
+        let banner = await models.banner.findAll({
+            include: {
+                model: models.bannerImages,
+                as: 'bannerImage',
+                include: {
+                    model: models.fileUpload,
+                    as: 'bannerImage'
+                }
+            }
+        })
+        // const id = banner[0].id;
+        // return res.json(banner[0])
+        // let bannerData = await models.banner.findOne({ where: { id } });
+        if (!banner) {
+            res.status(404).json({ message: 'Data not found' });
+        } else {
+            res.status(200).json(banner[0]);
+        }
+  
 };
 
 // //Delete Banner.

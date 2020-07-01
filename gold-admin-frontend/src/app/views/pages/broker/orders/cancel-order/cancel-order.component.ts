@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ShopService } from '../../../../../core/merchant-broker';
+import { ShopService } from '../../../../../core/broker';
 import { ActivatedRoute, Router } from "@angular/router";
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';

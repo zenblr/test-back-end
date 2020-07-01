@@ -51,8 +51,8 @@ export class AppComponent implements OnInit, OnDestroy {
 		private toast: ToastrService,
 		private cookieService: CookieService,
 	) {
-		if (this.cookieService.get('Token') && (this.cookieService.get('modules') ||
-			this.cookieService.get('permissions') || this.cookieService.get('userDetails'))) {
+		if (this.cookieService.get('Token') && this.cookieService.get('modules') &&
+			this.cookieService.get('permissions') && this.cookieService.get('userDetails')) {
 			const userData = {
 				Token: JSON.parse(this.cookieService.get('Token')),
 				modules: JSON.parse(this.cookieService.get('modules')),

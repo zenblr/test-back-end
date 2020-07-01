@@ -3,7 +3,7 @@ import { ToastrComponent } from '../../../partials/components/toastr/toastr.comp
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ShoppingCartService } from '../../../../core/merchant-broker';
+import { ShoppingCartService } from '../../../../core/broker';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 
 @Component({
@@ -32,15 +32,20 @@ export class ShoppingCartComponent implements OnInit {
   getCart() {
     this.shoppingCartService.getCart().subscribe(res => {
       this.cartData = res;
+      if (this.cartData.allCartData.length) {
+        for (const iterator of this.cartData.allCartData) {
+          iterator.showUpdateQuantity = false;
+        }
+      }
       this.shoppingCartService.cartCount.next(res.allCartData.length);
     });
   }
 
   removeCartItem(cartId) {
-    const _title = 'Delete Cart Item';
-    const _description = 'Are you sure you want to delete this cart item?';
-    const _waitDesciption = 'Cart Item is deleting...';
-    const _deleteMessage = `Cart Item has been deleted`;
+    const _title = 'Remove Cart Item';
+    const _description = 'Are you sure you want to remove this cart item?';
+    const _waitDesciption = 'Cart Item is removing...';
+    const _deleteMessage = `Cart Item has been removed`;
 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
@@ -74,8 +79,8 @@ export class ShoppingCartComponent implements OnInit {
     this.router.navigate(['/broker/shop']);
   }
 
-  updateInput(event) {
+  updateInput(event, cartItem) {
     console.log(event);
-
+    cartItem.showUpdateQuantity = true;
   }
 }

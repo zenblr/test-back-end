@@ -8,7 +8,7 @@ const check = require('../../lib/checkLib');
 
 exports.addOrnamentType = async (req, res, next) => {
     let { name } = req.body;
-    let ornamentTypeExist = await models.ornamentType.findOne({ where: { name: name } })
+    let ornamentTypeExist = await models.ornamentType.findOne({ where: { name: name, isActive: true } })
     if (!check.isEmpty(ornamentTypeExist)) {
         return res.status(404).json({ message: 'This Ornament Type is already Exist' });
     }
@@ -42,7 +42,7 @@ exports.updateOrnamentType = async (req, res, next) => {
     let { name } = req.body;
     let { id } = req.params;
 
-    let ornamentTypeExist = await models.ornamentType.findOne({ where: { name: name } })
+    let ornamentTypeExist = await models.ornamentType.findOne({ where: { name: name, isActive: true } })
     if (!check.isEmpty(ornamentTypeExist)) {
         return res.status(404).json({ message: 'This Purpose is already Exist' });
     }

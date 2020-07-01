@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DashboardService } from '../../../../core/merchant-broker';
+import { DashboardService } from '../../../../core/broker';
 import { Observable } from 'rxjs';
 
 @Component({

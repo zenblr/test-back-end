@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ToastrComponent } from '../../../../../../partials/components/toastr/toastr.component';
 import { ProductService } from '../../../../../../../core/emi-management/product/show-product/services/product.service';
 import { SubCategoryService } from '../../../../../../../core/emi-management/product/sub-category/services/sub-category.service';
+import { API_ENDPOINT } from '../../../../../../../app.constant';
 
 @Component({
   selector: 'kt-product-edit',
@@ -99,6 +100,7 @@ export class ProductEditComponent implements OnInit {
     _productData.manufacturingCostPerGram = parseFloat(_productData.manufacturingCostPerGram);
     _productData.hallmarkingPackaging = parseFloat(_productData.hallmarkingPackaging);
     _productData.shipping = parseFloat(_productData.shipping);
+    _productData.productImage = _productData.productImage.replace(API_ENDPOINT, 'public/');
 
     delete _productData.id;
     delete _productData.sku;
@@ -133,7 +135,7 @@ export class ProductEditComponent implements OnInit {
         if (this.data.action == 'view') {
           if (res.productImage != '0') {
             const prodImage = {
-              url: res.productImage
+              URL: res.productImage
             }
             res.productImages.push(prodImage);
           }
@@ -154,6 +156,7 @@ export class ProductEditComponent implements OnInit {
       for (let i = 0; i < this.productData.productImages.length; i++) {
         const product = this.productData.productImages[i];
         if (i == data.index) {
+          product.URL = data.uploadData.URL;
           product.url = data.uploadData.url;
           this.productForm.controls['productImages'].patchValue(this.productData.productImages);
         }

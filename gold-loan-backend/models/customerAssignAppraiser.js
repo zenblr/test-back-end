@@ -24,6 +24,18 @@ module.exports = (sequelize, DataTypes) => {
             field: 'modified_by',
             allowNull: false,
         },
+        appoinmentDate: {
+            type: DataTypes.DATEONLY,
+            field: 'appoinment_date',
+        },
+        startTime: {
+            type: DataTypes.TIME,
+            field: 'start_time',
+        },
+        endTime: {
+            type: DataTypes.TIME,
+            field: 'end_time',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

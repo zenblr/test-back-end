@@ -55,11 +55,11 @@ export class UserAddressComponent implements OnInit {
     this.identityForm = this.fb.group({
       customerId: [this.customerDetails.customerId],
       customerKycId: [this.customerDetails.customerKycId],
-      identityTypeId: ['', [Validators.required]],
+      identityTypeId: [, [Validators.required]],
       identityProof: [[], [Validators.required]],
       identityProofImg: [[]],
       identityProofFileName: ['', [Validators.required]],
-      identityProofNumber: [''],
+      identityProofNumber: ['', [Validators.required, Validators.minLength(12)]],
       address: this.fb.array([
         this.fb.group({
           addressType: ['permanent'],
@@ -87,6 +87,7 @@ export class UserAddressComponent implements OnInit {
         })
       ])
     });
+    this.identityForm.controls.identityTypeId.disable()
     this.getCities(0)
   }
 
@@ -180,6 +181,14 @@ export class UserAddressComponent implements OnInit {
     });
   }
 
+  selectAadhar(){
+    this.identityProofs.forEach(proof=>{
+      if(proof.name == "Aadhar Card"){
+        this.controls.identityTypeId.patchValue(proof.id)
+      }
+    })
+  }
+
   submit() {
     console.log(this.identityForm)
     if (this.identityForm.invalid) {
@@ -187,19 +196,22 @@ export class UserAddressComponent implements OnInit {
       return
     }
     this.addressControls.at(1).enable();
+    this.identityForm.controls.identityTypeId.enable()
 
 
 
     const data = this.identityForm.value;
     console.log(data)
-
     this.userAddressService.addressDetails(data).pipe(
       map(res => {
         if (res) {
           this.next.emit(true);
         }
         console.log(res);
-      }),
+      }, finalize(() => {
+        this.identityForm.controls.identityTypeId.disable()
+
+      })),
     ).subscribe();
 
     // this.next.emit(true);
@@ -230,7 +242,7 @@ export class UserAddressComponent implements OnInit {
     } else {
       this.sameAdd = false
       this.cities1 = [];
-      this.images.permanent = [];
+      this.images.residential = [];
       this.addressControls.at(1).reset();
       this.addressControls.at(1)['controls'].addressType.patchValue('residential')
       this.addressControls.at(1).enable();
@@ -303,6 +315,7 @@ export class UserAddressComponent implements OnInit {
       this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
       this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
       this.addressControls.controls[0].patchValue({ addressProofNumber: this.controls.identityProofNumber.value });
+      this.addressControls.controls[0].patchValue({ addressProofFileName: this.controls.identityProofFileName.value });
     } else {
       this.images.permanent = [];
       this.imageId.permanent = [];
