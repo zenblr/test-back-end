@@ -75,7 +75,7 @@ exports.readScheme = async (req, res, next) => {
     })
 
     if (!readSchemeData[0]) {
-        return res.status(404).json({ message: 'data not found' });
+        return res.status(200).json({ message: 'no scheme found' });
 
     }
     return res.status(200).json({ data: readSchemeData });
