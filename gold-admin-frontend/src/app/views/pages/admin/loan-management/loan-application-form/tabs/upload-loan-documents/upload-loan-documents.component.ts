@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { SharedService } from '../../../../../../../core/shared/services/shared.service';
-import { map } from 'rxjs/operators';
+import { map, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ImagePreviewDialogComponent } from '../../../../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
@@ -20,16 +20,17 @@ export class UploadLoanDocumentsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
-    private toastr:ToastrService,
-    public dialog:MatDialog,
-    public router:Router
+    private toastr: ToastrService,
+    public dialog: MatDialog,
+    public router: Router,
+    private ref:ChangeDetectorRef
   ) {
-    if(this.router.url == "/admin/loan-management/loan-transfer"){
+    if (this.router.url == "/admin/loan-management/loan-transfer") {
       this.show = true
-    }else{
+    } else {
       this.show = false
     }
-   }
+  }
 
   @Input() loanId;
 
@@ -38,7 +39,14 @@ export class UploadLoanDocumentsComponent implements OnInit {
     this.documentsForm = this.fb.group({
       loanAgreementCopy: [],
       pawnTicket: [],
-      schemeConfirmation: []
+      schemeConfirmation: [],
+      signedCheque: [],
+      declartionCopy: [],
+      loanAgreementImageName: [],
+      pawnTicketImageName: [],
+      schemeConfirmationImageName: [],
+      signedChequeImageName: [],
+      declarationCopyImageName: []
     })
   }
 
@@ -48,17 +56,32 @@ export class UploadLoanDocumentsComponent implements OnInit {
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png'
       || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
       const controls = this.documentsForm.controls
-      this.sharedService.uploadFile(event.target.files[0], 'offer').pipe(
+      const params = {
+        reason: 'loan'
+      }
+      this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
           if (value == 'loanAgreementCopy') {
             controls.loanAgreementCopy.patchValue(res.uploadFile.URL)
+            controls.loanAgreementImageName.patchValue(res.uploadFile.originalname)
           } else if (value == 'pawnTicket') {
             controls.pawnTicket.patchValue(res.uploadFile.URL)
+            controls.pawnTicketImageName.patchValue(res.uploadFile.originalname)
 
           } else if (value == 'schemeConfirmation') {
             controls.schemeConfirmation.patchValue(res.uploadFile.URL)
+            controls.schemeConfirmationImageName.patchValue(res.uploadFile.originalname)
+          } else if (value == 'signedCheque') {
+            controls.signedCheque.patchValue(res.uploadFile.URL)
+            controls.signedChequeImageName.patchValue(res.uploadFile.originalname)
+
+          } else if (value == 'declartionCopy') {
+            controls.declartionCopy.patchValue(res.uploadFile.URL)
+            controls.declarationCopyImageName.patchValue(res.uploadFile.originalname)
           }
           console.log(res)
+        }),finalize(()=>{
+          this.ref.detectChanges()
         })).subscribe()
     }
     else {
@@ -68,15 +91,15 @@ export class UploadLoanDocumentsComponent implements OnInit {
 
   preview(value) {
     var ext = value.split('.')
-    if (ext[ext.length - 1] == 'pdf'){
-      
+    if (ext[ext.length - 1] == 'pdf') {
+
       this.dialog.open(PdfViewerComponent, {
         data: {
           value
         },
         width: "80%"
       })
-    }else{
+    } else {
       this.dialog.open(ImagePreviewDialogComponent, {
         data: {
           images: [value],
@@ -85,7 +108,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
         width: "auto"
       })
     }
-   
+
   }
 
 }
