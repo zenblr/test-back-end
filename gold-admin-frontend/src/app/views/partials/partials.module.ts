@@ -85,6 +85,7 @@ import { OrnamentsComponent } from '../pages/admin/loan-management/loan-applicat
 import { ImageFunctionalityDialogComponent } from './components/image-functionality-dialog/image-functionality-dialog.component';
 
 import { AngularImageViewerModule } from 'angular-x-image-viewer';
+import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 @NgModule({
 	declarations: [
@@ -155,6 +156,7 @@ import { AngularImageViewerModule } from 'angular-x-image-viewer';
 		AddAppraiserComponent,
 		OrnamentsComponent,
 		ImageFunctionalityDialogComponent,
+		DropdownComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -218,6 +220,7 @@ import { AngularImageViewerModule } from 'angular-x-image-viewer';
 		OrnamentsComponent,
 
 		AngularImageViewerModule,
+		DropdownComponent,
 	],
 	imports: [
 		NgbModule,
