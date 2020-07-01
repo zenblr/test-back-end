@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-7">
                     <kt-multi-select-search formControlName="ornamentType" [items]="ornamentType" [multiple]="true"
-                        [bindLabel]="'ornamentType'" [isClear]="clearData" [placeholder]="'Ornament Type'">
+                        [bindLabel]="'ornamentType'" [isClear]="clearData" [placeholder]="'Ornament Type'" [selectAll]="true">
                     </kt-multi-select-search>
                     <mat-error
                         *ngIf="packetInfo.controls.ornamentType.touched && packetInfo.controls.ornamentType.invalid">

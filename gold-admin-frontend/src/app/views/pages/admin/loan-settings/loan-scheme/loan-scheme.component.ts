@@ -87,8 +87,10 @@ export class LoanSchemeComponent implements OnInit {
     this.viewLoading = true;
     this.loanSettingService.getScheme(this.queryParamsData).pipe(
       map(res => {
-        this.schemes = res.data;
-        this.ref.detectChanges();
+        if (res.data) {
+          this.schemes = res.data;
+          this.ref.detectChanges();
+        }
       }),
       catchError(err => {
 
