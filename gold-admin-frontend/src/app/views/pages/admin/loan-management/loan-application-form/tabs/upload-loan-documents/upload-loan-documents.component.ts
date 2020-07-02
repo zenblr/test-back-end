@@ -32,7 +32,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
     }
   }
 
-  @Input() loanId;
+  @Input() masterAndLoanIds;
 
 
   ngOnInit() {

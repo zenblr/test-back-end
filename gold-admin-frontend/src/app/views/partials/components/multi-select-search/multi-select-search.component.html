@@ -1,11 +1,18 @@
 <div [formGroup]="form">
     <ng-select [items]="items" [multiple]="multiple" [bindLabel]="bindLabel" [closeOnSelect]="false"
         [bindValue]="bindValue" formControlName="multiSelect" [placeholder]="placeholder">
+        <ng-template ng-header-tmp *ngIf="selectAll">
+                <label class="custom-checkbox">
+                    <span class="label-checkbox">Select All</span>
+                    <input type="checkbox" (change)="selectAllCheckBox($event)"/> 
+                    <span class="checkmark checkmark-custom header-checkmark"></span>
+                </label>            
+        </ng-template>
         <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
             <div class="custom-checkbox">
                 <span class="label-checkbox">{{item[bindLabel] | titlecase}}</span>
                 <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
-                [ngModelOptions]="{ standalone : true }" /> 
+                [ngModelOptions]="{ standalone : true }"/> 
                 <span class="checkmark checkmark-custom"></span>
             </div>
             <!-- <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"

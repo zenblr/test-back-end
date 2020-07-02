@@ -37,7 +37,7 @@ export class InterestCalculatorComponent implements OnInit {
   // @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Input() action;
-  @Input() loanId
+  @Input() masterAndLoanIds
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('calculation', { static: false }) calculation: ElementRef
@@ -86,9 +86,12 @@ export class InterestCalculatorComponent implements OnInit {
             this.approved = true;
 
           // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(finalLoan.loanStartDate))
-          this.editedDate = finalLoan.loanStartDate;
-          this.currentDate = new Date(finalLoan.loanStartDate)
-          this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
+          if(finalLoan.loanStartDate){
+            this.editedDate = finalLoan.loanStartDate;
+            this.currentDate = new Date(finalLoan.loanStartDate)
+            this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
+          }
+         
           this.finalInterestForm.controls.schemeId.patchValue(finalLoan.schemeId)
           if (finalLoan.unsecuredSchemeId) {
             this.finalInterestForm.controls.isUnsecuredSchemeApplied.patchValue(true)
@@ -279,6 +282,7 @@ export class InterestCalculatorComponent implements OnInit {
 
               this.controls.isUnsecuredSchemeApplied.patchValue(true);
               this.controls.unsecuredSchemeId.patchValue(scheme.id)
+              this.controls.unsecuredLoanAmount.patchValue(Math.round(amt))
               this.getIntrest();
               this.CheckProcessingCharge()
 
@@ -362,7 +366,7 @@ export class InterestCalculatorComponent implements OnInit {
         / 360
 
       this.unSecuredInterestAmount = this.unSecuredInterestAmount.toFixed(2)
-      this.controls.unsecuredLoanAmount.patchValue(this.securedInterestAmount)
+      // this.controls.unsecuredLoanAmount.patchValue(this.securedInterestAmount)
       this.controls.securedLoanAmount.patchValue(maximumAmtAllowed)
     } else {
 
@@ -467,6 +471,7 @@ export class InterestCalculatorComponent implements OnInit {
 
 
   nextAction() {
+    this.amountValidation()
     if (this.finalInterestForm.invalid) {
       this.finalInterestForm.markAllAsTouched()
       return
@@ -474,7 +479,7 @@ export class InterestCalculatorComponent implements OnInit {
     if (!this.dateOfPayment.length) {
       return
     }
-    this.loanFormService.submitFinalIntrest(this.finalInterestForm.value, this.loanId, this.dateOfPayment).pipe(
+    this.loanFormService.submitFinalIntrest(this.finalInterestForm.value, this.masterAndLoanIds, this.dateOfPayment).pipe(
       map(res => {
         if (res.finalLoanAmount)
           this.finalLoanAmount.emit(res.finalLoanAmount)
