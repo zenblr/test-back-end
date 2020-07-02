@@ -29,6 +29,8 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 	@Input() isClear: boolean = false;
 	@Input() placeholder:String;
 	@Input() style:boolean = false;
+	@Input() selectAll:boolean = false;
+
 	form: FormGroup;
 	subscriptions: Subscription[] = [];
 
