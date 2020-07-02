@@ -134,6 +134,13 @@
                 <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
+                        <button mat-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="applyLoan(loan)">Apply Loan</button>
+                            <button mat-menu-item (click)="transferLoan(loan)">Transfer Loan</button>
+                        </mat-menu>
                         <!-- <div ngbDropdown class="dropdown dropdown-inline" #customerActionDropdown1="ngbDropdown"
                             aria-haspopup="true" aria-expanded="false" [autoClose]="false">
                             <button mat-icon-button class="btn-transparent" ngbDropdownToggle>
