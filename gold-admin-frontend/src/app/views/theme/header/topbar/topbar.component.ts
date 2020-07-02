@@ -94,6 +94,10 @@ export class TopbarComponent implements OnInit {
 	clear: boolean;
 	dropdownValue = [];
 	dropdownTitle: string;
+	sortImg = "../../../../../assets/media/icons/sort.svg";
+	sortType: number = 1;
+	sortFlag: boolean = false;
+
 	constructor(
 		public sharedService: SharedService,
 		public subheaderService: SubheaderService,
@@ -253,7 +257,8 @@ export class TopbarComponent implements OnInit {
 		this.filterName = "";
 		this.filterWidth = "";
 		this.listType = "",
-			this.clear = false;
+			this.sortFlag = false;
+		this.clear = false;
 	}
 
 	dataSourceHeader() {
@@ -588,6 +593,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "shop") {
 			this.showInput = true;
 			this.toogle = true;
+			this.sortFlag = true;
 		}
 		if (location.href.includes('/shop/product/')) {
 			this.showBackButton = true;
@@ -752,6 +758,22 @@ export class TopbarComponent implements OnInit {
 	buttonValue(value) {
 		if (location.href.includes("edit-order-details")) {
 			this.orderDetailsService.buttonValue.next(value);
+		}
+	}
+
+	sortValue(value) {
+		this.shopService.sortValue.next(value);
+	}
+
+	sort() {
+		this.sortType += 1;
+		if (this.sortType % 2 == 0) {
+			this.sortImg = "../../../../../assets/media/icons/sort (1).svg";
+			this.shopService.sortType.next(true);
+
+		} else {
+			this.sortImg = "../../../../../assets/media/icons/sort.svg";
+			this.shopService.sortType.next(false);
 		}
 	}
 
