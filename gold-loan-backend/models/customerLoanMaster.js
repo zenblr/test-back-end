@@ -131,10 +131,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_loan_current_stage',
             values: ['1', '2', '3', '4', '5', '6']
         },
-        loanStageId: {
-            type: DataTypes.INTEGER,
-            field: 'loan_stage_id'
-        },
         isLoanSubmitted: {
             type: DataTypes.BOOLEAN,
             field: 'is_loan_submitted',
@@ -172,7 +168,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.hasMany(models.customerLoanIntrestCalculator, { foreignKey: 'masterLoanId', as: 'customerLoanIntrestCalculator' });
         CustomerLoanMaster.hasMany(models.customerLoanDisbursement, { foreignKey: 'masterLoanId', as: 'customerLoanDisbursement' });
 
-        CustomerLoanMaster.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
+        // CustomerLoanMaster.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'bmId', as: 'bm' });
