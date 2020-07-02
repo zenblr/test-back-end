@@ -93,12 +93,19 @@ export class AddLeadComponent implements OnInit {
         this.controls.panImage.setValidators(Validators.required)
         this.controls.panImage.updateValueAndValidity()
       } else {
-        this.controls.panImage.reset()
         this.controls.panImage.clearValidators()
         this.controls.panImage.updateValueAndValidity()
-        this.controls.panCardNumber.reset()
+        this.controls.panImage.reset()
+        this.controls.panImage.patchValue(null)
+
         this.controls.panCardNumber.clearValidators()
         this.controls.panCardNumber.updateValueAndValidity()
+        this.controls.panCardNumber.reset()
+
+        this.controls.panImg.clearValidators()
+        this.controls.panImg.updateValueAndValidity()
+        this.controls.panImg.reset()
+
       }
     });
 
@@ -136,8 +143,8 @@ export class AddLeadComponent implements OnInit {
       statusId: [, [Validators.required]],
       panType: [''],
       form60: [''],
-      panImage: [],
-      panImg: [],
+      panImage: [null],
+      panImg: [null],
       comment: [''],
       leadSourceId: [''],
       source: [''],
@@ -194,10 +201,10 @@ export class AddLeadComponent implements OnInit {
 
   getLeadById(id) {
     this.leadService.getLeadById(id).subscribe(res => {
-      // console.log(res);
       this.leadForm.patchValue(res.singleCustomer);
       this.leadForm.patchValue({ panImage: res.singleCustomer.panImage.id })
       this.leadForm.patchValue({ panImg: res.singleCustomer.panImage.URL })
+      // console.log(this.leadForm.value)
       this.getCities();
       this.commentBox()
     },
@@ -317,8 +324,8 @@ export class AddLeadComponent implements OnInit {
   }
 
   remove() {
-    this.controls.panImage.patchValue('')
-    this.controls.panImg.patchValue('')
+    this.controls.panImage.patchValue(null)
+    this.controls.panImg.patchValue(null)
   }
 
   onSubmit() {
@@ -353,7 +360,7 @@ export class AddLeadComponent implements OnInit {
       }
       if (this.controls.panType.value == '') {
         this.leadForm.get('panType').patchValue(null);
-        this.controls.panImage.patchValue('')
+        this.controls.panImage.patchValue(null)
       }
 
       const leadData = this.leadForm.value;
@@ -374,7 +381,7 @@ export class AddLeadComponent implements OnInit {
     } else if (this.data.action == 'edit') {
       if (this.controls.panType.value == '') {
         this.leadForm.get('panType').patchValue(null);
-        this.controls.panImage.patchValue('')
+        this.controls.panImage.patchValue(null)
       }
       if (this.controls.leadSourceId.value == "") {
         this.leadForm.get('leadSourceId').patchValue(null);

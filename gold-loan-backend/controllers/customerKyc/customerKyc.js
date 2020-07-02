@@ -222,7 +222,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let kyc = await sequelize.transaction(async (t) => {
 
-        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" })
+        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" },{transaction: t})
 
         await models.customer.update({ panCardNumber: panCardNumber, panType, panImageId: panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
 
@@ -234,7 +234,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
             panCardNumber: panCardNumber,
             createdBy,
             modifiedBy
-        });
+        }, {transaction: t});
         return customerKycAdd
     })
     return res.status(200).json({

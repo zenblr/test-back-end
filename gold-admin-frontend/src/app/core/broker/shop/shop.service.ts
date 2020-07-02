@@ -11,6 +11,12 @@ export class ShopService {
     toggle = new BehaviorSubject<any>('list');
     toggle$ = this.toggle.asObservable();
 
+    sortValue = new BehaviorSubject<any>('price');
+    sortValue$ = this.sortValue.asObservable();
+
+    sortType = new BehaviorSubject<any>(false);
+    sortType$ = this.sortType.asObservable();
+
     constructor(
         private http: HttpClient,
     ) { }
@@ -32,6 +38,9 @@ export class ShopService {
         }
         if (event && event.subCategoryId) {
             reqParams.subCategoryId = event.subCategoryId;
+        }
+        if (event && event.sort) {
+            reqParams.sort = event.sort;
         }
         return this.http.get(API_ENDPOINT + `api/products/product-by-subcategory`, {
             params: reqParams,

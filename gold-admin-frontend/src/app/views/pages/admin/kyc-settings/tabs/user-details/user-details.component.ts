@@ -123,6 +123,7 @@ export class UserDetailsComponent implements OnInit {
       panImage: [, Validators.required],
       image: [],
       panCardNumber: [''],
+      id:[]
     })
   }
 
@@ -184,14 +185,15 @@ export class UserDetailsComponent implements OnInit {
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       const params = {
-        reason: 'lead'
+        reason: 'lead',
+        customerId:this.controls.id.value
       }
       this.sharedServices.uploadFile(event.target.files[0], params).pipe(
         map(res => {
           if (res) {
             this.controls.form60.patchValue(event.target.files[0].name)
-            this.controls.panImage.patchValue(res.uploadFile.URL)
-            this.controls.image.patchValue(res.uploadFile.id)
+            this.controls.panImage.patchValue(res.uploadFile.id)
+            this.controls.image.patchValue(res.uploadFile.URL)
           }
         }), catchError(err => {
           throw err

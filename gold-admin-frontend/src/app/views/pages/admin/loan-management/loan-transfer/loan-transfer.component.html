@@ -1,0 +1,101 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row">
+            <div class="col-12">
+                <mat-tab-group>
+                    <mat-tab label="Basic Details">
+                        <kt-basic-details></kt-basic-details>
+                    </mat-tab>
+                    <mat-tab label="Upload Documents">
+                        <kt-upload-loan-documents></kt-upload-loan-documents>
+                    </mat-tab>
+                    <mat-tab label="Loan Trasnfer Approval">
+                        <div class="row justify-content-center">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="kt-padding-l-10">B.M Status </label>
+                                    </div>
+                                    <div class="col-6">
+                                        <select name="" id="" class="form-control">
+                                            <option value="">Select Status</option>
+                                            <option value="manager.value" *ngFor="let manager of branchManager">
+                                                {{manager.name | titlecase}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-25 justify-content-center">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="kt-padding-l-10">Reason</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <select name="" id="" class="form-control">
+                                            <option value="">Select Status</option>
+                                            <option value="manager.value" *ngFor="let manager of branchManager">
+                                                {{manager.name | titlecase}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-25 justify-content-center">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <mat-form-field class="w-100">
+                                            <mat-label>Reason</mat-label>
+                                            <textarea matInput></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Disbursal">
+
+                        <div class="row justify-content-center kt-padding-t-25">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label for="">LOAN ID</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="laon id">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center kt-padding-t-25">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label for="">Disbursed Loan Amount</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="1000000">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center kt-padding-t-25">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label for="">Transaction ID</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="Transxxxxx">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

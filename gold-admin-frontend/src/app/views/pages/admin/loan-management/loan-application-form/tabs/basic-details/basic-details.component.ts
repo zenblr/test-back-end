@@ -154,7 +154,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       panCardNumber: [''],
       startDate: [this.currentDate],
       customerId: [, Validators.required],
-      kycStatus: [, Validators.required],
+      kycStatus: [],
       purpose: ["", Validators.required],
       panType: [],
       loanId: [],
@@ -199,7 +199,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     })
   }
 
-  viewKYC(data) {
+  viewKYC() {
     // console.log(this.basicForm.value)
     // this.dialog.open(UserReviewComponent)
     const params = { customerId: this.controls.customerId.value };
