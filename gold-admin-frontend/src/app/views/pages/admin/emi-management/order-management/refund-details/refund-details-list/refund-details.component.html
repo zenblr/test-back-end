@@ -218,10 +218,10 @@
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div *ngxPermissionsOnly="['refundDetailsView']" (click)="viewRefund(element)"
-                                class="kt-pointer"> View </div>
-                            <div *ngxPermissionsOnly="['refundDetailsEdit']" class="px-1">|</div>
+                                class="kt-pointer"> View</div>
                             <div *ngxPermissionsOnly="['refundDetailsEdit']" (click)="editRefund(element)"
-                                class="kt-pointer"> Edit</div>
+                                class="kt-pointer">
+                                <span *ngIf="element?.refundStatus?.id != 14">&nbsp;| Edit</span></div>
                         </div>
                     </mat-cell>
                 </ng-container>
