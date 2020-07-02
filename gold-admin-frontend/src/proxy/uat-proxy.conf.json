@@ -1,0 +1,7 @@
+{
+    "/api/*": {
+        "target": "http://emiapiuat.nimapinfotech.com/",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}
