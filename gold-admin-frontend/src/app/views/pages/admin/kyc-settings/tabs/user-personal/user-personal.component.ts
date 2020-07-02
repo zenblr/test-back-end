@@ -50,7 +50,7 @@ export class UserPersonalComponent implements OnInit {
       gender: ['', [Validators.required]],
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
-      signatureProof: [''],
+      signatureProof: [null],
       signatureProofImg: [''],
       signatureProofFileName: [''],
       occupationId: [null],
@@ -165,6 +165,7 @@ export class UserPersonalComponent implements OnInit {
     }
 
     const basicForm = this.personalForm.value;
+
     this.userPersonalService.personalDetails(basicForm).pipe(
       map(res => {
         // console.log(res);
@@ -197,5 +198,22 @@ export class UserPersonalComponent implements OnInit {
     //   },
     //   width: "auto"
     // })
+  }
+
+  removeImage() {
+    this.personalForm.patchValue({
+      signatureProof: null,
+      signatureProofFileName: '',
+      signatureProofImg: ''
+    });
+
+  }
+
+  checkOccupation(event) {
+    if (event.target.value == 'null') {
+      this.controls.occupationId.patchValue(null)
+    }
+    console.log(event.target.value)
+    console.log(this.personalForm.value)
   }
 }

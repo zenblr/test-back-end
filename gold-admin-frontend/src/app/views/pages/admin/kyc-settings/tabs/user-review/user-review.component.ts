@@ -551,7 +551,7 @@ export class UserReviewComponent implements OnInit {
       gender: [this.data.customerKycReview.customerKycPersonal.gender, [Validators.required]],
       spouseName: [this.data.customerKycReview.customerKycPersonal.spouseName, [Validators.required]],
       martialStatus: [this.data.customerKycReview.customerKycPersonal.martialStatus, [Validators.required]],
-      signatureProof: [this.data.customerKycReview.customerKycPersonal.signatureProofData.id],
+      signatureProof: [],
       signatureProofFileName: [],
       occupationId: [],
       dateOfBirth: [this.data.customerKycReview.customerKycPersonal.dateOfBirth, [Validators.required]],
@@ -563,6 +563,10 @@ export class UserReviewComponent implements OnInit {
     })
     if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
       this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
+    }
+    if (this.data.customerKycReview.customerKycPersonal.signatureProofData !== null) {
+      this.customerKycPersonal.controls.signatureProof.patchValue(this.data.customerKycReview.customerKycPersonal.signatureProofData.id)
+
     }
 
     this.ref.detectChanges()
@@ -686,10 +690,14 @@ export class UserReviewComponent implements OnInit {
       this.addressImageArray2.splice(index, 1)
       this.addressIdArray2.splice(index, 1)
       this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 });
-    } else if (type == 'permanent') {
-      this.addressImageArray1.splice(index, 1)
-      this.addressIdArray1.splice(index, 1)
-      this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
+    }
+    else if (type == 'signature') {
+      this.data.customerKycReview.customerKycPersonal.signatureProofData.URL = ''
+      this.data.customerKycReview.customerKycPersonal.signatureProofData.id = null
+      this.customerKycPersonal.patchValue({
+        signatureProof: this.data.customerKycReview.customerKycPersonal.signatureProofData.id,
+        signatureProofFileName: ''
+      });
     }
     // else if (type == 'passbook') {
     // this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
@@ -732,7 +740,7 @@ export class UserReviewComponent implements OnInit {
                 this.customerKycAddressTwo.patchValue({ addressProofFileName: event.target.files[0].name });
               } else
                 if (type == "signature") {
-                  this.data.customerKycReview.customerKycPersonal.signatureProofData.URL = res.uploadFile.URL;
+                  this.data.customerKycReview.customerKycPersonal.signatureProofData = res.uploadFile;
                   this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.id })
                   this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
                   this.ref.markForCheck();
@@ -830,4 +838,11 @@ export class UserReviewComponent implements OnInit {
       this.customerKycAddressOne.patchValue({ addressProofNumber: '' });
     }
   }
+
+  checkOccupation(event) {
+    if (event.target.value == 'null') {
+      this.customerKycPersonal.controls.occupationId.patchValue(null)
+    }
+  }
+
 }

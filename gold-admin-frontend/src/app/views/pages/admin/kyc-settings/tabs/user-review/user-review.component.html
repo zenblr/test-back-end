@@ -731,7 +731,7 @@
                             </div>
                             <div class="col-7">
                                 <select name="" id="" formControlName="occupationId" class="form-control"
-                                    placeholder="Select Occupation"
+                                    placeholder="Select Occupation" (change)="checkOccupation($event)"
                                     [class.isError]="customerKycPersonal.controls.occupationId.touched && customerKycPersonal.controls.occupationId.invalid">
                                     <option value=null [selected]="true">Select Occupation
                                     </option>
@@ -824,7 +824,7 @@
                 </div>
 
                 <div class="row kt-margin-t-20 kt-margin-b-20"
-                    *ngIf="data.customerKycReview.customerKycPersonal.signatureProofData.URL">
+                    *ngIf="data.customerKycReview.customerKycPersonal.signatureProofData && data.customerKycReview.customerKycPersonal.signatureProofData.URL">
                     <div class="col-6">
                         <div class="col-8 offset-4">
                             <div class="img-container kt-margin-r-15">
@@ -833,6 +833,9 @@
                                         [src]="data.customerKycReview.customerKycPersonal.signatureProofData.URL"
                                         style="border-radius: 15px;" alt=""
                                         (click)="previewImage(data.customerKycReview.customerKycPersonal.signatureProofData.URL)" />
+                                    <img *ngIf="data.customerKycReview.customerKycPersonal.signatureProofData.URL"
+                                        src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                        class="kt-pointer remove-icon" (click)="removeImages(-1, 'signature');">
                                 </ng-container>
                             </div>
                         </div>

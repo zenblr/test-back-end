@@ -1,6 +1,16 @@
 <kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
 <kt-portlet>
     <kt-portlet-body>
+        <!-- <button mat-icon-button class="btn-transparent" ngbDropdown>
+            <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2" role="button">
+                <img src="../../../../../../assets/media/icons/options.svg" alt="">
+                <mat-icon>more_vert</mat-icon>
+            </a>
+            <div ngbDropdownMenu aria-labelledby="navbarDropdown2" class="dropdown-menu dropdown-menu-right">
+                <a ngbDropdownItem (click)="applyLoan(loan)">Apply Loan</a>
+                <a ngbDropdownItem (click)="transferLoan(loan)">Transfer Loan</a>
+            </div>
+        </button> -->
         <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'auto'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
@@ -45,18 +55,20 @@
                     <mat-header-cell *matHeaderCellDef>KYC Status</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <span class="text-success"
-                            *ngIf="role.customerKycClassification?.kycStatusFromBm == 'approved'">
-                            {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
+                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'approved'">
+                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
                         </span>
                         <span class="text-warning"
-                            *ngIf="role.customerKycClassification?.kycStatusFromBm == 'incomplete'">
-                            {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
+                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete'">
+                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
                         </span>
-                        <span class="text-warning" *ngIf="role.customerKycClassification?.kycStatusFromBm == 'pending'">
-                            {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
+                        <span class="text-warning"
+                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'pending'">
+                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="role.customerKycClassification?.kycStatusFromBm == 'rejected'">
-                            {{role.customerKycClassification?.kycStatusFromBm | titlecase}}
+                        <span class="text-danger"
+                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'rejected'">
+                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -68,8 +80,8 @@
                             *ngxPermissionsOnly="['appliedKycEdit','customerClassificationEdit']">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
                                 <span *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'pending') 
-                                    || (userType == 5 && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
-                                    role.customerKycClassification?.kycStatusFromBm == 'pending')">
+                                    || (userType == 8 && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
+                                    role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete')">
                                     <!-- <img src="../../../../assets/media/icons/action.svg"> -->
                                     <strong>Action ></strong>
                                 </span>
@@ -119,21 +131,20 @@
                     </mat-cell>
                 </ng-container>
 
-                <ng-container>
+                <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <button mat-icon-button class="btn-transparent" ngbDropdown>
-                            <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2"
-                                role="button">
-                                <!-- <img src="../../../../../../assets/media/icons/options.svg" alt=""> -->
+                        <!-- <div ngbDropdown class="dropdown dropdown-inline" #customerActionDropdown1="ngbDropdown"
+                            aria-haspopup="true" aria-expanded="false" [autoClose]="false">
+                            <button mat-icon-button class="btn-transparent" ngbDropdownToggle>
                                 <mat-icon>more_vert</mat-icon>
-                            </a>
+                            </button>
                             <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
                                 class="dropdown-menu dropdown-menu-right">
-                                <a ngbDropdownItem (click)="viewLoan(loan)">Apply Loan</a>
-                                <a ngbDropdownItem (click)="transferLoan(loan)">Transfer Loan</a>
+                                <a (click)="applyLoan(loan)">Apply Loan</a>
+                                <a (click)="transferLoan(loan)">Transfer Loan</a>
                             </div>
-                        </button>
+                        </div> -->
                     </mat-cell>
                 </ng-container>
 
