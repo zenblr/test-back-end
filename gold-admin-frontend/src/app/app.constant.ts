@@ -1,1 +1,3 @@
-export const API_ENDPOINT = 'https://emiapi.nimapinfotech.com/'
+import { environment } from '../../src/environments/environment'
+
+export const API_ENDPOINT = environment.apiUrl

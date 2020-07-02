@@ -75,10 +75,11 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let data of orderData.orderemidetails">
-                                <td
-                                    *ngIf="orderData.orderCurrentStatus.id == 2 || orderData.orderCurrentStatus.id == 3 || orderData.orderCurrentStatus.id == 15">
-                                    <mat-checkbox *ngIf="data.orderStatusId == 1 || data.orderStatusId == 15"
-                                        (change)="selectedEmi($event,data.id)"></mat-checkbox>
+                                <td> <span
+                                        *ngIf="orderData.orderCurrentStatus.id == 2 || orderData.orderCurrentStatus.id == 3 || orderData.orderCurrentStatus.id == 15">
+                                        <mat-checkbox *ngIf="data.orderStatusId == 1 || data.orderStatusId == 15"
+                                            (change)="selectedEmi($event,data.id)"></mat-checkbox>
+                                    </span>
                                 </td>
                                 <td>{{orderData.customerDetails.customerUniqueId}}</td>
                                 <td>{{orderData.orderUniqueId}}</td>
@@ -86,7 +87,8 @@
                                 <td>{{data.emiAmount}}</td>
                                 <td>{{data.emiPaidAmount}}</td>
                                 <td>{{data.emiBalancePayment}}</td>
-                                <td>{{data.dueDate ? (data.dueDate | date:'dd MMM yyyy') : '-'}}</td>
+                                <td>{{data.paymentRecievedDate ? (data.paymentRecievedDate | date:'dd MMM yyyy') : '-'}}
+                                </td>
                                 <td>{{data.orderemistatus.statusName | titlecase}}</td>
                                 <td *ngIf="data.orderStatusId != 1 && data.orderStatusId != 15">
                                     <button type="button" class="btn btn-outline"
