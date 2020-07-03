@@ -140,9 +140,15 @@ export class LoanSchemeComponent implements OnInit {
     console.log(event, index)
   }
 
-  changeStatus(event, index, item) {
-    // console.log(event, index, item);
-    let params = { isActive: event }
+  changeStatus(event, partnerIndex, schemeIndex, item) {
+    // console.log(event, partnerIndex, schemeIndex, item);
+    // let partnerArr: [] = this.schemes[partnerIndex].schemes;
+    // partnerArr.splice(schemeIndex, 1);
+    // if (!partnerArr.length) {
+    //   this.schemes.splice(partnerIndex, 1)
+    // }
+
+    // let params = { isActive: event }
     // this.loanSettingService.changeSchemeStatus(item.id, params)
     //   .pipe(map(() => {
     //     if (event) {

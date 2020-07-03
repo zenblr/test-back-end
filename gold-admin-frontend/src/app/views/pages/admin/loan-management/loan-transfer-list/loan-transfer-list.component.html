@@ -1,0 +1,70 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="customerID">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan.customer.customerUniqueId | uppercase}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="loanId">
+                    <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.loanUniqueId | uppercase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="fullName">
+                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="mobile">
+                    <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <mat-header-cell *matHeaderCellDef>Outstanding Loan Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                    <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date : 'mediumDate'}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef> Loan Transfer Application Status</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <!-- <div style="display: contents" class="kt-pointer" > -->
+                        <span (click)="action(loan)" class="kt-pointer font-weight-bold"
+                            *ngxPermissionsOnly="['loanDetailsView']">
+                            <strong>Action></strong>
+                        </span>
+                        <!-- </div> -->
+                    </mat-cell>
+                </ng-container>
+
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+
+        <div class="mat-table__bottom">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

@@ -116,7 +116,7 @@
                         <div class="row kt-padding-t-15" *ngIf="data.action != 'edit'">
                             <div class="col-4 form-label">
                                 <label for="" class="kt-padding-l-10 text-color"
-                                    [class.mandatory]="controls.userUniqueId.errors?.required">User
+                                    [class.mandatory]="controls.userTypeId.value == '7'">User
                                     ID</label>
                             </div>
                             <div class="col-8">

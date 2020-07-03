@@ -2,19 +2,6 @@
 
     <kt-portlet-body>
 
-        <!-- <button mat-icon-button class="btn-transparent" ngbDropdown>
-            <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2" role="button">
-                <img src="../../../../../../assets/media/icons/options.svg" alt="">
-            </a>
-            <div ngbDropdownMenu aria-labelledby="navbarDropdown2" class="dropdown-menu dropdown-menu-right">
-                <a ngbDropdownItem (click)="viewLoan()">View </a>
-                <a ngbDropdownItem (click)="interestEmi()">Pay Interest EMI</a>
-                <a ngbDropdownItem (click)="topUp()">Top Up</a>
-                <a ngbDropdownItem (click)="partPayment()">Part Payment</a>
-                <a ngbDropdownItem (click)="partRelease()">Part Release</a>
-                <a ngbDropdownItem (click)="new()">Add New Loan</a>
-            </div>
-        </button> -->
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
@@ -67,32 +54,40 @@
                         {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="actions">
+                <!-- <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <!-- <div style="display: contents" class="kt-pointer" > -->
                         <span (click)="viewLoan(loan)" class="kt-pointer font-weight-bold"
                             *ngxPermissionsOnly="['loanDetailsView']">View Loan </span>
-                        <!-- </div> -->
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="new">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <!-- <div style="display: contents" class="kt-pointer" > -->
                         <button (click)="new(loan)" class="btn-transparent"
                             *ngxPermissionsOnly="['loanApplicationAdd']">Add New Loan</button>
-                        <!-- </div> -->
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
 
-                <ng-container>
+                <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <button mat-icon-button class="btn-transparent" ngbDropdown>
+
+                        <button mat-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu" xPosition="before">
+                            <button mat-menu-item (click)="viewLoan(loan)">View Loan</button>
+                            <button mat-menu-item (click)="interestEmi(loan)">Pay Interest EMI</button>
+                            <button mat-menu-item (click)="topUp(loan)">Top Up</button>
+                            <button mat-menu-item (click)="partPayment(loan)">Part Payment</button>
+                            <button mat-menu-item (click)="partRelease(loan)">Part Release</button>
+                            <button mat-menu-item (click)="new(loan)">Add New Loan</button>
+                        </mat-menu>
+
+                        <!-- <button mat-icon-button class="btn-transparent" ngbDropdown>
                             <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2"
                                 role="button">
-                                <!-- <img src="../../../../../../assets/media/icons/options.svg" alt=""> -->
                                 <mat-icon>more_vert</mat-icon>
                             </a>
                             <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
@@ -104,20 +99,8 @@
                                 <a ngbDropdownItem (click)="partRelease(loan)">Part Release</a>
                                 <a ngbDropdownItem (click)="new(loan)">Add New Loan</a>
                             </div>
-                        </button>
+                        </button> -->
                     </mat-cell>
-                    <!-- <li class="nav-item" ngbDropdown>
-                        <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2"
-                            role="button">
-                            Static right
-                        </a>
-                        <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
-                            class="dropdown-menu dropdown-menu-right">
-                            <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
-                            <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
-                            <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
-                        </div>
-                    </li> -->
                 </ng-container>
 
 

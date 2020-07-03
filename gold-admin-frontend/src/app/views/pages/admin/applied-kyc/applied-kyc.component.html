@@ -137,7 +137,7 @@
                         <button mat-button [matMenuTriggerFor]="menu">
                             <mat-icon>more_vert</mat-icon>
                         </button>
-                        <mat-menu #menu="matMenu">
+                        <mat-menu #menu="matMenu" xPosition="before">
                             <button mat-menu-item (click)="applyLoan(loan)">Apply Loan</button>
                             <button mat-menu-item (click)="transferLoan(loan)">Transfer Loan</button>
                         </mat-menu>

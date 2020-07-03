@@ -269,6 +269,9 @@ export class PageConfig {
 				"topup": {
 					page: { title: "Top Up", desc: "" },
 				},
+				"transfer-loan-list": {
+					page: { title: "Transfer Loan List", desc: "" },
+				}
 			}
 		},
 		'broker': {

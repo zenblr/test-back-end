@@ -289,6 +289,12 @@ export class MenuConfig {
 									page: "/admin/loan-management/all-loan",
 									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanDetailsView'),
+								},
+								{
+									title: "Transfer Loan List",
+									page: "/admin/loan-management/transfer-loan-list",
+									bullet: 'dot',
+									// permission: !this.permissionsArr.includes('loanDetailsView'),
 								}
 							],
 						},
