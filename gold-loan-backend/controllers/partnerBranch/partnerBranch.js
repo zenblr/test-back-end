@@ -106,7 +106,7 @@ exports.readBranch = async (req, res, next) => {
         include: includeArray
     });
 
-    if (!readBranchData) { return res.status(404).json({ message: 'data not found' }) }
+    if (!readBranchData) { return res.status(200).json({ message: 'data not found' }) }
     return res.status(200).json({ data: readBranchData, count: count });
 }
 

@@ -92,6 +92,11 @@ export class TopbarComponent implements OnInit {
 	isDisabled = false;
 	button: boolean = false;
 	clear: boolean;
+	dropdownValue = [];
+	dropdownTitle: string;
+	sortImg = "../../../../../assets/media/icons/sort.svg";
+	sortType: number = 1;
+	sortFlag: boolean = false;
 
 	constructor(
 		public sharedService: SharedService,
@@ -246,11 +251,14 @@ export class TopbarComponent implements OnInit {
 		this.toogle = false;
 		this.showBackButton = false;
 		this.showDropdown = false;
+		this.dropdownTitle = "";
+		this.dropdownValue = [];
 		this.permissionType = "";
 		this.filterName = "";
 		this.filterWidth = "";
 		this.listType = "",
-			this.clear = false;
+			this.sortFlag = false;
+		this.clear = false;
 	}
 
 	dataSourceHeader() {
@@ -482,6 +490,13 @@ export class TopbarComponent implements OnInit {
 			this.listType = "tenure,orderStatus";
 			this.showfilter = true;
 			this.showDropdown = true;
+			this.dropdownTitle = "Generate";
+			this.dropdownValue = [
+				{ label: "Label", value: "label" },
+				{ label: "Manifest", value: "mainfest" },
+				{ label: "Deli Manifest", value: "deliMainfest" },
+				{ label: "Uninsured Manifest", value: "uninsuredMainfest" },
+			]
 		}
 		if (this.path == "cancel-order-details") {
 			this.showInput = true;
@@ -578,6 +593,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "shop") {
 			this.showInput = true;
 			this.toogle = true;
+			this.sortFlag = true;
 		}
 		if (location.href.includes('/shop/product/')) {
 			this.showBackButton = true;
@@ -734,12 +750,30 @@ export class TopbarComponent implements OnInit {
 	}
 
 	selectedValue(value: string) {
-		this.orderDetailsService.dropdownValue.next(value);
+		if (this.path == "order-details") {
+			this.orderDetailsService.dropdownValue.next(value);
+		}
 	}
 
 	buttonValue(value) {
 		if (location.href.includes("edit-order-details")) {
 			this.orderDetailsService.buttonValue.next(value);
+		}
+	}
+
+	sortValue(value) {
+		this.shopService.sortValue.next(value);
+	}
+
+	sort() {
+		this.sortType += 1;
+		if (this.sortType % 2 == 0) {
+			this.sortImg = "../../../../../assets/media/icons/sort (1).svg";
+			this.shopService.sortType.next(true);
+
+		} else {
+			this.sortImg = "../../../../../assets/media/icons/sort.svg";
+			this.shopService.sortType.next(false);
 		}
 	}
 

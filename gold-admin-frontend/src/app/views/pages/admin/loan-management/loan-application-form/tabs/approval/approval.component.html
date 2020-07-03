@@ -1,14 +1,16 @@
 <div class="container">
     <form [formGroup]="approvalForm">
         <div class="row justify-content-center">
-            <div class="table-div">
+            <div class="table-div" [ngStyle]="{'width':'viewBMForm'?'800px':'600px'}">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 40%">Field</th>
-                            <th scope="col" style="width: 30%" class="text-center">Appraiser</th>
-                            <th scope="col" style="width: 30%" class="text-center"
+                            <th scope="col" >Field</th>
+                            <th scope="col"  class="text-center">Appraiser</th>
+                            <th scope="col"  class="text-center"
                                 *ngIf="viewBMForm || url == 'view-loan'">Branch Manager</th>
+                                <th scope="col" class="text-center"
+                                *ngIf="viewBMForm || url == 'view-loan'">Operational Team</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,6 +25,14 @@
                                     [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
                                     *ngIf="!controls.applicationFormForAppraiser.value"
                                     (click)="approvalOfAppraiser(true,'form')">
+                            </td>
+                            <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
+                                    *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
+                                    *ngIf="!controls.applicationFormForBM.value" (click)="approvalOfBM(true,'form')">
                             </td>
                             <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
@@ -49,12 +59,18 @@
                             <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable )}"
-                                    *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')"
-                                    disabled>
+                                    *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
                                     [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
-                                    *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')"
-                                    disabled>
+                                    *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')">
+                            </td>
+                            <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable )}"
+                                    *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
+                                    *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')">
                             </td>
                         </tr>
 
@@ -73,6 +89,18 @@
                                 <mat-error
                                     *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                                     Field Required</mat-error>
+                            </td>
+                            <td class="rating-bm" *ngIf="viewBMForm || url == 'view-loan'">
+                                <select class="form-control" formControlName="loanStatusForBM"
+                                    (change)="resetBM();statusBM()"
+                                    [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
+                                    <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" *ngFor="let status of branchManager">
+                                        {{status.name | titlecase}}</option>
+                                </select>
+                                <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
+                                    Field
+                                    Required</mat-error>
                             </td>
                             <td class="rating-bm" *ngIf="viewBMForm || url == 'view-loan'">
                                 <select class="form-control" formControlName="loanStatusForBM"

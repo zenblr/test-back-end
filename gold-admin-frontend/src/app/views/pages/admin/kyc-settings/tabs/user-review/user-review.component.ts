@@ -413,6 +413,9 @@ export class UserReviewComponent implements OnInit {
   identityIdArray = [];
   addressIdArray1 = [];
   addressIdArray2 = [];
+  identityFileNameArray: any;
+  addressFileNameArray1: any;
+  addressFileNameArray2: any;
 
 
   constructor(private userAddressService:
@@ -452,31 +455,38 @@ export class UserReviewComponent implements OnInit {
       }
     })
 
+    console.log(this.data)
+
     this.initForm();
 
     let identityArray = this.data.customerKycReview.customerKycPersonal.identityProofImage
     identityArray.forEach(element => {
       this.identityImageArray.push(element.identityProof.URL)
       this.identityIdArray.push(element.identityProof.id)
+      // this.identityFileNameArray.push(element.identityProof.originalna)
     });
     this.reviewForm.controls.identityProof.patchValue(this.identityIdArray);
     this.customerKycPersonal.controls.identityProof.patchValue(this.identityIdArray);
+    // this.customerKycPersonal.controls.identityProofFileName.patchValue(this.identityFileNameArray[this.identityFileNameArray.length - 1]);
 
 
     let addressArray1 = this.data.customerKycReview.customerKycAddress[0].addressProofImage
     addressArray1.forEach(element => {
       this.addressImageArray1.push(element.addressProof.URL)
       this.addressIdArray1.push(element.addressProof.id)
+      // this.addressFileNameArray1.push(element.addressProof.originalname)
     });
     this.customerKycAddressOne.controls.addressProof.patchValue(this.addressIdArray1);
+    // this.customerKycAddressOne.controls.addressProofFileName.patchValue(this.addressFileNameArray1[this.addressFileNameArray1.length - 1]);
 
 
     let addressArray2 = this.data.customerKycReview.customerKycAddress[1].addressProofImage
     addressArray2.forEach(element => {
       this.addressImageArray2.push(element.addressProof.URL)
       this.addressIdArray2.push(element.addressProof.id)
+      // this.addressFileNameArray2.push(element.addressProof.originalname)
     });
-    this.customerKycAddressTwo.controls.addressProof.patchValue(this.addressIdArray2);
+    // this.customerKycAddressTwo.controls.addressProofFileName.patchValue(this.addressFileNameArray2[this.addressFileNameArray2.length - 1]);
 
 
 
@@ -603,7 +613,7 @@ export class UserReviewComponent implements OnInit {
       this.customerKycPersonal.markAllAsTouched();
       this.customerKycAddressOne.markAllAsTouched();
       this.customerKycAddressTwo.markAllAsTouched();
-      this.customerKycBank.markAllAsTouched();
+      // this.customerKycBank.markAllAsTouched();
       return;
     }
 
@@ -617,7 +627,7 @@ export class UserReviewComponent implements OnInit {
 
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
-      this.identityProofs = res;
+      this.identityProofs = res.filter(filter => filter.name == 'Aadhar Card');
     })
   }
 
@@ -679,10 +689,11 @@ export class UserReviewComponent implements OnInit {
       this.addressImageArray1.splice(index, 1)
       this.addressIdArray1.splice(index, 1)
       this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
-    } else if (type == 'passbook') {
-      this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
-      // this.customerKycBank.patchValue({ passbookProofFileName: '' });
     }
+    // else if (type == 'passbook') {
+    // this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
+    // this.customerKycBank.patchValue({ passbookProofFileName: '' });
+    // }
   }
 
   getFileInfo(event, type: any) {
@@ -696,7 +707,7 @@ export class UserReviewComponent implements OnInit {
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       const params = {
         reason: 'customer',
-        customerId: this.controls.customerId.value
+        customerId: this.customerKycAddressOne.controls.customerId.value
       }
       this.sharedService.uploadFile(this.file, params).pipe(
         map(res => {
@@ -801,5 +812,21 @@ export class UserReviewComponent implements OnInit {
     //   },
     //   width: "auto"
     // })
+  }
+
+  checkForAadhar() {
+    if (this.customerKycAddressOne.controls.addressProofTypeId.value == 2) {
+      this.addressImageArray1 = [];
+      this.addressIdArray1 = [];
+      Array.prototype.push.apply(this.addressImageArray1, this.identityImageArray)
+      Array.prototype.push.apply(this.addressIdArray1, this.identityIdArray)
+      this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
+      this.customerKycAddressOne.patchValue({ addressProofNumber: this.reviewForm.controls.identityProofNumber.value });
+    } else {
+      this.addressImageArray1 = [];
+      this.addressIdArray1 = [];;
+      this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
+      this.customerKycAddressOne.patchValue({ addressProofNumber: '' });
+    }
   }
 }

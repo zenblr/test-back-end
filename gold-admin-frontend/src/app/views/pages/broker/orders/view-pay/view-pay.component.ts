@@ -61,7 +61,8 @@ export class ViewPayComponent implements OnInit {
         this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
       },
         error => {
-          this.toastr.errorToastr(error.message);
+          this.emi = [];
+          this.toastr.errorToastr(error.error.message);
           this.getOrderDetails();
         });
     }
