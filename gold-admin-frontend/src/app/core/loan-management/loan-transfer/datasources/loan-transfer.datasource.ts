@@ -24,8 +24,8 @@ export class LoanTranferDatasource extends BaseDataSource {
             .pipe(
                 map(
                     loan => {
-                        this.paginatorTotalSubject.next(loan.count);
-                        this.entitySubject.next(loan.data);
+                        this.paginatorTotalSubject.next(loan['count']);
+                        this.entitySubject.next(loan['data']);
                     }
                 ),
                 catchError(() => of([])),
