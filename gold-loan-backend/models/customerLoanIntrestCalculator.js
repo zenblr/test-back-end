@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const CustomerLoanIntrestCalculator = sequelize.define('customerLoanIntrestCalculator', {
+    const CustomerLoanIntrest = sequelize.define('customerLoanInterest', {
         // attributes
         loanId: {
             type: DataTypes.INTEGER,
@@ -48,18 +48,18 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'customer_loan_intrest_calculator',
+        tableName: 'customer_loan_interest',
     });
 
-    CustomerLoanIntrestCalculator.associate = function (models) {
+    CustomerLoanIntrest.associate = function (models) {
 
-        CustomerLoanIntrestCalculator.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
-        CustomerLoanIntrestCalculator.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
+        CustomerLoanIntrest.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
+        CustomerLoanIntrest.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
-        CustomerLoanIntrestCalculator.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-        CustomerLoanIntrestCalculator.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+        CustomerLoanIntrest.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerLoanIntrest.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
 
-    return CustomerLoanIntrestCalculator;
+    return CustomerLoanIntrest;
 }
