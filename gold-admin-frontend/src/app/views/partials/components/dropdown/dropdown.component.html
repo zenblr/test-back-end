@@ -1,8 +1,0 @@
-<div ngbDropdown class="d-inline-block" (autoClose)="true">
-    <button class="btn-custom kt-margin-r-10 kt-margin-l-10" mat-raised-button id="dropdownBasic1" ngbDropdownToggle
-        [disabled]="isDisabled">{{title}}</button>
-    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-        <button *ngFor="let data of dropdownValue" ngbDropdownItem
-            (click)="selectedValue(data.value)">{{data.label}}</button>
-    </div>
-</div>
