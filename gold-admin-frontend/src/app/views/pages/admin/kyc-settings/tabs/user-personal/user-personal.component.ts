@@ -75,7 +75,11 @@ export class UserPersonalComponent implements OnInit {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+        const params = {
+          reason: 'customer',
+          customerId: this.controls.customerId.value
+        }
+        this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
           console.log(res)
           // this.profile = res.uploadFile.id
           this.personalForm.controls.profileImage.patchValue(res.uploadFile.id);

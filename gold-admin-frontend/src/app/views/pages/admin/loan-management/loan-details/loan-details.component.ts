@@ -97,7 +97,7 @@ export class LoanDetailsComponent implements OnInit {
     this.router.navigate(['/admin/customer-management/loan-details', loan.id])
   }
 
-  new(loan) {
+  newLoan(loan) {
     this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
   }
 

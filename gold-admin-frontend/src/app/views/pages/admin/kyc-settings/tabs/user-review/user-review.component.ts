@@ -793,7 +793,11 @@ export class UserReviewComponent implements OnInit {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+        const params = {
+          reason: 'customer',
+          customerId: this.customerKycAddressOne.controls.customerId.value
+        }
+        this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
           console.log(res)
           this.data.customerKycReview.customerKycPersonal.profileImageData.URL = res.uploadFile.URL
           this.customerKycPersonal.get('profileImage').patchValue(this.data.customerKycReview.customerKycPersonal.profileImageData.id);

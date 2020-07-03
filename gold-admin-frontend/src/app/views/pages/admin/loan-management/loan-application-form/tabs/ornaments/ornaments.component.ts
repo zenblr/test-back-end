@@ -529,7 +529,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+        const params = {
+          reason: 'loan'
+        }
+        this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
           console.log(res)
           this.patchUrlIntoForm(string, res.uploadFile.id, res.uploadFile.URL, index)
         })
