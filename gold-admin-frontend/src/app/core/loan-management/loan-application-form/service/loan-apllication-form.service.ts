@@ -41,10 +41,10 @@ export class LoanApplicationFormService {
     )
   }
 
-  submitFinalIntrest(loanFinalCalculator, masterAndLoanIds,intrestTable): Observable<any> {
+  submitFinalIntrest(loanFinalCalculator, masterAndLoanIds,interestTable): Observable<any> {
     let data = {
       loanFinalCalculator:loanFinalCalculator, 
-      intrestTable:intrestTable,
+      interestTable:interestTable,
       loanId:masterAndLoanIds.loanId,
       masterLoanId:masterAndLoanIds.masterLoanId
     }

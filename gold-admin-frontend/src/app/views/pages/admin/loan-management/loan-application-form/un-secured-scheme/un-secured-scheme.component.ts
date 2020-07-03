@@ -106,12 +106,12 @@ export class UnSecuredSchemeComponent implements OnInit {
     let tempIndex = 0;
     for (let index = 0; index < this.details.tenure; index++) {
       if ((index + 1) % this.colJoin == 0) {
-        this.details.calculation[tempIndex].unsecuredIntrestAmount = this.unSecuredInterestAmount
+        this.details.calculation[tempIndex].unsecuredInterestAmount = this.unSecuredInterestAmount
         tempIndex += 1;
 
       }
       else if (index + 1 == length) {
-        this.details.calculation[tempIndex].unsecuredIntrestAmount = ((this.unSecuredInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
+        this.details.calculation[tempIndex].unsecuredInterestAmount = ((this.unSecuredInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
         tempIndex += 1;
       }
     }
