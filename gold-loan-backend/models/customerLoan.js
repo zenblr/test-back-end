@@ -45,10 +45,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'unsecured_loan_id'
         },
-        loanStageId: {
-            type: DataTypes.INTEGER,
-            field: 'loan_stage_id'
-        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -83,17 +79,14 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.customerLoanDisbursement, { foreignKey: 'loanId', as: 'customerLoanDisbursement' });
 
 
-        customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
+        // customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 
         customerLoan.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
         customerLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
         customerLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
 
         customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan' });
-
-        customerLoan.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
-        customerLoan.belongsTo(models.user, { foreignKey: 'bmId', as: 'bm' });
-
+        
         customerLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 

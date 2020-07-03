@@ -131,6 +131,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_loan_current_stage',
             values: ['1', '2', '3', '4', '5', '6']
         },
+        loanStageId: {
+            type: DataTypes.INTEGER,
+            field: 'loan_stage_id'
+        },
         isLoanSubmitted: {
             type: DataTypes.BOOLEAN,
             field: 'is_loan_submitted',

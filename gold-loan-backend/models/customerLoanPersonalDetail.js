@@ -15,15 +15,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'customer_unique_id'
         },
-        mobileNumber: {
-            type: DataTypes.STRING,
-            field: 'mobile_number'
-        },
-        panCardNumber: {
-            type: DataTypes.STRING,
-            field: 'pan_card_number',
-            allowNull: false
-        },
         purpose: {
             type: DataTypes.TEXT,
             field: 'purpose',

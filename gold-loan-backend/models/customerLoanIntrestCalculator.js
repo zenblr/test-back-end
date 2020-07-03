@@ -15,17 +15,23 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATEONLY,
             field: 'emi_due_date'
         },
-        securedIntrestAmount: {
+        interestAmount: {
             type: DataTypes.FLOAT,
-            field: 'secured_intrest_amount',
+            field: 'secured_interest_amount',
         },
-        unsecuredIntrestAmount: {
-            type: DataTypes.FLOAT,
-            field: 'unsecured_intrest_amount'
+        emiReceivedDate: {
+            type: DataTypes.DATEONLY,
+            field: 'emi_due_date'
         },
-        totalAmount: {
-            type: DataTypes.FLOAT,
-            field: 'total_amount',
+        emiAmount: {
+            type: DataTypes.STRING,
+            field: 'emi_amount'
+        },
+        emiStatus: {
+            type: DataTypes.ENUM,
+            field: 'emi_status',
+            values: ['pending', 'complete'],
+            defaultValue: 'pending'
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -49,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerLoanIntrestCalculator.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanIntrestCalculator.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
-        
+
         CustomerLoanIntrestCalculator.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanIntrestCalculator.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
