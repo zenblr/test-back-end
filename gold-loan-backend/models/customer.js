@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const baseUrlConfig = require('../config/baseUrl');
 
 module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('customer', {
@@ -209,7 +208,7 @@ module.exports = (sequelize, DataTypes) => {
     Customer.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
         if (values.panImage) {
-            values.panImage.URL = baseUrlConfig.BASEURL + values.panImage.path;
+            values.panImage.URL = process.env.BASE_URL + values.panImage.path;
         }
         delete values.password;
         return values;

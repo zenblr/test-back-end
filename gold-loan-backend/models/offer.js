@@ -1,5 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
-
 module.exports = (sequelize, DataTypes) => {
     const Offer = sequelize.define('offer', {
         // attributes
@@ -26,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.offerImages) {
             for (image of values.offerImages) {
-                image.offerImages.URL = baseUrlConfig.BASEURL + image.offerImages.path;
+                image.offerImages.URL = process.env.BASE_URL + image.offerImages.path;
             }
         }
         return values;

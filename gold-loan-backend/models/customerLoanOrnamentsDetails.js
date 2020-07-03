@@ -1,5 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
-
 module.exports = (sequelize, DataTypes) => {
     const customerLoanOrnamentsDetail = sequelize.define('customerLoanOrnamentsDetail', {
         // attributes
@@ -124,24 +122,24 @@ module.exports = (sequelize, DataTypes) => {
     customerLoanOrnamentsDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.weightMachineZeroWeightData) {
-            values.weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + values.weightMachineZeroWeightData.path;
+            values.weightMachineZeroWeightData.URL = process.env.BASE_URL + values.weightMachineZeroWeightData.path;
         }
         if (values.withOrnamentWeightData) {
-            values.withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.withOrnamentWeightData.path;
+            values.withOrnamentWeightData.URL = process.env.BASE_URL + values.withOrnamentWeightData.path;
         }
         if (values.stoneTouchData) {
-            values.stoneTouchData.URL = baseUrlConfig.BASEURL + values.stoneTouchData.path;
+            values.stoneTouchData.URL = process.env.BASE_URL + values.stoneTouchData.path;
         }
         if (values.acidTestData) {
-            values.acidTestData.URL = baseUrlConfig.BASEURL + values.acidTestData.path;
+            values.acidTestData.URL = process.env.BASE_URL + values.acidTestData.path;
         }
         if (values.ornamentImageData) {
-            values.ornamentImageData.URL = baseUrlConfig.BASEURL + values.ornamentImageData.path;
+            values.ornamentImageData.URL = process.env.BASE_URL + values.ornamentImageData.path;
         }
 
         if (values.purityTestImage) {
             for (image of values.purityTestImage) {
-                image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.path;
+                image.purityTest.URL = process.env.BASE_URL + image.purityTest.path;
             }
         }
 

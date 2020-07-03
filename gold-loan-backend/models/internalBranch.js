@@ -1,5 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
-
 module.exports = (sequelize, DataTypes) => {
     const InternalBranch = sequelize.define('internalBranch', {
         internalBranchUniqueId: {
@@ -92,7 +90,7 @@ module.exports = (sequelize, DataTypes) => {
     InternalBranch.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.passbookStatementCheque) {
-            values.passbookStatementCheque.URL = baseUrlConfig.BASEURL + values.passbookStatementCheque.path;
+            values.passbookStatementCheque.URL = process.env.BASE_URL + values.passbookStatementCheque.path;
         }
         return values;
     }

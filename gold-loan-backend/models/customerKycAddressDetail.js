@@ -1,4 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
 
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycAddressDetail = sequelize.define('customerKycAddressDetail', {
@@ -93,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.addressProofImage) {
             for (image of values.addressProofImage) {
-                image.addressProof.URL = baseUrlConfig.BASEURL + image.addressProof.path;
+                image.addressProof.URL = process.env.BASE_URL + image.addressProof.path;
             }
         }
         return values;

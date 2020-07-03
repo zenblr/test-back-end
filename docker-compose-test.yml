@@ -4,6 +4,8 @@ services:
       build: ./gold-loan-backend/
       container_name: gold-loan-test-nodejs-demo
       image: gold-loan-test:nodejs-demo
+      environment:
+        - NODE_ENV=test
       links:
         - redis:redis
       ports:

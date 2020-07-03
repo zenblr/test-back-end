@@ -1,5 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
-
 module.exports = (sequelize, DataTypes) => {
     const CustomerLoanPackageDetails = sequelize.define('customerLoanPackageDetails', {
         // attributes
@@ -65,16 +63,16 @@ module.exports = (sequelize, DataTypes) => {
     CustomerLoanPackageDetails.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.emptyPacketWithNoOrnamentData) {
-            values.emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + values.emptyPacketWithNoOrnamentData.path;
+            values.emptyPacketWithNoOrnamentData.URL = process.env.BASE_URL + values.emptyPacketWithNoOrnamentData.path;
         }
         if (values.packetWithAllOrnamentsData) {
-            values.packetWithAllOrnamentsData.URL = baseUrlConfig.BASEURL + values.packetWithAllOrnamentsData.path;
+            values.packetWithAllOrnamentsData.URL = process.env.BASE_URL + values.packetWithAllOrnamentsData.path;
         }
         if (values.packetWithSealingData) {
-            values.packetWithSealingData.URL = baseUrlConfig.BASEURL + values.packetWithSealingData.path;
+            values.packetWithSealingData.URL = process.env.BASE_URL + values.packetWithSealingData.path;
         }
         if (values.packetWithWeightData) {
-            values.packetWithWeightData.URL = baseUrlConfig.BASEURL + values.packetWithWeightData.path;
+            values.packetWithWeightData.URL = process.env.BASE_URL + values.packetWithWeightData.path;
         }
 
         return values;
