@@ -24,7 +24,7 @@ exports.customerDetails = async (req, res, next) => {
 
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImageId'],
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
         include: [{
             model: models.fileUpload,
             as: 'panImage'
@@ -140,22 +140,8 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
         let loanData = await sequelize.transaction(async t => {
             await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt }, { where: { id: masterLoanId }, transaction: t })
 
-            // let ornaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
+            let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
 
-            let createdOrnaments = []
-            for (let purityTestData of allOrnmanets) {
-                var ornaments = await models.customerLoanOrnamentsDetail.create(purityTestData, { transaction: t });
-
-                let data = [];
-                for (let ele of purityTestData.purityTest) {
-                    let singlePurity = {}
-                    singlePurity["customerLoanOrnamentsDetailId"] = ornaments.id;
-                    singlePurity["purityTestId"] = ele;
-                    data.push(singlePurity);
-                }
-                await models.purityTestImage.bulkCreate(data, { transaction: t });
-                createdOrnaments.push(ornaments)
-            }
 
             return createdOrnaments
         })
@@ -167,32 +153,14 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
             if (loanSubmitted.isLoanSubmitted == false) {
                 await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt }, { where: { id: masterLoanId }, transaction: t })
             }
-            let getPurity = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLoanId: masterLoanId }, transaction: t })
-            let deleteId = []
-            for (let orna of getPurity) {
-                deleteId.push(orna.id)
-            }
-            let a = await models.purityTestImage.destroy({
-                where: {
-                    customerLoanOrnamentsDetailId: { [Op.in]: deleteId },
-                }, transaction: t
-            })
 
-            let b = await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
+            await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
+            let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
 
             let createdOrnaments = []
             for (let purityTestData of allOrnmanets) {
                 delete purityTestData.id;
                 var ornaments = await models.customerLoanOrnamentsDetail.create(purityTestData, { transaction: t });
-
-                let data = [];
-                for (let ele of purityTestData.purityTest) {
-                    let singlePurity = {}
-                    singlePurity["customerLoanOrnamentsDetailId"] = ornaments.id;
-                    singlePurity["purityTestId"] = ele;
-                    data.push(singlePurity);
-                }
-                await models.purityTestImage.bulkCreate(data, { transaction: t });
                 createdOrnaments.push(ornaments)
             }
             return createdOrnaments
@@ -340,16 +308,7 @@ exports.loanBankDetails = async (req, res, next) => {
         let loanData = await sequelize.transaction(async t => {
             await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
-            let loan = await models.customerLoanBankDetail.create({ loanId, masterLoanId, paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, createdBy, modifiedBy }, { transaction: t });
-
-            let data = [];
-            for (let ele of passbookProof) {
-                let single = {}
-                single["customerLoanBankDetailId"] = loan.id;
-                single["passbookProofId"] = ele;
-                data.push(single);
-            }
-            await models.passbookProofImage.bulkCreate(data, { transaction: t });
+            let loan = await models.customerLoanBankDetail.create({ loanId, masterLoanId, paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { transaction: t });
 
             return loan
         })
@@ -365,15 +324,6 @@ exports.loanBankDetails = async (req, res, next) => {
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
 
             await models.passbookProofImage.destroy({ where: { customerLoanBankDetailId: checkBank.id } });
-
-            let data = [];
-            for (let ele of passbookProof) {
-                let single = {}
-                single["customerLoanBankDetailId"] = checkBank.id;
-                single["passbookProofId"] = ele;
-                data.push(single);
-            }
-            await models.passbookProofImage.bulkCreate(data, { transaction: t });
 
             return loan
         })
@@ -552,14 +502,6 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             {
                 model: models.customerLoanBankDetail,
                 as: 'loanBankDetail',
-                include: [{
-                    model: models.passbookProofImage,
-                    as: 'passbookProofImage',
-                    include: {
-                        model: models.fileUpload,
-                        as: "passbookProof",
-                    }
-                }]
                 // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
             },
             {
@@ -571,34 +513,6 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customerLoanOrnamentsDetail,
                 as: 'loanOrnamentsDetail',
                 include: [
-                    {
-                        model: models.purityTestImage,
-                        as: "purityTestImage",
-                        include: {
-                            model: models.fileUpload,
-                            as: "purityTest",
-                        }
-                    },
-                    {
-                        model: models.fileUpload,
-                        as: "weightMachineZeroWeightData",
-                    },
-                    {
-                        model: models.fileUpload,
-                        as: "withOrnamentWeightData",
-                    },
-                    {
-                        model: models.fileUpload,
-                        as: "stoneTouchData",
-                    },
-                    {
-                        model: models.fileUpload,
-                        as: "acidTestData"
-                    },
-                    {
-                        model: models.fileUpload,
-                        as: "ornamentImageData"
-                    },
                     {
                         model: models.ornamentType,
                         as: "ornamentType"
@@ -633,31 +547,13 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                     model: models.packet,
                     as: 'packet',
                     attributes: ['id', 'packetUniqueId'],
-                }, {
-                    model: models.fileUpload,
-                    as: "emptyPacketWithNoOrnamentData"
                 },
-                {
-                    model: models.fileUpload,
-                    as: "packetWithAllOrnamentsData"
-                },
-                {
-                    model: models.fileUpload,
-                    as: "packetWithSealingData"
-                },
-                {
-                    model: models.fileUpload,
-                    as: "packetWithWeightData"
-                }]
+                ]
             },
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'firstName', 'lastName', 'panType', 'panImageId', 'mobileNumber'],
-                include: [{
-                    model: models.fileUpload,
-                    as: 'panImage'
-                }]
+                attributes: ['id', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
             },
             {
                 model: models.customerLoanInterest,

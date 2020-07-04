@@ -3,10 +3,10 @@ const baseUrlConfig = require('../config/baseUrl');
 module.exports = (sequelize, DataTypes) => {
     const Offer = sequelize.define('offer', {
         // attributes
-        // images: {
-        //     type: DataTypes.INTEGER,
-        //     field: 'images'
-        // },
+        images: {
+            type: DataTypes.INTEGER,
+            field: 'images'
+        },
         userId: {
             type: DataTypes.INTEGER,
             field: 'user_id'
@@ -24,22 +24,25 @@ module.exports = (sequelize, DataTypes) => {
 
     Offer.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.offerImages) {
-            for (image of values.offerImages) {
-                image.offerImages.URL = baseUrlConfig.BASEURL + image.offerImages.path;
+        let offerImage = []
+        if (values.images) {
+            for (imgUrl of values.images) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                bannerImage.push(URL)
             }
         }
+        values.offerImage = offerImage
         return values;
     }
 
-     //Add_Offer
-     Offer.addOffer = ( userId) => Offer.create({ userId });
+    //Add_Offer
+    Offer.addOffer = (images, userId) => Offer.create({ images, userId });
 
-     //Update_Offer
-     Offer.updateOffer = (id, userId) => Offer.update({ userId }, { where: { id } })
- 
-     //Read_Offer
-     Offer.readOffer = () => Offer.findAll();
-     
+    //Update_Offer
+    Offer.updateOffer = (id, images, userId) => Offer.update({ images, userId }, { where: { id } })
+
+    //Read_Offer
+    Offer.readOffer = () => Offer.findAll();
+
     return Offer;
 }

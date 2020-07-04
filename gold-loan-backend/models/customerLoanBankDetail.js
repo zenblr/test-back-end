@@ -41,10 +41,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'ifsc_code'
         },
-        // passbookProof: {
-        //     type: DataTypes.ARRAY(DataTypes.TEXT),
-        //     field: 'passbook_proof'
-        // },
+        passbookProof: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'passbook_proof'
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -77,11 +77,16 @@ module.exports = (sequelize, DataTypes) => {
     
     customerLoanBankDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.passbookProofImage) {
-            for (image of values.passbookProofImage) {
-                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.path;
+       
+        let passbookProofImage = []
+        if (values.passbookProof) {
+            for (imgUrl of values.passbookProof) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                passbookProofImage.push(URL)
             }
         }
+        values.passbookProofImage = passbookProofImage
+
         return values;
     }
 

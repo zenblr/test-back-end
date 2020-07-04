@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         profileImage: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'profile_image'
         },
         firstName: {
@@ -72,10 +72,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'identity_type_id'
         },
-        // identityProof: {
-        //     type: DataTypes.ARRAY(DataTypes.INTEGER),
-        //     field: 'identity_proof'
-        // },
+        identityProof: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'identity_proof'
+        },
         identityProofNumber: {
             type: DataTypes.STRING,
             field: 'identity_proof_number',
@@ -85,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'spouse_name',
         },
         signatureProof: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'signature_proof'
         },
         createdBy: {
@@ -122,27 +122,27 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        CustomerKycPersonalDetail.belongsTo(models.fileUpload, { foreignKey: 'profileImage', as: 'profileImageData' });
-        CustomerKycPersonalDetail.belongsTo(models.fileUpload, { foreignKey: 'signatureProof', as: 'signatureProofData' });
-
+    
         CustomerKycPersonalDetail.hasMany(models.identityProofImage, { foreignKey: 'customerKycPersonalDetailId', as: 'identityProofImage' });
     }
 
     CustomerKycPersonalDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.identityProofImage) {
-            for (image of values.identityProofImage) {
-                // for (ele of image.identityProof) {
-                    image.identityProof.URL = baseUrlConfig.BASEURL + image.identityProof.path;
-                // }
+        let identityProofImage = []
+        if (values.identityProof) {
+            for (imgUrl of values.identityProof) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                identityProofImage.push(URL)
             }
         }
-        if (values.profileImageData) {
-            values.profileImageData.URL = baseUrlConfig.BASEURL + values.profileImageData.path;
+
+        if (values.profileImage) {
+            values.profileImage = baseUrlConfig.BASEURL + values.profileImage;
         }
-        if (values.signatureProofData) {
-            values.signatureProofData.URL = baseUrlConfig.BASEURL + values.signatureProofData.path;
+        if (values.signatureProof) {
+            values.signatureProofImage = baseUrlConfig.BASEURL + values.signatureProof;
         }
+        values.identityProofImage = identityProofImage
 
         return values;
     }

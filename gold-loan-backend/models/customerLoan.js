@@ -98,26 +98,39 @@ module.exports = (sequelize, DataTypes) => {
 
         var resOrna = []
         for (let i = 0; i < values.loanOrnamentsDetail.length; i++) {
-            if (values.loanOrnamentsDetail[i].weightMachineZeroWeightData) {
-                values.loanOrnamentsDetail[i].weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeightData.path;
+            if (values.loanOrnamentsDetail[i].weightMachineZeroWeight) {
+                values.loanOrnamentsDetail[i].weightMachineZeroWeightImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeight;
             }
-            if (values.loanOrnamentsDetail[i].withOrnamentWeightData) {
-                values.loanOrnamentsDetail[i].withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].withOrnamentWeightData.path;
+
+            if (values.loanOrnamentsDetail[i].withOrnamentWeight) {
+                values.loanOrnamentsDetail[i].withOrnamentWeightImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].withOrnamentWeight;
             }
-            if (values.loanOrnamentsDetail[i].stoneTouchData) {
-                values.loanOrnamentsDetail[i].stoneTouchData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].stoneTouchData.path;
+
+            if (values.loanOrnamentsDetail[i].stoneTouch) {
+                values.loanOrnamentsDetail[i].stoneTouchImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].stoneTouch;
             }
-            if (values.loanOrnamentsDetail[i].acidTestData) {
-                values.loanOrnamentsDetail[i].acidTestData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].acidTestData.path;
+
+            if (values.loanOrnamentsDetail[i].acidTest) {
+                values.loanOrnamentsDetail[i].acidTestImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].acidTest;
             }
-            if (values.loanOrnamentsDetail[i].ornamentImageData) {
-                values.loanOrnamentsDetail[i].ornamentImageData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].ornamentImageData.path;
+
+            if (values.loanOrnamentsDetail[i].ornamentImage) {
+                values.loanOrnamentsDetail[i].ornamentImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].ornamentImage;
             }
-            if (values.loanOrnamentsDetail[i].purityTestImage) {
-                for (image of values.loanOrnamentsDetail[i].purityTestImage) {
+            if (values.loanOrnamentsDetail[i].purityTest) {
+                for (image of values.loanOrnamentsDetail[i].purityTest) {
                     image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.path;
                 }
             }
+            let purityTestImage = []
+            if (values.purityTest) {
+                for (imgUrl of values.purityTest) {
+                    let URL = baseUrlConfig.BASEURL + imgUrl;
+                    purityTestImage.push(URL)
+                }
+            }
+            values.loanOrnamentsDetail[i].purityTestImage = addressProofImage
+
             resOrna.push(values.loanOrnamentsDetail[i])
         }
 
@@ -144,7 +157,7 @@ module.exports = (sequelize, DataTypes) => {
             }
             resPac.push(values.loanPacketDetails[i])
         }
-        
+
 
         //documents
         if (values.customerLoanDocument) {

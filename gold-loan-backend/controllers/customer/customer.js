@@ -42,7 +42,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, panImageId: panImage, leadSourceId },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, panImage, leadSourceId },
       { transaction: t }
     );
   });
@@ -147,7 +147,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId, comment,source, panType, panImage, leadSourceId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panImage, leadSourceId } = req.body;
 
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
@@ -160,7 +160,7 @@ exports.editCustomer = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType,  panImageId: panImage, leadSourceId },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panImage, leadSourceId },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -258,7 +258,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   {
     model: models.lead,
     as: "lead",
-    attributes: ['id','leadName']
+    attributes: ['id', 'leadName']
   }
   ]
   let internalBranchId = req.userData.internalBranchId
@@ -311,7 +311,7 @@ exports.getSingleCustomer = async (req, res, next) => {
       {
         model: models.lead,
         as: "lead",
-        attributes: ['id','leadName']
+        attributes: ['id', 'leadName']
       }
     ],
   });
@@ -324,7 +324,7 @@ exports.getSingleCustomer = async (req, res, next) => {
 
 exports.getCustomerUniqueId = async (req, res) => {
   let customer = await models.customer.findAll({
-    attributes: ['id', 'customerUniqueId','firstName','lastName'],
+    attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
     where: { kycStatus: "approved" }
   })
   let assignCustomer = await models.customerAssignAppraiser.findAll({

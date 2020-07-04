@@ -3,11 +3,11 @@ const baseUrlConfig = require('../config/baseUrl');
 module.exports = (sequelize, DataTypes) => {
     const LenderBanner = sequelize.define('lenderBanner', {
         // attributes
-        // images: {
-        //     type: DataTypes.ARRAY(DataTypes.TEXT),
-        //     field: 'images'
+        images: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'images'
 
-        // },
+        },
         userId: {
             type: DataTypes.INTEGER,
             field: 'user_id'
@@ -25,19 +25,22 @@ module.exports = (sequelize, DataTypes) => {
 
     LenderBanner.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.lenderBannerImages) {
-            for (image of values.lenderBannerImages) {
-                image.lenderBannerImages.URL = baseUrlConfig.BASEURL + image.lenderBannerImages.path;
+        let lenderBannerImages = []
+        if (values.images) {
+            for (imgUrl of values.images) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                bannerImage.push(URL)
             }
         }
+        values.lenderBannerImages = lenderBannerImages
         return values;
     }
 
     //Add_LenderBanner
-    LenderBanner.addLenderBanner = ( userId) => LenderBanner.create({ userId });
+    LenderBanner.addLenderBanner = (images, userId) => LenderBanner.create({ images, userId });
 
     //Update_LenderBanner
-    LenderBanner.updateLenderBanner = (id, userId) => LenderBanner.update({ userId }, { where: { id } });
+    LenderBanner.updateLenderBanner = (id, images, userId) => LenderBanner.update({ images, userId }, { where: { id } });
 
     //Read_LenderBanner
     LenderBanner.readLenderBanner = () => LenderBanner.findAll();
