@@ -130,21 +130,20 @@ module.exports = (sequelize, DataTypes) => {
         resPac = []
         for (let i = 0; i < values.loanPacketDetails.length; i++) {
 
-            if (values.loanPacketDetails[i].emptyPacketWithNoOrnamentData) {
-                values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.path;
+            if (values.loanPacketDetails[i].emptyPacketWithNoOrnament) {
+                values.loanPacketDetails[i].emptyPacketWithNoOrnamentImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].emptyPacketWithNoOrnament;
             }
-            if (values.loanPacketDetails[i].packetWithAllOrnamentsData) {
-                values.loanPacketDetails[i].packetWithAllOrnamentsData = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithAllOrnamentsData.path;
+            if (values.loanPacketDetails[i].packetWithAllOrnaments) {
+                values.loanPacketDetails[i].packetWithAllOrnamentsImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithAllOrnaments;
             }
-            if (values.loanPacketDetails[i].packetWithSealingData) {
-                values.loanPacketDetails[i].packetWithSealingData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithSealingData.path;
+            if (values.loanPacketDetails[i].packetWithSealing) {
+                values.loanPacketDetails[i].packetWithSealingImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithSealing;
             }
-            if (values.loanPacketDetails[i].packetWithWeightData) {
-                values.loanPacketDetails[i].packetWithWeightData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithWeightData.path;
+            if (values.loanPacketDetails[i].packetWithWeight) {
+                values.loanPacketDetails[i].packetWithWeightImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithWeight;
             }
             resPac.push(values.loanPacketDetails[i])
         }
-
         
 
         //documents

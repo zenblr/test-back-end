@@ -19,19 +19,19 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         emptyPacketWithNoOrnament: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'empty_packet_with_no_ornament'
         },
         packetWithAllOrnaments: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'packet_with_all_ornaments'
         },
         packetWithSealing: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'packet_with_sealing'
         },
         packetWithWeight: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'packet_with_weight'
         },
         ornamentsId: {
@@ -71,17 +71,17 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerLoanPackageDetails.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.emptyPacketWithNoOrnamentData) {
-            values.emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + values.emptyPacketWithNoOrnamentData.path;
+        if (values.emptyPacketWithNoOrnament) {
+            values.emptyPacketWithNoOrnamentImage = baseUrlConfig.BASEURL + values.emptyPacketWithNoOrnament;
         }
-        if (values.packetWithAllOrnamentsData) {
-            values.packetWithAllOrnamentsData.URL = baseUrlConfig.BASEURL + values.packetWithAllOrnamentsData.path;
+        if (values.packetWithAllOrnaments) {
+            values.packetWithAllOrnamentsImage = baseUrlConfig.BASEURL + values.packetWithAllOrnaments;
         }
-        if (values.packetWithSealingData) {
-            values.packetWithSealingData.URL = baseUrlConfig.BASEURL + values.packetWithSealingData.path;
+        if (values.packetWithSealing) {
+            values.packetWithSealingImage = baseUrlConfig.BASEURL + values.packetWithSealing;
         }
-        if (values.packetWithWeightData) {
-            values.packetWithWeightData.URL = baseUrlConfig.BASEURL + values.packetWithWeightData.path;
+        if (values.packetWithWeight) {
+            values.packetWithWeightImage = baseUrlConfig.BASEURL + values.packetWithWeight;
         }
 
         return values;
