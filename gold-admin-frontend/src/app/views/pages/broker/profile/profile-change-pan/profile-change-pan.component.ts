@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
-import { ProfileService } from '../../../../../core/merchant-broker';
+import { ProfileService } from '../../../../../core/broker';
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
 
 @Component({

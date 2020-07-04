@@ -15,7 +15,7 @@ import { CustomerClassificationService } from '../../../../../../../core/kyc-set
 })
 export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() disable
-  @Input() loanId
+  @Input() masterAndLoanIds
   @Input() invalid;
   @Input() details;
   // @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
@@ -197,7 +197,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       return 
     }
     this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
-    this.loanFormService.applyForLoan(this.approvalForm.value, this.loanId).pipe(
+    this.loanFormService.applyForLoan(this.approvalForm.value, this.masterAndLoanIds).pipe(
       map(res => {
         this.router.navigate(['/admin/loan-management/applied-loan'])
       })).subscribe()

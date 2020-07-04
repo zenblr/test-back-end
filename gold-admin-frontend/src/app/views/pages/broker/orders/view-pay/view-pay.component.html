@@ -75,7 +75,8 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let data of orderData.orderemidetails">
-                                <td>
+                                <td
+                                    *ngIf="orderData.orderCurrentStatus.id == 2 || orderData.orderCurrentStatus.id == 3 || orderData.orderCurrentStatus.id == 15">
                                     <mat-checkbox *ngIf="data.orderStatusId == 1 || data.orderStatusId == 15"
                                         (change)="selectedEmi($event,data.id)"></mat-checkbox>
                                 </td>

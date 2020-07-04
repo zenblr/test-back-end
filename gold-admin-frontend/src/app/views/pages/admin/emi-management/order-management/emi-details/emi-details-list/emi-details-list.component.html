@@ -84,6 +84,12 @@
                         </div>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="emiInitialAmount">
+                    <mat-header-cell *matHeaderCellDef class="align-right">Initial Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="align-right">
+                        {{element?.order?.orderdetails[0]?.initialPayment ? element?.order?.orderdetails[0]?.initialPayment : '-'}}
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="emiPaidAmount">
                     <mat-header-cell *matHeaderCellDef class="align-right">EMI Paid Amount</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">

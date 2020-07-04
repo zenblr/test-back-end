@@ -10,7 +10,16 @@ export class DashboardService {
 
     constructor(private http: HttpClient) { }
 
-    getDashboard(): Observable<any> {
-        return this.http.get<any>(API_ENDPOINT + `api/dashboard`);
+    getDashboard(event?): Observable<any> {
+        const reqParams: any = {};
+        if (event && event.from) {
+            reqParams.from = event.from;
+        }
+        if (event && event.to) {
+            reqParams.to = event.to;
+        }
+        return this.http.get<any>(API_ENDPOINT + `api/dashboard`, {
+            params: reqParams,
+        });
     }
 }

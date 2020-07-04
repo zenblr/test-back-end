@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
-import { ShopService } from '../../../../../core/merchant-broker';
+import { ShopService } from '../../../../../core/broker';
 import { ActivatedRoute, Router } from "@angular/router";
 import { EmiDetailsService } from "../../../../../core/emi-management/order-management";
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
@@ -61,7 +61,8 @@ export class ViewPayComponent implements OnInit {
         this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
       },
         error => {
-          this.toastr.errorToastr(error.message);
+          this.emi = [];
+          this.toastr.errorToastr(error.error.message);
           this.getOrderDetails();
         });
     }

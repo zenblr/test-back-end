@@ -72,7 +72,7 @@
 				<hr>
 			</div>
 			<div class="col-12">
-				<table class="table table-borderless">
+				<table class="table">
 					<thead>
 						<tr>
 							<th scope="col">Member ID</th>
@@ -84,7 +84,7 @@
 							<th scope="col">EMI Tenure</th>
 						</tr>
 					</thead>
-					<tbody class="text-muted font-weight-normal">
+					<tbody class="font-weight-normal">
 						<ng-container *ngIf="details?.todaysOrderDetail?.length; else noTodaysOrder">
 							<tr *ngFor="let prod of details?.todaysOrderDetail">
 								<td>
@@ -103,7 +103,7 @@
 									{{prod?.product?.productName ? prod?.product?.productName : '-'}}
 								</td>
 								<td>
-									{{prod?.weight ? prod?.weight : '-'}}
+									{{prod?.weight | number:'1.0-2' | removeComma}}
 								</td>
 								<td>
 									{{prod?.paymentType?.paymentType ? prod?.paymentType?.paymentType : '-'}}
@@ -121,11 +121,11 @@
 		</div>
 		<div class="row pt-5">
 			<div class="col-12">
-				<h4>Overdue Customer</h4>
+				<h4>Overdue Payment</h4>
 				<hr>
 			</div>
 			<div class="col-12">
-				<table class="table table-borderless">
+				<table class="table">
 					<thead>
 						<tr>
 							<th scope="col">Member ID</th>
@@ -137,7 +137,7 @@
 							<th scope="col">EMI Tenure</th>
 						</tr>
 					</thead>
-					<tbody class="text-muted font-weight-normal">
+					<tbody class="font-weight-normal">
 						<ng-container *ngIf="details?.overdueCustomer?.length; else noOverdueCustomer">
 							<tr *ngFor="let prod of details?.overdueCustomer">
 								<td>

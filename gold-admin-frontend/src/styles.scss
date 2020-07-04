@@ -458,6 +458,7 @@ mat-header-row {
 		position: absolute;
 		top: 10px;
 		right: 10px;
+		z-index: 1;
 	}
 }
 
@@ -710,6 +711,10 @@ mat-header-row {
 
 .mat-slide-toggle-thumb-container{
  z-index: unset !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-header{
+	border: unset !important;
 }
 
 

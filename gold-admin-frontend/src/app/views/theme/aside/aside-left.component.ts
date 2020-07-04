@@ -16,7 +16,7 @@ import { LayoutConfigService, MenuAsideService, MenuOptions, OffcanvasOptions } 
 import { HtmlClassService } from '../html-class.service';
 import { AuthService } from '../../../core/auth';
 import { SharedService } from '../../../core/shared/services/shared.service';
-import { ShoppingCartService } from '../../../core/merchant-broker';
+import { ShoppingCartService } from '../../../core/broker';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({

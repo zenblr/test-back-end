@@ -29,7 +29,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() invalid
   @Input() action;
   @Output() next: EventEmitter<any> = new EventEmitter();
-  @Output() laonId: EventEmitter<any> = new EventEmitter();
+  @Output() id: EventEmitter<any> = new EventEmitter();
   @Output() totalEligibleAmt: EventEmitter<any> = new EventEmitter();
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
@@ -123,7 +123,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
 
             stage = Number(stage) - 1;
             this.next.emit(stage)
-            this.laonId.emit(res.loanId)
+            this.id.emit({loanId:res.loanId,masterLoanId:res.masterLoanId})
             if (stage >= 1) {
               this.apiHit.emit(res.loanId)
             }
@@ -154,10 +154,11 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       panCardNumber: [''],
       startDate: [this.currentDate],
       customerId: [, Validators.required],
-      kycStatus: [, Validators.required],
+      kycStatus: [],
       purpose: ["", Validators.required],
       panType: [],
       loanId: [],
+      masterLoanId: [],
       panImage: [],
     })
   }
@@ -177,7 +178,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         let stage = res.loanCurrentStage
         stage = Number(stage) - 1;
         this.next.emit(stage)
-        this.laonId.emit(res.loanId)
+        this.id.emit({loanId:res.loanId,masterLoanId:res.masterLoanId})
       }), catchError(err => {
         this.toast.error(err.error.message)
         throw err
@@ -199,7 +200,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     })
   }
 
-  viewKYC(data) {
+  viewKYC() {
     // console.log(this.basicForm.value)
     // this.dialog.open(UserReviewComponent)
     const params = { customerId: this.controls.customerId.value };

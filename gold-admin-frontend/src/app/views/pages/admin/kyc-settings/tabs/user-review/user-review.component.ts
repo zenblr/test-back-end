@@ -603,7 +603,7 @@ export class UserReviewComponent implements OnInit {
       this.customerKycPersonal.markAllAsTouched();
       this.customerKycAddressOne.markAllAsTouched();
       this.customerKycAddressTwo.markAllAsTouched();
-      this.customerKycBank.markAllAsTouched();
+      // this.customerKycBank.markAllAsTouched();
       return;
     }
 
@@ -617,7 +617,7 @@ export class UserReviewComponent implements OnInit {
 
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
-      this.identityProofs = res;
+      this.identityProofs = res.filter(filter => filter.name == 'Aadhar Card');
     })
   }
 
@@ -679,10 +679,11 @@ export class UserReviewComponent implements OnInit {
       this.addressImageArray1.splice(index, 1)
       this.addressIdArray1.splice(index, 1)
       this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
-    } else if (type == 'passbook') {
-      this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
-      // this.customerKycBank.patchValue({ passbookProofFileName: '' });
     }
+    // else if (type == 'passbook') {
+    // this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
+    // this.customerKycBank.patchValue({ passbookProofFileName: '' });
+    // }
   }
 
   getFileInfo(event, type: any) {
@@ -801,5 +802,21 @@ export class UserReviewComponent implements OnInit {
     //   },
     //   width: "auto"
     // })
+  }
+
+  checkForAadhar() {
+    if (this.customerKycAddressOne.controls.addressProofTypeId.value == 2) {
+      this.addressImageArray1 = [];
+      this.addressIdArray1 = [];
+      Array.prototype.push.apply(this.addressImageArray1, this.identityImageArray)
+      Array.prototype.push.apply(this.addressIdArray1, this.identityIdArray)
+      this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
+      this.customerKycAddressOne.patchValue({ addressProofNumber: this.reviewForm.controls.identityProofNumber.value });
+    } else {
+      this.addressImageArray1 = [];
+      this.addressIdArray1 = [];;
+      this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
+      this.customerKycAddressOne.patchValue({ addressProofNumber: '' });
+    }
   }
 }

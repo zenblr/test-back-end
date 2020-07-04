@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, ElementRef, AfterViewInit, Input } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
-
+import { ImageFunctionalityDialogComponent } from '../image-functionality-dialog/image-functionality-dialog.component';
 @Component({
   selector: 'kt-image-preview-dialog',
   templateUrl: './image-preview-dialog.html',
@@ -21,6 +21,7 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {
   @Input() viewImages = [];
   @Input() type = '';
+  @Input() clickable: boolean;
   images: any[] = [];
   index: number = null;
   removePadding = false;
@@ -28,7 +29,9 @@ export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {
     config: NgbCarouselConfig,
     public dialogRef: MatDialogRef<ImagePreviewDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private ele: ElementRef) {
+    private ele: ElementRef,
+    public dialog: MatDialog,
+  ) {
     config.interval = 0;
     config.wrap = true;
     config.keyboard = false;
@@ -48,22 +51,37 @@ export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {
         }
       }
       Array.prototype.push.apply(this.images, temp);
-      if(this.data.modal){
+      if (this.data.modal) {
         this.removePadding = true;
       }
     }
-
-    
-
   }
 
   ngAfterViewInit() {
     var el = (document.querySelector('.mat-dialog-container') as HTMLElement)
-    el.style.background = "transparent";
-    el.style.boxShadow = "none";
+    if (el) {
+      el.style.background = "transparent";
+      el.style.boxShadow = "none";
+    }
   }
 
-  close(){
+  zoom(index) {
+    if (this.clickable) {
+      const dialogData = [];
+      for (let i = 0; i < this.viewImages.length; i++) {
+        dialogData.push(this.viewImages[i].URL)
+      }
+      const dialogRef = this.dialog.open(ImageFunctionalityDialogComponent, { data: { data: dialogData, index: index } });
+      dialogRef.afterClosed().subscribe(res => {
+        if (!res) {
+          return;
+        }
+      });
+
+    }
+  }
+
+  close() {
     this.dialogRef.close()
   }
 }

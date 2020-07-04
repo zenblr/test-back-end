@@ -246,30 +246,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
 		this.sortType += 1;
 		if (this.sortType % 2 == 0) {
 			this.sortImg = "../../../../../../../../assets/media/icons/sort (1).svg";
-			this.productData = {
-				from: 0,
-				to: 0,
-				search: "",
-				categoryId: 0,
-				subCategoryId: 0,
-				priceFrom: 0,
-				priceTo: 0,
-				order: true,
-			};
+			this.productData.order = true;
 			this.dataSource.loadProducts(this.productData);
 
 		} else {
 			this.sortImg = "../../../../../../../../assets/media/icons/sort.svg";
-			this.productData = {
-				from: 0,
-				to: 0,
-				search: "",
-				categoryId: 0,
-				subCategoryId: 0,
-				priceFrom: 0,
-				priceTo: 0,
-				order: false,
-			}
+			this.productData.order = false;
 			this.dataSource.loadProducts(this.productData);
 
 		}

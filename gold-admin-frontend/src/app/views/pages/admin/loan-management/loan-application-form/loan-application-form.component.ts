@@ -26,8 +26,8 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false, true, true, true, true, true];
-  loanId: any;
+  disabled = [false, false, false, false, false, false];
+  masterAndLoanIds: any;
   ornamentType = [];
   finalLoanAmt: any;
   constructor(
@@ -62,7 +62,7 @@ export class LoanApplicationFormComponent implements OnInit {
 
   editApi() {
     this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
-      this.loanId = res.data.id
+      this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
       this.action = 'edit'
       this.customerDetail = res.data
       // this.totalAmount = res.data.totalEligibleAmt
@@ -73,8 +73,8 @@ export class LoanApplicationFormComponent implements OnInit {
         this.disabledForm = true;
       } else {
         this.disabledForm = false;
-        if (res.data.customerLoanCurrentStage) {
-          let stage = res.data.customerLoanCurrentStage
+        if (res.data.masterLoan.customerLoanCurrentStage) {
+          let stage = res.data.masterLoan.customerLoanCurrentStage
           this.selected = Number(stage) - 1;
         } else {
           this.selected = 5;
@@ -110,7 +110,7 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   loan(event) {
-    this.loanId = event
+    this.masterAndLoanIds = event
   }
 
   totalEligibleAmt(event) {
@@ -140,7 +140,7 @@ export class LoanApplicationFormComponent implements OnInit {
     ).subscribe()
   }
 
-  
+
   total(event) {
     this.totalAmount = event
   }
@@ -148,21 +148,21 @@ export class LoanApplicationFormComponent implements OnInit {
 
 
   next(event) {
-    if (event.index != undefined) {
-      this.selected = event.index;
-    } else {
-      this.selected = event;
-    }
-    for (let index = 0; index < this.disabled.length; index++) {
-      if (this.url != "view-loan") {
-        if (this.selected >= index) {
-          this.disabled[index] = false
-        } else {
-          this.disabled[index] = true
-        }
-      } else {
-        this.disabled[index] = false
-      }
-    }
+    // if (event.index != undefined) {
+    //   this.selected = event.index;
+    // } else {
+    //   this.selected = event;
+    // }
+    // for (let index = 0; index < this.disabled.length; index++) {
+    //   if (this.url != "view-loan") {
+    //     if (this.selected >= index) {
+    //       this.disabled[index] = false
+    //     } else {
+    //       this.disabled[index] = true
+    //     }
+    //   } else {
+    //     this.disabled[index] = false
+    //   }
+    // }
   }
 }

@@ -167,4 +167,8 @@ export class AppliedKycComponent implements OnInit {
       const dialogRef = this.dialog.open(UserReviewComponent, { data: { action: 'view' }, width: '900px' });
     })
   }
+
+  transferLoan(loan){
+    this.router.navigate(['/admin/laon-management/loan-transfer'])
+  }
 }
