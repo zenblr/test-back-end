@@ -84,7 +84,6 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        CustomerKycAddressDetail.hasMany(models.addressProofImage, { foreignKey: 'customerKycAddressDetailId', as: 'addressProofImage' });
 
     }
 

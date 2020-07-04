@@ -123,7 +123,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
     
-        CustomerKycPersonalDetail.hasMany(models.identityProofImage, { foreignKey: 'customerKycPersonalDetailId', as: 'identityProofImage' });
+        
     }
 
     CustomerKycPersonalDetail.prototype.toJSON = function () {
