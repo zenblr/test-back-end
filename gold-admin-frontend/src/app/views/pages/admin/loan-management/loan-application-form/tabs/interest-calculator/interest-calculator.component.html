@@ -9,7 +9,7 @@
                     <div class="col-7">
                         <select formControlName="tenure" class="form-control" (change)="setEndDate()"
                             [class.isError]="controls.tenure.touched && controls.tenure.invalid">
-                            <option value="" [selected]="true" [disabled]="true">Select Tenure</option>
+                            <option value="null" [selected]="true" [disabled]="true">Select Tenure</option>
                             <option [value]="ten" *ngFor="let ten of tenure;index as i">
                                 <span *ngIf="i==0">{{ten}} Month</span>
                                 <span *ngIf="i > 0">{{ten}} Months</span>
@@ -29,7 +29,7 @@
                     <div class="col-7">
                         <select formControlName="partnerId" class="form-control" (change)="getSchemes()"
                             [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
-                            <option value="" [selected]="true" [disabled]="true">Select Partner</option>
+                            <option value="null" [selected]="true" [disabled]="true">Select Partner</option>
                             <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found</option>
                             <option [value]="partner.id" *ngFor="let partner of partnerList">
                                 {{partner.name | uppercase}}
@@ -52,7 +52,7 @@
                     <div class="col-7">
                         <select formControlName="schemeId" class="form-control" (change)="scheme()"
                             [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
-                            <option value="" [selected]="true" [disabled]="true">Select Schemes</option>
+                            <option value="null" [selected]="true" [disabled]="true">Select Schemes</option>
                             <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found</option>
                             <option [value]="schemes.id" *ngFor="let schemes of schemesList">
                                 {{schemes.schemeName | uppercase}} ({{schemes.schemeAmountStart}} -

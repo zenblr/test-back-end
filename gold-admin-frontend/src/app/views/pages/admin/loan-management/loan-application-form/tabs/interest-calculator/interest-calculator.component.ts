@@ -80,14 +80,15 @@ export class InterestCalculatorComponent implements OnInit {
 
           const finalLoan = changes.details.currentValue
 
-          this.finalInterestForm.patchValue(finalLoan.masterLoan  )
-          this.finalInterestForm.patchValue(finalLoan)
+
 
           if (changes.details.currentValue.loanStatusForBM == "approved")
             this.approved = true;
 
           // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(finalLoan.loanStartDate))
           if (finalLoan.masterLoan.loanStartDate) {
+            this.finalInterestForm.patchValue(finalLoan.masterLoan)
+            this.finalInterestForm.patchValue(finalLoan)
             this.currentDate = new Date(finalLoan.masterLoan.loanStartDate)
             this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
           }
@@ -98,7 +99,7 @@ export class InterestCalculatorComponent implements OnInit {
               emiDueDate: interset.emiDueDate,
               paymentType: this.controls.paymentFrequency.value,
               securedInterestAmount: interset.interestAmount,
-              unsecuredInterestAmount:0,
+              unsecuredInterestAmount: 0,
               totalAmount: Number(interset.interestAmount)
             }
             temp.push(data)
@@ -107,11 +108,11 @@ export class InterestCalculatorComponent implements OnInit {
             this.unSecuredSchemeCheck(finalLoan.masterLoan.unsecuredLoanAmount)
             this.selectedUnsecuredscheme.push(finalLoan.unsecuredScheme)
             for (let index = 0; index < temp.length; index++) {
-              temp[index].unsecuredInterestAmount =  finalLoan.unsecureLoan.customerLoanInterest.interestAmount
-              
+              temp[index].unsecuredInterestAmount = finalLoan.unsecureLoan.customerLoanInterest.interestAmount
+
             }
-          } 
-          Array.prototype.push.apply(this.dateOfPayment,temp)
+          }
+          Array.prototype.push.apply(this.dateOfPayment, temp)
           console.log(this.dateOfPayment)
           this.getIntrest()
           this.ref.detectChanges()
@@ -158,10 +159,10 @@ export class InterestCalculatorComponent implements OnInit {
 
   initForm() {
     this.finalInterestForm = this.fb.group({
-      partnerId: ['', [Validators.required]],
-      schemeId: ['', [Validators.required]],
+      partnerId: [null, [Validators.required]],
+      schemeId: [null, [Validators.required]],
       finalLoanAmount: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      tenure: [, [Validators.required]],
+      tenure: [null, [Validators.required]],
       loanStartDate: [this.currentDate],
       loanEndDate: [, [Validators.required]],
       paymentFrequency: [, [Validators.required]],
