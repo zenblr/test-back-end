@@ -820,7 +820,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
         })
 
         await sequelize.transaction(async (t) => {
-            let stageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' }, transaction: t })
+            let stageId = await models.loanStage.findOne({ where: { name: 'upload documents' }, transaction: t })
 
             await models.customerLoanMaster.update({ loanStageId: stageId.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
@@ -836,6 +836,37 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
     } else {
         res.status(404).json({ message: 'Given loan id is not proper' })
     }
+}
+
+//function of loan documents
+exports.loanDocuments = async (req, res, next) => {
+
+    let { loanAgreementCopy, pawnCopy, schemeConfirmationCopy, loanId, masterLoanId } = req.body
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+
+    let checkDocument = await models.customerLoanDocument.findOne({ where: { masterLoanId: masterLoanId } })
+
+    if (check.isEmpty(checkDocument)) {
+        let loanData = await sequelize.transaction(async t => {
+            let stageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' }, transaction: t })
+
+            await models.customerLoanMaster.update({ loanStageId: stageId.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
+
+            await models.customerLoanDocument.create({ loanId, masterLoanId, loanAgreementCopy, pawnCopy, schemeConfirmationCopy, createdBy, modifiedBy }, { transaction: t })
+            return loan
+        })
+        return res.status(200).json({ message: 'success', masterLoanId, loanId })
+    } else {
+        let loanData = await sequelize.transaction(async t => {
+
+            await models.customerLoanDocument.update({ loanAgreementCopy, pawnCopy, schemeConfirmationCopy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
+            return loan
+        })
+        return res.status(200).json({ message: 'success', masterLoanId, loanId })
+
+    }
+
 }
 
 //FUNCTION for disbursement

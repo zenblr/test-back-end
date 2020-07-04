@@ -77,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.packet, { foreignKey: 'loanId', as: 'packet' });
         customerLoan.hasMany(models.customerLoanInterest, { foreignKey: 'loanId', as: 'customerLoanInterest' });
         customerLoan.hasMany(models.customerLoanDisbursement, { foreignKey: 'loanId', as: 'customerLoanDisbursement' });
-
+        customerLoan.hasOne(models.customerLoanDocument, { foreignKey: 'loanId', as: 'customerLoanDocument' });
 
         // customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 
@@ -86,7 +86,7 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
 
         customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan' });
-        
+
         customerLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
@@ -143,6 +143,38 @@ module.exports = (sequelize, DataTypes) => {
                 values.loanPacketDetails[i].packetWithWeightData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithWeightData.path;
             }
             resPac.push(values.loanPacketDetails[i])
+        }
+
+        
+
+        //documents
+        if (values.customerLoanDocument) {
+            let loanAgreementCopyImage = []
+            let pawnCopyImage = []
+            let schemeConfirmationCopyImage = []
+
+            if (values.customerLoanDocument.loanAgreementCopy) {
+                for (imgUrl of values.customerLoanDocument.loanAgreementCopy) {
+                    let URL = baseUrlConfig.BASEURL + imgUrl;
+                    loanAgreementCopyImage.push(URL)
+                }
+            }
+            if (values.customerLoanDocument.schemeConfirmationCopyImage) {
+                for (imgUrl of values.customerLoanDocument.pawnCopyImage) {
+                    let URL = baseUrlConfig.BASEURL + imgUrl;
+                    pawnCopyImage.push(URL)
+                }
+            }
+            if (values.customerLoanDocument.schemeConfirmationCopyImage) {
+                for (imgUrl of values.customerLoanDocument.schemeConfirmationCopyImage) {
+                    let URL = baseUrlConfig.BASEURL + imgUrl;
+                    schemeConfirmationCopyImage.push(URL)
+                }
+            }
+            values.customerLoanDocument.loanAgreementCopyImage = loanAgreementCopyImage
+            values.customerLoanDocument.pawnCopyImage = pawnCopyImage
+            values.customerLoanDocument.schemeConfirmationCopyImage = schemeConfirmationCopyImage
+
         }
 
         values.loanOrnamentsDetail = resOrna
