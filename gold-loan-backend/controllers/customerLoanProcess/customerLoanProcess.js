@@ -106,7 +106,7 @@ exports.loanNomineeDetails = async (req, res, next) => {
         let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
         let loanData = await sequelize.transaction(async t => {
 
-            if (loanSubmitted.isLoanSubmitted = false) {
+            if (loanSubmitted.isLoanSubmitted == false) {
                 var loan = await models.customerLoanMaster.update({ customerLoanCurrentStage: '3', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
             }
 
@@ -163,10 +163,9 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
     } else {
 
         let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
-
         let loanData = await sequelize.transaction(async t => {
-            if (loanSubmitted.isLoanSubmitted = false) {
-                await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt }, { where: { id: loanId }, transaction: t })
+            if (loanSubmitted.isLoanSubmitted == false) {
+                await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt }, { where: { id: masterLoanId }, transaction: t })
             }
             let getPurity = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLoanId: masterLoanId }, transaction: t })
             let deleteId = []
@@ -360,7 +359,7 @@ exports.loanBankDetails = async (req, res, next) => {
         let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
 
         let loanData = await sequelize.transaction(async t => {
-            if (loanSubmitted.isLoanSubmitted = false) {
+            if (loanSubmitted.isLoanSubmitted == false) {
                 await models.customerLoan.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
             }
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
