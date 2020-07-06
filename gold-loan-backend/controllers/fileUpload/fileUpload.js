@@ -60,11 +60,11 @@ exports.uploadFile =
                     }
                 let data = Object.assign(req.files[0], { URL: req.files[0].location });
                 data.url = data.key;
-                let result = await models.fileUpload.create({filename:data.key,mimetype:data.mimetype,encoding:data.encoding,originalname:data.originalname,url:data.url,path:data.url,userId:req.userData.id});
-                    if (!result) {
+                let uploadFile = await models.fileUpload.create({filename:data.key,mimetype:data.mimetype,encoding:data.encoding,originalname:data.originalname,url:data.url,path:data.url,userId:req.userData.id});
+                    if (!uploadFile) {
                         return res.status(422).json({message: 'Error while uploading file!'});
                     } else {
-                        return res.status(200).json(result);
+                        return res.status(200).json({uploadFile});
                     }
             });
         }else{
