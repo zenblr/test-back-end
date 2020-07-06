@@ -79,9 +79,10 @@
                         <div [ngStyle]="{'display': 'inherit'}"
                             *ngxPermissionsOnly="['appliedKycEdit','customerClassificationEdit']">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
-                                <span *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'pending') 
+                                <span
+                                    *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'pending') 
                                     || (userType == 8 && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
-                                    role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete')">
+                                    (role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete' || role.customerKycClassification?.kycStatusFromOperationalTeam == 'pending'))">
                                     <!-- <img src="../../../../assets/media/icons/action.svg"> -->
                                     <strong>Action ></strong>
                                 </span>
@@ -133,14 +134,17 @@
 
                 <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let loan">
-                        <button mat-button [matMenuTriggerFor]="menu">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #menu="matMenu" xPosition="before">
-                            <button mat-menu-item (click)="applyLoan(loan)">Apply Loan</button>
-                            <button mat-menu-item (click)="transferLoan(loan)">Transfer Loan</button>
-                        </mat-menu>
+                    <mat-cell *matCellDef="let role">
+                        <ng-container
+                            *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved'">
+                            <button mat-button [matMenuTriggerFor]="menu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu" xPosition="before">
+                                <button mat-menu-item (click)="applyLoan(role)">Apply Loan</button>
+                                <button mat-menu-item (click)="transferLoan(role)">Transfer Loan</button>
+                            </mat-menu>
+                        </ng-container>
                         <!-- <div ngbDropdown class="dropdown dropdown-inline" #customerActionDropdown1="ngbDropdown"
                             aria-haspopup="true" aria-expanded="false" [autoClose]="false">
                             <button mat-icon-button class="btn-transparent" ngbDropdownToggle>

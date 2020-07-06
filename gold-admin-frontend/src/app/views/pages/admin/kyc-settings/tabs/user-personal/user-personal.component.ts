@@ -82,7 +82,7 @@ export class UserPersonalComponent implements OnInit {
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
           console.log(res)
           // this.profile = res.uploadFile.id
-          this.personalForm.controls.profileImage.patchValue(res.uploadFile.id);
+          this.personalForm.controls.profileImage.patchValue(res.uploadFile.path);
           this.personalForm.controls.profileImg.patchValue(res.uploadFile.URL);
           this.ref.detectChanges()
         })
@@ -105,7 +105,7 @@ export class UserPersonalComponent implements OnInit {
           if (type == "profile") {
             // this.profile = res.uploadFile.id;
             // this.personalForm.get('profileImage').patchValue(event.target.files[0].name);
-            this.personalForm.controls.profileImage.patchValue(res.uploadFile.id);
+            this.personalForm.controls.profileImage.patchValue(res.uploadFile.path);
             this.personalForm.controls.profileImg.patchValue(res.uploadFile.URL);
 
           } else if (type == "signature") {
@@ -113,7 +113,7 @@ export class UserPersonalComponent implements OnInit {
             // this.signatureJSON.url = res.uploadFile.id;
             // this.signatureJSON.isImage = true;
             this.personalForm.get('signatureProofFileName').patchValue(event.target.files[0].name);
-            this.personalForm.get('signatureProof').patchValue(res.uploadFile.id);
+            this.personalForm.get('signatureProof').patchValue(res.uploadFile.path);
             this.personalForm.get('signatureProofImg').patchValue(res.uploadFile.URL);
 
             this.ref.detectChanges();
