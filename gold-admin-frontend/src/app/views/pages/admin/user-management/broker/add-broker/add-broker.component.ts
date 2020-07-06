@@ -187,7 +187,7 @@ export class AddBrokerComponent implements OnInit {
   }
 
   getFileInfo(event, type) {
-    var reason;
+    var reason ="broker";
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {

@@ -28,10 +28,11 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   width: number = 0
   packetsDetails: any[] = []
   packetInfo: FormGroup;
-  loanId: number = 0;
+  masterAndLoanIds: number = 0;
   packetsName: any;
   url: string;
-  @Input() ornamentType
+  @Input() ornamentType: any = []
+  ornamentTypeData: any[] = []
   ornamentName: any;
   clearData: boolean;
 
@@ -52,10 +53,10 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
 
   ngOnChanges(change: SimpleChanges) {
-    //   if (change.ornamentType && change.ornamentType.currentValue) {
-    //     this.ornamentType = change.ornamentType.currentValue.ornamentType
-    //     this.ornamentType.map(ele => ele.disabled = false)
-    //   }
+    if (change.ornamentType && change.ornamentType.currentValue.ornamentType) {
+      this.ornamentType = change.ornamentType.currentValue.ornamentType
+      this.ornamentTypeData.map(ele => ele.disabled = false)
+    }
   }
 
 
@@ -64,12 +65,12 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.initForm()
     this.getPacketsDetails()
 
-    this.ornamentType = [{ ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 }, { ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 }]
-    this.ornamentType.map(ele => ele.disabled = false)
+    // this.ornamentType = [{ornamentType: 'Necklace', id: 3},{ ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 }]
+    // this.ornamentType.map(ele => ele.disabled = false)
 
 
     this.url = this.router.url.split('/')[2]
-    this.loanId = this.route.snapshot.params.id
+    this.masterAndLoanIds = this.route.snapshot.params.id
 
     this.packetImg = this.fb.group({
       emptyPacketWithNoOrnament: ['', Validators.required],
@@ -125,8 +126,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
       })
     ).subscribe()
-    this.packetsDetails = [{ packetUniqueId: 'PAC-2', id: 2 }, { packetUniqueId: 'PAC-2', id: 1 }]
-    this.packetsDetails.map(ele => ele.disabled = false)
+    // this.packetsDetails = [{ packetUniqueId: 'PAC-2', id: 2 }, { packetUniqueId: 'PAC-2', id: 1 }]
+    // this.packetsDetails.map(ele => ele.disabled = false)
   }
 
   ngAfterViewInit() {
@@ -142,8 +143,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
     if (this.url != 'view-loan')
       this.removePackets()
-    this.packets.push(this.fb.group({
 
+    this.packets.push(this.fb.group({
       packetId: [this.controls.packetId.value],
       ornamentsId: [this.controls.ornamentType.value],
       packetsName: [this.packetsName],
@@ -163,17 +164,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
   removePacketsTab(idx) {
 
-    // let ornamnetsWidth = this.packets.length * 130
-    // if (ornamnetsWidth <= this.width) {
-    //   this.left = this.left - 130
-    //   const left = (this.left).toString() + 'px'
-    //   const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-    //   width.style.maxWidth = left
-    //   const addmore = (this.ele.nativeElement.querySelector('.addMore') as HTMLElement);
-    //   addmore.style.left = left
-
-    // }
-    this.packets.removeAt(idx)
   }
 
   clear() {
@@ -202,21 +192,22 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   removePackets() {
-    let arrayIndex = this.packets.length
-    const controls = this.packets.at(arrayIndex) as FormGroup;
-
     let index = this.packetsDetails.findIndex(ele => {
       return ele.id == this.controls.packetId.value;
     })
     this.packetsName = this.packetsDetails[index].packetUniqueId
     this.packetsDetails[index].disabled = true
 
-    // let ornamnetsIndex = this.ornamentType.findIndex(ele => {
-    //   return ele.id == this.controls.ornamentType.value.multiSelect;
-    // })
     let ornamentTypeObject = this.controls.ornamentType.value.multiSelect
     this.ornamentName = ornamentTypeObject.map(e => e.ornamentType).toString();
-    this.ornamentType[index].disabled = true
+    var z = this.ornamentType.filter(function (val) {
+      return ornamentTypeObject.indexOf(val) != -1;
+    });
+    console.log(z);
+
+    this.ornamentType.forEach(element => {
+      element.disabled = true
+    })
     console.log(this.controls.packetId.value)
     this.clearData = true;
 
@@ -236,7 +227,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.packetService.uploadPackets(this.packets.value, this.loanId).pipe(
+        this.packetService.uploadPackets(this.packets.value, this.masterAndLoanIds).pipe(
           map(res => {
             this.toast.success(res.message)
             this.router.navigate(['/admin/loan-management/applied-loan'])

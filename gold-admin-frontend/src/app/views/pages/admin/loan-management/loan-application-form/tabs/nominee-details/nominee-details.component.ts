@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class NomineeDetailsComponent implements OnInit, AfterViewInit {
 
-  @Input() loanId
+  @Input() masterAndLoanIds
   @Input() details;
   nominee: FormGroup;
   @Input() disable;
@@ -23,27 +23,27 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
   constructor(
     public fb: FormBuilder,
     public ref: ChangeDetectorRef,
-    public loanApplicationService:LoanApplicationFormService,
-    public toast:ToastrService
+    public loanApplicationService: LoanApplicationFormService,
+    public toast: ToastrService
   ) { }
 
   ngOnInit() {
     this.initForm()
   }
 
-  ngOnChanges(changes:SimpleChanges) {
-    if(changes.details){
-    if(changes.action.currentValue == 'edit' && changes.details.currentValue.loanNomineeDetail.length){
-      this.nominee.patchValue(changes.details.currentValue.loanNomineeDetail[0])
-      this.ref.markForCheck()
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.details) {
+      if (changes.action.currentValue == 'edit' && changes.details.currentValue.loanNomineeDetail.length) {
+        this.nominee.patchValue(changes.details.currentValue.loanNomineeDetail[0])
+        this.ref.markForCheck()
 
+      }
     }
-  }
     if (this.invalid) {
       this.nominee.markAllAsTouched()
       this.invalid = false
     }
-    if(this.disable){
+    if (this.disable) {
       this.nominee.disable()
     }
   }
@@ -99,15 +99,15 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
   //   }
   //   // this.nomineeEmit.emit({ nominee: this.nominee});
   // }
-  nextAction(){
-    if(this.nominee.invalid){
+  nextAction() {
+    if (this.nominee.invalid) {
       this.nominee.markAllAsTouched();
       return
     }
-    this.loanApplicationService.nomineeSubmit(this.nominee.value,this.loanId).pipe(
-      map(res=>{
+    this.loanApplicationService.nomineeSubmit(this.nominee.value, this.masterAndLoanIds).pipe(
+      map(res => {
         this.next.emit(2)
-      }),catchError(err=>{
+      }), catchError(err => {
         this.toast.error(err.error.message)
         throw err
       })).subscribe()

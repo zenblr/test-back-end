@@ -15,14 +15,14 @@ import { CustomerClassificationService } from '../../../../../../../core/kyc-set
 })
 export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() disable
-  @Input() loanId
+  @Input() masterAndLoanIds
   @Input() invalid;
   @Input() details;
   // @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
   // appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
   // branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }, { value: 'incomplete', name: 'incomplete' }];
-  appraiser:any;
-  branchManager:any;
+  appraiser: any;
+  branchManager: any;
   userType: any = ''
   @Input() action;
   // @Output() apply: EventEmitter<any> = new EventEmitter<any>();
@@ -31,7 +31,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   approvalForm: FormGroup;
   url: string;
   viewBMForm = true;
-  reasons: any []= [];
+  reasons: any[] = [];
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -79,7 +79,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       goldValuationForBM: [false],
       loanStatusForBM: ['pending'],
       commentByBM: [''],
-      reasons:['']
+      reasons: ['']
     })
 
 
@@ -92,7 +92,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.approvalForm.patchValue(changes.details.currentValue)
-        this.approvalForm.patchValue({reasons:changes.details.currentValue.commentByAppraiser})
+        this.approvalForm.patchValue({ reasons: changes.details.currentValue.commentByAppraiser })
         this.statusAppraiser()
         this.statusBM()
         this.ref.markForCheck()
@@ -146,7 +146,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
   statusAppraiser() {
 
-    if (this.controls.loanStatusForAppraiser.value != 'approved' ) {
+    if (this.controls.loanStatusForAppraiser.value != 'approved') {
       this.controls.reasons.setValidators(Validators.required);
       this.controls.reasons.updateValueAndValidity()
     } else {
@@ -167,9 +167,9 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
 
-  patchReason(){
+  patchReason() {
     this.resetAppraiser()
-    if(this.controls.reasons.value == 'Other'){
+    if (this.controls.reasons.value == 'Other') {
       this.controls.commentByAppraiser.setValidators(Validators.required);
       this.controls.commentByAppraiser.updateValueAndValidity()
     } else {
@@ -192,12 +192,12 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   applyForm() {
-    if(this.approvalForm.invalid){
+    if (this.approvalForm.invalid) {
       this.approvalForm.markAllAsTouched()
-      return 
+      return
     }
     this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
-    this.loanFormService.applyForLoan(this.approvalForm.value, this.loanId).pipe(
+    this.loanFormService.applyForLoan(this.approvalForm.value, this.masterAndLoanIds).pipe(
       map(res => {
         this.router.navigate(['/admin/loan-management/applied-loan'])
       })).subscribe()

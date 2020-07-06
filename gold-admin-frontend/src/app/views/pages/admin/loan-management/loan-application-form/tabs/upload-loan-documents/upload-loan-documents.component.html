@@ -24,9 +24,9 @@
                         aria-describedby="basic-addon2" readonly formControlName="loanAgreementImageName" />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="file1.click()">Attach</span>
+                            (click)="loanAgreementCopy.click()">Attach</span>
                     </div>
-                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file1
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #loanAgreementCopy
                         (change)="fileUpload($event,'loanAgreementCopy')">
                 </div>
             </div>
@@ -36,9 +36,9 @@
                         aria-describedby="basic-addon2" readonly formControlName="pawnTicketImageName" />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="file2.click()">Attach</span>
+                            (click)="pawnTicket.click()">Attach</span>
                     </div>
-                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file2
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #pawnTicket
                         (change)="fileUpload($event,'pawnTicket')">
                 </div>
             </div>
@@ -48,9 +48,9 @@
                         aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationImageName" />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="file3.click()">Attach</span>
+                            (click)="schemeConfirmation.click()">Attach</span>
                     </div>
-                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file3
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #schemeConfirmation
                         (change)="fileUpload($event,'schemeConfirmation')">
                 </div>
             </div>
@@ -60,9 +60,9 @@
                         aria-describedby="basic-addon2" readonly formControlName="signedChequeImageName" />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="file3.click()">Attach</span>
+                            (click)="signedCheque.click()">Attach</span>
                     </div>
-                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file3
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #signedCheque
                         (change)="fileUpload($event,'signedCheque')">
                 </div>
             </div>
@@ -72,9 +72,9 @@
                         aria-describedby="basic-addon2" readonly formControlName="declarationCopyImageName" />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="file3.click()">Attach</span>
+                            (click)="declarationCopy.click()">Attach</span>
                     </div>
-                    <input type="file" class="d-none" accept="image/png, image/jpeg" #file3
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #declarationCopy
                         (change)="fileUpload($event,'declarationCopy')">
                 </div>
             </div>
@@ -90,9 +90,17 @@
 
                         <div class="" *ngIf="documentsForm.controls.loanAgreementCopy.value">
                             <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.loanAgreementCopy.value">
+                                <img class="fetched-image" [src]="documentsForm.controls.loanAgreementCopy.value"
+                                    *ngIf="!pdf.loanAgreementCopy"
+                                    (click)="preview(documentsForm.controls.loanAgreementCopy.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                                    class="kt-pointer remove-icon" (click)="editImages('loanAgreementCopy');">
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    *ngIf="pdf.loanAgreementCopy"
+                                    (click)="preview(documentsForm.controls.loanAgreementCopy.value)"> -->
+                                    <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.loanAgreementCopy"
+                                    [pdfSrc]="documentsForm.controls.loanAgreementCopy.value"
+                                    (click)="preview(documentsForm.controls.loanAgreementCopy.value)"></kt-pdf-viewer>
                             </div>
                         </div>
                     </div>
@@ -109,9 +117,15 @@
 
                         <div class="" *ngIf="documentsForm.controls.pawnTicket.value">
                             <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.pawnTicket.value">
+                                <img class="fetched-image" [src]="documentsForm.controls.pawnTicket.value"
+                                    *ngIf="!pdf.pawnTicket" (click)="preview(documentsForm.controls.pawnTicket.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                                    class="kt-pointer remove-icon" (click)="editImages('pawnTicket');">
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    (click)="preview(documentsForm.controls.pawnTicket.value)"> -->
+                                <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnTicket"
+                                    [pdfSrc]="documentsForm.controls.pawnTicket.value"
+                                    (click)="preview(documentsForm.controls.pawnTicket.value)"></kt-pdf-viewer>
                             </div>
                         </div>
                     </div>
@@ -128,9 +142,17 @@
 
                         <div class="" *ngIf="documentsForm.controls.schemeConfirmation.value">
                             <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.schemeConfirmation.value">
+                                <img class="fetched-image" [src]="documentsForm.controls.schemeConfirmation.value"
+                                    *ngIf="!pdf.schemeConfirmation"
+                                    (click)="preview(documentsForm.controls.schemeConfirmation.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                                    class="kt-pointer remove-icon" (click)="editImages('schemeConfirmation');">
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    *ngIf="pdf.schemeConfirmation"
+                                    (click)="preview(documentsForm.controls.schemeConfirmation.value)"> -->
+                                <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.schemeConfirmation"
+                                    [pdfSrc]="documentsForm.controls.schemeConfirmation.value"
+                                    (click)="preview(documentsForm.controls.schemeConfirmation.value)"></kt-pdf-viewer>
                             </div>
                         </div>
                     </div>
@@ -147,9 +169,17 @@
 
                         <div class="" *ngIf="documentsForm.controls.signedCheque.value">
                             <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.signedCheque.value">
+                                <img class="fetched-image" [src]="documentsForm.controls.signedCheque.value"
+                                    *ngIf="!pdf.signedCheque"
+                                    (click)="preview(documentsForm.controls.signedCheque.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                                    class="kt-pointer remove-icon" (click)="editImages('signedCheque');">
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    *ngIf="pdf.signedCheque"
+                                    (click)="preview(documentsForm.controls.signedCheque.value)"> -->
+                                    <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.signedCheque"
+                                    [pdfSrc]="documentsForm.controls.signedCheque.value"
+                                    (click)="preview(documentsForm.controls.signedCheque.value)"></kt-pdf-viewer>   
                             </div>
                         </div>
                     </div>
@@ -166,9 +196,17 @@
 
                         <div class="" *ngIf="documentsForm.controls.declartionCopy.value">
                             <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.declartionCopy.value">
+                                <img class="fetched-image" [src]="documentsForm.controls.declartionCopy.value"
+                                    *ngIf="!pdf.declartionCopy"
+                                    (click)="preview(documentsForm.controls.declartionCopy.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                                    class="kt-pointer remove-icon" (click)="editImages('declartionCopy');">
+                                    <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.declartionCopy"
+                                    [pdfSrc]="documentsForm.controls.declartionCopy.value"
+                                    (click)="preview(documentsForm.controls.declartionCopy.value)"></kt-pdf-viewer> 
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    *ngIf="pdf.declartionCopy"
+                                    (click)="preview(documentsForm.controls.declartionCopy.value)"> -->
                             </div>
                         </div>
                     </div>
