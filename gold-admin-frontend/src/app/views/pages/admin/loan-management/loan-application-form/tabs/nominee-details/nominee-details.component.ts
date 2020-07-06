@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class NomineeDetailsComponent implements OnInit, AfterViewInit {
 
-  @Input() loanId
+  @Input() masterAndLoanIds
   @Input() details;
   nominee: FormGroup;
   @Input() disable;
@@ -104,7 +104,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
       this.nominee.markAllAsTouched();
       return
     }
-    this.loanApplicationService.nomineeSubmit(this.nominee.value,this.loanId).pipe(
+    this.loanApplicationService.nomineeSubmit(this.nominee.value,this.masterAndLoanIds).pipe(
       map(res=>{
         this.next.emit(2)
       }),catchError(err=>{

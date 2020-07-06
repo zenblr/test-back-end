@@ -12,7 +12,7 @@ import { LoanApplicationFormService } from '../../../../../../../core/loan-manag
 })
 export class BankDetailsComponent implements OnInit, OnChanges {
 
-  @Input() loanId
+  @Input() masterAndLoanIds
   @ViewChild('passbook', { static: false }) passbook
   @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
@@ -44,11 +44,15 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       if (changes.action.currentValue == 'edit') {
         if (changes.details.currentValue && changes.details.currentValue.loanBankDetail) {
           this.bankForm.patchValue(changes.details.currentValue.loanBankDetail)
+          let passbookProofImage = changes.details.currentValue.loanBankDetail.passbookProofImage
+          this.bankForm.controls.passbookProofImage.patchValue(passbookProofImage.map(ele => ele.passbookProof.URL))
+          this.bankForm.controls.passbookProof.patchValue(passbookProofImage.map(ele => ele.passbookProof.id))
+          this.bankForm.controls.passbookProofImageName.patchValue(passbookProofImage[0].passbookProof.originalname)
           this.ref.markForCheck()
         }
       }
 
-      this.bankFormEmit.emit(this.bankForm);
+      // this.bankFormEmit.emit(this.bankForm);
     }
     if (changes.finalLoanAmt) {
       if (changes.finalLoanAmt.currentValue > '200000') {
@@ -152,17 +156,19 @@ export class BankDetailsComponent implements OnInit, OnChanges {
         this.bankForm.markAllAsTouched()
         return
       }
-      data = this.bankForm.value
     } else {
       if (this.controls.paymentType.invalid) {
         this.controls.paymentType.markAsTouched();
         return
       }
-      data = this.bankForm.controls.paymentType.value
+      this.bankForm.reset()
+      this.bankForm.controls.paymentType.patchValue('cash')
+      this.bankForm.controls.passbookProof.patchValue([])
+      this.bankForm.controls.passbookProofImage.patchValue([])
+      }
+    data = this.bankForm.value
 
-    }
-
-    this.loanFormService.submitBank(data, this.loanId).pipe(
+    this.loanFormService.submitBank(data, this.masterAndLoanIds).pipe(
       map(res => {
         this.next.emit(5)
       })).subscribe()

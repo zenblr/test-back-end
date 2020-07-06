@@ -9,7 +9,7 @@
                         </div>
                         <div class="col-6">
                             <input type="text" class="form-control" placeholder="10234501203203"
-                                formControlName="customerUniqueId"
+                                formControlName="customerUniqueId" maxlength="8"
                                 [class.isError]="controls.customerUniqueId.touched && controls.customerUniqueId.invalid"
                                 (keyup.enter)="getCustomerDetails()">
                             <div *ngIf="controls.customerUniqueId.touched && controls.customerUniqueId.invalid">
@@ -42,7 +42,7 @@
                             <label class="text-color kt-padding-l-10">KYC Status</label>
                         </div>
                         <div class="col-6">
-                           <input type="text" class="form-control position-relative" formControlName="kycStatus">
+                           <input type="text" class="form-control position-relative text-capitalize" formControlName="kycStatus">
                            <span class="inside-input" (click)="viewKYC()">View KYC</span>
                         </div>
                     </div>

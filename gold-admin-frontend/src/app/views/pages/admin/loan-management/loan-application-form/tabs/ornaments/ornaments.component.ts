@@ -33,7 +33,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   // @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
-  @Input() loanId
+  @Input() masterAndLoanIds
   @Input() ornamentType
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
@@ -118,7 +118,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
               this.patchUrlIntoForm(key, data.id, data.url, index)
 
             } else {
-              this.patchUrlIntoForm(key, group.value[key].id, group.value[key].URL, index)
+              if (group.value[key] && group.value[key].id && group.value[key].URL)
+                this.patchUrlIntoForm(key, group.value[key].id, group.value[key].URL, index)
 
             }
 
@@ -231,7 +232,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
 
     this.OrnamentsData.push(this.fb.group({
-      ornamentType: [, Validators.required],
+      ornamentTypeId: [, Validators.required],
       quantity: [, Validators.required],
       grossWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
@@ -322,7 +323,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string, ) {
+  uploadFile(index, event, string,) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
@@ -507,7 +508,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.loanId).pipe(
+    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds).pipe(
       map(res => {
         let array = this.OrnamentsData.controls
         for (let index = 0; index < array.length; index++) {
