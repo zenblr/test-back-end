@@ -129,6 +129,11 @@ export class PageConfig {
 					page: { title: "Loan Repayment", desc: "" },
 				}
 			},
+			"funds-approvals": {
+				"deposit": {
+					page: { title: "Deposit", desc: "" },
+				},
+			},
 			repayment: {
 				monthly: {
 					page: { title: "Monthly Repayment", desc: "" },

@@ -345,6 +345,20 @@ export class MenuConfig {
 							],
 						},
 						{
+							title: "Funds and Approvals",
+							root: true,
+							src: "assets/media/aside-icons/icons-12.svg",
+							bullet: 'dot',
+							permission: false,
+							submenu: [
+								{
+									title: "Deposit",
+									page: "/admin/funds-approvals/deposit",
+									permission: false,
+								},
+							],
+						},
+						{
 							title: "Report",
 							root: true,
 							bullet: 'dot',
