@@ -596,7 +596,7 @@ exports.appliedKyc = async (req, res, next) => {
                     }
                 ),
                 kyc_rating_bm: sequelize.where(
-                    sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
+                    sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_operational_team"), "varchar"),
                     {
                         [Op.iLike]: search + "%",
                     }
@@ -618,11 +618,23 @@ exports.appliedKyc = async (req, res, next) => {
         assignAppraiser = { appraiserId: req.userData.id }
     }
 
+    if(req.userData.userTypeId == 6){
+        customerKycClassification = {
+            kycStatusFromCce: { [Op.in]: [ "approved", 'pending', 'incomplete', 'rejected'] },
+        }
+    }else{
+        customerKycClassification = {
+            kycStatusFromCce: { [Op.in]: [ 'approved'] },
+        }
+    }
+
     const includeArray = [
         {
             model: models.customerKycClassification,
             as: 'customerKycClassification',
-            attributes: ['kycStatusFromCce', 'reasonFromCce', 'kycStatusFromBm', 'reasonFromBm']
+            required: true,
+            where: customerKycClassification,
+            attributes: ['kycStatusFromCce', 'reasonFromCce', 'kycStatusFromOperationalTeam', 'reasonFromOperationalTeam']
         },
         {
             model: models.customer,
@@ -667,6 +679,7 @@ exports.appliedKyc = async (req, res, next) => {
 
 
 }
+
 
 
 exports.getReviewAndSubmit = async (req, res, next) => {
