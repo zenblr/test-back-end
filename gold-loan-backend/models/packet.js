@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
         masterLoanId: {
             type: DataTypes.INTEGER,
             field: 'master_loan_id',
-            allowNull: false
         },
         customerId: {
             type: DataTypes.INTEGER,
@@ -52,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         packet.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         
         packet.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranch', as: 'internalBranch' });
-        packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packet' });
+        packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packetOrnament' });
         
     }
 

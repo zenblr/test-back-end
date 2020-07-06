@@ -45,6 +45,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'unsecured_loan_id'
         },
+        disbursed: {
+            type: DataTypes.BOOLEAN,
+            field: 'disbursed',
+            defaultValue: false
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'

@@ -13,30 +13,17 @@ module.exports = (sequelize, DataTypes) => {
             field: 'master_loan_id',
             allowNull: false
         },
-        packetId: {
-            type: DataTypes.INTEGER,
-            field: 'packet_id',
-            allowNull: false
-        },
         emptyPacketWithNoOrnament: {
             type: DataTypes.TEXT,
             field: 'empty_packet_with_no_ornament'
         },
-        packetWithAllOrnaments: {
+        sealingPacketWithWeight: {
             type: DataTypes.TEXT,
-            field: 'packet_with_all_ornaments'
+            field: 'sealing_packet_with_weight'
         },
-        packetWithSealing: {
+        sealingPacketWithCustomer: {
             type: DataTypes.TEXT,
-            field: 'packet_with_sealing'
-        },
-        packetWithWeight: {
-            type: DataTypes.TEXT,
-            field: 'packet_with_weight'
-        },
-        ornamentsId: {
-            type: DataTypes.INTEGER,
-            field: 'ornaments_id'
+            field: 'sealing_packet_with_customer'
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -60,12 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanPackageDetails.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanPackageDetails.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
-        CustomerLoanPackageDetails.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
-
-        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'emptyPacketWithNoOrnament', as: 'emptyPacketWithNoOrnamentData' });
-        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'packetWithAllOrnaments', as: 'packetWithAllOrnamentsData' });
-        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'packetWithSealing', as: 'packetWithSealingData' });
-        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'packetWithWeight', as: 'packetWithWeightData' });
+        CustomerLoanPackageDetails.hasMany(models.customerLoanPacket, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPacket' });
 
     }
 
