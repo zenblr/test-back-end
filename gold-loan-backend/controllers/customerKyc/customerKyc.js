@@ -245,7 +245,7 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
 
     })
     let customerKycReview = await models.customer.findOne({
-        where: { id: KycStage.customerId },
+        where: { id: customerId },
         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
         include: [{
             model: models.fileUpload,
@@ -476,7 +476,7 @@ exports.getReviewAndSubmit = async (req, res, next) => {
     let { customerId, customerKycId } = req.query;
 
     let customerKycReview = await models.customer.findOne({
-        where: { id: KycStage.customerId },
+        where: { id: customerId },
         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
         include: [{
             model: models.fileUpload,

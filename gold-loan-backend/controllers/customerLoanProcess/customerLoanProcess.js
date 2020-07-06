@@ -155,7 +155,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
             }
 
             await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
-            let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
+            // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
 
             let createdOrnaments = []
             for (let purityTestData of allOrnmanets) {

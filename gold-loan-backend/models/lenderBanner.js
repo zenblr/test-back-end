@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
 
     LenderBanner.associate = function (models) {
 
-        LenderBanner.hasMany(models.lenderBannerImages, { foreignKey: 'lenderBannerId', as: 'lenderBannerImages' });
+        // LenderBanner.hasMany(models.lenderBannerImages, { foreignKey: 'lenderBannerId', as: 'lenderBannerImages' });
 
     }
 

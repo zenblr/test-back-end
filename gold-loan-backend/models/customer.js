@@ -207,7 +207,7 @@ module.exports = (sequelize, DataTypes) => {
     Customer.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
         if (values.panImage) {
-            values.panImage = baseUrlConfig.BASEURL + values.panImage;
+            values.panImg = baseUrlConfig.BASEURL + values.panImage;
         }
         delete values.password;
         return values;
