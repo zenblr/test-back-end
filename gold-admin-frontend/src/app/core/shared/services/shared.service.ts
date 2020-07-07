@@ -53,6 +53,9 @@ export class SharedService {
 		if (data && data.customerId) {
 			reqParams.customerId = data.customerId;
 		}
+		if (data && data.loanId) {
+			reqParams.loanId = data.loanId;
+		}
 		var fd = new FormData();
 		fd.append("avatar", files);
 		return this.http.post<any>(`/api/upload-file`, fd, { params: reqParams });

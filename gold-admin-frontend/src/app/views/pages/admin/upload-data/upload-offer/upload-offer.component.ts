@@ -19,18 +19,18 @@ export class UploadOfferComponent implements OnInit {
   @ViewChild("file", { static: false }) file;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
- 
+
 
   constructor(
     private uploadOfferService: UploadOfferService,
     private ref: ChangeDetectorRef,
-    private ngxPermissions:NgxPermissionsService
-  ) { 
-    this.ngxPermissions.permissions$.subscribe(permission=>{
-      if(permission.goldRateView){
-        
+    private ngxPermissions: NgxPermissionsService
+  ) {
+    this.ngxPermissions.permissions$.subscribe(permission => {
+      if (permission.goldRateView) {
+
       }
-      if(permission.offerBannerView){
+      if (permission.offerBannerView) {
         this.getData();
       }
     })
@@ -42,20 +42,23 @@ export class UploadOfferComponent implements OnInit {
   getData() {
     this.uploadOfferService.getOffers().pipe(
       map(res => {
-        if (res.offerImages.length > 0) {
-          res.offerImages.forEach(element => {
-            this.images.push(element.offerImages.URL)
-            this.imgId.push(element.offerImages.id)
-          });
-         
+        // if (res.offerImages.length > 0) {
+        //   res.offerImages.forEach(element => {
+        //     this.images.push(element.offerImages.URL)
+        //     this.imgId.push(element.offerImages.id)
+        //   });
+        // }
+        if (res) {
+          this.images = res.offerImage
+          this.imgId = res.images
         }
         this.ref.detectChanges();
       })).subscribe()
   }
 
-  
 
-  
+
+
 
   save() {
 
