@@ -320,7 +320,6 @@ exports.loanBankDetails = async (req, res, next) => {
             }
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
 
-
             return loan
         })
         return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '6' })
@@ -407,6 +406,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
             })
             return res.status(200).json({ message: 'success' })
         }
+        return res.status(200).json({ message: 'success' })
     }
 
     if (req.userData.userTypeId == 8) {
@@ -922,18 +922,18 @@ exports.getLoanDetails = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
                 "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-                "$finalLoan.final_loan_amount$": { [Op.iLike]: search + '%' },
-                "$finalLoan.interest_rate$": { [Op.iLike]: search + '%' },
-                tenure: sequelize.where(
-                    sequelize.cast(sequelize.col("finalLoan.tenure"), "varchar"),
-                    {
-                        [Op.iLike]: search + "%",
-                    }
-                )
+                // "$finalLoan.final_loan_amount$": { [Op.iLike]: search + '%' },
+                // "$finalLoan.interest_rate$": { [Op.iLike]: search + '%' },
+                // tenure: sequelize.where(
+                //     sequelize.cast(sequelize.col("finalLoan.tenure"), "varchar"),
+                //     {
+                //         [Op.iLike]: search + "%",
+                //     }
+                // )
             },
         }],
         isActive: true,
-        loanStageId: stageId.id
+        // loanStageId: stageId.id
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
