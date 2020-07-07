@@ -25,7 +25,7 @@ exports.customerDetails = async (req, res, next) => {
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
-       
+
     })
 
     let customerLoanStage = await models.customerLoanMaster.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false } })
@@ -567,12 +567,18 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         }
         customerLoan.dataValues.ornamentType = ornamentType;
     }
-    // console.log(customerLoan.unsecuredLoan.isActive)
-    if (customerLoan.loanBankDetail == null) {
-        customerLoan.dataValues['isUnsecuredSchemeApplied'] = false
+    console.log(customerLoan.unsecuredLoan)
+    if (customerLoan.unsecuredLoan == null) {
+        customerLoan.dataValues['isUnsecuredSchemeApplied'] = false;
     } else {
-        customerLoan.dataValues['isUnsecuredSchemeApplied'] = customerLoan.unsecuredLoan.isActive
+        if (customerLoan.unsecuredLoan.isActive) {
+            customerLoan.dataValues['isUnsecuredSchemeApplied'] = false
+        } else {
+            customerLoan.dataValues['isUnsecuredSchemeApplied'] = customerLoan.unsecuredLoan.isActive
+        }
     }
+
+
     return res.status(200).json({ message: 'success', data: customerLoan })
 }
 

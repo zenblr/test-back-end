@@ -177,9 +177,14 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         if (values.loanBankDetail) {
-            for (image of values.loanBankDetail.passbookProofImage) {
-                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.path;
+            let passbookProofData = [];
+
+            for (image of values.loanBankDetail.passbookProof) {
+                let URL = baseUrlConfig.BASEURL + image;
+                passbookProofData.push(URL)
+
             }
+            values.loanBankDetail.passbookProofImage = passbookProofData;
         }
 
         resPac = []
