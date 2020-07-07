@@ -398,6 +398,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           //   temp.push(element.purityTest.url)
           // });
         } else {
+          this.purityTestImg = controls.controls.purityTestImage.value
+          this.purityTestPath = controls.controls.purityTest.value
           this.purityTestImg.push(url)
           this.purityTestPath.push(id)
         }
