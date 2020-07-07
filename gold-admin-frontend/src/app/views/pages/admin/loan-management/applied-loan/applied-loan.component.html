@@ -29,17 +29,26 @@
 
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date: 'mediumDate'}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan.loanStartDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div class="currency">
+                            {{loan.securedLoanAmount | indianCurrencyFormat}}</div>
+                        <div class="currency">
+                            {{loan.unsecuredLoanAmount | indianCurrencyFormat}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="schemeName">
                     <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan?.scheme?.schemeName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div>{{loan.customerLoan[0]?.scheme?.schemeName | uppercase}}</div>
+                        <div>{{loan.customerLoan[0]?.unsecuredScheme?.schemeName | uppercase}}</div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="appraisalApproval">
@@ -85,6 +94,14 @@
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
                                     <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed': !(((loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected' ||loan.loanStatusForBM == 'incomplete')
                                     && this.userType == 5 && loan.loanStatusForAppraiser == 'approved')&&edit)}"
+                                        class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                                </div>
+                            </div>
+                            <div *ngIf="loan.loanStage.id == 7">
+                                <div class="kt-pointer" class="kt-pointer">
+                                    <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
+                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed': !(((loan.loanStatusForOperatinalTeam == 'pending' || loan.loanStatusForOperatinalTeam == 'rejected' ||loan.loanStatusForOperatinalTeam == 'incomplete')
+                                    && this.userType == 8 && loan.loanStatusForBM == 'approved')&&edit)}"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
