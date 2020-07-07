@@ -138,15 +138,13 @@ module.exports = (sequelize, DataTypes) => {
             if (values.loanPacketDetails[i].emptyPacketWithNoOrnament) {
                 values.loanPacketDetails[i].emptyPacketWithNoOrnamentImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].emptyPacketWithNoOrnament;
             }
-            if (values.loanPacketDetails[i].packetWithAllOrnaments) {
-                values.loanPacketDetails[i].packetWithAllOrnamentsImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithAllOrnaments;
+            if (values.loanPacketDetails[i].sealingPacketWithWeight) {
+                values.loanPacketDetails[i].sealingPacketWithWeightImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].sealingPacketWithWeight;
             }
-            if (values.loanPacketDetails[i].packetWithSealing) {
-                values.loanPacketDetails[i].packetWithSealingImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithSealing;
+            if (values.loanPacketDetails[i].sealingPacketWithCustomer) {
+                values.loanPacketDetails[i].sealingPacketWithCustomerImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].sealingPacketWithCustomer;
             }
-            if (values.loanPacketDetails[i].packetWithWeight) {
-                values.loanPacketDetails[i].packetWithWeightImage = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithWeight;
-            }
+
             resPac.push(values.loanPacketDetails[i])
         }
         
@@ -163,14 +161,14 @@ module.exports = (sequelize, DataTypes) => {
                     loanAgreementCopyImage.push(URL)
                 }
             }
-            if (values.customerLoanDocument.schemeConfirmationCopyImage) {
-                for (imgUrl of values.customerLoanDocument.pawnCopyImage) {
+            if (values.customerLoanDocument.pawnCopy) {
+                for (imgUrl of values.customerLoanDocument.pawnCopy) {
                     let URL = baseUrlConfig.BASEURL + imgUrl;
                     pawnCopyImage.push(URL)
                 }
             }
-            if (values.customerLoanDocument.schemeConfirmationCopyImage) {
-                for (imgUrl of values.customerLoanDocument.schemeConfirmationCopyImage) {
+            if (values.customerLoanDocument.schemeConfirmationCopy) {
+                for (imgUrl of values.customerLoanDocument.schemeConfirmationCopy) {
                     let URL = baseUrlConfig.BASEURL + imgUrl;
                     schemeConfirmationCopyImage.push(URL)
                 }

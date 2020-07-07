@@ -629,7 +629,10 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 as: 'loanPacketDetails',
                 // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                 include: [{
-                    model: models.packet
+                    model: models.packet,
+                    include: [{
+                        model: models.ornamentType
+                    }]
                 }]
             },
             {
@@ -644,6 +647,9 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             {
                 model: models.customerLoanInterest,
                 as: 'customerLoanInterest',
+            }, {
+                model: models.customerLoanDocument,
+                as: 'customerLoanDocument'
             }]
     });
 
@@ -818,7 +824,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
             let packetMapping = []
             for (single of packetOrnamentArray) {
                 let entry = {}
-                entry['customerLoanPackageDetailsId'] = loanPacket.id
+                entry['customerLoanPackageDetailId'] = loanPacket.id
                 entry['packetId'] = single.packetId
                 packetMapping.push(entry)
             }
@@ -865,7 +871,7 @@ exports.loanDocuments = async (req, res, next) => {
             await models.customerLoanMaster.update({ loanStageId: stageId.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanDocument.create({ loanId, masterLoanId, loanAgreementCopy, pawnCopy, schemeConfirmationCopy, createdBy, modifiedBy }, { transaction: t })
-            return loan
+            // return loan
         })
         return res.status(200).json({ message: 'success', masterLoanId, loanId })
     } else {

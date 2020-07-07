@@ -58,15 +58,13 @@ module.exports = (sequelize, DataTypes) => {
         if (values.emptyPacketWithNoOrnament) {
             values.emptyPacketWithNoOrnamentImage = baseUrlConfig.BASEURL + values.emptyPacketWithNoOrnament;
         }
-        if (values.packetWithAllOrnaments) {
-            values.packetWithAllOrnamentsImage = baseUrlConfig.BASEURL + values.packetWithAllOrnaments;
+        if (values.sealingPacketWithWeight) {
+            values.sealingPacketWithWeightImage = baseUrlConfig.BASEURL + values.sealingPacketWithWeight;
         }
-        if (values.packetWithSealing) {
-            values.packetWithSealingImage = baseUrlConfig.BASEURL + values.packetWithSealing;
+        if (values.sealingPacketWithCustomer) {
+            values.sealingPacketWithCustomerImage = baseUrlConfig.BASEURL + values.sealingPacketWithCustomer;
         }
-        if (values.packetWithWeight) {
-            values.packetWithWeightImage = baseUrlConfig.BASEURL + values.packetWithWeight;
-        }
+      
 
         return values;
     }

@@ -69,12 +69,7 @@ exports.viewPacket = async (req, res, next) => {
             attributes: ['id', 'internalBranchUniqueId', 'name']
         },
         {
-            model: models.packetOrnament,
-            as: 'packetOrnament',
-            include: [{
-                model: models.ornamentType,
-                as: 'ornamentType'
-            }]
+            model: models.ornamentType,
         }
     ];
 

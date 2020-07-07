@@ -1,9 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
     const CustomerLoanPacket = sequelize.define('customerLoanPacket', {
         //attribute
-        customerLoanPackageDetailsId: {
+        customerLoanPackageDetailId: {
             type: DataTypes.INTEGER,
-            field: 'customer_loan_package_details_id'
+            field: 'customer_loan_package_detail_id'
         },
         packetId: {
             type: DataTypes.INTEGER,
