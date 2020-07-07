@@ -6,6 +6,7 @@ const Op = Sequelize.Op;
 const check = require('../../lib/checkLib')
 const _ = require('lodash');
 const cache = require('../../utils/cache');
+let baseUrl= require('../../config/baseUrl');
 
 //add Role
 exports.addRole = async (req, res, next) => {
@@ -87,7 +88,9 @@ exports.updateRole = async (req, res, next) => {
             let deletePermissions = await deletePermissionsId.map((data) => data.permissionId);
             await models.rolePermission.destroy({ where: { roleId : id, permissionId: deletePermissions } });
             let users = await models.userRole.getAllUser(id);
-            await users.map((data) => cache(`${data.userId}permissions`));
+            let userId = await users.map((data) => data.userId);
+            models.axios.post(`${baseUrl.EMIAPI}/api/roles`, {userId });
+            await userId.map((id) => cache(`${id}permissions`));
             res.status(200).json({"message" : "success"});
         }
     } catch(err){
@@ -207,7 +210,9 @@ exports.addPermissions = async (req, res) => {
     })
     //delete permissions from redis cache
     let users = await models.userRole.getAllUser(roleId);
-    await users.map((data) => cache(`${data.userId}permissions`));
+    let userId = await users.map((data) => data.userId);
+    models.axios.post(`${baseUrl.EMIAPI}/api/roles`, {userId });
+    await userId.map((id) => cache(`${id}permissions`));
     res.status(200).json({ message: "Success" });
   };
 
