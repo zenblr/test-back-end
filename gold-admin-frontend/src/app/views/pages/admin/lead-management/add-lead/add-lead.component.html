@@ -24,7 +24,7 @@
                             <div class="col-8">
                                 <select class="form-control" formControlName="leadSourceId"
                                     [class.isError]="controls.leadSourceId.touched && controls.leadSourceId.invalid">
-                                    <option value="" [disabled]="true" [selected]="true"> Select Lead </option>
+                                    <option value="null" [selected]="true"> Select Lead </option>
                                     <option *ngFor="let lead of leadSources" [value]="lead.id">
                                         {{lead.leadName | titlecase}}
                                     </option>
@@ -357,7 +357,7 @@
 
 
                         <!-- Status -->
-                        <div class="row kt-padding-t-15">
+                        <div class="row kt-padding-t-15 kt-padding-b-15">
                             <div class="col-4 form-label">
                                 <mat-label class="mandatory">Select Status</mat-label>
                             </div>

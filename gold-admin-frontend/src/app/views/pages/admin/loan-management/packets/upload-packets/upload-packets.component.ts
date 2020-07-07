@@ -66,6 +66,24 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
       this.ornamentTypeData = temp
     }
+
+    if (change.viewpacketsDetails && change.viewpacketsDetails.currentValue) {
+      let packet = change.viewpacketsDetails.currentValue.loanPacketDetails[0]
+      if (packet) {
+        this.packetImg.patchValue({
+          emptyPacketWithNoOrnament: packet.emptyPacketWithNoOrnamentImage,
+          sealingPacketWithCustomer: packet.sealingPacketWithCustomerImage,
+          sealingPacketWithWeight: packet.sealingPacketWithWeightImage
+        })
+        console.log(packet.packets)
+        packet.packets.forEach(ele => {
+          this.packetsName = ele.packetUniqueId;
+          this.ornamentName = ele.ornamentTypes.map(e => e.name).toString();
+          this.pushPackets()
+        });
+        this.url = 'view-loan'
+      }
+    }
   }
 
 
@@ -73,11 +91,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   ngOnInit() {
     this.initForm()
     this.getPacketsDetails()
-
-    // this.ornamentType = [{ornamentType: 'Necklace', id: 3},{ ornamentType: 'chain', id: 2 }, { ornamentType: 'Ring', id: 1 }]
-    // this.ornamentType.map(ele => ele.disabled = false)
-
-
     this.url = this.router.url.split('/')[2]
     this.masterAndLoanIds = this.route.snapshot.params.id
 
@@ -87,23 +100,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       sealingPacketWithCustomer: ['', Validators.required],
       packetOrnamentArray: this.fb.array([])
     })
-
-
-    if (this.viewpacketsDetails) {
-      const array = this.viewpacketsDetails.loanPacketDetails
-      for (let index = 0; index < array.length; index++) {
-        this.controls.packetId.patchValue(array[index].packetId)
-        this.addmore()
-        const pack = this.packets.at(index) as FormGroup;
-        pack.patchValue(array[index])
-        pack.patchValue({ packetsName: array[index].packet.packetUniqueId })
-        pack.patchValue({ ornamentsName: array[index].ornaments.packetUniqueId })
-        console.log(pack)
-        // pack.at(inde).patchValue(array[index])
-      }
-
-      console.log(this.viewpacketsDetails.loanPacketDetails)
-    }
 
   }
 
@@ -149,12 +145,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     if (this.url != 'view-loan')
       this.removePackets()
 
-    this.packets.push(this.fb.group({
-      packetId: [this.controls.packetId.value],
-      ornamentsId: [this.ornamentId],
-      packetsName: [this.packetsName],
-      ornamentsName: [this.ornamentName]
-    }))
+    this.pushPackets()
+
 
 
     setTimeout(() => {
@@ -162,14 +154,21 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       this.form.resetForm()
       this.ref.detectChanges();
     })
-
-
-
   }
+  pushPackets() {
+    this.packets.push(this.fb.group({
+      packetId: [this.controls.packetId.value],
+      ornamentsId: [this.ornamentId],
+      packetsName: [this.packetsName],
+      ornamentsName: [this.ornamentName]
+    }))
+  }
+
+
 
   removePacketsData(idx) {
     console.log(this.packets.controls[idx])
-    this.packets.controls.splice(idx,1)
+    this.packets.controls.splice(idx, 1)
   }
 
   clear() {
@@ -278,6 +277,10 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
+        const params = {
+          reason: 'loan',
+          masterLoanId:this.masterAndLoanIds.masterLoanId
+        }
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
           this.packetImg.controls[value].patchValue(res.uploadFile.path)

@@ -45,7 +45,7 @@
                 <thead>
                     <th class="transparent">Packet</th>
                     <th class="transparent">Ornaments</th>
-                    <th class="transparent"></th>
+                    <th class="transparent" *ngIf="url != 'view-loan'"></th>
                 </thead>
                 <tbody>
                     <tr formArrayName="packetOrnamentArray" *ngFor="let packet of packets.controls;index as idx">
@@ -58,7 +58,7 @@
                                 <label class="m-0">{{packet.controls.ornamentsName.value | uppercase  }}</label>
 
                             </td>
-                            <td class="text-gray">
+                            <td class="text-gray" *ngIf="url != 'view-loan'">
                                 <img src="../../../../../../../assets/media/icons/cancel.png" alt="" height="15" (click)="removePacketsData(idx)">
                             </td>
                         </ng-container>
@@ -128,6 +128,6 @@
     </div>
 
 </div>
-<div class="text-center" *ngIf="packets.controls.length">
-    <kt-button [type]="'button'" [value]="'Save'" (click)="save()" *ngIf="url != 'view-loan'"></kt-button>
+<div class="text-right kt-padding-b-15" *ngIf="packets.controls.length">
+    <kt-button [type]="'button'" [value]="'Next'" (click)="save()"></kt-button>
 </div>

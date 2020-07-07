@@ -129,6 +129,11 @@ export class PageConfig {
 					page: { title: "Loan Repayment", desc: "" },
 				}
 			},
+			"funds-approvals": {
+				"deposit": {
+					page: { title: "Deposit", desc: "" },
+				},
+			},
 			repayment: {
 				monthly: {
 					page: { title: "Monthly Repayment", desc: "" },
@@ -269,6 +274,9 @@ export class PageConfig {
 				"topup": {
 					page: { title: "Top Up", desc: "" },
 				},
+				"transfer-loan-list": {
+					page: { title: "Transfer Loan List", desc: "" },
+				}
 			}
 		},
 		'broker': {

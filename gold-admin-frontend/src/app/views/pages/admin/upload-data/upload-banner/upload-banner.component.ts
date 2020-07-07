@@ -31,11 +31,15 @@ export class UploadBannerComponent implements OnInit {
   getData() {
     this.UploadBannerService.getBanners().pipe(
       map(res => {
-        if (res.bannerImage.length > 0) {
-          res.bannerImage.forEach(element => {
-            this.images.push(element.bannerImage.URL)
-            this.imgId.push(element.bannerImage.id)
-          });
+        // if (res.bannerImage.length > 0) {
+        //   res.bannerImage.forEach(element => {
+        //     this.images.push(element.bannerImage.URL)
+        //     this.imgId.push(element.bannerImage.id)
+        //   });
+        // }
+        if (res) {
+          this.images = res.bannerImage
+          this.imgId = res.images
         }
       })).subscribe()
   }

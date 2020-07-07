@@ -136,7 +136,7 @@
                                     </div>
                                     <div class="col-7">
                                         <select name="" id="" formControlName="occupationId" class="form-control"
-                                            placeholder="Select Occupation"
+                                            placeholder="Select Occupation" (change)="checkOccupation($event)"
                                             [class.isError]="controls.occupationId.touched && controls.occupationId.invalid">
                                             <option value=null [selected]="true">Select Occupation
                                             </option>
@@ -226,6 +226,9 @@
                                     <img class="fetched-image" *ngIf="controls.signatureProof.value"
                                         [src]="controls.signatureProofImg.value" style="border-radius: 15px;" alt=""
                                         (click)="previewImage(controls.signatureProofImg.value)" />
+                                    <img *ngIf="controls.signatureProof.value"
+                                        src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                        class="kt-pointer remove-icon" (click)="removeImage();">
                                 </div>
                                 <div class="kt-margin-t-20 text-color font-11">
                                     (Please verify the detail before moving forward)

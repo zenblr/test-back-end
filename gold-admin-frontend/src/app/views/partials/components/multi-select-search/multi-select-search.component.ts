@@ -98,11 +98,11 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 
 	selectAllCheckBox(event) {
 		this.items.forEach(res => {
-			if (event.target.checked) { 
+			if (event.target.checked) {
 				const selected = this.items;
 				this.form.get('multiSelect').patchValue(selected);
 				console.log(selected)
-			
+
 			} else {
 				this.form.get('multiSelect').patchValue([]);
 

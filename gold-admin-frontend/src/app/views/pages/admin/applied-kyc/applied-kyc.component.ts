@@ -20,7 +20,7 @@ export class AppliedKycComponent implements OnInit {
 
   filteredDataList: any = {};
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'pan', 'customerId', 'appraiserName', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
+  displayedColumns = ['fullName', 'pan', 'customerId', 'appraiserName', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser', 'menu'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -168,7 +168,12 @@ export class AppliedKycComponent implements OnInit {
     })
   }
 
-  transferLoan(loan){
+  transferLoan(loan) {
     this.router.navigate(['/admin/laon-management/loan-transfer'])
+  }
+
+  applyLoan(loan) {
+    console.log(loan)
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
   }
 }
