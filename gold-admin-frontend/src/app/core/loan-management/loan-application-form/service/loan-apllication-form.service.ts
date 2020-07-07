@@ -80,7 +80,7 @@ export class LoanApplicationFormService {
     )
   }
 
-  uploadDocuments(details, masterAndLoanIds) {
+  uploadDocuments(details, masterAndLoanIds): Observable<any> {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/loan-documents`, data).pipe(
       map(res => res)
