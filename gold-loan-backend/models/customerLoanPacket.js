@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     )
 
     CustomerLoanPacket.associate = function (models) {
-        CustomerLoanPacket.belongsTo(models.customerLoanPackageDetails, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPackageDetails' });
-        CustomerLoanPacket.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
+        // CustomerLoanPacket.belongsTo(models.customerLoanPackageDetails, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPackageDetails' });
+        // CustomerLoanPacket.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
 
     }
 

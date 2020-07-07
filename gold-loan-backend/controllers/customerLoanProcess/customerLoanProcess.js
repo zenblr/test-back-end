@@ -629,20 +629,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 as: 'loanPacketDetails',
                 // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                 include: [{
-                    model: models.customerLoanPacket,
-                    as: 'customerLoanPacket',
-                    include: [{
-                        model: models.packet,
-                        as: 'packet',
-                        include: [{
-                            model: models.packetOrnament,
-                            as: 'packetOrnament',
-                            include: [{
-                                model: models.ornamentType,
-                                as: 'ornamentType'
-                            }]
-                        }]
-                    }]
+                    model: models.packet
                 }]
             },
             {

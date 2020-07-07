@@ -47,7 +47,9 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanPackageDetails.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanPackageDetails.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
-        CustomerLoanPackageDetails.hasMany(models.customerLoanPacket, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPacket' });
+        // CustomerLoanPackageDetails.hasMany(models.customerLoanPacket, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPacket' });
+    
+        CustomerLoanPackageDetails.belongsToMany(models.packet, { through: models.customerLoanPacket });
 
     }
 
