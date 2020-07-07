@@ -37,6 +37,6 @@ route.get('/customer-loan-details/:customerUniqueId', checkAuth, wrapper(custome
 
 route.get('/assign-appraiser-customer', checkAuth, wrapper(getAssignAppraiserCustomer)) //get customer of appraiser
 
-route.get('/loan-documents', checkAuth, wrapper(loanDocuments))// ADD loan documents
+route.post('/loan-documents', checkAuth, wrapper(loanDocuments))// ADD loan documents
 
 module.exports = route; // EXPORTING ALL ROUTES

@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'customer_loan_bank_detail',
+        tableName: 'customer_loan_document',
     });
 
 
@@ -65,13 +65,13 @@ module.exports = (sequelize, DataTypes) => {
                 loanAgreementCopyImage.push(URL)
             }
         }
-        if (values.schemeConfirmationCopyImage) {
+        if (values.pawnCopy) {
             for (imgUrl of values.pawnCopyImage) {
                 let URL = baseUrlConfig.BASEURL + imgUrl;
                 pawnCopyImage.push(URL)
             }
         }
-        if (values.schemeConfirmationCopyImage) {
+        if (values.schemeConfirmationCopy) {
             for (imgUrl of values.schemeConfirmationCopyImage) {
                 let URL = baseUrlConfig.BASEURL + imgUrl;
                 schemeConfirmationCopyImage.push(URL)

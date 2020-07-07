@@ -13,30 +13,17 @@ module.exports = (sequelize, DataTypes) => {
             field: 'master_loan_id',
             allowNull: false
         },
-        packetId: {
-            type: DataTypes.INTEGER,
-            field: 'packet_id',
-            allowNull: false
-        },
         emptyPacketWithNoOrnament: {
             type: DataTypes.TEXT,
             field: 'empty_packet_with_no_ornament'
         },
-        packetWithAllOrnaments: {
+        sealingPacketWithWeight: {
             type: DataTypes.TEXT,
-            field: 'packet_with_all_ornaments'
+            field: 'sealing_packet_with_weight'
         },
-        packetWithSealing: {
+        sealingPacketWithCustomer: {
             type: DataTypes.TEXT,
-            field: 'packet_with_sealing'
-        },
-        packetWithWeight: {
-            type: DataTypes.TEXT,
-            field: 'packet_with_weight'
-        },
-        ornamentsId: {
-            type: DataTypes.INTEGER,
-            field: 'ornaments_id'
+            field: 'sealing_packet_with_customer'
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -60,7 +47,9 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanPackageDetails.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanPackageDetails.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
-        CustomerLoanPackageDetails.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
+        // CustomerLoanPackageDetails.hasMany(models.customerLoanPacket, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPacket' });
+    
+        CustomerLoanPackageDetails.belongsToMany(models.packet, { through: models.customerLoanPacket });
 
     }
 
@@ -69,15 +58,13 @@ module.exports = (sequelize, DataTypes) => {
         if (values.emptyPacketWithNoOrnament) {
             values.emptyPacketWithNoOrnamentImage = baseUrlConfig.BASEURL + values.emptyPacketWithNoOrnament;
         }
-        if (values.packetWithAllOrnaments) {
-            values.packetWithAllOrnamentsImage = baseUrlConfig.BASEURL + values.packetWithAllOrnaments;
+        if (values.sealingPacketWithWeight) {
+            values.sealingPacketWithWeightImage = baseUrlConfig.BASEURL + values.sealingPacketWithWeight;
         }
-        if (values.packetWithSealing) {
-            values.packetWithSealingImage = baseUrlConfig.BASEURL + values.packetWithSealing;
+        if (values.sealingPacketWithCustomer) {
+            values.sealingPacketWithCustomerImage = baseUrlConfig.BASEURL + values.sealingPacketWithCustomer;
         }
-        if (values.packetWithWeight) {
-            values.packetWithWeightImage = baseUrlConfig.BASEURL + values.packetWithWeight;
-        }
+      
 
         return values;
     }

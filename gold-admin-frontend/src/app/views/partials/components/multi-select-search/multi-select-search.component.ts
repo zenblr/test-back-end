@@ -63,6 +63,7 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 			this.form.reset();
 
 		}
+		console.log(changes)
 		// if(changes.style && changes.style.currentValue){
 
 		// }
