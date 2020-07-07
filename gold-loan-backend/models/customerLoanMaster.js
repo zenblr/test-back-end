@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false
         },
+        loanTransferId: {
+            type: DataTypes.INTEGER,
+            field: 'loan_transfer_id'
+        },
         masterLoanUniqueId: {
             type: DataTypes.STRING,
             field: 'master_loan_unique_id'
@@ -183,7 +187,7 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
-
+        CustomerLoanMaster.belongsTo(models.customerLoanTransfer, { foreignKey: 'loanTransferId', as: 'loanTransfer' });
     }
 
     return CustomerLoanMaster;
