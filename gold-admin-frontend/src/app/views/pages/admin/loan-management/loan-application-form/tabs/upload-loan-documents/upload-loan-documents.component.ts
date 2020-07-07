@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectorRef, ViewChild, SimpleChanges } from '@angular/core';
 import { SharedService } from '../../../../../../../core/shared/services/shared.service';
 import { map, finalize } from 'rxjs/operators';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ImagePreviewDialogComponent } from '../../../../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
 import { MatDialog } from '@angular/material';
@@ -75,6 +75,28 @@ export class UploadLoanDocumentsComponent implements OnInit {
       signedChequeImageName: [],
       declarationCopyImageName: []
     })
+    this.validation()
+  }
+
+  get controls() {
+    return this.documentsForm.controls
+  }
+
+  validation() {
+    if (this.show) {
+      this.documentsForm.controls.loanAgreementCopy.setValidators(Validators.required),
+        this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
+      this.documentsForm.controls.pawnCopy.setValidators(Validators.required),
+        this.documentsForm.controls.pawnCopy.updateValueAndValidity()
+      this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
+        this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
+
+    } else {
+      this.documentsForm.controls.signedCheque.setValidators(Validators.required),
+        this.documentsForm.controls.signedCheque.updateValueAndValidity()
+      this.documentsForm.controls.declartionCopy.setValidators(Validators.required),
+        this.documentsForm.controls.declartionCopy.updateValueAndValidity()
+    }
   }
 
   fileUpload(event, value) {
