@@ -112,8 +112,9 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
         const params = {
           reason: 'loan',
-          loanId: this.masterAndLoanIds.masterLoanId
+          masterLoanId: this.masterAndLoanIds.masterLoanId
         }
+  
         this.sharedService.uploadFile(event.target.files[0], params).pipe(
           map(res => {
             this.passbookImg.push(res.uploadFile.URL);
