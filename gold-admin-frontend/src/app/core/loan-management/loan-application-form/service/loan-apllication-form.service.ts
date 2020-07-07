@@ -23,30 +23,30 @@ export class LoanApplicationFormService {
   }
 
   nomineeSubmit(details, masterAndLoanIds): Observable<any> {
-    let data ={...details,...masterAndLoanIds}
+    let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/nominee-details`, data).pipe(
       map(res => res)
     )
   }
 
-  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds, ): Observable<any> {
+  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds,): Observable<any> {
     let data = {
-      loanOrnaments:loanOrnaments, 
-      totalEligibleAmt:totalEligibleAmt,
-      loanId:masterAndLoanIds.loanId,
-      masterLoanId:masterAndLoanIds.masterLoanId
+      loanOrnaments: loanOrnaments,
+      totalEligibleAmt: totalEligibleAmt,
+      loanId: masterAndLoanIds.loanId,
+      masterLoanId: masterAndLoanIds.masterLoanId
     }
     return this.http.post(`/api/loan-process/ornaments-details`, data).pipe(
       map(res => res)
     )
   }
 
-  submitFinalIntrest(loanFinalCalculator, masterAndLoanIds,interestTable): Observable<any> {
+  submitFinalIntrest(loanFinalCalculator, masterAndLoanIds, interestTable): Observable<any> {
     let data = {
-      loanFinalCalculator:loanFinalCalculator, 
-      interestTable:interestTable,
-      loanId:masterAndLoanIds.loanId,
-      masterLoanId:masterAndLoanIds.masterLoanId
+      loanFinalCalculator: loanFinalCalculator,
+      interestTable: interestTable,
+      loanId: masterAndLoanIds.loanId,
+      masterLoanId: masterAndLoanIds.masterLoanId
     }
     return this.http.post(`/api/loan-process/final-loan-details`, data).pipe(
       map(res => res)
@@ -54,7 +54,7 @@ export class LoanApplicationFormService {
   }
 
   submitBank(details, masterAndLoanIds): Observable<any> {
-    let data = {...details, ...masterAndLoanIds}
+    let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/bank-details`, data).pipe(
       map(res => res)
     )
@@ -62,7 +62,7 @@ export class LoanApplicationFormService {
 
 
   applyForLoan(details, masterAndLoanIds): Observable<any> {
-    let data ={...details,...masterAndLoanIds}
+    let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/appraiser-rating`, data).pipe(
       map(res => res)
     )
@@ -80,6 +80,11 @@ export class LoanApplicationFormService {
     )
   }
 
-  
+  uploadDocuments(details, masterAndLoanIds) {
+    let data = { ...details, ...masterAndLoanIds }
+    return this.http.post(`/api/loan-process/loan-documents`, data).pipe(
+      map(res => res)
+    )
+  }
 
 }

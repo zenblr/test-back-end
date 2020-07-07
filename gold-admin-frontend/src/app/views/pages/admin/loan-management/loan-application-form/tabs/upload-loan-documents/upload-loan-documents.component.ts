@@ -7,7 +7,7 @@ import { ImagePreviewDialogComponent } from '../../../../../../../views/partials
 import { MatDialog } from '@angular/material';
 import { PdfViewerComponent } from '../../../../../../../views/partials/components/pdf-viewer/pdf-viewer.component';
 import { Router } from '@angular/router';
-import { values } from 'lodash';
+import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 
 @Component({
   selector: 'kt-upload-loan-documents',
@@ -38,6 +38,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
     private toastr: ToastrService,
     public dialog: MatDialog,
     public router: Router,
+    public loanService:LoanApplicationFormService,
     private ref: ChangeDetectorRef
   ) {
     if (this.router.url == "/admin/loan-management/loan-transfer") {
@@ -71,32 +72,31 @@ export class UploadLoanDocumentsComponent implements OnInit {
       || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
       const controls = this.documentsForm.controls
       const params = {
-        reason: 'loan'
+        reason: 'loan',
+        masterLoanId:this.masterAndLoanIds.masterLoanId
       }
 
 
       this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
-          controls[value].patchValue(res.uploadFile.path)
-          controls[value].patchValue(res.uploadFile.originalname)
-          // if (value == 'loanAgreementCopy') {
-          //   controls.loanAgreementCopy.patchValue(res.uploadFile.path)
-          //   controls.loanAgreementImageName.patchValue(res.uploadFile.originalname)
-          // } else if (value == 'pawnCopy') {
-          //   controls.pawnCopy.patchValue(res.uploadFile.path)
-          //   controls.pawnCopyImageName.patchValue(res.uploadFile.originalname)
+          if (value == 'loanAgreementCopy') {
+            controls.loanAgreementCopy.patchValue(res.uploadFile.path)
+            controls.loanAgreementImageName.patchValue(res.uploadFile.originalname)
+          } else if (value == 'pawnCopy') {
+            controls.pawnCopy.patchValue(res.uploadFile.path)
+            controls.pawnCopyImageName.patchValue(res.uploadFile.originalname)
 
-          // } else if (value == 'schemeConfirmationCopy') {
-          //   controls.schemeConfirmationCopy.patchValue(res.uploadFile.path)
-          //   controls.schemeConfirmationCopyImageName.patchValue(res.uploadFile.originalname)
-          // } else if (value == 'signedCheque') {
-          //   controls.signedCheque.patchValue(res.uploadFile.path)
-          //   controls.signedChequeImageName.patchValue(res.uploadFile.originalname)
+          } else if (value == 'schemeConfirmationCopy') {
+            controls.schemeConfirmationCopy.patchValue(res.uploadFile.path)
+            controls.schemeConfirmationCopyImageName.patchValue(res.uploadFile.originalname)
+          } else if (value == 'signedCheque') {
+            controls.signedCheque.patchValue(res.uploadFile.path)
+            controls.signedChequeImageName.patchValue(res.uploadFile.originalname)
 
-          // } else if (value == 'declartionCopy') {
-          //   controls.declartionCopy.patchValue(res.uploadFile.path)
-          //   controls.declarationCopyImageName.patchValue(res.uploadFile.originalname)
-          // }
+          } else if (value == 'declartionCopy') {
+            controls.declartionCopy.patchValue(res.uploadFile.path)
+            controls.declarationCopyImageName.patchValue(res.uploadFile.originalname)
+          }
           if (ext[ext.length - 1] == 'pdf') {
             this.pdf[value] = true
           } else {
@@ -141,6 +141,13 @@ export class UploadLoanDocumentsComponent implements OnInit {
 
   editImages(value) {
     this[value].nativeElement.click()
+  }
+
+  save(){
+    this.loanService.uploadDocuments(this.documentsForm.value,this.masterAndLoanIds).pipe(
+      map(res =>{
+
+      })).subscribe()
   }
 
 }
