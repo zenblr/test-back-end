@@ -44,10 +44,10 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       if (changes.action.currentValue == 'edit') {
         if (changes.details.currentValue && changes.details.currentValue.loanBankDetail) {
           this.bankForm.patchValue(changes.details.currentValue.loanBankDetail)
-          let passbookProofImage = changes.details.currentValue.loanBankDetail.passbookProofImage
-          this.bankForm.controls.passbookProofImage.patchValue(passbookProofImage.map(ele => ele.passbookProof.URL))
-          this.bankForm.controls.passbookProof.patchValue(passbookProofImage.map(ele => ele.passbookProof.id))
-          this.bankForm.controls.passbookProofImageName.patchValue(passbookProofImage[0].passbookProof.originalname)
+          // let passbookProofImage = changes.details.currentValue.loanBankDetail.passbookProofImage
+          // this.bankForm.controls.passbookProofImage.patchValue(passbookProofImage.map(ele => ele.passbookProof.URL))
+          // this.bankForm.controls.passbookProof.patchValue(passbookProofImage.map(ele => ele.passbookProof.id))
+          // this.bankForm.controls.passbookProofImageName.patchValue(passbookProofImage[0].passbookProof.originalname)
           this.ref.markForCheck()
         }
       }
@@ -114,7 +114,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
           reason: 'loan',
           masterLoanId: this.masterAndLoanIds.masterLoanId
         }
-  
+
         this.sharedService.uploadFile(event.target.files[0], params).pipe(
           map(res => {
             this.passbookImg.push(res.uploadFile.URL);
