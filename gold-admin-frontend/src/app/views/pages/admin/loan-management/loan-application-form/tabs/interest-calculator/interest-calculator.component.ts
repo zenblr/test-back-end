@@ -131,8 +131,11 @@ export class InterestCalculatorComponent implements OnInit {
   partner() {
     this.partnerService.getPartnerBySchemeAmount(Math.floor(this.totalAmt)).subscribe(res => {
       this.partnerList = res.data;
-      if (this.controls.schemeId.value) {
+      if (this.controls.schemeId.value && this.details) {
+        this.details = ''
         this.returnScheme()
+      } else {
+        this.getSchemes()
       }
     })
   }
