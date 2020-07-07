@@ -320,7 +320,6 @@ exports.loanBankDetails = async (req, res, next) => {
             }
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
 
-            await models.passbookProofImage.destroy({ where: { customerLoanBankDetailId: checkBank.id } });
 
             return loan
         })
