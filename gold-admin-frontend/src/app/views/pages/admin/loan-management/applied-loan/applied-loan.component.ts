@@ -141,13 +141,30 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   editLoan(loan) {
-    if (((
-      (loan.loanStatusForBM == 'pending' || loan.loanStatusForBM == 'rejected' || loan.loanStatusForBM == 'incomplete')
-      && this.userType == 5 && loan.loanStatusForAppraiser == 'approved' || loan.loanStatusForAppraiser == 'rejected') || (loan.loanStatusForAppraiser == 'pending'
-        && this.userType == 7) && this.edit)) {
-      this.router.navigate(['/admin/loan-management/loan-application-form', loan.id])
+
+    if (this.userType == 5) {
+      if ((loan.loanStatusForBM == 'pending' ||
+        loan.loanStatusForBM == 'rejected' ||
+        loan.loanStatusForBM == 'incomplete') && loan.loanStatusForAppraiser == 'approved') {
+        this.navigate(loan)
+      }
+    } else if (this.userType == 7) {
+      if (loan.loanStatusForAppraiser != 'approved') {
+        this.navigate(loan)
+      }
+    } else if (this.userType == 8) {
+      if ((loan.loanStatusForOperatinalTeam == 'pending' ||
+        loan.loanStatusForOperatinalTeam == 'rejected' ||
+        loan.loanStatusForOperatinalTeam == 'incomplete') && loan.loanStatusForBM == 'approved') {
+        this.navigate(loan)
+      }
     }
   }
+
+  navigate(loan) {
+    this.router.navigate(['/admin/loan-management/loan-application-form', loan.id])
+  }
+
 
   packetImageUpload(loan) {
     this.router.navigate(['/admin/loan-management/packet-image-upload', loan.id])

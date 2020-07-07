@@ -43,7 +43,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.id = this.rout.snapshot.params.id
     if (this.id) {
       for (let index = 0; index < this.disabled.length; index++) {
-        this.disabled[index] = true;
+        this.disabled[index] = false;
       }
       this.editApi()
 
