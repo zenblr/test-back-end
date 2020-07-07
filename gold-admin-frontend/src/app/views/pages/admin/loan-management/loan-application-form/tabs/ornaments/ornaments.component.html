@@ -258,22 +258,27 @@
                                         class="my-auto text-primary text-center kt-padding-l-15 kt-pointer"
                                         (click)="preview(ornament.controls.purityTestImage.value,idx)">View Image</label> -->
                                     <mat-error class="kt-padding-l-10">
-                                        <span *ngIf="ornament.controls.purityTestImage.errors?.required">Upload Image</span>
+                                        <span *ngIf="ornament.controls.purityTestImage.errors?.required">Upload
+                                            Image</span>
                                     </mat-error>
                                 </div>
                                 <div class="col-7">
-                                    <span class="my-auto kt-padding-l-5 kt-pointer"
-                                        *ngFor="let img of ornament.controls.purityTestImage.value;index as purityIndex">
-                                        <img [src]="img" class="" height="35" width="35" (click)="preview(img,idx)">
-                                        <span *ngIf="!disable" class="pos"
-                                            (click)="removeImage('purityTestImage',idx,purityIndex)">x</span>
-                                    </span>
+                                    <ng-container *ngIf="isArray(ornament.controls.purityTestImage.value)">
+                                        <span class="my-auto kt-padding-l-5 kt-pointer"
+                                            *ngFor="let img of ornament.controls.purityTestImage.value;index as purityIndex">
+                                            <img [src]="img" class="" height="35" width="35" (click)="preview(img,idx)">
+                                            <span *ngIf="!disable" class="pos"
+                                                (click)="removeImage('purityTestImage',idx,purityIndex)">x</span>
+                                        </span>
+                                    </ng-container>
+
                                 </div>
                                 <div class="col-1 text-right min-height-attach">
                                     <input type="file" #purity class="d-none"
                                         (change)="uploadFile(idx,$event,'purityTestImage')">
-                                    <kt-button *ngIf="ornament.controls.purityTestImage.value.length == 0" [type]="'button'"
-                                        [value]="'Attach'" (click)="webcam(idx,$event,'purityTestImage')"></kt-button>
+                                    <kt-button *ngIf="ornament.controls.purityTestImage.value.length == 0"
+                                        [type]="'button'" [value]="'Attach'"
+                                        (click)="webcam(idx,$event,'purityTestImage')"></kt-button>
                                     <div class="form-label">
                                         <button *ngIf="ornament.controls.purityTestImage.value.length > 0 && !disable"
                                             class="my-auto img-add kt-pointer"

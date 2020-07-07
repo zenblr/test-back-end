@@ -61,8 +61,15 @@ export class SharedService {
 		return this.http.post<any>(`/api/upload-file`, fd, { params: reqParams });
 	}
 
-	uploadBase64File(avatar): Observable<any> {
-		return this.http.post<any>(`/api/upload-file/base`, { avatar });
+	uploadBase64File(avatar, data?): Observable<any> {
+		const reqParams: any = {};
+		if (data && data.reason) {
+			reqParams.reason = data.reason;
+		}
+		if (data && data.customerId) {
+			reqParams.customerId = data.customerId;
+		}
+		return this.http.post<any>(`/api/upload-file/base`, { avatar }, { params: reqParams });
 	}
 
 	getRole(): Observable<any> {

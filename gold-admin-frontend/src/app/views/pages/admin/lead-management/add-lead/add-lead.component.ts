@@ -146,7 +146,7 @@ export class AddLeadComponent implements OnInit {
       panImage: [null],
       panImg: [null],
       comment: [''],
-      leadSourceId: [''],
+      leadSourceId: [null],
       source: [''],
     });
     this.getCities()
@@ -201,10 +201,10 @@ export class AddLeadComponent implements OnInit {
 
   getLeadById(id) {
     this.leadService.getLeadById(id).subscribe(res => {
-      // console.log(res);
       this.leadForm.patchValue(res.singleCustomer);
-      this.leadForm.patchValue({ panImage: res.singleCustomer.panImage.id })
-      this.leadForm.patchValue({ panImg: res.singleCustomer.panImage.URL })
+      this.leadForm.patchValue({ panImage: res.singleCustomer.panImage })
+      this.leadForm.patchValue({ panImg: res.singleCustomer.panImg })
+      console.log(this.leadForm.value)
       this.getCities();
       this.commentBox()
     },
@@ -300,7 +300,7 @@ export class AddLeadComponent implements OnInit {
           if (res) {
             // this.controls.form60.patchValue(event.target.files[0].name)
             this.controls.panImg.patchValue(res.uploadFile.URL)
-            this.controls.panImage.patchValue(res.uploadFile.id)
+            this.controls.panImage.patchValue(res.uploadFile.path)
           }
         }), catchError(err => {
           throw err
@@ -341,7 +341,7 @@ export class AddLeadComponent implements OnInit {
         return
       }
 
-      if (this.controls.leadSourceId.value == "") {
+      if (this.controls.leadSourceId.value == null) {
         this.leadForm.get('leadSourceId').patchValue(null);
       } else {
         this.leadForm.get('leadSourceId').patchValue(Number(this.controls.leadSourceId.value));
@@ -383,7 +383,7 @@ export class AddLeadComponent implements OnInit {
         this.leadForm.get('panType').patchValue(null);
         this.controls.panImage.patchValue(null)
       }
-      if (this.controls.leadSourceId.value == "") {
+      if (this.controls.leadSourceId.value == null) {
         this.leadForm.get('leadSourceId').patchValue(null);
       } else {
         this.leadForm.get('leadSourceId').patchValue(Number(this.controls.leadSourceId.value));

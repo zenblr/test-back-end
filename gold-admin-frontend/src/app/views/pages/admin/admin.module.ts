@@ -90,8 +90,8 @@ import { AdminComponent } from './admin.component';
 						loadChildren: () => import('./assigned-customers/assigned-customers.module').then(m => m.AssignedCustomersModule)
 					},
 					{
-						path: 'account',
-						loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
+						path: 'funds-approvals',
+						loadChildren: () => import('./funds-approvals/funds-approvals.module').then(m => m.FundsApprovalsModule)
 					},
 					{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 					{ path: '**', redirectTo: 'dashboard', pathMatch: 'full' }

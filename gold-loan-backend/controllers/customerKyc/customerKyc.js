@@ -25,7 +25,7 @@ exports.getCustomerDetails = async (req, res, next) => {
     let statusId = status.id
     let checkStatusCustomer = await models.customer.findOne({
         where: { statusId, id: numberExistInCustomer.id },
-        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImageId'],
+        attributes: ['id','firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImageId'],
         include: [{
             model: models.fileUpload,
             as: 'panImage'
