@@ -80,11 +80,11 @@ export class UplodDataImageComponent implements OnInit {
               this.sharedService.uploadFile(details[0], params).pipe(map(res => {
                 if (this.index != null) {
                   this.images.splice(this.index, 1, res.uploadFile.URL)
-                  this.imgId.splice(this.index, 1, res.uploadFile.id)
+                  this.imgId.splice(this.index, 1, res.uploadFile.path)
                   this.index = null;
                 } else {
                   this.images.push(res.uploadFile.URL)
-                  this.imgId.push(res.uploadFile.id)
+                  this.imgId.push(res.uploadFile.path)
                 }
                 this.ref.detectChanges();
               }),

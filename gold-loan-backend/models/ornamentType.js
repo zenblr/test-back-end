@@ -16,5 +16,11 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
+    OrnamentType.associate = function (models) {
+
+        OrnamentType.belongsToMany(models.packet, { through: models.packetOrnament });
+
+    }
+
     return OrnamentType;
 }

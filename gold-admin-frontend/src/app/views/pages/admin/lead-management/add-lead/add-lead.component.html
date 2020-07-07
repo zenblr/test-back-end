@@ -24,7 +24,7 @@
                             <div class="col-8">
                                 <select class="form-control" formControlName="leadSourceId"
                                     [class.isError]="controls.leadSourceId.touched && controls.leadSourceId.invalid">
-                                    <option value="" [disabled]="true" [selected]="true"> Select Lead </option>
+                                    <option value="null" [selected]="true"> Select Lead </option>
                                     <option *ngFor="let lead of leadSources" [value]="lead.id">
                                         {{lead.leadName | titlecase}}
                                     </option>

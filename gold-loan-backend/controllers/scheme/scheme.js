@@ -64,18 +64,36 @@ exports.addScheme = async (req, res, next) => {
 //read scheme
 
 exports.readScheme = async (req, res, next) => {
-    let readSchemeData = await models.partner.findAll({
-        where: { isActive: true },
-        include: [
-            {
-                model: models.scheme,
-                where: { isActive: true }
-            },
-        ],
-    })
+
+    var { isActive } = req.query;
+    const query = {};
+    let readSchemeData;
+    if (isActive) {
+        query.isActive = isActive;
+        readSchemeData = await models.partner.findAll({
+            where: { isActive: true },
+            include: [
+                {
+                    model: models.scheme,
+                    required: true,
+                    where: query
+                },
+            ],
+        })
+    }else{
+        readSchemeData = await models.partner.findAll({
+            where: { isActive: true },
+            include: [
+                {
+                    model: models.scheme,
+                    required: true,
+                },
+            ],
+        })
+    }
 
     if (!readSchemeData[0]) {
-        return res.status(200).json({ message: 'no scheme found' });
+        return res.status(200).json({ data: readSchemeData });
 
     }
     return res.status(200).json({ data: readSchemeData });

@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InternalUserService } from '../../../../../../core/user-management/internal-user';
 import { catchError, map } from 'rxjs/operators';
 import { InternalUserBranchService } from '../../../../../../core/user-management/internal-user-branch'
-import { RolesService} from '../../../../../../core/user-management/roles'
+import { RolesService } from '../../../../../../core/user-management/roles'
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -18,15 +18,15 @@ export class AddInternalUserComponent implements OnInit {
   addUserForm: FormGroup
   branch: unknown;
   roles: any;
-  userType:any;
+  userType: any;
   constructor(
     public dialogRef: MatDialogRef<AddInternalUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private internalUser: InternalUserService,
     private internalUserBranchService: InternalUserBranchService,
-    private rolesService:RolesService,
-    private toast:ToastrService
+    private rolesService: RolesService,
+    private toast: ToastrService
   ) { }
 
   ngOnInit() {
@@ -44,34 +44,34 @@ export class AddInternalUserComponent implements OnInit {
     } else if (this.data.action == 'edit') {
       this.title = 'Edit Internal User'
       this.addUserForm.patchValue(this.data.user)
-      this.addUserForm.patchValue({roleId:this.data.user.roles[0].id})
-      this.addUserForm.patchValue({internalBranchId:this.data.user.internalBranches[0].id})
+      this.addUserForm.patchValue({ roleId: this.data.user.roles[0].id })
+      this.addUserForm.patchValue({ internalBranchId: this.data.user.internalBranches[0].id })
     } else {
       this.title = 'View Internal User'
       this.addUserForm.disable();
     }
   }
 
-  getUserType(){
-    this.internalUserBranchService.getUserType().subscribe(res=>{
+  getUserType() {
+    this.internalUserBranchService.getUserType().subscribe(res => {
       this.userType = res.data
     })
   }
 
   getBranch() {
-    this.internalUserBranchService.getInternalBranch('',1,50).pipe(
-      map(res =>{
+    this.internalUserBranchService.getInternalBranch('', 1, 50).pipe(
+      map(res => {
         this.branch = res['data']
       })
     ).subscribe()
   }
 
   getRoles() {
-    this.rolesService.getRoles('',1,50).pipe(
-      map(res =>{
+    this.rolesService.getRoles('', 1, 50).pipe(
+      map(res => {
         this.roles = res.data;
       })
-      ).subscribe()
+    ).subscribe()
   }
 
   initForm() {
@@ -79,11 +79,11 @@ export class AddInternalUserComponent implements OnInit {
       internalBranchId: ['', Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      userUniqueId: ['', Validators.required],
-      email: ['', [Validators.email,Validators.required]],
-      mobileNumber: ['', [Validators.required,Validators.minLength(10)]],
+      userUniqueId: [''],
+      email: ['', [Validators.email, Validators.required]],
+      mobileNumber: ['', [Validators.required, Validators.minLength(10)]],
       roleId: ['', Validators.required],
-      userTypeId:['',Validators.required],
+      userTypeId: ['', Validators.required],
     })
   }
 
@@ -125,5 +125,15 @@ export class AddInternalUserComponent implements OnInit {
           throw err
         })).subscribe()
     }
+  }
+
+  checkUserType() {
+    console.log(this.addUserForm.value)
+    if (this.controls.userTypeId.value == 7) {
+      this.addUserForm.controls.userUniqueId.setValidators(Validators.required)
+    } else {
+      this.addUserForm.controls.userUniqueId.clearValidators()
+    }
+    this.addUserForm.controls.userUniqueId.updateValueAndValidity()
   }
 }

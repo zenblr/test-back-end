@@ -43,18 +43,17 @@
                             [masterAndLoanIds]="masterAndLoanIds">
                         </kt-approval>
                     </mat-tab>
-                    <mat-tab label="Packets" >
-                        <!-- *ngIf="url == 'packet-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)"> -->
+                    <mat-tab label="Packets" *ngIf="url == 'packet-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)">
                         <!-- <ng-template> -->
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab"
                             style="padding:0px !important">
-                            <kt-upload-packets [viewpacketsDetails]="customerDetail" [ornamentType]="customerDetail">
+                            <kt-upload-packets [viewpacketsDetails]="customerDetail" [ornamentType]="customerDetail" [masterAndLoanIds]="masterAndLoanIds">
                             </kt-upload-packets>
                         </div>
                         <!-- </ng-template> -->
                     </mat-tab>
                     <mat-tab label="Upload Documents">
-                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds"></kt-upload-loan-documents>
+                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" [loanDocumnets]="customerDetail"></kt-upload-loan-documents>
                     </mat-tab>
                     
                 </mat-tab-group>

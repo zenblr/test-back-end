@@ -12,8 +12,8 @@
                                 <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof"
                                     [class.isError]="controls.identityTypeId.invalid && controls.identityTypeId.touched">
                                     <option value="" [disabled]="true"> Select Proof</option>
-                                    <option *ngFor="let proof of identityProofs"
-                                        [selected]="selectAadhar()" [value]="proof.id">
+                                    <option *ngFor="let proof of identityProofs" [selected]="selectAadhar()"
+                                        [value]="proof.id">
                                         {{ proof.name | titlecase}}
                                     </option>
                                 </select>
@@ -370,7 +370,7 @@
                                         </div>
                                         <div class="col-7">
                                             <select formControlName="addressProofTypeId" class="form-control"
-                                                (change)="checkForAadhar()"
+                                                (change)="checkForAadhar(i)"
                                                 [class.isError]="addressForm.controls.addressProofTypeId.touched && addressForm.controls.addressProofTypeId.invalid">
                                                 <option value="" [disabled]=true [selected]="true"> Select Proof
                                                 </option>

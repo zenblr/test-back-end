@@ -459,34 +459,35 @@ export class UserReviewComponent implements OnInit {
 
     this.initForm();
 
-    let identityArray = this.data.customerKycReview.customerKycPersonal.identityProofImage
-    identityArray.forEach(element => {
-      this.identityImageArray.push(element.identityProof.URL)
-      this.identityIdArray.push(element.identityProof.id)
-      // this.identityFileNameArray.push(element.identityProof.originalna)
-    });
+    let identityArray = this.data.customerKycReview.customerKycPersonal
+    // identityArray.forEach(element => {
+    //   this.identityImageArray.push(element.identityProof.URL)
+    //   this.identityIdArray.push(element.identityProof.id)
+    // });
+    this.identityImageArray = identityArray.identityProofImage
+    this.identityIdArray = identityArray.identityProof
     this.reviewForm.controls.identityProof.patchValue(this.identityIdArray);
     this.customerKycPersonal.controls.identityProof.patchValue(this.identityIdArray);
-    // this.customerKycPersonal.controls.identityProofFileName.patchValue(this.identityFileNameArray[this.identityFileNameArray.length - 1]);
 
 
-    let addressArray1 = this.data.customerKycReview.customerKycAddress[0].addressProofImage
-    addressArray1.forEach(element => {
-      this.addressImageArray1.push(element.addressProof.URL)
-      this.addressIdArray1.push(element.addressProof.id)
-      // this.addressFileNameArray1.push(element.addressProof.originalname)
-    });
+    let addressArray1 = this.data.customerKycReview.customerKycAddress[0]
+    // addressArray1.forEach(element => {
+    //   this.addressImageArray1.push(element.addressProof.URL)
+    //   this.addressIdArray1.push(element.addressProof.id)
+    // });
+    this.addressImageArray1 = addressArray1.addressProofImage
+    this.addressIdArray1 = addressArray1.addressProof
     this.customerKycAddressOne.controls.addressProof.patchValue(this.addressIdArray1);
-    // this.customerKycAddressOne.controls.addressProofFileName.patchValue(this.addressFileNameArray1[this.addressFileNameArray1.length - 1]);
 
 
-    let addressArray2 = this.data.customerKycReview.customerKycAddress[1].addressProofImage
-    addressArray2.forEach(element => {
-      this.addressImageArray2.push(element.addressProof.URL)
-      this.addressIdArray2.push(element.addressProof.id)
-      // this.addressFileNameArray2.push(element.addressProof.originalname)
-    });
-    // this.customerKycAddressTwo.controls.addressProofFileName.patchValue(this.addressFileNameArray2[this.addressFileNameArray2.length - 1]);
+    let addressArray2 = this.data.customerKycReview.customerKycAddress[1]
+    // addressArray2.forEach(element => {
+    //   this.addressImageArray2.push(element.addressProof.URL)
+    //   this.addressIdArray2.push(element.addressProof.id)
+    // });
+    this.addressImageArray2 = addressArray2.addressProofImage
+    this.addressIdArray2 = addressArray2.addressProof
+    this.customerKycAddressTwo.controls.addressProof.patchValue(this.addressIdArray2);
 
 
 
@@ -505,7 +506,7 @@ export class UserReviewComponent implements OnInit {
 
   initForm() {
     this.reviewForm = this.fb.group({
-      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImageData.id, [Validators.required]],
+      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
       firstName: [this.data.customerKycReview.firstName, [Validators.required]],
       lastName: [this.data.customerKycReview.lastName, [Validators.required]],
       mobileNumber: [this.data.customerKycReview.mobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
@@ -545,12 +546,12 @@ export class UserReviewComponent implements OnInit {
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
     })
     this.customerKycPersonal = this.fb.group({
-      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImageData.id, [Validators.required]],
+      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
       alternateMobileNumber: [this.data.customerKycReview.customerKycPersonal.alternateMobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       gender: [this.data.customerKycReview.customerKycPersonal.gender, [Validators.required]],
       spouseName: [this.data.customerKycReview.customerKycPersonal.spouseName, [Validators.required]],
       martialStatus: [this.data.customerKycReview.customerKycPersonal.martialStatus, [Validators.required]],
-      signatureProof: [this.data.customerKycReview.customerKycPersonal.signatureProofData.id],
+      signatureProof: [],
       signatureProofFileName: [],
       occupationId: [],
       dateOfBirth: [this.data.customerKycReview.customerKycPersonal.dateOfBirth, [Validators.required]],
@@ -562,6 +563,10 @@ export class UserReviewComponent implements OnInit {
     })
     if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
       this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
+    }
+    if (this.data.customerKycReview.customerKycPersonal.signatureProofData !== null) {
+      this.customerKycPersonal.controls.signatureProof.patchValue(this.data.customerKycReview.customerKycPersonal.signatureProof)
+
     }
 
     this.ref.detectChanges()
@@ -688,7 +693,15 @@ export class UserReviewComponent implements OnInit {
     } else if (type == 'permanent') {
       this.addressImageArray1.splice(index, 1)
       this.addressIdArray1.splice(index, 1)
-      this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
+      this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray1 });
+    }
+    else if (type == 'signature') {
+      this.data.customerKycReview.customerKycPersonal.signatureProofImage = ''
+      this.data.customerKycReview.customerKycPersonal.signatureProof = null
+      this.customerKycPersonal.patchValue({
+        signatureProof: this.data.customerKycReview.customerKycPersonal.signatureProof,
+        signatureProofFileName: ''
+      });
     }
     // else if (type == 'passbook') {
     // this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
@@ -714,31 +727,31 @@ export class UserReviewComponent implements OnInit {
 
           if (type == "identityProof" && this.identityImageArray.length < 2) {
             this.identityImageArray.push(res.uploadFile.URL)
-            this.identityIdArray.push(res.uploadFile.id)
+            this.identityIdArray.push(res.uploadFile.path)
             this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
             this.reviewForm.patchValue({ identityProofFileName: event.target.files[0].name });
           } else
             if (type == 'permanent' && this.addressImageArray1.length < 2) {
               this.addressImageArray1.push(res.uploadFile.URL)
-              this.addressIdArray1.push(res.uploadFile.id)
+              this.addressIdArray1.push(res.uploadFile.path)
               this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 })
               this.customerKycAddressOne.patchValue({ addressProofFileName: event.target.files[0].name });
             } else
               if (type == 'residential' && this.addressImageArray2.length < 2) {
                 this.addressImageArray2.push(res.uploadFile.URL)
-                this.addressIdArray2.push(res.uploadFile.id)
+                this.addressIdArray2.push(res.uploadFile.path)
                 this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 })
                 this.customerKycAddressTwo.patchValue({ addressProofFileName: event.target.files[0].name });
               } else
                 if (type == "signature") {
-                  this.data.customerKycReview.customerKycPersonal.signatureProofData.URL = res.uploadFile.URL;
-                  this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.id })
+                  this.data.customerKycReview.customerKycPersonal.signatureProofImg = res.uploadFile.URL;
+                  this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.path })
                   this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
                   this.ref.markForCheck();
                 }
                 else if (type == "profile") {
                   this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
-                  this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.id })
+                  this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.path })
                   this.ref.markForCheck();
                 }
                 else {
@@ -784,10 +797,14 @@ export class UserReviewComponent implements OnInit {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+        const params = {
+          reason: 'customer',
+          customerId: this.customerKycAddressOne.controls.customerId.value
+        }
+        this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
           console.log(res)
-          this.data.customerKycReview.customerKycPersonal.profileImageData.URL = res.uploadFile.URL
-          this.customerKycPersonal.get('profileImage').patchValue(this.data.customerKycReview.customerKycPersonal.profileImageData.id);
+          this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL
+          this.customerKycPersonal.get('profileImage').patchValue(this.data.customerKycReview.customerKycPersonal.profileImg);
           this.ref.detectChanges()
         })
       }
@@ -829,4 +846,11 @@ export class UserReviewComponent implements OnInit {
       this.customerKycAddressOne.patchValue({ addressProofNumber: '' });
     }
   }
+
+  checkOccupation(event) {
+    if (event.target.value == 'null') {
+      this.customerKycPersonal.controls.occupationId.patchValue(null)
+    }
+  }
+
 }
