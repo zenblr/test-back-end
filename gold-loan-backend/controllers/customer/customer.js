@@ -231,9 +231,6 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     isActive: true,
   };
   let includeArray = [{
-    model: models.fileUpload,
-    as: 'panImage'
-  }, {
     model: models.customerKyc,
     as: "customerKyc",
     attributes: ['isKycSubmitted']
