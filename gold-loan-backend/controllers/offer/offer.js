@@ -31,14 +31,14 @@ exports.addUpdateOffer = async (req, res, next) => {
 
 exports.readOffer = async (req, res, next) => {
     let offer = await models.offer.findAll({
-        include: {
-            model: models.offerImages,
-            as: 'offerImages',
-            include: {
-                model: models.fileUpload,
-                as: 'offerImages'
-            }
-        }
+        // include: {
+        //     model: models.offerImages,
+        //     as: 'offerImages',
+        //     include: {
+        //         model: models.fileUpload,
+        //         as: 'offerImages'
+        //     }
+        // }
     })
     if (!offer[0]) {
         res.status(400).json({ message: 'Data not found' });

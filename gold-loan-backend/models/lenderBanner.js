@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
         images: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'images'
-
         },
         userId: {
             type: DataTypes.INTEGER,
@@ -29,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         if (values.images) {
             for (imgUrl of values.images) {
                 let URL = baseUrlConfig.BASEURL + imgUrl;
-                bannerImage.push(URL)
+                lenderBannerImages.push(URL)
             }
         }
         values.lenderBannerImages = lenderBannerImages

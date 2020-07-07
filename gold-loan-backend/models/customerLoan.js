@@ -99,37 +99,74 @@ module.exports = (sequelize, DataTypes) => {
         var resOrna = []
         for (let i = 0; i < values.loanOrnamentsDetail.length; i++) {
             if (values.loanOrnamentsDetail[i].weightMachineZeroWeight) {
-                values.loanOrnamentsDetail[i].weightMachineZeroWeightImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeight;
+                // values.loanOrnamentsDetail[i].weightMachineZeroWeightData = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeight;
+
+                let data = {};
+                data.path = values.loanOrnamentsDetail[i].weightMachineZeroWeight;
+                data.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeight;
+                values.loanOrnamentsDetail[i].weightMachineZeroWeightData = data;
+
             }
 
             if (values.loanOrnamentsDetail[i].withOrnamentWeight) {
-                values.loanOrnamentsDetail[i].withOrnamentWeightImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].withOrnamentWeight;
+                // values.loanOrnamentsDetail[i].withOrnamentWeightData = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].withOrnamentWeight;
+
+                let data = {};
+                data.path = values.loanOrnamentsDetail[i].withOrnamentWeight;
+                data.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].withOrnamentWeight;
+                values.loanOrnamentsDetail[i].withOrnamentWeightData = data;
             }
 
             if (values.loanOrnamentsDetail[i].stoneTouch) {
-                values.loanOrnamentsDetail[i].stoneTouchImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].stoneTouch;
+                // values.loanOrnamentsDetail[i].stoneTouchData = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].stoneTouch;
+
+                let data = {};
+                data.path = values.loanOrnamentsDetail[i].stoneTouch;
+                data.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].stoneTouch;
+                values.loanOrnamentsDetail[i].stoneTouchData = data;
             }
 
             if (values.loanOrnamentsDetail[i].acidTest) {
-                values.loanOrnamentsDetail[i].acidTestImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].acidTest;
+                // values.loanOrnamentsDetail[i].acidTestData = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].acidTest;
+
+                let data = {};
+                data.path = values.loanOrnamentsDetail[i].acidTest;
+                data.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].acidTest;
+                values.loanOrnamentsDetail[i].acidTestData = data;
             }
 
             if (values.loanOrnamentsDetail[i].ornamentImage) {
-                values.loanOrnamentsDetail[i].ornamentImage = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].ornamentImage;
+                let data = {};
+                data.path = values.loanOrnamentsDetail[i].ornamentImage; 
+                data.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].ornamentImage;
+                values.loanOrnamentsDetail[i].ornamentImageData = data;
             }
             if (values.loanOrnamentsDetail[i].purityTest) {
                 for (image of values.loanOrnamentsDetail[i].purityTest) {
-                    image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.path;
+                    image.purityTest = baseUrlConfig.BASEURL + image.purityTest;
                 }
+
             }
             let purityTestImage = []
-            if (values.purityTest) {
-                for (imgUrl of values.purityTest) {
+            let purityTestPath = []
+            let newData;
+
+            if (values.loanOrnamentsDetail[i].purityTest.length) {
+
+                for (imgUrl of values.loanOrnamentsDetail[i].purityTest) {
                     let URL = baseUrlConfig.BASEURL + imgUrl;
                     purityTestImage.push(URL)
+
+                    let path = imgUrl;
+                    purityTestPath.push(path)
+
+                    let data = {};
+                    data.path = purityTestPath;
+                    data.URL =  purityTestImage;
+                    newData = data;
                 }
             }
-            values.loanOrnamentsDetail[i].purityTestImage = addressProofImage
+            values.loanOrnamentsDetail[i].purityTestImage = newData
 
             resOrna.push(values.loanOrnamentsDetail[i])
         }

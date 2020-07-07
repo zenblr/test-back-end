@@ -87,10 +87,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
             let customerKycReview = await models.customer.findOne({
                 where: { id: KycStage.customerId },
                 attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
-                include: [{
-                    model: models.fileUpload,
-                    as: 'panImage'
-                }, {
+                include: [ {
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
                     attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
@@ -247,10 +244,7 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
-        include: [{
-            model: models.fileUpload,
-            as: 'panImage'
-        }, {
+        include: [ {
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
             attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
@@ -479,9 +473,6 @@ exports.getReviewAndSubmit = async (req, res, next) => {
         where: { id: customerId },
         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
         include: [{
-            model: models.fileUpload,
-            as: 'panImage'
-        }, {
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
             attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],

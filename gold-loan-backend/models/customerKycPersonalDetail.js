@@ -137,10 +137,11 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         if (values.profileImage) {
-            values.profileImage = baseUrlConfig.BASEURL + values.profileImage;
+            values.profileImg = baseUrlConfig.BASEURL + values.profileImage;
+
         }
         if (values.signatureProof) {
-            values.signatureProofImage = baseUrlConfig.BASEURL + values.signatureProof;
+            values.signatureProofImg = baseUrlConfig.BASEURL + values.signatureProof;
         }
         values.identityProofImage = identityProofImage
 

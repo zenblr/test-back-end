@@ -31,14 +31,14 @@ exports.addUpdateLenderBanner = async (req, res, next) => {
 
 exports.readLenderBanner = async (req, res, next) => {
     let lenderBanner = await models.lenderBanner.findAll({
-        include: {
-            model: models.lenderBannerImages,
-            as: 'lenderBannerImages',
-            include: {
-                model: models.fileUpload,
-                as: 'lenderBannerImages'
-            }
-        }
+        // include: {
+        //     model: models.lenderBannerImages,
+        //     as: 'lenderBannerImages',
+        //     include: {
+        //         model: models.fileUpload,
+        //         as: 'lenderBannerImages'
+        //     }
+        // }
     })
     if (!lenderBanner[0]) {
         res.status(404).json({ message: 'Data not found' });

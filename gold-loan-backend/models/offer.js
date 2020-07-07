@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     const Offer = sequelize.define('offer', {
         // attributes
         images: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'images'
         },
         userId: {
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         if (values.images) {
             for (imgUrl of values.images) {
                 let URL = baseUrlConfig.BASEURL + imgUrl;
-                bannerImage.push(URL)
+                offerImage.push(URL)
             }
         }
         values.offerImage = offerImage

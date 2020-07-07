@@ -25,10 +25,7 @@ exports.customerDetails = async (req, res, next) => {
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
-        include: [{
-            model: models.fileUpload,
-            as: 'panImage'
-        }]
+       
     })
 
     let customerLoanStage = await models.customerLoanMaster.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false } })

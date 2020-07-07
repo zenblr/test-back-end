@@ -122,19 +122,19 @@ module.exports = (sequelize, DataTypes) => {
     customerLoanOrnamentsDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.weightMachineZeroWeight) {
-            values.weightMachineZeroWeightImage = baseUrlConfig.BASEURL + values.weightMachineZeroWeight;
+            values.weightMachineZeroWeightData = baseUrlConfig.BASEURL + values.weightMachineZeroWeight;
         }
         if (values.withOrnamentWeight) {
-            values.withOrnamentWeightImage = baseUrlConfig.BASEURL + values.withOrnamentWeight;
+            values.withOrnamentWeightData = baseUrlConfig.BASEURL + values.withOrnamentWeight;
         }
         if (values.stoneTouch) {
-            values.stoneTouchImage = baseUrlConfig.BASEURL + values.stoneTouch;
+            values.stoneTouchData = baseUrlConfig.BASEURL + values.stoneTouch;
         }
         if (values.acidTest) {
-            values.acidTestImage = baseUrlConfig.BASEURL + values.acidTest;
+            values.acidTestData = baseUrlConfig.BASEURL + values.acidTest;
         }
         if (values.ornamentImage) {
-            values.ornamentImage = baseUrlConfig.BASEURL + values.ornamentImage;
+            values.ornamentImageData = baseUrlConfig.BASEURL + values.ornamentImage;
         }
         let purityTestImage = []
         if (values.purityTest) {
@@ -143,7 +143,7 @@ module.exports = (sequelize, DataTypes) => {
                 purityTestImage.push(URL)
             }
         }
-        values.purityTestImage = addressProofImage
+        values.purityTestImage = purityTestImage
 
         return values;
     }

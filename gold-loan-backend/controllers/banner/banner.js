@@ -32,14 +32,14 @@ exports.addUpdateBanner = async (req, res, next) => {
 
 exports.readBanner = async (req, res, next) => {
     let banner = await models.banner.findAll({
-        include: {
-            model: models.bannerImages,
-            as: 'bannerImage',
-            include: {
-                model: models.fileUpload,
-                as: 'bannerImage'
-            }
-        }
+        // include: {
+        //     model: models.bannerImages,
+        //     as: 'bannerImage',
+        //     include: {
+        //         model: models.fileUpload,
+        //         as: 'bannerImage'
+        //     }
+        // }
     })
     // const id = banner[0].id;
     // return res.json(banner[0])
