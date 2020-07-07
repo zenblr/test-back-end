@@ -52,8 +52,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   totalAmount = 0;
   addmoreMinus: any;
   globalValue: any;
-  purityTestPath: any[];
-  purityTestImg: any[];
+  purityTestPath: any = [];
+  purityTestImg: any = [];
 
   constructor(
     public fb: FormBuilder,
@@ -545,16 +545,20 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         const params = {
-          reason: 'loan'
+          reason: 'loan',
+          masterLoanId: this.masterAndLoanIds.masterLoanId
         }
-        if (controls.controls.purityTest.value.length < 4) {
-          this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-            console.log(res)
-            this.patchUrlIntoForm(string, res.uploadFile.path, res.uploadFile.URL, index)
-          })
-        } else {
-          this.toast.error('Maximum of 4 Images can be uploaded in Purity Test')
+        if (string == 'purityTestImage') {
+          if (controls.controls.purityTest.value.length >= 4) {
+            this.toast.error('Maximum of 4 Images can be uploaded in Purity Test')
+            return
+          }
         }
+        this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
+          console.log(res)
+          this.patchUrlIntoForm(string, res.uploadFile.path, res.uploadFile.URL, index)
+        })
+
       }
     });
   }
