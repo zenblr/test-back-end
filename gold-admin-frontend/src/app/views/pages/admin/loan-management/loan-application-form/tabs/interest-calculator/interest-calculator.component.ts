@@ -94,10 +94,11 @@ export class InterestCalculatorComponent implements OnInit {
           }
           this.selectedScheme.push(finalLoan.scheme)
           let temp = []
+          this.getIntrest()
           finalLoan.customerLoanInterest.forEach(interset => {
             var data = {
               emiDueDate: interset.emiDueDate,
-              paymentType: this.controls.paymentFrequency.value,
+              paymentType: this.paymentType,
               securedInterestAmount: interset.interestAmount,
               unsecuredInterestAmount: 0,
               totalAmount: Number(interset.interestAmount)
@@ -112,9 +113,8 @@ export class InterestCalculatorComponent implements OnInit {
 
             }
           }
-          Array.prototype.push.apply(this.dateOfPayment, temp)
-          console.log(this.dateOfPayment)
-          this.getIntrest()
+          this.dateOfPayment = temp
+          console.log(this.dateOfPayment.length)
           this.ref.detectChanges()
 
         }

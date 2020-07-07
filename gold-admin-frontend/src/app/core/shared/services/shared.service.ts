@@ -53,8 +53,8 @@ export class SharedService {
 		if (data && data.customerId) {
 			reqParams.customerId = data.customerId;
 		}
-		if (data && data.loanId) {
-			reqParams.loanId = data.loanId;
+		if (data && data.masterLoanId) {
+			reqParams.loanId = data.masterLoanId;
 		}
 		var fd = new FormData();
 		fd.append("avatar", files);

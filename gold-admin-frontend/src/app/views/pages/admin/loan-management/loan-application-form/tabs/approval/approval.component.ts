@@ -32,6 +32,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   url: string;
   viewBMForm = true;
   reasons: any[] = [];
+  viewOpertaionalForm: boolean;
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -64,6 +65,14 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.viewBMForm = false;
     } else if (this.userType == 5) {
       this.controls.loanStatusForAppraiser.disable()
+      this.viewBMForm = true;
+      this.viewOpertaionalForm = false;
+
+    } else if (this.userType == 8) {
+      this.controls.loanStatusForAppraiser.disable()
+      this.controls.loanStatusForBM.disable()
+      this.viewOpertaionalForm = true;
+
     } else {
       this.approvalForm.disable()
     }
@@ -79,7 +88,11 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       goldValuationForBM: [false],
       loanStatusForBM: ['pending'],
       commentByBM: [''],
-      reasons: ['']
+      reasons: [''],
+      applicationFormForOperatinalTeam: [false],
+      goldValuationForOperatinalTeam: [false],
+      loanStatusForOperatinalTeam: [],
+      commentByOperatinalTeam: ['']
     })
 
 
@@ -91,8 +104,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
-        this.approvalForm.patchValue(changes.details.currentValue)
-        this.approvalForm.patchValue({ reasons: changes.details.currentValue.commentByAppraiser })
+        this.approvalForm.patchValue(changes.details.currentValue.masterLoan)
+        this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
         this.statusAppraiser()
         this.statusBM()
         this.ref.markForCheck()
@@ -125,12 +138,23 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
+
   approvalOfBM(value: boolean, type: string) {
     if (this.userType == 5 && !this.disable) {
       if (type == 'gold') {
         this.controls.goldValuationForBM.patchValue(value)
       } else {
         this.controls.applicationFormForBM.patchValue(value)
+      }
+    }
+  }
+
+  approvalOfOperational(value: boolean, type: string) {
+    if (this.userType == 8 && !this.disable) {
+      if (type == 'gold') {
+        this.controls.goldValuationForOperatinalTeam.patchValue(value)
+      } else {
+        this.controls.applicationFormForOperatinalTeam.patchValue(value)
       }
     }
   }
