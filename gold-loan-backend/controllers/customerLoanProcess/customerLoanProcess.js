@@ -72,7 +72,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
 
     let loanData = await sequelize.transaction(async t => {
 
-        let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '2', createdBy, modifiedBy }, { transaction: t })
+        let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '2', internalBranchId: req.userData.internalBranchId, createdBy, modifiedBy }, { transaction: t })
 
         let loan = await models.customerLoan.create({ customerId, masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
 
