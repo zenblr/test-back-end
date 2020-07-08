@@ -352,7 +352,7 @@ exports.appliedKyc = async (req, res, next) => {
     }
     if (req.query.bmRating) {
         query.bmRating = sequelize.where(
-            sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_bm"), "varchar"),
+            sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_operational_team"), "varchar"),
             {
                 [Op.iLike]: search + "%",
             }
