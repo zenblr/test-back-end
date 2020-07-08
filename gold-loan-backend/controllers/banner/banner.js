@@ -18,7 +18,7 @@ exports.addUpdateBanner = async (req, res, next) => {
         }
     } else {
         let id = banner[0].id;
-        let UpdateData = await models.banner.update(id, images, userId)
+        let UpdateData = await models.banner.updateBanner(id, images, userId)
 
         if (UpdateData[0] === 0) {
             return res.status(404).json({ message: 'Data not updated' });
