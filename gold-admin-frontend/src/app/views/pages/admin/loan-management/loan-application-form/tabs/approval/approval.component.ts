@@ -186,7 +186,6 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
   resetAppraiser() {
     this.controls.commentByAppraiser.reset()
-    this.controls.reasons.reset()
   }
 
   resetBM() {
