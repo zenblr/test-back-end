@@ -106,8 +106,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       if (changes.action.currentValue == 'edit') {
         this.approvalForm.patchValue(changes.details.currentValue.masterLoan)
         this.approvalForm.patchValue({ commentByAppraiser: changes.details.currentValue.masterLoan.commentByAppraiser })
-        if(changes.details.currentValue.masterLoan.commentByAppraiser){
-        this.approvalForm.patchValue({ reasons: "Other" })
+        if (changes.details.currentValue.masterLoan.commentByAppraiser) {
+          this.approvalForm.patchValue({ reasons: "Other" })
         }
         this.statusAppraiser()
         this.statusBM()
@@ -139,6 +139,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       } else {
         this.controls.applicationFormForAppraiser.patchValue(value)
       }
+      this.checkforApproval('approved');
     }
   }
 
@@ -253,4 +254,15 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.location.back()
   }
 
+  checkforApproval(status) {
+    if (status.name == 'approved') {
+      if (this.controls.goldValuationForAppraiser.value &&                    this.controls.applicationFormForAppraiser.value) {
+        return false
+      } else {
+        return true
+      }
+    } else {
+      return false
+    }
+  }
 }
