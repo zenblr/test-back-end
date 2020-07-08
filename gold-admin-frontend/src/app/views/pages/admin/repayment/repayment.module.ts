@@ -27,6 +27,10 @@ const routes: Routes = [
   {
     path: 'part-release',
     component: PartReleaseComponent,
+  },
+  {
+    path: 'full-release',
+    component: PartReleaseComponent,
   }
 ]
 
@@ -36,7 +40,7 @@ const routes: Routes = [
     MonthlyPaymentAddComponent,
     QuickPayComponent,
     EmiLogsDialogComponent,
-    PartReleaseComponent
+    PartReleaseComponent,
   ],
   imports: [
     CommonModule,

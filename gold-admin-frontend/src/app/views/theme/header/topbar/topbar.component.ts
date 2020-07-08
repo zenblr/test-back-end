@@ -614,6 +614,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/repayment/part-release')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/admin/repayment/full-release')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
