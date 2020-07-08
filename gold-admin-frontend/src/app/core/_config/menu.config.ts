@@ -708,7 +708,7 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-21.svg",
 							root: true,
 							page: "/admin/dashboard",
-							permission: !(this.userType === 4),
+							permission: !(this.userType !== 2 && this.userType !== 3),
 						},
 						{
 							title: "Log Out",
