@@ -623,7 +623,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'top-up-approval') {
 			this.showInput = true;
 			this.showfilter = true;
-
+		}
+		if (location.href.includes('/admin/repayment/full-release')) {
+			this.showBackButton = true;
 		}
 	}
 

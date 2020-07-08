@@ -69,6 +69,10 @@ export class AssignAppraiserComponent implements OnInit {
       this.title = 'Edit Appraiser'
 
       this.appraiserForm.patchValue(this.data.appraiser)
+      const startTime = this.convertTime24To12(this.data.appraiser.startTime);
+      const endTime = this.convertTime24To12(this.data.appraiser.endTime);
+      this.appraiserForm.patchValue({ startTime, endTime })
+
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
       }
@@ -172,6 +176,15 @@ export class AssignAppraiserComponent implements OnInit {
     }
 
   }
+
+  convertTime24To12(timeString) {
+    return (new Date("1955-11-05T" + timeString + "Z")).toLocaleTimeString("bestfit", {
+      timeZone: "UTC",
+      hour12: !0,
+      hour: "numeric",
+      minute: "numeric"
+    });
+  };
 
 
 
