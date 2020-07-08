@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'partner_id'
         },
+        loanAmount:{
+            type: DataTypes.STRING,
+            field: 'loan_amount'
+        },
         schemeId: {
             type: DataTypes.INTEGER,
             field: 'scheme_id'
