@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'master_loan_id',
             allowNull: false
         },
+        loanAmount: {
+            type: DataTypes.STRING,
+            field: 'loan_amount'
+        },
         transactionId: {
             type: DataTypes.STRING,
             field: 'transaction_id'
