@@ -32,6 +32,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
   documentsForm: FormGroup
   show: boolean;
+  url: string;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -64,6 +65,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
 
 
   ngOnInit() {
+    this.url = this.router.url.split('/')[3]
     this.documentsForm = this.fb.group({
       loanAgreementCopy: [],
       pawnCopy: [],

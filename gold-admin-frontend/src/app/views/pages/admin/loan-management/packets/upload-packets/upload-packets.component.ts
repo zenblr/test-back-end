@@ -52,7 +52,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private ref: ChangeDetectorRef,
     private dilaog: MatDialog
   ) {
-
+    
   }
 
 
@@ -92,7 +92,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   ngOnInit() {
     this.initForm()
     this.getPacketsDetails()
-    this.url = this.router.url.split('/')[2]
+    this.url = this.router.url.split('/')[3]
     this.masterAndLoanIds = this.route.snapshot.params.id
 
     this.packetImg = this.fb.group({

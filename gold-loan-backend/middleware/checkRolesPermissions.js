@@ -9,12 +9,6 @@ module.exports = async (req, res, next) => {
     try {
         let userId = await req.userData.id;
         let requestInfo = {'method': req.method,'baseUrl': req.baseUrl,'path': req.route.path}
-        console.log(requestInfo);
-
-        // return res.json(requestInfo)
-        next()
-        return
-        let systemInfo;
 
         await redisClient.get(`${userId}permissions`, async (err, result) => {
             if (err) {
@@ -42,12 +36,12 @@ module.exports = async (req, res, next) => {
                 let getRole = await models.userRole.getAllRole(userId);
                 let roleId = await getRole.map((data) => data.roleId);
                 let getPermissions = await models.rolePermission.findAll({
-                    where: { roleId: { [Op.in]: roleId }, isActive: true },
+                    where: { roleId: { [Op.in]: roleId } },
                     attributes: ['permissionId']
                 });
                 let permissionId = await getPermissions.map((data) => data.permissionId);
                 let systemInfoData = await models.permissionSystemInfo.findAll({
-                    where: { permissionId: { [Op.in]: permissionId }, isActive: true },
+                    where: { permissionId: { [Op.in]: permissionId } },
                     attributes: ['systemInfo']
                 });
                 systemInfo = await systemInfoData.map((data) => data.systemInfo);
@@ -64,10 +58,10 @@ module.exports = async (req, res, next) => {
                     if (access) {
                         next();
                     } else {
-                        res.status(403).json({ message: 'access denied' })
+                        res.status(403).json({ message: 'Access denied' })
                     }
                 } else {
-                    res.status(403).json({ message: 'access denied' })
+                    res.status(403).json({ message: 'Access denied' })
                 }
             }
         })

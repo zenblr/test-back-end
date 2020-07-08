@@ -105,7 +105,10 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.approvalForm.patchValue(changes.details.currentValue.masterLoan)
-        this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
+        this.approvalForm.patchValue({ commentByAppraiser: changes.details.currentValue.masterLoan.commentByAppraiser })
+        if(changes.details.currentValue.masterLoan.commentByAppraiser){
+        this.approvalForm.patchValue({ reasons: "Other" })
+        }
         this.statusAppraiser()
         this.statusBM()
         this.ref.markForCheck()
@@ -183,7 +186,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
   resetAppraiser() {
     this.controls.commentByAppraiser.reset()
-
+    this.controls.reasons.reset()
   }
 
   resetBM() {

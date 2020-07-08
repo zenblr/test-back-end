@@ -56,9 +56,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'account_number'
         },
-        passbookStatementChequeId: {
-            type: DataTypes.INTEGER,
-            field: 'passbook_statement_cheque_id'
+        passbookStatementCheque: {
+            type: DataTypes.TEXT,
+            field: 'passbook_statement_cheque'
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -85,14 +85,12 @@ module.exports = (sequelize, DataTypes) => {
         InternalBranch.belongsToMany(models.user, { through: models.userInternalBranch });
         InternalBranch.belongsToMany(models.partner, { through: models.internalBranchPartner })
 
-        InternalBranch.belongsTo(models.fileUpload, { foreignKey: 'passbookStatementChequeId', as: 'passbookStatementCheque' })
-
     }
 
     InternalBranch.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.passbookStatementCheque) {
-            values.passbookStatementCheque.URL = baseUrlConfig.BASEURL + values.passbookStatementCheque.path;
+            values.passbookStatementChequeImage = baseUrlConfig.BASEURL + values.passbookStatementCheque;
         }
         return values;
     }
