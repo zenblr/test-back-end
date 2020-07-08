@@ -42,7 +42,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, panImageId: panImage, leadSourceId },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, panImage, leadSourceId },
       { transaction: t }
     );
   });
@@ -160,7 +160,7 @@ exports.editCustomer = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panImageId: panImage, leadSourceId },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panImage, leadSourceId },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -231,9 +231,6 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     isActive: true,
   };
   let includeArray = [{
-    model: models.fileUpload,
-    as: 'panImage'
-  }, {
     model: models.customerKyc,
     as: "customerKyc",
     attributes: ['isKycSubmitted']
@@ -294,31 +291,28 @@ exports.getSingleCustomer = async (req, res, next) => {
     where: {
       id: customerId,
     },
-    include: [{
-      model: models.fileUpload,
-      as: 'panImage'
-    },
-    {
-      model: models.state,
-      as: "state",
-    },
-    {
-      model: models.city,
-      as: "city",
-    },
-    {
-      model: models.stage,
-      as: "stage",
-    },
-    {
-      model: models.status,
-      as: "status",
-    },
-    {
-      model: models.lead,
-      as: "lead",
-      attributes: ['id', 'leadName']
-    }
+    include: [
+      {
+        model: models.state,
+        as: "state",
+      },
+      {
+        model: models.city,
+        as: "city",
+      },
+      {
+        model: models.stage,
+        as: "stage",
+      },
+      {
+        model: models.status,
+        as: "status",
+      },
+      {
+        model: models.lead,
+        as: "lead",
+        attributes: ['id', 'leadName']
+      }
     ],
   });
   if (check.isEmpty(singleCustomer)) {

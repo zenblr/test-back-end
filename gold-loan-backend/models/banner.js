@@ -3,11 +3,11 @@ const baseUrlConfig = require('../config/baseUrl');
 module.exports = (sequelize, DataTypes) => {
     const Banner = sequelize.define('banner', {
         // attributes
-        // images: {
-        //     type: DataTypes.ARRAY(DataTypes.TEXT),
-        //     field: 'images'
+        images: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'images'
 
-        // },
+        },
         userId: {
             type: DataTypes.INTEGER,
             field: 'user_id'
@@ -18,16 +18,18 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Banner.associate = function (models) {
-        Banner.hasMany(models.bannerImages, { foreignKey: 'bannerId', as: 'bannerImage' });
     }
 
     Banner.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.bannerImage) {
-            for (image of values.bannerImage) {
-                image.bannerImage.URL = baseUrlConfig.BASEURL +  image.bannerImage.path;
+        let bannerImage = []
+        if (values.images) {
+            for (imgUrl of values.images) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                bannerImage.push(URL)
             }
         }
+        values.bannerImage = bannerImage
         return values;
     }
     

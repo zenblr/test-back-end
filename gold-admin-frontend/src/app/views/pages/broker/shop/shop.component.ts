@@ -23,8 +23,11 @@ export class ShopComponent implements OnInit {
     to: 25,
     search: "",
     subCategoryId: "",
+    sort: "",
   };
   searchValue = "";
+  sortType: boolean;
+  sortValue: string;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("searchInput", { static: true }) searchInput: ElementRef;
@@ -40,11 +43,20 @@ export class ShopComponent implements OnInit {
     this.shopService.toggle$.subscribe(res => {
       this.toogler = res;
     })
+
+    this.shopService.sortType$.subscribe(res => {
+      this.sortType = res;
+      this.sort();
+    })
+
+    this.shopService.sortValue$.subscribe(res => {
+      this.sortValue = res;
+      this.sort();
+    })
   }
 
   ngOnInit() {
     this.getSubCategory();
-    this.getProducts();
     const searchSubscription = this.dataTableService.searchInput$
       .pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe((res) => {
@@ -113,9 +125,31 @@ export class ShopComponent implements OnInit {
     });
   }
 
+  sort() {
+    if (this.sortValue == 'price' && this.sortType) {
+      this.productsData.sort = 'productPriceAsc'
+    } else if (this.sortValue == 'price' && this.sortType == false) {
+      this.productsData.sort = 'productPriceDesc'
+
+    }
+
+    if (this.sortValue == 'name' && this.sortType) {
+      this.productsData.sort = 'productNameAsc'
+
+    } else if (this.sortValue == 'name' && this.sortType == false) {
+      this.productsData.sort = 'productNameDesc'
+
+    }
+
+    this.getProducts();
+
+  }
+
   ngOnDestroy() {
     this.shopService.toggle.next('list');
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
+    this.shopService.sortType.next(false);
+    this.shopService.sortValue.next('price');
   }
 }

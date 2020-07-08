@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
+        masterLoanId: {
+            type: DataTypes.INTEGER,
+            field: 'master_loan_id',
+            allowNull: false
+        },
         paymentType: {
             type: DataTypes.TEXT,
             field: 'payment_type'
@@ -36,10 +41,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'ifsc_code'
         },
-        // passbookProof: {
-        //     type: DataTypes.ARRAY(DataTypes.TEXT),
-        //     field: 'passbook_proof'
-        // },
+        passbookProof: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'passbook_proof'
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -61,21 +66,25 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanBankDetail.associate = function (models) {
         customerLoanBankDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+        customerLoanBankDetail.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
         customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoanBankDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
-
-        customerLoanBankDetail.hasMany(models.passbookProofImage, { foreignKey: 'customerLoanBankDetailId', as: 'passbookProofImage' });
 
     }
     
     customerLoanBankDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.passbookProofImage) {
-            for (image of values.passbookProofImage) {
-                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.path;
+       
+        let passbookProofImage = []
+        if (values.passbookProof) {
+            for (imgUrl of values.passbookProof) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                passbookProofImage.push(URL)
             }
         }
+        values.passbookProofImage = passbookProofImage
+
         return values;
     }
 
