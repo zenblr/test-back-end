@@ -228,7 +228,7 @@ export class InterestCalculatorComponent implements OnInit {
         this.controls.finalLoanAmount.setErrors(null)
       }
 
-      if (Number(amt) <= Number(this.globalValue.minimumLoanAmountAllowed)) {
+      if (Number(amt) >= Number(this.globalValue.minimumLoanAmountAllowed)) {
         this.controls.finalLoanAmount.setErrors(null)
       } else {
         this.controls.finalLoanAmount.setErrors({ mimimumAmt: true })

@@ -52,7 +52,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private ref: ChangeDetectorRef,
     private dilaog: MatDialog
   ) {
-    
+
   }
 
 
@@ -245,6 +245,12 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
             this.toast.success(res.message)
             this.next.emit(7)
             // this.router.navigate(['/admin/loan-management/applied-loan'])
+          }),
+          catchError(err => {
+            if (err.error.message && err.error.message == 'Packets has been already assign') {
+              this.next.emit(7)
+            }
+            throw (err)
           })
         ).subscribe()
       }

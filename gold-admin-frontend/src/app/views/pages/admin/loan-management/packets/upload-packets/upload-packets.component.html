@@ -1,5 +1,5 @@
 <div *ngIf="url != 'view-loan'">
-    {{url != 'view-loan'}} {{url}}
+    <!-- {{url != 'view-loan'}} {{url}} -->
     <form class="row justify-content-center" action="" [formGroup]="packetInfo" (submit)="addmore()" #form="ngForm">
         <div class="col-2">
             <select class="form-control packet-dropdown" formControlName="packetId"
@@ -60,7 +60,8 @@
 
                             </td>
                             <td class="text-gray" *ngIf="url != 'view-loan'">
-                                <img src="../../../../../../../assets/media/icons/cancel.png" alt="" height="15" (click)="removePacketsData(idx)">
+                                <img src="../../../../../../../assets/media/icons/cancel.png" alt="" height="15"
+                                    (click)="removePacketsData(idx)">
                             </td>
                         </ng-container>
                     </tr>
@@ -80,7 +81,8 @@
         <img *ngIf="packetImg.controls.emptyPacketWithNoOrnament.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
-        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packet(s) with all ornaments</label>
+        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packet(s) with all
+            ornaments</label>
         <div>
             <mat-error
                 *ngIf="packetImg.controls.emptyPacketWithNoOrnament.touched && packetImg.controls.emptyPacketWithNoOrnament.invalid">
@@ -124,7 +126,8 @@
                 *ngIf="packetImg.controls.sealingPacketWithCustomer.touched && packetImg.controls.sealingPacketWithCustomer.invalid">
                 Field Required</mat-error>
         </div>
-        <input type="file" class="d-none" #sealingPacketWithCustomer (change)="uploadFile(idx,'sealingPacketWithCustomer',$event)">
+        <input type="file" class="d-none" #sealingPacketWithCustomer
+            (change)="uploadFile(idx,'sealingPacketWithCustomer',$event)">
 
     </div>
 

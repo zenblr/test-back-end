@@ -30,7 +30,8 @@
                         <select formControlName="partnerId" class="form-control" (change)="getSchemes()"
                             [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
                             <option value="null" [selected]="true" [disabled]="true">Select Partner</option>
-                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found</option>
+                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
+                            </option>
                             <option [value]="partner.id" *ngFor="let partner of partnerList">
                                 {{partner.name | uppercase}}
                             </option>
@@ -53,7 +54,8 @@
                         <select formControlName="schemeId" class="form-control" (change)="scheme()"
                             [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
                             <option value="null" [selected]="true" [disabled]="true">Select Schemes</option>
-                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found</option>
+                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
+                            </option>
                             <option [value]="schemes.id" *ngFor="let schemes of schemesList">
                                 {{schemes.schemeName | uppercase}} ({{schemes.schemeAmountStart}} -
                                 {{schemes.schemeAmountEnd}})
@@ -93,12 +95,13 @@
                                 <small>Entered amount exceeds loan criteria</small>
                             </mat-error>
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible">
-                                <small>Entered  Amount is greater than Eligible Amount</small>
-                            </mat-error><mat-error *ngIf="controls.finalLoanAmount.errors?.mimimumAmt">
-                                <small>Entered  Amount is less minimum loan amount</small>
+                                <small>Entered Amount is greater than Eligible Amount</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.mimimumAmt">
+                                <small>Entered Amount should be greater than minimum loan amount</small>
                             </mat-error>
                         </div>
-                        
+
 
                     </div>
                 </div>
@@ -182,8 +185,7 @@
                         <label class="mandatory">Processing Charges</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" class="form-control" formControlName="processingCharge"
-                            placeholder="1100"
+                        <input type="number" class="form-control" formControlName="processingCharge" placeholder="1100"
                             [class.isError]="controls.processingCharge.touched && controls.processingCharge.invalid" />
                         <mat-error
                             *ngIf="controls.processingCharge.errors?.pattern && controls.processingCharge.touched">
@@ -243,11 +245,13 @@
                                         Interest Amount <br>
                                         (Secured Scheme)
                                     </th>
-                                    <th scope="col" class=" text-center" *ngIf="controls.isUnsecuredSchemeApplied.value">
+                                    <th scope="col" class=" text-center"
+                                        *ngIf="controls.isUnsecuredSchemeApplied.value">
                                         Interest Amount <br>
                                         (UnSecured Scheme)
                                     </th>
-                                    <th scope="col" class=" text-center" *ngIf="controls.isUnsecuredSchemeApplied.value">
+                                    <th scope="col" class=" text-center"
+                                        *ngIf="controls.isUnsecuredSchemeApplied.value">
                                         Total Interest Amount
                                     </th>
                                 </tr>
