@@ -686,7 +686,7 @@ export class MenuConfig {
 							root: true,
 							page: "/broker/shop",
 							src: "assets/media/aside-icons/icons-31.svg",
-							permission: !this.permissionsArr.includes('orderAdd'),
+							permission: !this.permissionsArr.includes('productView'),
 						},
 						{
 							title: "Cart",
