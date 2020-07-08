@@ -47,18 +47,6 @@
                     </div>
                 </div>
 
-                <!-- <div class="col-6 kt-margin-t-20">
-                <div class="row">
-                    <div class="col-3 offset-1 p-0">
-                        <label  class="mandatory  font-weight-500 text-color">Name</label>
-                    </div>
-                    <div class="col-7">
-                        <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
-                            class="form-control">
-                    </div>
-                </div>
-            </div> -->
-
                 <div class="row">
                     <div class="col-6 kt-margin-t-20">
                         <div class="row">
@@ -114,53 +102,6 @@
                     </div>
                 </div>
 
-                <!-- DOB & Gender -->
-                <!-- <div class="row">
-            <div class="col-6 kt-margin-t-20">
-                <div class="row">
-                    <div class="col-3 offset-1 p-0">
-                        <label  class="mandatory  font-weight-500 text-color">Date of Birth</label>
-                    </div>
-                    <div class="col-7">
-                        <mat-form-field appearance="box" class="example-full-width">
-                            <mat-label>Choose a date</mat-label>
-                            <input matInput [matDatepicker]="picker">
-                            <mat-datepicker-toggle matSuffix [for]="picker">
-                                <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
-                            </mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                        </mat-form-field>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-6 kt-margin-t-20">
-                <div class="row">
-                    <div class="col-3 offset-1 p-0">
-                        <label  class="mandatory  font-weight-500 text-color">Gender</label>
-                    </div>
-                    <div class="col-7">
-                        <select class="form-control" margin>
-                            <option disabled selected> Select </option>
-                            <option value="m">Male</option>
-                            <option value="f">Female</option>
-                            <option value="o">Other</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-                <!-- <div class="text-right kt-padding-r-50">
-                <div class="position-relative pos">
-                    <label  class="custom-checkbox ">
-                        <span class="label-checkbox">Residential Same as Permanent</span>
-                        <input type="checkbox" class="" (change)="sameAddress($event.target.checked)">
-                        <span class="checkmark top-0"></span>
-                    </label>
-                </div>
-            </div> -->
-
                 <div class="row">
                     <div class="offset-6">
                         <!-- <div class="">
@@ -175,10 +116,9 @@
                     <div class="col">
                         <div class="row">
                             <div class="offset-1 col">
-                                <!-- <mat-checkbox (change)="sameAddress($event.target.checked)">Residential Same as
-                                    Permanent</mat-checkbox> -->
                                 <label class="custom-checkbox ">
-                                    <span class="label-checkbox">Residential Same as Permanent</span>
+                                    <span class="label-checkbox">Current Residential Address same as Permanent
+                                        Address</span>
                                     <input type="checkbox" class="" (change)="sameAddress($event.target.checked)">
                                     <span class="checkmark top-0"></span>
                                 </label>
@@ -190,7 +130,6 @@
                 <div class="row">
                     <ng-container formArrayName="address"
                         *ngFor="let addressForm of identityForm.get('address')['controls']; index as i;">
-                        <!-- <div> -->
                         <div [formGroupName]="i" class="col-6">
 
 
@@ -220,17 +159,6 @@
                                 <input *ngIf="i==1" value="residential" formControlName="addressType" type="hidden">
                                 <input *ngIf="i==0" value="permanent" formControlName="addressType" type="hidden">
                             </div>
-                            <!-- <div class=" kt-margin-t-20">
-                                    <div class="row">
-                                        <div class="col-3 offset-1 p-0">
-                                            <label  class="mandatory  font-weight-500 text-color">Permanent Address</label>
-                                        </div>
-                                        <div class="col-7">
-                                            <textarea type="text" rows="5" aria-label="Permanent Address" placeholder="Enter your text"
-                                                ktAlphabets class="form-control"></textarea>
-                                        </div>
-                                    </div>
-                                </div> -->
 
                             <div>
                                 <div class=" kt-margin-t-20">
@@ -257,21 +185,7 @@
                                     </div>
                                 </div>
 
-                                <!-- <div class=" kt-margin-t-20">
-                                    <div class="row">
-                                        <div class="col-3 offset-1 p-0">
-                                            <label  class="mandatory  font-weight-500 text-color">State</label>
-                                        </div>
-                                        <div class="col-7">
-                                            <select class="form-control" margin>
-                                                <option disabled selected> Select </option>
-                                                <option>
-                                                    ANC
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div> -->
+
                                 <div>
                                     <div class=" kt-margin-t-20">
                                         <div class="row">
@@ -316,21 +230,6 @@
                                     </div>
                                 </div>
 
-                                <!-- <div class=" kt-margin-t-20">
-                                    <div class="row">
-                                        <div class="col-3 offset-1 p-0">
-                                            <label  class="mandatory  font-weight-500 text-color">City</label>
-                                        </div>
-                                        <div class="col-7">
-                                            <select class="form-control" margin>
-                                                <option disabled selected> Select </option>
-                                                <option>
-                                                    ANC
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div> -->
                                 <div>
 
                                     <div class=" kt-margin-t-20">
@@ -350,16 +249,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class=" kt-margin-t-20">
-                                    <div class="row">
-                                        <div class="col-3 offset-1 p-0">
-                                            <label  class="mandatory  font-weight-500 text-color">Pin Code</label>
-                                        </div>
-                                        <div class="col-7">
-                                            <input type="text" aria-label="First name" placeholder="000000" class="form-control">
-                                        </div>
-                                    </div>
-                                </div> -->
                                 </div>
 
                                 <div class=" kt-margin-t-20">
@@ -452,29 +341,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- <div class=" kt-margin-t-20">
-                                    <div class="row">
-                                        <div class="col-3 offset-1 p-0">
-                                            <label  class="mandatory  font-weight-500 text-color">Attach Proof</label>
-                                        </div>
-                                        <div class="col-7">
-                                            <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Select" aria-label="Select"
-                                                    aria-describedby="basic-addon2" readonly>
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                                        (click)="file.click()">Attach</span>
-                                                </div>
-                                            </div>
-                                            <label  class="mandatory  file d-none">
-                                                <input type="file"  accept="image/png, image/jpeg" id="file" aria-label="File browser example" #file
-                                                    (input)="getFileInfo($event)">
-                                                <span class="file-custom"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div> -->
                                 </div>
 
                                 <div class=" kt-margin-t-20 kt-margin-b-20">
@@ -528,59 +394,10 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <!-- <div class="img-container" *ngIf="(i==0 && images.residential.length== 0)">
-                                        <img class="placeholder-image"
-                                            src="../../../../../../assets/media/icons/image-placeholder.png"
-                                            alt="placeholder">
-                                    </div>
-                                    <div class="img-container" *ngIf="(i==1 && images.permanent.length==0)">
-                                        <img class="placeholder-image"
-                                            src="../../../../../../assets/media/icons/image-placeholder.png"
-                                            alt="placeholder">
-                                    </div>
-
-                                    <div *ngIf="i==1 && images.residential.length > 0">
-                                        <div class="row">
-                                            <div class="col-6" *ngFor="let img of images.residential">
-                                                <div class="img-container">
-                                                    <img class="fetched-image" [src]="img" alt="">
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
-
-                                    <div *ngIf="i==0 && images.permanent.length > 0">
-                                        <div class="row">
-                                            <div class="col-6" *ngFor="let img of images.permanent">
-                                                <div class="img-container">
-                                                    <img class="fetched-image" [src]="img" alt="">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
-
-                                            <!-- <div class="img-container" *ngIf="i==1 && images.permanent.length > 0">
-                                        <img class="fetched-image" [src]="img" alt=""
-                                            *ngFor="let img of images.permanent">
-                                    </div> -->
-
-                                        </div>
-                                    </div>
-
-                                    <!-- <div class="">
-                                    <div class="col-8 offset-4 border-rad-15">
-                                        <div class="img-container">
-                                            <img class="placeholder-image"
-                                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
-                                       
-                                        </div>
-                                    </div>
-                                </div> -->
                                 </div>
                             </div>
-
-                            <!-- </div> -->
                         </div>
                     </ng-container>
 
