@@ -372,7 +372,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
         }
         let bmId = req.userData.id
         if (loanStatusForBM != "approved") {
-            if (loanStatusForOperatinalTeam == 'incomplete') {
+            if (loanStatusForBM == 'incomplete') {
                 let incompleteStageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' } })
                 await sequelize.transaction(async (t) => {
                     await models.customerLoanMaster.update(
@@ -448,7 +448,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
             var loanUniqueId = null;
             var unsecuredLoanUniqueId = null;
-            if (loanStatusForBM === 'approved') {
+            if (loanStatusForOperatinalTeam === 'approved') {
                 if (applicationFormForOperatinalTeam == true && goldValuationForOperatinalTeam == true) {
                     loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
                     if (!check.isEmpty(checkUnsecuredLoan)) {
@@ -964,18 +964,17 @@ exports.getLoanDetails = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
                 "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-                // "$finalLoan.final_loan_amount$": { [Op.iLike]: search + '%' },
-                // "$finalLoan.interest_rate$": { [Op.iLike]: search + '%' },
-                // tenure: sequelize.where(
-                //     sequelize.cast(sequelize.col("finalLoan.tenure"), "varchar"),
-                //     {
-                //         [Op.iLike]: search + "%",
-                //     }
-                // )
+                "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
+                tenure: sequelize.where(
+                    sequelize.cast(sequelize.col("customerLoanMaster.tenure"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                )
             },
         }],
         isActive: true,
-        // loanStageId: stageId.id
+        loanStageId: stageId.id
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
@@ -985,32 +984,40 @@ exports.getLoanDetails = async (req, res, next) => {
         internalBranchWhere = { isActive: true }
     }
 
-    let associateModel = [{
-        model: models.customer,
-        as: 'customer',
-        where: internalBranchWhere,
-        attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-    }, {
-        model: models.scheme,
-        as: 'scheme',
-        attributes: ['id', 'schemeName']
+    let associateModel = [
+        {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            include: [{
+                model: models.scheme,
+                as: 'scheme',
+                attributes: ['id', 'schemeName']
 
-    }, {
-        model: models.customerLoan,
-        as: 'unsecuredLoan'
-    }]
+            },
+            {
+                model: models.scheme,
+                as: 'unsecuredScheme',
+                attributes: ['id', 'schemeName']
+            }]
+        },
+        {
+            model: models.customer,
+            as: 'customer',
+            where: internalBranchWhere,
+            attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+        }]
 
-    let loanDetails = await models.customerLoan.findAll({
+    let loanDetails = await models.customerLoanMaster.findAll({
         where: searchQuery,
         include: associateModel,
-        attributes: ['id', 'loanUniqueId'],
         order: [
+            [models.customerLoan, 'id', 'asc'],
             ['id', 'DESC']
         ],
         offset: offset,
         limit: pageSize
     });
-    let count = await models.customerLoan.findAll({
+    let count = await models.customerLoanMaster.findAll({
         where: searchQuery,
         include: associateModel,
     });
