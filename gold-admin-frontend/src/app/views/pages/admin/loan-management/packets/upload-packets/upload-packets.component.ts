@@ -83,6 +83,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.pushPackets()
         });
         this.url = 'view-loan'
+        // this.next.emit(8);
       }
     }
   }

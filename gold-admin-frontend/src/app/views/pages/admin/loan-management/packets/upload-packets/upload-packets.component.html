@@ -132,6 +132,6 @@
     </div>
 
 </div>
-<div class="text-right kt-padding-b-15" *ngIf="packets.controls.length">
+<div class="text-right kt-padding-b-15" *ngIf="packets.controls.length && url != 'view-loan'">
     <kt-button [type]="'button'" [value]="'Next'" (click)="save()"></kt-button>
 </div>

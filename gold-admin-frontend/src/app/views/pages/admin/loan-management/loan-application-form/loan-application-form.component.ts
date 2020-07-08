@@ -67,7 +67,11 @@ export class LoanApplicationFormComponent implements OnInit {
       this.customerDetail = res.data
       // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "packet-image-upload") {
-        this.selected = 6;
+        if (this.customerDetail.loanPacketDetails[0].packets.length) {
+          this.selected = 7;
+        } else {
+          this.selected = 6;
+        }
         this.disabledForm = true;
       } else if (this.url == "view-loan") {
         this.disabledForm = true;
@@ -89,7 +93,11 @@ export class LoanApplicationFormComponent implements OnInit {
     setTimeout(() => {
 
       if (this.url == "packet-image-upload") {
-        this.selected = 6;
+        if (this.customerDetail.loanPacketDetails[0].packets.length) {
+          this.selected = 7;
+        } else {
+          this.selected = 6;
+        }
         this.disabledForm = true;
       } else if (this.url == "view-loan") {
         this.next(0)
@@ -166,5 +174,6 @@ export class LoanApplicationFormComponent implements OnInit {
         }
       }
     }
+    this.ref.detectChanges();
   }
 }
