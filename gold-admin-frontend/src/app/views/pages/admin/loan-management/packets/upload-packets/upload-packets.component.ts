@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
@@ -38,6 +38,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   splicedOrnaments: any[] = []
   splicedPackets: any[] = []
   ornamentId: any;
+  @Output() next: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private sharedService: SharedService,
@@ -242,7 +243,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.packetService.uploadPackets(this.packetImg.value, this.masterAndLoanIds).pipe(
           map(res => {
             this.toast.success(res.message)
-            this.router.navigate(['/admin/loan-management/applied-loan'])
+            this.next.emit(7)
+            // this.router.navigate(['/admin/loan-management/applied-loan'])
           })
         ).subscribe()
       }
@@ -279,7 +281,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       if (res) {
         const params = {
           reason: 'loan',
-          masterLoanId:this.masterAndLoanIds.masterLoanId
+          masterLoanId: this.masterAndLoanIds.masterLoanId
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
