@@ -38,35 +38,40 @@ exports.viewPacket = async (req, res, next) => {
     let searchQuery = {
         [Op.and]: [query, {
             [Op.or]: {
-                "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                // "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
+                // "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
                 packetUniqueId: { [Op.iLike]: search + '%' },
             },
         }],
         isActive: true,
     };
 
-    let associateModel = [{
-        model: models.customer,
-        required: false,
-        as: 'customer',
-        where: { isActive: true },
-        attributes: ['id', 'customerUniqueId']
-    },
-    {
-        model: models.customerLoan,
-        required: false,
-        as: 'customerLoan',
-        where: { isActive: true },
-        attributes: ['id', 'loanUniqueId']
-    },
-    {
-        model: models.internalBranch,
+    let associateModel = [
+        {
+            model: models.customer,
+            required: false,
+            as: 'customer',
+            where: { isActive: true },
+            attributes: ['id', 'customerUniqueId']
+        },
+        {
+            model: models.customerLoan,
+            required: false,
+            as: 'customerLoan',
+            where: { isActive: true },
+            attributes: ['id', 'loanUniqueId']
+        },
+        {
+            model: models.internalBranch,
             required: false,
             as: 'internalBranch',
             where: { isActive: true },
             attributes: ['id', 'internalBranchUniqueId', 'name']
-    }];
+        },
+        {
+            model: models.ornamentType,
+        }
+    ];
 
     let packetDetails = await models.packet.findAll({
         where: searchQuery,
@@ -91,21 +96,20 @@ exports.viewPacket = async (req, res, next) => {
 //  FUNCTION FOR GET AVAILABLE PACKET
 exports.availablePacket = async (req, res, next) => {
     let data = await models.user.findOne({
-        where:{
+        where: {
             id: req.userData.id
         },
-        include: {
-            model: models.userInternalBranch,
-            
-        }
+        include: [{
+            model: models.internalBranch,
+        }]
     });
     let internalBranchId = [];
-    for(let idData of data.internalBranches){
+    for (let idData of data.internalBranches) {
         internalBranchId.push(idData.id);
     }
 
     let availablePacketDetails = await models.packet.findAll({
-        where: { isActive: true, packetAssigned: false,  internalUserBranch: { [Op.in]: internalBranchId } },
+        where: { isActive: true, packetAssigned: false, internalUserBranch: { [Op.in]: internalBranchId } },
     });
     if (availablePacketDetails.length === 0) {
         res.status(200).json({ message: 'no packet details found', data: [] });
@@ -118,10 +122,19 @@ exports.availablePacket = async (req, res, next) => {
 // FUNCTION TO ASSIGN PACKET
 exports.assignPacket = async (req, res, next) => {
     let id = req.params.id;
-    let { customerId, loanId } = req.body;
+    let { customerId, loanId, ornamentTypeId } = req.body;
     let modifiedBy = req.userData.id;
 
     let packet = await models.packet.assignPacket(customerId, loanId, modifiedBy, id);
+
+    let data = [];
+    for (let ornament of ornamentTypeId) {
+        let single = {}
+        single["packetId"] = id;
+        single["ornamentTypeId"] = ornament;
+        data.push(single);
+    }
+    await models.packetOrnament.bulkCreate(data);
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "not assigned packet" });
@@ -136,7 +149,7 @@ exports.changePacket = async (req, res, next) => {
     let { packetUniqueId, internalUserBranch } = req.body;
     let modifiedBy = req.userData.id;
 
-    let packet = await models.packet.updatePacket(id, packetUniqueId,internalUserBranch, modifiedBy);
+    let packet = await models.packet.updatePacket(id, packetUniqueId, internalUserBranch, modifiedBy);
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "packet not update" });

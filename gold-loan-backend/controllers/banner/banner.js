@@ -8,7 +8,9 @@ exports.addUpdateBanner = async (req, res, next) => {
     let userId = req.userData.id
     let banner = await models.banner.readBanner()
     if (banner.length == 0) {
+
         let CreatedBanner = await models.banner.addBanner(images, userId);
+
         if (!CreatedBanner) {
             res.status(422).json({ message: 'Banner not added' });
         } else {
@@ -16,7 +18,8 @@ exports.addUpdateBanner = async (req, res, next) => {
         }
     } else {
         let id = banner[0].id;
-        let UpdateData = await models.banner.updateBanner(id, images, userId)
+        let UpdateData = await models.banner.update(id, images, userId)
+
         if (UpdateData[0] === 0) {
             return res.status(404).json({ message: 'Data not updated' });
         }
@@ -28,7 +31,16 @@ exports.addUpdateBanner = async (req, res, next) => {
 // Read Banner.
 
 exports.readBanner = async (req, res, next) => {
-    let banner = await models.banner.readBanner()
+    let banner = await models.banner.findAll({
+        // include: {
+        //     model: models.bannerImages,
+        //     as: 'bannerImage',
+        //     include: {
+        //         model: models.fileUpload,
+        //         as: 'bannerImage'
+        //     }
+        // }
+    })
     // const id = banner[0].id;
     // return res.json(banner[0])
     // let bannerData = await models.banner.findOne({ where: { id } });
@@ -37,6 +49,7 @@ exports.readBanner = async (req, res, next) => {
     } else {
         res.status(200).json(banner[0]);
     }
+
 };
 
 // //Delete Banner.

@@ -9,11 +9,11 @@ import { AppraiserService } from '../../../../../../core/user-management/apprais
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 
 @Component({
-  selector: 'kt-add-appraiser',
-  templateUrl: './add-appraiser.component.html',
-  styleUrls: ['./add-appraiser.component.scss']
+  selector: 'kt-assign-appraiser',
+  templateUrl: './assign-appraiser.component.html',
+  styleUrls: ['./assign-appraiser.component.scss']
 })
-export class AddAppraiserComponent implements OnInit {
+export class AssignAppraiserComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   appraiserForm: FormGroup;
   states: any;
@@ -27,21 +27,21 @@ export class AddAppraiserComponent implements OnInit {
   minDate = new Date();
   darkTheme: NgxMaterialTimepickerTheme = {
     container: {
-        bodyBackgroundColor: '#fff',
-        buttonColor: '#454d67'
+      bodyBackgroundColor: '#fff',
+      buttonColor: '#454d67'
     },
     dial: {
-        dialBackgroundColor: '#5d78ff',
+      dialBackgroundColor: '#5d78ff',
     },
     clockFace: {
-        clockFaceBackgroundColor: '#e7e9ec',
-        clockHandColor: '#5d78ff',
-        clockFaceTimeInactiveColor: '#454d67'
+      clockFaceBackgroundColor: '#e7e9ec',
+      clockHandColor: '#5d78ff',
+      clockFaceTimeInactiveColor: '#454d67'
     }
-};
+  };
 
   constructor(
-    public dialogRef: MatDialogRef<AddAppraiserComponent>,
+    public dialogRef: MatDialogRef<AssignAppraiserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private sharedService: SharedService,
     private fb: FormBuilder,
@@ -86,8 +86,9 @@ export class AddAppraiserComponent implements OnInit {
       customerId: [, [Validators.required]],
       customerName: [''],
       appraiserId: ['', [Validators.required]],
-      date:[],
-      time:[]
+      appoinmentDate: [],
+      startTime: [],
+      endTime: []
     });
   }
 

@@ -12,7 +12,7 @@ exports.addOccupationValidation = [
 
 exports.updateOccupationValidation = [
     body('name')
-    .exists().withMessage('occupation name is required')
+    .exists().withMessage('occupation already required')
     .custom(async (value,{req}) => {
       return await models.occupation.findOne({ where: { 
         name: {
@@ -21,7 +21,7 @@ exports.updateOccupationValidation = [
         isActive:true }
         }).then(occupation => {
         if (occupation) {
-          return Promise.reject("occupation name already exit !");
+          return Promise.reject("occupation already exits !");
         }
       })
     }),]

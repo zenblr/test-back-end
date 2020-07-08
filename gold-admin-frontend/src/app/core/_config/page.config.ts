@@ -33,7 +33,10 @@ export class PageConfig {
 				},
 				'lead-source': {
 					page: { title: "Lead Source", desc: "" },
-				}
+				},
+				occupation: {
+					page: { title: "Occupations", desc: "" },
+				},
 			},
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
@@ -125,6 +128,11 @@ export class PageConfig {
 				"loan-repayment": {
 					page: { title: "Loan Repayment", desc: "" },
 				}
+			},
+			"funds-approvals": {
+				"deposit": {
+					page: { title: "Deposit", desc: "" },
+				},
 			},
 			repayment: {
 				monthly: {
@@ -266,6 +274,9 @@ export class PageConfig {
 				"topup": {
 					page: { title: "Top Up", desc: "" },
 				},
+				"transfer-loan-list": {
+					page: { title: "Transfer Loan List", desc: "" },
+				}
 			}
 		},
 		'broker': {

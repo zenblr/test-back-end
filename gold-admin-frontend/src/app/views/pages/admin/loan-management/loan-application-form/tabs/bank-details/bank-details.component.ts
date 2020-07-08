@@ -12,7 +12,7 @@ import { LoanApplicationFormService } from '../../../../../../../core/loan-manag
 })
 export class BankDetailsComponent implements OnInit, OnChanges {
 
-  @Input() loanId
+  @Input() masterAndLoanIds
   @ViewChild('passbook', { static: false }) passbook
   @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
@@ -22,6 +22,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   @Output() next: EventEmitter<any> = new EventEmitter();
   bankForm: FormGroup;
   passbookImg: any = [];
+  passbookImgId: any = []
   constructor(
     public toastr: ToastrService,
     public ref: ChangeDetectorRef,
@@ -33,7 +34,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-
+    console.log(this.masterAndLoanIds)
   }
 
 
@@ -43,11 +44,15 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       if (changes.action.currentValue == 'edit') {
         if (changes.details.currentValue && changes.details.currentValue.loanBankDetail) {
           this.bankForm.patchValue(changes.details.currentValue.loanBankDetail)
+          // let passbookProofImage = changes.details.currentValue.loanBankDetail.passbookProofImage
+          // this.bankForm.controls.passbookProofImage.patchValue(passbookProofImage.map(ele => ele.passbookProof.URL))
+          // this.bankForm.controls.passbookProof.patchValue(passbookProofImage.map(ele => ele.passbookProof.id))
+          // this.bankForm.controls.passbookProofImageName.patchValue(passbookProofImage[0].passbookProof.originalname)
           this.ref.markForCheck()
         }
       }
 
-      this.bankFormEmit.emit(this.bankForm);
+      // this.bankFormEmit.emit(this.bankForm);
     }
     if (changes.finalLoanAmt) {
       if (changes.finalLoanAmt.currentValue > '200000') {
@@ -64,39 +69,40 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     this.bankForm = this.fb.group({
       paymentType: ['', Validators.required],
       bankName: [, [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
-      accountNumber: [, [Validators.required]],
+      accountNumber: [, [Validators.required, Validators.minLength(9)]],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       accountType: [],
       accountHolderName: [, [Validators.required]],
       bankBranchName: [, [Validators.required]],
       passbookProof: [[]],
-      passbookProofImage: ['']
+      passbookProofImage: [[]],
+      passbookProofImageName: ['']
     })
     // this.bankForm.disable()
   }
 
   setValidation(event) {
-    if (event.target.value == 'bank') {
-      this.controls.bankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]);
-      this.controls.accountNumber.setValidators([Validators.required]);
-      this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]);
-      this.controls.accountHolderName.setValidators([Validators.required]);
-      this.controls.bankBranchName.setValidators([Validators.required]);
-      this.controls.passbookProof.setValidators([Validators.required]);
-    } else if (event.target.value == 'cash') {
-      Object.keys(this.bankForm.controls).forEach(key => {
-        if (key != 'paymentType') {
-          this.bankForm.controls[key].reset();
-          this.bankForm.controls[key].clearValidators();
-        }
-        if (key == 'passbookProof') {
-          this.bankForm.controls[key].patchValue([])
-        }
-      });
-    }
-    Object.keys(this.bankForm.controls).forEach(key => {
-      this.bankForm.controls[key].updateValueAndValidity();
-    });
+    // if (event.target.value == 'bank') {
+    //   this.controls.bankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]);
+    //   this.controls.accountNumber.setValidators([Validators.required]);
+    //   this.controls.ifscCode.setValidators([Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]);
+    //   this.controls.accountHolderName.setValidators([Validators.required]);
+    //   this.controls.bankBranchName.setValidators([Validators.required]);
+    //   this.controls.passbookProof.setValidators([Validators.required]);
+    // } else if (event.target.value == 'cash') {
+    //   Object.keys(this.bankForm.controls).forEach(key => {
+    //     if (key != 'paymentType') {
+    //       this.bankForm.controls[key].reset();
+    //       this.bankForm.controls[key].clearValidators();
+    //     }
+    //     if (key == 'passbookProof') {
+    //       this.bankForm.controls[key].patchValue([])
+    //     }
+    //   });
+    // }
+    // Object.keys(this.bankForm.controls).forEach(key => {
+    //   this.bankForm.controls[key].updateValueAndValidity();
+    // });
   }
 
   getFileInfo(event) {
@@ -104,11 +110,18 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       var name = event.target.files[0].name
       var ext = name.split('.')
       if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-        this.sharedService.uploadFile(event.target.files[0]).pipe(
+        const params = {
+          reason: 'loan',
+          masterLoanId: this.masterAndLoanIds.masterLoanId
+        }
+
+        this.sharedService.uploadFile(event.target.files[0], params).pipe(
           map(res => {
             this.passbookImg.push(res.uploadFile.URL);
-            this.bankForm.patchValue({ passbookProof: this.passbookImg });
-            this.bankForm.get('passbookProofImage').patchValue(event.target.files[0].name);
+            this.passbookImgId.push(res.uploadFile.path);
+            this.bankForm.patchValue({ passbookProofImage: this.passbookImg });
+            this.bankForm.patchValue({ passbookProof: this.passbookImgId });
+            this.bankForm.get('passbookProofImageName').patchValue(event.target.files[0].name);
             this.ref.detectChanges();
             console.log(this.bankForm.value);
           }), catchError(err => {
@@ -129,7 +142,6 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
   removeImages(index) {
     this.passbookImg.splice(index, 1);
-    console.log(this.passbookImg)
     this.bankForm.get('passbookProof').patchValue(this.passbookImg);
     this.bankForm.get('passbookProofImage').patchValue('');
   }
@@ -140,17 +152,25 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   }
 
   nextAction() {
-    if (this.controls.paymentType.invalid) {
-      this.controls.paymentType.markAsTouched();
-      return
-    }
+    let data
     if (this.controls.paymentType.value == "bank") {
       if (this.bankForm.invalid) {
         this.bankForm.markAllAsTouched()
         return
       }
+    } else {
+      if (this.controls.paymentType.invalid) {
+        this.controls.paymentType.markAsTouched();
+        return
+      }
+      this.bankForm.reset()
+      this.bankForm.controls.paymentType.patchValue('cash')
+      this.bankForm.controls.passbookProof.patchValue([])
+      this.bankForm.controls.passbookProofImage.patchValue([])
     }
-    this.loanFormService.submitBank(this.bankForm.value, this.loanId).pipe(
+    data = this.bankForm.value
+
+    this.loanFormService.submitBank(data, this.masterAndLoanIds).pipe(
       map(res => {
         this.next.emit(5)
       })).subscribe()

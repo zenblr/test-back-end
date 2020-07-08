@@ -1,5 +1,6 @@
 <div class="">
-    <label class="text-color font-weight-bold h-v-text-center min-vh-100" *ngIf="schemes.length==0">No Schemes
+    <label class="text-color font-weight-bold h-v-text-center min-vh-100" *ngIf="schemes && schemes?.length==0">No
+        Schemes
         Available</label>
 </div>
 
@@ -33,14 +34,16 @@
                                 <div class="col offset-4">
                                     <div class="row pb-2">
                                         <div class="col">
-                                            <mat-slide-toggle  *ngIf="schemeDeatils.schemeType == 'unsecured'" [disabled]="schemeDeatils.default"
-                                                (change)="changeDefault($event.checked, idx, schemeDeatils,i)" [checked]="schemeDeatils.default">
+                                            <mat-slide-toggle *ngIf="schemeDeatils.schemeType == 'unsecured'"
+                                                [disabled]="schemeDeatils.default"
+                                                (change)="changeDefault($event.checked, idx, schemeDeatils,i)"
+                                                [checked]="schemeDeatils.default">
                                                 <strong>Default</strong>
                                             </mat-slide-toggle>
                                         </div>
                                         <div class="col-6" [class.offset-6]="schemeDeatils.schemeType == 'secured'">
                                             <mat-slide-toggle [checked]="schemeDeatils.isActive"
-                                                (change)="changeStatus($event.checked, idx,schemeDeatils)">
+                                                (change)="changeStatus($event.checked, i, idx,schemeDeatils)">
                                                 <strong>Status</strong>
                                             </mat-slide-toggle>
                                         </div>

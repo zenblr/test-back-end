@@ -6,18 +6,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
+        masterLoanId: {
+            type: DataTypes.INTEGER,
+            field: 'master_loan_id',
+            allowNull: false
+        },
         customerUniqueId: {
             type: DataTypes.STRING,
             field: 'customer_unique_id'
-        },
-        mobileNumber: {
-            type: DataTypes.STRING,
-            field: 'mobile_number'
-        },
-        panCardNumber: {
-            type: DataTypes.STRING,
-            field: 'pan_card_number',
-            allowNull: false
         },
         purpose: {
             type: DataTypes.TEXT,
@@ -53,6 +49,8 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanPersonalDetail.associate = function (models) {
         customerLoanPersonalDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+        customerLoanPersonalDetail.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
+
         customerLoanPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoanPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }

@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const CustomerLoanPackageDetails = sequelize.define('customerLoanPackageDetails', {
         // attributes
@@ -6,30 +8,22 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
-        packetId: {
+        masterLoanId: {
             type: DataTypes.INTEGER,
-            field: 'packet_id',
+            field: 'master_loan_id',
             allowNull: false
         },
         emptyPacketWithNoOrnament: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             field: 'empty_packet_with_no_ornament'
         },
-        packetWithAllOrnaments: {
-            type: DataTypes.STRING,
-            field: 'packet_with_all_ornaments'
+        sealingPacketWithWeight: {
+            type: DataTypes.TEXT,
+            field: 'sealing_packet_with_weight'
         },
-        packetWithSealing: {
-            type: DataTypes.STRING,
-            field: 'packet_with_sealing'
-        },
-        packetWithWeight: {
-            type: DataTypes.STRING,
-            field: 'packet_with_weight'
-        },
-        ornamentsId: {
-            type: DataTypes.INTEGER,
-            field: 'ornaments_id'
+        sealingPacketWithCustomer: {
+            type: DataTypes.TEXT,
+            field: 'sealing_packet_with_customer'
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -51,7 +45,28 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerLoanPackageDetails.associate = function (models) {
         CustomerLoanPackageDetails.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
-        CustomerLoanPackageDetails.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
+        CustomerLoanPackageDetails.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
+
+        // CustomerLoanPackageDetails.hasMany(models.customerLoanPacket, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPacket' });
+    
+        CustomerLoanPackageDetails.belongsToMany(models.packet, { through: models.customerLoanPacket });
+
+    }
+
+    CustomerLoanPackageDetails.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.emptyPacketWithNoOrnament) {
+            values.emptyPacketWithNoOrnamentImage = baseUrlConfig.BASEURL + values.emptyPacketWithNoOrnament;
+        }
+        if (values.sealingPacketWithWeight) {
+            values.sealingPacketWithWeightImage = baseUrlConfig.BASEURL + values.sealingPacketWithWeight;
+        }
+        if (values.sealingPacketWithCustomer) {
+            values.sealingPacketWithCustomerImage = baseUrlConfig.BASEURL + values.sealingPacketWithCustomer;
+        }
+      
+
+        return values;
     }
 
     // FUNCTION TO ADD PACKAGE IMAGE UPLOAD

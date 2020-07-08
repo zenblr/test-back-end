@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycPersonalDetail = sequelize.define('customerKycPersonalDetail', {
         // attributes
@@ -48,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_card_number',
             allowNull: false
         },
-        age:{
+        age: {
             type: DataTypes.STRING,
             field: 'age'
         },
@@ -119,6 +121,31 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+    
+        
+    }
+
+    CustomerKycPersonalDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        let identityProofImage = []
+        if (values.identityProof) {
+            for (imgUrl of values.identityProof) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                identityProofImage.push(URL)
+            }
+        }
+
+        if (values.profileImage) {
+            values.profileImg = baseUrlConfig.BASEURL + values.profileImage;
+
+        }
+        if (values.signatureProof) {
+            values.signatureProofImg = baseUrlConfig.BASEURL + values.signatureProof;
+        }
+        values.identityProofImage = identityProofImage
+
+        return values;
     }
 
 

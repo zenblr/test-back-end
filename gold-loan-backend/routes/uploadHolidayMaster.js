@@ -18,6 +18,6 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage
 });
-router.post('/', checkAuth,checkRolePermission,  upload.single('holidaylist'), wrapper(uploadHolidayMaster));
+router.post('/', checkAuth, checkRolePermission, upload.single('holidaylist'), wrapper(uploadHolidayMaster));
 
 module.exports = router;

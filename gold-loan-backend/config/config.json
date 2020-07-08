@@ -2,7 +2,7 @@
     "development": {
         "username": "postgres",
         "password": "nimap@123",
-        "database": "gold_master",
+        "database": "gold_master_live",
         "host": "173.249.49.7",
         "port": "3432",
         "dialect": "postgres",
@@ -13,6 +13,14 @@
         "password": null,
         "database": "database_test",
         "host": "127.0.0.1",
+        "dialect": "postgres",
+        "operatorsAliases": false
+    },
+    "uat": {
+        "username": "loan_uat_admin",
+        "password": "hCVtBwCfBs658qp8JSOn",
+        "database": "emi-loan-uat",
+        "host": "emi-loan-uat.cdqj1gojl1vk.ap-south-1.rds.amazonaws.com",
         "dialect": "postgres",
         "operatorsAliases": false
     },

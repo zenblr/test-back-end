@@ -11,8 +11,9 @@
                             <div class="col-7">
                                 <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof"
                                     [class.isError]="controls.identityTypeId.invalid && controls.identityTypeId.touched">
-                                    <option value="" [disabled]="true" [selected]="true"> Select Proof</option>
-                                    <option *ngFor="let proof of identityProofs" [value]="proof.id">
+                                    <option value="" [disabled]="true"> Select Proof</option>
+                                    <option *ngFor="let proof of identityProofs" [selected]="selectAadhar()"
+                                        [value]="proof.id">
                                         {{ proof.name | titlecase}}
                                     </option>
                                 </select>
@@ -27,15 +28,19 @@
                     <div class="col-6 kt-margin-t-20">
                         <div class="row">
                             <div class="col-3 offset-1 p-0">
-                                <label class="mandatory font-weight-500 text-color">Unique Identity No.</label>
+                                <label class="mandatory font-weight-500 text-color">Aadhar No.</label>
                             </div>
                             <div class="col-7">
                                 <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
-                                    placeholder="Unique Identity Number" class="form-control"
+                                    placeholder="Aadhar Number" class="form-control" numbersOnly maxlength="12"
                                     [class.isError]="controls.identityProofNumber.touched && controls.identityProofNumber.invalid">
                                 <mat-error
                                     *ngIf="controls.identityProofNumber.errors?.required && controls.identityProofNumber.touched">
                                     Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.identityProofNumber.errors?.minlength && controls.identityProofNumber.touched">
+                                    Invalid Input
                                 </mat-error>
                             </div>
                         </div>
@@ -58,7 +63,7 @@
                     <div class="col-6 kt-margin-t-20">
                         <div class="row">
                             <div class="col-3 offset-1 p-0">
-                                <label class="mandatory  font-weight-500 text-color">Attach</label>
+                                <label class="mandatory  font-weight-500 text-color">Attach Aadhar</label>
                             </div>
                             <div class="col-7">
                                 <div class="input-group mb-3">
@@ -365,6 +370,7 @@
                                         </div>
                                         <div class="col-7">
                                             <select formControlName="addressProofTypeId" class="form-control"
+                                                (change)="checkForAadhar(i)"
                                                 [class.isError]="addressForm.controls.addressProofTypeId.touched && addressForm.controls.addressProofTypeId.invalid">
                                                 <option value="" [disabled]=true [selected]="true"> Select Proof
                                                 </option>
@@ -475,19 +481,19 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="offset-4 img-container"
-                                                *ngIf="(i==0 && images.residential.length== 0)">
+                                                *ngIf="(i==1 && images.residential.length== 0)">
                                                 <img class="placeholder-image"
                                                     src="../../../../../../assets/media/icons/image-placeholder.png"
                                                     alt="placeholder">
                                             </div>
                                             <div class="offset-4 img-container"
-                                                *ngIf="(i==1 && images.permanent.length==0)">
+                                                *ngIf="(i==0 && images.permanent.length==0)">
                                                 <img class="placeholder-image"
                                                     src="../../../../../../assets/media/icons/image-placeholder.png"
                                                     alt="placeholder">
                                             </div>
 
-                                            <div *ngIf="i==0 && images.residential.length > 0">
+                                            <div *ngIf="i==1 && images.residential.length > 0">
                                                 <div class="row">
                                                     <div class="col-6" [class.offset-4]="images.residential.length == 1"
                                                         *ngFor="let img of images.residential, index as idx">
@@ -505,7 +511,7 @@
                                                 </div>
                                             </div>
 
-                                            <div *ngIf="i==1 && images.permanent.length > 0">
+                                            <div *ngIf="i==0 && images.permanent.length > 0">
                                                 <div class="row">
                                                     <div class="col-6" [class.offset-4]="images.permanent.length == 1"
                                                         *ngFor="let img of images.permanent, index as idx">

@@ -1,0 +1,230 @@
+<div class="row justify-content-around" [formGroup]="documentsForm">
+    <div class="col-11">
+        <div class="row kt-padding-t-15 kt-padding-b-20 justify-content-around">
+            <div class="col-4 form-label" *ngIf="!show">
+                <label class="kt-padding-l-10">Loan Agreement Copy</label>
+            </div>
+            <div class="col-4 form-label">
+                <label class="kt-padding-l-10">Pawn Ticket/Copy of pledge</label>
+            </div>
+            <div class="col-4 form-label" *ngIf="!show">
+                <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
+            </div>
+            <div class="col-4 form-label" *ngIf="show">
+                <label class="kt-padding-l-10">Signed Cheque Copy</label>
+            </div>
+            <div class="col-4 form-label" *ngIf="show">
+                <label class="kt-padding-l-10">Declaration Copy</label>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="col-4" *ngIf="!show">
+                <div class="input-group mb-3" [class.isError]="controls.loanAgreementCopy.touched && controls.loanAgreementCopy.invalid">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly formControlName="loanAgreementImageName" />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="loanAgreementCopy.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #loanAgreementCopy
+                        (change)="fileUpload($event,'loanAgreementCopy')">
+                        <mat-error *ngIf="controls.loanAgreementCopy.touched && controls.loanAgreementCopy.invalid">Field Required</mat-error>
+
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group mb-3" [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly formControlName="pawnCopyImageName" />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="pawnCopy.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #pawnCopy
+                        (change)="fileUpload($event,'pawnCopy')">
+                        <mat-error *ngIf="controls.pawnCopy.touched && controls.pawnCopy.invalid">Field Required</mat-error>
+
+                </div>
+            </div>
+            <div class="col-4" *ngIf="!show">
+                <div class="input-group mb-3" [class.isError]="controls.schemeConfirmationCopy.touched && controls.schemeConfirmationCopy.invalid">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="schemeConfirmationCopy.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #schemeConfirmationCopy
+                        (change)="fileUpload($event,'schemeConfirmationCopy')">
+                        <mat-error *ngIf="controls.schemeConfirmationCopy.touched && controls.schemeConfirmationCopy.invalid">Field Required</mat-error>
+
+                </div>
+            </div>
+            <div class="col-4" *ngIf="show">
+                <div class="input-group mb-3" [class.isError]="controls.signedCheque.touched && controls.signedCheque.invalid">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly formControlName="signedChequeImageName" />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="signedCheque.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #signedCheque
+                        (change)="fileUpload($event,'signedCheque')">
+                        <mat-error *ngIf="controls.signedCheque.touched && controls.signedCheque.invalid">Field Required</mat-error>
+                </div>
+            </div>
+            <div class="col-4" *ngIf="show">
+                <div class="input-group mb-3" [class.isError]="controls.declarationCopy.touched && controls.declarationCopy.invalid">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly formControlName="declarationCopyImageName" />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="declarationCopy.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" accept="image/png, image/jpeg" #declarationCopy
+                        (change)="fileUpload($event,'declarationCopy')">
+                        <mat-error *ngIf="controls.declarationCopy.touched && controls.declarationCopy.invalid">Field Required</mat-error>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col" *ngIf="!show">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container width" *ngIf="!documentsForm.controls.loanAgreementCopy.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.loanAgreementCopy.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.loanAgreementCopy.value"
+                                    *ngIf="!pdf.loanAgreementCopy"
+                                    (click)="preview(documentsForm.controls.loanAgreementCopy.value)">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="editImages('loanAgreementCopy');">
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    *ngIf="pdf.loanAgreementCopy"
+                                    (click)="preview(documentsForm.controls.loanAgreementCopy.value)"> -->
+                                    <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.loanAgreementCopy"
+                                    [pdfSrc]="documentsForm.controls.loanAgreementCopy.value"
+                                    (click)="preview(documentsForm.controls.loanAgreementCopy.value)"></kt-pdf-viewer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container width" *ngIf="!documentsForm.controls.pawnCopy.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.pawnCopy.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.pawnCopy.value"
+                                    *ngIf="!pdf.pawnCopy" (click)="preview(documentsForm.controls.pawnCopy.value)">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="editImages('pawnCopy');">
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    (click)="preview(documentsForm.controls.pawnCopy.value)"> -->
+                                <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnCopy"
+                                    [pdfSrc]="documentsForm.controls.pawnCopy.value"
+                                    (click)="preview(documentsForm.controls.pawnCopy.value)"></kt-pdf-viewer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col" *ngIf="!show">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container width" *ngIf="!documentsForm.controls.schemeConfirmationCopy.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.schemeConfirmationCopy.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.schemeConfirmationCopy.value"
+                                    *ngIf="!pdf.schemeConfirmationCopy"
+                                    (click)="preview(documentsForm.controls.schemeConfirmationCopy.value)">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="editImages('schemeConfirmationCopy');">
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    *ngIf="pdf.schemeConfirmationCopy"
+                                    (click)="preview(documentsForm.controls.schemeConfirmationCopy.value)"> -->
+                                <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.schemeConfirmationCopy"
+                                    [pdfSrc]="documentsForm.controls.schemeConfirmationCopy.value"
+                                    (click)="preview(documentsForm.controls.schemeConfirmationCopy.value)"></kt-pdf-viewer>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col" *ngIf="show">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container width" *ngIf="!documentsForm.controls.signedCheque.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.signedCheque.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.signedCheque.value"
+                                    *ngIf="!pdf.signedCheque"
+                                    (click)="preview(documentsForm.controls.signedCheque.value)">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="editImages('signedCheque');">
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    *ngIf="pdf.signedCheque"
+                                    (click)="preview(documentsForm.controls.signedCheque.value)"> -->
+                                    <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.signedCheque"
+                                    [pdfSrc]="documentsForm.controls.signedCheque.value"
+                                    (click)="preview(documentsForm.controls.signedCheque.value)"></kt-pdf-viewer>   
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col" *ngIf="show">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container width" *ngIf="!documentsForm.controls.declartionCopy.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+
+                        <div class="" *ngIf="documentsForm.controls.declartionCopy.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15">
+                                <img class="fetched-image" [src]="documentsForm.controls.declartionCopy.value"
+                                    *ngIf="!pdf.declartionCopy"
+                                    (click)="preview(documentsForm.controls.declartionCopy.value)">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                    class="kt-pointer remove-icon" (click)="editImages('declartionCopy');">
+                                    <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.declartionCopy"
+                                    [pdfSrc]="documentsForm.controls.declartionCopy.value"
+                                    (click)="preview(documentsForm.controls.declartionCopy.value)"></kt-pdf-viewer> 
+                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
+                                    *ngIf="pdf.declartionCopy"
+                                    (click)="preview(documentsForm.controls.declartionCopy.value)"> -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-11 text-right kt-padding-t-15">
+        <kt-button [type]="'button'" [value]="'Save'" (click)="save()"></kt-button>
+    </div>
+</div>

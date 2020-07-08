@@ -76,13 +76,16 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { UserReviewComponent } from "../pages/admin/kyc-settings/tabs/user-review/user-review.component";
 import { NgxPermissionsModule } from "ngx-permissions";
 import { MultiSelectSearchComponent } from "./components/multi-select-search/multi-select-search.component";
-import { AddAppraiserComponent } from '../pages/admin/user-management/assign-appraiser/add-appraiser/add-appraiser.component';
+import { AssignAppraiserComponent } from '../pages/admin/user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 
 import { WebcamModule } from "ngx-webcam";
 import { WebcamDialogComponent } from '../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { OrnamentsComponent } from '../pages/admin/loan-management/loan-application-form/tabs/ornaments/ornaments.component';
 import { ImageFunctionalityDialogComponent } from './components/image-functionality-dialog/image-functionality-dialog.component';
+
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
 
 import { AngularImageViewerModule } from 'angular-x-image-viewer';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
@@ -146,15 +149,16 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 		UplodPreviewImageComponent,
 
 		UserReviewComponent,
-		AddAppraiserComponent,
+		AssignAppraiserComponent,
 		WebcamDialogComponent,
 
 		FilteredDataComponent,
 
 		MultiSelectSearchComponent,
 
-		AddAppraiserComponent,
+		AssignAppraiserComponent,
 		OrnamentsComponent,
+		PdfViewerComponent,
 		ImageFunctionalityDialogComponent,
 		DropdownComponent,
 	],
@@ -209,7 +213,7 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 		UplodPreviewImageComponent,
 		UserReviewComponent,
 		FilteredDataComponent,
-		AddAppraiserComponent,
+		AssignAppraiserComponent,
 		WebcamDialogComponent,
 		// spinner
 		NgbDropdownModule,
@@ -218,11 +222,13 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 		NgxMaterialTimepickerModule,
 		MultiSelectSearchComponent,
 		OrnamentsComponent,
+		PdfViewerComponent,
 
 		AngularImageViewerModule,
 		DropdownComponent,
 	],
 	imports: [
+		PdfViewerModule,
 		NgbModule,
 		CommonModule,
 		RouterModule,
@@ -246,6 +252,11 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 		NgxMaterialTimepickerModule.setLocale('en-IN'),
 		AngularImageViewerModule,
 	],
-	entryComponents: [ImagePreviewDialogComponent, ImageFunctionalityDialogComponent],
+
+	entryComponents: [
+		PdfViewerComponent, 
+		ImagePreviewDialogComponent, 
+		ImageFunctionalityDialogComponent],
 })
-export class PartialsModule { }
+export class PartialsModule {
+}

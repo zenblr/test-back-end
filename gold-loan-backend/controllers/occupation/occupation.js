@@ -10,7 +10,7 @@ exports.addOccupation = async (req, res, next) => {
     let { name } = req.body;
     let occupationExist = await models.occupation.findOne({ where: { name, isActive: true } })
     if (!check.isEmpty(occupationExist)) {
-        return res.status(400).json({ message: 'This Occupation is already Exist' });
+        return res.status(400).json({ message: 'Occupation already Exists' });
     }
     let addOccupation = await models.occupation.create({ name });
     if (!addOccupation) { return res.status(422).json({ message: 'Occupation is not created' }) }
@@ -28,12 +28,12 @@ exports.readOccupation = async (req, res, next) => {
 }
 // update occupation
 
-exports.updateOccupation= async (req,res,next)=>{
-    let ocuupationId=req.params.id;
-    const{name}=req.body;
-    let updateOccupation= await models.occupation.update({name},{where:{id:ocuupationId,isActive:true}});
-    if(!updateOccupation[0]){return res.status(404).json({message:'occupation update failed'});}
-    return res.status(200).json({message:'Updated'});
+exports.updateOccupation = async (req, res, next) => {
+    let ocuupationId = req.params.id;
+    const { name } = req.body;
+    let updateOccupation = await models.occupation.update({ name }, { where: { id: ocuupationId, isActive: true } });
+    if (!updateOccupation[0]) { return res.status(404).json({ message: 'occupation update failed' }); }
+    return res.status(200).json({ message: 'Updated' });
 }
 
 // deactive Occupation

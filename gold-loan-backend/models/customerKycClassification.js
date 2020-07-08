@@ -31,19 +31,19 @@ module.exports = (sequelize, DataTypes) => {
             field: 'cce_id',
             allowNull: false
         },
-        kycStatusFromBm: {
+        kycStatusFromOperationalTeam: {
             type: DataTypes.ENUM,
-            field: 'kyc_status_from_bm',
+            field: 'kyc_status_from_operational_team',
             values: ['approved', 'pending', 'incomplete', 'rejected'],
             defaultValue: "pending"
         },
-        reasonFromBm: {
+        reasonFromOperationalTeam: {
             type: DataTypes.TEXT,
-            field: 'reason_from_bm',
+            field: 'reason_from_operational_team',
         },
-        branchManagerId: {
+        operationalTeamId: {
             type: DataTypes.INTEGER,
-            field: 'branch_manager_id',
+            field: 'operational_team_id',
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -71,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycClassification.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
         CustomerKycClassification.belongsTo(models.user, { foreignKey: 'cceId', as: 'cceInfo' });
-        CustomerKycClassification.belongsTo(models.user, { foreignKey: 'branchManagerId', as: 'branchManagerInfo' });
+        CustomerKycClassification.belongsTo(models.user, { foreignKey: 'operationalTeamId', as: 'operationalTeamInfo' });
 
         CustomerKycClassification.belongsTo(models.rating, { foreignKey: 'kycRatingFromCce', as: 'KycRatingFromCce' });
 

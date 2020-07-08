@@ -13,23 +13,24 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class UploadOfferComponent implements OnInit {
   images: any[] = []
+  imgId: any[] = []
   index: number = null
   viewLoading: boolean = false;
   @ViewChild("file", { static: false }) file;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
 
- 
+
 
   constructor(
     private uploadOfferService: UploadOfferService,
     private ref: ChangeDetectorRef,
-    private ngxPermissions:NgxPermissionsService
-  ) { 
-    this.ngxPermissions.permissions$.subscribe(permission=>{
-      if(permission.goldRateView){
-        
+    private ngxPermissions: NgxPermissionsService
+  ) {
+    this.ngxPermissions.permissions$.subscribe(permission => {
+      if (permission.goldRateView) {
+
       }
-      if(permission.offerBannerView){
+      if (permission.offerBannerView) {
         this.getData();
       }
     })
@@ -41,22 +42,27 @@ export class UploadOfferComponent implements OnInit {
   getData() {
     this.uploadOfferService.getOffers().pipe(
       map(res => {
-        // this.goldRate.patchValue(res.goldRate)
-        // this.uploadOfferService.goldRate.next(res.goldRate);
-        if (res.images.length > 0) {
-          Array.prototype.push.apply(this.images, res.images)
+        // if (res.offerImages.length > 0) {
+        //   res.offerImages.forEach(element => {
+        //     this.images.push(element.offerImages.URL)
+        //     this.imgId.push(element.offerImages.id)
+        //   });
+        // }
+        if (res) {
+          this.images = res.offerImage
+          this.imgId = res.images
         }
         this.ref.detectChanges();
       })).subscribe()
   }
 
-  
 
-  
+
+
 
   save() {
 
-    this.uploadOfferService.uploadOffers(this.images).pipe(
+    this.uploadOfferService.uploadOffers(this.imgId).pipe(
       (map(res => {
         this.toastr.successToastr('Uploaded Sucessfully');
         // this.uploadOfferService.goldRate.next(this.goldRate.value);

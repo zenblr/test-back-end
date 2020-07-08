@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
@@ -12,26 +12,32 @@ import { MatDialog } from '@angular/material';
 @Component({
   selector: 'kt-upload-packets',
   templateUrl: './upload-packets.component.html',
-  styleUrls: ['./upload-packets.component.scss']
+  styleUrls: ['./upload-packets.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() viewpacketsDetails;
+  @Input() masterAndLoanIds;
   @ViewChild('form', { static: false }) form;
   @ViewChild('emptyPacketWithNoOrnament', { static: false }) emptyPacketWithNoOrnament: ElementRef
-  @ViewChild('packetWithAllOrnaments', { static: false }) packetWithAllOrnaments: ElementRef
-  @ViewChild('packetWithSealing', { static: false }) packetWithSealing: ElementRef
+  @ViewChild('sealingPacketWithWeight', { static: false }) sealingPacketWithWeight: ElementRef
+  @ViewChild('sealingPacketWithCustomer', { static: false }) sealingPacketWithCustomer: ElementRef
   @ViewChild('packetWithWeight', { static: false }) packetWithWeight: ElementRef
   packetImg: FormGroup;
   left: number = 0
   width: number = 0
   packetsDetails: any[] = []
   packetInfo: FormGroup;
-  loanId: number = 0;
   packetsName: any;
   url: string;
-  @Input() ornamentType
+  @Input() ornamentType: any = []
+  ornamentTypeData = []
   ornamentName: any;
+  clearData: boolean;
+  splicedOrnaments: any[] = []
+  splicedPackets: any[] = []
+  ornamentId: any;
 
   constructor(
     private sharedService: SharedService,
@@ -50,10 +56,34 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
 
   ngOnChanges(change: SimpleChanges) {
-  //   if (change.ornamentType && change.ornamentType.currentValue) {
-  //     this.ornamentType = change.ornamentType.currentValue.ornamentType
-  //     this.ornamentType.map(ele => ele.disabled = false)
-  //   }
+    if (change.ornamentType && change.ornamentType.currentValue && change.ornamentType.currentValue.ornamentType) {
+      let ornamentType = change.ornamentType.currentValue.ornamentType
+      console.log(this.ornamentType)
+      var temp = []
+      ornamentType.forEach(ele => {
+        temp.push(ele.ornamentType)
+      });
+
+      this.ornamentTypeData = temp
+    }
+
+    if (change.viewpacketsDetails && change.viewpacketsDetails.currentValue) {
+      let packet = change.viewpacketsDetails.currentValue.loanPacketDetails[0]
+      if (packet) {
+        this.packetImg.patchValue({
+          emptyPacketWithNoOrnament: packet.emptyPacketWithNoOrnamentImage,
+          sealingPacketWithCustomer: packet.sealingPacketWithCustomerImage,
+          sealingPacketWithWeight: packet.sealingPacketWithWeightImage
+        })
+        console.log(packet.packets)
+        packet.packets.forEach(ele => {
+          this.packetsName = ele.packetUniqueId;
+          this.ornamentName = ele.ornamentTypes.map(e => e.name).toString();
+          this.pushPackets()
+        });
+        this.url = 'view-loan'
+      }
+    }
   }
 
 
@@ -61,33 +91,15 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   ngOnInit() {
     this.initForm()
     this.getPacketsDetails()
-
-    this.ornamentType = [{ ornamentType: 'abc', id: 2 }, { ornamentType: 'xcv', id: 1 }]
-    this.ornamentType.map(ele => ele.disabled = false)
-
-
     this.url = this.router.url.split('/')[2]
-    this.loanId = this.route.snapshot.params.id
+    this.masterAndLoanIds = this.route.snapshot.params.id
 
     this.packetImg = this.fb.group({
-      packetsArray: this.fb.array([])
+      emptyPacketWithNoOrnament: ['', Validators.required],
+      sealingPacketWithWeight: ['', Validators.required],
+      sealingPacketWithCustomer: ['', Validators.required],
+      packetOrnamentArray: this.fb.array([])
     })
-
-    if (this.viewpacketsDetails) {
-      const array = this.viewpacketsDetails.loanPacketDetails
-      for (let index = 0; index < array.length; index++) {
-        this.controls.packetId.patchValue(array[index].packetId)
-        this.addmore()
-        const pack = this.packets.at(index) as FormGroup;
-        pack.patchValue(array[index])
-        pack.patchValue({ packetsName: array[index].packet.packetUniqueId })
-        pack.patchValue({ ornamentsName: array[index].ornaments.packetUniqueId })
-        console.log(pack)
-        // pack.at(inde).patchValue(array[index])
-      }
-
-      console.log(this.viewpacketsDetails.loanPacketDetails)
-    }
 
   }
 
@@ -100,7 +112,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
   get packets() {
     if (this.packetImg) {
-      return this.packetImg.controls.packetsArray as FormArray
+      return this.packetImg.controls.packetOrnamentArray as FormArray
     }
   }
 
@@ -114,9 +126,11 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.packetService.getPacketsAvailable().pipe(
       map(res => {
         this.packetsDetails = res.data;
-        this.packetsDetails.map(ele => ele.disabled = false)
+
       })
     ).subscribe()
+    // this.packetsDetails = [{ packetUniqueId: 'PAC-2', id: 2 }, { packetUniqueId: 'PAC-2', id: 1 }]
+    // this.packetsDetails.map(ele => ele.disabled = false)
   }
 
   ngAfterViewInit() {
@@ -127,64 +141,40 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       this.packetInfo.markAllAsTouched();
       return;
     }
-    // if (this.left < 650) {
-    //   this.width = this.width + 130
 
-    //   if (this.left == 0)
-    //     this.left = this.left + 150
-    //   else if (this.left > 0)
-    //     this.left = this.left + 130
-
-    //   const left = (this.left).toString() + 'px'
-    //   const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-    //   const addmore = (this.ele.nativeElement.querySelector('.addMore') as HTMLElement);
-    //   width.style.maxWidth = left
-    //   addmore.style.left = left
-
-    // } else {
-    //   const addmore = (this.ele.nativeElement.querySelector('.addMore') as HTMLElement);
-    //   addmore.style.left = '670px'
-    //   const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-    //   width.style.maxWidth = '680px'
-
-    // }
     if (this.url != 'view-loan')
       this.removePackets()
 
+    this.pushPackets()
+
+
+
+    setTimeout(() => {
+      this.clearData = false;
+      this.form.resetForm()
+      this.ref.detectChanges();
+    })
+  }
+  pushPackets() {
     this.packets.push(this.fb.group({
-      emptyPacketWithNoOrnament: ['', Validators.required],
-      packetWithAllOrnaments: ['', Validators.required],
-      packetWithSealing: ['', Validators.required],
-      packetWithWeight: ['', Validators.required],
       packetId: [this.controls.packetId.value],
-      ornamentsId: [this.controls.ornamentType.value],
+      ornamentsId: [this.ornamentId],
       packetsName: [this.packetsName],
       ornamentsName: [this.ornamentName]
     }))
-
-    this.form.resetForm()
-
   }
 
-  removePacketsTab(idx) {
 
-    // let ornamnetsWidth = this.packets.length * 130
-    // if (ornamnetsWidth <= this.width) {
-    //   this.left = this.left - 130
-    //   const left = (this.left).toString() + 'px'
-    //   const width = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
-    //   width.style.maxWidth = left
-    //   const addmore = (this.ele.nativeElement.querySelector('.addMore') as HTMLElement);
-    //   addmore.style.left = left
 
-    // }
-    this.packets.removeAt(idx)
+  removePacketsData(idx) {
+    console.log(this.packets.controls[idx])
+    this.packets.controls.splice(idx, 1)
   }
 
   clear() {
-    this.packetWithAllOrnaments.nativeElement.value = '';
+    this.sealingPacketWithWeight.nativeElement.value = '';
     this.emptyPacketWithNoOrnament.nativeElement.value = '';
-    this.packetWithSealing.nativeElement.value = '';
+    this.sealingPacketWithCustomer.nativeElement.value = '';
     this.packetWithWeight.nativeElement.value = ''
   }
 
@@ -207,21 +197,32 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   removePackets() {
-    let arrayIndex = this.packets.length
-    const controls = this.packets.at(arrayIndex) as FormGroup;
-
     let index = this.packetsDetails.findIndex(ele => {
       return ele.id == this.controls.packetId.value;
     })
-    this.packetsName = this.packetsDetails[index]
-    this.packetsDetails[index].disabled = true
+    this.packetsName = this.packetsDetails[index].packetUniqueId
+    this.splicedPackets.push(this.packetsDetails[index])
+    this.packetsDetails.splice(index, 1)
 
-    let ornamnetsIndex = this.ornamentType.findIndex(ele => {
-      return ele.id == this.controls.ornamentType.value;
+    let ornamentTypeObject = this.controls.ornamentType.value.multiSelect
+    this.ornamentName = ornamentTypeObject.map(e => e.name).toString();
+    this.ornamentId = ornamentTypeObject.map(e => e.id)
+    var selectedOrnaments = this.ornamentTypeData.filter((val) => {
+      return ornamentTypeObject.indexOf(val) != -1;
+    });
+
+    var temp = this.ornamentTypeData
+    console.log(selectedOrnaments);
+    selectedOrnaments.forEach(selectedornament => {
+      var index = this.ornamentTypeData.findIndex(ornament => {
+        return selectedornament.id == ornament.id
+      })
+      this.splicedOrnaments.push(this.ornamentTypeData[index])
+      temp.splice(index, 1)
     })
-    this.ornamentName = this.ornamentType[ornamnetsIndex]
-    this.ornamentType[index].disabled = true
-    console.log(this.controls.packetId.value)
+    this.ornamentTypeData = temp;
+    this.clearData = true;
+
 
     // this.packetsDetails.splice(index, 1)
   }
@@ -238,15 +239,13 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.packetService.uploadPackets(this.packets.value, this.loanId).pipe(
+        this.packetService.uploadPackets(this.packetImg.value, this.masterAndLoanIds).pipe(
           map(res => {
             this.toast.success(res.message)
             this.router.navigate(['/admin/loan-management/applied-loan'])
           })
         ).subscribe()
       }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
     });
 
   }
@@ -267,8 +266,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.packets.removeAt(idx);
         this.ref.detectChanges()
       }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
     });
   }
 
@@ -280,16 +277,15 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
+        const params = {
+          reason: 'loan',
+          masterLoanId:this.masterAndLoanIds.masterLoanId
+        }
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
-          const packet = this.packets.at(index) as FormArray
-          packet.controls[value].patchValue(res.uploadFile.URL)
-          console.log(this.packets.value)
-          // this.profile = res.uploadFile.URL
-          // this.personalForm.get('profileImage').patchValue(this.profile);
+          this.packetImg.controls[value].patchValue(res.uploadFile.path)
           this.ref.detectChanges()
         })
-        // this.controls.
       }
     });
   }

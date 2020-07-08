@@ -8,30 +8,36 @@
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="grossWeight" min="0"
-                            (keypress)="rejectNegativeNumber($event)" placeholder="10.50 grams"
+                             placeholder="10.50 grams"
                             (blur)="weightCheck();calcGoldDeductionWeight()"
                             [class.isError]="controls.grossWeight.touched && controls.grossWeight.invalid">
                         <mat-error *ngIf="controls.grossWeight.errors?.required && controls.grossWeight.touched">
                             Required field
+                        </mat-error>
+                        <mat-error *ngIf="controls.grossWeight.errors?.pattern && controls.grossWeight.touched">
+                            Invalid Input
                         </mat-error>
 
                     </div>
                 </div>
                 <div class="row kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label for="" class="mandatory text-color">Deduction Weight</label>
+                        <label for="" class="mandatory text-color">Gold Deduction Weight</label>
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="deductionWeight" min="0"
-                            (keypress)="rejectNegativeNumber($event)" placeholder="2.00 grams"
+                             placeholder="2.00 grams"
                             (blur)="weightCheck();calcGoldDeductionWeight()"
                             [class.isError]="controls.deductionWeight.touched && controls.deductionWeight.invalid">
                         <mat-error
                             *ngIf="controls.deductionWeight.errors?.required && controls.deductionWeight.touched">
                             Required field
                         </mat-error>
+                        <mat-error *ngIf="controls.deductionWeight.errors?.pattern && controls.deductionWeight.touched">
+                            Invalid Input
+                        </mat-error>
                         <mat-error *ngIf="controls.deductionWeight.errors?.weight && controls.deductionWeight.touched">
-                            <small>Deduction Weight should be lesser then Gross Weight</small>
+                            <small>Deduction Weight should be lesser than Gross Weight</small>
                         </mat-error>
                     </div>
                 </div>

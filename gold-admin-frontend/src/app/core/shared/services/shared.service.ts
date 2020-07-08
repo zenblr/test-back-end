@@ -45,14 +45,34 @@ export class SharedService {
 		return this.http.get(`/api/city?stateId=${id}`);
 	}
 
-	uploadFile(files): Observable<any> {
+	uploadFile(files, data?): Observable<any> {
+		const reqParams: any = {};
+		if (data && data.reason) {
+			reqParams.reason = data.reason;
+		}
+		if (data && data.customerId) {
+			reqParams.customerId = data.customerId;
+		}
+		if (data && data.masterLoanId) {
+			reqParams.loanId = data.masterLoanId;
+		}
 		var fd = new FormData();
 		fd.append("avatar", files);
-		return this.http.post<any>(`/api/upload-file`, fd);
+		return this.http.post<any>(`/api/upload-file`, fd, { params: reqParams });
 	}
 
-	uploadBase64File(avatar): Observable<any> {
-		return this.http.post<any>(`/api/upload-file/base`, { avatar });
+	uploadBase64File(avatar, data?): Observable<any> {
+		const reqParams: any = {};
+		if (data && data.reason) {
+			reqParams.reason = data.reason;
+		}
+		if (data && data.customerId) {
+			reqParams.customerId = data.customerId;
+		}
+		if (data && data.masterLoanId) {
+			reqParams.loanId = data.masterLoanId;
+		}
+		return this.http.post<any>(`/api/upload-file/base`, { avatar }, { params: reqParams });
 	}
 
 	getRole(): Observable<any> {

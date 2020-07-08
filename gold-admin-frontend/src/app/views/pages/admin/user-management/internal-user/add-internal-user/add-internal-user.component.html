@@ -63,19 +63,7 @@
                                     Required field</mat-error>
                             </div>
                         </div>
-                        <div class="row kt-padding-t-15" *ngIf="data.action != 'edit'">
-                            <div class="col-4 form-label">
-                                <label for="" class="kt-padding-l-10 text-color mandatory">Customer ID</label>
-                            </div>
-                            <div class="col-8">
-                                <input class="form-control" formControlName="userUniqueId" placeholder="e.g 012345"
-                                    [class.isError]="controls.userUniqueId.touched && controls.userUniqueId.invalid">
-                                <mat-error
-                                    *ngIf="controls.userUniqueId.errors?.required && controls.userUniqueId.touched">
-                                    Required field
-                                </mat-error>
-                            </div>
-                        </div>
+
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
                                 <label for="" class="kt-padding-l-10 text-color mandatory">Email</label>
@@ -115,12 +103,29 @@
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="userTypeId" autocomplete="off"
+                                    (change)="checkUserType()"
                                     [class.isError]="controls.userTypeId.touched && controls.userTypeId.invalid">
                                     <option value="" selected disabled>Select</option>
                                     <option [value]="type.id" *ngFor="let type of userType">{{type.userType}}</option>
                                 </select>
                                 <mat-error *ngIf="controls.userTypeId.touched && controls.userTypeId.errors?.required">
                                     Required field</mat-error>
+                            </div>
+                        </div>
+
+                        <div class="row kt-padding-t-15" *ngIf="data.action != 'edit'">
+                            <div class="col-4 form-label">
+                                <label for="" class="kt-padding-l-10 text-color"
+                                    [class.mandatory]="controls.userTypeId.value == '7'">User
+                                    ID</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="userUniqueId" placeholder="e.g 012345"
+                                    [class.isError]="controls.userUniqueId.touched && controls.userUniqueId.invalid">
+                                <mat-error
+                                    *ngIf="controls.userUniqueId.errors?.required && controls.userUniqueId.touched">
+                                    Required field
+                                </mat-error>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">

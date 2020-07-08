@@ -176,6 +176,11 @@ export class MenuConfig {
 											permission: false,
 										},
 										{
+											title: "Occupations",
+											page: "/admin/masters/occupation",
+											permission: false,
+										},
+										{
 											title: "Packet Location",
 											page: "/admin/masters/packet-location",
 											permission: false,
@@ -284,6 +289,12 @@ export class MenuConfig {
 									page: "/admin/loan-management/all-loan",
 									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanDetailsView'),
+								},
+								{
+									title: "Transfer Loan List",
+									page: "/admin/loan-management/transfer-loan-list",
+									bullet: 'dot',
+									// permission: !this.permissionsArr.includes('loanDetailsView'),
 								}
 							],
 						},
@@ -329,6 +340,20 @@ export class MenuConfig {
 								{
 									title: "Loan Repayment Details",
 									page: "/admin/account/loan-repayment",
+									permission: false,
+								},
+							],
+						},
+						{
+							title: "Funds and Approvals",
+							root: true,
+							src: "assets/media/aside-icons/icons-12.svg",
+							bullet: 'dot',
+							permission: false,
+							submenu: [
+								{
+									title: "Deposit",
+									page: "/admin/funds-approvals/deposit",
 									permission: false,
 								},
 							],
@@ -397,7 +422,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-29.svg",
 							page: "/broker",
-							permission: true,
+							permission: !this.modulesArr.includes(2),
 						},
 						{
 							title: "Log Out",
@@ -654,14 +679,14 @@ export class MenuConfig {
 							root: true,
 							page: "/broker/orders",
 							src: "assets/media/aside-icons/icons-30.svg",
-							permission: !this.permissionsArr.includes('customerView'),
+							permission: !this.permissionsArr.includes('orderView'),
 						},
 						{
 							title: "Shop",
 							root: true,
 							page: "/broker/shop",
 							src: "assets/media/aside-icons/icons-31.svg",
-							permission: !this.permissionsArr.includes('customerView'),
+							permission: !this.permissionsArr.includes('orderAdd'),
 						},
 						{
 							title: "Cart",

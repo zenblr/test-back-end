@@ -93,12 +93,19 @@ export class AddLeadComponent implements OnInit {
         this.controls.panImage.setValidators(Validators.required)
         this.controls.panImage.updateValueAndValidity()
       } else {
-        this.controls.panImage.reset()
         this.controls.panImage.clearValidators()
         this.controls.panImage.updateValueAndValidity()
-        this.controls.panCardNumber.reset()
+        this.controls.panImage.reset()
+        this.controls.panImage.patchValue(null)
+
         this.controls.panCardNumber.clearValidators()
         this.controls.panCardNumber.updateValueAndValidity()
+        this.controls.panCardNumber.reset()
+
+        this.controls.panImg.clearValidators()
+        this.controls.panImg.updateValueAndValidity()
+        this.controls.panImg.reset()
+
       }
     });
 
@@ -136,9 +143,10 @@ export class AddLeadComponent implements OnInit {
       statusId: [, [Validators.required]],
       panType: [''],
       form60: [''],
-      panImage: [],
+      panImage: [null],
+      panImg: [null],
       comment: [''],
-      leadSourceId: [''],
+      leadSourceId: [null],
       source: [''],
     });
     this.getCities()
@@ -193,8 +201,10 @@ export class AddLeadComponent implements OnInit {
 
   getLeadById(id) {
     this.leadService.getLeadById(id).subscribe(res => {
-      // console.log(res);
       this.leadForm.patchValue(res.singleCustomer);
+      this.leadForm.patchValue({ panImage: res.singleCustomer.panImage })
+      this.leadForm.patchValue({ panImg: res.singleCustomer.panImg })
+      console.log(this.leadForm.value)
       this.getCities();
       this.commentBox()
     },
@@ -282,11 +292,15 @@ export class AddLeadComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0]).pipe(
+      const params = {
+        reason: 'lead'
+      }
+      this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
           if (res) {
             // this.controls.form60.patchValue(event.target.files[0].name)
-            this.controls.panImage.patchValue(res.uploadFile.URL)
+            this.controls.panImg.patchValue(res.uploadFile.URL)
+            this.controls.panImage.patchValue(res.uploadFile.path)
           }
         }), catchError(err => {
           throw err
@@ -297,7 +311,8 @@ export class AddLeadComponent implements OnInit {
   }
 
   preview() {
-    let img = [this.controls.panImage.value]
+    console.log(this.controls.panImg.value)
+    let img = [this.controls.panImg.value]
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
         images: img,
@@ -309,7 +324,8 @@ export class AddLeadComponent implements OnInit {
   }
 
   remove() {
-    this.controls.panImage.patchValue('')
+    this.controls.panImage.patchValue(null)
+    this.controls.panImg.patchValue(null)
   }
 
   onSubmit() {
@@ -325,12 +341,17 @@ export class AddLeadComponent implements OnInit {
         return
       }
 
-      // if (this.controls.statusId.valid) {
-      //   this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
-      // }
-      // if (this.controls.pinCode.valid) {
-      //   this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
-      // }
+      if (this.controls.leadSourceId.value == null) {
+        this.leadForm.get('leadSourceId').patchValue(null);
+      } else {
+        this.leadForm.get('leadSourceId').patchValue(Number(this.controls.leadSourceId.value));
+      }
+      if (this.controls.statusId.valid) {
+        this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
+      }
+      if (this.controls.pinCode.valid) {
+        this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
+      }
       if (!this.controls.panCardNumber.value) {
         this.leadForm.get('panCardNumber').patchValue(null);
       } else {
@@ -339,7 +360,7 @@ export class AddLeadComponent implements OnInit {
       }
       if (this.controls.panType.value == '') {
         this.leadForm.get('panType').patchValue(null);
-        this.controls.panImage.patchValue('')
+        this.controls.panImage.patchValue(null)
       }
 
       const leadData = this.leadForm.value;
@@ -360,14 +381,19 @@ export class AddLeadComponent implements OnInit {
     } else if (this.data.action == 'edit') {
       if (this.controls.panType.value == '') {
         this.leadForm.get('panType').patchValue(null);
-        this.controls.panImage.patchValue('')
+        this.controls.panImage.patchValue(null)
       }
-      // if (this.controls.statusId.valid) {
-      //   this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
-      // }
-      // if (this.controls.pinCode.valid) {
-      //   this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
-      // }
+      if (this.controls.leadSourceId.value == null) {
+        this.leadForm.get('leadSourceId').patchValue(null);
+      } else {
+        this.leadForm.get('leadSourceId').patchValue(Number(this.controls.leadSourceId.value));
+      }
+      if (this.controls.statusId.valid) {
+        this.leadForm.get('statusId').patchValue(Number(this.controls.statusId.value));
+      }
+      if (this.controls.pinCode.valid) {
+        this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
+      }
       const leadData = this.leadForm.value;
       console.log('edit')
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {
@@ -406,4 +432,5 @@ export class AddLeadComponent implements OnInit {
       this.closeModal();
     }
   }
+
 }

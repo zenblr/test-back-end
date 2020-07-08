@@ -8,6 +8,8 @@ import { ToastrService } from 'ngx-toastr';
 import { PurposeService } from '../../../../../../../core/masters/purposes/service/purpose.service';
 import { ImagePreviewDialogComponent } from '../../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { MatDialog } from '@angular/material';
+import { AppliedKycService } from '../../../../../../../core/applied-kyc/services/applied-kyc.service';
+import { UserReviewComponent } from '../../../../kyc-settings/tabs/user-review/user-review.component';
 
 @Component({
   selector: 'kt-basic-details',
@@ -27,7 +29,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() invalid
   @Input() action;
   @Output() next: EventEmitter<any> = new EventEmitter();
-  @Output() laonId: EventEmitter<any> = new EventEmitter();
+  @Output() id: EventEmitter<any> = new EventEmitter();
   @Output() totalEligibleAmt: EventEmitter<any> = new EventEmitter();
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
@@ -42,7 +44,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     public loanApplicationFormService: LoanApplicationFormService,
     public toast: ToastrService,
     public purposeService: PurposeService,
-    private dilaog:MatDialog
+    private dilaog: MatDialog,
+    private appliedKycService: AppliedKycService,
+    private dialog: MatDialog
   ) {
     this.initForm()
     this.getPurposeInfo()
@@ -119,7 +123,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
 
             stage = Number(stage) - 1;
             this.next.emit(stage)
-            this.laonId.emit(res.loanId)
+            this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
             if (stage >= 1) {
               this.apiHit.emit(res.loanId)
             }
@@ -150,11 +154,12 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       panCardNumber: [''],
       startDate: [this.currentDate],
       customerId: [, Validators.required],
-      kycStatus: [, Validators.required],
+      kycStatus: [],
       purpose: ["", Validators.required],
       panType: [],
       loanId: [],
-      panImage: []
+      masterLoanId: [],
+      panImage: [],
     })
   }
 
@@ -173,7 +178,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         let stage = res.loanCurrentStage
         stage = Number(stage) - 1;
         this.next.emit(stage)
-        this.laonId.emit(res.loanId)
+        this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
       }), catchError(err => {
         this.toast.error(err.error.message)
         throw err
@@ -185,13 +190,23 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       })).subscribe()
   }
 
-  preview(images){
+  preview(images) {
     this.dilaog.open(ImagePreviewDialogComponent, {
       data: {
         images: [images],
         index: 0
       },
       width: "auto"
+    })
+  }
+
+  viewKYC() {
+    // console.log(this.basicForm.value)
+    // this.dialog.open(UserReviewComponent)
+    const params = { customerId: this.controls.customerId.value };
+    this.appliedKycService.editKycDetails(params).subscribe(res => {
+      // console.log(res)
+      const dialogRef = this.dialog.open(UserReviewComponent, { data: { action: 'view' }, width: '900px' });
     })
   }
 

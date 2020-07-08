@@ -14,7 +14,7 @@ exports.addHolidayMaster = async (req, res) => {
     // let modifiedTime=Date.now();
     let holidayDateExist = await models.holidayMaster.findOne({ where: { holidayDate: holidayDate, isActive: true } });
     if (!check.isEmpty(holidayDateExist)) {
-        return res.status(404).json({ message: "This holiday date is already Exists" });
+        return res.status(404).json({ message: "This holiday date already Exists" });
     }
     let addHolidayMasterData = await models.holidayMaster.create({ holidayDate, description, year, modifiedBy, createdBy });
     if (!addHolidayMasterData) {

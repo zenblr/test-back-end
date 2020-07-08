@@ -33,6 +33,10 @@ import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dial
 import { PacketTrackingComponent } from './packets/packet-tracking/packet-tracking.component';
 import { UpdateLocationComponent } from './packets/update-location/update-location.component';
 import { TopUpComponent } from './top-up/top-up.component';
+import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
+import { UploadLoanDocumentsComponent } from './loan-application-form/tabs/upload-loan-documents/upload-loan-documents.component';
+import { LoanTransferComponent } from './loan-transfer/loan-transfer.component';
+import { LoanTransferListComponent } from './loan-transfer-list/loan-transfer-list.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -73,6 +77,14 @@ const rout: Routes = [
   {
     path: 'topup',
     component: TopUpComponent
+  },
+  {
+    path: 'loan-transfer',
+    component: LoanTransferComponent
+  },
+  {
+    path: 'transfer-loan-list',
+    component: LoanTransferListComponent
   }
 ]
 
@@ -99,6 +111,9 @@ const rout: Routes = [
     PacketTrackingComponent,
     UpdateLocationComponent,
     TopUpComponent,
+    UploadLoanDocumentsComponent,
+    LoanTransferComponent,
+    LoanTransferListComponent,
   ],
   imports: [
     CommonModule,
@@ -130,7 +145,8 @@ const rout: Routes = [
     UnSecuredSchemeComponent,
     WebcamDialogComponent,
     UpdateLocationComponent,
-    OrnamentsComponent
+    OrnamentsComponent,
+    UserReviewComponent
   ]
 })
 export class LoanManagementModule { }

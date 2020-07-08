@@ -1,0 +1,37 @@
+version: "3"
+services: 
+    web:
+      build: ./gold-loan-backend/
+      container_name: gold-loan-nodejs-uat
+      image: maishafruits/maisha:node_loan_uat
+      environment:
+        - NODE_ENV=uat
+      links:
+        - redis:redis
+      ports:
+        - "8100:3000"
+      volumes:
+        - gold-loan-uat-public-data:/usr/src/app/public/uploads
+    
+    redis:
+      container_name: gold-loan-uat-redis
+      restart: always
+      image: redis:latest
+      expose:
+        - "6370"
+
+    nginx:
+      restart: always
+      container_name: gold-loan-uat-nginx
+      image: maishafruits/maisha:nginx_loan
+      build: ./gold-admin-frontend/
+      volumes:
+        - ./logs/:/gold/logs
+      ports:
+        - "8300:80"
+      links:
+        - web
+volumes:
+    gold-loan-uat-public-data:
+
+    

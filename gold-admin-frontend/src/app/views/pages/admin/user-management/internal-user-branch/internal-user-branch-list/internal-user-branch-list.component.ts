@@ -48,7 +48,7 @@ export class InternalUserBranchListComponent implements OnInit {
    * @param layoutUtilsService: LayoutUtilsService
    */
   constructor(
-    
+
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
@@ -73,10 +73,10 @@ export class InternalUserBranchListComponent implements OnInit {
   ngOnInit() {
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
-			tap(() => this.loadInternalBranchList())
-		)
-			.subscribe();
-		this.subscriptions.push(paginatorSubscriptions);
+      tap(() => this.loadInternalBranchList())
+    )
+      .subscribe();
+    this.subscriptions.push(paginatorSubscriptions);
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
@@ -145,10 +145,10 @@ export class InternalUserBranchListComponent implements OnInit {
       if (!res) {
         return;
       }
-      this.internalUserBranchService.delete(false,branch.id).pipe(
-        map(res =>{
+      this.internalUserBranchService.delete(false, branch.id).pipe(
+        map(res => {
           this.toast.success(res.message)
-        }),catchError(err=>{
+        }), catchError(err => {
           this.toast.error(err.error.message)
           console.log(err.error)
           throw err
@@ -175,7 +175,7 @@ export class InternalUserBranchListComponent implements OnInit {
 
 
   editInternalBranch(internalBranch, action) {
-   var branch = this.createData(internalBranch)
+    var branch = this.createData(internalBranch)
     const _saveMessage = `Role successfully has been saved.`;
     const dialogRef = this.dialog.open(AddInternalUserBranchComponent, {
       data: {
@@ -194,23 +194,32 @@ export class InternalUserBranchListComponent implements OnInit {
     });
   }
 
-  createData(internalBranch){
-   let partner = []
-   let partnersName = []
+  createData(internalBranch) {
+    let partner = []
+    let partnersName = []
     internalBranch.partners.forEach(element => {
       partner.push(element.id)
       partnersName.push(element.name)
     });
-    var  data = {
-      name:internalBranch.name,
-      cityId:internalBranch.city.id,
-      stateId:internalBranch.state.id,
-      address:internalBranch.address,
-      pinCode:internalBranch.pinCode,
-      userId:internalBranch.id,
-      partnerId:partner,
-      multiselect:{multiSelect:partner},
-      partner:partnersName
+    // console.log(internalBranch)
+    var data = {
+      name: internalBranch.name,
+      cityId: internalBranch.city.id,
+      stateId: internalBranch.state.id,
+      address: internalBranch.address,
+      pinCode: internalBranch.pinCode,
+      userId: internalBranch.id,
+      partnerId: partner,
+      multiselect: { multiSelect: partner },
+      partner: partnersName,
+      bankName: internalBranch.bankName,
+      bankBranch: internalBranch.bankBranch,
+      ifscCode: internalBranch.ifscCode,
+      accountHolderName: internalBranch.accountHolderName,
+      accountNumber: internalBranch.accountNumber,
+      passbookStatementCheque: internalBranch.passbookStatementChequeImage,
+      passbookImg: internalBranch.passbookStatementChequeImage,
+      // passbookImgName: internalBranch.passbookStatementChequeImage,
     }
     return data
   }

@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycAddressDetail = sequelize.define('customerKycAddressDetail', {
         // attributes
@@ -35,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'pin_code'
         },
-        addressProofTypeId:{
+        addressProofTypeId: {
             type: DataTypes.INTEGER,
             field: 'address_proof_type_id'
         },
@@ -80,7 +82,23 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycAddressDetail.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
 
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-        CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });        
+        CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+
+    }
+
+
+    CustomerKycAddressDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        let addressProofImage = []
+        if (values.addressProof) {
+            for (imgUrl of values.addressProof) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                addressProofImage.push(URL)
+            }
+        }
+        values.addressProofImage = addressProofImage
+        return values;
     }
 
 

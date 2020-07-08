@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const Customer = sequelize.define('customer', {
         // attributes
@@ -100,21 +102,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'last_login',
         },
-        leadSourceId:{
+        leadSourceId: {
             type: DataTypes.INTEGER,
             field: 'lead_source_id',
         },
-        source:{
+        source: {
             type: DataTypes.STRING,
             field: 'source',
         },
-        panType:{
+        panType: {
             type: DataTypes.ENUM,
             field: 'pan_type',
             values: ['pan', 'form60'],
         },
-        panImage:{
-            type: DataTypes.STRING,
+        panImage: {
+            type: DataTypes.TEXT,
             field: 'pan_image',
         }
     }, {
@@ -129,12 +131,12 @@ module.exports = (sequelize, DataTypes) => {
         Customer.hasOne(models.customerKyc, { foreignKey: 'customerId', as: 'customerKyc' });
         Customer.hasOne(models.customerKycPersonalDetail, { foreignKey: 'customerId', as: 'customerKycPersonal' });
         Customer.hasMany(models.customerKycAddressDetail, { foreignKey: 'customerId', as: 'customerKycAddress' });
-        Customer.hasMany(models.customerKycBankDetail, { foreignKey: 'customerId', as: 'customerKycBank' });
 
         Customer.hasOne(models.customerKycClassification, { foreignKey: 'customerId', as: 'customerKycClassification' });
 
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.hasMany(models.customerLoan, { foreignKey: 'customerId', as: 'customerLoan' });
+        Customer.hasMany(models.customerLoanMaster, { foreignKey: 'customerId', as: 'customerMasterLoan' });
 
 
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
@@ -146,6 +148,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         Customer.belongsTo(models.lead,{foreignKey: 'leadSourceId', as: 'lead' });
+
     }
 
     // This hook is always run before create.
@@ -203,6 +206,9 @@ module.exports = (sequelize, DataTypes) => {
     // This will not return password, refresh token and access token.
     Customer.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
+        if (values.panImage) {
+            values.panImg = baseUrlConfig.BASEURL + values.panImage;
+        }
         delete values.password;
         return values;
     }

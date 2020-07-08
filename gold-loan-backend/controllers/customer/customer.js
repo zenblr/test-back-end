@@ -147,7 +147,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId, comment,source, panType, panImage, leadSourceId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panImage, leadSourceId } = req.body;
 
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
@@ -258,7 +258,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   {
     model: models.lead,
     as: "lead",
-    attributes: ['id','leadName']
+    attributes: ['id', 'leadName']
   }
   ]
   let internalBranchId = req.userData.internalBranchId
@@ -311,7 +311,7 @@ exports.getSingleCustomer = async (req, res, next) => {
       {
         model: models.lead,
         as: "lead",
-        attributes: ['id','leadName']
+        attributes: ['id', 'leadName']
       }
     ],
   });
@@ -324,7 +324,7 @@ exports.getSingleCustomer = async (req, res, next) => {
 
 exports.getCustomerUniqueId = async (req, res) => {
   let customer = await models.customer.findAll({
-    attributes: ['id', 'customerUniqueId','firstName','lastName'],
+    attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
     where: { kycStatus: "approved" }
   })
   let assignCustomer = await models.customerAssignAppraiser.findAll({
@@ -456,9 +456,6 @@ exports.getsingleCustomerManagement = async (req, res) => {
         as: 'customerLoan',
         where: { loanStageId: stageId.id },
         include: [{
-          model: models.customerFinalLoan,
-          as: 'finalLoan'
-        }, {
           model: models.customerLoanNomineeDetail,
           as: 'loanNomineeDetail'
         }]

@@ -48,6 +48,8 @@ import { PacketTrackingService } from '../../../../core/loan-management';
 import { LoanRepaymentService } from '../../../../core/account/loan-repayment/services/loan-repayment.service';
 import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
 import { ShopService, ShoppingCartService, OrdersService } from '../../../../core/broker';
+import { OccupationService } from '../../../../core/masters/occupation/services/occupation.service';
+
 @Component({
 	selector: "kt-topbar",
 	templateUrl: "./topbar.component.html",
@@ -141,7 +143,7 @@ export class TopbarComponent implements OnInit {
 		private loanDisbursementService: LoanDisbursementService,
 		private shoppingCartService: ShoppingCartService,
 		private ordersService: OrdersService,
-
+		private occupationService: OccupationService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -384,7 +386,11 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.showfilter = false;
 		}
-
+		if (this.path == "occupation") {
+			this.value2 = "Add Occupation";
+			this.type2 = "button";
+			this.rightButton = true;
+		}
 		if (this.path == "purposes") {
 			this.value2 = "Add Purpose";
 			this.type2 = "button";
@@ -722,6 +728,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'loan-repayment') {
 			this.loanRepaymentService.openModal.next(true)
+		}
+		if (this.path == 'occupation') {
+			this.occupationService.openModal.next(true)
 		}
 	}
 

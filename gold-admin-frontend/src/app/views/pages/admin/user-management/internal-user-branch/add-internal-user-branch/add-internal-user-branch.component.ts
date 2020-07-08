@@ -56,13 +56,16 @@ export class AddInternalUserBranchComponent implements OnInit {
       this.title = 'Edit Internal User'
       this.button = 'update'
       this.addInternalBranchForm.patchValue(this.data.branch)
+      console.log(this.data.branch)
       this.getCites()
     } else {
       this.title = 'View Internal User'
       this.addInternalBranchForm.patchValue(this.data.branch)
+      console.log(this.data.branch)
       this.getCites()
       this.addInternalBranchForm.disable();
     }
+    console.log(this.addInternalBranchForm.value)
   }
 
   initForm() {
@@ -79,7 +82,7 @@ export class AddInternalUserBranchComponent implements OnInit {
       bankBranch: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
       accountHolderName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
       accountNumber: ['', Validators.required],
-      passbookStatementChequeId: [],
+      passbookStatementCheque: [],
       passbookImg: [],
       passbookImgName: ['', Validators.required],
     })
@@ -149,7 +152,10 @@ export class AddInternalUserBranchComponent implements OnInit {
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       // this.formData = new FormData();
       // this.formData.append("avatar", event.target.files[0]);
-      this.sharedService.uploadFile(event.target.files[0]).pipe(
+      const params = {
+        reason: 'user'
+      }
+      this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
 
           // if (type == 'pan') {
@@ -158,7 +164,7 @@ export class AddInternalUserBranchComponent implements OnInit {
           //   this.addInternalBranchForm.controls.panCardImg.patchValue(res.uploadFile.URL)
           // } else {
           this.addInternalBranchForm.controls.passbookImgName.patchValue(event.target.files[0].name)
-          this.addInternalBranchForm.controls.passbookStatementChequeId.patchValue(res.uploadFile.id)
+          this.addInternalBranchForm.controls.passbookStatementCheque.patchValue(res.uploadFile.path)
           this.addInternalBranchForm.controls.passbookImg.patchValue(res.uploadFile.URL)
           // }
         }), catchError(err => {

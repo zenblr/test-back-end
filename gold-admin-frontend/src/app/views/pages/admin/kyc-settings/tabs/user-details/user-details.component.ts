@@ -121,7 +121,9 @@ export class UserDetailsComponent implements OnInit {
       panType: ['', Validators.required],
       form60: [''],
       panImage: [, Validators.required],
+      panImg: [],
       panCardNumber: [''],
+      id: []
     })
   }
 
@@ -135,6 +137,8 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
+        this.controls.panImage.patchValue(res.customerInfo.panImage);
+        this.controls.panImg.patchValue(res.customerInfo.panImg);
         if (res.customerInfo.panCardNumber !== null) {
           this.controls.panCardNumber.disable();
           this.controls.panType.disable();
@@ -180,11 +184,16 @@ export class UserDetailsComponent implements OnInit {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedServices.uploadFile(event.target.files[0]).pipe(
+      const params = {
+        reason: 'lead',
+        customerId: this.controls.id.value
+      }
+      this.sharedServices.uploadFile(event.target.files[0], params).pipe(
         map(res => {
           if (res) {
             this.controls.form60.patchValue(event.target.files[0].name)
-            this.controls.panImage.patchValue(res.uploadFile.URL)
+            this.controls.panImage.patchValue(res.uploadFile.path)
+            this.controls.panImg.patchValue(res.uploadFile.URL)
           }
         }), catchError(err => {
           throw err

@@ -14,6 +14,7 @@ import { OrnamentsService } from '../../../../../../../core/masters/ornaments/se
 import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
+import { iif } from 'rxjs';
 
 
 @Component({
@@ -32,7 +33,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   // @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
-  @Input() loanId
+  @Input() masterAndLoanIds
   @Input() ornamentType
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
@@ -51,6 +52,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   totalAmount = 0;
   addmoreMinus: any;
   globalValue: any;
+  purityTestPath: any = [];
+  purityTestImg: any = [];
+
   constructor(
     public fb: FormBuilder,
     public sharedService: SharedService,
@@ -70,8 +74,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit() {
-
-
 
     this.url = this.router.url.split('/')[2]
     this.getKarat()
@@ -113,7 +115,17 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           group.patchValue(array[index])
           this.calcGoldDeductionWeight(index)
           Object.keys(group.value).forEach(key => {
-            this.patchUrlIntoForm(key, group.value[key], index)
+
+            if (key == 'purityTestImage') {
+              let data = this.createPurityImageArray(group.value.purityTestImage)
+              this.patchUrlIntoForm(key, data.path, data.URL, index)
+
+            } else {
+              if (group.value[key])
+                this.patchUrlIntoForm(key, group.value[key].path, group.value[key].URL, index)
+
+            }
+
           })
           this.ref.detectChanges()
         }
@@ -157,6 +169,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   get OrnamentsData() {
     if (this.ornamentsForm)
       return this.ornamentsForm.controls.ornamentData as FormArray;
+  }
+
+  createPurityImageArray(purity) {
+    let data = { URL: [], path: [] }
+    // console.log(purity)
+    data = purity
+    // purity.forEach(pure => {
+    //   data.URL.push(pure.purityTest.URL)
+    //   data.path.push(pure.purityTest.path)
+    // });
+
+    return data
   }
 
   weightCheck(index) {
@@ -212,24 +236,30 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
 
     this.OrnamentsData.push(this.fb.group({
-      ornamentType: [, Validators.required],
+      ornamentTypeId: [, Validators.required],
       quantity: [, Validators.required],
       grossWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ornamentImage: [, Validators.required],
-      weightMachineZeroWeight: [, Validators.required],
-      withOrnamentWeight: [, Validators.required],
-      stoneTouch: [, Validators.required],
-      acidTest: [, Validators.required],
+      weightMachineZeroWeight: [],
+      withOrnamentWeight: [],
+      stoneTouch: [],
+      acidTest: [],
       karat: ['', Validators.required],
       ltvRange: [[]],
-      purityTest: [[], Validators.required],
+      purityTest: [[]],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
       loanAmount: [''],
       id: [],
-      currentLtvAmount: [this.goldRate]
+      currentLtvAmount: [this.goldRate],
+      ornamentImageData: [, Validators.required],
+      weightMachineZeroWeightData: [],
+      withOrnamentWeightData: [],
+      stoneTouchData: [],
+      acidTestData: [],
+      purityTestImage: [[]],
     }))
     this.createImageArray()
   }
@@ -297,13 +327,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string,) {
+  uploadFile(index, event, string, ) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-      this.sharedService.uploadFile(event.target.files[0]).pipe(
+      const params = {
+        reason: 'loan'
+      }
+      this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
-          this.patchUrlIntoForm(string, res.uploadFile.URL, index)
+          this.patchUrlIntoForm(string, res.uploadFile.path, res.uploadFile.URL, index)
         }),
         catchError(err => {
           this.toast.error(err.error)
@@ -314,57 +347,79 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  patchUrlIntoForm(key, url, index) {
+  patchUrlIntoForm(key, id, url, index) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
     switch (key) {
-      case 'withOrnamentWeight':
-        controls.controls.withOrnamentWeight.patchValue(url)
+      case 'withOrnamentWeightData':
+        controls.controls.withOrnamentWeight.patchValue(id)
+        controls.controls.withOrnamentWeightData.patchValue(url)
         this.withOrnamentWeight.nativeElement.value = ''
         this.images[index].withOrnamentWeight = url
+        // this.images[index].withOrnamentWeight = controls.controls.withOrnamentWeightData.value
         break;
-      case 'acidTest':
-        controls.controls.acidTest.patchValue(url)
+      case 'acidTestData':
+        controls.controls.acidTest.patchValue(id)
+        controls.controls.acidTestData.patchValue(url)
         this.acidTest.nativeElement.value = ''
         this.images[index].acidTest = url
-
+        // this.images[index].acidTest = controls.controls.acidTestData.value
         break;
-      case 'weightMachineZeroWeight':
-        controls.controls.weightMachineZeroWeight.patchValue(url)
+      case 'weightMachineZeroWeightData':
+        controls.controls.weightMachineZeroWeight.patchValue(id)
+        controls.controls.weightMachineZeroWeightData.patchValue(url)
         this.weightMachineZeroWeight.nativeElement.value = ''
         this.images[index].weightMachineZeroWeight = url
-
+        // this.images[index].weightMachineZeroWeight = controls.controls.weightMachineZeroWeightData.value
         break;
-      case 'stoneTouch':
-        controls.controls.stoneTouch.patchValue(url)
+      case 'stoneTouchData':
+        controls.controls.stoneTouch.patchValue(id)
+        controls.controls.stoneTouchData.patchValue(url)
         this.stoneTouch.nativeElement.value = ''
         this.images[index].stoneTouch = url
-
+        // this.images[index].stoneTouch = controls.controls.stoneTouchData.value
         break;
-      case 'purityTest':
-        let temp = []
-        if (controls.controls.purityTest.value.length > 0)
-          temp = controls.controls.purityTest.value
+      case 'purityTestImage':
+        // if (controls.controls.purityTest.value.length <= 4) {
+        let temp: any[]; let tempId: any[];
 
-        if (!temp.includes(url))
+        // if (controls.controls.purityTest.value.length > 0) {
+        //   tempId = controls.controls.purityTestImage.value
+        //   temp = controls.controls.purityTestImage.value
+        // }
+        // if (!temp.includes(url)) 
 
-          if (typeof url == "object") {
-            temp = url
-          } else {
-            temp.push(url)
-          }
-        this.images[index].purity = temp
-        controls.controls.purityTest.patchValue(this.images[index].purity)
+        if (typeof url == "object") {
+          //   controls.controls.purityTest.patchValue(id)
+          // controls.controls.purityTestImage.patchValue(url)
+          // temp = [] ; tempId = [];
+          this.purityTestImg = url
+          this.purityTestPath = id
+          // url.forEach(element => {
+          //   temp.push(element.purityTest.url)
+          // });
+        } else {
+          this.purityTestImg = controls.controls.purityTestImage.value
+          this.purityTestPath = controls.controls.purityTest.value
+          this.purityTestImg.push(url)
+          this.purityTestPath.push(id)
+        }
+        this.images[index].purity = this.purityTestImg
+        controls.controls.purityTest.patchValue(this.purityTestPath)
+        controls.controls.purityTestImage.patchValue(this.purityTestImg)
         this.purity.nativeElement.value = ''
+        // } else {
+        //   this.toast.error('Maximum of 4 Images can be uploaded in Purity Test')
+        // }
         break;
-
-      case 'ornamentImage':
-        controls.controls.ornamentImage.patchValue(url)
+      case 'ornamentImageData':
+        controls.controls.ornamentImage.patchValue(id)
+        controls.controls.ornamentImageData.patchValue(url)
         this.ornamentImage.nativeElement.value = ''
         this.images[index].ornamentImage = url
-
+        // this.images[index].ornamentImage = controls.controls.ornamentImageData.value
         break;
     }
-
+    console.log(controls.value)
 
   }
 
@@ -373,33 +428,41 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     switch (key) {
       case 'withOrnamentWeight':
         controls.controls.withOrnamentWeight.patchValue(null)
+        controls.controls.withOrnamentWeightData.patchValue(null)
         this.images[index].withOrnamentWeight = ''
 
         break;
       case 'acidTest':
         controls.controls.acidTest.patchValue(null)
+        controls.controls.acidTestData.patchValue(null)
         this.images[index].acidTest = ''
 
         break;
       case 'weightMachineZeroWeight':
         controls.controls.weightMachineZeroWeight.patchValue(null)
+        controls.controls.weightMachineZeroWeightData.patchValue(null)
         this.images[index].weightMachineZeroWeight = ''
 
         break;
       case 'stoneTouch':
         controls.controls.stoneTouch.patchValue(null)
+        controls.controls.stoneTouchData.patchValue(null)
         this.images[index].stoneTouch = ''
 
         break;
-      case 'purityTest':
+      case 'purityTestImage':
         let temp = controls.controls.purityTest.value
+        let tempUrl = controls.controls.purityTestImage.value
         temp.splice(purityIndex, 1)
+        tempUrl.splice(purityIndex, 1)
         controls.controls.purityTest.patchValue(temp)
-        this.images[index].purity = temp
+        controls.controls.purityTestImage.patchValue(tempUrl)
+        this.images[index].purity = tempUrl
 
         break;
       case 'ornamentImage':
         controls.controls.ornamentImage.patchValue(null)
+        controls.controls.ornamentImageData.patchValue(null)
         this.images[index].ornamentImage = ''
 
         break;
@@ -458,7 +521,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.loanId).pipe(
+    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds).pipe(
       map(res => {
         let array = this.OrnamentsData.controls
         for (let index = 0; index < array.length; index++) {
@@ -473,6 +536,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   webcam(index, event, string) {
+    const controls = this.OrnamentsData.at(index) as FormGroup;
     const dialogRef = this.dilaog.open(WebcamDialogComponent,
       {
         data: {},
@@ -480,12 +544,27 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+        const params = {
+          reason: 'loan',
+          masterLoanId: this.masterAndLoanIds.masterLoanId
+        }
+        if (string == 'purityTestImage') {
+          if (controls.controls.purityTest.value.length >= 4) {
+            this.toast.error('Maximum of 4 Images can be uploaded in Purity Test')
+            return
+          }
+        }
+        this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
           console.log(res)
-          this.patchUrlIntoForm(string, res.uploadFile.URL, index)
+          this.patchUrlIntoForm(string, res.uploadFile.path, res.uploadFile.URL, index)
         })
+
       }
     });
+  }
+
+  isArray(obj: any) {
+    return Array.isArray(obj)
   }
 
 }

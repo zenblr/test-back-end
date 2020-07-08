@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const customerLoanOrnamentsDetail = sequelize.define('customerLoanOrnamentsDetail', {
         // attributes
@@ -6,9 +8,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
-        ornamentType: {
-            type: DataTypes.STRING,
-            field: 'ornament_type'
+        masterLoanId: {
+            type: DataTypes.INTEGER,
+            field: 'master_loan_id',
+            allowNull: false
+        },
+        ornamentTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'ornament_type_id'
         },
         quantity: {
             type: DataTypes.STRING,
@@ -27,23 +34,23 @@ module.exports = (sequelize, DataTypes) => {
             field: 'deduction_weight'
         },
         weightMachineZeroWeight: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             field: 'weight_machine_zero_weight'
         },
         withOrnamentWeight: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             field: 'with_ornament_weight'
         },
         stoneTouch: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             field: 'stone_touch'
         },
         acidTest: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             field: 'acid_test'
         },
         purityTest: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'purity_test'
         },
         karat: {
@@ -59,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'ltv_range'
         },
         ornamentImage: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             field: 'ornament_image'
         },
         ltvPercent: {
@@ -67,11 +74,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'ltv_percent'
         },
         ltvAmount: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.FLOAT,
             field: 'ltv_amount'
         },
         currentLtvAmount: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.FLOAT,
             field: 'current_ltv_amount'
         },
         loanAmount: {
@@ -103,10 +110,44 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanOrnamentsDetail.associate = function (models) {
         customerLoanOrnamentsDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+        customerLoanOrnamentsDetail.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
         customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        customerLoanOrnamentsDetail.belongsTo(models.ornamentType, { foreignKey: 'ornamentTypeId', as: 'ornamentType' });
+
     }
+
+    customerLoanOrnamentsDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.weightMachineZeroWeight) {
+            values.weightMachineZeroWeightData = baseUrlConfig.BASEURL + values.weightMachineZeroWeight;
+        }
+        if (values.withOrnamentWeight) {
+            values.withOrnamentWeightData = baseUrlConfig.BASEURL + values.withOrnamentWeight;
+        }
+        if (values.stoneTouch) {
+            values.stoneTouchData = baseUrlConfig.BASEURL + values.stoneTouch;
+        }
+        if (values.acidTest) {
+            values.acidTestData = baseUrlConfig.BASEURL + values.acidTest;
+        }
+        if (values.ornamentImage) {
+            values.ornamentImageData = baseUrlConfig.BASEURL + values.ornamentImage;
+        }
+        let purityTestImage = []
+        if (values.purityTest) {
+            for (imgUrl of values.purityTest) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                purityTestImage.push(URL)
+            }
+        }
+        values.purityTestImage = purityTestImage
+
+        return values;
+    }
+
 
     // FUNCTION TO ADD CUSTOMER ORNAMENTS DETAIL
     customerLoanOrnamentsDetail.addCustomerOrnamentsDetail =

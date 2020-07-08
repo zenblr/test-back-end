@@ -20,7 +20,8 @@ export class UplodDataImageComponent implements OnInit {
   index: number = null;
   @Input() title;
   @Input() images;
-  @Output() upload = new EventEmitter();
+  @Input() imgId;
+  @Input() reason
 
   @ViewChild("file", { static: false }) file;
   @ViewChild(ToastrComponent, { static: false }) toastr: ToastrComponent;
@@ -73,12 +74,17 @@ export class UplodDataImageComponent implements OnInit {
             if (width !== 600 || height !== 300) {
               this.toastrService.error('Please Upload Image of Valid Size');
             } else {
-              this.sharedService.uploadFile(details[0]).pipe(map(res => {
+              const params = {
+                reason: this.reason
+              }
+              this.sharedService.uploadFile(details[0], params).pipe(map(res => {
                 if (this.index != null) {
                   this.images.splice(this.index, 1, res.uploadFile.URL)
+                  this.imgId.splice(this.index, 1, res.uploadFile.path)
                   this.index = null;
                 } else {
                   this.images.push(res.uploadFile.URL)
+                  this.imgId.push(res.uploadFile.path)
                 }
                 this.ref.detectChanges();
               }),
@@ -115,6 +121,7 @@ export class UplodDataImageComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.images.splice(index, 1);
+        this.imgId.splice(index, 1);
         this.ref.detectChanges();
       }
     });
@@ -166,6 +173,6 @@ export class UplodDataImageComponent implements OnInit {
       if (permission.partnerBannerDelete)
         this.deleteBanner = true
     }
-    console.log(this.add,this.editBanner,this.deleteBanner)
+    console.log(this.add, this.editBanner, this.deleteBanner)
   }
 }

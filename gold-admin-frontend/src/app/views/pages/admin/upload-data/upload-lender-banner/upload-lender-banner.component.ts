@@ -11,6 +11,7 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 })
 export class UploadLenderBannerComponent implements OnInit {
   images: any[] = []
+  imgId: any[] = []
   index: number = null
   @ViewChild("file", { static: false }) file;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -29,19 +30,24 @@ export class UploadLenderBannerComponent implements OnInit {
   getData() {
     this.uploadLenderBannerService.getLenderBanners().pipe(
       map(res => {
-        if (res.images.length > 0) {
-          Array.prototype.push.apply(this.images, res.images)
-          this.ref.detectChanges();
+        // if (res.lenderBannerImages.length > 0) {
+        //   res.lenderBannerImages.forEach(element => {
+        //     this.images.push(element.lenderBannerImages.URL)
+        //     this.imgId.push(element.lenderBannerImages.id)
+        //   });
+        // }
+        if (res) {
+          this.images = res.lenderBannerImages
+          this.imgId = res.images
         }
-        console.log(this.images)
       })).subscribe()
   }
 
-  
+
 
   uploadLenderBanners() {
 
-    this.uploadLenderBannerService.uploadLenderBanners(this.images).pipe(
+    this.uploadLenderBannerService.uploadLenderBanners(this.imgId).pipe(
       (map(res => {
         this.toastr.successToastr('Uploaded Sucessfully');
       })),

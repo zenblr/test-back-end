@@ -27,8 +27,9 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 	@Input() bindLabel: string;
 	@Input() bindValue: string;
 	@Input() isClear: boolean = false;
-	@Input() placeholder:String;
-	@Input() style:boolean = false;
+	@Input() placeholder: String;
+	@Input() style: boolean = false;
+	@Input() selectAll: boolean;
 	form: FormGroup;
 	subscriptions: Subscription[] = [];
 
@@ -57,14 +58,15 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 		);
 	}
 
-	ngOnChanges(changes:SimpleChanges) {
-		if (this.isClear) {
+	ngOnChanges(changes: SimpleChanges) {
+		if (changes.isClear && changes.isClear.currentValue) {
 			this.form.reset();
+
 		}
-		this.isClear = false;
-		if(changes.style && changes.style.currentValue){
-			
-		}
+		console.log(changes)
+		// if(changes.style && changes.style.currentValue){
+
+		// }
 
 	}
 
@@ -92,5 +94,19 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 	// communicate the inner form validation to the parent form
 	validate(_: FormControl) {
 		return this.form.valid ? null : { value: { valid: false } };
+	}
+
+	selectAllCheckBox(event) {
+		this.items.forEach(res => {
+			if (event.target.checked) {
+				const selected = this.items;
+				this.form.get('multiSelect').patchValue(selected);
+				console.log(selected)
+
+			} else {
+				this.form.get('multiSelect').patchValue([]);
+
+			}
+		})
 	}
 }

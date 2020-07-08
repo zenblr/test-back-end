@@ -45,6 +45,7 @@
         "moment": "^2.24.0",
         "ng-http-loader": "^6.0.1",
         "ng-inline-svg": "^9.2.2",
+        "ng2-pdf-viewer": "^6.3.0",
         "ngrx-store-freeze": "^0.2.4",
         "ngx-clipboard": "^12.3.0",
         "ngx-cookie-service": "^3.0.4",
