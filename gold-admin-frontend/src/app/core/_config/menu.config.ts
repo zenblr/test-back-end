@@ -356,6 +356,11 @@ export class MenuConfig {
 									page: "/admin/funds-approvals/deposit",
 									permission: false,
 								},
+								{
+									title: "Top-Up Approval",
+									page: "/admin/funds-approvals/top-up-approval",
+									permission: false,
+								},
 							],
 						},
 						{
