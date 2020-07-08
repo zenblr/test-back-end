@@ -52,11 +52,7 @@
                         </div>
                         <!-- </ng-template> -->
                     </mat-tab>
-<<<<<<< HEAD
                     <mat-tab label="Upload Documents"  *ngIf="url == 'packet-image-upload' || url == 'view-loan'">
-=======
-                    <mat-tab label="Upload Documents" *ngIf="url == 'packet-image-upload' || (action == 'edit' && customerDetail.loanPacketDetails.length>0)">
->>>>>>> origin/develop-gold-master
                         <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" [loanDocumnets]="customerDetail"></kt-upload-loan-documents>
                     </mat-tab>
                     

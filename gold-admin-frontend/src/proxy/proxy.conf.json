@@ -1,10 +1,6 @@
 {
     "/api/*": {
-<<<<<<< HEAD:gold-admin-frontend/proxy.conf.json
         "target": "http://0cc6ab62867a.ngrok.io/",
-=======
-        "target": "https://gold.nimapinfotech.com/",
->>>>>>> origin/develop-gold-master:gold-admin-frontend/src/proxy/proxy.conf.json
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
