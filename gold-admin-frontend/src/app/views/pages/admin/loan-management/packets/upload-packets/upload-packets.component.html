@@ -1,4 +1,5 @@
-<div *ngIf="url != 'view-loan' ">
+<div *ngIf="url != 'view-loan'">
+    {{url != 'view-loan'}} {{url}}
     <form class="row justify-content-center" action="" [formGroup]="packetInfo" (submit)="addmore()" #form="ngForm">
         <div class="col-2">
             <select class="form-control packet-dropdown" formControlName="packetId"

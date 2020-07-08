@@ -17,7 +17,7 @@
                 <label class="kt-padding-l-10">Declaration Copy</label>
             </div>
         </div>
-        <div class="row justify-content-between">
+        <div class="row justify-content-between" *ngIf="url != 'view-loan'">
             <div class="col-4" *ngIf="!show">
                 <div class="input-group mb-3" [class.isError]="controls.loanAgreementCopy.touched && controls.loanAgreementCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -103,7 +103,7 @@
                                     *ngIf="!pdf.loanAgreementCopy"
                                     (click)="preview(documentsForm.controls.loanAgreementCopy.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="editImages('loanAgreementCopy');">
+                                    class="kt-pointer remove-icon" *ngIf="url != 'view-loan'" (click)="editImages('loanAgreementCopy');">
                                 <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
                                     *ngIf="pdf.loanAgreementCopy"
                                     (click)="preview(documentsForm.controls.loanAgreementCopy.value)"> -->
@@ -129,7 +129,7 @@
                                 <img class="fetched-image" [src]="documentsForm.controls.pawnCopy.value"
                                     *ngIf="!pdf.pawnCopy" (click)="preview(documentsForm.controls.pawnCopy.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="editImages('pawnCopy');">
+                                    class="kt-pointer remove-icon" *ngIf="url != 'view-loan'" (click)="editImages('pawnCopy');">
                                 <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
                                     (click)="preview(documentsForm.controls.pawnCopy.value)"> -->
                                 <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnCopy"
@@ -155,7 +155,7 @@
                                     *ngIf="!pdf.schemeConfirmationCopy"
                                     (click)="preview(documentsForm.controls.schemeConfirmationCopy.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="editImages('schemeConfirmationCopy');">
+                                    class="kt-pointer remove-icon" *ngIf="url != 'view-loan'" (click)="editImages('schemeConfirmationCopy');">
                                 <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
                                     *ngIf="pdf.schemeConfirmationCopy"
                                     (click)="preview(documentsForm.controls.schemeConfirmationCopy.value)"> -->
@@ -182,7 +182,7 @@
                                     *ngIf="!pdf.signedCheque"
                                     (click)="preview(documentsForm.controls.signedCheque.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="editImages('signedCheque');">
+                                    class="kt-pointer remove-icon" *ngIf="url != 'view-loan'" (click)="editImages('signedCheque');">
                                 <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
                                     *ngIf="pdf.signedCheque"
                                     (click)="preview(documentsForm.controls.signedCheque.value)"> -->
@@ -209,7 +209,7 @@
                                     *ngIf="!pdf.declartionCopy"
                                     (click)="preview(documentsForm.controls.declartionCopy.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    class="kt-pointer remove-icon" (click)="editImages('declartionCopy');">
+                                    class="kt-pointer remove-icon" *ngIf="url != 'view-loan'" (click)="editImages('declartionCopy');">
                                     <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.declartionCopy"
                                     [pdfSrc]="documentsForm.controls.declartionCopy.value"
                                     (click)="preview(documentsForm.controls.declartionCopy.value)"></kt-pdf-viewer> 
@@ -224,7 +224,7 @@
             </div>
         </div>
     </div>
-    <div class="col-11 text-right kt-padding-t-15">
+    <div class="col-11 text-right kt-padding-t-15" *ngIf="url != 'view-loan'">
         <kt-button [type]="'button'" [value]="'Save'" (click)="save()"></kt-button>
     </div>
 </div>

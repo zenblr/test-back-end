@@ -102,6 +102,7 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get({ plain: true }));
 
         var resOrna = []
+        if (values.loanOrnamentsDetail) {
         for (let i = 0; i < values.loanOrnamentsDetail.length; i++) {
             if (values.loanOrnamentsDetail[i].weightMachineZeroWeight) {
                 // values.loanOrnamentsDetail[i].weightMachineZeroWeightData = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeight;
@@ -175,6 +176,7 @@ module.exports = (sequelize, DataTypes) => {
 
             resOrna.push(values.loanOrnamentsDetail[i])
         }
+    }
 
         if (values.loanBankDetail) {
             let passbookProofData = [];
@@ -188,6 +190,7 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         resPac = []
+        if (values.loanPacketDetails) {
         for (let i = 0; i < values.loanPacketDetails.length; i++) {
 
             if (values.loanPacketDetails[i].emptyPacketWithNoOrnament) {
@@ -202,6 +205,7 @@ module.exports = (sequelize, DataTypes) => {
 
             resPac.push(values.loanPacketDetails[i])
         }
+    }
 
 
         //documents

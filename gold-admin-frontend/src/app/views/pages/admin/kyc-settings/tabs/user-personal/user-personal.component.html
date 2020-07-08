@@ -140,7 +140,8 @@
                                             [class.isError]="controls.occupationId.touched && controls.occupationId.invalid">
                                             <option value=null [selected]="true">Select Occupation
                                             </option>
-                                            <option [value]="occ.id" *ngFor="let occ of occupations;"> {{occ.name}}
+                                            <option [value]="occ.id" *ngFor="let occ of occupations;">
+                                                {{occ.name| titlecase}}
                                             </option>
                                         </select>
                                         <mat-error

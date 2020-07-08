@@ -91,7 +91,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       reasons: [''],
       applicationFormForOperatinalTeam: [false],
       goldValuationForOperatinalTeam: [false],
-      loanStatusForOperatinalTeam: [],
+      loanStatusForOperatinalTeam: ['pending'],
       commentByOperatinalTeam: ['']
     })
 
@@ -105,7 +105,10 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         this.approvalForm.patchValue(changes.details.currentValue.masterLoan)
-        this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
+        this.approvalForm.patchValue({ commentByAppraiser: changes.details.currentValue.masterLoan.commentByAppraiser })
+        if(changes.details.currentValue.masterLoan.commentByAppraiser){
+        this.approvalForm.patchValue({ reasons: "Other" })
+        }
         this.statusAppraiser()
         this.statusBM()
         this.ref.markForCheck()
@@ -177,17 +180,22 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.controls.reasons.clearValidators();
       this.controls.reasons.updateValueAndValidity();
       this.controls.reasons.markAsUntouched()
+      this.resetAppraiser()
     }
   }
 
   resetAppraiser() {
     this.controls.commentByAppraiser.reset()
-
+    this.controls.reasons.reset()
   }
 
   resetBM() {
     this.controls.commentByBM.reset()
 
+  }
+
+  resetOT() {
+    this.controls.commentByBM.reset()
   }
 
 
@@ -200,6 +208,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.controls.commentByAppraiser.clearValidators();
       this.controls.commentByAppraiser.updateValueAndValidity();
       this.controls.commentByAppraiser.markAsUntouched()
+      this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
     }
   }
 
@@ -212,6 +221,20 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.controls.commentByBM.clearValidators();
       this.controls.commentByBM.updateValueAndValidity();
       this.controls.commentByBM.markAsUntouched()
+      this.resetBM()
+    }
+  }
+
+  statusOT() {
+    if (this.controls.loanStatusForOperatinalTeam.value != 'approved' && this.controls.loanStatusForOperatinalTeam.value != 'pending') {
+      this.controls.commentByOperatinalTeam.setValidators(Validators.required);
+      this.controls.commentByOperatinalTeam.updateValueAndValidity()
+    } else {
+      this.controls.commentByOperatinalTeam.reset();
+      this.controls.commentByOperatinalTeam.clearValidators();
+      this.controls.commentByOperatinalTeam.updateValueAndValidity();
+      this.controls.commentByOperatinalTeam.markAsUntouched()
+      this.resetOT()
     }
   }
 
@@ -220,7 +243,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.approvalForm.markAllAsTouched()
       return
     }
-    this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
+    // this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
     this.loanFormService.applyForLoan(this.approvalForm.value, this.masterAndLoanIds).pipe(
       map(res => {
         this.router.navigate(['/admin/loan-management/applied-loan'])

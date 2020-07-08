@@ -131,8 +131,11 @@ export class InterestCalculatorComponent implements OnInit {
   partner() {
     this.partnerService.getPartnerBySchemeAmount(Math.floor(this.totalAmt)).subscribe(res => {
       this.partnerList = res.data;
-      if (this.controls.schemeId.value) {
+      if (this.controls.schemeId.value && this.details) {
+        this.details = ''
         this.returnScheme()
+      } else {
+        this.getSchemes()
       }
     })
   }
@@ -144,8 +147,8 @@ export class InterestCalculatorComponent implements OnInit {
     this.controls.interestRate.reset()
     this.controls.totalFinalInterestAmt.reset()
     this.controls.paymentFrequency.reset()
-    this.controls.schemeId.patchValue('')
-    this.controls.paymentFrequency.patchValue('')
+    this.controls.finalLoanAmount.reset()
+    this.controls.processingCharge.reset()
     this.returnScheme()
   }
 
@@ -225,7 +228,7 @@ export class InterestCalculatorComponent implements OnInit {
         this.controls.finalLoanAmount.setErrors(null)
       }
 
-      if (amt >= this.globalValue.minimumLoanAmountAllowed) {
+      if (Number(amt) <= Number(this.globalValue.minimumLoanAmountAllowed)) {
         this.controls.finalLoanAmount.setErrors(null)
       } else {
         this.controls.finalLoanAmount.setErrors({ mimimumAmt: true })

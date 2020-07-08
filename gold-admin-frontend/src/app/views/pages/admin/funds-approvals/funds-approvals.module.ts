@@ -9,13 +9,21 @@ import { AngularMaterialModule } from '../../angular-material/angular-material.m
 import { CoreModule } from '../../../../core/core.module';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { TopUpApprovalComponent } from './top-up-approval/top-up-approval.component';
 
 const routes = [
-  { path: 'deposit', component: DepositListComponent }
+  {
+    path: 'deposit',
+    component: DepositListComponent
+  },
+  {
+    path: 'top-up-approval',
+    component: TopUpApprovalComponent
+  }
 ]
 
 @NgModule({
-  declarations: [DepositListComponent],
+  declarations: [DepositListComponent, TopUpApprovalComponent],
   imports: [
     CommonModule,
     HttpClientModule,

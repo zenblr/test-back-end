@@ -42,10 +42,10 @@
                             <label class="kt-padding-l-10 mandatory">Loan Amount</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control" formControlName="finalLoanAmount"
-                                [class.isError]="controls.finalLoanAmount.invalid &&  controls.finalLoanAmount.touched">
+                            <input type="text" class="form-control" formControlName="loanAmount"
+                                [class.isError]="controls.loanAmount.invalid &&  controls.loanAmount.touched">
                             <mat-error
-                                *ngIf="controls.finalLoanAmount.touched && controls.finalLoanAmount.errors?.required">
+                                *ngIf="controls.loanAmount.touched && controls.loanAmount.errors?.required">
                                 Required field
                             </mat-error>
                         </div>
