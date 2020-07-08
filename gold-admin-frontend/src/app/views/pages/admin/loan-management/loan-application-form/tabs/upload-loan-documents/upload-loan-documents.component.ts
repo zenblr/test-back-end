@@ -41,6 +41,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
     public loanService: LoanApplicationFormService,
     private ref: ChangeDetectorRef
   ) {
+    
     if (this.router.url == "/admin/loan-management/loan-transfer") {
       this.show = true
     } else {

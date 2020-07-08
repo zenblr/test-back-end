@@ -383,8 +383,8 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
   };
 
   let includeArray = [{
-    model: models.customerLoan,
-    as: 'customerLoan',
+    model: models.customerLoanMaster,
+    as: 'masterLoan',
     where: { loanStageId: stageId.id },
     attributes: [],
   }, {
@@ -454,8 +454,11 @@ exports.getsingleCustomerManagement = async (req, res) => {
       {
         model: models.customerLoan,
         as: 'customerLoan',
-        where: { loanStageId: stageId.id },
         include: [{
+          model: models.customerLoanMaster,
+          as: 'masterLoan',
+          where: { loanStageId: stageId.id },
+        },{
           model: models.customerLoanNomineeDetail,
           as: 'loanNomineeDetail'
         }]

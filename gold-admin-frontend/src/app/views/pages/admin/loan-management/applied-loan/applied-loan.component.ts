@@ -127,10 +127,10 @@ export class AppliedLoanComponent implements OnInit {
     this.filteredDataList = data.list
   }
 
-  disburse(loan) {
+  disburse(loan,masterLoanId) {
     // console.log(event);
     const dialogRef = this.dialog.open(DisburseDialogComponent, {
-      data: loan,
+      data: {loan,masterLoanId},
       width: '500px'
     });
     dialogRef.afterClosed().subscribe(res => {
