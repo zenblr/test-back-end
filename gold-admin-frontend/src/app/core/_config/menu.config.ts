@@ -701,7 +701,7 @@ export class MenuConfig {
 							root: true,
 							page: "/broker/profile",
 							src: "assets/media/aside-icons/icons-33.svg",
-							permission: !this.permissionsArr.includes('customerView'),
+							permission: !(this.userType === 2 || this.userType === 3),
 						},
 						{
 							title: 'Back',
