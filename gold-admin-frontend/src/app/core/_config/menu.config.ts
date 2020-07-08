@@ -422,7 +422,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-29.svg",
 							page: "/broker",
-							permission: true,
+							permission: !this.modulesArr.includes(2),
 						},
 						{
 							title: "Log Out",
@@ -679,14 +679,14 @@ export class MenuConfig {
 							root: true,
 							page: "/broker/orders",
 							src: "assets/media/aside-icons/icons-30.svg",
-							permission: !this.permissionsArr.includes('customerView'),
+							permission: !this.permissionsArr.includes('orderView'),
 						},
 						{
 							title: "Shop",
 							root: true,
 							page: "/broker/shop",
 							src: "assets/media/aside-icons/icons-31.svg",
-							permission: !this.permissionsArr.includes('customerView'),
+							permission: !this.permissionsArr.includes('orderAdd'),
 						},
 						{
 							title: "Cart",
