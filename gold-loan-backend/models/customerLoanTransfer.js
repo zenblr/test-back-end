@@ -25,25 +25,25 @@ module.exports = (sequelize, DataTypes) => {
             field: 'reason_by_bm'
         },
         pawnTicket:{
-            type: DataTypes.STRING,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'pawn_ticket'
         },
         signedCheque:{
-            type: DataTypes.STRING,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'signed_cheque'
         },
         declaration:{
-            type: DataTypes.STRING,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'declaration'
         },
         outstandingLoanAmount:{
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'outstanding_loan_amount'
         },
         loanTransferCurrentStage: {
             type: DataTypes.ENUM,
             field: 'loan_transfer_current_stage',
-            values: ['1', '2', '3', '4']
+            values: ['1', '2', '3', '4','5']
         },
         createdBy: {
             type: DataTypes.INTEGER,

@@ -1,12 +1,22 @@
-// LOAD REQUIRED PACKGES
 const express = require('express');
 const route = express.Router();
-const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { loanTransferBasicDeatils } =
-  require('../controllers/customerLoanTransfer/customerLoanTransfer'); // IMPORTING LOAN PROCESS FUNCTIONS
+const { wrapper } = require('../utils/errorWrap'); 
+const { loanTransferBasicDeatils,customerDetails,loanTransferDocuments,loanTransferBmRating,loanTransferDisbursal,getSingleLoanDetails } =require('../controllers/customerLoanTransfer/customerLoanTransfer'); // IMPORTING LOAN PROCESS FUNCTIONS
+const validationError = require('../middleware/validationError');
+const { loanTransferStep1,loanTransferStep2,loanTransferStep3,loanTransferStep4 } = require('../validations/customerLoanTransfer');
+const checkAuth = require('../middleware/checkAuth'); 
 
-const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
+route.get('/single-loan', checkAuth, wrapper(getSingleLoanDetails)); 
 
-route.post('/basic-details', checkAuth, wrapper(loanTransferBasicDeatils)); // ADD CUSTOMER BANK DETAIL
+route.get('/:customerUniqueId', checkAuth, wrapper(customerDetails));
 
-module.exports = route; // EXPORTING ALL ROUTES
+route.post('/basic-details', checkAuth,loanTransferStep1,validationError, wrapper(loanTransferBasicDeatils)); 
+
+route.post('/documents',checkAuth,loanTransferStep2,validationError,wrapper(loanTransferDocuments)); 
+
+route.post('/bm-rating',checkAuth,loanTransferStep3,validationError,wrapper(loanTransferBmRating)); 
+
+route.post('/disbursal',checkAuth, loanTransferStep4,validationError,wrapper(loanTransferDisbursal));
+
+
+module.exports = route; 
