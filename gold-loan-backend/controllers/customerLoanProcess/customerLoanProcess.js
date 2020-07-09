@@ -316,9 +316,10 @@ exports.loanBankDetails = async (req, res, next) => {
         let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
 
         let loanData = await sequelize.transaction(async t => {
-            if (loanSubmitted.isLoanSubmitted == false) {
-                await models.customerLoan.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
-            }
+            // if (loanSubmitted.isLoanSubmitted == false) {
+                var a = await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
+            // }
+            console.log(a)
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
 
             return loan
@@ -347,7 +348,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
             } else {
                 let stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
 
-                if (loanStatusForAppraiser === 'approved') {
+                if (loanStatusForAppraiser == 'approved') {
                     if (applicationFormForAppraiser == false || goldValuationForAppraiser == false) {
                         return res.status(400).json({ message: `One of field is not verified` })
                     }
@@ -478,8 +479,6 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 
     let { customerLoanId } = req.query
 
-    let { masterLoanId } = await models.customerLoan.findOne({ where: { id: customerLoanId } })
-
     let customerLoan = await models.customerLoan.findOne({
         where: { id: customerLoanId },
         // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
@@ -583,7 +582,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
             },
             {
                 model: models.customerLoanInterest,
@@ -717,7 +716,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
             [models.customerLoan, "id", "asc"],
             ['id', 'DESC']
         ],
-        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStatusForOperatinalTeam', 'loanStartDate', 'securedLoanAmount', 'unsecuredLoanAmount', 'finalLoanAmount', 'loanStageId'],
+        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStatusForOperatinalTeam', 'loanStartDate', 'securedLoanAmount', 'unsecuredLoanAmount', 'finalLoanAmount', 'loanStageId', 'isLoanSubmitted'],
         offset: offset,
         limit: pageSize,
 
@@ -1000,7 +999,7 @@ exports.getLoanDetails = async (req, res, next) => {
                 "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
                 "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
                 "$customerLoan.scheme.scheme_name$": { [Op.iLike]: search + '%' },
-                
+
                 tenure: sequelize.where(
                     sequelize.cast(sequelize.col("customerLoanMaster.tenure"), "varchar"),
                     {
