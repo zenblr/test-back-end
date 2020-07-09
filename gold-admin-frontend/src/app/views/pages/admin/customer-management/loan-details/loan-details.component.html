@@ -9,7 +9,7 @@
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer ID</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.loanPersonalDetail.customerUniqueId}}</div>
+                        {{loanDetails?.customer?.customerUniqueId}}</div>
                 </div>
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Amount</div>
@@ -55,28 +55,28 @@
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Account Number</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.loanBankDetail?.accountNumber}}
+                        {{loanDetails?.masterLoan.loanBankDetail?.accountNumber}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">IFSC Code</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.loanBankDetail?.ifscCode | uppercase}}</div>
+                        {{loanDetails?.masterLoan.loanBankDetail?.ifscCode | uppercase}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Nominee</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.loanNomineeDetail[0]?.nomineeName | titlecase}}
+                        {{loanDetails?.masterLoan.loanNomineeDetail[0]?.nomineeName | titlecase}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Age</div>
-                    <div class="text-color font-weight-500">{{loanDetails?.loanNomineeDetail[0]?.nomineeAge}}</div>
+                    <div class="text-color font-weight-500">{{loanDetails?.masterLoan?.loanNomineeDetail[0]?.nomineeAge}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Relation</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.loanNomineeDetail[0]?.relationship | titlecase}}</div>
+                        {{loanDetails?.masterLoan?.loanNomineeDetail[0]?.relationship | titlecase}}</div>
                 </div>
             </div>
         </div>
@@ -85,7 +85,7 @@
     <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total
-                {{loanDetails?.masterLoan?.loanOrnamentsDetail.length}} Ornaments</label>
+                {{loanDetails?.masterLoan?.loanOrnamentsDetail?.length}} Ornaments</label>
             <mat-tab-group style="min-height: 300px;">
                 <mat-tab label="Ornaments {{idx + 1}}"
                     *ngFor="let ornaments of loanDetails?.masterLoan?.loanOrnamentsDetail;index as idx">
@@ -164,56 +164,61 @@
     <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
-                {{loanDetails.masterLoan.loanPacketDetails[0].packets.length}} Packets</label>
-                <div style="min-height: 300px;"
-                    *ngFor="let packets of loanDetails.masterLoan.loanPacketDetails;index as idx">
-                    <div class="row justify-content-center kt-padding-t-15">
-                        <div class="col-4">
-                            <div class="table-div">
-                                <table class="table outer-border">
-                                    <thead>
-                                        <th class="transparent">Packet</th>
-                                        <th class="transparent">Ornaments</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let packet of packets.packets;index as idx">
-                                            <ng-container>
-                                                <td class="text-color ">
-                                                    <label class="m-0">{{packet.packetUniqueId | uppercase}}</label>
-                    
-                                                </td>
-                                                <td class="text-color ">
-                                                    <!-- <label class="m-0">{{packet.ornamentTypes[0].name | uppercase  }}</label> -->
-                    
-                                                </td>
-                                            </ng-container>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                {{loanDetails?.masterLoan?.loanPacketDetails[0]?.packets.length}} Packets</label>
+            <div style="min-height: 300px;"
+                *ngFor="let packets of loanDetails?.masterLoan?.loanPacketDetails;index as idx">
+                <div class="row justify-content-center kt-padding-t-15">
+                    <div class="col-4">
+                        <div class="table-div text-center">
+                            <table class="table outer-border">
+                                <thead>
+                                    <th class="transparent">Packet</th>
+                                    <th class="transparent">Ornaments</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let packet of packets.packets;index as idx">
+                                        <ng-container>
+                                            <td class="text-color ">
+                                                <label class="m-0">{{packet.packetUniqueId | uppercase}}</label>
+
+                                            </td>
+                                            <td class="text-color ">
+
+                                                <label class="m-0">
+                                                    <span *ngFor="let ornament of packet.ornamentTypes;index as i">
+                                                        {{ornament.name | uppercase  }}
+                                                        <span *ngIf="i != packet.ornamentTypes.length - 1">,</span>
+                                                    </span>
+                                                </label>
+
+                                            </td>
+                                        </ng-container>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-4">
-                            <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
-                                No
-                                Ornaments</label>
-                        </div>
-                        <div class="col-4">
-                            <img class="packets" [src]="packets?.sealingPacketWithWeightImage">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with All
-                                Ornaments</label>
-                        </div>
-                        <div class="col-4">
-                            <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
-                                Sealing</label>
-
-                        </div>
-                    </div>
-
                 </div>
+                <div class="row">
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packet(s) with
+                            all ornaments</label>
+                    </div>
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.sealingPacketWithWeightImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Sealed Packet(s) with
+                            weight</label>
+                    </div>
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Sealed packet(s) with
+                            customer*</label>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
