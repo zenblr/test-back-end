@@ -149,7 +149,7 @@
                     <div class="col-7">
                         <select class="form-control" formControlName="paymentFrequency" (change)="getIntrest()"
                             [class.isError]="controls.paymentFrequency.touched && controls.paymentFrequency.invalid">
-                            <option value="" [selected]="true" [disabled]="true">Select Repay Period</option>
+                            <option value="" [selected]="true" [disabled]="true">Select Payment Frequency</option>
                             <option [value]="pay.value" *ngFor="let pay of repayType">{{pay.name | titlecase}}</option>
                         </select>
                         <mat-error
@@ -226,7 +226,6 @@
             <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcInterestAmount()"></kt-button>
         </div>
     </div>
-    {{dateOfPayment.length}}
     <div #calculation id="calculation" class="row justify-content-center kt-margin-b-20" *ngIf="dateOfPayment.length">
         <div class="col-8">
             <div class="row justify-content-center">
