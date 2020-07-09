@@ -57,11 +57,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
       if (documents) {
-        this.documentsForm.patchValue({
-          loanAgreementCopy: documents.loanAgreementCopyImage,
-          pawnCopy: documents.pawnCopyImage,
-          schemeConfirmationCopy: documents.schemeConfirmationCopyImage,
-        })
+        this.documentsForm.patchValue(documents)
       }
     }
   }
@@ -69,9 +65,9 @@ export class UploadLoanDocumentsComponent implements OnInit {
 
   ngOnInit() {
     this.documentsForm = this.fb.group({
-      loanAgreementCopy: [''],
-      pawnCopy: ['',Validators.required],
-      schemeConfirmationCopy: [],
+      loanAgreementCopy: [[]],
+      pawnCopy: [[],Validators.required],
+      schemeConfirmationCopy: [[]],
       signedCheque: [],
       declaration: [],
       loanAgreementImageName: [],
@@ -81,7 +77,10 @@ export class UploadLoanDocumentsComponent implements OnInit {
       declarationCopyImageName: [],
       signedChequeImage: [],
       declarationCopyImage: [],
-      outstandingLoanAmount:[]
+      outstandingLoanAmount:[],
+      loanAgreementCopyImage: [[]],
+      pawnCopyImage: [[]],
+      schemeConfirmationCopyImage: [[]],
     })
     this.validation()
   }
@@ -124,13 +123,17 @@ export class UploadLoanDocumentsComponent implements OnInit {
           if (value == 'loanAgreementCopy') {
             controls.loanAgreementCopy.patchValue([res.uploadFile.path])
             controls.loanAgreementImageName.patchValue(res.uploadFile.originalname)
+            controls.loanAgreementCopyImage.patchValue(res.uploadFile.URL)
           } else if (value == 'pawnCopy') {
             controls.pawnCopy.patchValue([res.uploadFile.path])
             controls.pawnCopyImageName.patchValue(res.uploadFile.originalname)
+            controls.pawnCopyImage.patchValue(res.uploadFile.URL)
 
           } else if (value == 'schemeConfirmationCopy') {
             controls.schemeConfirmationCopy.patchValue([res.uploadFile.path])
             controls.schemeConfirmationCopyImageName.patchValue(res.uploadFile.originalname)
+            controls.schemeConfirmationCopyImage.patchValue(res.uploadFile.URL)
+
           } else if (value == 'signedCheque') {
             controls.signedCheque.patchValue([res.uploadFile.path])
             controls.signedChequeImageName.patchValue(res.uploadFile.originalname)
@@ -140,6 +143,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
             controls.declaration.patchValue([res.uploadFile.path])
             controls.declarationCopyImageName.patchValue(res.uploadFile.originalname)
             controls.declarationCopyImage.patchValue(res.uploadFile.URL)
+
           }
           if (ext[ext.length - 1] == 'pdf') {
             this.pdf[value] = true
@@ -174,7 +178,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
     } else {
       this.dialog.open(ImagePreviewDialogComponent, {
         data: {
-          images: value,
+          images: [value],
           index: 0
         },
         width: "auto"
