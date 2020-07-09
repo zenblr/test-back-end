@@ -115,6 +115,7 @@ export class InterestCalculatorComponent implements OnInit {
           }
           this.dateOfPayment = temp
           console.log(this.dateOfPayment.length)
+          this.finalLoanAmount.emit(this.controls.finalLoanAmount.value)
           this.ref.detectChanges()
 
         }

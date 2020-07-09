@@ -161,7 +161,7 @@ export class LoanApplicationFormComponent implements OnInit {
     } else {
       this.selected = event;
     }
-    if (event < 7) {
+    if (this.selected < 7) {
       for (let index = 0; index < this.disabled.length; index++) {
         if (this.url != "view-loan") {
           if (this.selected >= index) {

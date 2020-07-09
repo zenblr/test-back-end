@@ -72,15 +72,15 @@
 </div>
 <div class="row pl-5 kt-padding-t-15" *ngIf="packets.controls.length">
     <div class="col-4 ">
-        <div class="img-container packets" *ngIf="!packetImg.controls.emptyPacketWithNoOrnament.value"
+        <div class="img-container packets" *ngIf="!packetImg.controls.emptyPacketWithNoOrnamentImage.value"
             (click)="webcam('emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentData')">
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
-        <img class="packets position-relative" [src]="packetImg.controls.emptyPacketWithNoOrnamentData.value"
-            *ngIf="packetImg.controls.emptyPacketWithNoOrnament.value">
-        <img *ngIf="packetImg.controls.emptyPacketWithNoOrnament.value && url != 'view-loan'"
+        <img class="packets position-relative" [src]="packetImg.controls.emptyPacketWithNoOrnamentImage.value"
+            *ngIf="packetImg.controls.emptyPacketWithNoOrnamentImage.value">
+        <img *ngIf="packetImg.controls.emptyPacketWithNoOrnamentImage.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-            (click)="webcam('emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentData')">
+            (click)="webcam('emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentImage')">
         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packet(s) with all ornaments</label>
         <div>
             <mat-error
@@ -91,15 +91,15 @@
             (change)="uploadFile(idx,'emptyPacketWithNoOrnament',$event)">
     </div>
     <div class="col-4 ">
-        <div class="img-container packets" *ngIf="!packetImg.controls.sealingPacketWithWeight.value"
-            (click)="webcam('sealingPacketWithWeight','sealingPacketWithWeightData')">
+        <div class="img-container packets" *ngIf="!packetImg.controls.sealingPacketWithWeightImage.value"
+            (click)="webcam('sealingPacketWithWeight','sealingPacketWithWeightImage')">
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
-        <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithWeightData.value"
-            *ngIf="packetImg.controls.sealingPacketWithWeight.value">
-        <img *ngIf="packetImg.controls.sealingPacketWithWeight.value && url != 'view-loan'"
+        <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithWeightImage.value"
+            *ngIf="packetImg.controls.sealingPacketWithWeightImage.value">
+        <img *ngIf="packetImg.controls.sealingPacketWithWeightImage.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-            (click)="webcam('sealingPacketWithWeight','sealingPacketWithWeightData')">
+            (click)="webcam('sealingPacketWithWeight','sealingPacketWithWeightImage')">
         <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Sealed Packet(s) with weight</label>
         <div>
             <mat-error
@@ -110,15 +110,15 @@
             (change)="uploadFile(idx,'sealingPacketWithWeight',$event)">
     </div>
     <div class="col-4 ">
-        <div class="img-container packets" *ngIf="!packetImg.controls.sealingPacketWithCustomer.value"
+        <div class="img-container packets" *ngIf="!packetImg.controls.sealingPacketWithCustomerImage.value"
             (click)="webcam('sealingPacketWithCustomer')">
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
-        <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithCustomerData.value"
+        <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithCustomerImage.value"
             *ngIf="packetImg.controls.sealingPacketWithCustomer.value">
         <img *ngIf="packetImg.controls.sealingPacketWithCustomer.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-            (click)="webcam('sealingPacketWithCustomer','sealingPacketWithCustomerData')">
+            (click)="webcam('sealingPacketWithCustomer','sealingPacketWithCustomerImage')">
         <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Sealed packet(s) with customer</label>
         <div>
             <mat-error
