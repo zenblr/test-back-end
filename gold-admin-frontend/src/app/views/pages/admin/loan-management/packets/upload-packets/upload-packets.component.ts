@@ -71,11 +71,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     if (change.viewpacketsDetails && change.viewpacketsDetails.currentValue) {
       let packet = change.viewpacketsDetails.currentValue.loanPacketDetails[0]
       if (packet) {
-        this.packetImg.patchValue({
-          emptyPacketWithNoOrnament: packet.emptyPacketWithNoOrnamentImage,
-          sealingPacketWithCustomer: packet.sealingPacketWithCustomerImage,
-          sealingPacketWithWeight: packet.sealingPacketWithWeightImage
-        })
+        this.packetImg.patchValue(packet)
         console.log(packet.packets)
         packet.packets.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
@@ -83,7 +79,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.pushPackets()
         });
         this.url = 'view-loan'
-        // this.next.emit(8);
       }
     }
   }
@@ -98,11 +93,11 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
     this.packetImg = this.fb.group({
       emptyPacketWithNoOrnament: ['', Validators.required],
-      emptyPacketWithNoOrnamentData: ['', Validators.required],
+      emptyPacketWithNoOrnamentImage: ['', Validators.required],
       sealingPacketWithWeight: ['', Validators.required],
-      sealingPacketWithWeightData: ['', Validators.required],
+      sealingPacketWithWeightImage: ['', Validators.required],
       sealingPacketWithCustomer: ['', Validators.required],
-      sealingPacketWithCustomerData: ['', Validators.required],
+      sealingPacketWithCustomerImage: ['', Validators.required],
       packetOrnamentArray: this.fb.array([])
     })
 
@@ -174,6 +169,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   removePacketsData(idx) {
     console.log(this.packets.controls[idx])
     this.packets.controls.splice(idx, 1)
+    console.log(this.splicedOrnaments)
+    console.log(this.splicedPackets)
   }
 
   clear() {

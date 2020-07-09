@@ -114,8 +114,8 @@
                                     Required field
                                 </mat-error>
                                 <mat-error
-                                    *ngIf="controls.accountNumber.errors?.minlength && controls.accountNumber.touched">
-                                    'Minimum 9 or maximum 18 digits required"
+                                    *ngIf="controls.accountNumber.errors?.pattern && controls.accountNumber.touched">
+                                    <small>Invalid Input</small>
                                 </mat-error>
                             </div>
                         </div>

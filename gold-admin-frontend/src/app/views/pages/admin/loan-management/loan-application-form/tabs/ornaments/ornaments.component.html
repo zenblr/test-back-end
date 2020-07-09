@@ -403,12 +403,12 @@
     </mat-tab-group>
 </div>
 
-<div class="row kt-margin-t-10">
+<div class="row kt-margin-t-10" *ngIf="!data?.modal">
     <div class="col-12">
         <mat-divider></mat-divider>
     </div>
 </div>
-<div class="row justify-content-center">
+<div class="row justify-content-center"  *ngIf="!data?.modal">
     <div class="col-12 py-2">
         <h3 class="text-center my-3">
             <b>
@@ -418,7 +418,7 @@
         </h3>
     </div>
 </div>
-<div class="row">
+<div class="row"  *ngIf="!data?.modal">
     <div class="col-12 kt-margin-b-10">
         <mat-divider></mat-divider>
     </div>

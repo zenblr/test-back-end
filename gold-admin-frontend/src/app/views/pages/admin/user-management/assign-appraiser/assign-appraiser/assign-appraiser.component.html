@@ -93,7 +93,7 @@
                             </div>
                             <div class="col-4">
                                 <input [ngxTimepicker]="picker2" class="form-control" formControlName="endTime"
-                                    placeholder="To">
+                                    placeholder="To" [min]="controls.startTime.value">
                                 <ngx-material-timepicker #picker2></ngx-material-timepicker>
                             </div>
                         </div>
