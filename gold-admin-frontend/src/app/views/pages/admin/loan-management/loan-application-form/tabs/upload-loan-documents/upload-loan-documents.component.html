@@ -114,9 +114,9 @@
 
                         <div class="" *ngIf="documentsForm.controls.loanAgreementCopy.value.length">
                             <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.loanAgreementCopy.value[0]"
+                                <img class="fetched-image" [src]="documentsForm.controls.loanAgreementCopyImage.value"
                                     *ngIf="!pdf.loanAgreementCopy"
-                                    (click)="preview(documentsForm.controls.loanAgreementCopy.value[0])">
+                                    (click)="preview(documentsForm.controls.loanAgreementCopyImage.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer remove-icon" *ngIf="url != 'view-loan'"
                                     (click)="editImages('loanAgreementCopy');">
@@ -124,8 +124,8 @@
                                     *ngIf="pdf.loanAgreementCopy"
                                     (click)="preview(documentsForm.controls.loanAgreementCopy.value)"> -->
                                 <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.loanAgreementCopy"
-                                    [pdfSrc]="documentsForm.controls.loanAgreementCopy.value[0]"
-                                    (click)="preview(documentsForm.controls.loanAgreementCopy.value[0])">
+                                    [pdfSrc]="documentsForm.controls.loanAgreementCopyImage.value"
+                                    (click)="preview(documentsForm.controls.loanAgreementCopyImage.value)">
                                 </kt-pdf-viewer>
                             </div>
                         </div>
