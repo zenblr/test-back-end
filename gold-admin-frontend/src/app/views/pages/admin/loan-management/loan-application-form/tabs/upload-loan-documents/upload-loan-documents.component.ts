@@ -42,7 +42,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
     public loanService: LoanApplicationFormService,
     private ref: ChangeDetectorRef
   ) {
-    
+
     if (this.router.url == "/admin/loan-management/loan-transfer") {
       this.show = true
     } else {
@@ -54,11 +54,12 @@ export class UploadLoanDocumentsComponent implements OnInit {
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
       if (documents) {
-        this.documentsForm.patchValue({
-          loanAgreementCopy: documents.loanAgreementCopyImage,
-          pawnCopy: documents.pawnCopyImage,
-          schemeConfirmationCopy: documents.schemeConfirmationCopyImage,
-        })
+        // this.documentsForm.patchValue({
+        //   loanAgreementCopy: documents.loanAgreementCopyImage,
+        //   pawnCopy: documents.pawnCopyImage,
+        //   schemeConfirmationCopy: documents.schemeConfirmationCopyImage,
+        // })
+        this.documentsForm.patchValue(documents)
       }
     }
   }
@@ -67,16 +68,21 @@ export class UploadLoanDocumentsComponent implements OnInit {
   ngOnInit() {
     this.url = this.router.url.split('/')[3]
     this.documentsForm = this.fb.group({
-      loanAgreementCopy: [],
-      pawnCopy: [],
-      schemeConfirmationCopy: [],
+      loanAgreementCopy: [[]],
+      pawnCopy: [[]],
+      schemeConfirmationCopy: [[]],
       signedCheque: [],
       declartionCopy: [],
       loanAgreementImageName: [],
       pawnCopyImageName: [],
       schemeConfirmationCopyImageName: [],
       signedChequeImageName: [],
-      declarationCopyImageName: []
+      declarationCopyImageName: [],
+      loanAgreementCopyImage: [[]],
+      pawnCopyImage: [[]],
+      schemeConfirmationCopyImage: [[]],
+      signedChequeImage: [],
+      declarationCopyImage: []
     })
     this.validation()
   }
@@ -119,20 +125,27 @@ export class UploadLoanDocumentsComponent implements OnInit {
           if (value == 'loanAgreementCopy') {
             controls.loanAgreementCopy.patchValue([res.uploadFile.path])
             controls.loanAgreementImageName.patchValue(res.uploadFile.originalname)
+            controls.loanAgreementCopyImage.patchValue(res.uploadFile.URL)
           } else if (value == 'pawnCopy') {
             controls.pawnCopy.patchValue([res.uploadFile.path])
             controls.pawnCopyImageName.patchValue(res.uploadFile.originalname)
+            controls.pawnCopyImage.patchValue(res.uploadFile.URL)
 
           } else if (value == 'schemeConfirmationCopy') {
             controls.schemeConfirmationCopy.patchValue([res.uploadFile.path])
             controls.schemeConfirmationCopyImageName.patchValue(res.uploadFile.originalname)
+            controls.schemeConfirmationCopyImage.patchValue(res.uploadFile.URL)
+
           } else if (value == 'signedCheque') {
             controls.signedCheque.patchValue([res.uploadFile.path])
             controls.signedChequeImageName.patchValue(res.uploadFile.originalname)
+            controls.signedChequeImage.patchValue(res.uploadFile.URL)
 
           } else if (value == 'declartionCopy') {
             controls.declartionCopy.patchValue([res.uploadFile.path])
             controls.declarationCopyImageName.patchValue(res.uploadFile.originalname)
+            controls.declarationCopyImage.patchValue(res.uploadFile.URL)
+
           }
           if (ext[ext.length - 1] == 'pdf') {
             this.pdf[value] = true
@@ -153,12 +166,12 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
 
   preview(value) {
-    var ext = value[0].split('.')
+    var ext = value.split('.')
     if (ext[ext.length - 1] == 'pdf') {
 
       this.dialog.open(PdfViewerComponent, {
         data: {
-          pdfSrc: value[0],
+          pdfSrc: value,
           page: 1,
           showAll: true
         },
@@ -167,7 +180,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
     } else {
       this.dialog.open(ImagePreviewDialogComponent, {
         data: {
-          images: value,
+          images: [value],
           index: 0
         },
         width: "auto"
