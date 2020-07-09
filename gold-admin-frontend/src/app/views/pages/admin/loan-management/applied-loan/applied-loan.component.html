@@ -36,9 +36,9 @@
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">
                         <div class="currency">
-                            {{loan.securedLoanAmount | indianCurrencyFormat}}</div>
+                            {{loan.customerLoan[0]?.loanAmount | indianCurrencyFormat}}</div>
                         <div class="currency">
-                            {{loan.unsecuredLoanAmount | indianCurrencyFormat}}
+                            {{loan.customerLoan[1]?.loanAmount | indianCurrencyFormat}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -47,7 +47,7 @@
                     <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">
                         <div>{{loan.customerLoan[0]?.scheme?.schemeName | uppercase}}</div>
-                        <div>{{loan.customerLoan[0]?.unsecuredScheme?.schemeName | uppercase}}</div>
+                        <div>{{loan.customerLoan[1]?.scheme?.schemeName | uppercase}}</div>
                     </mat-cell>
                 </ng-container>
 
