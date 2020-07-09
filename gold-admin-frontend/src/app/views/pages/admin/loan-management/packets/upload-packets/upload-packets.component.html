@@ -1,5 +1,5 @@
 <div *ngIf="url != 'view-loan'">
-    {{url != 'view-loan'}} {{url}}
+    <!-- {{url != 'view-loan'}} {{url}} -->
     <form class="row justify-content-center" action="" [formGroup]="packetInfo" (submit)="addmore()" #form="ngForm">
         <div class="col-2">
             <select class="form-control packet-dropdown" formControlName="packetId"
@@ -60,7 +60,8 @@
 
                             </td>
                             <td class="text-gray" *ngIf="url != 'view-loan'">
-                                <img src="../../../../../../../assets/media/icons/cancel.png" alt="" height="15" (click)="removePacketsData(idx)">
+                                <img src="../../../../../../../assets/media/icons/cancel.png" alt="" height="15"
+                                    (click)="removePacketsData(idx)">
                             </td>
                         </ng-container>
                     </tr>
@@ -75,11 +76,11 @@
             (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
-        <img class="packets position-relative" [src]="packetImg.controls.emptyPacketWithNoOrnament.value"
+        <img class="packets position-relative" [src]="packetImg.controls.emptyPacketWithNoOrnamentData.value"
             *ngIf="packetImg.controls.emptyPacketWithNoOrnament.value">
         <img *ngIf="packetImg.controls.emptyPacketWithNoOrnament.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-            (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
+            (click)="webcam(idx,$event,'emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentData')">
         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packet(s) with all ornaments</label>
         <div>
             <mat-error
@@ -94,11 +95,11 @@
             (click)="webcam(idx,$event,'sealingPacketWithWeight')">
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
-        <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithWeight.value"
+        <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithWeightData.value"
             *ngIf="packetImg.controls.sealingPacketWithWeight.value">
         <img *ngIf="packetImg.controls.sealingPacketWithWeight.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-            (click)="webcam(idx,$event,'sealingPacketWithWeight')">
+            (click)="webcam(idx,$event,'sealingPacketWithWeight','sealingPacketWithWeightData')">
         <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Sealed Packet(s) with weight</label>
         <div>
             <mat-error
@@ -113,22 +114,23 @@
             (click)="webcam(idx,$event,'sealingPacketWithCustomer')">
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
-        <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithCustomer.value"
+        <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithCustomerData.value"
             *ngIf="packetImg.controls.sealingPacketWithCustomer.value">
         <img *ngIf="packetImg.controls.sealingPacketWithCustomer.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-            (click)="webcam(idx,$event,'sealingPacketWithCustomer')">
+            (click)="webcam(idx,$event,'sealingPacketWithCustomer','sealingPacketWithCustomerData')">
         <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Sealed packet(s) with customer</label>
         <div>
             <mat-error
                 *ngIf="packetImg.controls.sealingPacketWithCustomer.touched && packetImg.controls.sealingPacketWithCustomer.invalid">
                 Field Required</mat-error>
         </div>
-        <input type="file" class="d-none" #sealingPacketWithCustomer (change)="uploadFile(idx,'sealingPacketWithCustomer',$event)">
+        <input type="file" class="d-none" #sealingPacketWithCustomer
+            (change)="uploadFile(idx,'sealingPacketWithCustomer',$event)">
 
     </div>
 
 </div>
-<div class="text-right kt-padding-b-15" *ngIf="packets.controls.length">
+<div class="text-right kt-padding-b-15" *ngIf="packets.controls.length && url != 'view-loan'">
     <kt-button [type]="'button'" [value]="'Next'" (click)="save()"></kt-button>
 </div>

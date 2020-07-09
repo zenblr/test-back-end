@@ -22,8 +22,8 @@
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
                             style="padding:0px !important">
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
-                                [details]="customerDetail" (totalAmt)="total($event)" [masterAndLoanIds]="masterAndLoanIds"
-                                [ornamentType]="ornamentType">
+                                [details]="customerDetail" (totalAmt)="total($event)"
+                                [masterAndLoanIds]="masterAndLoanIds" [ornamentType]="ornamentType">
                             </kt-ornaments>
                         </div>
                         <!-- </ng-template> -->
@@ -34,8 +34,9 @@
                             [details]="customerDetail" [masterAndLoanIds]="masterAndLoanIds"></kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">
-                        <kt-bank-details [action]="action" [masterAndLoanIds]="masterAndLoanIds" [details]="customerDetail"
-                            [disable]="disabledForm" [finalLoanAmt]="finalLoanAmt" (next)="next($event)">
+                        <kt-bank-details [action]="action" [masterAndLoanIds]="masterAndLoanIds"
+                            [details]="customerDetail" [disable]="disabledForm" [finalLoanAmt]="finalLoanAmt"
+                            (next)="next($event)">
                         </kt-bank-details>
                     </mat-tab>
                     <mat-tab label="Loan Status Approval" [disabled]="disabled[5]">
@@ -47,15 +48,17 @@
                         <!-- <ng-template> -->
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab"
                             style="padding:0px !important">
-                            <kt-upload-packets [viewpacketsDetails]="customerDetail" [ornamentType]="customerDetail" [masterAndLoanIds]="masterAndLoanIds">
+                            <kt-upload-packets [viewpacketsDetails]="customerDetail" [ornamentType]="customerDetail"
+                                [masterAndLoanIds]="masterAndLoanIds" (next)="next($event)">
                             </kt-upload-packets>
                         </div>
                         <!-- </ng-template> -->
                     </mat-tab>
-                    <mat-tab label="Upload Documents"  *ngIf="url == 'packet-image-upload' || url == 'view-loan'">
-                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" [loanDocumnets]="customerDetail"></kt-upload-loan-documents>
+                    <mat-tab label="Upload Documents" *ngIf="url == 'packet-image-upload' || url == 'view-loan'">
+                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds"
+                            [loanDocumnets]="customerDetail"></kt-upload-loan-documents>
                     </mat-tab>
-                    
+
                 </mat-tab-group>
             </div>
         </div>
