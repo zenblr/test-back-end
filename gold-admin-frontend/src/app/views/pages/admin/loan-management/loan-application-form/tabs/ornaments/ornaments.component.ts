@@ -1,9 +1,9 @@
-import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChildren, QueryList, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChildren, QueryList, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../../core/shared/services/shared.service';
 import { map, catchError, filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { UploadOfferService } from '../../../../../../../core/upload-data';
 import { KaratDetailsService } from '../../../../../../../core/loan-setting/karat-details/services/karat-details.service';
@@ -14,7 +14,6 @@ import { OrnamentsService } from '../../../../../../../core/masters/ornaments/se
 import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
-import { iif } from 'rxjs';
 
 
 @Component({
@@ -68,7 +67,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public loanApplicationFormService: LoanApplicationFormService,
     public ornamentTypeService: OrnamentsService,
     public layoutUtilsService: LayoutUtilsService,
-    public globalSettingService: GlobalSettingService
+    public globalSettingService: GlobalSettingService,
+    public dialogRef: MatDialogRef<OrnamentsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
 
   }

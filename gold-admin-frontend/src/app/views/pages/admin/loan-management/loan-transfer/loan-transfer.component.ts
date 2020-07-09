@@ -32,7 +32,9 @@ export class LoanTransferComponent implements OnInit {
 
 
   getSingleDetails(event){
-    
+    this.loanTransferService.getSingleUserData(event).subscribe(res=>{
+
+    })
   }
 
   ngOnInit() {
@@ -105,7 +107,11 @@ export class LoanTransferComponent implements OnInit {
   }
 
   next(event) {
-    this.selected = event
+    if (event.index != undefined) {
+      this.selected = event.index;
+    } else {
+      this.selected = event;
+    }
   }
 }
 
