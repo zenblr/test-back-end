@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material';
 import { PdfViewerComponent } from '../../../../../../../views/partials/components/pdf-viewer/pdf-viewer.component';
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
+import { LoanTransferService } from '../../../../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
 
 @Component({
   selector: 'kt-upload-loan-documents',
@@ -22,13 +23,13 @@ export class UploadLoanDocumentsComponent implements OnInit {
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
   @ViewChild('signedCheque', { static: false }) signedCheque
-  @ViewChild('declartionCopy', { static: false }) declartionCopy
+  @ViewChild('declaration', { static: false }) declaration
   pdf = {
     loanAgreementCopy: false,
     pawnCopy: false,
     schemeConfirmationCopy: false,
     signedCheque: false,
-    declartionCopy: false
+    declaration: false
   }
   documentsForm: FormGroup
   show: boolean;
@@ -40,10 +41,12 @@ export class UploadLoanDocumentsComponent implements OnInit {
     public dialog: MatDialog,
     public router: Router,
     public loanService: LoanApplicationFormService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private loanTransferFormService: LoanTransferService
+
   ) {
-    
-    if (this.router.url == "/admin/loan-management/loan-transfer") {
+    this.url = (this.router.url.split("/")[3]).split("?")[0]
+    if (this.url == "loan-transfer") {
       this.show = true
     } else {
       this.show = false
@@ -65,18 +68,20 @@ export class UploadLoanDocumentsComponent implements OnInit {
 
 
   ngOnInit() {
-    this.url = this.router.url.split('/')[3]
     this.documentsForm = this.fb.group({
-      loanAgreementCopy: [],
-      pawnCopy: [],
+      loanAgreementCopy: [''],
+      pawnCopy: ['',Validators.required],
       schemeConfirmationCopy: [],
       signedCheque: [],
-      declartionCopy: [],
+      declaration: [],
       loanAgreementImageName: [],
       pawnCopyImageName: [],
       schemeConfirmationCopyImageName: [],
       signedChequeImageName: [],
-      declarationCopyImageName: []
+      declarationCopyImageName: [],
+      signedChequeImage: [],
+      declarationCopyImage: [],
+      outstandingLoanAmount:[]
     })
     this.validation()
   }
@@ -89,16 +94,16 @@ export class UploadLoanDocumentsComponent implements OnInit {
     if (this.show) {
       this.documentsForm.controls.loanAgreementCopy.setValidators(Validators.required),
         this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
-      this.documentsForm.controls.pawnCopy.setValidators(Validators.required),
-        this.documentsForm.controls.pawnCopy.updateValueAndValidity()
       this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
         this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
 
     } else {
       this.documentsForm.controls.signedCheque.setValidators(Validators.required),
         this.documentsForm.controls.signedCheque.updateValueAndValidity()
-      this.documentsForm.controls.declartionCopy.setValidators(Validators.required),
-        this.documentsForm.controls.declartionCopy.updateValueAndValidity()
+      this.documentsForm.controls.declaration.setValidators(Validators.required),
+        this.documentsForm.controls.declaration.updateValueAndValidity()
+        this.documentsForm.controls.outstandingLoanAmount.setValidators(Validators.required),
+        this.documentsForm.controls.outstandingLoanAmount.updateValueAndValidity()
     }
   }
 
@@ -129,10 +134,12 @@ export class UploadLoanDocumentsComponent implements OnInit {
           } else if (value == 'signedCheque') {
             controls.signedCheque.patchValue([res.uploadFile.path])
             controls.signedChequeImageName.patchValue(res.uploadFile.originalname)
+            controls.signedChequeImage.patchValue(res.uploadFile.URL)
 
-          } else if (value == 'declartionCopy') {
-            controls.declartionCopy.patchValue([res.uploadFile.path])
+          } else if (value == 'declaration') {
+            controls.declaration.patchValue([res.uploadFile.path])
             controls.declarationCopyImageName.patchValue(res.uploadFile.originalname)
+            controls.declarationCopyImage.patchValue(res.uploadFile.URL)
           }
           if (ext[ext.length - 1] == 'pdf') {
             this.pdf[value] = true
@@ -153,12 +160,12 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
 
   preview(value) {
-    var ext = value[0].split('.')
+    var ext = value.split('.')
     if (ext[ext.length - 1] == 'pdf') {
 
       this.dialog.open(PdfViewerComponent, {
         data: {
-          pdfSrc: value[0],
+          pdfSrc: value,
           page: 1,
           showAll: true
         },
@@ -181,11 +188,18 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
 
   save() {
-    this.loanService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
-      map(res => {
-        this.toastr.success(res.message)
-        this.router.navigate(['/admin/loan-management/applied-loan'])
-      })).subscribe()
-  }
+    if (this.url == 'loan-transfer') {
+      this.loanTransferFormService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
+        map(res => {
+          
+        })).subscribe()
+    } else {
+      this.loanService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
+        map(res => {
+          this.toastr.success(res.message)
+          this.router.navigate(['/admin/loan-management/applied-loan'])
+        })).subscribe()
 
+    }
+  }
 }
