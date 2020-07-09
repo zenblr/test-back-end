@@ -183,7 +183,10 @@
 
                                             </td>
                                             <td class="text-color ">
-                                                <!-- <label class="m-0">{{packet.ornamentTypes[0].name | uppercase  }}</label> -->
+                                                <span *ngFor="let ornament of packet?.ornamentTypes;index as idx">
+                                                    {{ornament.name | uppercase}}
+                                                    <span *ngIf="index == packet.ornamentTypes.length - 1"></span>
+                                                </span>
 
                                             </td>
                                         </ng-container>
