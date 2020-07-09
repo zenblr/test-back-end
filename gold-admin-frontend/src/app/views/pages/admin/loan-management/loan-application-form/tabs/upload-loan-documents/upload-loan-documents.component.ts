@@ -78,9 +78,9 @@ export class UploadLoanDocumentsComponent implements OnInit {
       signedChequeImage: [],
       declarationCopyImage: [],
       outstandingLoanAmount:[],
-      loanAgreementCopyImage: [[]],
-      pawnCopyImage: [[]],
-      schemeConfirmationCopyImage: [[]],
+      loanAgreementCopyImage: [],
+      pawnCopyImage: [],
+      schemeConfirmationCopyImage: [],
     })
     this.validation()
   }
