@@ -9,49 +9,77 @@
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan.customer.customerUniqueId | uppercase}}
+                        {{loan?.customer?.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.loanUniqueId | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div>
+                            {{loan?.customerLoan[0]?.loanUniqueId | uppercase}}
+                        </div>
+                        <div>
+                            {{loan?.customerLoan[1]?.loanUniqueId | uppercase}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="schemeName">
                     <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName}}</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div>
+                            {{loan?.customerLoan[0]?.scheme?.schemeName | uppercase}}
+                        </div>
+                        <div>
+                            {{loan?.customerLoan[1]?.unsecuredScheme?.schemeName | uppercase}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div>
+                            {{loan?.securedLoanAmount}}
+                        </div>
+                        <div>
+                            {{loan?.unsecuredLoanAmount}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="interestRate">
                     <mat-header-cell *matHeaderCellDef>Intrest Rate</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.interestRate}} % P.M</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div>
+                            {{loan?.customerLoan[0]?.interestRate}} % P.M
+                        </div>
+                        <div>
+                            {{loan?.customerLoan[1]?.unsecuredInterestRate}} % P.M
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="tenure">
                     <mat-header-cell *matHeaderCellDef>Loan Tenure</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.tenure}} Months</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.finalLoan?.tenure}} Months</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="interestRestDays">
                     <mat-header-cell *matHeaderCellDef>Payment Frequency</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span *ngIf="loan.finalLoan.paymentFrequency == '30'">Monthly</span>
-                        <span *ngIf="loan.finalLoan.paymentFrequency == '90'">Quarterly</span>
-                        <span *ngIf="loan.finalLoan.paymentFrequency == '180'">Half Yearly</span>
+                        <span *ngIf="loan?.paymentFrequency == '30'">Monthly</span>
+                        <span *ngIf="loan?.paymentFrequency == '90'">Quarterly</span>
+                        <span *ngIf="loan?.paymentFrequency == '180'">Half Yearly</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="startDate">
                     <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date : 'mediumDate'}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.loanStartDate | date : 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="endDate">
                     <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
+                        {{loan?.loanEndDate | date : 'mediumDate'}}
                     </mat-cell>
                 </ng-container>
                 <!-- <ng-container matColumnDef="actions">

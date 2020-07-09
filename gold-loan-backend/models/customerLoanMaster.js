@@ -144,6 +144,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_loan_submitted',
             defaultValue: false
         },
+        internalBranchId: {
+            type: DataTypes.INTEGER,
+            field: 'internal_branch_id'
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -165,6 +169,8 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerLoanMaster.associate = function (models) {
         CustomerLoanMaster.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        CustomerLoanMaster.belongsTo(models.internalBranch, { foreignKey: 'internalBranchId', as: 'internalBranch' })
+
 
         CustomerLoanMaster.hasMany(models.customerLoan, { foreignKey: 'masterLoanId', as: 'customerLoan' });
         CustomerLoanMaster.hasOne(models.customerLoanBankDetail, { foreignKey: 'masterLoanId', as: 'loanBankDetail' });

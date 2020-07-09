@@ -13,73 +13,73 @@
                 </div>
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Amount</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.finalLoanAmount}}
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.finalLoanAmount}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Tenure</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.tenure}} Months
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.tenure}} Months
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Start Date</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.finalLoan.loanStartDate | date: 'mediumDate'}}</div>
+                        {{loanDetails?.loanStartDate | date: 'mediumDate'}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">End Date</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.finalLoan.loanEndDate | date: 'mediumDate'}}</div>
+                        {{loanDetails?.loanEndDate | date: 'mediumDate'}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Status</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanStage.name | titlecase}}
-                    </div>
+                    <!-- <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanStage.name | titlecase}} -->
+                    <!-- </div> -->
                 </div>
             </div>
             <div class="row justify-content-around">
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Interest Rate</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.interestRate}}% P.M
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.interestRate}}% P.M
                     </div>
                 </div>
 
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer Name</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.customer.firstName | titlecase}}
-                        {{loanDetails.customer.lastName | titlecase}}
+                        {{loanDetails?.firstName | titlecase}}
+                        {{loanDetails?.lastName | titlecase}}
                     </div>
                 </div>
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Account Number</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanBankDetail.accountNumber}}
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.loanBankDetail?.accountNumber}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">IFSC Code</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.loanBankDetail.ifscCode | uppercase}}</div>
+                        {{loanDetails?.loanBankDetail?.ifscCode | uppercase}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Nominee</div>
-                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].nomineeName | titlecase}}
+                    <div class="text-color font-weight-500">{{loanDetails?.loanNomineeDetail[0]?.nomineeName | titlecase}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Age</div>
-                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].nomineeAge}}</div>
+                    <div class="text-color font-weight-500">{{loanDetails?.loanNomineeDetail[0]?.nomineeAge}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Relation</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails.loanNomineeDetail[0].relationship | titlecase}}</div>
+                        {{loanDetails?.loanNomineeDetail[0]?.relationship | titlecase}}</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row kt-margin-t-15">
+    <!-- <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total
                 {{loanDetails.loanOrnamentsDetail.length}} Ornaments</label>
@@ -155,9 +155,9 @@
                 </mat-tab>
             </mat-tab-group>
         </div>
-    </div>
+    </div> -->
 
-    <div class="row kt-margin-t-15">
+    <!-- <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
                 {{loanDetails.loanPacketDetails.length}} Packets</label>
@@ -193,7 +193,7 @@
 
             </mat-tab-group>
         </div>
-    </div>
+    </div> -->
 
 
 </div>

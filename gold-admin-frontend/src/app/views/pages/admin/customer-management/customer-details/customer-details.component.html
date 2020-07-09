@@ -72,9 +72,9 @@
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Bank Details</div>
                     <div class="text-color font-weight-500">
-                        <div>{{cutomerDetails.customerKycBank[0].accountHolderName | titlecase}}</div>
-                        <div>{{cutomerDetails.customerKycBank[0].accountNumber}}</div>
-                        <div>{{cutomerDetails.customerKycBank[0].ifscCode | uppercase}}</div>
+                        <!-- <div>{{cutomerDetails?.customerKycBank[0]?.accountHolderName | titlecase}}</div>
+                        <div>{{cutomerDetails?.customerKycBank[0]?.accountNumber}}</div>
+                        <div>{{cutomerDetails?.customerKycBank[0]?.ifscCode | uppercase}}</div> -->
                     </div>
                 </div>
                 <div class="col">
@@ -102,8 +102,8 @@
                         (click)="preview(cutomerDetails.customerKycAddress[1].addressProof[0])">View Proof</div>
                 </div>
                 <div class="col">
-                    <div class="text-primary font-weight-500 kt-pointer"
-                        (click)="preview(cutomerDetails.customerKycBank[0].passbookProof[0])">View Proof</div>
+                   <!--  <div class="text-primary font-weight-500 kt-pointer"
+                        (click)="preview(cutomerDetails.customerKycBank[0].passbookProof[0])">View Proof</div> -->
                 </div>
                 <div class="col">
                     <div class="text-primary font-weight-500 kt-pointer"
@@ -117,36 +117,42 @@
         </div>
     </div>
     <div class="row kt-margin-t-20 justify-content-start">
-        <div class="col-3 p-0" *ngFor="let loan of cutomerDetails.customerLoan;index as i">
-            <div class="card kt-padding-15" [class.kt-margin-r-15]="(i+1)%4!=0">
-                <div class="text-gray font-weight-500 kt-margin-b-5">Loan ID</div>
-                <div class="text-color font-weight-500 kt-margin-b-5">{{loan.loanUniqueId}}</div>
-                <mat-divider class="kt-margin-b-10 kt-margin-t-10"></mat-divider>
-                <div class="row kt-margin-b-15">
-                    <div class="col-6">
-                        <div class="text-gray font-weight-500">Loan Amount</div>
-                        <div class="text-color font-weight-500">{{loan.finalLoan.finalLoanAmount}}</div>
-                    </div>
-                    <div class="col-6">
-                        <div class="text-gray font-weight-500">Loan Tennure</div>
-                        <div class="text-color font-weight-500">{{loan.finalLoan.tenure}} Months</div>
+        <div class="p-0" [ngClass]="masterLoan.customerLoan.length == 1 ? 'col-3' : 'col-6'" *ngFor="let masterLoan of cutomerDetails.masterLoan;index as i">
+            <div class="row">
+                <div class="col" *ngFor="let loan of masterLoan.customerLoan">
+                    <div class="card kt-padding-15" [class.kt-margin-r-15]="(i+1)%4!=0">
+                        <div class="text-gray font-weight-500 kt-margin-b-5">Loan ID</div>
+                        <div class="text-color font-weight-500 kt-margin-b-5">{{loan.loanUniqueId}}</div>
+                        <mat-divider class="kt-margin-b-10 kt-margin-t-10"></mat-divider>
+                        <div class="row kt-margin-b-15">
+                            <div class="col-6">
+                                <div class="text-gray font-weight-500">Loan Amount</div>
+                                <div class="text-color font-weight-500">{{loan.finalLoan?.finalLoanAmount}}</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-gray font-weight-500">Loan Tennure</div>
+                                <div class="text-color font-weight-500">{{loan.finalLoan?.tenure}} Months</div>
+                            </div>
+                        </div>
+                        <div class="row kt-margin-b-20">
+                            <div class="col-6">
+                                <div class="text-gray font-weight-500">Start Date</div>
+                                <div class="text-color font-weight-500">{{loan.finalLoan?.loanStartDate | date: 'mediumDate'}}
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-gray font-weight-500">End Date</div>
+                                <div class="text-color font-weight-500">{{loan.finalLoan?.loanEndDate | date: 'mediumDate'}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)"
+                        *ngxPermissionsOnly="['loanDetailsView']">View  Details</div>
                     </div>
                 </div>
-                <div class="row kt-margin-b-20">
-                    <div class="col-6">
-                        <div class="text-gray font-weight-500">Start Date</div>
-                        <div class="text-color font-weight-500">{{loan.finalLoan.loanStartDate | date: 'mediumDate'}}
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="text-gray font-weight-500">End Date</div>
-                        <div class="text-color font-weight-500">{{loan.finalLoan.loanEndDate | date: 'mediumDate'}}
-                        </div>
-                    </div>
-                </div>
-                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)"
-                *ngxPermissionsOnly="['loanDetailsView']">View  Details</div>
             </div>
         </div>
     </div>
 </div>
+
+

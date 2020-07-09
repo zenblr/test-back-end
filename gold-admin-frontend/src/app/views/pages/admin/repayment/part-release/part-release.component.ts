@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-part-release',
@@ -9,9 +10,26 @@ export class PartReleaseComponent implements OnInit {
 
   showReleaseSummary: boolean;
   showPaymentConfirmation: boolean;
-  constructor() { }
+  url: string;
+  fullReleaseScreen = false;
+
+  constructor(private router: Router) { }
 
   ngOnInit() {
+    console.log(this.router.url)
+    this.url = this.router.url
+    if (this.url.includes('full-release')) {
+      this.fullReleaseScreen = true
+      this.showReleaseSummary = true
+    } else {
+      this.fullReleaseScreen = false
+      this.showReleaseSummary = false
+
+    }
+  }
+
+  fullRelease() {
+    this.router.navigate(['/admin/repayment/full-release'])
   }
 
   selectOrnament(event) {

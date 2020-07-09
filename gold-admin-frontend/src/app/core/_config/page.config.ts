@@ -141,6 +141,9 @@ export class PageConfig {
 				"part-release": {
 					page: { title: "Part Release", desc: "" },
 				},
+				"full-release": {
+					page: { title: "Full Release", desc: "" },
+				},
 				'interest-emi': {
 					page: { title: "Pay Interest EMI", desc: "" },
 				},

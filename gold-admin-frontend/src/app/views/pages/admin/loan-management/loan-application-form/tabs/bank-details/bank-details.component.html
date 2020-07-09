@@ -142,7 +142,8 @@
                             </div>
                         </div>
                         <div class="row kt-margin-b-20">
-                            <div class="col kt-padding-l-20 offset-4">
+                            <div class="col kt-padding-l-20"
+                                [class.offset-4]="controls.passbookProofImage.value.length < 2">
                                 <div class="row">
                                     <div *ngIf="!controls.passbookProofImage.value.length" class="img-container"
                                         style="width: 250px;">
@@ -150,7 +151,7 @@
                                             src="../../../../../../../assets/media/icons/image-placeholder.png"
                                             class="placeholder-image">
                                     </div>
-        
+
                                     <div *ngIf="controls.passbookProofImage.value.length" class="">
                                         <div class="d-inline-block img-container kt-margin-r-15"
                                             *ngFor="let proof of controls.passbookProofImage.value; index as idx;">
@@ -167,7 +168,7 @@
                         </div>
                     </div>
                 </div>
-               
+
             </span>
 
 
@@ -177,4 +178,3 @@
         </div>
     </div>
 </form>
-   

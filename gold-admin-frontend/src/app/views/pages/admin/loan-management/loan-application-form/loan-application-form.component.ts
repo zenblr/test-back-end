@@ -67,7 +67,11 @@ export class LoanApplicationFormComponent implements OnInit {
       this.customerDetail = res.data
       // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "packet-image-upload") {
-        this.selected = 6;
+        if (this.customerDetail.loanPacketDetails[0].packets.length) {
+          this.selected = 7;
+        } else {
+          this.selected = 6;
+        }
         this.disabledForm = true;
       } else if (this.url == "view-loan") {
         this.disabledForm = true;
@@ -89,7 +93,11 @@ export class LoanApplicationFormComponent implements OnInit {
     setTimeout(() => {
 
       if (this.url == "packet-image-upload") {
-        this.selected = 6;
+        if (this.customerDetail.loanPacketDetails[0].packets.length) {
+          this.selected = 7;
+        } else {
+          this.selected = 6;
+        }
         this.disabledForm = true;
       } else if (this.url == "view-loan") {
         this.next(0)
@@ -153,16 +161,19 @@ export class LoanApplicationFormComponent implements OnInit {
     } else {
       this.selected = event;
     }
-    for (let index = 0; index < this.disabled.length; index++) {
-      if (this.url != "view-loan") {
-        if (this.selected >= index) {
-          this.disabled[index] = false
+    if (event < 7) {
+      for (let index = 0; index < this.disabled.length; index++) {
+        if (this.url != "view-loan") {
+          if (this.selected >= index) {
+            this.disabled[index] = false
+          } else {
+            this.disabled[index] = true
+          }
         } else {
-          this.disabled[index] = true
+          this.disabled[index] = false
         }
-      } else {
-        this.disabled[index] = false
       }
     }
+    this.ref.detectChanges();
   }
 }

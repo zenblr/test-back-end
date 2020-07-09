@@ -620,6 +620,13 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/repayment/part-release')) {
 			this.showBackButton = true;
 		}
+		if (this.path == 'top-up-approval') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
+		if (location.href.includes('/admin/repayment/full-release')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
