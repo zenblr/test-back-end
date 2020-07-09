@@ -83,7 +83,7 @@
                             </td>
                             <td class="rating-cce">
                                 <select class="form-control " formControlName="loanStatusForAppraiser"
-                                    (change)="resetAppraiser();statusAppraiser()"
+                                    (change)="clearAppraiser();statusAppraiser()"
                                     [class.isError]="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                                     <option value=null [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" [disabled]="checkforApproval(status)"
@@ -188,7 +188,8 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center " *ngIf="controls.reasons.value && controls.reasons.value == 'Other'">
+        <div class="row justify-content-center "
+            *ngIf="controls.reasons.value && controls.reasons.value == 'Other' && controls.loanStatusForAppraiser.value != 'approved'">
             <div class="col-7">
                 <mat-form-field class="w-100">
 

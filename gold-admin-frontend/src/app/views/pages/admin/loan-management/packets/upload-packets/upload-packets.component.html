@@ -73,14 +73,14 @@
 <div class="row pl-5 kt-padding-t-15" *ngIf="packets.controls.length">
     <div class="col-4 ">
         <div class="img-container packets" *ngIf="!packetImg.controls.emptyPacketWithNoOrnament.value"
-            (click)="webcam(idx,$event,'emptyPacketWithNoOrnament')">
+            (click)="webcam('emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentData')">
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
         <img class="packets position-relative" [src]="packetImg.controls.emptyPacketWithNoOrnamentData.value"
             *ngIf="packetImg.controls.emptyPacketWithNoOrnament.value">
         <img *ngIf="packetImg.controls.emptyPacketWithNoOrnament.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-            (click)="webcam(idx,$event,'emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentData')">
+            (click)="webcam('emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentData')">
         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packet(s) with all ornaments</label>
         <div>
             <mat-error
@@ -92,14 +92,14 @@
     </div>
     <div class="col-4 ">
         <div class="img-container packets" *ngIf="!packetImg.controls.sealingPacketWithWeight.value"
-            (click)="webcam(idx,$event,'sealingPacketWithWeight')">
+            (click)="webcam('sealingPacketWithWeight','sealingPacketWithWeightData')">
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
         <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithWeightData.value"
             *ngIf="packetImg.controls.sealingPacketWithWeight.value">
         <img *ngIf="packetImg.controls.sealingPacketWithWeight.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-            (click)="webcam(idx,$event,'sealingPacketWithWeight','sealingPacketWithWeightData')">
+            (click)="webcam('sealingPacketWithWeight','sealingPacketWithWeightData')">
         <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Sealed Packet(s) with weight</label>
         <div>
             <mat-error
@@ -111,14 +111,14 @@
     </div>
     <div class="col-4 ">
         <div class="img-container packets" *ngIf="!packetImg.controls.sealingPacketWithCustomer.value"
-            (click)="webcam(idx,$event,'sealingPacketWithCustomer')">
+            (click)="webcam('sealingPacketWithCustomer')">
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
         <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithCustomerData.value"
             *ngIf="packetImg.controls.sealingPacketWithCustomer.value">
         <img *ngIf="packetImg.controls.sealingPacketWithCustomer.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-            (click)="webcam(idx,$event,'sealingPacketWithCustomer','sealingPacketWithCustomerData')">
+            (click)="webcam('sealingPacketWithCustomer','sealingPacketWithCustomerData')">
         <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Sealed packet(s) with customer</label>
         <div>
             <mat-error
