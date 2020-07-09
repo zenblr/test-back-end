@@ -38,8 +38,11 @@ exports.viewPacket = async (req, res, next) => {
     let searchQuery = {
         [Op.and]: [query, {
             [Op.or]: {
-                // "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
-                // "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                "$internalBranch.name$": {
+                    [Op.iLike]: search + "%",
+                  },
                 packetUniqueId: { [Op.iLike]: search + '%' },
             },
         }],
@@ -75,6 +78,7 @@ exports.viewPacket = async (req, res, next) => {
 
     let packetDetails = await models.packet.findAll({
         where: searchQuery,
+        subQuery: false,
         include: associateModel,
         order: [
             ['id', 'DESC']
@@ -85,6 +89,7 @@ exports.viewPacket = async (req, res, next) => {
     });
     let count = await models.packet.count({
         where: searchQuery,
+        subQuery: false,
         include: associateModel,
     });
 
