@@ -169,7 +169,7 @@ export class AppliedKycComponent implements OnInit {
   }
 
   transferLoan(loan) {
-    this.router.navigate(['/admin/laon-management/loan-transfer'])
+    this.router.navigate(['/admin/loan-management/loan-transfer'],{ queryParams: { customerID: loan.customer.customerUniqueId }})
   }
 
   applyLoan(loan) {

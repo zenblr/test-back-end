@@ -281,7 +281,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     });
   }
 
-  webcam(index, event, value,data) {
+  webcam(value,imageDataKey) {
     const dialogRef = this.dilaog.open(WebcamDialogComponent,
       {
         data: {},
@@ -296,7 +296,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
           this.packetImg.controls[value].patchValue(res.uploadFile.path)
-          this.packetImg.controls[data].patchValue(res.uploadFile.URL)
+          this.packetImg.controls[imageDataKey].patchValue(res.uploadFile.URL)
           this.ref.detectChanges()
         })
       }
