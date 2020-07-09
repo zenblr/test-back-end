@@ -61,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row kt-margin-t-15">
+            <div class="row kt-margin-t-15" *ngIf="url !='loan-transfer'">
                
                 <div class="col-6">
                     <div class="row">
@@ -69,7 +69,7 @@
                             <label class="text-color kt-padding-l-10 mandatory">Loan Purpose</label>
                         </div>
                         <div class="col-6">
-                            <select formControlName="purpose" class="form-control" 
+                            <select formControlName="purpose" class="form-control"
                             [class.isError]="controls.purpose.touched && controls.purpose.invalid">
                                 <option value="" selected disabled>Select Purpose</option>
                                 <option [value]="purpose.name" *ngFor="let purpose of purpose">{{purpose.name | titlecase}}</option>

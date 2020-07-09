@@ -37,10 +37,10 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   prepareImages(){
-    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycAddress[0].addressProof)
-    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycAddress[1].addressProof)
+    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycAddress[0].addressProofImage)
+    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycAddress[1].addressProofImage)
     // Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycBank[0].passbookProof)
-    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycPersonal.identityProof)
+    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycPersonal.identityProofImage)
     // console.log(this.images)
   }
 
