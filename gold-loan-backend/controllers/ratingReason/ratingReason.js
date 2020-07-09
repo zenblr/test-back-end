@@ -25,11 +25,11 @@ exports.getRatingReason = async (req, res, next) => {
 
         let whereCondition;
         if (getAll == "true") {
-            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
+            whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] }
         } else if (getAll == "false") {
-            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
+            whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] }
         } else if (getAll == undefined) {
-            whereCondition = {  where: { isActive: true }, order: [['id', 'DESC']] }
+            whereCondition = {  where: { isActive: true }, order: [["updatedAt", "DESC"]] }
         }
         let allRating = await models.ratingReason.findAll(whereCondition);
         let count = await models.ratingReason.findAll(whereCondition);

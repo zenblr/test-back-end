@@ -26,11 +26,11 @@ exports.getOrnamentType = async (req, res, next) => {
 
         let whereCondition;
         if (getAll == "true") {
-            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
+            whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] }
         } else if (getAll == "false") {
-            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
+            whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] }
         } else if (getAll == undefined) {
-            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
+            whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] }
         }
         let allOrnamentType = await models.ornamentType.findAll(whereCondition)
         return res.status(200).json({ data: allOrnamentType, count: allOrnamentType.length })
