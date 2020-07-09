@@ -86,7 +86,8 @@
                                     (change)="resetAppraiser();statusAppraiser()"
                                     [class.isError]="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                                     <option value=null [disabled]="true" [selected]="true">Select Status</option>
-                                    <option [value]="status.value" *ngFor="let status of appraiser">
+                                    <option [value]="status.value" [disabled]="checkforApproval(status)"
+                                        *ngFor="let status of appraiser">
                                         {{status.name | titlecase}}
                                     </option>
                                 </select>
@@ -130,9 +131,10 @@
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
-                        <label for="">Reason by Branch Manager for {{controls.loanStatusForBM.value}}</label>
+                        <label for="">Reason for {{controls.loanStatusForBM.value | titlecase}} <br> (Branch
+                            Manager)</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 kt-padding-10">
                         <label for="">{{controls.commentByBM.value }}</label>
                     </div>
                 </div>
@@ -145,10 +147,11 @@
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
-                        <label for="">Reason by Operation Team for
-                            {{controls.loanStatusForOperatinalTeam.value}}</label>
+                        <label for="">Reason for {{controls.loanStatusForOperatinalTeam.value | titlecase}}<br>
+                            (Operational Team)</label>
+
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 kt-padding-10">
                         <label for="">{{controls.commentByOperatinalTeam.value }}</label>
                     </div>
                 </div>

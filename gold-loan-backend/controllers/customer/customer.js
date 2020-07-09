@@ -452,16 +452,18 @@ exports.getsingleCustomerManagement = async (req, res) => {
         }]
       },
       {
-        model: models.customerLoan,
-        as: 'customerLoan',
-        include: [{
-          model: models.customerLoanMaster,
-          as: 'masterLoan',
-          where: { loanStageId: stageId.id },
-        },{
-          model: models.customerLoanNomineeDetail,
-          as: 'loanNomineeDetail'
-        }]
+        model: models.customerLoanMaster,
+        as: 'masterLoan',
+        include: [
+          {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            where: { isActive: true }
+          }, {
+            model: models.customerLoanNomineeDetail,
+            as: 'loanNomineeDetail'
+          }
+        ]
       }
     ]
   })
