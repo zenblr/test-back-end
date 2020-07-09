@@ -652,6 +652,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
                 "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+
                 appraiser_status: sequelize.where(
                     sequelize.cast(sequelize.col("customerLoanMaster.loan_status_for_appraiser"), "varchar"),
                     {

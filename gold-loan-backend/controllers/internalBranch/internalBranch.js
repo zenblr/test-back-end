@@ -56,11 +56,20 @@ exports.readInternalBranch = async (req, res) => {
         },
         isActive: true,
     }
+
+    if (offset !== 1 && pageSize !== -1 ) { 
+        whereCondition = { 
+            where: searchQuery, 
+            order: [['id', 'DESC']],
+            offset: offset,
+            limit: pageSize, }
+        } else {
+            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] } 
+        }
+
+
     let readInternalBranch = await models.internalBranch.findAll({
-        where: searchQuery,
-        order: [["id", "DESC"]],
-        offset: offset,
-        limit: pageSize,
+        whereCondition,
         include: [
             {
                 model: models.partner,
@@ -133,13 +142,28 @@ exports.readInternalBranch = async (req, res) => {
         ],
     });
 
-    if (!readInternalBranch) {
-        res.status(200).json({
-            data: [],
-            count: 0
-        })
-    }
-    return res.status(200).json({ data: readInternalBranch, count: count });
+    if (offset !== 1 && pageSize !== -1 ) { 
+
+        if (!readInternalBranch) {
+            res.status(200).json({
+                data: [],
+                count: 0
+            })
+        }else{
+            return res.status(200).json({ data: allLead, count: count.length });
+        }
+      } else {
+        return res.status(200).json({ data: readInternalBranch});
+
+      }
+
+    // if (!readInternalBranch) {
+    //     res.status(200).json({
+    //         data: [],
+    //         count: 0
+    //     })
+    // }
+    
 }
 
 // read internal branch by id
