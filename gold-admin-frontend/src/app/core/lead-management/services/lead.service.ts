@@ -105,7 +105,7 @@ export class LeadService {
   }
 
   getInternalBranhces(): Observable<any> {
-    return this.http.get<any>(`api/internal-branch`);
+    return this.http.get<any>(`api/internal-branch?from=1&to=-1`);
   }
 
 }
