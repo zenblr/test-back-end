@@ -9,7 +9,7 @@
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer ID</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.loanPersonalDetail.customerUniqueId}}</div>
+                        {{loanDetails.customer.customerUniqueId}}</div>
                 </div>
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Amount</div>
@@ -66,17 +66,18 @@
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Nominee</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.loanNomineeDetail[0]?.nomineeName | titlecase}}
+                        {{loanDetails?.masterLoan.loanNomineeDetail[0].nomineeName | titlecase}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Age</div>
-                    <div class="text-color font-weight-500">{{loanDetails?.loanNomineeDetail[0]?.nomineeAge}}</div>
+                    <div class="text-color font-weight-500">{{loanDetails?.masterLoan.loanNomineeDetail[0].nomineeAge}}
+                    </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Relation</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.loanNomineeDetail[0]?.relationship | titlecase}}</div>
+                        {{loanDetails?.masterLoan.loanNomineeDetail[0].relationship | titlecase}}</div>
                 </div>
             </div>
         </div>
@@ -183,7 +184,10 @@
 
                                             </td>
                                             <td class="text-color ">
-                                                <!-- <label class="m-0">{{packet.ornamentTypes[0].name | uppercase  }}</label> -->
+                                                <span *ngFor="let ornament of packet?.ornamentTypes;index as idx">
+                                                    {{ornament.name | uppercase}}
+                                                    <span *ngIf="index == packet.ornamentTypes.length - 1"></span>
+                                                </span>
 
                                             </td>
                                         </ng-container>

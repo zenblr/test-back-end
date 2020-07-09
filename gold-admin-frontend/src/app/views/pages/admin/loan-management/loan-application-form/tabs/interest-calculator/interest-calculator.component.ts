@@ -288,9 +288,9 @@ export class InterestCalculatorComponent implements OnInit {
             const scheme = this.selectedUnsecuredscheme[0]
 
             if (scheme &&
-              amt <= scheme.schemeAmountEnd &&
-              amt >= scheme.schemeAmountStart &&
-              enterAmount <= (this.totalAmt * (securedPercentage + (scheme.maximumPercentageAllowed / 100)))
+              Number(amt) <= Number(scheme.schemeAmountEnd) &&
+              Number(amt) >= Number(scheme.schemeAmountStart) &&
+              Number(enterAmount) <= (this.totalAmt * (securedPercentage + (scheme.maximumPercentageAllowed / 100)))
             ) {
 
               this.controls.isUnsecuredSchemeApplied.patchValue(true);
@@ -299,6 +299,10 @@ export class InterestCalculatorComponent implements OnInit {
               this.getIntrest();
               this.CheckProcessingCharge()
 
+            }
+            else {
+              this.controls.finalLoanAmount.setErrors({ maximumAmtAllowed: true })
+              return
             }
           } else {
             this.controls.finalLoanAmount.setErrors({ maximumAmtAllowed: true })
