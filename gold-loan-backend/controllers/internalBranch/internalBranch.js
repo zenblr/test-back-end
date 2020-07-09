@@ -60,11 +60,11 @@ exports.readInternalBranch = async (req, res) => {
     if (offset !== 1 && pageSize !== -1 ) { 
         whereCondition = { 
             where: searchQuery, 
-            order: [['id', 'DESC']],
+            order: [["updatedAt", "DESC"]],
             offset: offset,
             limit: pageSize, }
         } else {
-            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] } 
+            whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] } 
         }
 
 
@@ -150,7 +150,7 @@ exports.readInternalBranch = async (req, res) => {
                 count: 0
             })
         }else{
-            return res.status(200).json({ data: allLead, count: count.length });
+            return res.status(200).json({ data: readInternalBranch, count: count.length });
         }
       } else {
         return res.status(200).json({ data: readInternalBranch});
