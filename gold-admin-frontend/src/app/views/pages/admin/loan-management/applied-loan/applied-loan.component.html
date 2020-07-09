@@ -69,6 +69,15 @@
                         </span>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="oTApproval">
+                    <mat-header-cell *matHeaderCellDef>OT Approval</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <span
+                            [ngClass]="loan.loanStatusForOperatinalTeam == 'pending' ? 'text-warning' :loan.loanStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
+                            {{loan.loanStatusForOperatinalTeam | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
                 <!-- <ng-container matColumnDef="loanStage">
                     <mat-header-cell *matHeaderCellDef>Loan Stage</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
