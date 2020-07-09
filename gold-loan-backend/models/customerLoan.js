@@ -21,22 +21,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'partner_id'
         },
+        loanAmount:{
+            type: DataTypes.STRING,
+            field: 'loan_amount'
+        },
         schemeId: {
             type: DataTypes.INTEGER,
             field: 'scheme_id'
         },
-        unsecuredSchemeId: {
-            type: DataTypes.INTEGER,
-            field: 'unsecured_scheme_id'
-        },
         interestRate: {
             type: DataTypes.STRING,
             field: 'interest_rate'
-        },
-        unsecuredInterestRate: {
-            type: DataTypes.STRING,
-            field: 'unsecured_interest_rate'
-        },
+        },      
         loanType: {
             type: DataTypes.STRING,
             field: 'loan_type'
@@ -88,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
 
         customerLoan.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
         customerLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
-        customerLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
+        // customerLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
 
         customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan' });
 

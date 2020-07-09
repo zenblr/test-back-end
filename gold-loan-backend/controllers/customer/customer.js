@@ -214,6 +214,12 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         last_name: { [Op.iLike]: search + "%" },
         mobile_number: { [Op.iLike]: search + "%" },
         pan_card_number: { [Op.iLike]: search + "%" },
+        pinCode: sequelize.where(
+          sequelize.cast(sequelize.col("customer.pin_code"), "varchar"),
+          {
+            [Op.iLike]: search + "%"
+          },
+        ),
         "$internalBranch.name$": {
           [Op.iLike]: search + "%",
         },
@@ -225,7 +231,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         },
         "$state.name$": {
           [Op.iLike]: search + "%",
-        }
+        },
       },
     }],
     isActive: true,
@@ -269,7 +275,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
     attributes: { exclude: ['mobileNumber', 'createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
-    order: [["id", "DESC"]],
+    order: [["updatedAt", "DESC"]],
     offset: offset,
     limit: pageSize,
     include: includeArray,
@@ -369,6 +375,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
       [Op.or]: {
         first_name: { [Op.iLike]: search + "%" },
         last_name: { [Op.iLike]: search + "%" },
+        customer_unique_id: { [Op.iLike]: search + "%" },
         mobile_number: { [Op.iLike]: search + "%" },
         pan_card_number: { [Op.iLike]: search + "%" },
         "$city.name$": {
@@ -452,16 +459,18 @@ exports.getsingleCustomerManagement = async (req, res) => {
         }]
       },
       {
-        model: models.customerLoan,
-        as: 'customerLoan',
-        include: [{
-          model: models.customerLoanMaster,
-          as: 'masterLoan',
-          where: { loanStageId: stageId.id },
-        },{
-          model: models.customerLoanNomineeDetail,
-          as: 'loanNomineeDetail'
-        }]
+        model: models.customerLoanMaster,
+        as: 'masterLoan',
+        include: [
+          {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            where: { isActive: true }
+          }, {
+            model: models.customerLoanNomineeDetail,
+            as: 'loanNomineeDetail'
+          }
+        ]
       }
     ]
   })
