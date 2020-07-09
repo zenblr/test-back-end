@@ -12,6 +12,7 @@ import { LoanTransferService } from '../../../../../core/loan-management/loan-tr
 })
 export class LoanTransferComponent implements OnInit {
 
+  customerDetail:any
   selected: number;
   approvalForm: FormGroup;
   disbursalForm: FormGroup;
@@ -30,6 +31,9 @@ export class LoanTransferComponent implements OnInit {
   }
 
 
+  getSingleDetails(event){
+    
+  }
 
   ngOnInit() {
     this.initForms()
