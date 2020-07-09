@@ -33,7 +33,7 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   viewLoan(loanId: number) {
-    this.router.navigate(['/admin/customer-management/loan-details/' + loanId])
+    this.router.navigate(['/admin/customer-management/customer-list/' + this.customerId + '/loan-details/' + loanId])
   }
 
   prepareImages(){

@@ -28,6 +28,10 @@ const routes: Routes = [
     component: CustomerDetailsComponent
   },
   {
+    path: 'customer-list/:id/loan-details/:loanId',
+    component: LoanDetailsComponent
+  },
+  {
     path: 'loan-details/:loanId',
     component: LoanDetailsComponent
   }
