@@ -66,17 +66,18 @@
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Nominee</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.loanNomineeDetail[0]?.nomineeName | titlecase}}
+                        {{loanDetails?.masterLoan.loanNomineeDetail[0].nomineeName | titlecase}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Age</div>
-                    <div class="text-color font-weight-500">{{loanDetails?.loanNomineeDetail[0]?.nomineeAge}}</div>
+                    <div class="text-color font-weight-500">{{loanDetails?.masterLoan.loanNomineeDetail[0].nomineeAge}}
+                    </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Relation</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.loanNomineeDetail[0]?.relationship | titlecase}}</div>
+                        {{loanDetails?.masterLoan.loanNomineeDetail[0].relationship | titlecase}}</div>
                 </div>
             </div>
         </div>

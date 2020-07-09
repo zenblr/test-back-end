@@ -49,20 +49,20 @@ export class DisburseDialogComponent implements OnInit {
       passbookStatementChequeId: [],
       passbookImg: [],
       passbookImgName: [],
-      masterLoanId:[this.data.masterLoanId],
+      masterLoanId: [this.data.masterLoanId],
     })
     this.getBankDetails()
 
   }
 
   getBankDetails() {
-    this.loanService.getBankDetails(this.data.loan,this.data.masterLoanId).subscribe(res => {
+    this.loanService.getBankDetails(this.data.loan, this.data.masterLoanId).subscribe(res => {
       if (Object.keys(res.data).length) {
         this.details = res.data
         this.patchValue(res.data.paymentType)
         this.disburseForm.patchValue(res.data)
-        this.disburseForm.patchValue({loanAmount:res.data.finalLoanAmount})
-        if(this.globalValue.cashTransactionLimit < this.disburseForm.controls.loanAmount.value){
+        this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
+        if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
           this.disburseForm.controls.paymentMode.patchValue('bank')
           this.disburseForm.controls.paymentMode.disable()
           return
