@@ -165,55 +165,84 @@
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
                 {{loanDetails.masterLoan.loanPacketDetails[0].packets.length}} Packets</label>
-                <div style="min-height: 300px;"
-                    *ngFor="let packets of loanDetails.masterLoan.loanPacketDetails;index as idx">
-                    <div class="row justify-content-center kt-padding-t-15">
-                        <div class="col-4">
-                            <div class="table-div">
-                                <table class="table outer-border">
-                                    <thead>
-                                        <th class="transparent">Packet</th>
-                                        <th class="transparent">Ornaments</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let packet of packets.packets;index as idx">
-                                            <ng-container>
-                                                <td class="text-color ">
-                                                    <label class="m-0">{{packet.packetUniqueId | uppercase}}</label>
-                    
-                                                </td>
-                                                <td class="text-color ">
-                                                    <!-- <label class="m-0">{{packet.ornamentTypes[0].name | uppercase  }}</label> -->
-                    
-                                                </td>
-                                            </ng-container>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4">
-                            <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
-                                No
-                                Ornaments</label>
-                        </div>
-                        <div class="col-4">
-                            <img class="packets" [src]="packets?.sealingPacketWithWeightImage">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with All
-                                Ornaments</label>
-                        </div>
-                        <div class="col-4">
-                            <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
-                                Sealing</label>
+            <div style="min-height: 300px;"
+                *ngFor="let packets of loanDetails.masterLoan.loanPacketDetails;index as idx">
+                <div class="row justify-content-center kt-padding-t-15">
+                    <div class="col-4">
+                        <div class="table-div">
+                            <table class="table outer-border">
+                                <thead>
+                                    <th class="transparent">Packet</th>
+                                    <th class="transparent">Ornaments</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let packet of packets.packets;index as idx">
+                                        <ng-container>
+                                            <td class="text-color ">
+                                                <label class="m-0">{{packet.packetUniqueId | uppercase}}</label>
 
+                                            </td>
+                                            <td class="text-color ">
+                                                <!-- <label class="m-0">{{packet.ornamentTypes[0].name | uppercase  }}</label> -->
+
+                                            </td>
+                                        </ng-container>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
+                            No
+                            Ornaments</label>
+                    </div>
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.sealingPacketWithWeightImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with All
+                            Ornaments</label>
+                    </div>
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
+                            Sealing</label>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row kt-margin-t-15">
+        <div class="col-12 card kt-padding-15">
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Documents
+            </label>
+
+            <div class="row justify-content-center kt-padding-t-15">
+
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <img class="packets" [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
+                </div>
+                <div class="col-4">
+                    <img class="packets" [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy</label>
+                </div>
+                <div class="col-4">
+                    <img class="packets"
+                        [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
+                    </label>
 
                 </div>
+            </div>
+
         </div>
     </div>
 

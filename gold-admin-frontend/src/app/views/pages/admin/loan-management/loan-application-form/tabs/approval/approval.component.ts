@@ -108,14 +108,14 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         this.approvalForm.patchValue({ commentByAppraiser: changes.details.currentValue.masterLoan.commentByAppraiser })
         if (changes.details.currentValue.masterLoan.commentByAppraiser == "Other") {
           this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
-        let temp = this.reasons.filter(reason=>{
-          return reason.description == changes.details.currentValue.masterLoan.commentByAppraiser
-        })
+          let temp = this.reasons.filter(reason => {
+            return reason.description == changes.details.currentValue.masterLoan.commentByAppraiser
+          })
 
-        if(!temp.length){
-          this.approvalForm.patchValue({ reasons:"Other" })
+          if (!temp.length) {
+            this.approvalForm.patchValue({ reasons: "Other" })
+          }
         }
-      }
         this.statusAppraiser()
         this.statusBM()
         this.ref.markForCheck()
@@ -146,7 +146,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       } else {
         this.controls.applicationFormForAppraiser.patchValue(value)
       }
-      this.checkforApproval('approved');
+      this.checkforApprovalAppraiser('approved');
     }
   }
 
@@ -157,6 +157,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       } else {
         this.controls.applicationFormForBM.patchValue(value)
       }
+      this.checkforApprovalBM('approved')
     }
   }
 
@@ -167,6 +168,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       } else {
         this.controls.applicationFormForOperatinalTeam.patchValue(value)
       }
+      this.checkforApprovalOT('approved')
     }
   }
 
@@ -205,7 +207,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.controls.commentByBM.reset()
   }
 
-  clearAppraiser(){
+  clearAppraiser() {
     this.controls.commentByAppraiser.clearValidators()
     this.controls.commentByAppraiser.updateValueAndValidity()
   }
@@ -265,9 +267,33 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.location.back()
   }
 
-  checkforApproval(status) {
+  checkforApprovalAppraiser(status) {
     if (status.name == 'approved') {
-      if (this.controls.goldValuationForAppraiser.value &&                    this.controls.applicationFormForAppraiser.value) {
+      if (this.controls.goldValuationForAppraiser.value && this.controls.applicationFormForAppraiser.value) {
+        return false
+      } else {
+        return true
+      }
+    } else {
+      return false
+    }
+  }
+
+  checkforApprovalBM(status) {
+    if (status.name == 'approved') {
+      if (this.controls.goldValuationForBM.value && this.controls.applicationFormForBM.value) {
+        return false
+      } else {
+        return true
+      }
+    } else {
+      return false
+    }
+  }
+
+  checkforApprovalOT(status) {
+    if (status.name == 'approved') {
+      if (this.controls.goldValuationForOperatinalTeam.value && this.controls.applicationFormForOperatinalTeam.value) {
         return false
       } else {
         return true

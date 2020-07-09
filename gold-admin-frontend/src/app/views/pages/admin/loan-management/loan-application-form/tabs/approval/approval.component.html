@@ -86,7 +86,7 @@
                                     (change)="clearAppraiser();statusAppraiser()"
                                     [class.isError]="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                                     <option value=null [disabled]="true" [selected]="true">Select Status</option>
-                                    <option [value]="status.value" [disabled]="checkforApproval(status)"
+                                    <option [value]="status.value" [disabled]="checkforApprovalAppraiser(status)"
                                         *ngFor="let status of appraiser">
                                         {{status.name | titlecase}}
                                     </option>
@@ -100,7 +100,8 @@
                                     (change)="resetBM();statusBM()"
                                     [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                                     <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
-                                    <option [value]="status.value" *ngFor="let status of branchManager">
+                                    <option [value]="status.value" [disabled]="checkforApprovalBM(status)"
+                                        *ngFor="let status of branchManager">
                                         {{status.name | titlecase}}</option>
                                 </select>
                                 <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
@@ -112,7 +113,8 @@
                                     (change)="resetOT();statusOT()"
                                     [class.isError]="controls.loanStatusForOperatinalTeam.invalid && controls.loanStatusForOperatinalTeam.touched">
                                     <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
-                                    <option [value]="status.value" *ngFor="let status of branchManager">
+                                    <option [value]="status.value" [disabled]="checkforApprovalOT(status)"
+                                        *ngFor="let status of branchManager">
                                         {{status.name | titlecase}}</option>
                                 </select>
                                 <mat-error
