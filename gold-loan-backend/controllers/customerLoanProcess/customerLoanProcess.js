@@ -652,6 +652,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
                 "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                "$customerLoan.scheme.scheme_name$": { [Op.iLike]: search + '%' },
 
                 appraiser_status: sequelize.where(
                     sequelize.cast(sequelize.col("customerLoanMaster.loan_status_for_appraiser"), "varchar"),
@@ -710,6 +711,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
 
     let appliedLoanDetails = await models.customerLoanMaster.findAll({
         where: searchQuery,
+        subQuery: false,
         include: associateModel,
         order: [
             [models.customerLoan, "id", "asc"],
@@ -722,6 +724,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     });
     let count = await models.customerLoanMaster.findAll({
         where: searchQuery,
+        subQuery: false,
         include: associateModel,
     });
 
@@ -995,8 +998,17 @@ exports.getLoanDetails = async (req, res, next) => {
                 "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
                 "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
+                "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
+                "$customerLoan.scheme.scheme_name$": { [Op.iLike]: search + '%' },
+                
                 tenure: sequelize.where(
                     sequelize.cast(sequelize.col("customerLoanMaster.tenure"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                interestRate: sequelize.where(
+                    sequelize.cast(sequelize.col("customerLoan.interest_rate"), "varchar"),
                     {
                         [Op.iLike]: search + "%",
                     }
@@ -1035,6 +1047,7 @@ exports.getLoanDetails = async (req, res, next) => {
 
     let loanDetails = await models.customerLoanMaster.findAll({
         where: searchQuery,
+        subQuery: false,
         include: associateModel,
         order: [
             [models.customerLoan, 'id', 'asc'],
@@ -1045,6 +1058,7 @@ exports.getLoanDetails = async (req, res, next) => {
     });
     let count = await models.customerLoanMaster.findAll({
         where: searchQuery,
+        subQuery: false,
         include: associateModel,
     });
     if (loanDetails.length === 0) {
