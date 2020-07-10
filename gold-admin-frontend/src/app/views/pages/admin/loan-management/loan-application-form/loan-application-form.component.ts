@@ -54,7 +54,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.id = event
     this.editApi()
     setTimeout(() => {
-      this.action = 'add'
+      // this.action = 'add'
     }, 5000)
   }
 
@@ -132,7 +132,6 @@ export class LoanApplicationFormComponent implements OnInit {
   customerDetails(event) {
     this.loanApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
       map(res => {
-        this.action = 'add'
         this.customerDetail = res.customerData
         for (let index = 0; index < this.disabled.length; index++) {
           if (index <= 2) {

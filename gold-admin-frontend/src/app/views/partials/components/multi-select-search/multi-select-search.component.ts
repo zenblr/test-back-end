@@ -109,4 +109,14 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 			}
 		})
 	}
+
+	isChecked() {
+		if (this.form.get('multiSelect').value && this.form.get('multiSelect').value.length) {
+			if (this.form.get('multiSelect').value.length == this.items.length) {
+				return true
+			}
+		} else {
+			return false
+		}
+	}
 }

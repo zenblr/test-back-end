@@ -4,6 +4,7 @@ import { SharedService } from '../../../../../../../core/shared/services/shared.
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-bank-details',
@@ -23,14 +24,17 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   bankForm: FormGroup;
   passbookImg: any = [];
   passbookImgId: any = []
+  url:any;
   constructor(
     public toastr: ToastrService,
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
     public sharedService: SharedService,
     public loanFormService: LoanApplicationFormService,
+    private router:Router
   ) {
     this.initForm()
+    this.url = this.router.url.split("/")[3]
   }
 
   ngOnInit() {

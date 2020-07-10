@@ -162,16 +162,16 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   navigate(loan) {
-    this.router.navigate(['/admin/loan-management/loan-application-form', loan.id])
+    this.router.navigate(['/admin/loan-management/loan-application-form', loan.customerLoan[0].id])
   }
 
 
   packetImageUpload(loan) {
-    this.router.navigate(['/admin/loan-management/packet-image-upload', loan.id])
+    this.router.navigate(['/admin/loan-management/packet-image-upload', loan.customerLoan[0].id])
   }
 
   viewLoan(loan) {
-    this.router.navigate(['/admin/loan-management/view-loan', loan.id])
+    this.router.navigate(['/admin/loan-management/view-loan', loan.customerLoan[0].id])
   }
 
 }

@@ -95,6 +95,7 @@ export class InterestCalculatorComponent implements OnInit {
           this.selectedScheme.push(finalLoan.scheme)
           let temp = []
           this.getIntrest()
+
           finalLoan.customerLoanInterest.forEach(interset => {
             var data = {
               emiDueDate: interset.emiDueDate,
@@ -106,16 +107,21 @@ export class InterestCalculatorComponent implements OnInit {
             temp.push(data)
           });
           if (finalLoan.isUnsecuredSchemeApplied) {
-            this.unSecuredSchemeCheck(finalLoan.masterLoan.unsecuredLoanAmount)
-            this.selectedUnsecuredscheme.push(finalLoan.unsecuredScheme)
+            this.unSecuredSchemeCheck(finalLoan.masterLoan.unsecuredLoanAmount, (finalLoan.scheme.maximumPercentageAllowed / 100), 'edit')
+            this.selectedUnsecuredscheme.push(finalLoan.unsecuredLoan.scheme)
+            this.finalInterestForm.patchValue({unsecuredSchemeId:finalLoan.unsecuredLoan.scheme.id})
             for (let index = 0; index < temp.length; index++) {
-              temp[index].unsecuredInterestAmount = finalLoan.unsecureLoan.customerLoanInterest.interestAmount
+              temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
 
             }
+            this.getIntrest()
+
           }
+
           this.dateOfPayment = temp
           console.log(this.dateOfPayment.length)
           this.finalLoanAmount.emit(this.controls.finalLoanAmount.value)
+          this.returnScheme()
           this.ref.detectChanges()
 
         }
@@ -276,37 +282,40 @@ export class InterestCalculatorComponent implements OnInit {
 
 
 
-  unSecuredSchemeCheck(amt, securedPercentage?) {
+  unSecuredSchemeCheck(amt, securedPercentage, action?) {
     if (this.controls.finalLoanAmount.valid) {
       let enterAmount = this.controls.finalLoanAmount.value;
       this.partnerService.getUnsecuredSchemeByParnter(this.controls.partnerId.value, Math.round(amt)).subscribe(
         res => {
-          if (Object.values(res.data).length) {
+          this.unSecuredScheme = res.data
+          if (!action) {
+            if (Object.values(res.data).length) {
 
-            this.unSecuredScheme = res.data
-            this.selectedUnsecuredscheme = this.unSecuredScheme.schemes.filter(scheme => { return scheme.default })
-            const scheme = this.selectedUnsecuredscheme[0]
+              this.selectedUnsecuredscheme = this.unSecuredScheme.schemes.filter(scheme => { return scheme.default })
+              const scheme = this.selectedUnsecuredscheme[0]
+              if (scheme &&
+                Number(amt) <= Number(scheme.schemeAmountEnd) &&
+                Number(amt) >= Number(scheme.schemeAmountStart) &&
+                Number(enterAmount) <= (this.totalAmt * (securedPercentage + (scheme.maximumPercentageAllowed / 100)))
+              ) {
 
-            if (scheme &&
-              Number(amt) <= Number(scheme.schemeAmountEnd) &&
-              Number(amt) >= Number(scheme.schemeAmountStart) &&
-              Number(enterAmount) <= (this.totalAmt * (securedPercentage + (scheme.maximumPercentageAllowed / 100)))
-            ) {
+                this.controls.isUnsecuredSchemeApplied.patchValue(true);
+                this.controls.unsecuredSchemeId.patchValue(scheme.id)
+                this.controls.unsecuredLoanAmount.patchValue(Math.round(amt))
 
-              this.controls.isUnsecuredSchemeApplied.patchValue(true);
-              this.controls.unsecuredSchemeId.patchValue(scheme.id)
-              this.controls.unsecuredLoanAmount.patchValue(Math.round(amt))
-              this.getIntrest();
-              this.CheckProcessingCharge()
+                this.getIntrest();
+                this.CheckProcessingCharge()
+              }
 
+              else {
+                this.controls.finalLoanAmount.setErrors({ maximumAmtAllowed: true })
+                return
+              }
             }
             else {
               this.controls.finalLoanAmount.setErrors({ maximumAmtAllowed: true })
               return
             }
-          } else {
-            this.controls.finalLoanAmount.setErrors({ maximumAmtAllowed: true })
-            return
           }
         }
       )
