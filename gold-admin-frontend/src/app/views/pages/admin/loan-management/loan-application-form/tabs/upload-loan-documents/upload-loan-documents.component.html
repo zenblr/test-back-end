@@ -8,8 +8,13 @@
                 <input type="text" formControlName="outstandingLoanAmount" class="form-control " placeholder="Outstanding">
             </div>
         </div>
+        <div class="row kt-padding-t-15">
+            <div class="offset-10 col-2">
+                <kt-button [value] ="'print'" [type]="'button'"></kt-button>
+            </div>
+        </div>
         <div class="row kt-padding-t-15 kt-padding-b-20 justify-content-around">
-            <div class="col-4 form-label" *ngIf="!show">{{show}}
+            <div class="col-4 form-label" *ngIf="!show">
                 <label class="kt-padding-l-10">Loan Agreement Copy</label>
             </div>
             <div class="col-4 form-label">

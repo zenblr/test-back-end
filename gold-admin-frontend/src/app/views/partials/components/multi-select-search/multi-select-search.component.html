@@ -4,7 +4,7 @@
         <ng-template ng-header-tmp *ngIf="selectAll">
                 <label class="custom-checkbox">
                     <span class="label-checkbox">Select All</span>
-                    <input type="checkbox" (change)="selectAllCheckBox($event)"/> 
+                    <input type="checkbox" (change)="selectAllCheckBox($event)" [checked]="isChecked()"/> 
                     <span class="checkmark checkmark-custom header-checkmark"></span>
                 </label>            
         </ng-template>

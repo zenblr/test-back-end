@@ -241,6 +241,12 @@ export class PageConfig {
 						page: { title: "Customer Details", desc: "" },
 					},
 				},
+				"loan-details": {
+					id: {
+						page: { title: "Loan Details", desc: "" },
+					}
+
+				},
 			},
 			"loan-management": {
 				"loan-calculator": {

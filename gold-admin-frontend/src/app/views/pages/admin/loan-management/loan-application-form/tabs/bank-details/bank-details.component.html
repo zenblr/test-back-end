@@ -156,7 +156,7 @@
                                         <div class="d-inline-block img-container kt-margin-r-15"
                                             *ngFor="let proof of controls.passbookProofImage.value; index as idx;">
                                             <img class="fetched-image" [src]="proof">
-                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt="" *ngIf="url != 'view-loan'"
                                                 class="kt-pointer remove-icon" (click)="removeImages(idx);">
                                         </div>
                                     </div>
