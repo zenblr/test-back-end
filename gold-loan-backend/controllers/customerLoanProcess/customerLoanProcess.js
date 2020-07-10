@@ -461,7 +461,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
             }
             await sequelize.transaction(async (t) => {
 
-                await models.customerLoanMaster.update({ applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, loanStatusForOperatinalTeam, commentByOperatinalTeam, loanStageId: approvedStageId.id, operatinalTeamId, modifiedBy }, { where: { id: loanId }, transaction: t })
+                await models.customerLoanMaster.update({ applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, loanStatusForOperatinalTeam, commentByOperatinalTeam, loanStageId: approvedStageId.id, operatinalTeamId, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
                 //securedLoanIdUpdate
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
                 if (!check.isEmpty(checkUnsecuredLoan)) {
@@ -566,6 +566,9 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 include: [{
                     model: models.customerLoanInterest,
                     as: 'customerLoanInterest',
+                },{
+                    model: models.scheme,
+                    as: 'scheme',
                 }]
             },
             {
@@ -604,7 +607,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         customerLoan.dataValues['isUnsecuredSchemeApplied'] = false;
     } else {
         if (customerLoan.unsecuredLoan.isActive) {
-            customerLoan.dataValues['isUnsecuredSchemeApplied'] = false
+            customerLoan.dataValues['isUnsecuredSchemeApplied'] = true
         } else {
             customerLoan.dataValues['isUnsecuredSchemeApplied'] = customerLoan.unsecuredLoan.isActive
         }
