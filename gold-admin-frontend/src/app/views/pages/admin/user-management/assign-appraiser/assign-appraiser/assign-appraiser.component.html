@@ -77,7 +77,7 @@
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                     formControlName="appoinmentDate"
                                     [class.isError]="controls.appoinmentDate.touched && controls.appoinmentDate.invalid"
-                                    readonly placeholder="4/5/2020" [min]="data.action == 'add'? 'minDate' : null">
+                                    readonly placeholder="4/5/2020" [min]="currentDate">
                                 <mat-datepicker #picker></mat-datepicker>
                             </div>
                         </div>
@@ -88,12 +88,13 @@
 
                             <div class="col-4">
                                 <input [ngxTimepicker]="picker1" class="form-control" formControlName="startTime"
-                                    placeholder="From">
-                                <ngx-material-timepicker #picker1></ngx-material-timepicker>
+                                    placeholder="From" [min]="addStartTime">
+                                <ngx-material-timepicker #picker1>
+                                </ngx-material-timepicker>
                             </div>
                             <div class="col-4">
                                 <input [ngxTimepicker]="picker2" class="form-control" formControlName="endTime"
-                                    placeholder="To" [min]="controls.startTime.value">
+                                    placeholder="To" [min]="addStartTime">
                                 <ngx-material-timepicker #picker2></ngx-material-timepicker>
                             </div>
                         </div>
