@@ -256,7 +256,9 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 	entryComponents: [
 		PdfViewerComponent, 
 		ImagePreviewDialogComponent, 
-		ImageFunctionalityDialogComponent],
+		ImageFunctionalityDialogComponent,
+		OrnamentsComponent
+	],
 })
 export class PartialsModule {
 }

@@ -350,8 +350,8 @@ exports.appliedKyc = async (req, res, next) => {
             }
         );
     }
-    if (req.query.bmRating) {
-        query.bmRating = sequelize.where(
+    if (req.query.kycStatusFromOperationalTeam) {
+        query.kycStatusFromOperationalTeam = sequelize.where(
             sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_operational_team"), "varchar"),
             {
                 [Op.iLike]: search + "%",
@@ -366,6 +366,13 @@ exports.appliedKyc = async (req, res, next) => {
                 "$customer.last_name$": { [Op.iLike]: search + "%" },
                 "$customer.mobile_number$": { [Op.iLike]: search + "%" },
                 "$customer.pan_card_number$": { [Op.iLike]: search + "%" },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + "%" },
+                "$customer.customerAssignAppraiser.appraiser.first_name$": {
+                    [Op.iLike]: search + "%",
+                  },
+                  "$customer.customerAssignAppraiser.appraiser.last_name$": {
+                    [Op.iLike]: search + "%",
+                  },
                 kyc_status: sequelize.where(
                     sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
                     {
@@ -447,6 +454,7 @@ exports.appliedKyc = async (req, res, next) => {
     let getAppliedKyc = await models.customerKyc.findAll({
         where: searchQuery,
         attributes: ['id', 'customerId', 'createdAt'],
+        order: [["updatedAt", "DESC"]],
         offset: offset,
         limit: pageSize,
         include: includeArray

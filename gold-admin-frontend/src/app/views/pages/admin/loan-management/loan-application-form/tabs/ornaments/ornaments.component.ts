@@ -1,9 +1,9 @@
-import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChildren, QueryList, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChildren, QueryList, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../../core/shared/services/shared.service';
 import { map, catchError, filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { UploadOfferService } from '../../../../../../../core/upload-data';
 import { KaratDetailsService } from '../../../../../../../core/loan-setting/karat-details/services/karat-details.service';
@@ -14,7 +14,6 @@ import { OrnamentsService } from '../../../../../../../core/masters/ornaments/se
 import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
-import { iif } from 'rxjs';
 
 
 @Component({
@@ -68,7 +67,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public loanApplicationFormService: LoanApplicationFormService,
     public ornamentTypeService: OrnamentsService,
     public layoutUtilsService: LayoutUtilsService,
-    public globalSettingService: GlobalSettingService
+    public globalSettingService: GlobalSettingService,
+    public dialogRef: MatDialogRef<OrnamentsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
 
   }
@@ -84,7 +85,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
         this.karatArr = res;
-        console.log(res)
       })
     ).subscribe()
   }
@@ -327,7 +327,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string, ) {
+  uploadFile(index, event, string,) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
@@ -379,34 +379,24 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         // this.images[index].stoneTouch = controls.controls.stoneTouchData.value
         break;
       case 'purityTestImage':
-        // if (controls.controls.purityTest.value.length <= 4) {
-        let temp: any[]; let tempId: any[];
+        if (url) {
 
-        // if (controls.controls.purityTest.value.length > 0) {
-        //   tempId = controls.controls.purityTestImage.value
-        //   temp = controls.controls.purityTestImage.value
-        // }
-        // if (!temp.includes(url)) 
+          if (typeof url == "object") {
 
-        if (typeof url == "object") {
-          //   controls.controls.purityTest.patchValue(id)
-          // controls.controls.purityTestImage.patchValue(url)
-          // temp = [] ; tempId = [];
-          this.purityTestImg = url
-          this.purityTestPath = id
-          // url.forEach(element => {
-          //   temp.push(element.purityTest.url)
-          // });
-        } else {
-          this.purityTestImg = controls.controls.purityTestImage.value
-          this.purityTestPath = controls.controls.purityTest.value
-          this.purityTestImg.push(url)
-          this.purityTestPath.push(id)
+            this.purityTestImg = url
+            this.purityTestPath = id
+
+          } else {
+            this.purityTestImg = controls.controls.purityTestImage.value
+            this.purityTestPath = controls.controls.purityTest.value
+            this.purityTestImg.push(url)
+            this.purityTestPath.push(id)
+          }
+          this.images[index].purity = this.purityTestImg
+          controls.controls.purityTest.patchValue(this.purityTestPath)
+          controls.controls.purityTestImage.patchValue(this.purityTestImg)
+          this.purity.nativeElement.value = ''
         }
-        this.images[index].purity = this.purityTestImg
-        controls.controls.purityTest.patchValue(this.purityTestPath)
-        controls.controls.purityTestImage.patchValue(this.purityTestImg)
-        this.purity.nativeElement.value = ''
         // } else {
         //   this.toast.error('Maximum of 4 Images can be uploaded in Purity Test')
         // }
@@ -419,7 +409,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         // this.images[index].ornamentImage = controls.controls.ornamentImageData.value
         break;
     }
-    console.log(controls.value)
 
   }
 
@@ -531,7 +520,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.next.emit(3)
       })
     ).subscribe()
-    console.log(this.ornamentsForm.value, this.totalAmount)
 
   }
 
@@ -555,7 +543,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           }
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-          console.log(res)
           this.patchUrlIntoForm(string, res.uploadFile.path, res.uploadFile.URL, index)
         })
 

@@ -30,7 +30,7 @@
                             {{loan?.customerLoan[0]?.scheme?.schemeName | uppercase}}
                         </div>
                         <div>
-                            {{loan?.customerLoan[1]?.unsecuredScheme?.schemeName | uppercase}}
+                            {{loan?.customerLoan[1]?.scheme?.schemeName | uppercase}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -38,10 +38,10 @@
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">
                         <div>
-                            {{loan?.securedLoanAmount}}
+                            {{loan?.customerLoan[0]?.loanAmount}}
                         </div>
                         <div>
-                            {{loan?.unsecuredLoanAmount}}
+                            {{loan?.customerLoan[1]?.loanAmount}}
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -52,8 +52,8 @@
                         <div>
                             {{loan?.customerLoan[0]?.interestRate}} % P.M
                         </div>
-                        <div>
-                            {{loan?.customerLoan[1]?.unsecuredInterestRate}} % P.M
+                        <div *ngIf="loan?.customerLoan.length > 1">
+                            {{loan?.customerLoan[1]?.interestRate}} % P.M
                         </div>
                     </mat-cell>
                 </ng-container>

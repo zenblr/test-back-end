@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         purpose: {
             type: DataTypes.TEXT,
             field: 'purpose',
-            allowNull: false
         },
         startDate: {
             type: DataTypes.DATE,

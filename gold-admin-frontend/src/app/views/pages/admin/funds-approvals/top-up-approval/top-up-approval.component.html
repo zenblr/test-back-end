@@ -1,5 +1,6 @@
 <kt-portlet>
     <kt-portlet-body>
+        <button (click)="ornamentsDetails()"></button>
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
                 <ng-container matColumnDef="customerId">
@@ -103,7 +104,7 @@
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
 

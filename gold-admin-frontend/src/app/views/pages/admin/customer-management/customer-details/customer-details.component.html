@@ -5,7 +5,7 @@
                 <div class="col">
                     <div class="row">
                         <div class="col-1">
-                            <img class="kt-margin-t-10 profile" [src]="cutomerDetails.customerKycPersonal.profileImage">
+                            <img class="kt-margin-t-10 profile" [src]="cutomerDetails.customerKycPersonal.profileImg">
                             <!-- <img [src]="customer.image" *ngIf="customer.image != '' || customer.image != null"> -->
                         </div>
                         <div class="col kt-padding-l-25">
@@ -127,22 +127,23 @@
                         <div class="row kt-margin-b-15">
                             <div class="col-6">
                                 <div class="text-gray font-weight-500">Loan Amount</div>
-                                <div class="text-color font-weight-500">{{loan.finalLoan?.finalLoanAmount}}</div>
+                                <div class="text-color font-weight-500">
+                                    <span class="currency">{{loan.loanAmount | indianCurrencyFormat}}</span></div>
                             </div>
                             <div class="col-6">
                                 <div class="text-gray font-weight-500">Loan Tennure</div>
-                                <div class="text-color font-weight-500">{{loan.finalLoan?.tenure}} Months</div>
+                                <div class="text-color font-weight-500">{{masterLoan?.tenure}} Months</div>
                             </div>
                         </div>
                         <div class="row kt-margin-b-20">
                             <div class="col-6">
                                 <div class="text-gray font-weight-500">Start Date</div>
-                                <div class="text-color font-weight-500">{{loan.finalLoan?.loanStartDate | date: 'mediumDate'}}
+                                <div class="text-color font-weight-500">{{masterLoan?.loanStartDate | date: 'mediumDate'}}
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="text-gray font-weight-500">End Date</div>
-                                <div class="text-color font-weight-500">{{loan.finalLoan?.loanEndDate | date: 'mediumDate'}}
+                                <div class="text-color font-weight-500">{{masterLoan?.loanEndDate | date: 'mediumDate'}}
                                 </div>
                             </div>
                         </div>

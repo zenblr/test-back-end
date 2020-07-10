@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output, OnChanges, Input, ChangeDetectionStrategy, ChangeDetectorRef, SimpleChanges, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { catchError, map, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
@@ -10,6 +10,7 @@ import { ImagePreviewDialogComponent } from '../../../../../../partials/componen
 import { MatDialog } from '@angular/material';
 import { AppliedKycService } from '../../../../../../../core/applied-kyc/services/applied-kyc.service';
 import { UserReviewComponent } from '../../../../kyc-settings/tabs/user-review/user-review.component';
+import { LoanTransferService } from '../../../../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
 
 @Component({
   selector: 'kt-basic-details',
@@ -35,6 +36,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
 
   currentDate: any = new Date();
+  url: string;
 
   constructor(
     private fb: FormBuilder,
@@ -46,18 +48,23 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     public purposeService: PurposeService,
     private dilaog: MatDialog,
     private appliedKycService: AppliedKycService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router,
+    private loanTransferFormService: LoanTransferService
   ) {
     this.initForm()
     this.getPurposeInfo()
+    this.url = (this.router.url.split("/")[3]).split("?")[0]
   }
 
   ngAfterViewInit() {
     this.rout.queryParams.subscribe(res => {
       console.log(res)
-      if (res.customerID) {
-        this.controls.customerUniqueId.patchValue(res.customerID)
+      this.controls.customerUniqueId.patchValue(res.customerID)
+      if (res.customerID && this.url == 'loan-application-form') {
         this.getCustomerDetails()
+      } else {
+        this.getCustomerDetailsForTransfer()
       }
     })
 
@@ -73,7 +80,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.details) {
+    if (changes.details && changes.details.currentValue) {
       if (changes.action.currentValue == 'add') {
         this.basicForm.controls.mobileNumber.patchValue(changes.details.currentValue.mobileNumber)
         this.basicForm.controls.panCardNumber.patchValue(changes.details.currentValue.panCardNumber)
@@ -112,6 +119,43 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       }
     )
   }
+
+
+  getCustomerDetailsForTransfer() {
+    if (this.controls.customerUniqueId.valid) {
+      this.loanTransferFormService.getCustomerDetailsForTransfer(this.controls.customerUniqueId.value).pipe(
+        map(res => {
+          this.basicForm.controls.purpose.clearValidators()
+          this.basicForm.controls.purpose.updateValueAndValidity()
+          this.action = "add"
+          if (res.loanCurrentStage) {
+            let stage = res.loanCurrentStage
+
+            stage = Number(stage) - 1;
+            this.next.emit(stage)
+            this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+            if (stage >= 1) {
+              this.apiHit.emit(res.loanId)
+            } else {
+              this.customerDetail = res.customerData
+              this.basicForm.patchValue(this.customerDetail)
+              this.basicForm.controls.customerId.patchValue(this.customerDetail.id)
+            }
+          }
+          // if (res.totalEligibleAmt)
+          //   this.totalEligibleAmt.emit(res.totalEligibleAmt)
+          // if (res.finalLoanAmount)
+          //   this.finalLoanAmount.emit(res.finalLoanAmount)
+
+        }),
+        catchError(err => {
+          this.toast.error(err.error.message)
+          throw err;
+        })
+      ).subscribe()
+    }
+  }
+
 
 
   getCustomerDetails() {
@@ -173,22 +217,33 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       return
     }
     this.basicForm.enable()
-    this.loanApplicationFormService.basicSubmit(this.basicForm.value).pipe(
-      map(res => {
-        let stage = res.loanCurrentStage
-        stage = Number(stage) - 1;
-        this.next.emit(stage)
-        this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
-      }), catchError(err => {
-        this.toast.error(err.error.message)
-        throw err
-      }), finalize(() => {
-        if (this.action == 'edit') {
-          this.basicForm.disable()
-          this.basicForm.controls.purpose.enable()
-        }
-      })).subscribe()
+    if (this.url == "loan-application-form") {
+      this.loanApplicationFormService.basicSubmit(this.basicForm.value).pipe(
+        map(res => {
+          let stage = res.loanCurrentStage
+          stage = Number(stage) - 1;
+          this.next.emit(stage)
+          this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+        }), catchError(err => {
+          this.toast.error(err.error.message)
+          throw err
+        }), finalize(() => {
+          if (this.action == 'edit') {
+            this.basicForm.disable()
+            this.basicForm.controls.purpose.enable()
+          }
+        })).subscribe()
+    } else {
+      this.loanTransferFormService.basicSubmit(this.basicForm.value).pipe(
+        map(res => {
+          this.next.emit(1)
+        }), catchError(err => {
+          this.toast.error(err.error.message)
+          throw err
+        })).subscribe()
+    }
   }
+
 
   preview(images) {
     this.dilaog.open(ImagePreviewDialogComponent, {

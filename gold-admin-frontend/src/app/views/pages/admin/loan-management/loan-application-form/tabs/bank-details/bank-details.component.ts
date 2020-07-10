@@ -4,6 +4,7 @@ import { SharedService } from '../../../../../../../core/shared/services/shared.
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-bank-details',
@@ -23,14 +24,17 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   bankForm: FormGroup;
   passbookImg: any = [];
   passbookImgId: any = []
+  url:any;
   constructor(
     public toastr: ToastrService,
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
     public sharedService: SharedService,
     public loanFormService: LoanApplicationFormService,
+    private router:Router
   ) {
     this.initForm()
+    this.url = this.router.url.split("/")[3]
   }
 
   ngOnInit() {
@@ -55,7 +59,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       // this.bankFormEmit.emit(this.bankForm);
     }
     if (changes.finalLoanAmt) {
-      if (changes.finalLoanAmt.currentValue > '200000') {
+      if (Number(changes.finalLoanAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
       }
@@ -69,7 +73,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     this.bankForm = this.fb.group({
       paymentType: ['', Validators.required],
       bankName: [, [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
-      accountNumber: [, [Validators.required, Validators.minLength(9)]],
+      accountNumber: [, [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[1-9]).{3,21}$')]],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       accountType: [],
       accountHolderName: [, [Validators.required]],
@@ -168,10 +172,15 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       this.bankForm.controls.passbookProof.patchValue([])
       this.bankForm.controls.passbookProofImage.patchValue([])
     }
+    this.controls.paymentType.enable()
     data = this.bankForm.value
 
     this.loanFormService.submitBank(data, this.masterAndLoanIds).pipe(
       map(res => {
+        if(Number(this.finalLoanAmt) > 200000){
+          this.controls.paymentType.disable()
+
+        }
         this.next.emit(5)
       })).subscribe()
   }

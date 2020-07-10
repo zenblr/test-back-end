@@ -7,6 +7,7 @@ import { LayoutUtilsService } from '../../../../../core/_base/crud';
 import { map, tap } from 'rxjs/operators';
 import { takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
 import { TopUpApprovalDatasource, TopUpApprovalService } from '../../../../../core/funds-approvals'
+import { OrnamentsComponent } from '../../loan-management/loan-application-form/tabs/ornaments/ornaments.component';
 
 @Component({
   selector: 'kt-top-up-approval',
@@ -17,9 +18,9 @@ export class TopUpApprovalComponent implements OnInit {
 
   dataSource;
   displayedColumns = ['customerId', 'loanId', 'requestDate', 'fullName', 'mobileNumber', 'loanAmount',
-    'loanDate', 'depositAmount', 'outstandingLoan', 'schemeName','grossWeight','netWeight','previousLtv',
-    'currentLtv','ornamentsDetails','eligibleTopUp','requestedTopUp','interestAmount','penalInterest','newLoan',
-    'netAmount','status','action'];
+    'loanDate', 'depositAmount', 'outstandingLoan', 'schemeName', 'grossWeight', 'netWeight', 'previousLtv',
+    'currentLtv', 'ornamentsDetails', 'eligibleTopUp', 'requestedTopUp', 'interestAmount', 'penalInterest', 'newLoan',
+    'netAmount', 'status', 'action'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -77,6 +78,15 @@ export class TopUpApprovalComponent implements OnInit {
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
     this.dataSource.getDepositList(from, to, this.searchValue);
+  }
+
+  ornamentsDetails() {
+    this.dialog.open(OrnamentsComponent, { 
+      data: {
+        modal:true
+      } , 
+      width: '90%' 
+    })
   }
 
 }

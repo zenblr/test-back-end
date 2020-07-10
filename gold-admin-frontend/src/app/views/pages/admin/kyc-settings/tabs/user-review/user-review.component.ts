@@ -696,7 +696,7 @@ export class UserReviewComponent implements OnInit {
       this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray1 });
     }
     else if (type == 'signature') {
-      this.data.customerKycReview.customerKycPersonal.signatureProofImage = ''
+      this.data.customerKycReview.customerKycPersonal.signatureProofImg = ''
       this.data.customerKycReview.customerKycPersonal.signatureProof = null
       this.customerKycPersonal.patchValue({
         signatureProof: this.data.customerKycReview.customerKycPersonal.signatureProof,
