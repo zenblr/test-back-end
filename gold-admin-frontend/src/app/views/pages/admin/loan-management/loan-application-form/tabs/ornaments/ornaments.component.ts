@@ -85,7 +85,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
         this.karatArr = res;
-        console.log(res)
       })
     ).subscribe()
   }
@@ -328,7 +327,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string, ) {
+  uploadFile(index, event, string,) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
@@ -380,34 +379,24 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         // this.images[index].stoneTouch = controls.controls.stoneTouchData.value
         break;
       case 'purityTestImage':
-        // if (controls.controls.purityTest.value.length <= 4) {
-        let temp: any[]; let tempId: any[];
+        if (url) {
 
-        // if (controls.controls.purityTest.value.length > 0) {
-        //   tempId = controls.controls.purityTestImage.value
-        //   temp = controls.controls.purityTestImage.value
-        // }
-        // if (!temp.includes(url)) 
+          if (typeof url == "object") {
 
-        if (typeof url == "object") {
-          //   controls.controls.purityTest.patchValue(id)
-          // controls.controls.purityTestImage.patchValue(url)
-          // temp = [] ; tempId = [];
-          this.purityTestImg = url
-          this.purityTestPath = id
-          // url.forEach(element => {
-          //   temp.push(element.purityTest.url)
-          // });
-        } else {
-          this.purityTestImg = controls.controls.purityTestImage.value
-          this.purityTestPath = controls.controls.purityTest.value
-          this.purityTestImg.push(url)
-          this.purityTestPath.push(id)
+            this.purityTestImg = url
+            this.purityTestPath = id
+
+          } else {
+            this.purityTestImg = controls.controls.purityTestImage.value
+            this.purityTestPath = controls.controls.purityTest.value
+            this.purityTestImg.push(url)
+            this.purityTestPath.push(id)
+          }
+          this.images[index].purity = this.purityTestImg
+          controls.controls.purityTest.patchValue(this.purityTestPath)
+          controls.controls.purityTestImage.patchValue(this.purityTestImg)
+          this.purity.nativeElement.value = ''
         }
-        this.images[index].purity = this.purityTestImg
-        controls.controls.purityTest.patchValue(this.purityTestPath)
-        controls.controls.purityTestImage.patchValue(this.purityTestImg)
-        this.purity.nativeElement.value = ''
         // } else {
         //   this.toast.error('Maximum of 4 Images can be uploaded in Purity Test')
         // }
@@ -420,7 +409,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         // this.images[index].ornamentImage = controls.controls.ornamentImageData.value
         break;
     }
-    console.log(controls.value)
 
   }
 
@@ -532,7 +520,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.next.emit(3)
       })
     ).subscribe()
-    console.log(this.ornamentsForm.value, this.totalAmount)
 
   }
 
@@ -556,7 +543,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           }
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-          console.log(res)
           this.patchUrlIntoForm(string, res.uploadFile.path, res.uploadFile.URL, index)
         })
 

@@ -166,11 +166,30 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
 
 
-  removePacketsData(idx) {
+  removeSelectedPacketsData(idx) {
     console.log(this.packets.controls[idx])
+    let packetIndex = this.splicedPackets.findIndex(packet => {
+      return packet.id == this.packets.controls[idx].value.packetId
+    })
+    this.packetsDetails.push(this.splicedPackets[packetIndex])
+    this.splicedPackets.splice(packetIndex, 1)
     this.packets.controls.splice(idx, 1)
-    console.log(this.splicedOrnaments)
-    console.log(this.splicedPackets)
+    let temp = this.ornamentTypeData;
+    this.ornamentTypeData = []
+    for (let ornamnetsIndex = 0; ornamnetsIndex < this.splicedOrnaments.length; ornamnetsIndex++) {
+      for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < this.ornamentId.length; ornamnetsIdIndex++) {
+        if (this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex]) {
+          temp.push(this.splicedOrnaments[ornamnetsIndex])
+          this.splicedOrnaments.splice(ornamnetsIndex, 1)
+          ornamnetsIdIndex = 0;
+        }
+      }
+    }
+
+    setTimeout(() => {
+      this.ornamentTypeData = temp;
+    }, 500)
+
   }
 
   clear() {
@@ -214,15 +233,20 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     });
 
     var temp = this.ornamentTypeData
+    this.ornamentTypeData = [];
     console.log(selectedOrnaments);
     selectedOrnaments.forEach(selectedornament => {
-      var index = this.ornamentTypeData.findIndex(ornament => {
+      var index = temp.findIndex(ornament => {
         return selectedornament.id == ornament.id
       })
-      this.splicedOrnaments.push(this.ornamentTypeData[index])
+      this.splicedOrnaments.push(temp[index])
       temp.splice(index, 1)
     })
-    this.ornamentTypeData = temp;
+    setTimeout(() => {
+
+      this.ornamentTypeData = temp;
+    }, 500)
+    console.log(this.ornamentTypeData)
     this.clearData = true;
 
 
@@ -244,6 +268,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.packetService.uploadPackets(this.packetImg.value, this.masterAndLoanIds).pipe(
           map(res => {
             this.toast.success(res.message)
+            this.url = 'view-loan'
             this.next.emit(7)
             // this.router.navigate(['/admin/loan-management/applied-loan'])
           }),
@@ -278,7 +303,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     });
   }
 
-  webcam(value,imageDataKey) {
+  webcam(value, imageDataKey) {
     const dialogRef = this.dilaog.open(WebcamDialogComponent,
       {
         data: {},
