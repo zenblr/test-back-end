@@ -68,7 +68,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-  let message = await `Dear ${referenceCode}, Your OTP for completing the order request is ${otp}.`
+  let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
   await sms.sendSms(mobileNumber, message);
   // request(
   //   `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
@@ -101,7 +101,7 @@ exports.sendOtp = async (req, res, next) => {
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-  let message = await `Dear ${referenceCode}, Your OTP for completing the order request is ${otp}.`
+  let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
   await sms.sendSms(mobileNumber, message);
   // request(
   //   `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
