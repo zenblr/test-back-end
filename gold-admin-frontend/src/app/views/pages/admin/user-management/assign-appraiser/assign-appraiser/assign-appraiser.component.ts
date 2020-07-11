@@ -25,7 +25,7 @@ export class AssignAppraiserComponent implements OnInit {
 
   viewLoading: boolean = false;
   title: string;
-  currentDate = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000);
+  currentDate = new Date();
   darkTheme: NgxMaterialTimepickerTheme = {
     container: {
       bodyBackgroundColor: '#fff',
@@ -69,7 +69,6 @@ export class AssignAppraiserComponent implements OnInit {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
         this.appraiserForm.controls.customerUniqueId.patchValue(this.data.customer.customerUniqueId)
         this.appraiserForm.controls.customerId.patchValue(this.data.id)
-        this.minStartTime()
       }
     } else if (this.data.action == 'edit') {
       this.title = 'Edit Appraiser'
@@ -97,7 +96,7 @@ export class AssignAppraiserComponent implements OnInit {
       customerName: [''],
       appraiserId: ['', [Validators.required]],
       appoinmentDate: [],
-      startTime: [],
+      startTime: [this.addStartTime],
       endTime: []
     });
   }
@@ -144,6 +143,9 @@ export class AssignAppraiserComponent implements OnInit {
       return
     }
     // console.log(this.appraiserForm.value);
+    const appoinmentDate = this.controls.appoinmentDate.value
+    const correctedDate = new Date(appoinmentDate.getTime() - appoinmentDate.getTimezoneOffset() * 60000)
+    this.appraiserForm.patchValue({ appoinmentDate: correctedDate })
     const appraiserData = this.appraiserForm.value;
     this.customers.filter(cust => {
       if (appraiserData.customerId == cust.id) {
@@ -183,10 +185,8 @@ export class AssignAppraiserComponent implements OnInit {
 
   }
 
-  setStartTime() {
-    typeof (this.controls.startTime.value)
-    this.startTime = this.controls.startTime.value
-    console.log(this.startTime)
+  setStartTime(event) {
+    this.startTime = event
     this.ref.detectChanges
   }
 
@@ -200,12 +200,25 @@ export class AssignAppraiserComponent implements OnInit {
   };
 
   minStartTime() {
-    this.addStartTime = this.currentDate.toLocaleTimeString("bestfit", {
+    let currentDate = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000);
+    this.addStartTime = currentDate.toLocaleTimeString("bestfit", {
       timeZone: "UTC",
       hour12: !0,
       hour: "numeric",
       minute: "numeric"
     });
+  }
+
+  setMinimumStartTime(event) {
+    const selectedDate = event.value;
+    const currentDate = new Date();
+    let timeDifference = selectedDate.getTime() - currentDate.getTime();
+    var daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    if (daysDifference > 0) {
+      this.addStartTime = null
+    } else {
+      this.minStartTime()
+    }
   }
 
 
