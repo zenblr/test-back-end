@@ -23,55 +23,39 @@ exports.uploadScheme = async (req, res, next) => {
         if (check.isEmpty(jsonArray[i].schemeType)) {
             return res.status(400).json({ message: `Scheme type is required` })
         }
-        // if ( jsonArray[i].default !== "true" || jsonArray[i].default !== "false" ) {
-        //     return res.status(400).json({ message: `default is required` })
-        // }
-        if ( !check.isNumeric(parseFloat(jsonArray[i].processingChargePer)) && parseFloat(jsonArray[i].processingChargePer) < 100 ) {
+
+        if (!check.isNumeric(parseFloat(jsonArray[i].processingChargePer)) && parseFloat(jsonArray[i].processingChargePer) < 100) {
             return res.status(400).json({ message: `Processing Charge in percentage is not valid` })
         }
-        if (!check.isNumeric(parseFloat(jsonArray[i].processingChargeAmt ))) {
+        if (!check.isNumeric(parseFloat(jsonArray[i].processingChargeAmt))) {
             return res.status(400).json({ message: `Processing Charge in amount is not valid` })
         }
-        if ( !check.isNumeric(parseFloat(jsonArray[i].maximumPerAllow)) && parseFloat(jsonArray[i].maximumPerAllow) < 100) {
+        if (!check.isNumeric(parseFloat(jsonArray[i].maximumPerAllow)) && parseFloat(jsonArray[i].maximumPerAllow) < 100) {
             return res.status(400).json({ message: `maximum percentage amount is not valid` })
         }
-        if ( !check.isNumeric(parseFloat(jsonArray[i].penalInterest)) && parseFloat(jsonArray[i].penalInterest) < 100) {
+        if (!check.isNumeric(parseFloat(jsonArray[i].penalInterest)) && parseFloat(jsonArray[i].penalInterest) < 100) {
             return res.status(400).json({ message: `penal interest  is not valid` })
         }
-        if ( !check.isNumeric(parseFloat(jsonArray[i].InterestRateThirtyDaysMonthly)) && parseFloat(jsonArray[i].InterestRateThirtyDaysMonthly) < 100) {
+        if (!check.isNumeric(parseFloat(jsonArray[i].InterestRateThirtyDaysMonthly)) && parseFloat(jsonArray[i].InterestRateThirtyDaysMonthly) < 100) {
             return res.status(400).json({ message: `interest rate thirty days monthly is not valid` })
         }
-        if ( !check.isNumeric(parseFloat(jsonArray[i].InterestRateNinetyDaysMonthly)) && parseFloat(jsonArray[i].InterestRateNinetyDaysMonthly) < 100) {
+        if (!check.isNumeric(parseFloat(jsonArray[i].InterestRateNinetyDaysMonthly)) && parseFloat(jsonArray[i].InterestRateNinetyDaysMonthly) < 100) {
             return res.status(400).json({ message: `interest rate ninety days monthly is not valid` })
         }
-        if ( !check.isNumeric(parseFloat(jsonArray[i].InterestRateOneHundredEightyDaysMonthly)) && parseFloat(jsonArray[i].InterestRateOneHundredEightyDaysMonthly) < 100) {
+        if (!check.isNumeric(parseFloat(jsonArray[i].InterestRateOneHundredEightyDaysMonthly)) && parseFloat(jsonArray[i].InterestRateOneHundredEightyDaysMonthly) < 100) {
             return res.status(400).json({ message: `interest rate onehundredeighty days monthly is not valid` })
         }
-        
-    }
 
-    // let readSchemeByPartner = await models.partner.findOne({
-    //     where: { isActive: true, id: partnerId[0] },
-    //     include: [{
-    //     model: models.scheme,
-    //     where: { isActive: true }
-    //     }],
-    //     });
-    //     let schemeArray = [];
-    //     for(let scheme of readSchemeByPartner.schemes){
-    //     schemeArray.push(scheme.id);
-    //     }
-    //     await models.scheme.update(
-    //     { default: false }, { where: { id:{[Op.in]: schemeArray } } });
+    }
 
     let scheme = await jsonArray.map(value => { return value.schemeName.toLowerCase() })
     var repeatSchemeName = _.filter(scheme, (val, i, iteratee) => _.includes(iteratee, val, i + 1));
     if (repeatSchemeName.length > 0) {
         return res.status(400).json({ message: `In your csv file there scheme name is dublicate` })
     }
-    let defaultset = await jsonArray.map(value => { return value.default === "TRUE" ? true: false});
+    let defaultset = await jsonArray.map(value => { return value.default === "TRUE" ? true : false });
     let schemeDefault = await defaultset.filter(x => { return x === true; });
-    if (schemeDefault.length > 0) {
+    if (schemeDefault.length > 1) {
         return res.status(400).json({ message: `more then one default value is true` })
     }
 
@@ -92,26 +76,58 @@ exports.uploadScheme = async (req, res, next) => {
 
     await sequelize.transaction(async t => {
 
+        if (schemeDefault.length == 1) {
+            let readSchemeByPartner = await models.partner.findOne({
+                where: { isActive: true, id: partnerId[0] },
+                include: [{
+                    model: models.scheme,
+                    where: { isActive: true }
+                }],
+            });
+            if (readSchemeByPartner) {
+                let schemeArray = [];
+                for (let scheme of readSchemeByPartner.schemes) {
+                    schemeArray.push(scheme.id);
+                }
+                await models.scheme.update({ default: false }, { where: { id: { [Op.in]: schemeArray } }, transaction: t });
+            }
+        }
+
         for (var i = 0; i < jsonArray.length; i++) {
 
             let addSchemeData = await models.scheme.create({
                 schemeName: jsonArray[i].schemeName.toLowerCase(), schemeType: jsonArray[i].schemeType, default: jsonArray[i].default,
-                processingChargePercent: parseFloat(jsonArray[i].processingChargePer),processingChargeFixed: parseFloat(jsonArray[i].processingChargeAmt ), 
-                maximumPercentageAllowed: parseFloat(jsonArray[i].maximumPerAllow) ,penalInterest: parseFloat(jsonArray[i].penalInterest),
+                processingChargePercent: parseFloat(jsonArray[i].processingChargePer), processingChargeFixed: parseFloat(jsonArray[i].processingChargeAmt),
+                maximumPercentageAllowed: parseFloat(jsonArray[i].maximumPerAllow), penalInterest: parseFloat(jsonArray[i].penalInterest),
 
                 schemeAmountStart: jsonArray[i].AmountStart, schemeAmountEnd: jsonArray[i].AmountEnd,
                 interestRateThirtyDaysMonthly: jsonArray[i].InterestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly: jsonArray[i].InterestRateNinetyDaysMonthly,
                 interestRateOneHundredEightyDaysMonthly: jsonArray[i].InterestRateOneHundredEightyDaysMonthly
             }, { transaction: t });
 
-                let  schemedata = await models.partnerScheme.create({
-                    schemeId: addSchemeData.id,
-                    partnerId: partnerId
+            let schemedata = await models.partnerScheme.create({
+                schemeId: addSchemeData.id,
+                partnerId: partnerId
 
-                }, { transaction: t })
-            }
+            }, { transaction: t })
+        }
 
     })
-    return res.status(201).json({ message: " Schemes Created" })
+
+    // let readSchemeByPartner = await models.partner.findOne({
+    //     where: { isActive: true, id: partnerId[0] },
+    //     include: [{
+    //     model: models.scheme,
+    //     where: { isActive: true }
+    //     }],
+    //     });
+    //     let schemeArray = [];
+    //     for(let scheme of readSchemeByPartner.schemes){
+    //     schemeArray.push(scheme.id);
+    //     }
+    //     await models.scheme.update(
+    //     { default: false }, { where: { id:{[Op.in]: schemeArray } } });
+
+    return res.status(200).json({ message: " Schemes Created" })
 
 }
