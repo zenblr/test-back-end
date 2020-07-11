@@ -30,6 +30,7 @@ export class LoanApplicationFormComponent implements OnInit {
   masterAndLoanIds: any;
   ornamentType = [];
   finalLoanAmt: any;
+  fullAmount: any = 0;
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
@@ -123,6 +124,10 @@ export class LoanApplicationFormComponent implements OnInit {
 
   totalEligibleAmt(event) {
     this.totalAmount = event
+  }
+
+  fullAmt(event){
+    this.fullAmount = event
   }
 
   finalLoanAmount(event) {

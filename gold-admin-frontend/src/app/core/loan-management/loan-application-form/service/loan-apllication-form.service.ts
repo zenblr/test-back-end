@@ -29,12 +29,13 @@ export class LoanApplicationFormService {
     )
   }
 
-  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds,): Observable<any> {
+  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds,fullAmount): Observable<any> {
     let data = {
       loanOrnaments: loanOrnaments,
       totalEligibleAmt: totalEligibleAmt,
       loanId: masterAndLoanIds.loanId,
-      masterLoanId: masterAndLoanIds.masterLoanId
+      masterLoanId: masterAndLoanIds.masterLoanId,
+      fullAmount:fullAmount
     }
     return this.http.post(`/api/loan-process/ornaments-details`, data).pipe(
       map(res => res)
