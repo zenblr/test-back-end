@@ -121,7 +121,7 @@ exports.loanNomineeDetails = async (req, res, next) => {
 //FUNCTION for submitting ornament details  DONE
 exports.loanOrnmanetDetails = async (req, res, next) => {
 
-    let { loanOrnaments, totalEligibleAmt, loanId, masterLoanId } = req.body
+    let { loanOrnaments, totalEligibleAmt, fullAmount, loanId, masterLoanId } = req.body
     let allOrnmanets = []
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -136,7 +136,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
     let checkOrnaments = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLoanId: masterLoanId } })
     if (checkOrnaments.length == 0) {
         let loanData = await sequelize.transaction(async t => {
-            await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt }, { where: { id: masterLoanId }, transaction: t })
+            await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, fullAmount, totalEligibleAmt }, { where: { id: masterLoanId }, transaction: t })
 
             let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
 
@@ -149,7 +149,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
         let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
         let loanData = await sequelize.transaction(async t => {
             if (loanSubmitted.isLoanSubmitted == false) {
-                await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt, fullAmount }, { where: { id: masterLoanId }, transaction: t })
             }
 
             await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
@@ -317,7 +317,7 @@ exports.loanBankDetails = async (req, res, next) => {
 
         let loanData = await sequelize.transaction(async t => {
             // if (loanSubmitted.isLoanSubmitted == false) {
-                var a = await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
+            var a = await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
             // }
             console.log(a)
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
@@ -566,7 +566,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 include: [{
                     model: models.customerLoanInterest,
                     as: 'customerLoanInterest',
-                },{
+                }, {
                     model: models.scheme,
                     as: 'scheme',
                 }]

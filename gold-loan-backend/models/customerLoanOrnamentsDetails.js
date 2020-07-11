@@ -85,6 +85,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'loan_amount'
         },
+        ornamentFullAmount:{
+            type: DataTypes.STRING,
+            field: 'ornament_full_amount'
+        },
         finalNetWeight: {
             type: DataTypes.STRING,
             field: 'final_net_weight'

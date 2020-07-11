@@ -25,6 +25,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   selected: number = 0
   goldRate: any;
+  ltvGoldRate:any;
   @Input() invalid;
   @Input() disable;
   @Input() details;
@@ -32,6 +33,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   // @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
+  @Output() fullAmt: EventEmitter<any> = new EventEmitter();
   @Input() masterAndLoanIds
   @Input() ornamentType
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
@@ -53,6 +55,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   globalValue: any;
   purityTestPath: any = [];
   purityTestImg: any = [];
+  fullAmount: number;
 
   constructor(
     public fb: FormBuilder,
@@ -110,10 +113,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             this.addmore()
           }
         }
+
         for (let index = 0; index < array.length; index++) {
           const group = this.OrnamentsData.at(index) as FormGroup
           group.patchValue(array[index])
-          this.calcGoldDeductionWeight(index)
+          // this.calcGoldDeductionWeight(index)
           Object.keys(group.value).forEach(key => {
 
             if (key == 'purityTestImage') {
@@ -123,7 +127,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             } else {
               if (group.value[key])
                 this.patchUrlIntoForm(key, group.value[key].path, group.value[key].URL, index)
-
             }
 
           })
@@ -147,9 +150,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.globalValue = global;
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
-          this.goldRate = res * (this.globalValue.ltvGoldValue / 100)
+          this.goldRate =res;
+          this.ltvGoldRate = res * (this.globalValue.ltvGoldValue / 100)
           const group = this.OrnamentsData.at(0) as FormGroup
-          group.controls.currentLtvAmount.patchValue(this.goldRate)
+          group.controls.currentLtvAmount.patchValue(this.ltvGoldRate)
+          group.controls.currentGoldRate.patchValue(res)
         })
       }
     })
@@ -157,11 +162,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ornamentsForm.valueChanges.subscribe(() => {
       if (this.ornamentsForm.valid) {
         this.totalAmount = 0;
+        this.fullAmount =0;
         this.OrnamentsData.value.forEach(element => {
           this.totalAmount += Number(element.loanAmount)
+          this.fullAmount +=Number((element.ornamentFullAmount))
         });
+        console.log(this.fullAmount)
         this.totalAmount = Math.round(this.totalAmount)
+        this.fullAmount = Math.round(this.fullAmount)
         this.totalAmt.emit(this.totalAmount)
+        this.fullAmt.emit(this.fullAmount)
       }
     })
 
@@ -253,13 +263,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       ltvAmount: [],
       loanAmount: [''],
       id: [],
-      currentLtvAmount: [this.goldRate],
+      currentLtvAmount: [this.ltvGoldRate],
       ornamentImageData: [, Validators.required],
       weightMachineZeroWeightData: [],
       withOrnamentWeightData: [],
       stoneTouchData: [],
       acidTestData: [],
       purityTestImage: [[]],
+      ornamentFullAmount:[],
+      currentGoldRate:[]
     }))
     this.createImageArray()
   }
@@ -494,6 +506,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
       controls.controls.ltvAmount.patchValue(ltv)
       controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
+      let fullAmount = controls.controls.currentGoldRate.value * (ltvPercent / 100)
+      controls.controls.ornamentFullAmount.patchValue((fullAmount * controls.controls.netWeight.value).toFixed(2))
+      console.log(controls.controls.ornamentFullAmount.value)
     }
   }
 
@@ -510,7 +525,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds).pipe(
+    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds,this.fullAmount).pipe(
       map(res => {
         let array = this.OrnamentsData.controls
         for (let index = 0; index < array.length; index++) {

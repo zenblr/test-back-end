@@ -43,18 +43,18 @@ exports.addScheme = async (req, res, next) => {
             for (let scheme of readSchemeByPartner.schemes) {
                 schemeArray.push(scheme.id);
             }
-            await models.scheme.update(
-                { default: false }, { where: { id: { [Op.in]: schemeArray } } });
+            if (isDefault == true) {
+                await models.scheme.update({ default: false }, { where: { id: { [Op.in]: schemeArray } } });
+            }
+
 
         }
 
         // for (let i = 0; i < partnerId.length; i++) {
         // console.log(partnerId[i]);
-
         let data = await models.partnerScheme.create({
             schemeId: addSchemeData.id,
-            partnerId: partnerId
-
+            partnerId: partnerId[0]
         }, { transaction: t })
     })
     return res.status(201).json({ message: "scheme created" })
@@ -80,7 +80,7 @@ exports.readScheme = async (req, res, next) => {
                 },
             ],
         })
-    }else{
+    } else {
         readSchemeData = await models.partner.findAll({
             where: { isActive: true },
             include: [
@@ -152,7 +152,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
     if (!partnerSecuredScheme) {
         return res.status(200).json({ data: {} });
     }
-    return res.status(200).json({data: partnerSecuredScheme });
+    return res.status(200).json({ data: partnerSecuredScheme });
 
 }
 
@@ -175,7 +175,7 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
     if (!partnerSecuredScheme) {
         return res.status(200).json({ data: {} });
     }
-    return res.status(200).json({data: partnerSecuredScheme });
+    return res.status(200).json({ data: partnerSecuredScheme });
 
 }
 
