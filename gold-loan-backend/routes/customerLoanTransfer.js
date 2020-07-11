@@ -5,20 +5,21 @@ const { loanTransferBasicDeatils,customerDetails,loanTransferDocuments,loanTrans
 const validationError = require('../middleware/validationError');
 const { loanTransferStep1,loanTransferStep2,loanTransferStep3,loanTransferStep4 } = require('../validations/customerLoanTransfer');
 const checkAuth = require('../middleware/checkAuth'); 
+const checkRolePermission = require('../middleware/checkRolesPermissions');
 
-route.get('/single-loan', checkAuth, wrapper(getSingleLoanDetails)); 
+route.get('/single-loan', checkAuth,checkRolePermission, wrapper(getSingleLoanDetails)); 
 
-route.get('/:customerUniqueId', checkAuth, wrapper(customerDetails));
+route.get('/:customerUniqueId', checkAuth,checkRolePermission, wrapper(customerDetails));
 
-route.get('/', checkAuth, wrapper(getLoanTransferList)); 
+route.get('/', checkAuth,checkRolePermission, wrapper(getLoanTransferList)); 
 
-route.post('/basic-details', checkAuth,loanTransferStep1,validationError, wrapper(loanTransferBasicDeatils)); 
+route.post('/basic-details', checkAuth,checkRolePermission,loanTransferStep1,validationError, wrapper(loanTransferBasicDeatils)); 
 
-route.post('/documents',checkAuth,loanTransferStep2,validationError,wrapper(loanTransferDocuments)); 
+route.post('/documents',checkAuth,checkRolePermission,loanTransferStep2,validationError,wrapper(loanTransferDocuments)); 
 
-route.post('/bm-rating',checkAuth,loanTransferStep3,validationError,wrapper(loanTransferBmRating)); 
+route.post('/bm-rating',checkAuth,checkRolePermission,loanTransferStep3,validationError,wrapper(loanTransferBmRating)); 
 
-route.post('/disbursal',checkAuth, loanTransferStep4,validationError,wrapper(loanTransferDisbursal));
+route.post('/disbursal',checkAuth,checkRolePermission, loanTransferStep4,validationError,wrapper(loanTransferDisbursal));
 
 
 module.exports = route; 
