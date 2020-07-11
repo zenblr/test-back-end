@@ -194,6 +194,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
+        CustomerLoanMaster.hasMany(models.customerLoanHistory, { foreignKey: 'masterLoanId', as: 'customerLoanHistory' });
+
     }
 
     return CustomerLoanMaster;
