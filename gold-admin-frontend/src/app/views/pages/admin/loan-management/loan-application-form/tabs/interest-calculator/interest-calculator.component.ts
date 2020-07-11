@@ -38,6 +38,7 @@ export class InterestCalculatorComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Input() action;
   @Input() masterAndLoanIds
+  @Input() fullAmount
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('calculation', { static: false }) calculation: ElementRef
@@ -74,6 +75,10 @@ export class InterestCalculatorComponent implements OnInit {
         this.partner()
       }
     }
+
+    if(changes.fullAmount){
+      console.log(changes.fullAmount)
+    }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         if (changes.details.currentValue && changes.details.currentValue) {
@@ -109,7 +114,7 @@ export class InterestCalculatorComponent implements OnInit {
           if (finalLoan.isUnsecuredSchemeApplied) {
             this.unSecuredSchemeCheck(finalLoan.masterLoan.unsecuredLoanAmount, (finalLoan.scheme.maximumPercentageAllowed / 100), 'edit')
             this.selectedUnsecuredscheme.push(finalLoan.unsecuredLoan.scheme)
-            this.finalInterestForm.patchValue({unsecuredSchemeId:finalLoan.unsecuredLoan.scheme.id})
+            this.finalInterestForm.patchValue({ unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id })
             for (let index = 0; index < temp.length; index++) {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
 
@@ -242,21 +247,21 @@ export class InterestCalculatorComponent implements OnInit {
         return
       }
 
-      let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
-      if (amt > this.totalAmt * rbiLoanPercent) {
-        this.controls.finalLoanAmount.setErrors({ rbi: true })
-        return
-      } else {
-        this.controls.finalLoanAmount.setErrors(null)
-      }
+      // let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
+      // if (amt > this.totalAmt * rbiLoanPercent) {
+      //   this.controls.finalLoanAmount.setErrors({ rbi: true })
+      //   return
+      // } else {
+      //   this.controls.finalLoanAmount.setErrors(null)
+      // }
 
 
 
       let maximumAmtAllowed = (scheme.maximumPercentageAllowed / 100)
-      console.log(this.totalAmt * maximumAmtAllowed)
-      if (amt > this.totalAmt * maximumAmtAllowed) {
+      console.log(this.fullAmount * maximumAmtAllowed)
+      if (amt > this.fullAmount * maximumAmtAllowed) {
 
-        let eligibleForLoan = this.totalAmt * maximumAmtAllowed
+        let eligibleForLoan = this.fullAmount * maximumAmtAllowed
         let unsecureAmt = amt - eligibleForLoan
         this.unSecuredSchemeCheck(unsecureAmt, maximumAmtAllowed)
 
@@ -296,7 +301,7 @@ export class InterestCalculatorComponent implements OnInit {
               if (scheme &&
                 Number(amt) <= Number(scheme.schemeAmountEnd) &&
                 Number(amt) >= Number(scheme.schemeAmountStart) &&
-                Number(enterAmount) <= (this.totalAmt * (securedPercentage + (scheme.maximumPercentageAllowed / 100)))
+                Number(enterAmount) <= (this.fullAmount * (securedPercentage + (scheme.maximumPercentageAllowed / 100)))
               ) {
 
                 this.controls.isUnsecuredSchemeApplied.patchValue(true);
@@ -372,8 +377,8 @@ export class InterestCalculatorComponent implements OnInit {
 
     if (this.controls.isUnsecuredSchemeApplied.value) {
 
-      let maximumAmtAllowed = (this.totalAmt * (this.selectedScheme[0].maximumPercentageAllowed / 100))
-
+      let maximumAmtAllowed = (this.fullAmount * (this.selectedScheme[0].maximumPercentageAllowed / 100))
+      console.log(maximumAmtAllowed)
       this.securedInterestAmount = (maximumAmtAllowed *
         (this.controls.interestRate.value * 12 / 100)) * this.controls.paymentFrequency.value
         / 360
@@ -428,7 +433,7 @@ export class InterestCalculatorComponent implements OnInit {
       }
     }
 
-    this.controls.processingCharge.patchValue(processingCharge)
+    this.controls.processingCharge.patchValue(processingCharge.toFixed(2))
   }
 
   generateTable(unSecuredInterestAmount?) {
