@@ -165,7 +165,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.fullAmount =0;
         this.OrnamentsData.value.forEach(element => {
           this.totalAmount += Number(element.loanAmount)
-          this.fullAmount +=Number((element.ornamentFullAmount))
+          this.fullAmount +=Number(element.ornamentFullAmount)
         });
         console.log(this.fullAmount)
         this.totalAmount = Math.round(this.totalAmount)
@@ -271,7 +271,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       acidTestData: [],
       purityTestImage: [[]],
       ornamentFullAmount:[],
-      currentGoldRate:[]
+      currentGoldRate:[this.goldRate]
     }))
     this.createImageArray()
   }
@@ -510,6 +510,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       controls.controls.ornamentFullAmount.patchValue((fullAmount * controls.controls.netWeight.value).toFixed(2))
       console.log(controls.controls.ornamentFullAmount.value)
     }
+    console.log(this.OrnamentsData.value)
   }
 
   nextAction() {
