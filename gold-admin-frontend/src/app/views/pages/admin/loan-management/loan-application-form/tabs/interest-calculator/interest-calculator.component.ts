@@ -76,7 +76,7 @@ export class InterestCalculatorComponent implements OnInit {
       }
     }
 
-    if(changes.fullAmount){
+    if (changes.fullAmount) {
       console.log(changes.fullAmount)
     }
     if (changes.details) {
@@ -259,11 +259,11 @@ export class InterestCalculatorComponent implements OnInit {
 
       let maximumAmtAllowed = (scheme.maximumPercentageAllowed / 100)
       console.log(this.fullAmount * maximumAmtAllowed)
-      if (amt > this.fullAmount * maximumAmtAllowed) {
+      let eligibleForLoan = Math.round(this.fullAmount * maximumAmtAllowed)
+      if (amt > eligibleForLoan) {
 
-        let eligibleForLoan = this.fullAmount * maximumAmtAllowed
         let unsecureAmt = amt - eligibleForLoan
-        this.unSecuredSchemeCheck(unsecureAmt, maximumAmtAllowed)
+        this.unSecuredSchemeCheck(Math.round(unsecureAmt), maximumAmtAllowed)
 
       } else {
 
@@ -301,7 +301,7 @@ export class InterestCalculatorComponent implements OnInit {
               if (scheme &&
                 Number(amt) <= Number(scheme.schemeAmountEnd) &&
                 Number(amt) >= Number(scheme.schemeAmountStart) &&
-                Number(enterAmount) <= (this.fullAmount * (securedPercentage + (scheme.maximumPercentageAllowed / 100)))
+                Number(enterAmount) <= Math.round((this.fullAmount * (securedPercentage + (scheme.maximumPercentageAllowed / 100))))
               ) {
 
                 this.controls.isUnsecuredSchemeApplied.patchValue(true);
