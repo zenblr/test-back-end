@@ -10,6 +10,8 @@ import { CoreModule } from '../../../../core/core.module';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { TopUpApprovalComponent } from './top-up-approval/top-up-approval.component';
+import { PartReleaseApprovalComponent } from './jewellery-release-approval/part-release-approval/part-release-approval.component';
+import { FullReleaseApprovalComponent } from './jewellery-release-approval/full-release-approval/full-release-approval.component';
 
 const routes = [
   {
@@ -19,11 +21,19 @@ const routes = [
   {
     path: 'top-up-approval',
     component: TopUpApprovalComponent
+  },
+  {
+    path: 'part-release-approval',
+    component: PartReleaseApprovalComponent
+  },
+  {
+    path: 'full-release-approval',
+    component: FullReleaseApprovalComponent
   }
 ]
 
 @NgModule({
-  declarations: [DepositListComponent, TopUpApprovalComponent],
+  declarations: [DepositListComponent, TopUpApprovalComponent, PartReleaseApprovalComponent, FullReleaseApprovalComponent],
   imports: [
     CommonModule,
     HttpClientModule,

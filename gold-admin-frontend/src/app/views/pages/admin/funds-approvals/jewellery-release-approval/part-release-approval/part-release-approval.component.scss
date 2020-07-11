@@ -1,0 +1,16 @@
+:host{
+    ::ng-deep.mat-row,
+    ::ng-deep.mat-header-row{
+        width: 250% !important;
+    }
+
+    .mat-column-netWeightReleaseOrnament{
+        display: flex;
+    flex-direction: column;
+    }
+
+    .mat-column-netWeightRemainingOrnament{
+        display: flex;
+    flex-direction: column;
+    }
+}
