@@ -11,7 +11,15 @@ const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB
 exports.customerDetails = async (req, res, next) => {
 
     let customerUniqueId = req.params.customerUniqueId;
-    
+    let reqId = req.userData.id;
+    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } })
+
+    if (check.isEmpty(getAppraiserId)) {
+        return res.status(400).json({ message: 'This customer Did not assign in to anyone' })
+    }
+    if (reqId != getAppraiserId.appraiserId) {
+        return res.status(400).json({ message: `This customer is not assign to you` })
+    }
 
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
@@ -48,7 +56,6 @@ exports.customerDetails = async (req, res, next) => {
 }
 
 exports.loanTransferBasicDeatils = async (req, res, next) => {
-
     let { customerId, customerUniqueId, kycStatus, startDate, masterLoanId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -62,14 +69,10 @@ exports.loanTransferBasicDeatils = async (req, res, next) => {
         }
     }
     let loanData = await sequelize.transaction(async t => {
-        let createLoanTransfer = await models.customerLoanTransfer.create({ loanTransferCurrentStage: '2' }, { transaction: t });
-
+        let createLoanTransfer = await models.customerLoanTransfer.create({ loanTransferCurrentStage: '2',createdBy, modifiedBy }, { transaction: t });
         await models.customerLoanTransferHistory.create({ loanTransferId: createLoanTransfer.id, action: "Loan transfer basic details submitted", createdBy, modifiedBy }, { transaction: t })
-
         let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '1', createdBy, modifiedBy, loanTransferId: createLoanTransfer.id }, { transaction: t })
-
         let loan = await models.customerLoan.create({ customerId, masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
-
         await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, purpose: "Loan transfer", customerUniqueId, startDate, kycStatus, createdBy, modifiedBy }, { transaction: t })
         return loan
     })
@@ -136,11 +139,11 @@ exports.loanTransferBmRating = async (req, res, next) => {
                     return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'4' })
                 }
             } else {
-                return res.status(400).json({ message: 'You cannot change status for this customer', masterLoanId, loanId })
+                return res.status(400).json({ message: 'You cannot change status for this customer' })
             }
         })
     } else {
-        return res.status(400).json({ message: 'You cannot change status for this customer', masterLoanId, loanId })
+        return res.status(400).json({ message: 'You cannot change status for this customer' })
     }
 }
 
@@ -148,7 +151,6 @@ exports.loanTransferDisbursal = async (req, res, next) => {
     let { transactionId, loanId, masterLoanId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-
     let masterLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         include: [{
@@ -176,7 +178,6 @@ exports.loanTransferDisbursal = async (req, res, next) => {
         })
 }
 
-//get single customer loan details DONE
 exports.getSingleLoanDetails = async (req, res, next) => {
 
     let customerLoanId = req.query.customerLoanId
@@ -200,6 +201,75 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         return res.status(404).json({ message: 'Data not found'})
     }else{
         return res.status(200).json({ message: 'success', data: customerLoan })
+    }
+}
+
+exports.getLoanTransferList = async (req, res, next) => {
+
+    let { search, offset, pageSize } =
+    paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+    let query = {}
+    let searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$customer.first_name$": { [Op.iLike]: search + '%' },
+                "$customer.last_name$": { [Op.iLike]: search + '%' },
+                "$customer.mobile_number$": { [Op.iLike]: search + '%' },
+                "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
+                "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' }
+            },
+        }],
+        isActive: true,
+    };
+    let internalBranchId = req.userData.internalBranchId
+    let internalBranchWhere;
+    if (req.userData.userTypeId != 4) {
+        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    } else {
+        internalBranchWhere = { isActive: true }
+    }
+    let associateModel = [
+        {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes:['loanUniqueId','customerId','masterLoanId']
+        },
+        {
+            model: models.customer,
+            as: 'customer',
+            where: internalBranchWhere,
+            attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+        },
+        {
+            model: models.customerLoanTransfer,
+            as: "loanTransfer",
+            attributes: { exclude: [ 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
+        }
+    ]
+    
+    let loanDetails = await models.customerLoanMaster.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: associateModel,
+        attributes:['loanTransferId'],
+        order: [
+            [models.customerLoan, 'id', 'asc'],
+            ['id', 'DESC']
+        ],
+        offset: offset,
+        limit: pageSize
+    });
+    let count = await models.customerLoanMaster.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: associateModel,
+    });
+    if (loanDetails.length === 0) {
+        return res.status(200).json({data:[],count:0});
+    } else {
+        return res.status(200).json({ data: loanDetails, count: count.length });
     }
 }
 

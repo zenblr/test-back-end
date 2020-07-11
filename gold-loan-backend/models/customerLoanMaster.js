@@ -196,5 +196,30 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.belongsTo(models.customerLoanTransfer, { foreignKey: 'loanTransferId', as: 'loanTransfer' });
     }
 
+    CustomerLoanMaster.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        if (values.loanTransfer) {
+            let pawnTicketData = [];
+            for (image of values.loanTransfer.pawnTicket) {
+                let URL = baseUrlConfig.BASEURL + image;
+                pawnTicketData.push(URL)
+            }
+            values.loanTransfer.pawnTicket = pawnTicketData;
+            let signedChequeData = [];
+            for (image of values.loanTransfer.signedCheque) {
+                let URL = baseUrlConfig.BASEURL + image;
+                signedChequeData.push(URL)
+            }
+            values.loanTransfer.signedCheque = signedChequeData;
+            let declarationData = [];
+            for (image of values.loanTransfer.declaration) {
+                let URL = baseUrlConfig.BASEURL + image;
+                declarationData.push(URL)
+            }
+            values.loanTransfer.declaration = declarationData;
+            return values;
+        }
+    }
+
     return CustomerLoanMaster;
 }

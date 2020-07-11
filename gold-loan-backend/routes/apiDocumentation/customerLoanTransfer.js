@@ -1,5 +1,33 @@
 /**
  * @swagger
+ * /loan-transfer:
+ *   get:
+ *     tags:
+ *       -  Customer Loan Transfer
+ *     name: read loan transfer list
+ *     summary: To read loan transfer list
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: Loan transfer list fetch successfully
+ *       404:
+ *          description: no loan transfer details found
  * /loan-transfer/basic-details:
  *   post:
  *     tags:
