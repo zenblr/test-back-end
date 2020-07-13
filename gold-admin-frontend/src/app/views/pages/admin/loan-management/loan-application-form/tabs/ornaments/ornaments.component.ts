@@ -25,7 +25,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   selected: number = 0
   goldRate: any;
-  ltvGoldRate:any;
+  ltvGoldRate: any;
   @Input() invalid;
   @Input() disable;
   @Input() details;
@@ -150,7 +150,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.globalValue = global;
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
-          this.goldRate =res;
+          this.goldRate = res;
           this.ltvGoldRate = res * (this.globalValue.ltvGoldValue / 100)
           const group = this.OrnamentsData.at(0) as FormGroup
           group.controls.currentLtvAmount.patchValue(this.ltvGoldRate)
@@ -162,10 +162,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ornamentsForm.valueChanges.subscribe(() => {
       if (this.ornamentsForm.valid) {
         this.totalAmount = 0;
-        this.fullAmount =0;
+        this.fullAmount = 0;
         this.OrnamentsData.value.forEach(element => {
           this.totalAmount += Number(element.loanAmount)
-          this.fullAmount +=Number(element.ornamentFullAmount)
+          this.fullAmount += Number(element.ornamentFullAmount)
         });
         console.log(this.fullAmount)
         this.totalAmount = Math.round(this.totalAmount)
@@ -270,8 +270,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       stoneTouchData: [],
       acidTestData: [],
       purityTestImage: [[]],
-      ornamentFullAmount:[],
-      currentGoldRate:[this.goldRate]
+      ornamentFullAmount: [],
+      currentGoldRate: [this.goldRate]
     }))
     this.createImageArray()
   }
@@ -478,10 +478,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     let indexof = filterImage.findIndex(idx => {
       return typeof idx == 'object'
     })
-    temp = filterImage[indexof]
-    filterImage.splice(indexof, 1)
-    Array.prototype.push.apply(filterImage, temp)
 
+    if (indexof != -1) {
+      temp = filterImage[indexof]
+      filterImage.splice(indexof, 1)
+      Array.prototype.push.apply(filterImage, temp)
+    }
 
     temp = filterImage.filter(el => {
       return el != ''
@@ -526,7 +528,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds,this.fullAmount).pipe(
+    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
       map(res => {
         let array = this.OrnamentsData.controls
         for (let index = 0; index < array.length; index++) {
