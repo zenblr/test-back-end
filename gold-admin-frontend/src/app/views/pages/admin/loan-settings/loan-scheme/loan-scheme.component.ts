@@ -127,17 +127,17 @@ export class LoanSchemeComponent implements OnInit {
   }
 
   changeDefault(event, index, item, partnerIdx) {
-    let partnerArr: [] = this.schemes[partnerIdx].schemes;
-    let count = 0;
-    partnerArr.forEach(element => {
-      if (element['default']) {
-        count++;
-      }
-    });
-    if (count > 1) {
-      this.toastr.error('Please set another scheme as default from the selected partner')
-      return
-    }
+    // let partnerArr: [] = this.schemes[partnerIdx].schemes;
+    // let count = 0;
+    // partnerArr.forEach(element => {
+    //   if (element['default']) {
+    //     count++;
+    //   }
+    // });
+    // if (count > 1) {
+    //   this.toastr.error('Please set another scheme as default from the selected partner')
+    //   return
+    // }
 
     // let defaultStatus = event;
     this.schemes[partnerIdx].schemes[index].default = true
@@ -156,10 +156,21 @@ export class LoanSchemeComponent implements OnInit {
 
   changeStatus(event, partnerIndex, schemeIndex, item) {
     // console.log(event, partnerIndex, schemeIndex, item);
-    // let partnerArr: [] = this.schemes[partnerIndex].schemes;
+    let partnerArr: [] = this.schemes[partnerIndex].schemes;
     // partnerArr.splice(schemeIndex, 1);
     // if (!partnerArr.length) {
     //   this.schemes.splice(partnerIndex, 1)
+    // }
+
+    // let count = 0;
+    // partnerArr.forEach(element => {
+    //   if (element['default']) {
+    //     count++;
+    //   }
+    // });
+    // if (count > 1) {
+    //   this.toastr.error('Please set another scheme as default from the selected partner')
+    //   return
     // }
 
     console.log(this.schemes[partnerIndex].schemes[schemeIndex].isActive)
