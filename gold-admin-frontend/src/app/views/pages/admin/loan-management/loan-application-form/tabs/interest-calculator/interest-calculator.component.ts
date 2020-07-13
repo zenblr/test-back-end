@@ -220,6 +220,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   amountValidation() {
+    this.controls.isUnsecuredSchemeApplied.patchValue(false)
     this.dateOfPayment = []
     const scheme = this.selectedScheme[0]
 
@@ -265,12 +266,7 @@ export class InterestCalculatorComponent implements OnInit {
         let unsecureAmt = amt - eligibleForLoan
         this.unSecuredSchemeCheck(Math.round(unsecureAmt), maximumAmtAllowed)
 
-      } else {
-
-        this.controls.isUnsecuredSchemeApplied.patchValue(false)
-        this.controls.finalLoanAmount.setErrors(null)
-
-      }
+      } 
 
 
     } else {
@@ -317,6 +313,10 @@ export class InterestCalculatorComponent implements OnInit {
                 this.controls.finalLoanAmount.setErrors({ noDefaultScheme: true })
                 return
               }
+            }
+            else {
+              this.controls.finalLoanAmount.setErrors({ noDefaultScheme: true })
+              return
             }
           }
         }

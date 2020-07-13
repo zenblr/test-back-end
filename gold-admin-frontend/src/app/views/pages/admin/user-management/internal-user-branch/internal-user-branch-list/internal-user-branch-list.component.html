@@ -4,33 +4,33 @@
         <!-- MATERIAL TABLE | Binded to datasources -->
         <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
         <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
-            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" >
-               
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
                 <ng-container matColumnDef="branchId">
-                    <mat-header-cell *matHeaderCellDef >Branch Id</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Branch ID</mat-header-cell>
                     <mat-cell *matCellDef="let internalBranch">
-                            {{internalBranch.internalBranchUniqueId}}
+                        {{internalBranch.internalBranchUniqueId}}
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="branchName">
-                    <mat-header-cell *matHeaderCellDef >Branch Name</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Branch Name</mat-header-cell>
                     <mat-cell *matCellDef="let internalBranch">{{internalBranch.name}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="pincode">
-                    <mat-header-cell *matHeaderCellDef >PinCode</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>PinCode</mat-header-cell>
                     <mat-cell *matCellDef="let internalBranch">{{internalBranch.pinCode}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="address">
-                    <mat-header-cell *matHeaderCellDef >Address</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Address</mat-header-cell>
                     <mat-cell *matCellDef="let internalBranch">{{internalBranch.address}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="state">
-                    <mat-header-cell *matHeaderCellDef >State</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
                     <mat-cell *matCellDef="let internalBranch">{{internalBranch.state.name}}</mat-cell>
                 </ng-container>stateId
                 <ng-container matColumnDef="city">
-                    <mat-header-cell *matHeaderCellDef >City</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
                     <mat-cell *matCellDef="let internalBranch">{{internalBranch.city.name}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
@@ -38,17 +38,17 @@
                     <mat-cell *matCellDef="let internalBranch">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div (click)="editInternalBranch(internalBranch,'view')" class="kt-pointer"
-                            *ngxPermissionsOnly="['internalBranchView']"> View
+                                *ngxPermissionsOnly="['internalBranchView']"> View
                                 |
                                 &nbsp;
                             </div>
                             <div (click)="editInternalBranch(internalBranch,'edit')" class="kt-pointer"
-                            *ngxPermissionsOnly="['internalBranchEdit']"> Edit
+                                *ngxPermissionsOnly="['internalBranchEdit']"> Edit
                                 |
                                 &nbsp;
                             </div>
                             <div (click)="deleteInternalBranch(internalBranch)" class="kt-pointer text-danger"
-                            *ngxPermissionsOnly="['internalBranchDelete']"> Delete
+                                *ngxPermissionsOnly="['internalBranchDelete']"> Delete
 
                             </div>
                         </div>
@@ -68,7 +68,7 @@
         <!-- start: BOTTOM -->
         <div class="mat-table__bottom">
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
-            
+
             <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>

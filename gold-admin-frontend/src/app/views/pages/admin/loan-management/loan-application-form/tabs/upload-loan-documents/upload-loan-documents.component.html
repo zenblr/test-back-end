@@ -1,6 +1,6 @@
 <div class="row justify-content-around" [formGroup]="documentsForm">
     <div class="col-11">
-        <div class="row kt-padding-t-15" *ngIf="url == 'loan-transfer'">
+        <div class="row kt-padding-t-15" *ngIf="show">
             <div class="col-2 form-label ">
                 <label class="kt-padding-l-10">Outstanding Loan Amount</label>
             </div>
@@ -208,7 +208,7 @@
                                 <img class="fetched-image" [src]="documentsForm.controls.signedChequeImage.value"
                                     *ngIf="!pdf.signedCheque"
                                     (click)="preview(documentsForm.controls.signedChequeImage.value)">
-                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                <img src="../../../../../assets/media/icons/edit.svg" alt="" *ngIf="url != 'view-loan'"
                                     class="kt-pointer remove-icon" (click)="editImages('signedCheque');">
                                 <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
                                     *ngIf="pdf.signedCheque"
@@ -235,7 +235,7 @@
                                 <img class="fetched-image" [src]="documentsForm.controls.declarationCopyImage.value"
                                     *ngIf="!pdf.declaration"
                                     (click)="preview(documentsForm.controls.declarationCopyImage.value)">
-                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                <img src="../../../../../assets/media/icons/edit.svg" alt="" 
                                     class="kt-pointer remove-icon" *ngIf="url != 'view-loan'" (click)="editImages('declaration');">
                                     <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.declaration"
                                     [pdfSrc]="documentsForm.controls.declarationCopyImage.value"

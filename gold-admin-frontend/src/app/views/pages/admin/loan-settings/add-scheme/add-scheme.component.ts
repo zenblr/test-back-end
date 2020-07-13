@@ -55,8 +55,8 @@ export class AddSchemeComponent implements OnInit {
   initForm() {
     this.fillingForm = this.fb.group({
       schemeName: ['', [Validators.required]],
-      schemeAmountStart: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])')]],
-      schemeAmountEnd: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,2})?(?![\\d.])')]],
+      schemeAmountStart: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,5})?(?![\\d.])')]],
+      schemeAmountEnd: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,5})?(?![\\d.])')]],
       interestRateThirtyDaysMonthly: ['', Validators.required],
       interestRateNinetyDaysMonthly: ['', Validators.required],
       interestRateOneHundredEightyDaysMonthly: ['', Validators.required],
