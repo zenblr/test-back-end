@@ -143,7 +143,7 @@ export class AssignAppraiserComponent implements OnInit {
       return
     }
     // console.log(this.appraiserForm.value);
-    const appoinmentDate = this.controls.appoinmentDate.value
+    const appoinmentDate = new Date(this.controls.appoinmentDate.value)
     const correctedDate = new Date(appoinmentDate.getTime() - appoinmentDate.getTimezoneOffset() * 60000)
     this.appraiserForm.patchValue({ appoinmentDate: correctedDate })
     const appraiserData = this.appraiserForm.value;

@@ -361,6 +361,40 @@ export class MenuConfig {
 									page: "/admin/funds-approvals/top-up-approval",
 									permission: false,
 								},
+								{
+									title: "Jewellery Release Approval",
+									permission: false,
+									bullet: 'dot',
+									submenu: [
+										{
+											title: "Part Release Approval",
+											page: "/admin/funds-approvals/part-release-approval",
+											permission: false,
+										},
+										{
+											title: "Full Release Approval",
+											page: "/admin/funds-approvals/full-release-approval",
+											permission: false,
+										},
+									]
+								},
+								{
+									title: "Jewellery Release Final Process",
+									permission: false,
+									bullet: 'dot',
+									submenu: [
+										{
+											title: "Part Release Approved List",
+											page: "/admin/funds-approvals/part-release-final",
+											permission: false,
+										},
+										{
+											title: "Full Release Final Process",
+											page: "/admin/funds-approvals/full-release-final",
+											permission: false,
+										},
+									]
+								},
 							],
 						},
 						{
