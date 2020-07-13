@@ -187,7 +187,12 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
 exports.deactiveScheme = async (req, res, next) => {
     const { id, isActive } = req.query;
 
-    const deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
+    let defaultSchemeCheck = await models.scheme.findOne({ where: { isActive: true, default: true, id: id } });
+    if (!check.isEmpty(defaultSchemeCheck)){
+        return res.status(400).json({message: "Please select one default scheme with respect to that partner."})
+    }
+
+        const deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
 
     if (!deactiveSchemeData[0]) {
         return res.status(404).json({ message: 'data not found' });
