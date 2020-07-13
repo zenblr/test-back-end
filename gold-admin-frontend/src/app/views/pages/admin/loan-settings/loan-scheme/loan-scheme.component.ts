@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@an
 import { LoanSettingsService } from "../../../../../core/loan-setting";
 import { MatDialog } from "@angular/material"
 import { AddSchemeComponent } from "../add-scheme/add-scheme.component"
-import { map, takeUntil, catchError } from 'rxjs/operators';
+import { map, takeUntil, catchError, finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
@@ -127,8 +127,21 @@ export class LoanSchemeComponent implements OnInit {
   }
 
   changeDefault(event, index, item, partnerIdx) {
+    let partnerArr: [] = this.schemes[partnerIdx].schemes;
+    let count = 0;
+    partnerArr.forEach(element => {
+      if (element['default']) {
+        count++;
+      }
+    });
+    if (count > 1) {
+      this.toastr.error('Please set another scheme as default from the selected partner')
+      return
+    }
+
+    // let defaultStatus = event;
     this.schemes[partnerIdx].schemes[index].default = true
-    console.log(item)
+    // console.log(item)
     this.loanSettingService.toogleDefault(item).subscribe(res => {
       if (res) {
         this.toastr.success("Updated Successfully")
@@ -136,8 +149,9 @@ export class LoanSchemeComponent implements OnInit {
       }
     }, err => {
       this.schemes[partnerIdx].schemes[index].default = false
+      this.getScheme()
     })
-    console.log(event, index)
+    // console.log(event, index)
   }
 
   changeStatus(event, partnerIndex, schemeIndex, item) {
@@ -148,16 +162,38 @@ export class LoanSchemeComponent implements OnInit {
     //   this.schemes.splice(partnerIndex, 1)
     // }
 
+    console.log(this.schemes[partnerIndex].schemes[schemeIndex].isActive)
+
     let params = { isActive: event }
     this.loanSettingService.changeSchemeStatus(item.id, params)
       .pipe(map(() => {
         if (event) {
           this.toastr.success('Scheme Activated');
+          this.schemes[partnerIndex].schemes[schemeIndex].isActive = event
         } else {
           this.toastr.success('Scheme Deactivated');
+          this.schemes[partnerIndex].schemes[schemeIndex].isActive = !event
         }
-        this.getScheme()
-      })).subscribe()
+        // this.getScheme()
+      }),
+        catchError(err => {
+          if (err) {
+            // if (!event) {
+            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = false
+            // } else {
+            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = true
+            // }
+            // setTimeout(() => {
+            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = false
+            // }, 500)
+          }
+          throw (err)
+        }),
+        finalize(() => {
+          this.getScheme()
+          this.ref.detectChanges()
+        })
+      ).subscribe()
   }
 
 }

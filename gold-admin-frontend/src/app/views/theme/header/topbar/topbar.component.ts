@@ -562,6 +562,14 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.showfilter = true;
 		}
+		if (this.path == 'part-release-final') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
+		if (this.path == 'full-release-final') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
 		if (location.href.includes("edit-refund-details")) {
 			this.showBackButton = true;
 		}

@@ -378,6 +378,23 @@ export class MenuConfig {
 										},
 									]
 								},
+								{
+									title: "Jewellery Release Final Process",
+									permission: false,
+									bullet: 'dot',
+									submenu: [
+										{
+											title: "Part Release Approved List",
+											page: "/admin/funds-approvals/part-release-final",
+											permission: false,
+										},
+										{
+											title: "Full Release Final Process",
+											page: "/admin/funds-approvals/full-release-final",
+											permission: false,
+										},
+									]
+								},
 							],
 						},
 						{
