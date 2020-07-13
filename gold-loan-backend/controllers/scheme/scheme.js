@@ -261,6 +261,13 @@ exports.filterScheme = async (req, res, next) => {
 exports.UpdateDefault = async (req, res, next) => {
     let { id } = req.params;
     let { partnerId } = req.body;
+
+    let schemeDefault = await models.scheme.findOne({where: {id: id}});
+
+    if(schemeDefault.isActive == false){
+        return res.status(400).json({message: "You can not set deactivate scheme as a default."})
+    }
+
     let readSchemeByPartner = await models.partner.findOne({
         where: { isActive: true, id: partnerId },
         include: [{
