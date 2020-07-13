@@ -474,9 +474,11 @@ exports.loanAppraiserRating = async (req, res, next) => {
                         { loanStatusForAppraiser: "pending", loanStatusForBM: "pending", applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, loanStatusForOperatinalTeam, commentByOperatinalTeam, loanStageId: incompleteStageId.id, operatinalTeamId, modifiedBy },
                         { where: { id: masterLoanId }, transaction: t })
 
+                    await models.customerLoanHistory.create({ loanId, masterLoanId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
+
+
                 })
 
-                await models.customerLoanHistory.create({ loanId, masterLoanId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
 
                 return res.status(200).json({ message: 'success' })
             } else {
@@ -486,9 +488,11 @@ exports.loanAppraiserRating = async (req, res, next) => {
                     await models.customerLoanMaster.update(
                         { applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, loanStatusForOperatinalTeam, commentByOperatinalTeam, loanStageId: rejectedStageId.id, operatinalTeamId, modifiedBy },
                         { where: { id: masterLoanId }, transaction: t })
+                        
+                    await models.customerLoanHistory.create({ loanId, masterLoanId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
+
                 })
 
-                await models.customerLoanHistory.create({ loanId, masterLoanId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
 
                 return res.status(200).json({ message: 'success' })
             }

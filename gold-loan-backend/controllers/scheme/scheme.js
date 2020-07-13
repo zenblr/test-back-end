@@ -140,6 +140,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
         include: [{
             model: models.scheme,
             where: {
+                isActive: true,
                 schemeType: "secured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
@@ -164,6 +165,7 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
         include: [{
             model: models.scheme,
             where: {
+                isActive: true,
                 schemeType: "unsecured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
