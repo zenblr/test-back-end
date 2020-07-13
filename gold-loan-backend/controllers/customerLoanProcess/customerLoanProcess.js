@@ -410,9 +410,11 @@ exports.loanAppraiserRating = async (req, res, next) => {
                         { loanStatusForAppraiser: "pending", applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM, loanStageId: incompleteStageId.id, bmId, modifiedBy },
                         { where: { id: masterLoanId }, transaction: t })
 
+                    await models.customerLoanHistory.create({ loanId, masterLoanId, action: BM_RATING, modifiedBy }, { transaction: t });
+
+
                 })
 
-                await models.customerLoanHistory.create({ loanId, masterLoanId, action: BM_RATING, modifiedBy }, { transaction: t });
 
                 return res.status(200).json({ message: 'success' })
             } else {
@@ -422,9 +424,11 @@ exports.loanAppraiserRating = async (req, res, next) => {
                     await models.customerLoanMaster.update(
                         { applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM, loanStageId: rejectedStageId.id, bmId, modifiedBy },
                         { where: { id: masterLoanId }, transaction: t })
+
+                    await models.customerLoanHistory.create({ loanId, masterLoanId, action: BM_RATING, modifiedBy }, { transaction: t });
+
                 })
 
-                await models.customerLoanHistory.create({ loanId, masterLoanId, action: BM_RATING, modifiedBy }, { transaction: t });
 
                 return res.status(200).json({ message: 'success' })
             }
@@ -437,12 +441,14 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 }
             }
 
-            await models.customerLoanHistory.create({ loanId, masterLoanId, action: BM_RATING, modifiedBy }, { transaction: t });
 
             await sequelize.transaction(async (t) => {
                 await models.customerLoanMaster.update(
                     { applicationFormForBM, goldValuationForBM, loanStatusForBM, commentByBM, loanStageId: approvedStageId.id, bmId, modifiedBy },
                     { where: { id: masterLoanId }, transaction: t })
+
+                await models.customerLoanHistory.create({ loanId, masterLoanId, action: BM_RATING, modifiedBy }, { transaction: t });
+
             })
             return res.status(200).json({ message: 'success' })
         }
