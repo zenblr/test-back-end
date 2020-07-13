@@ -433,7 +433,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 return res.status(200).json({ message: 'success' })
             }
         } else {
-            let approvedStageId = await models.loanStage.findOne({ where: { name: 'operational team rating' } })
+            let approvedStageId = await models.loanStage.findOne({ where: { name: 'OPES rating' } })
 
             if (loanStatusForBM === 'approved') {
                 if (applicationFormForBM == false || goldValuationForBM == false) {
@@ -482,7 +482,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
                 return res.status(200).json({ message: 'success' })
             } else {
-                let rejectedStageId = await models.loanStage.findOne({ where: { name: 'operational team rating' } })
+                let rejectedStageId = await models.loanStage.findOne({ where: { name: 'OPES rating' } })
 
                 await sequelize.transaction(async (t) => {
                     await models.customerLoanMaster.update(
