@@ -32,12 +32,13 @@ export class DisburseDialogComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.data)
     this.disburseForm = this.fb.group({
-      loanId: [this.data.id],
+      loanId: [this.data.loan],
       transactionId: ['', [Validators.required]],
       date: [this.currentDate, Validators.required],
       paymentMode: [''],
-      finalLoanAmount: [],
+      loanAmount: [],
       disbursementStatus: [''],
       otp: [],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
@@ -47,19 +48,21 @@ export class DisburseDialogComponent implements OnInit {
       accountNumber: ['', Validators.required],
       passbookStatementChequeId: [],
       passbookImg: [],
-      passbookImgName: []
+      passbookImgName: [],
+      masterLoanId: [this.data.masterLoanId],
     })
     this.getBankDetails()
 
   }
 
   getBankDetails() {
-    this.loanService.getBankDetails(this.data.id).subscribe(res => {
+    this.loanService.getBankDetails(this.data.loan, this.data.masterLoanId).subscribe(res => {
       if (Object.keys(res.data).length) {
         this.details = res.data
         this.patchValue(res.data.paymentType)
         this.disburseForm.patchValue(res.data)
-        if(this.globalValue.cashTransactionLimit < this.disburseForm.controls.finalLoanAmount.value){
+        this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
+        if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
           this.disburseForm.controls.paymentMode.patchValue('bank')
           this.disburseForm.controls.paymentMode.disable()
           return
@@ -71,7 +74,7 @@ export class DisburseDialogComponent implements OnInit {
   }
 
   formDisable() {
-    this.controls.finalLoanAmount.disable()
+    this.controls.loanAmount.disable()
     this.controls.ifscCode.disable()
     this.controls.bankName.disable()
     this.controls.bankBranch.disable()
@@ -84,7 +87,7 @@ export class DisburseDialogComponent implements OnInit {
   }
 
   formEnable() {
-    this.controls.finalLoanAmount.enable()
+    this.controls.loanAmount.enable()
     this.controls.ifscCode.enable()
     this.controls.bankName.enable()
     this.controls.bankBranch.enable()

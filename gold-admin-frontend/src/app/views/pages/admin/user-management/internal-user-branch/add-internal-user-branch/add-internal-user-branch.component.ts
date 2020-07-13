@@ -56,10 +56,12 @@ export class AddInternalUserBranchComponent implements OnInit {
       this.title = 'Edit Internal User'
       this.button = 'update'
       this.addInternalBranchForm.patchValue(this.data.branch)
+      console.log(this.data.branch)
       this.getCites()
     } else {
       this.title = 'View Internal User'
       this.addInternalBranchForm.patchValue(this.data.branch)
+      console.log(this.data.branch)
       this.getCites()
       this.addInternalBranchForm.disable();
     }
@@ -80,7 +82,7 @@ export class AddInternalUserBranchComponent implements OnInit {
       bankBranch: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
       accountHolderName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
       accountNumber: ['', Validators.required],
-      passbookStatementChequeId: [],
+      passbookStatementCheque: [],
       passbookImg: [],
       passbookImgName: ['', Validators.required],
     })
@@ -162,7 +164,7 @@ export class AddInternalUserBranchComponent implements OnInit {
           //   this.addInternalBranchForm.controls.panCardImg.patchValue(res.uploadFile.URL)
           // } else {
           this.addInternalBranchForm.controls.passbookImgName.patchValue(event.target.files[0].name)
-          this.addInternalBranchForm.controls.passbookStatementChequeId.patchValue(res.uploadFile.id)
+          this.addInternalBranchForm.controls.passbookStatementCheque.patchValue(res.uploadFile.path)
           this.addInternalBranchForm.controls.passbookImg.patchValue(res.uploadFile.URL)
           // }
         }), catchError(err => {

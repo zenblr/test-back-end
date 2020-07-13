@@ -1,5 +1,6 @@
 <kt-portlet>
-    <kt-modal-header *ngIf="!viewOnly" [title]='"KYC Details"' (action)="action()"></kt-modal-header>
+    <kt-modal-header *ngIf="!viewOnly" [title]='"KYC Details"' [noTitleCase]="true" (action)="action()">
+    </kt-modal-header>
     <kt-portlet-body>
         <div *ngIf="data">
             <form [formGroup]=reviewForm>
@@ -21,8 +22,8 @@
                                 <div class="profile-div">
                                     <!-- <img class="" src="../../../../../../assets/media/icons/user.png" alt="" /> -->
                                     <img *ngIf="data" class="profile-pic"
-                                        [src]="data.customerKycReview.customerKycPersonal.profileImageData.URL" alt=""
-                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.profileImageData.URL)" />
+                                        [src]="data.customerKycReview.customerKycPersonal.profileImg" alt=""
+                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.profileImg)" />
                                 </div>
                             </div>
                             <div class="col-7 d-flex" *ngIf="viewOnly">
@@ -106,9 +107,9 @@
                         <div class="col offset-4 kt-margin-t-25">
                             <div class="img-container ">
                                 <ng-container>
-                                    <img class="fetched-image" [src]="data.customerKycReview.panImage.URL"
+                                    <img class="fetched-image" [src]="data.customerKycReview.panImg"
                                         style="border-radius: 15px;" alt=""
-                                        (click)="previewImage(data.customerKycReview.panImage.URL)" />
+                                        (click)="previewImage(data.customerKycReview.panImg)" />
                                 </ng-container>
                             </div>
                         </div>
@@ -731,7 +732,7 @@
                             </div>
                             <div class="col-7">
                                 <select name="" id="" formControlName="occupationId" class="form-control"
-                                    placeholder="Select Occupation"
+                                    placeholder="Select Occupation" (change)="checkOccupation($event)"
                                     [class.isError]="customerKycPersonal.controls.occupationId.touched && customerKycPersonal.controls.occupationId.invalid">
                                     <option value=null [selected]="true">Select Occupation
                                     </option>
@@ -824,15 +825,18 @@
                 </div>
 
                 <div class="row kt-margin-t-20 kt-margin-b-20"
-                    *ngIf="data.customerKycReview.customerKycPersonal.signatureProofData.URL">
+                    *ngIf="data.customerKycReview.customerKycPersonal.signatureProofImg">
                     <div class="col-6">
                         <div class="col-8 offset-4">
                             <div class="img-container kt-margin-r-15">
                                 <ng-container>
                                     <img class="fetched-image"
-                                        [src]="data.customerKycReview.customerKycPersonal.signatureProofData.URL"
+                                        [src]="data.customerKycReview.customerKycPersonal.signatureProofImg"
                                         style="border-radius: 15px;" alt=""
-                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.signatureProofData.URL)" />
+                                        (click)="previewImage(data.customerKycReview.customerKycPersonal.signatureProofImg)" />
+                                    <img *ngIf="data.customerKycReview.customerKycPersonal.signatureProofImg"
+                                        src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                        class="kt-pointer remove-icon" (click)="removeImages(-1, 'signature');">
                                 </ng-container>
                             </div>
                         </div>

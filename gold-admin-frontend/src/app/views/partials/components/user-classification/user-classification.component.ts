@@ -45,8 +45,8 @@ export class UserClassificationComponent implements OnInit {
   //     behaviourRatingVerifiedByBm: false,
   //     idProofRatingVerifiedByBm: false,
   //     addressProofRatingVerifiedBm: false,
-  //     kycStatusFromBm: 'rejected',
-  //     reasonFromBm: null,
+  //     kycStatusFromOperationalTeam: 'rejected',
+  //     reasonFromOperationalTeam: null,
   //     branchManagerId: null,
   //     createdAt: "2020-05-11T13:28:22.997Z",
   //     updatedAt: "2020-05-11T13:28:22.997Z"
@@ -132,8 +132,8 @@ export class UserClassificationComponent implements OnInit {
       // behaviourRatingVerifiedByBm: [false, [Validators.required]],
       // idProofRatingVerifiedByBm: [false, [Validators.required]],
       // addressProofRatingVerifiedBm: [false, [Validators.required]],
-      kycStatusFromBm: ['pending', [Validators.required]],
-      reasonFromBm: ['']
+      kycStatusFromOperationalTeam: ['pending', [Validators.required]],
+      reasonFromOperationalTeam: ['']
     })
 
     if (this.userType == 6) {
@@ -142,10 +142,10 @@ export class UserClassificationComponent implements OnInit {
       // this.custClassificationForm.controls.idProofRatingVerifiedByBm.disable();
       // this.custClassificationForm.controls.addressProofRatingVerifiedBm.disable();
       this.custClassificationForm.controls.kycRatingFromBM.disable();
-      this.custClassificationForm.controls.kycStatusFromBm.disable();
-      this.custClassificationForm.controls.reasonFromBm.disable();
+      this.custClassificationForm.controls.kycStatusFromOperationalTeam.disable();
+      this.custClassificationForm.controls.reasonFromOperationalTeam.disable();
       this.viewBMForm = false;
-    } else if (this.userType == 5) {
+    } else if (this.userType == 8) {
       //   this.custClassificationForm.controls.behaviourRatingCce.disable();
       //   this.custClassificationForm.controls.idProofRatingCce.disable();
       //   this.custClassificationForm.controls.addressProofRatingCce.disable();
@@ -174,17 +174,17 @@ export class UserClassificationComponent implements OnInit {
     // }
 
     // Validation for BM
-    this.custClassificationForm.get('kycStatusFromBm').valueChanges.subscribe(res => {
+    this.custClassificationForm.get('kycStatusFromOperationalTeam').valueChanges.subscribe(res => {
       if (res == 'approved') {
-        this.custClassificationForm.get('reasonFromBm').clearValidators();
-        this.custClassificationForm.get('reasonFromBm').patchValue('');
+        this.custClassificationForm.get('reasonFromOperationalTeam').clearValidators();
+        this.custClassificationForm.get('reasonFromOperationalTeam').patchValue('');
         this.showTextBoxBM = false;
       } else if (res && res != 'pending') {
-        this.custClassificationForm.get('reasonFromBm').reset();
-        this.custClassificationForm.get('reasonFromBm').setValidators(Validators.required);
+        this.custClassificationForm.get('reasonFromOperationalTeam').reset();
+        this.custClassificationForm.get('reasonFromOperationalTeam').setValidators(Validators.required);
         this.showTextBoxBM = true;
       }
-      this.custClassificationForm.get('reasonFromBm').updateValueAndValidity();
+      this.custClassificationForm.get('reasonFromOperationalTeam').updateValueAndValidity();
     })
   }
 
@@ -253,7 +253,7 @@ export class UserClassificationComponent implements OnInit {
   }
 
   approvalOfBM(value: boolean, type: string) {
-    if (this.userType == 5) {
+    if (this.userType == 8) {
       if (type == 'kycRating') {
         this.cceControls.kycRatingFromBM.patchValue(value)
       }
@@ -272,5 +272,10 @@ export class UserClassificationComponent implements OnInit {
     } else {
       this.cceControls.reasonFromCce.reset()
     }
+  }
+
+  resetKYCStatus() {
+    this.cceControls.kycStatusFromCce.patchValue('')
+    this.cceControls.kycStatusFromCce.markAsUntouched()
   }
 }

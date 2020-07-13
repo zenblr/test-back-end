@@ -2,19 +2,6 @@
 
     <kt-portlet-body>
 
-        <!-- <button mat-icon-button class="btn-transparent" ngbDropdown>
-            <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2" role="button">
-                <img src="../../../../../../assets/media/icons/options.svg" alt="">
-            </a>
-            <div ngbDropdownMenu aria-labelledby="navbarDropdown2" class="dropdown-menu dropdown-menu-right">
-                <a ngbDropdownItem (click)="viewLoan()">View </a>
-                <a ngbDropdownItem (click)="interestEmi()">Pay Interest EMI</a>
-                <a ngbDropdownItem (click)="topUp()">Top Up</a>
-                <a ngbDropdownItem (click)="partPayment()">Part Payment</a>
-                <a ngbDropdownItem (click)="partRelease()">Part Release</a>
-                <a ngbDropdownItem (click)="new()">Add New Loan</a>
-            </div>
-        </button> -->
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
@@ -22,77 +9,112 @@
                     <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan.customer.customerUniqueId | uppercase}}
+                        {{loan?.customer?.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.loanUniqueId | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div>
+                            {{loan?.customerLoan[0]?.loanUniqueId | uppercase}}
+                        </div>
+                        <div>
+                            {{loan?.customerLoan[1]?.loanUniqueId | uppercase}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="schemeName">
                     <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName}}</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div>
+                            {{loan?.customerLoan[0]?.scheme?.schemeName | uppercase}}
+                        </div>
+                        <div>
+                            {{loan?.customerLoan[1]?.scheme?.schemeName | uppercase}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div>
+                            {{loan?.customerLoan[0]?.loanAmount}}
+                        </div>
+                        <div>
+                            {{loan?.customerLoan[1]?.loanAmount}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="interestRate">
                     <mat-header-cell *matHeaderCellDef>Intrest Rate</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.interestRate}} % P.M</mat-cell>
+                    <mat-cell *matCellDef="let loan" class="d-block">
+                        <div>
+                            {{loan?.customerLoan[0]?.interestRate}} % P.M
+                        </div>
+                        <div *ngIf="loan?.customerLoan.length > 1">
+                            {{loan?.customerLoan[1]?.interestRate}} % P.M
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="tenure">
                     <mat-header-cell *matHeaderCellDef>Loan Tenure</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.tenure}} Months</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.finalLoan?.tenure}} Months</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="interestRestDays">
                     <mat-header-cell *matHeaderCellDef>Payment Frequency</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span *ngIf="loan.finalLoan.paymentFrequency == '30'">Monthly</span>
-                        <span *ngIf="loan.finalLoan.paymentFrequency == '90'">Quarterly</span>
-                        <span *ngIf="loan.finalLoan.paymentFrequency == '180'">Half Yearly</span>
+                        <span *ngIf="loan?.paymentFrequency == '30'">Monthly</span>
+                        <span *ngIf="loan?.paymentFrequency == '90'">Quarterly</span>
+                        <span *ngIf="loan?.paymentFrequency == '180'">Half Yearly</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="startDate">
                     <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date : 'mediumDate'}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.loanStartDate | date : 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="endDate">
                     <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
+                        {{loan?.loanEndDate | date : 'mediumDate'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="actions">
+                <!-- <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <!-- <div style="display: contents" class="kt-pointer" > -->
                         <span (click)="viewLoan(loan)" class="kt-pointer font-weight-bold"
                             *ngxPermissionsOnly="['loanDetailsView']">View Loan </span>
-                        <!-- </div> -->
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="new">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <!-- <div style="display: contents" class="kt-pointer" > -->
                         <button (click)="new(loan)" class="btn-transparent"
                             *ngxPermissionsOnly="['loanApplicationAdd']">Add New Loan</button>
-                        <!-- </div> -->
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
 
-                <ng-container>
+                <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <button mat-icon-button class="btn-transparent" ngbDropdown>
+
+                        <button mat-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu" xPosition="before">
+                            <button mat-menu-item (click)="viewLoan(loan)">View Loan</button>
+                            <button mat-menu-item (click)="interestEmi(loan)">Quick Pay</button>
+                            <button mat-menu-item (click)="topUp(loan)">Top Up</button>
+                            <button mat-menu-item (click)="jewelleryRelease(loan)">Part Release</button>
+                            <button mat-menu-item (click)="newLoan(loan)">Add New Loan</button>
+                        </mat-menu>
+
+                        <!-- <button mat-icon-button class="btn-transparent" ngbDropdown>
                             <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2"
                                 role="button">
-                                <!-- <img src="../../../../../../assets/media/icons/options.svg" alt=""> -->
                                 <mat-icon>more_vert</mat-icon>
                             </a>
                             <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
@@ -104,20 +126,8 @@
                                 <a ngbDropdownItem (click)="partRelease(loan)">Part Release</a>
                                 <a ngbDropdownItem (click)="new(loan)">Add New Loan</a>
                             </div>
-                        </button>
+                        </button> -->
                     </mat-cell>
-                    <!-- <li class="nav-item" ngbDropdown>
-                        <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2"
-                            role="button">
-                            Static right
-                        </a>
-                        <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
-                            class="dropdown-menu dropdown-menu-right">
-                            <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
-                            <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
-                            <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
-                        </div>
-                    </li> -->
                 </ng-container>
 
 

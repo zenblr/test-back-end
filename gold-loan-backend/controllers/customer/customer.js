@@ -42,7 +42,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, panImageId: panImage, leadSourceId },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, panImage, leadSourceId },
       { transaction: t }
     );
   });
@@ -68,7 +68,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-  let message = await `Dear ${referenceCode}, Your OTP for completing the order request is ${otp}.`
+  let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
   await sms.sendSms(mobileNumber, message);
   // request(
   //   `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
@@ -101,7 +101,7 @@ exports.sendOtp = async (req, res, next) => {
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-  let message = await `Dear ${referenceCode}, Your OTP for completing the order request is ${otp}.`
+  let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
   await sms.sendSms(mobileNumber, message);
   // request(
   //   `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
@@ -160,7 +160,7 @@ exports.editCustomer = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panImageId: panImage, leadSourceId },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panImage, leadSourceId },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -214,6 +214,12 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         last_name: { [Op.iLike]: search + "%" },
         mobile_number: { [Op.iLike]: search + "%" },
         pan_card_number: { [Op.iLike]: search + "%" },
+        pinCode: sequelize.where(
+          sequelize.cast(sequelize.col("customer.pin_code"), "varchar"),
+          {
+            [Op.iLike]: search + "%"
+          },
+        ),
         "$internalBranch.name$": {
           [Op.iLike]: search + "%",
         },
@@ -225,15 +231,12 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         },
         "$state.name$": {
           [Op.iLike]: search + "%",
-        }
+        },
       },
     }],
     isActive: true,
   };
   let includeArray = [{
-    model: models.fileUpload,
-    as: 'panImage'
-  }, {
     model: models.customerKyc,
     as: "customerKyc",
     attributes: ['isKycSubmitted']
@@ -272,7 +275,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
     attributes: { exclude: ['mobileNumber', 'createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
-    order: [["id", "DESC"]],
+    order: [["updatedAt", "DESC"]],
     offset: offset,
     limit: pageSize,
     include: includeArray,
@@ -294,31 +297,28 @@ exports.getSingleCustomer = async (req, res, next) => {
     where: {
       id: customerId,
     },
-    include: [{
-      model: models.fileUpload,
-      as: 'panImage'
-    },
-    {
-      model: models.state,
-      as: "state",
-    },
-    {
-      model: models.city,
-      as: "city",
-    },
-    {
-      model: models.stage,
-      as: "stage",
-    },
-    {
-      model: models.status,
-      as: "status",
-    },
-    {
-      model: models.lead,
-      as: "lead",
-      attributes: ['id', 'leadName']
-    }
+    include: [
+      {
+        model: models.state,
+        as: "state",
+      },
+      {
+        model: models.city,
+        as: "city",
+      },
+      {
+        model: models.stage,
+        as: "stage",
+      },
+      {
+        model: models.status,
+        as: "status",
+      },
+      {
+        model: models.lead,
+        as: "lead",
+        attributes: ['id', 'leadName']
+      }
     ],
   });
   if (check.isEmpty(singleCustomer)) {
@@ -375,6 +375,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
       [Op.or]: {
         first_name: { [Op.iLike]: search + "%" },
         last_name: { [Op.iLike]: search + "%" },
+        customer_unique_id: { [Op.iLike]: search + "%" },
         mobile_number: { [Op.iLike]: search + "%" },
         pan_card_number: { [Op.iLike]: search + "%" },
         "$city.name$": {
@@ -389,8 +390,8 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
   };
 
   let includeArray = [{
-    model: models.customerLoan,
-    as: 'customerLoan',
+    model: models.customerLoanMaster,
+    as: 'masterLoan',
     where: { loanStageId: stageId.id },
     attributes: [],
   }, {
@@ -458,13 +459,19 @@ exports.getsingleCustomerManagement = async (req, res) => {
         }]
       },
       {
-        model: models.customerLoan,
-        as: 'customerLoan',
+        model: models.customerLoanMaster,
+        as: 'masterLoan',
         where: { loanStageId: stageId.id },
-        include: [{
-          model: models.customerLoanNomineeDetail,
-          as: 'loanNomineeDetail'
-        }]
+        include: [
+          {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            where: { isActive: true }
+          }, {
+            model: models.customerLoanNomineeDetail,
+            as: 'loanNomineeDetail'
+          }
+        ]
       }
     ]
   })

@@ -9,7 +9,7 @@ const _ = require('lodash');
 // add internal branch
 
 exports.addInternalBranch = async (req, res) => {
-    const { name, cityId, stateId, address, pinCode, partnerId, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, passbookStatementChequeId } = req.body;
+    const { name, cityId, stateId, address, pinCode, partnerId, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, passbookStatementCheque } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let nameExist = await models.internalBranch.findOne({ where: { name, isActive: true } })
@@ -19,7 +19,7 @@ exports.addInternalBranch = async (req, res) => {
     }
 
     await sequelize.transaction(async t => {
-        let addInternalBranch = await models.internalBranch.create({ name, cityId, stateId, address, pinCode, createdBy, modifiedBy, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, passbookStatementChequeId }, { transaction: t });
+        let addInternalBranch = await models.internalBranch.create({ name, cityId, stateId, address, pinCode, createdBy, modifiedBy, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, passbookStatementCheque }, { transaction: t });
         let id = addInternalBranch.dataValues.id;
         let newId = addInternalBranch.dataValues.name.slice(0, 3).toUpperCase() + '-' + id;
         await models.internalBranch.update({ internalBranchUniqueId: newId }, { where: { id }, transaction: t });
@@ -56,11 +56,20 @@ exports.readInternalBranch = async (req, res) => {
         },
         isActive: true,
     }
+
+    if (offset !== 1 && pageSize !== -1 ) { 
+        whereCondition = { 
+            where: searchQuery, 
+            order: [["updatedAt", "DESC"]],
+            offset: offset,
+            limit: pageSize, }
+        } else {
+            whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] } 
+        }
+
+
     let readInternalBranch = await models.internalBranch.findAll({
-        where: searchQuery,
-        order: [["id", "DESC"]],
-        offset: offset,
-        limit: pageSize,
+        whereCondition,
         include: [
             {
                 model: models.partner,
@@ -93,10 +102,6 @@ exports.readInternalBranch = async (req, res) => {
                 where: {
                     isActive: true
                 }
-            },
-            {
-                model: models.fileUpload,
-                as: "passbookStatementCheque",  
             }
         ],
         subQuery: false
@@ -133,21 +138,32 @@ exports.readInternalBranch = async (req, res) => {
                 where: {
                     isActive: true
                 }
-            },
-            {
-                model: models.fileUpload,
-                as: "passbookStatementCheque",  
             }
         ],
     });
 
-    if (!readInternalBranch) {
-        res.status(200).json({
-            data: [],
-            count: 0
-        })
-    }
-    return res.status(200).json({ data: readInternalBranch, count: count });
+    if (offset !== 1 && pageSize !== -1 ) { 
+
+        if (!readInternalBranch) {
+            res.status(200).json({
+                data: [],
+                count: 0
+            })
+        }else{
+            return res.status(200).json({ data: readInternalBranch, count: count.length });
+        }
+      } else {
+        return res.status(200).json({ data: readInternalBranch});
+
+      }
+
+    // if (!readInternalBranch) {
+    //     res.status(200).json({
+    //         data: [],
+    //         count: 0
+    //     })
+    // }
+    
 }
 
 // read internal branch by id
@@ -189,11 +205,6 @@ exports.readInternalBranchById = async (req, res) => {
                     isActive: true
                 }
             },
-            {
-                model: models.fileUpload,
-                as: "passbookStatementCheque",  
-            }
-
         ]
     });
     if (!readInternalBranchById) {
@@ -206,14 +217,14 @@ exports.readInternalBranchById = async (req, res) => {
 
 exports.updateInternalBranch = async (req, res) => {
     const internalBranchId = req.params.id;
-    const { name, cityId, stateId, pinCode, address, partnerId, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, passbookStatementChequeId } = req.body;
+    const { name, cityId, stateId, pinCode, address, partnerId, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, passbookStatementCheque } = req.body;
     let modifiedBy = req.userData.id;
     // if (!updateInternalBranch[0]) {
     //     return res.status(404).json({ message: 'internal branch updated failed' });
     // } else {
     await sequelize.transaction(async t => {
 
-        let updateInternalBranch = await models.internalBranch.update({ name, cityId, stateId, pinCode, address, modifiedBy, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, passbookStatementChequeId }, { where: { id: internalBranchId, isActive: true }, transaction: t });
+        let updateInternalBranch = await models.internalBranch.update({ name, cityId, stateId, pinCode, address, modifiedBy, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, passbookStatementCheque }, { where: { id: internalBranchId, isActive: true }, transaction: t });
         let readInternalBranchData = await models.internalBranchPartner.findAll({
             where: { internalBranchId: internalBranchId },
             attributes: ['partnerId']

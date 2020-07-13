@@ -114,8 +114,8 @@
                                     Required field
                                 </mat-error>
                                 <mat-error
-                                    *ngIf="controls.accountNumber.errors?.minlength && controls.accountNumber.touched">
-                                    'Minimum 9 or maximum 18 digits required"
+                                    *ngIf="controls.accountNumber.errors?.pattern && controls.accountNumber.touched">
+                                    <small>Invalid Input</small>
                                 </mat-error>
                             </div>
                         </div>
@@ -142,7 +142,8 @@
                             </div>
                         </div>
                         <div class="row kt-margin-b-20">
-                            <div class="col kt-padding-l-20 offset-4">
+                            <div class="col kt-padding-l-20"
+                                [class.offset-4]="controls.passbookProofImage.value.length < 2">
                                 <div class="row">
                                     <div *ngIf="!controls.passbookProofImage.value.length" class="img-container"
                                         style="width: 250px;">
@@ -150,12 +151,12 @@
                                             src="../../../../../../../assets/media/icons/image-placeholder.png"
                                             class="placeholder-image">
                                     </div>
-        
+
                                     <div *ngIf="controls.passbookProofImage.value.length" class="">
                                         <div class="d-inline-block img-container kt-margin-r-15"
                                             *ngFor="let proof of controls.passbookProofImage.value; index as idx;">
                                             <img class="fetched-image" [src]="proof">
-                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt="" *ngIf="url != 'view-loan'"
                                                 class="kt-pointer remove-icon" (click)="removeImages(idx);">
                                         </div>
                                     </div>
@@ -167,7 +168,7 @@
                         </div>
                     </div>
                 </div>
-               
+
             </span>
 
 
@@ -177,4 +178,3 @@
         </div>
     </div>
 </form>
-   

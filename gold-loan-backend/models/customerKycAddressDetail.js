@@ -41,10 +41,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'address_proof_type_id'
         },
-        // addressProof: {
-        //     type: DataTypes.ARRAY(DataTypes.INTEGER),
-        //     field: 'address_proof'
-        // },
+        addressProof: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'address_proof'
+        },
         addressProofNumber: {
             type: DataTypes.STRING,
             field: 'address_proof_number',
@@ -84,18 +84,20 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        CustomerKycAddressDetail.hasMany(models.addressProofImage, { foreignKey: 'customerKycAddressDetailId', as: 'addressProofImage' });
 
     }
 
 
     CustomerKycAddressDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.addressProofImage) {
-            for (image of values.addressProofImage) {
-                image.addressProof.URL = baseUrlConfig.BASEURL + image.addressProof.path;
+        let addressProofImage = []
+        if (values.addressProof) {
+            for (imgUrl of values.addressProof) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                addressProofImage.push(URL)
             }
         }
+        values.addressProofImage = addressProofImage
         return values;
     }
 

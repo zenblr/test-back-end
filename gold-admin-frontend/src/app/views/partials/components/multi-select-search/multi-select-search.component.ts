@@ -63,6 +63,7 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 			this.form.reset();
 
 		}
+		console.log(changes)
 		// if(changes.style && changes.style.currentValue){
 
 		// }
@@ -97,15 +98,25 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 
 	selectAllCheckBox(event) {
 		this.items.forEach(res => {
-			if (event.target.checked) { 
+			if (event.target.checked) {
 				const selected = this.items;
 				this.form.get('multiSelect').patchValue(selected);
 				console.log(selected)
-			
+
 			} else {
 				this.form.get('multiSelect').patchValue([]);
 
 			}
 		})
+	}
+
+	isChecked() {
+		if (this.form.get('multiSelect').value && this.form.get('multiSelect').value.length) {
+			if (this.form.get('multiSelect').value.length == this.items.length) {
+				return true
+			}
+		} else {
+			return false
+		}
 	}
 }

@@ -1,3 +1,1 @@
-schemeName,schemaType,default,processingChargePer,processingChargeAmt,maximumPerAllow,penalInterest,AmountStart,AmountEnd,InterestRateThirtyDaysMonthly,InterestRateNinetyDaysMonthly,InterestRateOneHundredEightyDaysMonthly
-Premium,secure,FALSE,10,50000,69,10,100000,200000,1.33,1.5,1.65
-Express,unsecure,FALSE,20,40000,65,12,150000,200000,1.22,1.6,1.75
+schemeName,schemeType,default,processingChargePer,processingChargeAmt,maximumPerAllow,penalInterest,AmountStart,AmountEnd,InterestRateThirtyDaysMonthly,InterestRateNinetyDaysMonthly,InterestRateOneHundredEightyDaysMonthlyPremium,secured,FALSE,10,50000,69,10,100000,200000,1.33,1.5,1.65Express,unsecured,FALSE,20,40000,65,12,150000,200000,1.22,1.6,1.75

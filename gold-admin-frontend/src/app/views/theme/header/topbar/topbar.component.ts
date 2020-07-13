@@ -554,6 +554,22 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			// this.permissionType = "schemeAdd";
 		}
+		if (this.path == 'part-release-approval') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
+		if (this.path == 'full-release-approval') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
+		if (this.path == 'part-release-final') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
+		if (this.path == 'full-release-final') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
 		if (location.href.includes("edit-refund-details")) {
 			this.showBackButton = true;
 		}
@@ -618,6 +634,13 @@ export class TopbarComponent implements OnInit {
 			this.showBackButton = true;
 		}
 		if (location.href.includes('/admin/repayment/part-release')) {
+			this.showBackButton = true;
+		}
+		if (this.path == 'top-up-approval') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
+		if (location.href.includes('/admin/repayment/full-release')) {
 			this.showBackButton = true;
 		}
 	}

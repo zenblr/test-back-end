@@ -39,8 +39,8 @@ export class AppliedLoanService {
   }
 
 
-  getBankDetails(loanId): Observable<any> {
-    return this.http.get(`/api/loan-process/disbursement-loan-bank-detail?loanId=${loanId}`).pipe(
+  getBankDetails(loanId,masterLoanId): Observable<any> {
+    return this.http.get(`/api/loan-process/disbursement-loan-bank-detail?loanId=${loanId}&masterLoanId=${masterLoanId}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) {

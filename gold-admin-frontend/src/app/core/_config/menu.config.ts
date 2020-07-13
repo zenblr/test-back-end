@@ -289,6 +289,12 @@ export class MenuConfig {
 									page: "/admin/loan-management/all-loan",
 									bullet: 'dot',
 									permission: !this.permissionsArr.includes('loanDetailsView'),
+								},
+								{
+									title: "Transfer Loan List",
+									page: "/admin/loan-management/transfer-loan-list",
+									bullet: 'dot',
+									// permission: !this.permissionsArr.includes('loanDetailsView'),
 								}
 							],
 						},
@@ -335,6 +341,59 @@ export class MenuConfig {
 									title: "Loan Repayment Details",
 									page: "/admin/account/loan-repayment",
 									permission: false,
+								},
+							],
+						},
+						{
+							title: "Funds and Approvals",
+							root: true,
+							src: "assets/media/aside-icons/icons-12.svg",
+							bullet: 'dot',
+							permission: false,
+							submenu: [
+								{
+									title: "Deposit",
+									page: "/admin/funds-approvals/deposit",
+									permission: false,
+								},
+								{
+									title: "Top-Up Approval",
+									page: "/admin/funds-approvals/top-up-approval",
+									permission: false,
+								},
+								{
+									title: "Jewellery Release Approval",
+									permission: false,
+									bullet: 'dot',
+									submenu: [
+										{
+											title: "Part Release Approval",
+											page: "/admin/funds-approvals/part-release-approval",
+											permission: false,
+										},
+										{
+											title: "Full Release Approval",
+											page: "/admin/funds-approvals/full-release-approval",
+											permission: false,
+										},
+									]
+								},
+								{
+									title: "Jewellery Release Final Process",
+									permission: false,
+									bullet: 'dot',
+									submenu: [
+										{
+											title: "Part Release Approved List",
+											page: "/admin/funds-approvals/part-release-final",
+											permission: false,
+										},
+										{
+											title: "Full Release Final Process",
+											page: "/admin/funds-approvals/full-release-final",
+											permission: false,
+										},
+									]
 								},
 							],
 						},

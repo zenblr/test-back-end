@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
+        masterLoanId: {
+            type: DataTypes.INTEGER,
+            field: 'master_loan_id',
+            allowNull: false
+        },
         ornamentTypeId: {
             type: DataTypes.INTEGER,
             field: 'ornament_type_id'
@@ -29,25 +34,25 @@ module.exports = (sequelize, DataTypes) => {
             field: 'deduction_weight'
         },
         weightMachineZeroWeight: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'weight_machine_zero_weight'
         },
         withOrnamentWeight: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'with_ornament_weight'
         },
         stoneTouch: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'stone_touch'
         },
         acidTest: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'acid_test'
         },
-        // purityTest: {
-        //     type: DataTypes.ARRAY(DataTypes.INTEGER),
-        //     field: 'purity_test'
-        // },
+        purityTest: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'purity_test'
+        },
         karat: {
             type: DataTypes.STRING,
             field: 'karat'
@@ -61,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'ltv_range'
         },
         ornamentImage: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'ornament_image'
         },
         ltvPercent: {
@@ -79,6 +84,10 @@ module.exports = (sequelize, DataTypes) => {
         loanAmount: {
             type: DataTypes.STRING,
             field: 'loan_amount'
+        },
+        ornamentFullAmount:{
+            type: DataTypes.STRING,
+            field: 'ornament_full_amount'
         },
         finalNetWeight: {
             type: DataTypes.STRING,
@@ -105,45 +114,40 @@ module.exports = (sequelize, DataTypes) => {
 
     customerLoanOrnamentsDetail.associate = function (models) {
         customerLoanOrnamentsDetail.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'loan' });
+        customerLoanOrnamentsDetail.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
         customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'weightMachineZeroWeight', as: 'weightMachineZeroWeightData' });
-        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'withOrnamentWeight', as: 'withOrnamentWeightData' });
-        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'stoneTouch', as: 'stoneTouchData' });
-        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'acidTest', as: 'acidTestData' });
-        customerLoanOrnamentsDetail.belongsTo(models.fileUpload, { foreignKey: 'ornamentImage', as: 'ornamentImageData' });
-
         customerLoanOrnamentsDetail.belongsTo(models.ornamentType, { foreignKey: 'ornamentTypeId', as: 'ornamentType' });
-
-        customerLoanOrnamentsDetail.hasMany(models.purityTestImage, { foreignKey: 'customerLoanOrnamentsDetailId', as: 'purityTestImage' });
 
     }
 
     customerLoanOrnamentsDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.weightMachineZeroWeightData) {
-            values.weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + values.weightMachineZeroWeightData.path;
+        if (values.weightMachineZeroWeight) {
+            values.weightMachineZeroWeightData = baseUrlConfig.BASEURL + values.weightMachineZeroWeight;
         }
-        if (values.withOrnamentWeightData) {
-            values.withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.withOrnamentWeightData.path;
+        if (values.withOrnamentWeight) {
+            values.withOrnamentWeightData = baseUrlConfig.BASEURL + values.withOrnamentWeight;
         }
-        if (values.stoneTouchData) {
-            values.stoneTouchData.URL = baseUrlConfig.BASEURL + values.stoneTouchData.path;
+        if (values.stoneTouch) {
+            values.stoneTouchData = baseUrlConfig.BASEURL + values.stoneTouch;
         }
-        if (values.acidTestData) {
-            values.acidTestData.URL = baseUrlConfig.BASEURL + values.acidTestData.path;
+        if (values.acidTest) {
+            values.acidTestData = baseUrlConfig.BASEURL + values.acidTest;
         }
-        if (values.ornamentImageData) {
-            values.ornamentImageData.URL = baseUrlConfig.BASEURL + values.ornamentImageData.path;
+        if (values.ornamentImage) {
+            values.ornamentImageData = baseUrlConfig.BASEURL + values.ornamentImage;
         }
-
-        if (values.purityTestImage) {
-            for (image of values.purityTestImage) {
-                image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.path;
+        let purityTestImage = []
+        if (values.purityTest) {
+            for (imgUrl of values.purityTest) {
+                let URL = baseUrlConfig.BASEURL + imgUrl;
+                purityTestImage.push(URL)
             }
         }
+        values.purityTestImage = purityTestImage
 
         return values;
     }

@@ -126,7 +126,7 @@
                         <div class="col-6">
                             <div class="row kt-margin-t-15 kt-padding-l-10">
                                 <div class="col-4 form-label">
-                                    <label class="my-auto text-color mandatory ">WM 00 wt.</label>
+                                    <label class="my-auto text-color ">WM 00 wt.</label>
                                 </div>
                                 <div class="col-4 form-label">
                                     <label *ngIf="ornament.controls.weightMachineZeroWeight.value"
@@ -161,7 +161,7 @@
                         <div class="col-6">
                             <div class="row kt-margin-t-15">
                                 <div class="col-4 form-label">
-                                    <label class="my-auto text-color mandatory ">With Ornament</label>
+                                    <label class="my-auto text-color ">With Ornament</label>
                                 </div>
                                 <div class="col-4 form-label">
                                     <label *ngIf="ornament.controls.withOrnamentWeight.value"
@@ -191,7 +191,7 @@
                         <div class="col-6">
                             <div class="row kt-margin-t-15 kt-padding-l-10">
                                 <div class="col-4 form-label">
-                                    <label class="my-auto text-color mandatory ">Stone Touch</label>
+                                    <label class="my-auto text-color ">Stone Touch</label>
                                 </div>
                                 <div class="col-4 form-label">
                                     <label *ngIf="ornament.controls.stoneTouch.value"
@@ -222,7 +222,7 @@
                         <div class="col-6">
                             <div class="row kt-margin-t-15">
                                 <div class="col-4 form-label">
-                                    <label class="my-auto text-color mandatory ">Acid Test</label>
+                                    <label class="my-auto text-color ">Acid Test</label>
                                 </div>
                                 <div class="col-4 form-label">
                                     <label *ngIf="ornament.controls.acidTest.value"
@@ -249,7 +249,7 @@
                         <div class="col-6">
                             <div class="row kt-margin-t-15 kt-padding-l-10">
                                 <div class="col-4 form-label">
-                                    <label class="my-auto text-color mandatory ">Purity Test</label>
+                                    <label class="my-auto text-color">Purity Test</label>
                                 </div>
                                 <div class="col-4 form-label"
                                     *ngIf="ornament.controls.purityTestImage.touched && ornament.controls.purityTestImage.invalid">
@@ -258,22 +258,27 @@
                                         class="my-auto text-primary text-center kt-padding-l-15 kt-pointer"
                                         (click)="preview(ornament.controls.purityTestImage.value,idx)">View Image</label> -->
                                     <mat-error class="kt-padding-l-10">
-                                        <span *ngIf="ornament.controls.purityTestImage.errors?.required">Upload Image</span>
+                                        <span *ngIf="ornament.controls.purityTestImage.errors?.required">Upload
+                                            Image</span>
                                     </mat-error>
                                 </div>
                                 <div class="col-7">
-                                    <span class="my-auto kt-padding-l-5 kt-pointer"
-                                        *ngFor="let img of ornament.controls.purityTestImage.value;index as purityIndex">
-                                        <img [src]="img" class="" height="35" width="35" (click)="preview(img,idx)">
-                                        <span *ngIf="!disable" class="pos"
-                                            (click)="removeImage('purityTestImage',idx,purityIndex)">x</span>
-                                    </span>
+                                    <ng-container *ngIf="isArray(ornament.controls.purityTestImage.value)">
+                                        <span class="my-auto kt-padding-l-5 kt-pointer"
+                                            *ngFor="let img of ornament.controls.purityTestImage.value;index as purityIndex">
+                                            <img [src]="img" class="" height="35" width="35" (click)="preview(img,idx)">
+                                            <span *ngIf="!disable" class="pos"
+                                                (click)="removeImage('purityTestImage',idx,purityIndex)">x</span>
+                                        </span>
+                                    </ng-container>
+
                                 </div>
                                 <div class="col-1 text-right min-height-attach">
                                     <input type="file" #purity class="d-none"
                                         (change)="uploadFile(idx,$event,'purityTestImage')">
-                                    <kt-button *ngIf="ornament.controls.purityTestImage.value.length == 0" [type]="'button'"
-                                        [value]="'Attach'" (click)="webcam(idx,$event,'purityTestImage')"></kt-button>
+                                    <kt-button *ngIf="ornament.controls.purityTestImage.value.length == 0"
+                                        [type]="'button'" [value]="'Attach'"
+                                        (click)="webcam(idx,$event,'purityTestImage')"></kt-button>
                                     <div class="form-label">
                                         <button *ngIf="ornament.controls.purityTestImage.value.length > 0 && !disable"
                                             class="my-auto img-add kt-pointer"
@@ -398,12 +403,12 @@
     </mat-tab-group>
 </div>
 
-<div class="row kt-margin-t-10">
+<div class="row kt-margin-t-10" *ngIf="!data?.modal">
     <div class="col-12">
         <mat-divider></mat-divider>
     </div>
 </div>
-<div class="row justify-content-center">
+<div class="row justify-content-center"  *ngIf="!data?.modal">
     <div class="col-12 py-2">
         <h3 class="text-center my-3">
             <b>
@@ -413,7 +418,7 @@
         </h3>
     </div>
 </div>
-<div class="row">
+<div class="row"  *ngIf="!data?.modal">
     <div class="col-12 kt-margin-b-10">
         <mat-divider></mat-divider>
     </div>

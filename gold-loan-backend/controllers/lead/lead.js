@@ -33,9 +33,9 @@ exports.getLead = async (req, res, next) => {
     };
     let whereCondition;
     if (getAll == "true") {
-        whereCondition = {  where: { isActive: true }, order: [['id', 'DESC']] }
+        whereCondition = {  where: { isActive: true }, order: [["updatedAt", "DESC"]] }
     } else if (getAll == "false") {
-        whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
+        whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] }
     } else if (getAll == undefined) {
         if (offset !== 1 && pageSize !== -1 ) { 
         whereCondition = { 

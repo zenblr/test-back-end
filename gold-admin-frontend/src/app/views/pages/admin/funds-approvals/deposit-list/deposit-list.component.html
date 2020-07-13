@@ -1,0 +1,75 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="transactionId">
+                    <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="bankTransactionId">
+                    <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="loanId">
+                    <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="depositDate">
+                    <mat-header-cell *matHeaderCellDef>Deposit Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="fullName">
+                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="mobileNumber">
+                    <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="modeOfPayment">
+                    <mat-header-cell *matHeaderCellDef>Mode of Payment</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="depositBankName">
+                    <mat-header-cell *matHeaderCellDef>Deposit Bank Name</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="depositAmount">
+                    <mat-header-cell *matHeaderCellDef>Deposit Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="depositStatus">
+                    <mat-header-cell *matHeaderCellDef>Deposit Status</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+            </mat-table>
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+        <div class="mat-table__bottom d-none">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>
