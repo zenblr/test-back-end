@@ -50,10 +50,10 @@ export class AddInternalUserBranchComponent implements OnInit {
 
   setTitle() {
     if (this.data.action == 'add') {
-      this.title = 'Add Internal User'
+      this.title = 'Add Internal User Branch'
       this.button = 'add'
     } else if (this.data.action == 'edit') {
-      this.title = 'Edit Internal User'
+      this.title = 'Edit Internal User Branch'
       this.button = 'update'
       this.addInternalBranchForm.patchValue(this.data.branch)
       console.log(this.data.branch)
@@ -84,7 +84,7 @@ export class AddInternalUserBranchComponent implements OnInit {
       accountNumber: ['', Validators.required],
       passbookStatementCheque: [],
       passbookImg: [],
-      passbookImgName: ['', Validators.required],
+      passbookImgName: [''],
     })
   }
 
