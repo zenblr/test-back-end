@@ -291,7 +291,7 @@ export class MenuConfig {
 									permission: !this.permissionsArr.includes('loanDetailsView'),
 								},
 								{
-									title: "Transfer Loan List",
+									title: "Loan Transfer List",
 									page: "/admin/loan-management/transfer-loan-list",
 									bullet: 'dot',
 									// permission: !this.permissionsArr.includes('loanDetailsView'),

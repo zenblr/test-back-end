@@ -4,6 +4,7 @@ import { CustomerClassificationService } from '../../../../../core/kyc-settings/
 import { map } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoanTransferService } from '../../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kt-loan-transfer',
@@ -12,34 +13,75 @@ import { LoanTransferService } from '../../../../../core/loan-management/loan-tr
 })
 export class LoanTransferComponent implements OnInit {
 
-  customerDetail:any
+  customerDetail: any
   selected: number;
   approvalForm: FormGroup;
   disbursalForm: FormGroup;
   masterAndLoanIds: any;
   branchManager: { value: string; name: string; }[];
   reasons: any[] = [];
+  id: any;
+  laonTransferDetails: any
+  disabled = [false, true, true, true]
   constructor(
     private custClassificationService: CustomerClassificationService,
     private sharedService: SharedService,
     private fb: FormBuilder,
-    private loanTransferService: LoanTransferService
+    private loanTransferService: LoanTransferService,
+    private rout: ActivatedRoute,
+    private router:Router
   ) {
+    this.id = this.rout.snapshot.params.id;;
+    if (this.id) {
+      this.getSingleDetails(this.id)
+    }
     this.sharedService.getStatus().subscribe(res => {
       this.branchManager = res.bm
     })
+    
   }
 
 
-  getSingleDetails(event){
-    this.loanTransferService.getSingleUserData(event).subscribe(res=>{
+  getSingleDetails(event) {
+    this.loanTransferService.getSingleUserData(event).subscribe(res => {
+      if (res.data) {
+        this.laonTransferDetails = res.data
+        if (res.data.masterLoan.loanTransfer.loanTransferCurrentStage) {
+          let stage = res.data.masterLoan.loanTransfer.loanTransferCurrentStage;
+          this.selected = Number(stage) - 1;
 
+          this.approvalForm.patchValue(res.data.masterLoan.loanTransfer)
+          console.log(this.approvalForm.value)
+          if (res.data.masterLoan.loanTransfer.reasonByBM) {
+            this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByBM })
+            let temp = this.reasons.filter(reason => {
+              return reason.description == res.data.masterLoan.loanTransfer.reasonByBM
+            })
+            
+            if (!temp.length) {
+              this.approvalForm.patchValue({ reason: "Other" })
+            }else{
+            this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByBM })
+            }
+          }
+
+          this.disbursalForm.patchValue(res.data.masterLoan.loanTransfer)
+          this.disbursalForm.patchValue(res.data)
+        }
+        this.masterAndLoanIds = { loanId: res.data.masterLoan.id, masterLoanId: res.data.masterLoanId }
+      }
     })
   }
 
   ngOnInit() {
     this.initForms()
     this.getReasonsList()
+    this.approvalForm.controls.loanTransferStatusForBM.valueChanges.subscribe((res)=>{
+      if(res == 'approved'){
+        this.approvalForm.controls.reasonByBM.reset()
+        this.approvalForm.controls.reason.reset()
+      }
+    })
   }
 
   initForms() {
@@ -85,6 +127,10 @@ export class LoanTransferComponent implements OnInit {
     this.loanTransferService.approval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
       if (res) {
         this.disbursalForm.patchValue(res)
+        if(res.loanCurrentStage){
+          let stage = Number(res.loanCurrentStage) - 1
+          this.next(stage)
+        }
       }
     }, err => {
 
@@ -99,7 +145,7 @@ export class LoanTransferComponent implements OnInit {
 
     this.loanTransferService.disbursal(this.disbursalForm.value, this.masterAndLoanIds).subscribe(res => {
       if (res) {
-        this.disbursalForm.patchValue(res)
+        this.router.navigate(['/admin/loan-management/transfer-loan-list'])
       }
     }, err => {
 
@@ -111,6 +157,13 @@ export class LoanTransferComponent implements OnInit {
       this.selected = event.index;
     } else {
       this.selected = event;
+    }
+    for (let index = 0; index < this.disabled.length; index++) {
+      if (this.selected >= index) {
+        this.disabled[index] = false
+      } else {
+        this.disabled[index] = true
+      }
     }
   }
 }
