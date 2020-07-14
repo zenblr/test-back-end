@@ -433,7 +433,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 return res.status(200).json({ message: 'success' })
             }
         } else {
-            let approvedStageId = await models.loanStage.findOne({ where: { name: 'operational team rating' } })
+            let approvedStageId = await models.loanStage.findOne({ where: { name: 'OPS team rating' } })
 
             if (loanStatusForBM === 'approved') {
                 if (applicationFormForBM == false || goldValuationForBM == false) {
@@ -482,13 +482,13 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
                 return res.status(200).json({ message: 'success' })
             } else {
-                let rejectedStageId = await models.loanStage.findOne({ where: { name: 'operational team rating' } })
+                let rejectedStageId = await models.loanStage.findOne({ where: { name: 'OPS team rating' } })
 
                 await sequelize.transaction(async (t) => {
                     await models.customerLoanMaster.update(
                         { applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, loanStatusForOperatinalTeam, commentByOperatinalTeam, loanStageId: rejectedStageId.id, operatinalTeamId, modifiedBy },
                         { where: { id: masterLoanId }, transaction: t })
-                        
+
                     await models.customerLoanHistory.create({ loanId, masterLoanId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
 
                 })
@@ -929,7 +929,7 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
     })
     let amount;
     if (loan.loanType == 'secured') {
-        amount = checkLoan.securedLoanAmount
+        amount = Number(checkLoan.securedLoanAmount) - Number(checkLoan.processingCharge)
     } else if (loan.loanType == 'unsecured') {
         amount = checkLoan.unsecuredLoanAmount
     }
@@ -961,7 +961,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
     let Loan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['paymentFrequency'],
+        attributes: ['paymentFrequency', 'processingCharge'],
         order: [
             [models.customerLoanInterest, "id", "asc"],
         ],
@@ -1011,6 +1011,12 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     if (loanDetails.loanStageId == matchStageId.id) {
 
         await sequelize.transaction(async (t) => {
+
+            // let minusAmount = await models.customerLoan.findOne({ where: { id: loanId }, transaction: t })
+
+            // if (minusAmount.loanType == "secured") {
+                await models.customerLoan.update({ disbursementAmount: loanAmount }, { where: { id: loanId }, transaction: t })
+            // }
 
             await models.customerLoanMaster.update({ loanStartDate: newStartDate, loanEndDate: newEndDate }, { where: { id: masterLoanId }, transaction: t })
 
