@@ -46,6 +46,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'disbursed',
             defaultValue: false
         },
+        disbursementAmount: {
+            type: DataTypes.STRING,
+            field:'disbursement_amount'
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'

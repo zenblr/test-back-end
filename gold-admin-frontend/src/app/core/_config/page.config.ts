@@ -133,6 +133,21 @@ export class PageConfig {
 				"deposit": {
 					page: { title: "Deposit", desc: "" },
 				},
+				"top-up-approval": {
+					page: { title: "Top Up Approval", desc: "" },
+				},
+				"part-release-approval": {
+					page: { title: "Part Release Approval", desc: "" },
+				},
+				"full-release-approval": {
+					page: { title: "Full Release Approval", desc: "" },
+				},
+				"part-release-final": {
+					page: { title: "Part Release Approved List", desc: "" },
+				},
+				"full-release-final": {
+					page: { title: "Full Release Final Process", desc: "" },
+				},
 			},
 			repayment: {
 				monthly: {

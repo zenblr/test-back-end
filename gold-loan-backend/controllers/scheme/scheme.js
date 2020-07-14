@@ -72,6 +72,11 @@ exports.readScheme = async (req, res, next) => {
         query.isActive = isActive;
         readSchemeData = await models.partner.findAll({
             where: { isActive: true },
+            order: [
+                ['id', 'asc'],
+                [models.scheme, 'id', 'desc']
+
+            ],
             include: [
                 {
                     model: models.scheme,
@@ -83,6 +88,10 @@ exports.readScheme = async (req, res, next) => {
     } else {
         readSchemeData = await models.partner.findAll({
             where: { isActive: true },
+            order: [
+                ['id', 'asc'],
+                [models.scheme, 'id', 'desc']
+            ],
             include: [
                 {
                     model: models.scheme,
@@ -140,6 +149,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
         include: [{
             model: models.scheme,
             where: {
+                isActive: true,
                 schemeType: "secured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
@@ -164,6 +174,7 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
         include: [{
             model: models.scheme,
             where: {
+                isActive: true,
                 schemeType: "unsecured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
@@ -184,6 +195,11 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
 
 exports.deactiveScheme = async (req, res, next) => {
     const { id, isActive } = req.query;
+
+    let defaultSchemeCheck = await models.scheme.findOne({ where: { isActive: true, default: true, id: id } });
+    if (!check.isEmpty(defaultSchemeCheck)) {
+        return res.status(400).json({ message: "Please select one default scheme with respect to that partner." })
+    }
 
     const deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
 
@@ -245,6 +261,13 @@ exports.filterScheme = async (req, res, next) => {
 exports.UpdateDefault = async (req, res, next) => {
     let { id } = req.params;
     let { partnerId } = req.body;
+
+    let schemeDefault = await models.scheme.findOne({where: {id: id}});
+
+    if(schemeDefault.isActive == false){
+        return res.status(400).json({message: "You can not set deactivate scheme as a default."})
+    }
+
     let readSchemeByPartner = await models.partner.findOne({
         where: { isActive: true, id: partnerId },
         include: [{
