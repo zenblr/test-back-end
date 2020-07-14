@@ -73,7 +73,7 @@ exports.loanTransferBasicDeatils = async (req, res, next) => {
         await models.customerLoanTransferHistory.create({ loanTransferId: createLoanTransfer.id, action: loanTransferHistory.BASIC_DETAILS_SUBMIT, createdBy, modifiedBy }, { transaction: t })
         let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '1', createdBy, modifiedBy, loanTransferId: createLoanTransfer.id }, { transaction: t })
         let loan = await models.customerLoan.create({ customerId, masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
-        await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, purpose: "Loan transfer", customerUniqueId, startDate, kycStatus, createdBy, modifiedBy }, { transaction: t })
+        await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, customerUniqueId, startDate, kycStatus, createdBy, modifiedBy }, { transaction: t })
         return loan
     })
     return res.status(200).json({ message: 'success', loanId: loanData.id, masterLoanId: loanData.masterLoanId, loanCurrentStage: '2' })
@@ -307,7 +307,7 @@ exports.customerDetailsLoanTransfer = async (req, res, next) => {
         include: [{
             model: models.customerLoanTransfer,
             as: "loanTransfer",
-            where: {loanTransferCurrentStage: 5 },
+            where: {loanTransferCurrentStage: '5' },
         }]
     });
     let loanTransfer = true;
