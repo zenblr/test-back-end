@@ -21,7 +21,10 @@ export class RazorpayPaymentService {
         this.zone.run(() => { });
       })
     },
-    prefill: {},
+    prefill: {
+      contact: '',
+      email: '',
+    },
     notes: {
       address: ''
     },
