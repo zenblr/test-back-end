@@ -79,7 +79,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnInit() {
 
-    this.url = this.router.url.split('/')[2]
+    this.url = this.router.url.split('/')[3]
     this.getKarat()
     this.initForm()
   }
@@ -339,7 +339,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string,) {
+  uploadFile(index, event, string, ) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {

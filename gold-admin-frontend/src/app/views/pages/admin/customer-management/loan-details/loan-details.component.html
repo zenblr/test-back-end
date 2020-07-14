@@ -106,44 +106,47 @@
                                     <div class="text-color font-weight-500">{{ornaments.quantity}} Pcs</div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">Gross WL</div>
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Gross Wt.</div>
                                     <div class="text-color font-weight-500">{{ornaments.grossWeight}} Gram</div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">Net WL</div>
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Net Wt.</div>
                                     <div class="text-color font-weight-500">{{ornaments.netWeight}} Gram</div>
                                 </div>
                             </div>
                             <div class="row kt-margin-t-25">
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">Decudtion WL</div>
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Deduction Wt.</div>
                                     <div class="text-color font-weight-500">{{ornaments.deductionWeight}} Gram</div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">WM 00 wt.</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">WM 00 Wt.</div>
+                                    <div *ngIf="ornaments.weightMachineZeroWeight"
+                                        class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.weightMachineZeroWeight,idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">With Ornaments</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div *ngIf="ornaments.withOrnamentWeight"
+                                        class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.withOrnamentWeight,idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Stone Touch</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div *ngIf="ornaments.stoneTouch" class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.stoneTouch,idx)">View Image</div>
                                 </div>
                             </div>
                             <div class="row kt-margin-t-25">
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Acid Test</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div *ngIf="ornaments.acidTest" class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.acidTest,idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">Ornament Type</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Purity Test</div>
+                                    <div *ngIf="ornaments.purityTest.length"
+                                        class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.purityTest[0],idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
@@ -231,15 +234,32 @@
             </div>
             <div class="row">
                 <div class="col-4">
-                    <img class="packets" [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage">
+                    <div class="pdf">
+                        <iframe
+                            [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="false" height="255"></iframe>
+                    </div>
+                    <img *ngIf="true" class="packets"
+                        [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
                 </div>
                 <div class="col-4">
-                    <img class="packets" [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage">
+                    <div class="pdf">
+                        <iframe [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="true" height="255"></iframe>
+                    </div>
+                    <img *ngIf="false" class="packets"
+                        [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage">
+
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy</label>
                 </div>
                 <div class="col-4">
-                    <img class="packets"
+                    <div class="pdf">
+                        <iframe
+                            [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="true" height="255"></iframe>
+                    </div>
+                    <img *ngIf="false" class="packets"
                         [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
                     </label>
