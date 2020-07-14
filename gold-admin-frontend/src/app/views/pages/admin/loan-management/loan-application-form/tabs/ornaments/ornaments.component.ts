@@ -274,6 +274,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       currentGoldRate: [this.goldRate]
     }))
     this.createImageArray()
+    this.selected = this.OrnamentsData.length;
   }
 
   createImageArray() {
@@ -534,6 +535,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         for (let index = 0; index < array.length; index++) {
           const controls = this.OrnamentsData.at(index) as FormGroup;
           controls.controls.id.patchValue(res.ornaments[index].id)
+        }
+        if(res.loanTransferData){
+          this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
         }
         this.next.emit(3)
       })

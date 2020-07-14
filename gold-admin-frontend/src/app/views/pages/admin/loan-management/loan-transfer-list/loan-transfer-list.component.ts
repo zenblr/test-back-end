@@ -15,7 +15,7 @@ import { LoanTranferDatasource } from '../../../../../core/loan-management/loan-
 export class LoanTransferListComponent implements OnInit {
 
   dataSource: LoanTranferDatasource;
-  displayedColumns = ['fullName', 'customerID', 'loanId', 'mobile', 'date', 'amount', 'status'];
+  displayedColumns = ['fullName', 'customerID', 'loanId', 'mobile', 'date', 'amount', 'status','actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -81,6 +81,10 @@ export class LoanTransferListComponent implements OnInit {
 
   navigate(loan) {
     this.router.navigate(['/admin/loan-management/loan-transfer/', loan.customerLoan[0].id])
+  }
+
+  applyLoan(loan){
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { transferLoanCustomerID: loan.customer.customerUniqueId } })
   }
 
 }

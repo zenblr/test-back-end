@@ -79,10 +79,14 @@ export class LoanTransferComponent implements OnInit {
     this.approvalForm.controls.loanTransferStatusForBM.valueChanges.subscribe((res)=>{
       if(res == 'approved'){
         this.approvalForm.controls.reasonByBM.reset()
+        this.approvalForm.controls.reasonByBM.clearValidators()
+        this.approvalForm.controls.reasonByBM.updateValueAndValidity()
         this.approvalForm.controls.reason.reset()
       }
     })
   }
+
+  
 
   initForms() {
     this.approvalForm = this.fb.group({

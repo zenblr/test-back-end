@@ -181,14 +181,17 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         if (this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex]) {
           temp.push(this.splicedOrnaments[ornamnetsIndex])
           this.splicedOrnaments.splice(ornamnetsIndex, 1)
-          ornamnetsIdIndex = 0;
+          this.ornamentId.splice(ornamnetsIdIndex, 1)
+          ornamnetsIndex = 0;
+          ornamnetsIndex = 0;
         }
       }
     }
 
     setTimeout(() => {
+      console.log(temp)
       this.ornamentTypeData = temp;
-    }, 500)
+    }, 200)
 
   }
 
