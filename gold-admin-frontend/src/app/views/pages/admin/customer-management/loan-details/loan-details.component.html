@@ -231,16 +231,25 @@
             </div>
             <div class="row">
                 <div class="col-4">
+                    <iframe [src]="documentsForm.controls.loanAgreementCopyImage.value | safe : 'resourceUrl'"
+                         scrolling="no" *ngIf="false"></iframe>
                     <img class="packets" [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
                 </div>
                 <div class="col-4">
-                    <img class="packets" [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage">
+                    <div class="d-inline-block  pdf kt-margin-r-15">
+                        <iframe [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage | safe : 'resourceUrl'"
+                        scrolling="no" *ngIf="true" height="195"></iframe>
+                    </div>
+                    
+                    <!-- <img class="packets" [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage"> -->
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy</label>
                 </div>
                 <div class="col-4">
-                    <img class="packets"
-                        [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage">
+                    <iframe [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
+                         scrolling="no" *ngIf="true"></iframe>
+                    <!--<img class="packets"
+                         [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage"> -->
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
                     </label>
 
