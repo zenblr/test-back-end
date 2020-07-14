@@ -335,7 +335,11 @@ export class AddLeadComponent implements OnInit {
         this.checkforVerfication()
         this.leadForm.markAllAsTouched();
         if (this.controls.panImage.invalid) {
-          this.toastr.errorToastr('Image not Uploaded')
+          if (this.controls.panType.value == 'pan') {
+            this.toastr.errorToastr('Upload PAN Image')
+          } else if (this.controls.panType.value == 'form60') {
+            this.toastr.errorToastr('Upload Form 60 Image')
+          }
         }
         console.log(this.leadForm.value)
         return
