@@ -63,7 +63,10 @@ exports.loanBasicDeatils = async (req, res, next) => {
     let stageId = await models.loanStage.findOne({ where: { name: 'applying' } })
 
     if (masterLoanId != null) {
-        let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+        let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
+        if(customerLoanMaster.loanTransferId != null){
+            await models.customerLoanTransfer.update({ isLoanApplied: true, modifiedBy },{where:{id:customerLoanMaster.loanTransferId}});
+        }
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanMaster.id, loanType: 'secured' } })
         if (!check.isEmpty(customerLoanMaster)) {
             return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })

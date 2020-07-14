@@ -172,6 +172,28 @@
  *         description: This customer Did not assign in to anyone/This customer is not assign to you
  *       404:
  *         description: no customer details found
+ * /loan-transfer/apply-loan/{customerUniqueId}:
+ *   get:
+ *     tags:
+ *       - Customer Loan Transfer
+ *     summary: To read customer loan details by customer unique Id while apply loan
+ *     parameters:
+ *     - name: "customerUniqueId"
+ *       in: "path"
+ *       description: "Id of customer Unique Id to read"
+ *       required: true
+ *       type: string
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: customer details fetch successfully.
+ *       400:
+ *         description: This customer Did not assign in to anyone/This customer is not assign to you
+ *       404:
+ *         description: no customer details found
  * /loan-transfer/single-loan:
  *   get:
  *     tags:
