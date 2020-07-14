@@ -112,26 +112,26 @@
             <div class="col" *ngIf="!show">
                 <div class="row">
                     <div class="col-10">
-                        <div class="img-container width" *ngIf="!documentsForm.controls.loanAgreementCopy.value.length">
+                        <div class="img-container width" *ngIf="!controls?.loanAgreementCopy?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
 
-                        <div class="" *ngIf="documentsForm.controls.loanAgreementCopy.value.length">
-                            <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.loanAgreementCopyImage.value"
+                        <div class="" *ngIf="controls?.loanAgreementCopy?.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15"
+                                (click)="preview(controls?.loanAgreementCopyImage?.value)">
+                                <img class="fetched-image" [src]="controls?.loanAgreementCopyImage?.value"
                                     *ngIf="!pdf.loanAgreementCopy"
-                                    (click)="preview(documentsForm.controls.loanAgreementCopyImage.value)">
+                                    (click)="preview(controls?.loanAgreementCopyImage?.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer remove-icon" *ngIf="url != 'view-loan'"
                                     (click)="editImages('loanAgreementCopy');">
                                 <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
                                     *ngIf="pdf.loanAgreementCopy"
-                                    (click)="preview(documentsForm.controls.loanAgreementCopy.value)"> -->
-                                <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.loanAgreementCopy"
-                                    [pdfSrc]="documentsForm.controls.loanAgreementCopyImage.value"
-                                    (click)="preview(documentsForm.controls.loanAgreementCopyImage.value)">
-                                </kt-pdf-viewer>
+                                    (click)="preview(controls?.loanAgreementCopy.value)"> -->
+                                <iframe
+                                    [src]="controls?.loanAgreementCopyImage.value | safe : 'resourceUrl'"
+                                    height="250" width="290" scrolling="no" *ngIf="pdf.loanAgreementCopy"></iframe>
                             </div>
                         </div>
                     </div>
@@ -141,23 +141,26 @@
             <div class="col">
                 <div class="row">
                     <div class="col-10">
-                        <div class="img-container width" *ngIf="!documentsForm.controls.pawnCopyImage.value">
+                        <div class="img-container width" *ngIf="!controls?.pawnCopyImage?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
 
-                        <div class="" *ngIf="documentsForm.controls.pawnCopyImage.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.pawnCopyImage.value"
-                                    *ngIf="!pdf.pawnCopy" (click)="preview(documentsForm.controls.pawnCopyImage.value)">
+                        <div class="" *ngIf="controls?.pawnCopyImage?.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15"
+                                (click)="preview(controls?.pawnCopyImage?.value)">
+                                <img class="fetched-image" [src]="controls?.pawnCopyImage?.value"
+                                    *ngIf="!pdf.pawnCopy">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer remove-icon" *ngIf="url != 'view-loan'"
                                     (click)="editImages('pawnCopy');">
                                 <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
-                                    (click)="preview(documentsForm.controls.pawnCopy.value)"> -->
-                                <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnCopy"
-                                    [pdfSrc]="documentsForm.controls.pawnCopyImage.value"
-                                    (click)="preview(documentsForm.controls.pawnCopyImage.value)"></kt-pdf-viewer>
+                                    (click)="preview(controls?.pawnCopy.value)"> -->
+                                <iframe [src]="controls?.pawnCopyImage?.value | safe : 'resourceUrl'"
+                                    height="250" width="290" scrolling="no" *ngIf="pdf.pawnCopy"></iframe>
+                                <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnCopy"
+                                    [pdfSrc]="controls?.pawnCopyImage.value"
+                                    (click)="preview(controls?.pawnCopyImage.value)"></kt-pdf-viewer> -->
                             </div>
                         </div>
                     </div>
@@ -168,27 +171,23 @@
                 <div class="row">
                     <div class="col-10">
                         <div class="img-container width"
-                            *ngIf="!documentsForm.controls.schemeConfirmationCopyImage.value">
+                            *ngIf="!controls?.schemeConfirmationCopyImage?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
 
-                        <div class="" *ngIf="documentsForm.controls.schemeConfirmationCopyImage.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15">
+                        <div class="" *ngIf="controls?.schemeConfirmationCopyImage?.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15"
+                                (click)="preview(controls?.schemeConfirmationCopyImage?.value)">
                                 <img class="fetched-image"
-                                    [src]="documentsForm.controls.schemeConfirmationCopyImage.value"
-                                    *ngIf="!pdf.schemeConfirmationCopy"
-                                    (click)="preview(documentsForm.controls.schemeConfirmationCopyImage.value)">
+                                    [src]="controls?.schemeConfirmationCopyImage?.value"
+                                    *ngIf="!pdf.schemeConfirmationCopy">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer remove-icon" *ngIf="url != 'view-loan'"
                                     (click)="editImages('schemeConfirmationCopy');">
-                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
-                                    *ngIf="pdf.schemeConfirmationCopy"
-                                    (click)="preview(documentsForm.controls.schemeConfirmationCopy.value)"> -->
-                                <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.schemeConfirmationCopy"
-                                    [pdfSrc]="documentsForm.controls.schemeConfirmationCopyImage.value"
-                                    (click)="preview(documentsForm.controls.schemeConfirmationCopyImage.value)">
-                                </kt-pdf-viewer>
+                                <iframe *ngIf="pdf.schemeConfirmationCopy"
+                                    [src]="controls?.schemeConfirmationCopyImage?.value | safe : 'resourceUrl'"
+                                    height="250" width="290" scrolling="no"></iframe>
                             </div>
                         </div>
                     </div>
@@ -198,24 +197,25 @@
             <div class="col" *ngIf="show">
                 <div class="row">
                     <div class="col-10">
-                        <div class="img-container width" *ngIf="!documentsForm.controls.signedChequeImage.value">
+                        <div class="img-container width" *ngIf="!controls?.signedChequeImage?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
 
-                        <div class="" *ngIf="documentsForm.controls.signedChequeImage.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.signedChequeImage.value"
+                        <div class="" *ngIf="controls?.signedChequeImage?.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15"
+                                (click)="preview(controls?.signedChequeImage?.value)">
+                                <img class="fetched-image" [src]="controls?.signedChequeImage?.value"
                                     *ngIf="!pdf.signedCheque"
-                                    (click)="preview(documentsForm.controls.signedChequeImage.value)">
+                                    (click)="preview(controls?.signedChequeImage?.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt="" *ngIf="url != 'view-loan'"
                                     class="kt-pointer remove-icon" (click)="editImages('signedCheque');">
-                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
-                                    *ngIf="pdf.signedCheque"
-                                    (click)="preview(documentsForm.controls.signedCheque.value)"> -->
-                                <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.signedCheque"
-                                    [pdfSrc]="documentsForm.controls.signedChequeImage.value"
-                                    (click)="preview(documentsForm.controls.signedChequeImage.value)"></kt-pdf-viewer>
+                                <iframe *ngIf="pdf.signedCheque"
+                                    [src]="controls?.signedChequeImage?.value | safe : 'resourceUrl'"
+                                    height="250" width="290" scrolling="no"></iframe>
+                                <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.signedCheque"
+                                    [pdfSrc]="controls?.signedChequeImage.value"
+                                    (click)="preview(controls?.signedChequeImage.value)"></kt-pdf-viewer> -->
                             </div>
                         </div>
                     </div>
@@ -225,26 +225,24 @@
             <div class="col" *ngIf="show">
                 <div class="row">
                     <div class="col-10">
-                        <div class="img-container width" *ngIf="!documentsForm.controls.declaration.value">
+                        <div class="img-container width" *ngIf="!controls?.declaration?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
 
-                        <div class="" *ngIf="documentsForm.controls.declaration.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15">
-                                <img class="fetched-image" [src]="documentsForm.controls.declarationCopyImage.value"
+                        <div class="" *ngIf="controls?.declaration?.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15"
+                                (click)="preview(controls?.declarationCopyImage?.value)">
+                                <img class="fetched-image" [src]="controls?.declarationCopyImage?.value"
                                     *ngIf="!pdf.declaration"
-                                    (click)="preview(documentsForm.controls.declarationCopyImage.value)">
+                                    (click)="preview(controls?.declarationCopyImage?.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer remove-icon" *ngIf="url != 'view-loan'"
                                     (click)="editImages('declaration');">
-                                <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.declaration"
-                                    [pdfSrc]="documentsForm.controls.declarationCopyImage.value"
-                                    (click)="preview(documentsForm.controls.declarationCopyImage.value)">
-                                </kt-pdf-viewer>
-                                <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
-                                    *ngIf="pdf.declaration"
-                                    (click)="preview(documentsForm.controls.declaration.value)"> -->
+                                <iframe *ngIf="pdf.declaration"
+                                    [src]="controls?.declarationCopyImage?.value | safe : 'resourceUrl'"
+                                    height="250" width="290" scrolling="no"></iframe>
+
                             </div>
                         </div>
                     </div>
