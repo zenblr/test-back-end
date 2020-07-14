@@ -126,7 +126,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.packetService.getPacketsAvailable().pipe(
       map(res => {
         this.packetsDetails = res.data;
-
+        this.ref.detectChanges()
       })
     ).subscribe()
     // this.packetsDetails = [{ packetUniqueId: 'PAC-2', id: 2 }, { packetUniqueId: 'PAC-2', id: 1 }]
@@ -176,14 +176,14 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.packets.controls.splice(idx, 1)
     let temp = this.ornamentTypeData;
     this.ornamentTypeData = []
+    for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < this.ornamentId.length; ornamnetsIdIndex++) {
     for (let ornamnetsIndex = 0; ornamnetsIndex < this.splicedOrnaments.length; ornamnetsIndex++) {
-      for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < this.ornamentId.length; ornamnetsIdIndex++) {
+        console.log(this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex])
         if (this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex]) {
           temp.push(this.splicedOrnaments[ornamnetsIndex])
           this.splicedOrnaments.splice(ornamnetsIndex, 1)
-          this.ornamentId.splice(ornamnetsIdIndex, 1)
-          ornamnetsIndex = 0;
-          ornamnetsIndex = 0;
+          // this.ornamentId.splice(ornamnetsIdIndex, 1)
+          // ornamnetsIndex = 0;
         }
       }
     }
