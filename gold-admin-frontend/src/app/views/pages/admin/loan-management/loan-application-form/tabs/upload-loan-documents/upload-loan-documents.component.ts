@@ -29,11 +29,11 @@ export class UploadLoanDocumentsComponent implements OnInit {
   @ViewChild('signedCheque', { static: false }) signedCheque
   @ViewChild('declaration', { static: false }) declaration
   pdf = {
-    loanAgreementCopy: true,
-    pawnCopy: true,
-    schemeConfirmationCopy: true,
-    signedCheque: true,
-    declaration: true
+    loanAgreementCopy: false,
+    pawnCopy: false,
+    schemeConfirmationCopy: false,
+    signedCheque: false,
+    declaration: false
   }
   documentsForm: FormGroup
   show: boolean;
@@ -48,8 +48,8 @@ export class UploadLoanDocumentsComponent implements OnInit {
     public loanService: LoanApplicationFormService,
     private ref: ChangeDetectorRef,
     private loanTransferFormService: LoanTransferService,
-    private el:ElementRef,
-    private renderer:Renderer
+    private el: ElementRef,
+    private renderer: Renderer
   ) {
     this.url = (this.router.url.split("/")[3]).split("?")[0]
     if (this.url == "loan-transfer") {
@@ -61,10 +61,10 @@ export class UploadLoanDocumentsComponent implements OnInit {
 
     }
 
-    
+
   }
-  
- 
+
+
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
@@ -78,47 +78,53 @@ export class UploadLoanDocumentsComponent implements OnInit {
           pawnCopy: documents.pawnCopyImage[0],
           schemeConfirmationCopy: documents.schemeConfirmationCopyImage[0],
         })
-        setTimeout(() => {
-          Object.keys(this.documentsForm.value).forEach(value => {
-            console.log()
-            let pdf = this.documentsForm.value[value]
-            if (pdf) {
-              let ext = pdf.split('.')
-              console.log(ext)
-              if (ext[ext.length - 1] == 'pdf') {
-                this.pdf[value] = true
-                this.ref.detectChanges()
-              } else {
-                this.pdf[value] = false
-              }
-              console.log(value)
-            }
-          })
-        }, 500)
+        this.pdfCheck()
 
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       let documents = changes.loanTransfer.currentValue.masterLoan.loanTransfer
       if (documents) {
-        this.documentsForm.patchValue(documents)
+        // this.documentsForm.patchValue(documents)
         this.documentsForm.patchValue({
           declarationCopyImage: documents.declaration[0],
           signedChequeImage: documents.signedCheque[0],
           pawnCopyImage: documents.pawnTicket[0],
-          pawnCopy: documents.pawnTicket[0]
+          pawnCopy: documents.pawnTicket[0],
+          outstandingLoanAmount:documents.outstandingLoanAmount,
+          declaration:documents.declaration[0],
+          signedCheque:documents.signedCheque[0]
         })
         this.url = 'view-loan'
+        this.pdfCheck()
       }
     }
   }
 
 
+  pdfCheck() {
+    Object.keys(this.documentsForm.value).forEach(value => {
+      console.log()
+      let pdf = this.documentsForm.value[value]
+      if (typeof pdf == 'string' && pdf) {
+        let ext = pdf.split('.')
+        console.log(ext)
+        if (ext[ext.length - 1] == 'pdf') {
+          this.pdf[value] = true
+          this.ref.detectChanges()
+        } else {
+          this.pdf[value] = false
+        }
+        console.log(value)
+      }
+    })
+  }
+
   ngOnInit() {
     this.documentsForm = this.fb.group({
-      loanAgreementCopy: [[]],
-      pawnCopy: [[], Validators.required],
-      schemeConfirmationCopy: [[]],
+      loanAgreementCopy: [],
+      pawnCopy: [, Validators.required],
+      schemeConfirmationCopy: [],
       signedCheque: [],
       declaration: [],
       loanAgreementImageName: [],

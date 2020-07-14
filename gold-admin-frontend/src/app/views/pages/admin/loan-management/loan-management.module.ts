@@ -83,6 +83,10 @@ const rout: Routes = [
     component: LoanTransferComponent
   },
   {
+    path: 'loan-transfer/:id',
+    component: LoanTransferComponent
+  },
+  {
     path: 'transfer-loan-list',
     component: LoanTransferListComponent
   }
