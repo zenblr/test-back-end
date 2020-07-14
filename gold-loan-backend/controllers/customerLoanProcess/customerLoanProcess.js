@@ -940,7 +940,7 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         userBankDetail: userBankDetails,
         branchBankDetail: brokerBankDetails,
         paymentType: userBankDetails.paymentType,
-        finalLoanAmount: amount,
+        finalLoanAmount: Math.round(amount),
         loanId,
         masterLoanId
     }
