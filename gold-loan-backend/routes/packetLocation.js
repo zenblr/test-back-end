@@ -3,15 +3,16 @@ var router = express.Router();
 
 const { wrapper } = require('../utils/errorWrap');
 
-const { addPacketLocation, getPacketLocation,  updatePacketLocation ,deactivatePacketLoaction } = require('../controllers/packetLocation/packetLoaction');
+const { addPacketLocation, getPacketLocation, updatePacketLocation, deactivatePacketLoaction } = require('../controllers/packetLocation/packetLoaction');
 const checkAuth = require('../middleware/checkAuth');
+const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 
-router.post('/', checkAuth, wrapper(addPacketLocation));
+router.post('/', checkAuth, checkRolePermission, wrapper(addPacketLocation));
 
 router.get('/', checkAuth, wrapper(getPacketLocation));
 
-router.put('/:id', checkAuth, wrapper(updatePacketLocation))
+router.put('/:id', checkAuth, checkRolePermission, wrapper(updatePacketLocation))
 
-router.delete('/', checkAuth, wrapper(deactivatePacketLoaction))
+router.delete('/', checkAuth, checkRolePermission, wrapper(deactivatePacketLoaction))
 module.exports = router;

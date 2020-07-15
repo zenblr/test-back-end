@@ -37,40 +37,34 @@ exports.addInternalBranch = async (req, res) => {
 // read internal branch
 exports.readInternalBranch = async (req, res) => {
 
-    const { search, offset, pageSize } =
-        paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+    if (req.query.from == 1 && req.query.to == -1) {
+        let readInternalBranch = await models.internalBranch.findAll({
+            where: { isActive: true }
+        });
+        return res.status(200).json({ data: readInternalBranch });
+    } else {
 
-    const searchQuery = {
-        [Op.or]: {
-            name: { [Op.iLike]: search + '%' },
-            pinCode: sequelize.where(
-                sequelize.cast(sequelize.col("internalBranch.pin_code"), "varchar"),
-                {
-                    [Op.iLike]: search + "%",
-                }
-            ),
-            "$city.name$": { [Op.iLike]: search + '%' },
-            "$state.name$": { [Op.iLike]: search + '%' },
-            // "$Createdby.first_name$": { [Op.iLike]: search + '%' },
-            // "$Modifiedby.first_name$": { [Op.iLike]: search + '%' }
-        },
-        isActive: true,
-    }
+        const { search, offset, pageSize } =
+            paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
-    if (offset !== 1 && pageSize !== -1 ) { 
-        whereCondition = { 
-            where: searchQuery, 
-            order: [['id', 'DESC']],
-            offset: offset,
-            limit: pageSize, }
-        } else {
-            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] } 
+        const searchQuery = {
+            [Op.or]: {
+                name: { [Op.iLike]: search + '%' },
+                pinCode: sequelize.where(
+                    sequelize.cast(sequelize.col("internalBranch.pin_code"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                "$city.name$": { [Op.iLike]: search + '%' },
+                "$state.name$": { [Op.iLike]: search + '%' },
+                // "$Createdby.first_name$": { [Op.iLike]: search + '%' },
+                // "$Modifiedby.first_name$": { [Op.iLike]: search + '%' }
+            },
+            isActive: true,
         }
 
-
-    let readInternalBranch = await models.internalBranch.findAll({
-        whereCondition,
-        include: [
+        const includeArray = [
             {
                 model: models.partner,
                 attributes: ['id', 'name', 'partnerId']
@@ -103,67 +97,35 @@ exports.readInternalBranch = async (req, res) => {
                     isActive: true
                 }
             }
-        ],
-        subQuery: false
+        ]
+
+        let readInternalBranch = await models.internalBranch.findAll({
+            where: searchQuery,
+            include: includeArray,
+            order: [["updatedAt", "DESC"]],
+            offset: offset,
+            limit: pageSize,
+            subQuery: false
 
 
-    });
-    let count = await models.internalBranch.count({
-        where: searchQuery,
-        include: [
-            {
-                model: models.user,
-                as: "Createdby",
-                where: {
-                    isActive: true
-                }
-            },
-            {
-                model: models.user,
-                as: "Modifiedby",
-                where: {
-                    isActive: true
-                }
-            },
-            {
-                model: models.city,
-                as: "city",
-                where: {
-                    isActive: true
-                }
-            },
-            {
-                model: models.state,
-                as: "state",
-                where: {
-                    isActive: true
-                }
-            }
-        ],
-    });
+        });
+        let count = await models.internalBranch.findAll({
+            where: searchQuery,
+            include: includeArray
+        });
 
-    if (offset !== 1 && pageSize !== -1 ) { 
 
         if (!readInternalBranch) {
             res.status(200).json({
                 data: [],
                 count: 0
             })
-        }else{
-            return res.status(200).json({ data: allLead, count: count.length });
+        } else {
+            return res.status(200).json({ data: readInternalBranch, count: count.length });
         }
-      } else {
-        return res.status(200).json({ data: readInternalBranch});
+    }
 
-      }
 
-    // if (!readInternalBranch) {
-    //     res.status(200).json({
-    //         data: [],
-    //         count: 0
-    //     })
-    // }
-    
 }
 
 // read internal branch by id

@@ -57,6 +57,8 @@ export class ViewPayComponent implements OnInit {
         this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
         this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
         this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
+        this.razorpayPaymentService.razorpayOptions.prefill.contact = this.orderData.customerDetails.mobileNumber;
+        this.razorpayPaymentService.razorpayOptions.prefill.email = this.orderData.customerDetails.email || 'info@augmont.in';
         this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
         this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
       },

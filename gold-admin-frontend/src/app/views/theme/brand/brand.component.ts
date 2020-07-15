@@ -4,8 +4,9 @@ import { AfterViewInit, Component, OnInit, ChangeDetectorRef } from '@angular/co
 import { LayoutConfigService, ToggleOptions } from '../../../core/_base/layout';
 import { HtmlClassService } from '../html-class.service';
 import { UploadOfferService } from '../../../core/upload-data';
-import { tap } from 'rxjs/operators';
+import { tap, filter } from 'rxjs/operators';
 import { GoldRateService } from '../../../core/upload-data/gold-rate/gold-rate.service';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
 	selector: 'kt-brand',
@@ -20,6 +21,7 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	headerLogo: string;
 	headerStickyLogo: string;
 	height: number;
+	showGoldRateFlag = false;
 
 	toggleOptions: ToggleOptions = {
 		target: 'body',
@@ -36,15 +38,21 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	 * @param htmlClassService: HtmlClassService
 	 */
 	constructor(private layoutConfigService: LayoutConfigService, public htmlClassService: HtmlClassService,
-		public goldRateService: GoldRateService, private ref: ChangeDetectorRef) {
+		public goldRateService: GoldRateService, private ref: ChangeDetectorRef, private router: Router) {
+
+		this.router.events
+			.pipe(filter(event => event instanceof NavigationEnd))
+			.subscribe(event => {
+				this.hideGoldRate();	
+			});
 
 		this.goldRateService.getGoldRate().pipe(
 			tap(res => {
 				// console.log(res)
 				this.rate = res.goldRate;
 				this.goldRateService.goldRate.next(this.rate);
+				this.hideGoldRate();
 				this.ref.detectChanges();
-
 			})
 		).subscribe(res => {
 
@@ -77,5 +85,13 @@ export class BrandComponent implements OnInit, AfterViewInit {
 	 * On after view init
 	 */
 	ngAfterViewInit(): void {
+	}
+
+	hideGoldRate() {
+		if (this.router.url.includes('/broker/')) {
+			this.showGoldRateFlag = false;
+		} else {
+			this.showGoldRateFlag = true;
+		}
 	}
 }

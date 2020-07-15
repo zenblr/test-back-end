@@ -5,6 +5,7 @@ const validationError = require('../middleware/validationError');
 const express=require('express');
 const route=express.Router();
 const checkAuth=require('../middleware/checkAuth');
+const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 route.post('/',checkAuth,addSmsAlertValidation,validationError,wrapper(addSmsAlert));//add sms alert
 

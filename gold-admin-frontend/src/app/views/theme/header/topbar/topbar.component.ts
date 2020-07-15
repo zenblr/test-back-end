@@ -795,11 +795,11 @@ export class TopbarComponent implements OnInit {
 		this.sortType += 1;
 		if (this.sortType % 2 == 0) {
 			this.sortImg = "../../../../../assets/media/icons/sort (1).svg";
-			this.shopService.sortType.next(true);
+			this.shopService.sortType.next('asc');
 
 		} else {
 			this.sortImg = "../../../../../assets/media/icons/sort.svg";
-			this.shopService.sortType.next(false);
+			this.shopService.sortType.next('desc');
 		}
 	}
 

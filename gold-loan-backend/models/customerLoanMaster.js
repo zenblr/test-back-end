@@ -94,6 +94,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'total_final_interest_amt'
         },
+        fullAmount: {
+            type: DataTypes.STRING,
+            field: 'full_amount'
+        },
         finalLoanAmount: {
             type: DataTypes.STRING,
             field: 'final_loan_amount',
@@ -189,6 +193,8 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        CustomerLoanMaster.hasMany(models.customerLoanHistory, { foreignKey: 'masterLoanId', as: 'customerLoanHistory' });
 
     }
 
