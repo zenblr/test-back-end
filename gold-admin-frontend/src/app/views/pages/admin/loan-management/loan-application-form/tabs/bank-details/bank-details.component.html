@@ -94,6 +94,10 @@
                                     *ngIf="controls.accountHolderName.errors?.required && controls.accountHolderName.touched">
                                     Required field
                                 </mat-error>
+                                <mat-error
+                                    *ngIf="controls.accountHolderName.errors?.pattern && controls.accountHolderName.touched">
+                                    Invalid Input
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -156,8 +160,9 @@
                                         <div class="d-inline-block img-container kt-margin-r-15"
                                             *ngFor="let proof of controls.passbookProofImage.value; index as idx;">
                                             <img class="fetched-image" [src]="proof">
-                                            <img src="../../../../../assets/media/icons/cancel.svg" alt="" *ngIf="url != 'view-loan'"
-                                                class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                *ngIf="url != 'view-loan'" class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx);">
                                         </div>
                                     </div>
                                 </div>
