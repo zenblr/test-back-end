@@ -93,7 +93,7 @@ export class UserAddressComponent implements OnInit {
 
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
-      this.identityProofs = res.filter(filter => filter.name == 'Aadhar Card');
+      this.identityProofs = res.filter(filter => filter.name == 'Aadhaar Card');
     }, err => {
       console.log(err);
     })
@@ -183,7 +183,7 @@ export class UserAddressComponent implements OnInit {
 
   selectAadhar() {
     this.identityProofs.forEach(proof => {
-      if (proof.name == "Aadhar Card") {
+      if (proof.name == "Aadhaar Card") {
         this.controls.identityTypeId.patchValue(proof.id)
       }
     })

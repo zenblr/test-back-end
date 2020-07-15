@@ -44,7 +44,7 @@ exports.updateOrnamentType = async (req, res, next) => {
 
     let ornamentTypeExist = await models.ornamentType.findOne({ where: { name: name, isActive: true } })
     if (!check.isEmpty(ornamentTypeExist)) {
-        return res.status(404).json({ message: 'This Purpose is already Exist' });
+        return res.status(404).json({ message: 'This Ornament is already Exist' });
     }
     let UpdateData = await models.ornamentType.update({ name }, { where: { id: id } })
     if (UpdateData[0] === 0) {

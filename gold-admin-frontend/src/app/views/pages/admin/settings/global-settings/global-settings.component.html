@@ -126,7 +126,8 @@
                 </div> -->
                 </div>
 
-                <div class="row col-6 offset-6 kt-padding-t-40 kt-padding-b-40">
+                <div class="row col-6 offset-6 kt-padding-t-40 kt-padding-b-40"
+                    *ngxPermissionsOnly="['addGlobalSetting']">
                     <kt-button [value]="'Save'" [type]="'submit'" (action)="submit()"></kt-button>
                 </div>
             </form>
