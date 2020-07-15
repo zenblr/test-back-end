@@ -81,7 +81,7 @@ export class AddInternalUserBranchComponent implements OnInit {
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       bankName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
       bankBranch: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
-      accountHolderName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
+      accountHolderName: ['', [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
       accountNumber: ['', [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[1-9]).{3,21}$')]],
       passbookStatementCheque: [],
       passbookImg: ['', Validators.required],
