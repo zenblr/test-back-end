@@ -284,19 +284,19 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Add Holiday";
 			this.showInput = true;
 			this.dataSourceHeader();
-			// this.permissionType = "schemeAdd";
+			this.permissionType = "addHoliday";
 		}
 		if (this.path == "ornaments") {
 			this.value2 = "Add Ornaments";
 			this.type2 = "button";
 			this.rightButton = true;
-			// this.permissionType = "schemeAdd";
+			this.permissionType = "addOrnament";
 		}
 		if (this.path == "reasons") {
 			this.value2 = "Add Reason";
 			this.type2 = "button";
 			this.rightButton = true;
-			// this.permissionType = "schemeAdd";
+			this.permissionType = "addUnapprovalReason";
 		}
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
@@ -381,6 +381,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "packet-location") {
 			this.dataSourceHeader();
 			this.value1 = "Add Packet Location";
+			this.permissionType = "addPacketLocation";
 		}
 		if (this.path == "packet-tracking") {
 			this.dataSourceHeader();
@@ -390,17 +391,19 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add Occupation";
 			this.type2 = "button";
 			this.rightButton = true;
+			this.permissionType = "addOccupation";
 		}
 		if (this.path == "purposes") {
 			this.value2 = "Add Purpose";
 			this.type2 = "button";
 			this.rightButton = true;
+			this.permissionType = "addPurpose";
 		}
 		if (this.path == "lead-source") {
 			this.value1 = "Add Lead Source";
 			this.showInput = true;
 			this.dataSourceHeader();
-			// this.permissionType = "schemeAdd";
+			this.permissionType = "addLeadSource";
 		}
 
 		if (this.path == "roles") {

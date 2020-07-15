@@ -11,10 +11,15 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <div [ngStyle]="{'display': 'inherit'}" *ngIf="item.description !== 'Other'">
-                            <span class="kt-pointer" (click)="editReason(item)">Edit</span>
-                            <div class="px-2">|</div>
-                            <span class="kt-pointer text-danger" (click)="deleteReason(item)">Delete</span>
+                        <div [ngStyle]="{'display': 'inherit'}"
+                            *ngxPermissionsOnly="['editUnapprovalReason', 'deleteUnapprovalReason']">
+                            <ng-container *ngIf="item.description !== 'Other'">
+                                <span *ngxPermissionsOnly="['editUnapprovalReason']" class="kt-pointer"
+                                    (click)="editReason(item)">Edit</span>
+                                <div class="px-2">|</div>
+                                <span *ngxPermissionsOnly="['deleteUnapprovalReason']" class="kt-pointer text-danger"
+                                    (click)="deleteReason(item)">Delete</span>
+                            </ng-container>
                         </div>
                     </mat-cell>
                 </ng-container>
