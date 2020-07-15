@@ -92,7 +92,7 @@ export class SignInWithOtpComponent implements OnInit {
   }
 
   reSend() {
-    this.auth.generateOtp(this.mobile).pipe(
+    this.auth.generateOtp(this.mobile, 'login').pipe(
       tap(response => {
         if (response) {
           this.toastr.successToastr(response.message);
@@ -123,7 +123,7 @@ export class SignInWithOtpComponent implements OnInit {
 
     if (referenceCode && this.router.url == '/auth/otp') {
 
-      this.auth.verifyotp(atob(referenceCode), otp).pipe(
+      this.auth.verifyotp(atob(referenceCode), otp, 'forget').pipe(
         tap(response => {
           this.router.navigate(['/auth/change-password'])
         }), catchError(err => {
@@ -138,7 +138,7 @@ export class SignInWithOtpComponent implements OnInit {
 
     if (referenceCode && this.router.url == '/auth/sign-in-otp') {
 
-      this.auth.signInWithOtp(atob(referenceCode), otp).pipe(
+      this.auth.signInWithOtp(atob(referenceCode), otp, 'login').pipe(
         tap(user => {
           // console.log(user);
           if (user) {
