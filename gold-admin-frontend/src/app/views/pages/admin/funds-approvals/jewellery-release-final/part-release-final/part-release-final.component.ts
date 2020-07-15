@@ -9,6 +9,7 @@ import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { OrnamentsComponent } from '../../../loan-management/loan-application-form/tabs/ornaments/ornaments.component';
 import { AssignAppraiserComponent } from '../../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { PartReleaseFinalDatasource } from '../../../../../../core/funds-approvals/jewellery-release-final/part-release-final/datasources/part-release-final.datasource';
+import { UpdateStatusComponent } from '../../update-status/update-status.component';
 
 @Component({
   selector: 'kt-part-release-final',
@@ -98,6 +99,15 @@ export class PartReleaseFinalComponent implements OnInit {
 
   updateAppraiser(item) {
 
+  }
+
+  openModal() {
+    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'add' }, width: '500px' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        // this.loadPage();
+      }
+    });
   }
 
 }

@@ -651,7 +651,7 @@
                                 <label [class.mandatory]="viewOnly" class="">Gender</label>
                             </div>
                             <div class="col-7">
-                                <select formControlName="gender" class="form-control"
+                                <select formControlName="gender" class="form-control" (change)="ageValidation()"
                                     [class.isError]="customerKycPersonal.controls.gender.touched && customerKycPersonal.controls.gender.invalid">
                                     <option value="" disabled selected> Select </option>
                                     <option value="m">Male</option>
@@ -684,9 +684,16 @@
                                     Required field
                                 </mat-error>
                                 <mat-error
+                                    *ngIf="customerKycPersonal.controls.age.errors?.pattern && customerKycPersonal.controls.age.touched && customerKycPersonal.controls.age.invalid">
+                                    <Small *ngIf="customerKycPersonal.controls.gender.value == 'm'">Age should be 21 and
+                                        above</Small>
+                                    <Small *ngIf="customerKycPersonal.controls.gender.value != 'm'">Age should be 18 and
+                                        above</Small>
+                                </mat-error>
+                                <!-- <mat-error
                                     *ngIf="customerKycPersonal.controls.age.errors?.pattern && customerKycPersonal.controls.age.touched">
                                     Invalid Input
-                                </mat-error>
+                                </mat-error> -->
                             </div>
                         </div>
                     </div>

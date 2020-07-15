@@ -79,7 +79,7 @@ export class UnSecuredSchemeComponent implements OnInit {
         if (scheme.length > 0)
           this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateNinetyDaysMonthly)
 
-        this.paymentType = "Quater"
+        this.paymentType = "Quarter"
         this.colJoin = 3
 
         break;
@@ -95,11 +95,13 @@ export class UnSecuredSchemeComponent implements OnInit {
   }
 
   calculate() {
-    this.unSecuredInterestAmount = (this.details.unsecuredSchemeAmount *
-      (this.controls.unsecuredSchemeInterest.value * 12 / 100)) * this.details.paymentType
-      / 360
-    this.isUnsecuredSchemeChanged = false;
-    this.genrateTable()
+    if (this.isUnsecuredSchemeChanged) {
+      this.unSecuredInterestAmount = (this.details.unsecuredSchemeAmount *
+        (this.controls.unsecuredSchemeInterest.value * 12 / 100)) * this.details.paymentType
+        / 360
+      this.isUnsecuredSchemeChanged = false;
+      this.genrateTable()
+    }
   }
 
   genrateTable() {
@@ -110,8 +112,8 @@ export class UnSecuredSchemeComponent implements OnInit {
         tempIndex += 1;
 
       }
-      else if (index + 1 == length) {
-        this.details.calculation[tempIndex].unsecuredInterestAmount = ((this.unSecuredInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
+      else if (index + 1 == Number(this.details.tenure)) {
+        this.details.calculation[tempIndex].unsecuredInterestAmount = ((this.unSecuredInterestAmount / this.colJoin) * (Number(this.details.tenure) % this.colJoin)).toFixed(2)
         tempIndex += 1;
       }
     }

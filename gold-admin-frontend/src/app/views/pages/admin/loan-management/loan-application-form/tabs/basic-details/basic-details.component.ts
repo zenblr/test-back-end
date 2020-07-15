@@ -34,6 +34,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() totalEligibleAmt: EventEmitter<any> = new EventEmitter();
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
+  @Input() loanTransfer
 
   currentDate: any = new Date();
   url: string;
@@ -59,13 +60,20 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngAfterViewInit() {
     this.rout.queryParams.subscribe(res => {
-      console.log(res)
-      this.controls.customerUniqueId.patchValue(res.customerID)
-      if (res.customerID && this.url == 'loan-application-form') {
-        this.getCustomerDetails()
+      if (res.customerID) {
+        this.controls.customerUniqueId.patchValue(res.customerID)
+        if (res.customerID && this.url == 'loan-application-form') {
+          this.getCustomerDetails()
+        } else {
+          this.basicForm.controls.purpose.clearValidators()
+          this.basicForm.controls.purpose.updateValueAndValidity()
+          this.getCustomerDetailsForTransfer()
+        }
       } else {
-        this.getCustomerDetailsForTransfer()
+        this.controls.customerUniqueId.patchValue(res.transferLoanCustomerID)
+        this.getTransferLoanDetailsToApplyLoan()
       }
+
     })
 
   }
@@ -108,6 +116,14 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.disable()
       this.ref.detectChanges()
     }
+
+    if (changes.loanTransfer && changes.loanTransfer.currentValue) {
+      this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
+      this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
+      this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)
+      this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
+      this.basicForm.patchValue(changes.loanTransfer.currentValue.customer)
+    }
   }
 
 
@@ -120,13 +136,41 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     )
   }
 
+  getTransferLoanDetailsToApplyLoan() {
+    if (this.controls.customerUniqueId.valid) {
+      this.loanTransferFormService.getTransferLoanDetailsToApplyLoan(this.controls.customerUniqueId.value).pipe(
+        map(res => {
+
+          if (res.loanCurrentStage) {
+            let stage = res.loanCurrentStage
+
+            stage = Number(stage) - 1;
+            this.next.emit(stage)
+            this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+            this.basicForm.patchValue({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+            if (stage >= 1) {
+              this.apiHit.emit(res.loanId)
+            } else {
+              this.customerDetail = res.customerData
+              this.basicForm.patchValue(this.customerDetail)
+              this.basicForm.controls.customerId.patchValue(this.customerDetail.id)
+            }
+          }
+        }),
+        catchError(err => {
+          if (err.error.message)
+            this.toast.error(err.error.message)
+          throw err;
+        })
+      ).subscribe()
+    }
+  }
 
   getCustomerDetailsForTransfer() {
     if (this.controls.customerUniqueId.valid) {
       this.loanTransferFormService.getCustomerDetailsForTransfer(this.controls.customerUniqueId.value).pipe(
         map(res => {
-          this.basicForm.controls.purpose.clearValidators()
-          this.basicForm.controls.purpose.updateValueAndValidity()
+
           this.action = "add"
           if (res.loanCurrentStage) {
             let stage = res.loanCurrentStage
@@ -142,11 +186,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
               this.basicForm.controls.customerId.patchValue(this.customerDetail.id)
             }
           }
-          // if (res.totalEligibleAmt)
-          //   this.totalEligibleAmt.emit(res.totalEligibleAmt)
-          // if (res.finalLoanAmount)
-          //   this.finalLoanAmount.emit(res.finalLoanAmount)
-
         }),
         catchError(err => {
           this.toast.error(err.error.message)
@@ -236,7 +275,10 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     } else {
       this.loanTransferFormService.basicSubmit(this.basicForm.value).pipe(
         map(res => {
-          this.next.emit(1)
+          let stage = res.loanCurrentStage
+          stage = Number(stage) - 1;
+          this.next.emit(stage)
+          this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
         }), catchError(err => {
           this.toast.error(err.error.message)
           throw err
