@@ -14,7 +14,7 @@ const moment = require('moment');
 const cache = require('../../utils/cache');
 let sms = require('../../utils/sendSMS');
 let baseUrl = require('../../config/baseUrl');
-const { sendOtpForLogin } = require('../../utils/SMS')
+const { sendOtpForLogin, forgetPasswordOtp } = require('../../utils/SMS')
 
 
 exports.addUser = async (req, res, next) => {
@@ -68,9 +68,10 @@ exports.sendOtp = async (req, res, next) => {
     if (userDetails) {
         let otp = Math.floor(1000 + Math.random() * 9000);
         const referenceCode = await createReferenceCode(5);
-        let createdTime = new Date();
+        let createdTime = moment(new Date());
         let expiryTime = moment.utc(createdTime).add(10, 'm');
 
+        var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
         await sequelize.transaction(async t => {
             await models.userOtp.destroy({ where: { mobileNumber }, transaction: t })
@@ -78,9 +79,9 @@ exports.sendOtp = async (req, res, next) => {
         })
 
         // if (type == "login") {
-        //     await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTime)
+        //     await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
         // }else if(type == "forget"){
-        //     await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTime)
+        //     await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
         // }
         let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
         await sms.sendSms(mobileNumber, message);

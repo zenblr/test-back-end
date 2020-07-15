@@ -8,7 +8,7 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
-
+let { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
 
 exports.addAssignAppraiser = async (req, res, next) => {
 
@@ -21,10 +21,15 @@ exports.addAssignAppraiser = async (req, res, next) => {
     if (!check.isEmpty(existAssign)) {
         return res.status(400).json({ message: `This customer already assign to the appraiser` })
     }
-
+    // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    
     await models.customerAssignAppraiser.create({ customerId, customerUniqueId, appraiserId, createdBy, modifiedBy, appoinmentDate, startTime, endTime });
 
-    let { mobileNumber } = await models.user.findOne({ where: { id: appraiserId } })
+    // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } })
+
+    // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerUniqueId);
+
+    // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
     request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message= customer unique Id ${customerUniqueId} is assign for you`);
 
@@ -37,12 +42,19 @@ exports.editAssignAppraiser = async (req, res, next) => {
 
     let { appraiserId, appoinmentDate, startTime, endTime } = req.body;
 
-    let getAssignCustomer = await models.customerAssignAppraiser.findOne({ where: { id: id } })
+    let getAssignCustomer = await models.customerAssignAppraiser.findOne({ where: { id: id } });
+
+    // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
 
     await models.customerAssignAppraiser.update({ appraiserId, modifiedBy, appoinmentDate, startTime, endTime }, { where: { id: id } });
 
     if (getAssignCustomer.appraiserId != appraiserId) {
-        let { mobileNumber } = await models.user.findOne({ where: { id: appraiserId } })
+        let { mobileNumber, firstName } = await models.user.findOne({ where: { id: appraiserId } })
+
+        // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, getAssignCustomer.customerUniqueId);
+
+        // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+
 
         request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message= customer unique Id ${getAssignCustomer.customerUniqueId} is assign for you`);
     }

@@ -8,6 +8,8 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
 
+let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
+
 const { BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory')
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
@@ -526,6 +528,22 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 await models.customerLoanHistory.create({ loanId, masterLoanId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
 
             })
+
+            // let getCustomer = await models.customerLoanMaster.findOne({
+            //     where: { id: masterLoanId },
+            //     include: [{
+            //         model: models.customer,
+            //         as: 'customer'
+            //     }]
+            // })
+            // let sendId;
+            // if (unsecuredLoanUniqueId != null) {
+            //     sendId = `secured ID : ${loanUniqueId} & unsecured ID : ${unsecuredLoanUniqueId}`
+            // } else {
+            //     sendId = `Loan ID : ${loanUniqueId}`
+            // }
+            // await sendMessageLoanIdGeneration(getCustomer.customer.mobileNumber, getCustomer.customer.firstName, sendId)
+
             return res.status(200).json({ message: 'success' })
         }
     }
@@ -1015,7 +1033,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
             // let minusAmount = await models.customerLoan.findOne({ where: { id: loanId }, transaction: t })
 
             // if (minusAmount.loanType == "secured") {
-                await models.customerLoan.update({ disbursementAmount: loanAmount }, { where: { id: loanId }, transaction: t })
+            await models.customerLoan.update({ disbursementAmount: loanAmount }, { where: { id: loanId }, transaction: t })
             // }
 
             await models.customerLoanMaster.update({ loanStartDate: newStartDate, loanEndDate: newEndDate }, { where: { id: masterLoanId }, transaction: t })
