@@ -97,7 +97,7 @@ export class InterestCalculatorComponent implements OnInit {
             this.loanFormService.finalLoanAmount.next(finalLoan.masterLoan.loanTransfer.disbursedLoanAmount)
           }
 
-          if (changes.details.currentValue.loanStatusForBM == "approved")
+          if (changes.details.currentValue.disbursed)
             this.approved = true;
 
           // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(finalLoan.loanStartDate))
@@ -127,14 +127,15 @@ export class InterestCalculatorComponent implements OnInit {
             this.finalInterestForm.patchValue({ unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id })
             for (let index = 0; index < temp.length; index++) {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
-
+              temp[index].totalAmount = Number(temp[index].securedInterestAmount) + 
+                                        Number(temp[index].unsecuredInterestAmount)
             }
             this.getIntrest()
 
           }
 
           this.dateOfPayment = temp
-          console.log(this.dateOfPayment.length)
+          console.log(this.dateOfPayment)
           this.finalLoanAmount.emit(this.controls.finalLoanAmount.value)
           this.returnScheme()
           this.ref.detectChanges()
@@ -553,6 +554,7 @@ export class InterestCalculatorComponent implements OnInit {
         console.log
         this.selectedUnsecuredscheme = res;
         this.controls.unsecuredSchemeId.patchValue(res[0].id)
+        this.getIntrest()
         this.calcInterestAmount()
         this.CheckProcessingCharge();
         this.generateTable();

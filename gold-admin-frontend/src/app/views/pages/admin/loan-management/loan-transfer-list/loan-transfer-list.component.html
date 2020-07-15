@@ -35,20 +35,24 @@
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <button class="apply-kyc" (click)="applyLoan(loan)">Apply Loan</button></mat-cell>
+                        <button class="apply-kyc" *ngIf="!loan?.loanTransfer?.isLoanApplied && loan?.loanTransfer?.loanTransferCurrentStage == '5'" (click)="applyLoan(loan)">Apply Loan</button></mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef> Loan Transfer Status</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <button  class="primary-button"
-                        *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'incomplete'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
-                        <button  class="warning-button"
-                        *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'pending'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
-                        <button  class="green-button"
-                        *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'approved'">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
-                        <button  class="red-button"
-                        *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'rejected'">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                        <div *ngIf="!loan?.loanTransfer?.isLoanDisbursed">
+                            <button  class="primary-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'incomplete'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                            <button  class="warning-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'pending'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                            <button  class="green-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'approved'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                            <button  class="red-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'rejected'">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                        </div>
+                        <button  class="green-button" *ngIf="loan?.loanTransfer?.isLoanDisbursed"
+                            >DISBURSED</button>
                         
                     </mat-cell>
                 </ng-container>
