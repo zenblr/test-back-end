@@ -91,9 +91,9 @@ export class UploadLoanDocumentsComponent implements OnInit {
           signedChequeImage: documents.signedCheque[0],
           pawnCopyImage: documents.pawnTicket[0],
           pawnCopy: documents.pawnTicket[0],
-          outstandingLoanAmount:documents.outstandingLoanAmount,
-          declaration:documents.declaration[0],
-          signedCheque:documents.signedCheque[0]
+          outstandingLoanAmount: documents.outstandingLoanAmount,
+          declaration: documents.declaration[0],
+          signedCheque: documents.signedCheque[0]
         })
         this.url = 'view-loan'
         this.pdfCheck()
@@ -148,18 +148,20 @@ export class UploadLoanDocumentsComponent implements OnInit {
 
   validation() {
     if (this.show) {
-      this.documentsForm.controls.loanAgreementCopy.setValidators(Validators.required),
-        this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
-      this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
-        this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
-
-    } else {
       this.documentsForm.controls.signedCheque.setValidators(Validators.required),
         this.documentsForm.controls.signedCheque.updateValueAndValidity()
       this.documentsForm.controls.declaration.setValidators(Validators.required),
         this.documentsForm.controls.declaration.updateValueAndValidity()
       this.documentsForm.controls.outstandingLoanAmount.setValidators(Validators.required),
         this.documentsForm.controls.outstandingLoanAmount.updateValueAndValidity()
+
+    } else {
+
+      this.documentsForm.controls.loanAgreementCopy.setValidators(Validators.required),
+        this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
+      this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
+        this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
+
     }
   }
 
@@ -249,9 +251,9 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
 
   save() {
-    if(this.documentsForm.invalid){
+    if (this.documentsForm.invalid) {
       this.documentsForm.markAllAsTouched()
-      return 
+      return
     }
     if (this.url == 'loan-transfer') {
       this.loanTransferFormService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
