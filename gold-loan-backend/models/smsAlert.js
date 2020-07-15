@@ -1,5 +1,5 @@
-module.exports=(sequelize,DataTypes)=>{
-    const SmsAlert=sequelize.define('smsAlert',{
+module.exports = (sequelize, DataTypes) => {
+    const SmsAlert = sequelize.define('smsAlert', {
         alertFor: {
             type: DataTypes.TEXT,
             field: 'alert_for',
@@ -10,12 +10,12 @@ module.exports=(sequelize,DataTypes)=>{
             field: 'content',
             allowNull: false,
         },
-        createdBy:{
+        createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
             allowNull: false,
         },
-        updatedBy:{
+        updatedBy: {
             type: DataTypes.INTEGER,
             field: 'updated_by',
             allowNull: false,
@@ -26,13 +26,16 @@ module.exports=(sequelize,DataTypes)=>{
             defaultValue: true,
         }
     },
-    {
-        freezeTableName: true,
-        tableName: 'sms_alert'
-    });
-    SmsAlert.associate = function(models) {
+        {
+            freezeTableName: true,
+            tableName: 'sms_alert'
+        });
+
+    SmsAlert.associate = function (models) {
         SmsAlert.belongsTo(models.user, { foreignKey: 'createdBy', as: 'createdByUser' });
         SmsAlert.belongsTo(models.user, { foreignKey: 'updatedBy', as: 'updatedByUser' });
     }
+
+    SmsAlert.getSmsTemplate = (alertFor) => SmsAlert.findOne({ where: { alertFor, isActive: true } });
     return SmsAlert;
-    }
+}

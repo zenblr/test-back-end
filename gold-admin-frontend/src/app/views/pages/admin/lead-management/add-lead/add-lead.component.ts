@@ -215,7 +215,7 @@ export class AddLeadComponent implements OnInit {
 
   sendOTP() {
     const mobileNumber = this.controls.mobileNumber.value;
-    this.leadService.sendOtp({ mobileNumber }).subscribe(res => {
+    this.leadService.sendOtp({ mobileNumber, type: 'lead' }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
         this.mobileAlreadyExists = true;
@@ -237,6 +237,7 @@ export class AddLeadComponent implements OnInit {
     const params = {
       otp: this.controls.otp.value,
       referenceCode: this.controls.referenceCode.value,
+      type: 'lead'
     };
     this.leadService.verifyOtp(params).subscribe(res => {
       if (res) {
@@ -270,7 +271,7 @@ export class AddLeadComponent implements OnInit {
   resendOTP() {
     const mobileNumber = this.controls.mobileNumber.value;
     // use send function OTP for resend OTP
-    this.leadService.sendOtp({ mobileNumber }).subscribe(res => {
+    this.leadService.sendOtp({ mobileNumber, type: 'lead' }).subscribe(res => {
       if (res) {
         this.otpSent = true;
         this.refCode = res.referenceCode;

@@ -33,8 +33,12 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({
+    extended: true,
+    limit: '50mb',
+    parameterLimit: 1000000
+}));
 // app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -63,11 +67,11 @@ app.use(function (err, req, res, next) {
 
     models.errorLogger.create({
         message: err.message,
-        url:req.url,
-        method:req.method,
+        url: req.url,
+        method: req.method,
         host: req.hostname,
-        body:req.body,
-        userData:req.userData
+        body: req.body,
+        userData: req.userData
     })
 
     // set locals, only providing error in development

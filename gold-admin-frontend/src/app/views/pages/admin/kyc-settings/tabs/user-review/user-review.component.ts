@@ -632,7 +632,7 @@ export class UserReviewComponent implements OnInit {
 
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
-      this.identityProofs = res.filter(filter => filter.name == 'Aadhar Card');
+      this.identityProofs = res.filter(filter => filter.name == 'Aadhaar Card');
     })
   }
 
@@ -673,7 +673,6 @@ export class UserReviewComponent implements OnInit {
   getOccupation() {
     this.userPersonalService.getOccupation().subscribe(res => {
       this.occupations = res;
-    }, err => {
     })
   }
 
@@ -750,7 +749,7 @@ export class UserReviewComponent implements OnInit {
                   this.ref.markForCheck();
                 }
                 else if (type == "profile") {
-                  this.data.customerKycReview.customerKycPersonal.profileImage = res.uploadFile.URL;
+                  this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL;
                   this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.path })
                   this.ref.markForCheck();
                 }
@@ -804,7 +803,7 @@ export class UserReviewComponent implements OnInit {
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
           console.log(res)
           this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL
-          this.customerKycPersonal.get('profileImage').patchValue(this.data.customerKycReview.customerKycPersonal.profileImg);
+          this.customerKycPersonal.get('profileImage').patchValue(res.uploadFile.path);
           this.ref.detectChanges()
         })
       }

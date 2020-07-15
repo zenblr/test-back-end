@@ -98,7 +98,7 @@ exports.singleSignOnBroker = async (req, res, next) => {
                                 res.cookie(`modules`,`${JSON.stringify(modules)}`);
                                 res.cookie(`permissions`,`${JSON.stringify(permissions)}`);
                                 res.cookie(`userDetails`,`${JSON.stringify(userDetails)}`);
-                                res.redirect('https://gold.nimapinfotech.com');
+                                res.redirect('http://golduat.nimapinfotech.com');
                     }else{
                         return res.status(401).send({ message: 'Broker account is not approved' });
                     }

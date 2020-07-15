@@ -10,10 +10,14 @@
 
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
-                    <mat-cell *matCellDef="let item" >
-                        <div class="kt-pointer" (click)="editPurpose(item)">Edit</div>
-                        <div class="px-3">|</div>
-                        <div class="kt-pointer text-danger" (click)="deletePurpose(item)">Delete</div>
+                    <mat-cell *matCellDef="let item">
+                        <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['editPurpose', 'deletePurpose']">
+                            <div *ngxPermissionsOnly="['editPurpose']" class="kt-pointer" (click)="editPurpose(item)">
+                                Edit</div>
+                            <div class="px-3">|</div>
+                            <div *ngxPermissionsOnly="['deletePurpose']" class="kt-pointer text-danger"
+                                (click)="deletePurpose(item)">Delete</div>
+                        </div>
                     </mat-cell>
                 </ng-container>
 

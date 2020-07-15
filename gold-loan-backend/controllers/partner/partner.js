@@ -91,14 +91,14 @@ exports.readPartner = async (req, res, next) => {
     };
     let readPartnerData = await models.partner.findAll({
       where: searchQuery,
-      order: [["id", "DESC"]],
+      order: [["updatedAt", "DESC"]],
       offset: offset,
       limit: pageSize,
     });
 
     let count = await models.partner.count({
       where: searchQuery,
-      order: [["id", "ASC"]],
+      order: [["updatedAt", "DESC"]],
     });
 
     if (!readPartnerData) {

@@ -152,43 +152,48 @@ export class MenuConfig {
 									title: "Masters",
 									root: true,
 									bullet: 'dot',
-									permission: false,
-
+									permission: !(this.permissionsArr.includes('viewLeadSource') ||
+										this.permissionsArr.includes('viewOrnamentType') ||
+										this.permissionsArr.includes('viewUnapprovalReason') ||
+										this.permissionsArr.includes('viewPurpose') ||
+										this.permissionsArr.includes('viewOccupation') ||
+										this.permissionsArr.includes('viewPacketLocation') ||
+										this.permissionsArr.includes('viewHoliday')),
 									submenu: [
 										{
 											title: "Lead Source",
 											page: "/admin/masters/lead-source",
-											permission: false,
+											permission: !this.permissionsArr.includes('viewLeadSource'),
 										},
 										{
 											title: "Ornaments",
 											page: "/admin/masters/ornaments",
-											permission: false,
+											permission: !this.permissionsArr.includes('viewOrnamentType'),
 										},
 										{
 											title: "Unapproved Reasons",
 											page: "/admin/masters/reasons",
-											permission: false,
+											permission: !this.permissionsArr.includes('viewUnapprovalReason'),
 										},
 										{
 											title: "Purposes",
 											page: "/admin/masters/purposes",
-											permission: false,
+											permission: !this.permissionsArr.includes('viewPurpose'),
 										},
 										{
 											title: "Occupations",
 											page: "/admin/masters/occupation",
-											permission: false,
+											permission: !this.permissionsArr.includes('viewOccupation'),
 										},
 										{
 											title: "Packet Location",
 											page: "/admin/masters/packet-location",
-											permission: false,
+											permission: !this.permissionsArr.includes('viewPacketLocation'),
 										},
 										{
 											title: "Holidays",
 											root: true,
-											permission: false,
+											permission: !this.permissionsArr.includes('viewHoliday'),
 											page: "/admin/holidays"
 										},
 									],
@@ -447,12 +452,12 @@ export class MenuConfig {
 							root: true,
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-03.svg",
-							permission: false,
+							permission: !(this.permissionsArr.includes('viewGlobalSetting')),
 							submenu: [
 								{
 									title: "Global Settings",
 									page: "/admin/global-settings",
-									permission: false,
+									permission: !this.permissionsArr.includes('viewGlobalSetting')
 								},
 							]
 						},
