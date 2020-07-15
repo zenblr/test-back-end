@@ -45,7 +45,7 @@ export class ChangePassword implements OnInit, OnDestroy {
 		private translate: TranslateService,
 		private router: Router,
 		private auth: AuthService,
-		
+
 		private fb: FormBuilder,
 		private cdr: ChangeDetectorRef
 	) {
@@ -122,7 +122,7 @@ export class ChangePassword implements OnInit, OnDestroy {
 		var referenceCode = atob(localStorage.getItem('reference'))
 		var newPassword = controls.password.value
 
-		this.auth.changeforgotpassword(newPassword, referenceCode).pipe(
+		this.auth.changeforgotpassword(newPassword, referenceCode, 'forget').pipe(
 			tap(user => {
 				if (user) {
 					// pass notice message to the login page
