@@ -6,6 +6,7 @@ const { submitCustomerKycAddressValidation, submitAllKycInfoValidation, submitCu
     submitCustomerKycInfoValidation, submitCustomerKycpersonalDetailValidation, getCustomerDetailsValidation } = require('../validations/customerKyc');
 const { getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitAllKycInfo, appliedKyc, getReviewAndSubmit } = require('../controllers/customerKyc/customerKyc')
 
+const { submitAppKyc, getAssignedCustomer } = require('../controllers/customerKyc/appCustomerKyc')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -24,7 +25,15 @@ route.post('/submit-all-kyc-info', submitAllKycInfoValidation, validationError, 
 
 route.get('/applied-kyc', checkAuth, checkRolePermission, wrapper(appliedKyc))
 
-route.get('/kyc-form-review', checkAuth, checkRolePermission, wrapper(getReviewAndSubmit))
+route.get('/kyc-form-review', checkAuth, checkRolePermission, wrapper(getReviewAndSubmit));
+
+//customerApp
+
+route.post('/submit-kyc', wrapper(submitAppKyc))
+
+route.get('/get-assigned-customer', checkAuth, wrapper(getAssignedCustomer))
+
+//customerApp
 
 
 module.exports = route;
