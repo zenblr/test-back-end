@@ -71,7 +71,7 @@ exports.loanTransferBasicDeatils = async (req, res, next) => {
     let loanData = await sequelize.transaction(async t => {
         let createLoanTransfer = await models.customerLoanTransfer.create({ loanTransferCurrentStage: '2',createdBy, modifiedBy }, { transaction: t });
         await models.customerLoanTransferHistory.create({ loanTransferId: createLoanTransfer.id, action: loanTransferHistory.BASIC_DETAILS_SUBMIT, createdBy, modifiedBy }, { transaction: t })
-        let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '1', createdBy, modifiedBy, loanTransferId: createLoanTransfer.id }, { transaction: t })
+        let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '1', createdBy, modifiedBy, loanTransferId: createLoanTransfer.id,isLoanTransfer:true }, { transaction: t })
         let loan = await models.customerLoan.create({ customerId, masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
         await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, customerUniqueId, startDate, kycStatus, createdBy, modifiedBy }, { transaction: t })
         return loan
@@ -163,7 +163,7 @@ exports.loanTransferDisbursal = async (req, res, next) => {
                 return res.status(400).json({ message: 'Amount is already disbursed'})
             } else {
                 if(masterLoan.loanTransfer.loanTransferStatusForBM == "approved"){
-                    await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '5' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '5',isLoanDisbursed:true }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DOCUMENTS, createdBy, modifiedBy }, { transaction: t })
                     return res.status(200).json({ message: 'success', masterLoanId, loanId })
                 }else{
@@ -232,6 +232,7 @@ exports.getLoanTransferList = async (req, res, next) => {
             },
         }],
         isActive: true,
+        isLoanTransfer: true
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
@@ -303,7 +304,7 @@ exports.customerDetailsLoanTransfer = async (req, res, next) => {
     })
 
     let customerLoanStage = await models.customerLoanMaster.findOne({ 
-        where: { customerId: customerData.id, isLoanSubmitted: false } ,
+        where: { customerId: customerData.id, isLoanSubmitted: false,isLoanTransfer:true } ,
         include: [{
             model: models.customerLoanTransfer,
             as: "loanTransfer",

@@ -152,6 +152,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id'
         },
+        isLoanTransfer:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_loan_transfer',
+            defaultValue: false
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'

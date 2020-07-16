@@ -58,6 +58,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_loan_applied',
             defaultValue: false
         },
+        isLoanDisbursed:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_loan_disbursed',
+            defaultValue: false
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

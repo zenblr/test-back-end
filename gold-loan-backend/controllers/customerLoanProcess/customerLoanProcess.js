@@ -902,7 +902,7 @@ exports.loanDocuments = async (req, res, next) => {
             }]
         })
     if (check.isEmpty(checkDocument)) {
-        if (loanMaster.loanTransferId != null) {
+        if (loanMaster.isLoanTransfer == true) {
             let loanData = await sequelize.transaction(async t => {
                 let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
                 let checkDisbursed = await models.customerLoan.findAll({ where: { masterLoanId: masterLoanId }, transaction: t });
