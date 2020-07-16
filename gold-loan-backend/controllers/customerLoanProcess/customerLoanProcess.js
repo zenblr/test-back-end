@@ -10,7 +10,7 @@ const moment = require('moment');
 
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
 
-const { BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory')
+const {LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory')
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
@@ -67,14 +67,22 @@ exports.loanBasicDeatils = async (req, res, next) => {
     if (masterLoanId != null) {
         let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
         if (customerLoanMaster.loanTransferId != null) {
-            await models.customerLoanTransfer.update({ isLoanApplied: true, modifiedBy }, { where: { id: customerLoanMaster.loanTransferId } });
+            let transferLoan = await models.customerLoanTransfer.findOne({id:customerLoanMaster.loanTransferId});
+            if(transferLoan.isLoanApplied == false){
+                await sequelize.transaction(async t => {
+                    let loan = await models.customerLoan.findOne({where:{masterLoanId}});
+                    await models.customerLoanMaster.update({ loanStageId: stageId.id, customerLoanCurrentStage: '2',internalBranchId: req.userData.internalBranchId, modifiedBy }, {where:{id:masterLoanId}, transaction: t })
+                    await models.customerLoanHistory.create({ loanId: loan.id, masterLoanId: masterLoanId, action: LOAN_TRANSFER_APPLY_LOAN, modifiedBy }, { transaction: t });
+                    await models.customerLoanPersonalDetail.update({ purpose,  modifiedBy }, {where:{masterLoanId:masterLoanId} ,transaction: t })
+                    await models.customerLoanTransfer.update({ isLoanApplied: true, modifiedBy }, { where: { id: customerLoanMaster.loanTransferId },transaction: t });
+                })
+            }
         }
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanMaster.id, loanType: 'secured' } })
         if (!check.isEmpty(customerLoanMaster)) {
             return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
         }
     }
-
 
     let loanData = await sequelize.transaction(async t => {
 

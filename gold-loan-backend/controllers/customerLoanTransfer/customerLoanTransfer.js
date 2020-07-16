@@ -126,7 +126,7 @@ exports.loanTransferBmRating = async (req, res, next) => {
                 if (loanTransferStatusForBM == "approved") {
                     let loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
                     await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, loanTransferCurrentStage: '4', transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
-                    await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t }) 
+                    await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { masterLoanId: masterLoanId }, transaction: t }) 
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
                     return res.status(200).json({ message: 'success', masterLoanId, loanId, loanUniqueId, disbursedLoanAmount: masterLoan.loanTransfer.disbursedLoanAmount,loanCurrentStage:'4' })
                 } else if (loanTransferStatusForBM == "rejected") {
@@ -164,7 +164,7 @@ exports.loanTransferDisbursal = async (req, res, next) => {
             } else {
                 if(masterLoan.loanTransfer.loanTransferStatusForBM == "approved"){
                     await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '5',isLoanDisbursed:true }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
-                    await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DOCUMENTS, createdBy, modifiedBy }, { transaction: t })
+                    await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DISBURSEMENT, createdBy, modifiedBy }, { transaction: t })
                     return res.status(200).json({ message: 'success', masterLoanId, loanId })
                 }else{
                     if(masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete"){
@@ -264,7 +264,7 @@ exports.getLoanTransferList = async (req, res, next) => {
         where: searchQuery,
         subQuery: false,
         include: associateModel,
-        attributes:['loanTransferId'],
+        attributes:['loanTransferId','isLoanSubmitted'],
         order: [
             [models.customerLoan, 'id', 'asc'],
             ['id', 'DESC']
@@ -304,7 +304,7 @@ exports.customerDetailsLoanTransfer = async (req, res, next) => {
     })
 
     let customerLoanStage = await models.customerLoanMaster.findOne({ 
-        where: { customerId: customerData.id, isLoanSubmitted: false,isLoanTransfer:true } ,
+        where: { customerId: customerData.id,isLoanTransfer:true } ,
         include: [{
             model: models.customerLoanTransfer,
             as: "loanTransfer",
