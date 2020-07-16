@@ -10,6 +10,7 @@ import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { AssignAppraiserComponent } from '../../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { FullReleaseFinalDatasource } from '../../../../../../core/funds-approvals/jewellery-release-final/full-release-final/datasources/full-release-final.datasource';
 import { FullReleaseFinalService } from '../../../../../../core/funds-approvals/jewellery-release-final/full-release-final/services/full-release-final.service';
+import { UpdateStatusComponent } from '../../update-status/update-status.component';
 
 @Component({
   selector: 'kt-full-release-final',
@@ -19,7 +20,7 @@ import { FullReleaseFinalService } from '../../../../../../core/funds-approvals/
 export class FullReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'assignAppraiser'];
+  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'updateStatus', 'assignAppraiser'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -90,6 +91,15 @@ export class FullReleaseFinalComponent implements OnInit {
 
   updateAppraiser(item) {
 
+  }
+
+  updateStatus(item) {
+    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        // this.loadPage();
+      }
+    });
   }
 
 }

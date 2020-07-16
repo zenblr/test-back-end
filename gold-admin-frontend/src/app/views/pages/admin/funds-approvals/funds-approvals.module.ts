@@ -14,6 +14,7 @@ import { PartReleaseApprovalComponent } from './jewellery-release-approval/part-
 import { FullReleaseApprovalComponent } from './jewellery-release-approval/full-release-approval/full-release-approval.component';
 import { PartReleaseFinalComponent } from './jewellery-release-final/part-release-final/part-release-final.component';
 import { FullReleaseFinalComponent } from './jewellery-release-final/full-release-final/full-release-final.component';
+import { UpdateStatusComponent } from './update-status/update-status.component';
 
 const routes = [
   {
@@ -43,7 +44,7 @@ const routes = [
 ]
 
 @NgModule({
-  declarations: [DepositListComponent, TopUpApprovalComponent, PartReleaseApprovalComponent, FullReleaseApprovalComponent, PartReleaseFinalComponent, FullReleaseFinalComponent],
+  declarations: [DepositListComponent, TopUpApprovalComponent, PartReleaseApprovalComponent, FullReleaseApprovalComponent, PartReleaseFinalComponent, FullReleaseFinalComponent, UpdateStatusComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -67,5 +68,6 @@ const routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
+  entryComponents: [UpdateStatusComponent]
 })
 export class FundsApprovalsModule { }
