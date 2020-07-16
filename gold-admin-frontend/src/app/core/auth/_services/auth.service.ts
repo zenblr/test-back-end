@@ -18,28 +18,28 @@ export class AuthService {
 
     constructor(private http: HttpClient) { }
     // Authentication/Authorization
-    login(mobileNumber: number, password: string): Observable<User> {
-        return this.http.post<User>(`/api/auth/user-login`, { mobileNumber, password }).pipe(
+    login(mobileNumber: number, password: string, type: string): Observable<User> {
+        return this.http.post<User>(`/api/auth/user-login`, { mobileNumber, password, type }).pipe(
             map(res => res)
         );
     }
 
-    generateOtp(mobileNumber: string): Observable<any> {
-        return this.http.post<any>(`/api/user/send-otp`, { mobileNumber }).pipe(
+    generateOtp(mobileNumber: string, type: string): Observable<any> {
+        return this.http.post<any>(`/api/user/send-otp`, { mobileNumber, type }).pipe(
             map(res => res),
         )
     }
 
-    verifyotp(referenceCode, otp: number): Observable<any> {
+    verifyotp(referenceCode, otp: number, type: string): Observable<any> {
 
-        return this.http.post<any>(`/api/user/verify-otp`, { referenceCode, otp }).pipe(
+        return this.http.post<any>(`/api/user/verify-otp`, { referenceCode, otp, type }).pipe(
             map(res => res),
         )
     }
 
-    signInWithOtp(referenceCode, otp: number): Observable<any> {
+    signInWithOtp(referenceCode, otp: number, type: string): Observable<any> {
 
-        return this.http.post<any>(`/api/auth/verify-login`, { referenceCode, otp }).pipe(
+        return this.http.post<any>(`/api/auth/verify-login`, { referenceCode, otp, type }).pipe(
             map(res => res),
         )
     }
@@ -48,8 +48,8 @@ export class AuthService {
         return this.http.post<any>(`/api/auth/resend-otp`, { userId })
     }
 
-    changeforgotpassword(newPassword, referenceCode) {
-        return this.http.post<any>(`/api/user/update-password`, { newPassword, referenceCode });
+    changeforgotpassword(newPassword, referenceCode, type: string) {
+        return this.http.post<any>(`/api/user/update-password`, { newPassword, referenceCode, type });
     }
 
     logout(): Observable<any> {

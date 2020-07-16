@@ -790,7 +790,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
         include: associateModel,
         order: [
             [models.customerLoan, "id", "asc"],
-            ['id', 'DESC']
+            ["updatedAt", "DESC"]
         ],
         attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStatusForOperatinalTeam', 'loanStartDate', 'securedLoanAmount', 'unsecuredLoanAmount', 'finalLoanAmount', 'loanStageId', 'isLoanSubmitted'],
         offset: offset,

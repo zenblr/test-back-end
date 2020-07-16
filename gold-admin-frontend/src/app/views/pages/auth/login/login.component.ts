@@ -144,10 +144,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 		const authData = {
 			mobileNo: controls.mobileNo.value,
-			password: controls.password.value
+			password: controls.password.value,
+			type: 'login'
 		};
 		this.auth
-			.login(authData.mobileNo, authData.password)
+			.login(authData.mobileNo, authData.password, authData.type)
 			.pipe(
 				tap(res => {
 					// console.log(user);
@@ -193,7 +194,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 			this.loginForm.controls.mobileNo.markAsTouched();
 			return
 		}
-		this.auth.generateOtp(this.loginForm.controls.mobileNo.value).pipe(
+
+		this.auth.generateOtp(this.loginForm.controls.mobileNo.value, 'login').pipe(
 			tap(response => {
 				if (response) {
 					this.authNoticeService.setNotice(this.translate.instant('AUTH.FORGOT.SUCCESS'), 'success');

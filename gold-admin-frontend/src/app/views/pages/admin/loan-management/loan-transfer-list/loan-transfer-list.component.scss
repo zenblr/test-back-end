@@ -1,0 +1,24 @@
+:host{
+    .mat-column-status{
+        flex: 0 0 17% !important;
+    }
+    .mat-column-date{
+        flex: 0 0 9% !important;
+    }
+    .mat-column-customerID{
+        flex: 0 0 9% !important;
+    }
+    .mat-column-loanId{
+        flex: 0 0 9% !important;
+    }
+    .mat-column-mobile{
+        flex: 0 0 9% !important;
+    }
+    .mat-column-fullName{
+        flex: 0 0 12% !important;
+        padding-left: 10px !important;
+    }
+    .mat-column-amount{
+        flex: 0 0 17% !important;
+    }
+}

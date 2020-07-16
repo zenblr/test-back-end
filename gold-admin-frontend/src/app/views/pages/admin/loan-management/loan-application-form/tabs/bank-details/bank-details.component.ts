@@ -24,14 +24,14 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   bankForm: FormGroup;
   passbookImg: any = [];
   passbookImgId: any = []
-  url:any;
+  url: any;
   constructor(
     public toastr: ToastrService,
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
     public sharedService: SharedService,
     public loanFormService: LoanApplicationFormService,
-    private router:Router
+    private router: Router
   ) {
     this.initForm()
     this.url = this.router.url.split("/")[3]
@@ -76,7 +76,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       accountNumber: [, [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[1-9]).{3,21}$')]],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       accountType: [],
-      accountHolderName: [, [Validators.required]],
+      accountHolderName: [, [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
       bankBranchName: [, [Validators.required]],
       passbookProof: [[]],
       passbookProofImage: [[]],
@@ -177,7 +177,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
     this.loanFormService.submitBank(data, this.masterAndLoanIds).pipe(
       map(res => {
-        if(Number(this.finalLoanAmt) > 200000){
+        if (Number(this.finalLoanAmt) > 200000) {
           this.controls.paymentType.disable()
 
         }

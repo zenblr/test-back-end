@@ -14,6 +14,8 @@ const moment = require('moment');
 const cache = require('../../utils/cache');
 let sms = require('../../utils/sendSMS');
 let baseUrl = require('../../config/baseUrl');
+const { sendOtpForLogin } = require('../../utils/SMS')
+
 
 exports.addUser = async (req, res, next) => {
     let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId, userTypeId, internalBranchId } = req.body;
@@ -61,7 +63,7 @@ exports.addUser = async (req, res, next) => {
 }
 
 exports.sendOtp = async (req, res, next) => {
-    const { mobileNumber } = req.body;
+    const { mobileNumber, type } = req.body;
     let userDetails = await models.user.findOne({ where: { mobileNumber } });
     if (userDetails) {
         let otp = Math.floor(1000 + Math.random() * 9000);
@@ -75,6 +77,11 @@ exports.sendOtp = async (req, res, next) => {
             await models.userOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
         })
 
+        // if (type == "login") {
+        //     await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTime)
+        // }else if(type == "forget"){
+        //     await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTime)
+        // }
         let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
         await sms.sendSms(mobileNumber, message);
         // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);

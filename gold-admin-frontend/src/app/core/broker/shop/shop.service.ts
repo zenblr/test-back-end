@@ -11,10 +11,10 @@ export class ShopService {
     toggle = new BehaviorSubject<any>('list');
     toggle$ = this.toggle.asObservable();
 
-    sortValue = new BehaviorSubject<any>('price');
+    sortValue = new BehaviorSubject<any>('');
     sortValue$ = this.sortValue.asObservable();
 
-    sortType = new BehaviorSubject<any>(false);
+    sortType = new BehaviorSubject<any>('');
     sortType$ = this.sortType.asObservable();
 
     constructor(

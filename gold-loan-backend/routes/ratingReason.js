@@ -5,13 +5,14 @@ const { wrapper } = require('../utils/errorWrap');
 
 const { addRatingReason, getRatingReason, updateRatingReason, deactivateRatingReason } = require('../controllers/ratingReason/ratingReason');
 const checkAuth = require('../middleware/checkAuth');
+const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 
-router.post('/', checkAuth, wrapper(addRatingReason))
+router.post('/', checkAuth, checkRolePermission, wrapper(addRatingReason))
 
 router.get('/', checkAuth, wrapper(getRatingReason));
 
-router.put('/:id', checkAuth, wrapper(updateRatingReason))
+router.put('/:id', checkAuth, checkRolePermission, wrapper(updateRatingReason))
 
-router.delete('/', checkAuth, wrapper(deactivateRatingReason))
+router.delete('/', checkAuth, checkRolePermission, wrapper(deactivateRatingReason))
 module.exports = router;

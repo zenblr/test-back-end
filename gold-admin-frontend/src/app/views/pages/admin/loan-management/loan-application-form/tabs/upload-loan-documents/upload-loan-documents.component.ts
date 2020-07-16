@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ViewChild, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy, ApplicationRef, HostListener, ElementRef, Renderer } from '@angular/core';
 import { SharedService } from '../../../../../../../core/shared/services/shared.service';
 import { map, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -9,16 +9,20 @@ import { PdfViewerComponent } from '../../../../../../../views/partials/componen
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
 import { LoanTransferService } from '../../../../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
+import { values } from 'lodash';
 
 @Component({
   selector: 'kt-upload-loan-documents',
   templateUrl: './upload-loan-documents.component.html',
-  styleUrls: ['./upload-loan-documents.component.scss']
+  styleUrls: ['./upload-loan-documents.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadLoanDocumentsComponent implements OnInit {
 
+  @Output() next: EventEmitter<any> = new EventEmitter();
   @Input() loanDocumnets
   @Input() masterAndLoanIds;
+  @Input() loanTransfer
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -34,6 +38,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
   documentsForm: FormGroup
   show: boolean;
   url: string;
+  buttonName: string;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -42,32 +47,84 @@ export class UploadLoanDocumentsComponent implements OnInit {
     public router: Router,
     public loanService: LoanApplicationFormService,
     private ref: ChangeDetectorRef,
-    private loanTransferFormService: LoanTransferService
-
+    private loanTransferFormService: LoanTransferService,
+    private el: ElementRef,
+    private renderer: Renderer
   ) {
     this.url = (this.router.url.split("/")[3]).split("?")[0]
     if (this.url == "loan-transfer") {
+      this.buttonName = 'next'
       this.show = true
     } else {
       this.show = false
+      this.buttonName = 'save'
+
     }
+
+
   }
+
+
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
       if (documents) {
-        this.documentsForm.patchValue(documents)
+        this.documentsForm.patchValue({
+          pawnCopyImage: documents.pawnCopyImage[0],
+          schemeConfirmationCopyImage: documents.schemeConfirmationCopyImage[0],
+          loanAgreementCopyImage: documents.loanAgreementCopyImage[0],
+          loanAgreementCopy: documents.loanAgreementCopyImage[0],
+          pawnCopy: documents.pawnCopyImage[0],
+          schemeConfirmationCopy: documents.schemeConfirmationCopyImage[0],
+        })
+        this.pdfCheck()
+
+      }
+    }
+    if (changes.loanTransfer && changes.loanTransfer.currentValue) {
+      let documents = changes.loanTransfer.currentValue.masterLoan.loanTransfer
+      if (documents) {
+        // this.documentsForm.patchValue(documents)
+        this.documentsForm.patchValue({
+          declarationCopyImage: documents.declaration[0],
+          signedChequeImage: documents.signedCheque[0],
+          pawnCopyImage: documents.pawnTicket[0],
+          pawnCopy: documents.pawnTicket[0],
+          outstandingLoanAmount: documents.outstandingLoanAmount,
+          declaration: documents.declaration[0],
+          signedCheque: documents.signedCheque[0]
+        })
+        this.url = 'view-loan'
+        this.pdfCheck()
       }
     }
   }
 
 
+  pdfCheck() {
+    Object.keys(this.documentsForm.value).forEach(value => {
+      console.log()
+      let pdf = this.documentsForm.value[value]
+      if (typeof pdf == 'string' && pdf) {
+        let ext = pdf.split('.')
+        console.log(ext)
+        if (ext[ext.length - 1] == 'pdf') {
+          this.pdf[value] = true
+          this.ref.detectChanges()
+        } else {
+          this.pdf[value] = false
+        }
+        console.log(value)
+      }
+    })
+  }
+
   ngOnInit() {
     this.documentsForm = this.fb.group({
-      loanAgreementCopy: [[]],
-      pawnCopy: [[],Validators.required],
-      schemeConfirmationCopy: [[]],
+      loanAgreementCopy: [],
+      pawnCopy: [, Validators.required],
+      schemeConfirmationCopy: [],
       signedCheque: [],
       declaration: [],
       loanAgreementImageName: [],
@@ -77,7 +134,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
       declarationCopyImageName: [],
       signedChequeImage: [],
       declarationCopyImage: [],
-      outstandingLoanAmount:[],
+      outstandingLoanAmount: [],
       loanAgreementCopyImage: [],
       pawnCopyImage: [],
       schemeConfirmationCopyImage: [],
@@ -91,18 +148,20 @@ export class UploadLoanDocumentsComponent implements OnInit {
 
   validation() {
     if (this.show) {
+      this.documentsForm.controls.signedCheque.setValidators(Validators.required),
+        this.documentsForm.controls.signedCheque.updateValueAndValidity()
+      this.documentsForm.controls.declaration.setValidators(Validators.required),
+        this.documentsForm.controls.declaration.updateValueAndValidity()
+      this.documentsForm.controls.outstandingLoanAmount.setValidators(Validators.required),
+        this.documentsForm.controls.outstandingLoanAmount.updateValueAndValidity()
+
+    } else {
+
       this.documentsForm.controls.loanAgreementCopy.setValidators(Validators.required),
         this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
       this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
         this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
 
-    } else {
-      this.documentsForm.controls.signedCheque.setValidators(Validators.required),
-        this.documentsForm.controls.signedCheque.updateValueAndValidity()
-      this.documentsForm.controls.declaration.setValidators(Validators.required),
-        this.documentsForm.controls.declaration.updateValueAndValidity()
-        this.documentsForm.controls.outstandingLoanAmount.setValidators(Validators.required),
-        this.documentsForm.controls.outstandingLoanAmount.updateValueAndValidity()
     }
   }
 
@@ -192,10 +251,17 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
 
   save() {
+    if (this.documentsForm.invalid) {
+      this.documentsForm.markAllAsTouched()
+      return
+    }
     if (this.url == 'loan-transfer') {
       this.loanTransferFormService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
         map(res => {
-          
+          if (res.loanCurrentStage) {
+            let stage = Number(res.loanCurrentStage) - 1
+            this.next.emit(stage)
+          }
         })).subscribe()
     } else {
       this.loanService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(

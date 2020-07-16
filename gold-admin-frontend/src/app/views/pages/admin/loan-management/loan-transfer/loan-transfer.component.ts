@@ -31,6 +31,7 @@ export class LoanTransferComponent implements OnInit {
     private rout: ActivatedRoute,
     private router:Router
   ) {
+    this.getReasonsList()
     this.id = this.rout.snapshot.params.id;;
     if (this.id) {
       this.getSingleDetails(this.id)
@@ -75,20 +76,28 @@ export class LoanTransferComponent implements OnInit {
 
   ngOnInit() {
     this.initForms()
-    this.getReasonsList()
     this.approvalForm.controls.loanTransferStatusForBM.valueChanges.subscribe((res)=>{
       if(res == 'approved'){
         this.approvalForm.controls.reasonByBM.reset()
+        this.approvalForm.controls.reasonByBM.clearValidators()
+        this.approvalForm.controls.reasonByBM.updateValueAndValidity()
         this.approvalForm.controls.reason.reset()
+        this.approvalForm.controls.reason.clearValidators()
+        this.approvalForm.controls.reason.updateValueAndValidity()
+      }else{
+        this.approvalForm.controls.reasonByBM.setValidators(Validators.required)
+        this.approvalForm.controls.reasonByBM.updateValueAndValidity()
       }
     })
   }
 
+  
+
   initForms() {
     this.approvalForm = this.fb.group({
-      loanTransferStatusForBM: ['', Validators.required],
+      loanTransferStatusForBM: ['pending', Validators.required],
       reasonByBM: ['', Validators.required],
-      reason: []
+      reason: ['',Validators.required]
     })
     this.disbursalForm = this.fb.group({
       disbursedLoanAmount: [],
@@ -119,19 +128,24 @@ export class LoanTransferComponent implements OnInit {
   }
 
   approval() {
-    if (this.approvalForm.invalid) {
+    if (this.approvalForm.invalid || this.approvalForm.controls.loanTransferStatusForBM.value =='pending') {
       this.approvalForm.markAllAsTouched()
       return
     }
 
     this.loanTransferService.approval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
       if (res) {
+        if(this.approvalForm.controls.loanTransferStatusForBM.value =='approved'){
         this.disbursalForm.patchValue(res)
         if(res.loanCurrentStage){
           let stage = Number(res.loanCurrentStage) - 1
           this.next(stage)
         }
       }
+      else{
+        this.router.navigate(['/admin/loan-management/transfer-loan-list'])
+      }
+    }
     }, err => {
 
     })

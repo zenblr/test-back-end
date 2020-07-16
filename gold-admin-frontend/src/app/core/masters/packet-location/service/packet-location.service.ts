@@ -18,7 +18,7 @@ export class PacketLocationService {
   ) { }
 
   getpacketsTrackingDetails(from, to, search): Observable<any> {
-    return this.http.get(`/api/packetLocation?search=${search}&from=${from}&to=${to}`).pipe(
+    return this.http.get(`/api/packet-location?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -28,7 +28,7 @@ export class PacketLocationService {
   }
 
   addpacketLocation(location): Observable<any> {
-    return this.http.post<any>(`/api/packetLocation`, { location }).pipe(
+    return this.http.post<any>(`/api/packet-location`, { location }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -39,7 +39,7 @@ export class PacketLocationService {
   }
 
   updatepacketLocation(id, location): Observable<any> {
-    return this.http.put<any>(`/api/packetLocation/${id}`, { location }).pipe(
+    return this.http.put<any>(`/api/packet-location/${id}`, { location }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -50,7 +50,7 @@ export class PacketLocationService {
   }
 
   deletepacketLocation(id): Observable<any> {
-    return this.http.delete<any>(`/api/packetLocation?id=${id}&isActive=false`).pipe(
+    return this.http.delete<any>(`/api/packet-location?id=${id}&isActive=false`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

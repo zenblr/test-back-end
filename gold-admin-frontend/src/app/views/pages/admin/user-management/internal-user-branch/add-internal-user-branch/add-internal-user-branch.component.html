@@ -201,6 +201,9 @@
                                 <mat-error
                                     *ngIf="controls.accountNumber.touched && controls.accountNumber.errors?.required">
                                     Required field</mat-error>
+                                <!-- <mat-error
+                                    *ngIf="controls.accountNumber.touched && controls.accountNumber.errors?.pattern">
+                                    Invalid Input </mat-error> -->
                             </div>
                         </div>
                         <div class="row kt-padding-t-15" *ngIf="data.action!='view'">

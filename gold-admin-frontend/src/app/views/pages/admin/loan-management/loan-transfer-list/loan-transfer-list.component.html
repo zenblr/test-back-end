@@ -6,47 +6,54 @@
                 <ng-container matColumnDef="customerID">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan.customer.customerUniqueId | uppercase}}
+                        {{loan?.customer?.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.loanUniqueId | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.customerLoan[0]?.loanUniqueId | uppercase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="fullName">
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.scheme.schemeName}}</mat-cell>
+                    <mat-cell *matCellDef="let loan"> {{loan?.customer?.firstName | titlecase}} {{loan?.customer?.lastName | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobile">
-                    <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.customer?.mobileNumber}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="amount">
                     <mat-header-cell *matHeaderCellDef>Outstanding Loan Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.finalLoanAmount}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.loanTransfer?.disbursedLoanAmount}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.finalLoan.loanStartDate | date : 'mediumDate'}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.loanTransfer?.createdAt | date : 'mediumDate'}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="status">
-                    <mat-header-cell *matHeaderCellDef> Loan Transfer Application Status</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">
-                        {{loan.finalLoan.loanEndDate | date : 'mediumDate'}}
-                    </mat-cell>
-                </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <!-- <div style="display: contents" class="kt-pointer" > -->
-                        <span (click)="action(loan)" class="kt-pointer font-weight-bold"
-                            *ngxPermissionsOnly="['loanDetailsView']">
-                            <strong>Action></strong>
-                        </span>
-                        <!-- </div> -->
+                        <button class="apply-kyc" *ngIf="!loan?.loanTransfer?.isLoanApplied && loan?.loanTransfer?.loanTransferCurrentStage == '5'" (click)="applyLoan(loan)">Apply Loan</button></mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef> Loan Transfer Status</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <div *ngIf="!loan?.loanTransfer?.isLoanDisbursed">
+                            <button  class="primary-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'incomplete'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                            <button  class="warning-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'pending'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                            <button  class="green-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'approved'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                            <button  class="red-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'rejected'">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                        </div>
+                        <button  class="green-button" *ngIf="loan?.loanTransfer?.isLoanDisbursed"
+                            >DISBURSED</button>
+                        
                     </mat-cell>
                 </ng-container>
 

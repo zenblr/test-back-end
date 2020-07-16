@@ -10,7 +10,7 @@ exports.addRatingReason = async (req, res, next) => {
     let { description } = req.body;
     let ratingExist = await models.ratingReason.findOne({ where: { description: description, isActive: true } })
     if (!check.isEmpty(ratingExist)) {
-        return res.status(404).json({ message: 'This Rating Reason already Exists' });
+        return res.status(404).json({ message: 'This Reason already Exists' });
     }
     let rating = await models.ratingReason.create({ description })
     return res.status(200).json({ message: `Created` })
@@ -43,7 +43,7 @@ exports.updateRatingReason = async (req, res, next) => {
 
     let ratingExist = await models.ratingReason.findOne({ where: { description: description, isActive: true } })
     if (!check.isEmpty(ratingExist)) {
-        return res.status(404).json({ message: 'This Rating is already Exist' });
+        return res.status(404).json({ message: 'This reason is already Exist' });
     }
     let UpdateData = await models.ratingReason.update({ description }, { where: { id: id } })
     if (UpdateData[0] === 0) {
