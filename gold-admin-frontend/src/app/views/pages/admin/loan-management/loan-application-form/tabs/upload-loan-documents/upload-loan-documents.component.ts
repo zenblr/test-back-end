@@ -249,6 +249,10 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
 
   save() {
+    if(this.documentsForm.invalid){
+      this.documentsForm.markAllAsTouched()
+      return 
+    }
     if (this.url == 'loan-transfer') {
       this.loanTransferFormService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
         map(res => {
