@@ -25,7 +25,7 @@ exports.addAssignAppraiser = async (req, res, next) => {
     
     await models.customerAssignAppraiser.create({ customerId, customerUniqueId, appraiserId, createdBy, modifiedBy, appoinmentDate, startTime, endTime });
 
-    // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } })
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } })
 
     // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerUniqueId);
 
