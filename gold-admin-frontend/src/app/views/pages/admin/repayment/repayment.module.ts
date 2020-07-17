@@ -25,7 +25,7 @@ const routes: Routes = [
     component: QuickPayComponent,
   },
   {
-    path: 'part-release',
+    path: 'part-release/:id',
     component: PartReleaseComponent,
   },
   {

@@ -154,10 +154,16 @@ export class PageConfig {
 					page: { title: "Monthly Repayment", desc: "" },
 				},
 				"part-release": {
-					page: { title: "Jewellery Release", desc: "" },
+					page: { title: "Full Release", desc: "" },
+					id: {
+						page: { title: "Jewellery Release", desc: "" },
+					}
 				},
 				"full-release": {
 					page: { title: "Full Release", desc: "" },
+					id: {
+						page: { title: "Full Release", desc: "" },
+					}
 				},
 				'interest-emi': {
 					page: { title: "Pay Interest EMI", desc: "" },

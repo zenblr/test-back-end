@@ -113,7 +113,7 @@ export class LoanDetailsComponent implements OnInit {
     this.router.navigate(['/admin/repayment/interest-emi'])
   }
 
-  jewelleryRelease() {
-    this.router.navigate(['/admin/repayment/part-release'])
+  jewelleryRelease(loan) {
+    this.router.navigate([`/admin/repayment/part-release/1`])
   }
 }
