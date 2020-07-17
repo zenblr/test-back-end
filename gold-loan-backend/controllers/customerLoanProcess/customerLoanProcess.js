@@ -10,7 +10,7 @@ const moment = require('moment');
 
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
 
-const {LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory')
+const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory')
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
@@ -32,7 +32,7 @@ exports.customerDetails = async (req, res, next) => {
 
     })
 
-    let customerLoanStage = await models.customerLoanMaster.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false, loanTransferId: null } })
+    let customerLoanStage = await models.customerLoanMaster.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false, isLoanTransfer: false } })
     if (!check.isEmpty(customerLoanStage)) {
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
@@ -67,14 +67,14 @@ exports.loanBasicDeatils = async (req, res, next) => {
     if (masterLoanId != null) {
         let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
         if (customerLoanMaster.loanTransferId != null) {
-            let transferLoan = await models.customerLoanTransfer.findOne({id:customerLoanMaster.loanTransferId});
-            if(transferLoan.isLoanApplied == false){
+            let transferLoan = await models.customerLoanTransfer.findOne({ id: customerLoanMaster.loanTransferId });
+            if (transferLoan.isLoanApplied == false) {
                 await sequelize.transaction(async t => {
-                    let loan = await models.customerLoan.findOne({where:{masterLoanId}});
-                    await models.customerLoanMaster.update({ loanStageId: stageId.id, customerLoanCurrentStage: '2',internalBranchId: req.userData.internalBranchId, modifiedBy }, {where:{id:masterLoanId}, transaction: t })
+                    let loan = await models.customerLoan.findOne({ where: { masterLoanId } });
+                    await models.customerLoanMaster.update({ loanStageId: stageId.id, customerLoanCurrentStage: '2', internalBranchId: req.userData.internalBranchId, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
                     await models.customerLoanHistory.create({ loanId: loan.id, masterLoanId: masterLoanId, action: LOAN_TRANSFER_APPLY_LOAN, modifiedBy }, { transaction: t });
-                    await models.customerLoanPersonalDetail.update({ purpose,  modifiedBy }, {where:{masterLoanId:masterLoanId} ,transaction: t })
-                    await models.customerLoanTransfer.update({ isLoanApplied: true, modifiedBy }, { where: { id: customerLoanMaster.loanTransferId },transaction: t });
+                    await models.customerLoanPersonalDetail.update({ purpose, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
+                    await models.customerLoanTransfer.update({ isLoanApplied: true, modifiedBy }, { where: { id: customerLoanMaster.loanTransferId }, transaction: t });
                 })
             }
         }
@@ -589,7 +589,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 {
                     model: models.customerLoanTransfer,
                     as: "loanTransfer",
-                    attributes:{ exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                 },
                 {
                     model: models.customerLoanPersonalDetail,
@@ -921,7 +921,7 @@ exports.loanDocuments = async (req, res, next) => {
     let checkDocument = await models.customerLoanDocument.findOne({ where: { masterLoanId: masterLoanId } })
     let loanMaster = await models.customerLoanMaster.findOne(
         {
-            where:{id:masterLoanId},
+            where: { id: masterLoanId },
             include: [{
                 model: models.customerLoanTransfer,
                 as: "loanTransfer",
@@ -936,7 +936,7 @@ exports.loanDocuments = async (req, res, next) => {
                 for (const loan of checkDisbursed) {
                     customerLoanId.push(loan.id);
                     await models.customerLoanDisbursement.create({
-                        loanId, masterLoanId, loanAmount:loanMaster.loanTransfer.disbursedLoanAmount, transactionId:loanMaster.loanTransfer.transactionId, date:loanMaster.loanTransfer.updatedAt, paymentMode:'Loan transfer',  createdBy:loanMaster.loanTransfer.modifiedBy, modifiedBy:loanMaster.loanTransfer.modifiedBy
+                        loanId, masterLoanId, loanAmount: loanMaster.loanTransfer.disbursedLoanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
                     }, { transaction: t })
                 }
                 await models.customerLoan.update({ disbursed: true }, { where: { id: { [Op.in]: customerLoanId } }, transaction: t })
