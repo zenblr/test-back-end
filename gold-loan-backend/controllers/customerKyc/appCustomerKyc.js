@@ -33,9 +33,14 @@ exports.getAssignedCustomer = async (req, res, next) => {
                         model: models.status,
                         as: 'status',
                         attributes: ['id', 'statusName']
+                    },
+                    {
+                        model: models.customerKycClassification,
+                        as: 'customerKycClassification',
+                        attributes: ['id', 'kycStatusFromCce', 'kycStatusFromOperationalTeam']
                     }
                 ]
-            }
+            },
         ]
     })
 
