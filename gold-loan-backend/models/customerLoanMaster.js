@@ -210,28 +210,28 @@ module.exports = (sequelize, DataTypes) => {
             var values = Object.assign({}, this.get({ plain: true }));
             if (values.loanTransfer) {
                 if(values.loanTransfer.pawnTicket){
-                    let pawnTicketData = [];
+                    let pawnTicketImage = [];
                 for (image of values.loanTransfer.pawnTicket) {
                     let URL = baseUrlConfig.BASEURL + image;
-                    pawnTicketData.push(URL)
+                    pawnTicketImage.push(URL)
                 }
-                values.loanTransfer.pawnTicket = pawnTicketData;
+                values.loanTransfer.pawnTicketImage = pawnTicketImage;
                 }
                 if(values.loanTransfer.signedCheque){
-                    let signedChequeData = [];
+                    let signedChequeImage = [];
                 for (image of values.loanTransfer.signedCheque) {
                     let URL = baseUrlConfig.BASEURL + image;
-                    signedChequeData.push(URL)
+                    signedChequeImage.push(URL)
                 }
-                values.loanTransfer.signedCheque = signedChequeData;
+                values.loanTransfer.signedChequeImage = signedChequeImage;
                 }
                 if(values.loanTransfer.declaration){
-                    let declarationData = [];
+                    let declarationImage = [];
                 for (image of values.loanTransfer.declaration) {
                     let URL = baseUrlConfig.BASEURL + image;
-                    declarationData.push(URL)
+                    declarationImage.push(URL)
                 }
-                values.loanTransfer.declaration = declarationData;
+                values.loanTransfer.declarationImage = declarationImage;
                 }
             }
             return values

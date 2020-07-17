@@ -371,28 +371,28 @@ module.exports = (sequelize, DataTypes) => {
         // loan transfer details
         if (values.masterLoan.loanTransfer) {
             if(values.masterLoan.loanTransfer.pawnTicket){
-                let pawnTicketData = [];
+                let pawnTicketImage = [];
             for (image of values.masterLoan.loanTransfer.pawnTicket) {
                 let URL = baseUrlConfig.BASEURL + image;
-                pawnTicketData.push(URL)
+                pawnTicketImage.push(URL)
             }
-            values.masterLoan.loanTransfer.pawnTicket = pawnTicketData;
+            values.masterLoan.loanTransfer.pawnTicketImage = pawnTicketImage;
             }
             if(values.masterLoan.loanTransfer.signedCheque){
-                let signedChequeData = [];
+                let signedChequeImage = [];
             for (image of values.masterLoan.loanTransfer.signedCheque) {
                 let URL = baseUrlConfig.BASEURL + image;
-                signedChequeData.push(URL)
+                signedChequeImage.push(URL)
             }
-            values.masterLoan.loanTransfer.signedCheque = signedChequeData;
+            values.masterLoan.loanTransfer.signedChequeImage = signedChequeImage;
             }
             if(values.masterLoan.loanTransfer.declaration){
-                let declarationData = [];
+                let declarationImage = [];
             for (image of values.masterLoan.loanTransfer.declaration) {
                 let URL = baseUrlConfig.BASEURL + image;
-                declarationData.push(URL)
+                declarationImage.push(URL)
             }
-            values.masterLoan.loanTransfer.declaration = declarationData;
+            values.masterLoan.loanTransfer.declarationImage = declarationImage;
             }
         }
         values.masterLoan.loanOrnamentsDetail = resMasterOrna
