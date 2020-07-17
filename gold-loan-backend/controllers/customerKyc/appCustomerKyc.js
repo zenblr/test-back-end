@@ -13,12 +13,9 @@ const check = require("../../lib/checkLib");
 exports.submitAppKyc = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let createdBy = req.userData.id;
-    // console.log(req.userData.id)
 
     let { customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address } = req.body
-
     let date = new Date(dateOfBirth)
-    //console.log(date)
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
@@ -35,7 +32,6 @@ exports.submitAppKyc = async (req, res, next) => {
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
             , 'panCardNumber'],
     })
-    //console.log(getCustomerInfo.panCardNumber)
     if (check.isEmpty(getCustomerInfo)) {
         return res.status(404).json({ message: "Your status is not confirm" });
     }
@@ -43,7 +39,6 @@ exports.submitAppKyc = async (req, res, next) => {
     let kycInfo = await sequelize.transaction(async t => {
 
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy }, { transaction: t })
-        //console.log(customerKycAdd.id)
 
         await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
@@ -70,7 +65,7 @@ exports.submitAppKyc = async (req, res, next) => {
         let addressArray = []
         for (let i = 0; i < address.length; i++) {
 
-            address[i]['customerId'] =  getCustomerInfo.id
+            address[i]['customerId'] = getCustomerInfo.id
             address[i]['customerKycId'] = customerKycAdd.id
             address[i]['createdBy'] = createdBy
             address[i]['modifiedBy'] = modifiedBy
@@ -81,39 +76,7 @@ exports.submitAppKyc = async (req, res, next) => {
         return customerKycAdd
     })
 
-    // let customerKycReview = await models.customer.findOne({
-    //     where: { id: customerId },
-    //     attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
-    //     include: [{
-    //         model: models.customerKycPersonalDetail,
-    //         as: 'customerKycPersonal',
-    //         attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
-    //         include: [{
-    //             model: models.occupation,
-    //             as: 'occupation'
-    //         }, {
-    //             model: models.identityType,
-    //             as: 'identityType'
-    //         }]
-    //     }, {
-    //         model: models.customerKycAddressDetail,
-    //         as: 'customerKycAddress',
-    //         attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
-    //         include: [{
-    //             model: models.state,
-    //             as: 'state'
-    //         }, {
-    //             model: models.city,
-    //             as: 'city'
-    //         }, {
-    //             model: models.addressProofType,
-    //             as: 'addressProofType'
-    //         }],
-    //         order: [["id", "ASC"]]
-    //     }]
-    // })
-
-    return res.status(200).json({ customerId, customerKycId: kycInfo.id })
+    return res.status(200).json({ message: 'success', customerId, customerKycId: kycInfo.id })
 
 
 
