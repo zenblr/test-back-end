@@ -54,16 +54,14 @@ export class UploadLoanDocumentsComponent implements OnInit {
     private renderer: Renderer,
     private ngxPermission: NgxPermissionsService
   ) {
+
     this.url = (this.router.url.split("/")[3]).split("?")[0]
+    if (this.url == "loan-transfer") {
+      this.show = true
+    } else {
+      this.show = false
+    }
     this.ngxPermission.permissions$.subscribe(res => {
-      if (this.url == "loan-transfer") {
-        this.show = true
-      } else {
-        this.show = false
-
-
-      }
-
       if (this.url == "loan-transfer" && res.loanTransferRating) {
         this.buttonName = 'next'
       }
@@ -102,13 +100,15 @@ export class UploadLoanDocumentsComponent implements OnInit {
           declarationCopyImage: documents.declaration[0],
           signedChequeImage: documents.signedCheque[0],
           pawnCopyImage: documents.pawnTicket[0],
-          pawnCopy: documents.pawnTicket[0],
+          pawnCopy: documents.pawnTicket,
           outstandingLoanAmount: documents.outstandingLoanAmount,
-          declaration: documents.declaration[0],
-          signedCheque: documents.signedCheque[0]
+          declaration: documents.declaration,
+          signedCheque: documents.signedCheque
         })
-        this.url = 'view-loan'
         this.pdfCheck()
+        if(documents.loanTransferStatusForBM == 'approved'){
+          this.url = 'view-loan'
+        }
       }
     }
   }
@@ -270,10 +270,14 @@ export class UploadLoanDocumentsComponent implements OnInit {
     if (this.url == 'loan-transfer') {
       this.loanTransferFormService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
         map(res => {
+          if(this.buttonName == 'save'){
+            this.router.navigate(['/admin/loan-management/transfer-loan-list'])
+          }else{
           if (res.loanCurrentStage) {
             let stage = Number(res.loanCurrentStage) - 1
             this.next.emit(stage)
           }
+        }
         })).subscribe()
     } else {
       this.loanService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
