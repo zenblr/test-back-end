@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         disbursementAmount: {
             type: DataTypes.STRING,
-            field:'disbursement_amount'
+            field: 'disbursement_amount'
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -73,6 +73,7 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         customerLoan.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
+        customerLoan.hasOne(models.customerAssignAppraiser, { foreignKey: 'appraiserId', sourceKey: 'createdBy', });
 
         customerLoan.hasOne(models.customerLoanBankDetail, { foreignKey: 'loanId', as: 'loanBankDetail' });
         customerLoan.hasMany(models.customerLoanNomineeDetail, { foreignKey: 'loanId', as: 'loanNomineeDetail' });
@@ -273,7 +274,7 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         //packet
-       var resPac = []
+        var resPac = []
         if (values.loanPacketDetails) {
             for (let i = 0; i < values.loanPacketDetails.length; i++) {
 

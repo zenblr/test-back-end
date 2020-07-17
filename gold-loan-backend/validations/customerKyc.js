@@ -161,3 +161,52 @@ exports.submitAllKycInfoValidation = [
         .exists()
         .withMessage("customer kyc is required")
 ]
+
+exports.submitCustomerKycDetailValidation = [
+    body("customerId")
+        .exists()
+        .withMessage('customer id is required'),
+    body("profileImage")
+        .exists()
+        .withMessage('profile Image is required'),
+
+    body("dateOfBirth")
+        .exists()
+        .withMessage('date of birth is required'),
+
+    body("alternateMobileNumber")
+        .exists()
+        .withMessage("mobile Number is required")
+        .custom(async value => {
+
+            if (!/^[0-9]{10}$/i.test(value)) {
+                return Promise.reject("Invalid alernate  mobile number");
+            }
+
+        }),
+    body("gender")
+        .exists()
+        .withMessage("gender is required"),
+
+    body("martialStatus")
+        .exists()
+        .withMessage("marital status is required"),
+    body("spouseName")
+        .exists()
+        .withMessage("spouse name is required"),
+    body("signatureProof")
+        .exists()
+        .withMessage("sinaguture Proof is required"),
+    body("identityProof")
+        .exists()
+        .withMessage('identity proof is required'),
+
+    body("identityTypeId")
+        .exists()
+        .withMessage("identity type is required"),
+
+    body("address")
+        .exists()
+        .withMessage("address is required")
+
+]
