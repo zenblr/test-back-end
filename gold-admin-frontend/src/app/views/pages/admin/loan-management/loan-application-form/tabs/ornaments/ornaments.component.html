@@ -63,7 +63,7 @@
                                     <label class="text-color mandatory ">Gross Wt.</label>
                                 </div>
                                 <div class="col-8">
-                                    <input type="text" class="form-control" placeholder="12.02 gram"
+                                    <input ktWeight type="text" class="form-control" placeholder="0.00"
                                         formControlName="grossWeight"
                                         [class.isError]="ornament.controls.grossWeight.touched && ornament.controls.grossWeight.invalid"
                                         (blur)="weightCheck(idx);calcGoldDeductionWeight(idx)">
@@ -83,7 +83,7 @@
                                     <label class="text-color mandatory kt-padding-l-10">Deduction Wt.</label>
                                 </div>
                                 <div class="col-8">
-                                    <input type="text" class="form-control" placeholder="14.04"
+                                    <input ktWeight type="text" class="form-control" placeholder="0.00"
                                         formControlName="deductionWeight"
                                         (blur)="weightCheck(idx);calcGoldDeductionWeight(idx)"
                                         [class.isError]="ornament.controls.deductionWeight.touched && ornament.controls.deductionWeight.invalid">
@@ -110,7 +110,7 @@
                                     <label class="text-color mandatory  ">Net wt.</label>
                                 </div>
                                 <div class="col-8">
-                                    <input type="text" class="form-control" [readonly]="true" placeholder="10.20"
+                                    <input type="text" class="form-control" [readonly]="true" placeholder="0.00"
                                         formControlName="netWeight"
                                         [class.isError]="ornament.controls.netWeight.touched && ornament.controls.netWeight.invalid">
                                     <mat-error

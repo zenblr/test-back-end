@@ -7,9 +7,8 @@
                         <label for="" class="mandatory text-color">Gold Gross Weight</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="grossWeight" min="0"
-                             placeholder="10.50 grams"
-                            (blur)="weightCheck();calcGoldDeductionWeight()"
+                        <input ktWeight type="text" class="form-control" formControlName="grossWeight" min="0"
+                            placeholder="0.00" (blur)="weightCheck();calcGoldDeductionWeight()"
                             [class.isError]="controls.grossWeight.touched && controls.grossWeight.invalid">
                         <mat-error *ngIf="controls.grossWeight.errors?.required && controls.grossWeight.touched">
                             Required field
@@ -25,9 +24,8 @@
                         <label for="" class="mandatory text-color">Gold Deduction Weight</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="deductionWeight" min="0"
-                             placeholder="2.00 grams"
-                            (blur)="weightCheck();calcGoldDeductionWeight()"
+                        <input ktWeight type="text" class="form-control" formControlName="deductionWeight" min="0"
+                            placeholder="0.00" (blur)="weightCheck();calcGoldDeductionWeight()"
                             [class.isError]="controls.deductionWeight.touched && controls.deductionWeight.invalid">
                         <mat-error
                             *ngIf="controls.deductionWeight.errors?.required && controls.deductionWeight.touched">
@@ -46,7 +44,7 @@
                         <label for="" class="mandatory text-color">Gold Net Weight</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="netWeight" placeholder="8.50 grams"
+                        <input ktWeight type="text" class="form-control" formControlName="netWeight" placeholder="0.00"
                             [class.isError]="controls.netWeight.touched && controls.netWeight.invalid" readonly>
                         <mat-error *ngIf="controls.netWeight.errors?.required && controls.netWeight.touched">
                             Required field

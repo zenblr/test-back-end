@@ -154,7 +154,7 @@ export class PageConfig {
 					page: { title: "Monthly Repayment", desc: "" },
 				},
 				"part-release": {
-					page: { title: "Part Release", desc: "" },
+					page: { title: "Jewellery Release", desc: "" },
 				},
 				"full-release": {
 					page: { title: "Full Release", desc: "" },

@@ -8,8 +8,12 @@
                 <div class="col font-weight-500">Loan Start Date</div>
                 <div class="col font-weight-500">Loan End Date</div>
                 <div class="col font-weight-500">Tenure</div>
-                <div class="col-3 font-weight-500">Principal Outstanding Amount</div>
-                <div class="col font-weight-500"></div>
+                <div class="col font-weight-500">Last Payment Date</div>
+                <div class="col-2 font-weight-500">Principal Outstanding Amount</div>
+                <div class="col font-weight-500">
+                    <kt-button *ngIf="!fullReleaseScreen" [value]="'Full Release'" [type]="'button'"
+                        (click)="fullRelease()"></kt-button>
+                </div>
             </div>
 
             <div class="row kt-padding-t0">
@@ -19,10 +23,10 @@
                 <div class="col text-gray font-weight-500">12,March 2020</div>
                 <div class="col text-gray font-weight-500">12,March 2020</div>
                 <div class="col text-gray font-weight-500">6 Months</div>
-                <div class="col-3 text-gray font-weight-500">3,40,000</div>
+                <div class="col text-gray font-weight-500">12,March 2020</div>
+                <div class="col-2 text-gray font-weight-500">3,40,000</div>
                 <div class="col font-weight-500">
-                    <kt-button *ngIf="!fullReleaseScreen" [value]="'Full Release'" [type]="'button'"
-                        (click)="fullRelease()"></kt-button>
+
                 </div>
             </div>
 
@@ -34,6 +38,7 @@
                         <thead>
                             <th class="transparent"> </th>
                             <th class="transparent">Ornament Type</th>
+                            <th class="transparent">Packet ID</th>
                             <th class="transparent">Quantity</th>
                             <th class="transparent">Gross Weight</th>
                             <th class="transparent">Deduction Weight </th>
@@ -66,6 +71,7 @@
 
                                 </td>
                                 <td>Ring</td>
+                                <td>PAC-01</td>
                                 <td>1</td>
                                 <td>12.00 gm</td>
                                 <td>4.00 gm</td>
@@ -76,6 +82,7 @@
                                 <td>View</td>
                                 <td>View</td>
                                 <td>22 K</td>
+                                <td>95 %</td>
                                 <td>4,50,000</td>
                                 <td>3,50,000</td>
                                 <td>View</td>
@@ -112,7 +119,7 @@
                                         <th class="transparent">Net Weight</th>
                                         <th class="transparent">Previous LTV</th>
                                         <th class="transparent">Current LTV</th>
-                                        <th class="transparent">Principal Outstanding Amount
+                                        <th class="transparent">Principal Outstanding Amount<br>
                                             (based on Current LTV Price)
                                         </th>
                                     </ng-container>
