@@ -32,7 +32,7 @@ exports.customerDetails = async (req, res, next) => {
 
     })
 
-    let customerLoanStage = await models.customerLoanMaster.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false, loanTransferId: null } })
+    let customerLoanStage = await models.customerLoanMaster.findOne({ where: { customerId: customerData.id, isLoanSubmitted: false, isLoanTransfer: false } })
     if (!check.isEmpty(customerLoanStage)) {
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
