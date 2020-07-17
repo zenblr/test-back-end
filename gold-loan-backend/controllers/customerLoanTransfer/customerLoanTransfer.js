@@ -120,7 +120,6 @@ exports.loanTransferBmRating = async (req, res, next) => {
             as: "loanTransfer",
         }]
     });
-    if (req.userData.userTypeId == 5) {
         await sequelize.transaction(async t => {
             if (masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete" || masterLoan.loanTransfer.loanTransferStatusForBM == "pending") {
                 if (loanTransferStatusForBM == "approved") {
@@ -142,9 +141,6 @@ exports.loanTransferBmRating = async (req, res, next) => {
                 return res.status(400).json({ message: 'You cannot change status for this customer' })
             }
         })
-    } else {
-        return res.status(400).json({ message: 'You cannot change status for this customer' })
-    }
 }
 
 exports.loanTransferDisbursal = async (req, res, next) => {
