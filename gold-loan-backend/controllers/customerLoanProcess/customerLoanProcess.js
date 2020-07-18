@@ -603,6 +603,7 @@ exports.loanDocuments = async (req, res, next) => {
             }]
         })
     if (check.isEmpty(checkDocument)) {
+        // remove if condiction
         if (loanMaster.isLoanTransfer == true) {
             let loanData = await sequelize.transaction(async t => {
                 let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
@@ -705,11 +706,40 @@ exports.loanOpsTeamRating = async (req, res, next) => {
 
         let checkUnsecuredLoan = await models.customerLoan.findOne({ where: { id: loanId, isActive: true } })
 
+        let loanMaster = await models.customerLoanMaster.findOne(
+            {
+                where: { id: masterLoanId },
+                include: [
+                    {
+                        model: models.customerLoan,
+                        as: "customerLoan",
+                    },
+                    {
+                        model: models.customerLoanTransfer,
+                        as: "loanTransfer",
+                    }
+                ]
+            })
 
         if (applicationFormForOperatinalTeam == false || goldValuationForOperatinalTeam == false) {
             return res.status(400).json({ message: `One of field is not verified` });
         }
         await sequelize.transaction(async (t) => {
+            // loan transfer changes complete
+            if (loanMaster.isLoanTransfer == true) {
+                let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
+
+                let customerLoanId = [];
+                for (const loan of loanMaster.customerLoan) {
+                    customerLoanId.push(loan.id);
+                    await models.customerLoanDisbursement.create({
+                        loanId: loan.id, masterLoanId, loanAmount: loanMaster.loanTransfer.disbursedLoanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
+                    }, { transaction: t })
+                }
+                await models.customerLoan.update({ disbursed: true }, { where: { id: { [Op.in]: customerLoanId } }, transaction: t })
+                await models.customerLoanMaster.update({ loanStageId: stageIdTransfer.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
+            }
+            // loan transfer changes complete
 
             await models.customerLoanMaster.update({ applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, loanStatusForOperatinalTeam, commentByOperatinalTeam, loanStageId: approvedStageId.id, operatinalTeamId, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
             //securedLoanIdUpdate
