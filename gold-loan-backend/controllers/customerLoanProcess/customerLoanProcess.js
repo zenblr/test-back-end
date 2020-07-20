@@ -39,10 +39,12 @@ exports.customerDetails = async (req, res, next) => {
             as: 'customer'
         }]
     })
-    const firstName = customerLoanStage.customer.firstName
-    const lastName = customerLoanStage.customer.lastName
+
 
     if (!check.isEmpty(customerLoanStage)) {
+        const firstName = customerLoanStage.customer.firstName
+        const lastName = customerLoanStage.customer.lastName
+        
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '2') {
