@@ -15,7 +15,7 @@ export class LoanDetailsComponent implements OnInit {
 
   roles: any
   dataSource: LoanDetailsDatasource;
-  displayedColumns = ['customerID', 'loanId', 'schemeName', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'startDate', 'endDate', 'actions', 'new'];
+  displayedColumns = ['customerID', 'loanId', 'schemeName', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'startDate', 'endDate', 'actions',];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -97,7 +97,7 @@ export class LoanDetailsComponent implements OnInit {
     this.router.navigate(['/admin/customer-management/loan-details', loan.id])
   }
 
-  new(loan) {
+  newLoan(loan) {
     this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
   }
 
@@ -113,11 +113,7 @@ export class LoanDetailsComponent implements OnInit {
     this.router.navigate(['/admin/repayment/interest-emi'])
   }
 
-  partPayment(loan) {
-    this.router.navigate([])
-  }
-
-  partRelease() {
+  jewelleryRelease() {
     this.router.navigate(['/admin/repayment/part-release'])
   }
 }

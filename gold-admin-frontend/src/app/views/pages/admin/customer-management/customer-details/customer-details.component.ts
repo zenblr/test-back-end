@@ -33,14 +33,14 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   viewLoan(loanId: number) {
-    this.router.navigate(['/admin/customer-management/customer-list/' + this.customerId + '/loan-details/' + loanId])
+    this.router.navigate(['/admin/customer-management/loan-details/' + loanId])
   }
 
   prepareImages(){
-    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycAddress[0].addressProof)
-    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycAddress[1].addressProof)
-    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycBank[0].passbookProof)
-    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycPersonal.identityProof)
+    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycAddress[0].addressProofImage)
+    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycAddress[1].addressProofImage)
+    // Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycBank[0].passbookProof)
+    Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycPersonal.identityProofImage)
     // console.log(this.images)
   }
 

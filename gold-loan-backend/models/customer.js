@@ -114,9 +114,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan_type',
             values: ['pan', 'form60'],
         },
-        panImageId: {
-            type: DataTypes.INTEGER,
-            field: 'pan_image_id',
+        panImage: {
+            type: DataTypes.TEXT,
+            field: 'pan_image',
         }
     }, {
         freezeTableName: true,
@@ -135,8 +135,8 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.hasMany(models.customerAddress, { foreignKey: 'customerId', as: 'address' });
         Customer.hasMany(models.customerLoan, { foreignKey: 'customerId', as: 'customerLoan' });
+        Customer.hasMany(models.customerLoanMaster, { foreignKey: 'customerId', as: 'masterLoan' });
 
-        Customer.belongsTo(models.fileUpload, { foreignKey: 'panImageId', as: 'panImage' });
 
         Customer.belongsTo(models.stage, { foreignKey: 'stageId', as: 'stage' });
         Customer.belongsTo(models.status, { foreignKey: 'statusId', as: 'status' });
@@ -147,8 +147,6 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         Customer.belongsTo(models.lead,{foreignKey: 'leadSourceId', as: 'lead' });
-
-        // Customer.belongsTo(models.fileUpload,{foreignKey: 'panImageId', as: 'panImage' });
 
     }
 
@@ -208,7 +206,11 @@ module.exports = (sequelize, DataTypes) => {
     Customer.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
         if (values.panImage) {
+<<<<<<< HEAD
             values.panImage.URL = process.env.BASE_URL + values.panImage.path;
+=======
+            values.panImg = process.env.BASE_URL + values.panImage;
+>>>>>>> c7137c32495a173637dfd35741ec4de31f06e01e
         }
         delete values.password;
         return values;

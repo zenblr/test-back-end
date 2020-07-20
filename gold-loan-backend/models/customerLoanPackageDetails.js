@@ -6,30 +6,22 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id',
             allowNull: false
         },
-        packetId: {
+        masterLoanId: {
             type: DataTypes.INTEGER,
-            field: 'packet_id',
+            field: 'master_loan_id',
             allowNull: false
         },
         emptyPacketWithNoOrnament: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TEXT,
             field: 'empty_packet_with_no_ornament'
         },
-        packetWithAllOrnaments: {
-            type: DataTypes.INTEGER,
-            field: 'packet_with_all_ornaments'
+        sealingPacketWithWeight: {
+            type: DataTypes.TEXT,
+            field: 'sealing_packet_with_weight'
         },
-        packetWithSealing: {
-            type: DataTypes.INTEGER,
-            field: 'packet_with_sealing'
-        },
-        packetWithWeight: {
-            type: DataTypes.INTEGER,
-            field: 'packet_with_weight'
-        },
-        ornamentsId: {
-            type: DataTypes.INTEGER,
-            field: 'ornaments_id'
+        sealingPacketWithCustomer: {
+            type: DataTypes.TEXT,
+            field: 'sealing_packet_with_customer'
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -51,29 +43,26 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerLoanPackageDetails.associate = function (models) {
         CustomerLoanPackageDetails.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
-        CustomerLoanPackageDetails.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
+        CustomerLoanPackageDetails.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
-        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'emptyPacketWithNoOrnament', as: 'emptyPacketWithNoOrnamentData' });
-        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'packetWithAllOrnaments', as: 'packetWithAllOrnamentsData' });
-        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'packetWithSealing', as: 'packetWithSealingData' });
-        CustomerLoanPackageDetails.belongsTo(models.fileUpload, { foreignKey: 'packetWithWeight', as: 'packetWithWeightData' });
+        // CustomerLoanPackageDetails.hasMany(models.customerLoanPacket, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPacket' });
+    
+        CustomerLoanPackageDetails.belongsToMany(models.packet, { through: models.customerLoanPacket });
 
     }
 
     CustomerLoanPackageDetails.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-        if (values.emptyPacketWithNoOrnamentData) {
-            values.emptyPacketWithNoOrnamentData.URL = process.env.BASE_URL + values.emptyPacketWithNoOrnamentData.path;
+        if (values.emptyPacketWithNoOrnament) {
+            values.emptyPacketWithNoOrnamentImage = process.env.BASE_URL + values.emptyPacketWithNoOrnament;
         }
-        if (values.packetWithAllOrnamentsData) {
-            values.packetWithAllOrnamentsData.URL = process.env.BASE_URL + values.packetWithAllOrnamentsData.path;
+        if (values.sealingPacketWithWeight) {
+            values.sealingPacketWithWeightImage = process.env.BASE_URL + values.sealingPacketWithWeight;
         }
-        if (values.packetWithSealingData) {
-            values.packetWithSealingData.URL = process.env.BASE_URL + values.packetWithSealingData.path;
+        if (values.sealingPacketWithCustomer) {
+            values.sealingPacketWithCustomerImage = process.env.BASE_URL + values.sealingPacketWithCustomer;
         }
-        if (values.packetWithWeightData) {
-            values.packetWithWeightData.URL = process.env.BASE_URL + values.packetWithWeightData.path;
-        }
+      
 
         return values;
     }

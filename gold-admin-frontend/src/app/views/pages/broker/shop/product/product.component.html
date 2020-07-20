@@ -4,10 +4,10 @@
         <div class="row card-container mt-4" *ngIf="product">
             <div class="col-md-4">
                 <div class="card p-2 justify-content-center">
-                    <img class="mx-auto" *ngIf="product?.productImages.length == 0"
-                        src="assets/media/icons/image-placeholder.png" alt="test" width="275px" height="315px">
-                    <kt-image-preview-dialog *ngIf="product?.productImages.length" [viewImages]="imageArray"
-                        [type]="'view'" clickable="true">
+                    <img class="mx-auto" *ngIf="imageArray.length == 0" src="assets/media/icons/image-placeholder.png"
+                        alt="test" width="275px" height="315px">
+                    <kt-image-preview-dialog *ngIf="imageArray.length > 0" [viewImages]="imageArray" [type]="'view'"
+                        clickable="true">
                     </kt-image-preview-dialog>
                 </div>
             </div>

@@ -1,0 +1,128 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row">
+            <div class="col-12">
+                <mat-tab-group [(selectedIndex)]="selected" (selectedTabChange)="next($event)">
+                    <mat-tab label="Basic Details" [disabled]="disabled[0]">
+                        <kt-basic-details (id)="loan($event)" (apiHit)="getSingleDetails($event)" [details]="customerDetail"
+                        (next)="next($event)" [loanTransfer]="laonTransferDetails"></kt-basic-details>
+                    </mat-tab>
+                    <mat-tab label="Upload Documents" [disabled]="disabled[1]">
+                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" [loanTransfer]="laonTransferDetails" (next)="next($event)"></kt-upload-loan-documents>
+                    </mat-tab>
+                    <mat-tab *ngxPermissionsOnly="['loanTransferRating']" label="Loan Trasnfer Approval" [formGroup]="approvalForm" [disabled]="disabled[2]">
+                        <div class="row justify-content-center">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="kt-padding-l-10">B.M Status </label>
+                                    </div>
+                                    <div class="col-6">
+                                        <select name="" id="" class="form-control" 
+                                        [class.isError]="approvalForm.controls.loanTransferStatusForBM.touched && this.approvalForm.controls.loanTransferStatusForBM.value =='pending'"
+                                            formControlName="loanTransferStatusForBM">
+                                            <option value="pending">Select Status</option>
+                                            <option [value]="manager.value" *ngFor="let manager of branchManager">
+                                                {{manager.name | titlecase}}</option>
+                                        </select>
+                                        <mat-error *ngIf="approvalForm.controls.loanTransferStatusForBM.touched && this.approvalForm.controls.loanTransferStatusForBM.value =='pending'">
+                                            Field Required
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-25 justify-content-center" 
+                            *ngIf="approvalForm.controls.loanTransferStatusForBM.value !='pending' && approvalForm.controls.loanTransferStatusForBM.value != 'approved'">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="kt-padding-l-10">Reason</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <select name="" id="" class="form-control" formControlName="reason"
+                                            (change)="patchValue()" [class.isError]="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
+                                            <option value="">Select Status</option>
+                                            <option [value]="reason.description" *ngFor="let reason of reasons">
+                                                {{reason.description | titlecase}}</option>
+                                        </select>
+                                        <mat-error *ngIf="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
+                                            Field Required
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-25 justify-content-center"
+                            *ngIf="approvalForm.controls.reason.value == 'Other'">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <mat-form-field class="w-100">
+                                            <mat-label>Reason</mat-label>
+                                            <textarea matInput formControlName="reasonByBM"></textarea>
+                                            <mat-error>Field Required</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-25">
+                            <div class="offset-10 col-2">
+                                <kt-button [type]="'button'" [value]="'Next'" (click)="approval()"></kt-button>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab *ngxPermissionsOnly="['loanTransferDisbursal']" label="Disbursal" [formGroup]="disbursalForm" [disabled]="disabled[3]">
+
+                        <div class="row justify-content-center kt-padding-t-25">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label for="">LOAN ID</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="laon id" formControlName="loanUniqueId"  readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center kt-padding-t-25">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label for="">Disbursed Loan Amount</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="1000000" formControlName="disbursedLoanAmount" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center kt-padding-t-25">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label for="">Transaction ID</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="Transxxxxx" formControlName="transactionId" 
+                                        [class.isError]="disbursalForm.controls.transactionId.invalid && disbursalForm.controls.transactionId.touched">
+                                        <mat-error *ngIf="disbursalForm.controls.transactionId.invalid && disbursalForm.controls.transactionId.touched">
+                                            Field Required
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row kt-padding-t-25">
+                            <div class="offset-10 col-2">
+                                <kt-button [type]="'button'" [value]="'Save'" (click)="disbursal()"></kt-button>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

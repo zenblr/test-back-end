@@ -9,7 +9,7 @@ const moment = require("moment");
 
 const check = require("../../lib/checkLib");
 var uniqid = require('uniqid');
-
+let { sendCustomerUniqueId, sendMessageToOperationsTeam } = require('../../utils/SMS')
 
 exports.addCceRating = async (req, res, next) => {
 
@@ -97,66 +97,71 @@ exports.updateRating = async (req, res, next) => {
         }
     }
 
-    if (user.userTypeId == 5) {
-        let { kycStatusFromBm, reasonFromBm } = req.body
+    if (user.userTypeId == 8) {
+        let { kycStatusFromOperationalTeam, reasonFromOperationalTeam } = req.body
 
         let checkCceVerified = await models.customerKyc.findOne({ where: { customerId, isVerifiedByCce: true } })
         if (check.isEmpty(checkCceVerified)) {
             return res.status(400).json({ message: `Cce rating not verified` })
         }
 
-        let bmId = req.userData.id
+        let operationalTeamId = req.userData.id
 
-        if (customerRating.kycStatusFromBm == "approved" || customerRating.kycStatusFromBm == "rejected") {
+        if (customerRating.kycStatusFromOperationalTeam == "approved" || customerRating.kycStatusFromOperationalTeam == "rejected") {
             return res.status(400).json({ message: `You cannot change status for this customer` })
         }
-        if (kycStatusFromBm !== "approved") {
-            if (reasonFromBm.length == 0) {
+        if (kycStatusFromOperationalTeam !== "approved") {
+            if (reasonFromOperationalTeam.length == 0) {
                 return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
             }
-            if (kycStatusFromBm == "incomplete") {
+            if (kycStatusFromOperationalTeam == "incomplete") {
                 await sequelize.transaction(async (t) => {
 
                     await models.customer.update({ kycStatus: "pending" }, { where: { id: customerId } })
                     await models.customerKyc.update(
-                        { branchManagerVerifiedBy: bmId, isVerifiedByCce: false },
+                        { operationalTeamVerifiedBy: operationalTeamId, isVerifiedByCce: false },
                         { where: { customerId: customerId }, transaction: t })
 
-                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromBm, reasonFromBm, branchManagerId: bmId, kycStatusFromCce: "pending" }, { where: { customerId }, transaction: t })
+                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, kycStatusFromCce: "pending" }, { where: { customerId }, transaction: t })
                 });
                 return res.status(200).json({ message: 'success' })
             } else {
                 await sequelize.transaction(async (t) => {
                     await models.customerKyc.update(
-                        { branchManagerVerifiedBy: bmId },
+                        { operationalTeamVerifiedBy: operationalTeamId },
                         { where: { customerId: customerId }, transaction: t })
 
-                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
+                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
                 });
                 return res.status(200).json({ message: 'success' })
             }
 
 
         } else {
-            reasonFromBm = ""
+            reasonFromOperationalTeam = ""
             let customerUniqueId = uniqid.time().toUpperCase();
             await sequelize.transaction(async (t) => {
                 await models.customer.update({ customerUniqueId, kycStatus: "approved" }, { where: { id: customerId }, transaction: t })
                 await models.customerKyc.update(
-                    { isVerifiedByBranchManager: true, branchManagerVerifiedBy: bmId },
+                    { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
                     { where: { customerId: customerId }, transaction: t })
 
-                await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromBm, reasonFromBm, branchManagerId: bmId }, { where: { customerId }, transaction: t })
+                await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
             });
 
             let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
             let cusMobile = getMobileNumber.mobileNumber
+
+            // await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
             //message for customer
             request(
                 `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
             );
-            let getBm = await models.user.findOne({ where: { id: bmId } });
+            let getBm = await models.user.findOne({ where: { id: operationalTeamId } });
             let bmMobile = getBm.mobileNumber
+
+            // await sendMessageToOperationsTeam(bmMobile, customerUniqueId)
+
             //message for BranchManager
             request(
                 `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
@@ -171,4 +176,3 @@ exports.updateRating = async (req, res, next) => {
     return res.status(400).json({ message: `You do not have authority.` })
 
 }
-

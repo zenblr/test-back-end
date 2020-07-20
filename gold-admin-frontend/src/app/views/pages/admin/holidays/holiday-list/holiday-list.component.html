@@ -16,9 +16,13 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <div class="kt-pointer" (click)="editHoliday(item)">Edit</div>
-                        <div class="px-3">|</div>
-                        <div class="kt-pointer text-danger" (click)="deleteHoliday(item)">Delete</div>
+                        <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['editHoliday', 'deleteHoliday']">
+                            <div *ngxPermissionsOnly="['editHoliday']" class="kt-pointer" (click)="editHoliday(item)">
+                                Edit</div>
+                            <div class="px-3">|</div>
+                            <div *ngxPermissionsOnly="['deleteHoliday']" class="kt-pointer text-danger"
+                                (click)="deleteHoliday(item)">Delete</div>
+                        </div>
                     </mat-cell>
                 </ng-container>
 

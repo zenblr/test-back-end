@@ -13,6 +13,9 @@ const CONSTANT = require('../../utils/constant');
 const moment = require('moment');
 const cache = require('../../utils/cache');
 let sms = require('../../utils/sendSMS');
+let baseUrl = require('../../config/baseUrl');
+const { sendOtpForLogin, forgetPasswordOtp } = require('../../utils/SMS')
+
 
 exports.addUser = async (req, res, next) => {
     let { firstName, lastName, password, mobileNumber, email, panCardNumber, address, roleId, userTypeId, internalBranchId } = req.body;
@@ -60,21 +63,27 @@ exports.addUser = async (req, res, next) => {
 }
 
 exports.sendOtp = async (req, res, next) => {
-    const { mobileNumber } = req.body;
+    const { mobileNumber, type } = req.body;
     let userDetails = await models.user.findOne({ where: { mobileNumber } });
     if (userDetails) {
         let otp = Math.floor(1000 + Math.random() * 9000);
         const referenceCode = await createReferenceCode(5);
-        let createdTime = new Date();
+        let createdTime = moment(new Date());
         let expiryTime = moment.utc(createdTime).add(10, 'm');
 
+        var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
         await sequelize.transaction(async t => {
             await models.userOtp.destroy({ where: { mobileNumber }, transaction: t })
             await models.userOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
         })
 
-        let message = await `Dear ${referenceCode}, Your OTP for completing the order request is ${otp}.`
+        // if (type == "login") {
+        //     await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+        // }else if(type == "forget"){
+        //     await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+        // }
+        let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
         await sms.sendSms(mobileNumber, message);
         // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
 
@@ -251,6 +260,8 @@ exports.updateInternalUser = async (req, res, next) => {
             await models.userInternalBranch.create({ userId: id, internalBranchId }, { transaction: t })
         }
     })
+    let userId = [id];
+    models.axios.post(`${baseUrl.EMIAPI}/api/roles`, { userId });
     cache(`${id}permissions`);
     cache(`${id}`);
     return res.status(200).json({ message: 'User updated.' });
@@ -263,6 +274,9 @@ exports.deleteInternalUser = async (req, res, next) => {
         const user = await models.user.update({ isActive: false, modifiedBy }, { where: { id: id } })
         await models.userRole.destroy({ where: { userId: id } });
     })
+    let userId = [id];
+    models.axios.post(`${baseUrl.EMIAPI}/api/roles`, { userId });
+    cache(`${id}permissions`);
     cache(`${id}`);
     return res.status(200).json({ message: 'User deleted.' });
 }

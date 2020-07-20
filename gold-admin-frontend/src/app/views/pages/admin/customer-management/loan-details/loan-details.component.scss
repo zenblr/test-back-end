@@ -22,4 +22,19 @@
         font-size: 14px;
         margin   : 15px 0;
     }
+    .pdf{
+        overflow: hidden;
+        border-radius: 15px;
+        // width: 100%;
+    }
+
+	iframe {
+		pointer-events: none;
+		display: block;
+		// margin-top: -65px;
+        // margin-left: -7px;
+        // height: 195px;
+        width: 105%;
+        margin-top: -60px;
+	}
 }

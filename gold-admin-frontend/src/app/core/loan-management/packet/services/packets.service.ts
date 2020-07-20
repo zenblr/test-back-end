@@ -14,8 +14,9 @@ export class PacketsService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  uploadPackets(packageImageData, loanId): Observable<any> {
-    return this.http.post(`/api/loan-process/add-packet-images/`, { packageImageData, loanId }).pipe(
+  uploadPackets(packetImages, masterLoanId): Observable<any> {
+    let data = { ...packetImages, ...masterLoanId }
+    return this.http.post(`/api/loan-process/add-packet-images/`, data).pipe(
       map(res => res)
     )
   }

@@ -30,11 +30,15 @@ export class UploadLenderBannerComponent implements OnInit {
   getData() {
     this.uploadLenderBannerService.getLenderBanners().pipe(
       map(res => {
-        if (res.lenderBannerImages.length > 0) {
-          res.lenderBannerImages.forEach(element => {
-            this.images.push(element.lenderBannerImages.URL)
-            this.imgId.push(element.lenderBannerImages.id)
-          });
+        // if (res.lenderBannerImages.length > 0) {
+        //   res.lenderBannerImages.forEach(element => {
+        //     this.images.push(element.lenderBannerImages.URL)
+        //     this.imgId.push(element.lenderBannerImages.id)
+        //   });
+        // }
+        if (res) {
+          this.images = res.lenderBannerImages
+          this.imgId = res.images
         }
       })).subscribe()
   }

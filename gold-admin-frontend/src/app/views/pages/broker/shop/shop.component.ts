@@ -5,12 +5,14 @@ import { DataTableService } from "../../../../core/shared/services/data-table.se
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { Subject } from 'rxjs';
 import { Router } from "@angular/router";
-import { ProductComponent } from './product/product.component'
+import { ProductComponent } from './product/product.component';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'kt-shop',
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.scss'],
+  providers: [TitleCasePipe],
   encapsulation: ViewEncapsulation.None
 })
 export class ShopComponent implements OnInit {
@@ -23,12 +25,12 @@ export class ShopComponent implements OnInit {
     to: 25,
     search: "",
     subCategoryId: "",
-    sort: "",
+    sort: "productPriceDesc",
   };
   searchValue = "";
-  sortType: boolean;
+  sortType: string;
   sortValue: string;
-
+  private destroy$ = new Subject();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild("searchInput", { static: true }) searchInput: ElementRef;
   private unsubscribeSearch$ = new Subject();
@@ -39,24 +41,30 @@ export class ShopComponent implements OnInit {
     private dataTableService: DataTableService,
     private router: Router,
     public dialog: MatDialog,
+    private titlecasePipe: TitleCasePipe
   ) {
     this.shopService.toggle$.subscribe(res => {
       this.toogler = res;
     })
 
-    this.shopService.sortType$.subscribe(res => {
-      this.sortType = res;
-      this.sort();
-    })
+    this.shopService.sortType$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+      if (res) {
+        this.sortType = res;
+        this.sort();
+      }
+    });
 
-    this.shopService.sortValue$.subscribe(res => {
-      this.sortValue = res;
-      this.sort();
-    })
+    this.shopService.sortValue$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+      if (res) {
+        this.sortValue = res;
+        this.sort();
+      }
+    });
   }
 
   ngOnInit() {
     this.getSubCategory();
+    this.getProducts();
     const searchSubscription = this.dataTableService.searchInput$
       .pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe((res) => {
@@ -126,30 +134,23 @@ export class ShopComponent implements OnInit {
   }
 
   sort() {
-    if (this.sortValue == 'price' && this.sortType) {
-      this.productsData.sort = 'productPriceAsc'
-    } else if (this.sortValue == 'price' && this.sortType == false) {
-      this.productsData.sort = 'productPriceDesc'
-
+    if (this.sortValue && this.sortType) {
+      this.productsData.sort = 'product' + this.titlecasePipe.transform(this.sortValue) + this.titlecasePipe.transform(this.sortType);
+    } else if ((this.sortValue == '' || this.sortValue == undefined) && this.sortType) {
+      this.productsData.sort = 'productPrice' + this.titlecasePipe.transform(this.sortType);
+    } else if (this.sortValue && (this.sortType == '' || this.sortType == undefined)) {
+      this.productsData.sort = 'product' + this.titlecasePipe.transform(this.sortValue) + 'Desc';
     }
-
-    if (this.sortValue == 'name' && this.sortType) {
-      this.productsData.sort = 'productNameAsc'
-
-    } else if (this.sortValue == 'name' && this.sortType == false) {
-      this.productsData.sort = 'productNameDesc'
-
-    }
-
     this.getProducts();
-
   }
 
   ngOnDestroy() {
     this.shopService.toggle.next('list');
+    this.destroy$.next();
+    this.destroy$.complete();
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
-    this.shopService.sortType.next(false);
-    this.shopService.sortValue.next('price');
+    this.shopService.sortType.next('');
+    this.shopService.sortValue.next('');
   }
 }

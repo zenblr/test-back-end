@@ -2,7 +2,7 @@
 <div class="kt-aside__brand kt-grid__item" [ngClass]="htmlClassService.getClasses('brand', true)" id="kt_aside_brand">
 	<div class="kt-aside__brand-logo">
 		<a href="javascript:;" routerLink="/">
-			<img alt="logo" [attr.src]="headerLogo" [height]="height"/>
+			<img alt="logo" [attr.src]="headerLogo" [height]="height" />
 		</a>
 
 	</div>
@@ -17,13 +17,12 @@
 			<span>
 				<div [inlineSVG]="'./assets/media/icons/svg/Navigation/Angle-double-right.svg'" class="d-block"></div>
 			</span>
-			
 		</button>
 
 	</div>
 </div>
 
-<div class="gold-rate text-center kt-aside__gold-rate">
+<div class="gold-rate text-center kt-aside__gold-rate" *ngIf="showGoldRateFlag">
 	<span class="">Gold rate: </span>{{goldRateService.goldRate$ | async}} /gm
 </div>
 <!-- end:: Brand -->

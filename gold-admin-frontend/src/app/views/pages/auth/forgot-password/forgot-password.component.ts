@@ -99,7 +99,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 		this.loading = true;
 
 		const email = controls.email.value;
-		this.authService.generateOtp(email).pipe(
+		this.authService.generateOtp(email, 'forget').pipe(
 			tap(response => {
 				if (response) {
 					this.authNoticeService.setNotice(this.translate.instant('AUTH.FORGOT.SUCCESS'), 'success');

@@ -41,9 +41,16 @@
                             <label class="text-color kt-padding-l-10 mandatory">Relationship</label>
                         </div>
                         <div class="col-6">
-                            <input type="text" class="form-control" placeholder="eg.Son,Father"
+                            <input type="text" list="relationship" class="form-control" placeholder="eg.Son,Father"
                                 formControlName="relationship"
                                 [class.isError]="controls.relationship.touched && controls.relationship.invalid">
+                            <datalist id="relationship">
+                                <option value="Son">
+                                <option value="Father">
+                                <option value="Mother">
+                                <option value="Brother">
+                                <option value="Sister">
+                            </datalist>
                             <mat-error *ngIf="controls.relationship.touched && controls.relationship.invalid">
                                 <span *ngIf="controls.relationship.errors?.required">Field is Required</span>
                                 <span *ngIf="controls.relationship.errors?.pattern">Invalid Input</span>
@@ -104,7 +111,8 @@
                                     [class.isError]="controls.guardianRelationship.touched && controls.guardianRelationship.invalid">
                                 <mat-error
                                     *ngIf="controls.guardianRelationship.touched && controls.guardianRelationship.invalid">
-                                    <span *ngIf="controls.guardianRelationship.errors?.required">Field is Required</span>
+                                    <span *ngIf="controls.guardianRelationship.errors?.required">Field is
+                                        Required</span>
                                     <span *ngIf="controls.guardianRelationship.errors?.pattern">Invalid Input</span>
                                 </mat-error>
                             </div>
@@ -112,7 +120,7 @@
                     </div>
                 </div>
             </span>
-            
+
         </div>
         <div class="text-right py-3 col-12" *ngIf="!disable">
             <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>

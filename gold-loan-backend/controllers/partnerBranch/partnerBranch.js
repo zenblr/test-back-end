@@ -95,9 +95,7 @@ exports.readBranch = async (req, res, next) => {
     let readBranchData = await models.partnerBranch.findAll({
         where: searchQuery,
         include: includeArray,
-        order: [
-            ['id', 'DESC']
-        ],
+        order: [["updatedAt", "DESC"]],
         offset: offset,
         limit: pageSize
     });

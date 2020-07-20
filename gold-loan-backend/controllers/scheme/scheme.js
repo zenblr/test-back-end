@@ -43,18 +43,18 @@ exports.addScheme = async (req, res, next) => {
             for (let scheme of readSchemeByPartner.schemes) {
                 schemeArray.push(scheme.id);
             }
-            await models.scheme.update(
-                { default: false }, { where: { id: { [Op.in]: schemeArray } } });
+            if (isDefault == true) {
+                await models.scheme.update({ default: false }, { where: { id: { [Op.in]: schemeArray } } });
+            }
+
 
         }
 
         // for (let i = 0; i < partnerId.length; i++) {
         // console.log(partnerId[i]);
-
         let data = await models.partnerScheme.create({
             schemeId: addSchemeData.id,
-            partnerId: partnerId
-
+            partnerId: partnerId[0]
         }, { transaction: t })
     })
     return res.status(201).json({ message: "scheme created" })
@@ -64,18 +64,45 @@ exports.addScheme = async (req, res, next) => {
 //read scheme
 
 exports.readScheme = async (req, res, next) => {
-    let readSchemeData = await models.partner.findAll({
-        where: { isActive: true },
-        include: [
-            {
-                model: models.scheme,
-                where: { isActive: true }
-            },
-        ],
-    })
+
+    var { isActive } = req.query;
+    const query = {};
+    let readSchemeData;
+    if (isActive) {
+        query.isActive = isActive;
+        readSchemeData = await models.partner.findAll({
+            where: { isActive: true },
+            order: [
+                ['id', 'asc'],
+                [models.scheme, 'id', 'desc']
+
+            ],
+            include: [
+                {
+                    model: models.scheme,
+                    required: true,
+                    where: query
+                },
+            ],
+        })
+    } else {
+        readSchemeData = await models.partner.findAll({
+            where: { isActive: true },
+            order: [
+                ['id', 'asc'],
+                [models.scheme, 'id', 'desc']
+            ],
+            include: [
+                {
+                    model: models.scheme,
+                    required: true,
+                },
+            ],
+        })
+    }
 
     if (!readSchemeData[0]) {
-        return res.status(200).json({ message: 'no scheme found' });
+        return res.status(200).json({ data: readSchemeData });
 
     }
     return res.status(200).json({ data: readSchemeData });
@@ -122,6 +149,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
         include: [{
             model: models.scheme,
             where: {
+                isActive: true,
                 schemeType: "secured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
@@ -134,7 +162,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
     if (!partnerSecuredScheme) {
         return res.status(200).json({ data: {} });
     }
-    return res.status(200).json({data: partnerSecuredScheme });
+    return res.status(200).json({ data: partnerSecuredScheme });
 
 }
 
@@ -146,6 +174,7 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
         include: [{
             model: models.scheme,
             where: {
+                isActive: true,
                 schemeType: "unsecured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
@@ -157,7 +186,7 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
     if (!partnerSecuredScheme) {
         return res.status(200).json({ data: {} });
     }
-    return res.status(200).json({data: partnerSecuredScheme });
+    return res.status(200).json({ data: partnerSecuredScheme });
 
 }
 
@@ -166,6 +195,11 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
 
 exports.deactiveScheme = async (req, res, next) => {
     const { id, isActive } = req.query;
+
+    let defaultSchemeCheck = await models.scheme.findOne({ where: { isActive: true, default: true, id: id } });
+    if (!check.isEmpty(defaultSchemeCheck)) {
+        return res.status(400).json({ message: "Please select one default scheme with respect to that partner." })
+    }
 
     const deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
 
@@ -227,6 +261,13 @@ exports.filterScheme = async (req, res, next) => {
 exports.UpdateDefault = async (req, res, next) => {
     let { id } = req.params;
     let { partnerId } = req.body;
+
+    let schemeDefault = await models.scheme.findOne({where: {id: id}});
+
+    if(schemeDefault.isActive == false){
+        return res.status(400).json({message: "You can not set deactivate scheme as a default."})
+    }
+
     let readSchemeByPartner = await models.partner.findOne({
         where: { isActive: true, id: partnerId },
         include: [{

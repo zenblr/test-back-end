@@ -14,6 +14,7 @@ export class LoanDetailsComponent implements OnInit {
   images: any = []
   loanId
   loanDetails: any
+  pdf = { loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false }
   constructor(
     private loanservice: LoanApplicationFormService,
     private rout: ActivatedRoute,
@@ -25,13 +26,40 @@ export class LoanDetailsComponent implements OnInit {
     this.loanservice.getLoanDataById(this.loanId).subscribe(res => {
       this.loanDetails = res.data
       this.createOrnamentsImage()
-      // console.log(this.images)
+      this.pdfCheck()
+      console.log(this.images)
     })
   }
 
+  pdfCheck(){
+    let laonAgree = this.loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage[0].split('.')
+    let pawn = this.loanDetails.masterLoan.customerLoanDocument.pawnCopyImage[0].split('.')
+    let scheme = this.loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage[0].split('.')
+    if(laonAgree[laonAgree.length - 1] == 'pdf'){
+      this.pdf.loanAgreementCopyImage = true
+    }else{
+      this.pdf.loanAgreementCopyImage = false
+
+    }
+    if(pawn[pawn.length - 1] == 'pdf'){
+      this.pdf.pawnCopyImage = true
+
+    }else{
+      this.pdf.pawnCopyImage = false
+      
+    }
+    if(scheme[scheme.length - 1] == 'pdf'){
+      this.pdf.schemeConfirmationCopyImage = true
+
+    }else{
+      this.pdf.schemeConfirmationCopyImage = false
+      
+    }
+  }
+
   createOrnamentsImage() {
-    for (let ornametsIndex = 0; ornametsIndex < this.loanDetails.loanOrnamentsDetail.length; ornametsIndex++) {
-      let ornamets = this.loanDetails.loanOrnamentsDetail[ornametsIndex]
+    for (let ornametsIndex = 0; ornametsIndex < this.loanDetails.masterLoan.loanOrnamentsDetail.length; ornametsIndex++) {
+      let ornamets = this.loanDetails.masterLoan.loanOrnamentsDetail[ornametsIndex]
       this.createImageArray()
       let keys = Object.keys(ornamets)
       for (let index = 0; index < keys.length; index++) {
@@ -56,37 +84,28 @@ export class LoanDetailsComponent implements OnInit {
 
   patchUrlIntoForm(key, url, index) {
     switch (key) {
-      case 'withOrnamentWeight':
-        this.images[index].withOrnamentWeight = url
+      case 'withOrnamentWeightData':
+        this.images[index].withOrnamentWeight = url.URL
         break;
-      case 'acidTest':
-        this.images[index].acidTest = url
+      case 'acidTestData':
+        this.images[index].acidTest = url.URL
 
         break;
-      case 'weightMachineZeroWeight':
-        this.images[index].weightMachineZeroWeight = url
+      case 'weightMachineZeroWeightData':
+        this.images[index].weightMachineZeroWeight = url.URL
 
         break;
-      case 'stoneTouch':
-        this.images[index].stoneTouch = url
+      case 'stoneTouchData':
+        this.images[index].stoneTouch = url.URL
 
         break;
-      case 'purityTest':
-        let temp = []
-        // if (controls.controls.purityTest.value.length > 0)
-        //   temp = controls.controls.purityTest.value
-        temp.push(url)
-        if (typeof url == "object") {
-          this.images[index].purity = url[0]
-        } else {
-          this.images[index].purity = url
-        }
-
+      case 'purityTestImage':
+        this.images[index].purity = url.URL
 
         break;
 
-      case 'ornamentImage':
-        this.images[index].ornamentImage = url
+      case 'ornamentImageData':
+        this.images[index].ornamentImage = url.URL
 
         break;
     }
@@ -97,14 +116,25 @@ export class LoanDetailsComponent implements OnInit {
   preview(value, formIndex) {
     let filterImage = []
     filterImage = Object.values(this.images[formIndex])
-    var temp =[]
-    temp = filterImage.filter(el=>{
+    var temp = []
+    temp = filterImage.filter(el => {
       return el != ''
     })
-    let index = temp.indexOf(value)
+    let array = []
+    for (let index = 0; index < temp.length; index++) {
+      if (typeof temp[index] == "object") {
+        array = temp[index]
+        temp.splice(index, 1)
+      }
+    }
+    console.log(temp)
+
+    let finalArray = [...array, ...temp]
+    console.log(finalArray)
+    let index = finalArray.indexOf(value)
     this.dilaog.open(ImagePreviewDialogComponent, {
       data: {
-        images: temp,
+        images: finalArray,
         index: index
       },
       width: "auto"

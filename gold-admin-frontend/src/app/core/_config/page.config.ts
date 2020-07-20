@@ -129,12 +129,35 @@ export class PageConfig {
 					page: { title: "Loan Repayment", desc: "" },
 				}
 			},
+			"funds-approvals": {
+				"deposit": {
+					page: { title: "Deposit", desc: "" },
+				},
+				"top-up-approval": {
+					page: { title: "Top Up Approval", desc: "" },
+				},
+				"part-release-approval": {
+					page: { title: "Part Release Approval", desc: "" },
+				},
+				"full-release-approval": {
+					page: { title: "Full Release Approval", desc: "" },
+				},
+				"part-release-final": {
+					page: { title: "Part Release Approved List", desc: "" },
+				},
+				"full-release-final": {
+					page: { title: "Full Release Final Process", desc: "" },
+				},
+			},
 			repayment: {
 				monthly: {
 					page: { title: "Monthly Repayment", desc: "" },
 				},
 				"part-release": {
 					page: { title: "Part Release", desc: "" },
+				},
+				"full-release": {
+					page: { title: "Full Release", desc: "" },
 				},
 				'interest-emi': {
 					page: { title: "Pay Interest EMI", desc: "" },
@@ -233,6 +256,12 @@ export class PageConfig {
 						page: { title: "Customer Details", desc: "" },
 					},
 				},
+				"loan-details": {
+					id: {
+						page: { title: "Loan Details", desc: "" },
+					}
+
+				},
 			},
 			"loan-management": {
 				"loan-calculator": {
@@ -269,6 +298,9 @@ export class PageConfig {
 				"topup": {
 					page: { title: "Top Up", desc: "" },
 				},
+				"transfer-loan-list": {
+					page: { title: "Transfer Loan List", desc: "" },
+				}
 			}
 		},
 		'broker': {

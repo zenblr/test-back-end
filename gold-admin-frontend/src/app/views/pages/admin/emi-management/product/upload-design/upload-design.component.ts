@@ -66,7 +66,7 @@ export class UploadDesignComponent implements OnInit {
           const width = img.naturalWidth;
           const height = img.naturalHeight;
           window.URL.revokeObjectURL(img.src);
-          if ((width !== 1500 || height !== 1500) || (file.size > 200000)) {
+          if ((width > 1500 || height > 1500) || (file.size > 200000)) {
             console.log(width, height, file.size);
             this.improperCount++;
           } else {

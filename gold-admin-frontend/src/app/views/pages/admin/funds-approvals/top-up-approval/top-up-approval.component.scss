@@ -1,0 +1,13 @@
+:host{
+    ::ng-deep.mat-row,
+    ::ng-deep.mat-header-row{
+        width: 250% !important;
+    }
+
+    .mat-column-customerId{
+        padding-left: 10px !important;
+    }
+    .mat-column-outstandingLoan{
+        flex: 0 0 7% !important;
+    }
+}

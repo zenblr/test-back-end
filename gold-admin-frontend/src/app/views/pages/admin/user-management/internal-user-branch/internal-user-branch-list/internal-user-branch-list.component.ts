@@ -217,9 +217,9 @@ export class InternalUserBranchListComponent implements OnInit {
       ifscCode: internalBranch.ifscCode,
       accountHolderName: internalBranch.accountHolderName,
       accountNumber: internalBranch.accountNumber,
-      passbookStatementChequeId: internalBranch.passbookStatementChequeId,
-      passbookImg: internalBranch.passbookStatementCheque.URL,
-      passbookImgName: internalBranch.passbookStatementCheque.originalname,
+      passbookStatementCheque: internalBranch.passbookStatementCheque,
+      passbookImg: internalBranch.passbookStatementChequeImage,
+      // passbookImgName: internalBranch.passbookStatementChequeImage,
     }
     return data
   }
