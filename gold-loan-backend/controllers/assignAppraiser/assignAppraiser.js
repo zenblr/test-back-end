@@ -40,7 +40,7 @@ exports.editAssignAppraiser = async (req, res, next) => {
     let { id } = req.params;
     let modifiedBy = req.userData.id;
 
-    let { appraiserId, appoinmentDate, startTime, endTime } = req.body;
+    let { appraiserId, appoinmentDate, startTime, endTime, customerId } = req.body;
 
     let getAssignCustomer = await models.customerAssignAppraiser.findOne({ where: { id: id } });
 
