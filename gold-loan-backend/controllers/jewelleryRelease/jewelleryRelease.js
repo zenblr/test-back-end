@@ -12,18 +12,18 @@ exports.ornamentsDetails = async (req, res, next) => {
 
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes:['customerId','masterLoanUniqueId','finalLoanAmount','tenure','loanStartDate','loanEndDate'],
+        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
         include: [
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
-                attributes:['masterLoanId','loanUniqueId','loanAmount']
+                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount']
             },
             {
                 model: models.customerLoanPersonalDetail,
                 as: 'loanPersonalDetail',
-                attributes:['customerUniqueId']
-            },  {
+                attributes: ['customerUniqueId']
+            }, {
                 model: models.customerLoanOrnamentsDetail,
                 as: 'loanOrnamentsDetail',
                 include: [
@@ -38,10 +38,15 @@ exports.ornamentsDetails = async (req, res, next) => {
                 include: [{
                     model: models.packet,
                     include: [{
-                        model: models.ornamentType
+                        model: models.packetOrnament,
+                        as: 'packetOrnament',
+                        include: [{
+                            model: models.ornamentType,
+                            as: 'ornamentType'
+                        }]
                     }]
                 }]
-            }, ]
+            },]
     });
 
     let ornamentType = [];
@@ -60,8 +65,9 @@ exports.ornamentsDetails = async (req, res, next) => {
             customerLoan.dataValues['isUnsecuredSchemeApplied'] = customerLoan.unsecuredLoan.isActive
         }
     }
+
     let lastPayment = await getLoanLastPayment(masterLoanId);
-    return res.status(200).json({ message: 'success', customerLoan, lastPayment })
+    return res.status(200).json({ message: 'success', customerLoan })
 }
 
 async function getLoanLastPayment(masterLoanId) {

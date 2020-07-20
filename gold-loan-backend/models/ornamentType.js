@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     );
 
     OrnamentType.associate = function (models) {
-        OrnamentType.hasMany(models.packetOrnament, { foreignKey: 'ornamentTypeId', as: 'ornament' });
+        OrnamentType.hasMany(models.packetOrnament, { foreignKey: 'ornamentTypeId', as: 'packetOrnament' });
 
         // OrnamentType.belongsToMany(models.packet, { through: models.packetOrnament });
 
