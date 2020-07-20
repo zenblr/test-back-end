@@ -1,5 +1,5 @@
 const express = require('express');
-const { ornamentsDetails } = require('../controllers/jewelleryRelese/jewelleryRelese');
+const { ornamentsDetails } = require('../controllers/jewelleryRelease/jewelleryRelease');
 const route = express.Router();
 const validatiError = require('../middleware/validationError');
 const { wrapper } = require('../utils/errorWrap');
