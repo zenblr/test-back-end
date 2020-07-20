@@ -915,56 +915,16 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             {
                 model: models.customerLoanMaster,
                 as: 'masterLoan',
-                // include: [{
-                //     model: models.loanStage,
-                //     as: 'loanStage',
-                //     attributes: ['id', 'name']
-                // },
-                // {
-                //     model: models.customerLoanTransfer,
-                //     as: "loanTransfer",
-                //     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                // },
-                // {
-                //     model: models.customerLoanPersonalDetail,
-                //     as: 'loanPersonalDetail',
-                // }, {
-                //     model: models.customerLoanBankDetail,
-                //     as: 'loanBankDetail',
-                // }, {
-                //     model: models.customerLoanNomineeDetail,
-                //     as: 'loanNomineeDetail',
-                // }, {
-                //     model: models.customerLoanOrnamentsDetail,
-                //     as: 'loanOrnamentsDetail',
-                //     include: [
-                //         {
-                //             model: models.ornamentType,
-                //             as: "ornamentType"
-                //         }
-                //     ]
-                // }, {
-                //     model: models.customerLoanPackageDetails,
-                //     as: 'loanPacketDetails',
-                //     // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                //     include: [{
-                //         model: models.packet,
-                //         include: [{
-                //             model: models.packetOrnament,
-                //             as: 'packetOrnament',
-                //             include: [{
-                //                 model: models.ornamentType,
-                //                 as: 'ornamentType'
-                //             }]
-                //         }]
-                //     }]
-                // }, {
-                //     model: models.customerLoanDocument,
-                //     as: 'customerLoanDocument'
-                // }, {
-                //     model: models.customerLoanInterest,
-                //     as: 'customerLoanInterest',
-                // }]
+                include: [{
+                    model: models.loanStage,
+                    as: 'loanStage',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: models.customerLoanTransfer,
+                    as: "loanTransfer",
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                }]
             },
             {
                 model: models.customerLoanPersonalDetail,
