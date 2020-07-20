@@ -39,10 +39,12 @@ exports.customerDetails = async (req, res, next) => {
             as: 'customer'
         }]
     })
-    const firstName = customerLoanStage.customer.firstName
-    const lastName = customerLoanStage.customer.lastName
+
 
     if (!check.isEmpty(customerLoanStage)) {
+        const firstName = customerLoanStage.customer.firstName
+        const lastName = customerLoanStage.customer.lastName
+
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '2') {
@@ -104,7 +106,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
         await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, customerUniqueId, startDate, purpose, kycStatus, createdBy, modifiedBy }, { transaction: t })
         return loan
     })
-    return res.status(200).json({ message: 'success', loanId: loanData.id, masterLoanId: loanData.masterLoanId, loanCurrentStage: '2' })
+    return res.status(200).json({ message: 'success', loanstage: stageId, loanId: loanData.id, masterLoanId: loanData.masterLoanId, loanCurrentStage: '2' })
 
 }
 
