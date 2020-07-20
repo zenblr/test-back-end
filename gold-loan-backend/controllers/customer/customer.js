@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-
+let { sendOtpToLeadVerification } = require('../../utils/SMS')
 
 exports.addCustomer = async (req, res, next) => {
   let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId } = req.body;
@@ -67,19 +67,18 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   let otp = Math.floor(1000 + Math.random() * 9000);
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
+
+  // var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+
+  //await sendOtpToLeadVerification(customerExist.firstName, customerExist.mobileNumber, otp, expiryTimeToUser)
+
   let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
   await sms.sendSms(mobileNumber, message);
-  // request(
-  //   `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
-  // );
 
-  return res
-    .status(200)
-    .json({
-      message: `Otp send to your entered mobile number.`,
-      referenceCode,
-    });
+
+  return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, });
 };
 
 

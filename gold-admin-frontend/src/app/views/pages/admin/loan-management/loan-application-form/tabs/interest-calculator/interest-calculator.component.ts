@@ -93,9 +93,9 @@ export class InterestCalculatorComponent implements OnInit {
 
           const finalLoan = changes.details.currentValue
 
-          if (finalLoan.masterLoan.loanTransfer && finalLoan.masterLoan.loanTransfer.disbursedLoanAmount) {
-            this.loanFormService.finalLoanAmount.next(finalLoan.masterLoan.loanTransfer.disbursedLoanAmount)
-          }
+          // if (finalLoan.masterLoan.loanTransfer && finalLoan.masterLoan.loanTransfer.disbursedLoanAmount) {
+          //   this.loanFormService.finalLoanAmount.next(finalLoan.masterLoan.loanTransfer.disbursedLoanAmount)
+          // }
 
           if (changes.details.currentValue.disbursed)
             this.approved = true;

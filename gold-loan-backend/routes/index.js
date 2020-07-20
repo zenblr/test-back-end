@@ -155,4 +155,10 @@ router.use('/global-setting', globalSetting)
 const singleSignOn = require('./singleSignOn');
 router.use('/single-sign-on',singleSignOn);
 
+const customerLoanTransfer = require('./customerLoanTransfer');
+router.use('/loan-transfer',customerLoanTransfer);
+
+const jewelleryRelese = require('./jewelleryRelese');
+router.use('/jewellery-relese',jewelleryRelese);
+
 module.exports = router;

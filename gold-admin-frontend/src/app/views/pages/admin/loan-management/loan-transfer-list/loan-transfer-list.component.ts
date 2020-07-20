@@ -6,6 +6,7 @@ import { merge, Subject, Subscription } from 'rxjs';
 import { tap, skip, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { LoanTransferService } from '../../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
 import { LoanTranferDatasource } from '../../../../../core/loan-management/loan-transfer/datasources/loan-transfer.datasource';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   selector: 'kt-loan-transfer-list',
@@ -29,6 +30,7 @@ export class LoanTransferListComponent implements OnInit {
     private dataTableService: DataTableService,
     private router: Router,
     // private sharedService: SharedService
+    private ngxPermission:NgxPermissionsService,
   ) { }
 
   ngOnInit() {
@@ -80,7 +82,13 @@ export class LoanTransferListComponent implements OnInit {
   }
 
   navigate(loan) {
-    this.router.navigate(['/admin/loan-management/loan-transfer/', loan.customerLoan[0].id])
+    this.ngxPermission.permissions$.subscribe(res=>{
+      
+      if((res.loanTransferRating && loan.loanTransfer.loanTransferCurrentStage == '3')
+       || (res.loanTransferDisbursal && loan.loanTransfer.loanTransferCurrentStage == '4') ){
+        this.router.navigate(['/admin/loan-management/loan-transfer/', loan.customerLoan[0].id])
+      }
+    })
   }
 
   applyLoan(loan){

@@ -117,7 +117,7 @@
                                 class="placeholder-image">
                         </div>
 
-                        <div class="" *ngIf="controls?.loanAgreementCopy?.value">
+                        <div class="" *ngIf="controls?.loanAgreementCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15"
                                 (click)="preview(controls?.loanAgreementCopyImage?.value)">
                                 <img class="fetched-image" [src]="controls?.loanAgreementCopyImage?.value"
@@ -230,7 +230,7 @@
                                 class="placeholder-image">
                         </div>
 
-                        <div class="" *ngIf="controls?.declaration?.value">
+                        <div class="" *ngIf="controls?.declarationCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15"
                                 (click)="preview(controls?.declarationCopyImage?.value)">
                                 <img class="fetched-image" [src]="controls?.declarationCopyImage?.value"
@@ -252,6 +252,6 @@
         </div>
     </div>
     <div class="col-11 text-right kt-padding-t-15" *ngIf="url != 'view-loan'">
-        <kt-button [type]="'button'" [value]="'Save'" (click)="save()"></kt-button>
+        <kt-button [type]="'button'" [value]="buttonName" (click)="save(buttonName)"></kt-button>
     </div>
 </div>

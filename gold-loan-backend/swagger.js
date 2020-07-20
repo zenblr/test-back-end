@@ -2,7 +2,6 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const express = require("express");
 const app = express();
 
-const { BASEURLFORSWAGGER } = require('./config/baseUrl')
 
 const swaggerDefinition = {
     info: {
@@ -10,7 +9,7 @@ const swaggerDefinition = {
         title: 'Gold Loan',
         description: 'Gold Loan APIs',
     },
-    host: `${BASEURLFORSWAGGER}`,
+    host: process.env.BASE_URL_SWAGGER,
     basePath: '/api',
     securityDefinitions: {
         bearerAuth: {

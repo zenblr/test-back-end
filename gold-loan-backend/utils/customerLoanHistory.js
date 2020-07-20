@@ -11,6 +11,7 @@ module.exports = {
     PACKET_IMAGES: "Add packet image",
     LOAN_DOCUMENTS: "Add loan document",
     LOAN_DISBURSEMENT: "loan disbursement",
+    LOAN_TRANSFER_APPLY_LOAN: "Applied loan for loan transfer",
 
 
 }

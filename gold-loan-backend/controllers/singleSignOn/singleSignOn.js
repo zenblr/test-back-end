@@ -92,13 +92,12 @@ exports.singleSignOnBroker = async (req, res, next) => {
                                 // res.writeHead(301, {Location: 'https://gold.nimapinfotech.com/broker/dashboard',
                                 // Authorization: `jwt ${Token}`});
                                 // return res.end();
-                                
                                 // res.setHeader('Access-Control-Allow-Origin', 'https://gold.nimapinfotech.com');
                                 res.cookie(`Token`,`${JSON.stringify(Token)}`);
                                 res.cookie(`modules`,`${JSON.stringify(modules)}`);
                                 res.cookie(`permissions`,`${JSON.stringify(permissions)}`);
                                 res.cookie(`userDetails`,`${JSON.stringify(userDetails)}`);
-                                res.redirect('https://gold.nimapinfotech.com');
+                                res.redirect(`${process.env.SINGLE_SIGN_ON}`);
                     }else{
                         return res.status(401).send({ message: 'Broker account is not approved' });
                     }

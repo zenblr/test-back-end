@@ -1,5 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
-
 module.exports = (sequelize, DataTypes) => {
     const CustomerKycPersonalDetail = sequelize.define('customerKycPersonalDetail', {
         // attributes
@@ -131,17 +129,17 @@ module.exports = (sequelize, DataTypes) => {
         let identityProofImage = []
         if (values.identityProof) {
             for (imgUrl of values.identityProof) {
-                let URL = baseUrlConfig.BASEURL + imgUrl;
+                let URL = process.env.BASE_URL + imgUrl;
                 identityProofImage.push(URL)
             }
         }
 
         if (values.profileImage) {
-            values.profileImg = baseUrlConfig.BASEURL + values.profileImage;
+            values.profileImg = process.env.BASE_URL + values.profileImage;
 
         }
         if (values.signatureProof) {
-            values.signatureProofImg = baseUrlConfig.BASEURL + values.signatureProof;
+            values.signatureProofImg = process.env.BASE_URL + values.signatureProof;
         }
         values.identityProofImage = identityProofImage
 
