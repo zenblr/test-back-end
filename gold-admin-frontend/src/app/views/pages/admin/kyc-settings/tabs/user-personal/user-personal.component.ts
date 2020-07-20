@@ -50,7 +50,7 @@ export class UserPersonalComponent implements OnInit {
       gender: ['', [Validators.required]],
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
-      signatureProof: [''],
+      signatureProof: [null],
       signatureProofImg: [''],
       signatureProofFileName: [''],
       occupationId: [null],
@@ -75,10 +75,14 @@ export class UserPersonalComponent implements OnInit {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
+        const params = {
+          reason: 'customer',
+          customerId: this.controls.customerId.value
+        }
+        this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
           console.log(res)
           // this.profile = res.uploadFile.id
-          this.personalForm.controls.profileImage.patchValue(res.uploadFile.id);
+          this.personalForm.controls.profileImage.patchValue(res.uploadFile.path);
           this.personalForm.controls.profileImg.patchValue(res.uploadFile.URL);
           this.ref.detectChanges()
         })
@@ -101,7 +105,7 @@ export class UserPersonalComponent implements OnInit {
           if (type == "profile") {
             // this.profile = res.uploadFile.id;
             // this.personalForm.get('profileImage').patchValue(event.target.files[0].name);
-            this.personalForm.controls.profileImage.patchValue(res.uploadFile.id);
+            this.personalForm.controls.profileImage.patchValue(res.uploadFile.path);
             this.personalForm.controls.profileImg.patchValue(res.uploadFile.URL);
 
           } else if (type == "signature") {
@@ -109,7 +113,7 @@ export class UserPersonalComponent implements OnInit {
             // this.signatureJSON.url = res.uploadFile.id;
             // this.signatureJSON.isImage = true;
             this.personalForm.get('signatureProofFileName').patchValue(event.target.files[0].name);
-            this.personalForm.get('signatureProof').patchValue(res.uploadFile.id);
+            this.personalForm.get('signatureProof').patchValue(res.uploadFile.path);
             this.personalForm.get('signatureProofImg').patchValue(res.uploadFile.URL);
 
             this.ref.detectChanges();
@@ -165,6 +169,7 @@ export class UserPersonalComponent implements OnInit {
     }
 
     const basicForm = this.personalForm.value;
+
     this.userPersonalService.personalDetails(basicForm).pipe(
       map(res => {
         // console.log(res);
@@ -197,5 +202,22 @@ export class UserPersonalComponent implements OnInit {
     //   },
     //   width: "auto"
     // })
+  }
+
+  removeImage() {
+    this.personalForm.patchValue({
+      signatureProof: null,
+      signatureProofFileName: '',
+      signatureProofImg: ''
+    });
+
+  }
+
+  checkOccupation(event) {
+    if (event.target.value == 'null') {
+      this.controls.occupationId.patchValue(null)
+    }
+    console.log(event.target.value)
+    console.log(this.personalForm.value)
   }
 }

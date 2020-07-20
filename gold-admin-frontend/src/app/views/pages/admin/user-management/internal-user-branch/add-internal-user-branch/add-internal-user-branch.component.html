@@ -201,6 +201,9 @@
                                 <mat-error
                                     *ngIf="controls.accountNumber.touched && controls.accountNumber.errors?.required">
                                     Required field</mat-error>
+                                <!-- <mat-error
+                                    *ngIf="controls.accountNumber.touched && controls.accountNumber.errors?.pattern">
+                                    Invalid Input </mat-error> -->
                             </div>
                         </div>
                         <div class="row kt-padding-t-15" *ngIf="data.action!='view'">
@@ -212,7 +215,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="input-group"
-                                    [class.isError]="controls.passbookImgName.touched && controls.passbookImgName.errors?.required">
+                                    [class.isError]="controls.passbookImg.touched && controls.passbookImg.errors?.required">
                                     <input type="text" class="form-control" formControlName="passbookImgName" readonly
                                         placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2">
                                     <div class="input-group-append">

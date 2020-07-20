@@ -147,12 +147,15 @@ const lead = require('./lead');
 router.use('/lead', lead)
 
 const packetLocation = require('./packetLocation');
-router.use('/packetLocation', packetLocation)
+router.use('/packet-location', packetLocation)
 
 const globalSetting = require('./globalSettings');
 router.use('/global-setting', globalSetting)
 
 const singleSignOn = require('./singleSignOn');
 router.use('/single-sign-on',singleSignOn);
+
+const customerLoanTransfer = require('./customerLoanTransfer');
+router.use('/loan-transfer',customerLoanTransfer);
 
 module.exports = router;

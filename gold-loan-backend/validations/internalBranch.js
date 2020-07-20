@@ -43,7 +43,7 @@ exports.addInternalBranchValidation = [
     body('accountNumber')
         .exists()
         .withMessage('account number is required'),
-    body('passbookStatementChequeId')
+    body('passbookStatementCheque')
         .exists()
         .withMessage('passbook or Statement or Cheque is required')
 ]
@@ -106,7 +106,7 @@ exports.updateInternalBranchValidation = [
     body('accountNumber')
         .exists()
         .withMessage('account number is required'),
-    body('passbookStatementChequeId')
+    body('passbookStatementCheque')
         .exists()
         .withMessage('passbook or Statement or Cheque is required')
 

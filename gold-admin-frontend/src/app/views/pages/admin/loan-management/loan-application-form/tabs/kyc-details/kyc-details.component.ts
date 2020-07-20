@@ -30,11 +30,11 @@ export class KycDetailsComponent implements OnInit, AfterViewInit {
     if (changes.details) {
       if (changes.action.currentValue == 'add') {
         this.setValue()
-      } else if (changes.action.currentValue  == 'edit') {
+      } else if (changes.action.currentValue == 'edit') {
         this.kycForm.patchValue(changes.details.currentValue.loanKycDetail)
         this.controls.permanentAddCityName.patchValue(changes.details.currentValue.loanKycDetail.perCity.name)
         this.controls.permanentAddStateName.patchValue(changes.details.currentValue.loanKycDetail.perState.name)
-        this.controls.identityTypeName.patchValue(changes.details.currentValue.loanKycDetail.identityType.name  )
+        this.controls.identityTypeName.patchValue(changes.details.currentValue.loanKycDetail.identityType.name)
         this.controls.permanentAddProofTypeName.patchValue(changes.details.currentValue.loanKycDetail.perAddressProofType.name)
         this.controls.residentialAddStateName.patchValue(changes.details.currentValue.loanKycDetail.resCity.name)
         this.controls.residentialAddCityName.patchValue(changes.details.currentValue.loanKycDetail.resState.name)

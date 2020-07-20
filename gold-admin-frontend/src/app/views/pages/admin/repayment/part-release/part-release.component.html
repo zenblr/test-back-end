@@ -1,7 +1,7 @@
 <kt-portlet>
     <kt-portlet-body>
         <div class="main">
-            <div class="row kt-padding-t-5">
+            <div class="row kt-padding-t-5 kt-margin-b-5">
                 <div class="col font-weight-500">Customer ID</div>
                 <div class="col font-weight-500">Loan ID</div>
                 <div class="col font-weight-500">Loan Amount</div>
@@ -9,6 +9,7 @@
                 <div class="col font-weight-500">Loan End Date</div>
                 <div class="col font-weight-500">Tenure</div>
                 <div class="col-3 font-weight-500">Principal Outstanding Amount</div>
+                <div class="col font-weight-500"></div>
             </div>
 
             <div class="row kt-padding-t0">
@@ -19,71 +20,78 @@
                 <div class="col text-gray font-weight-500">12,March 2020</div>
                 <div class="col text-gray font-weight-500">6 Months</div>
                 <div class="col-3 text-gray font-weight-500">3,40,000</div>
+                <div class="col font-weight-500">
+                    <kt-button *ngIf="!fullReleaseScreen" [value]="'Full Release'" [type]="'button'"
+                        (click)="fullRelease()"></kt-button>
+                </div>
             </div>
 
-            <h5 class="kt-padding-t-30">Ornaments Details</h5>
+            <div *ngIf="!fullReleaseScreen">
+                <h5 class="kt-padding-t-30">Ornaments Details</h5>
 
-            <div class="table-div table-responsive kt-padding-t-15">
-                <table class="table outer-border ornament-list">
-                    <thead>
-                        <th class="transparent"> </th>
-                        <th class="transparent">Ornament Type</th>
-                        <th class="transparent">Quantity</th>
-                        <th class="transparent">Gross Weight</th>
-                        <th class="transparent">Deduction Weight </th>
-                        <th class="transparent" style="width: 100px;">Net Weight</th>
-                        <th class="transparent" style="width: 100px;">Weight machine 00 weight</th>
-                        <th class="transparent">With Ornament weight</th>
-                        <th class="transparent" style="width: 100px;">Stone Touch</th>
-                        <th class="transparent">Acid Test</th>
-                        <th class="transparent">Purity Test</th>
-                        <th class="transparent">Karat</th>
-                        <th class="transparent">Purity %</th>
-                        <th class="transparent">LTV Amount</th>
-                        <th class="transparent">Final LTV Loan Amount</th>
-                        <th class="transparent">Ornament Image</th>
-                        <th class="transparent">Release Date</th>
-                        <th class="transparent">Status</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <span style="position: relative">
+                <div class="table-div table-responsive kt-padding-t-15">
+                    <table class="table outer-border ornament-list">
+                        <thead>
+                            <th class="transparent"> </th>
+                            <th class="transparent">Ornament Type</th>
+                            <th class="transparent">Quantity</th>
+                            <th class="transparent">Gross Weight</th>
+                            <th class="transparent">Deduction Weight </th>
+                            <th class="transparent" style="width: 100px;">Net Weight</th>
+                            <th class="transparent" style="width: 100px;">Weight machine 00 weight</th>
+                            <th class="transparent">With Ornament weight</th>
+                            <th class="transparent" style="width: 100px;">Stone Touch</th>
+                            <th class="transparent">Acid Test</th>
+                            <th class="transparent">Purity Test</th>
+                            <th class="transparent">Karat</th>
+                            <th class="transparent">Purity %</th>
+                            <th class="transparent">LTV Amount</th>
+                            <th class="transparent">Final LTV Loan Amount</th>
+                            <th class="transparent">Ornament Image</th>
+                            <th class="transparent">Release Date</th>
+                            <th class="transparent">Status</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span style="position: relative">
 
-                                    <label class="custom-checkbox">
-                                        <span class="label-checkbox text-color font-weight-500"></span>
-                                        <input type="checkbox" class="" id="view"
-                                            (change)="selectOrnament($event.target.checked)">
-                                        <span class="checkmark top-0"></span>
-                                    </label>
-                                </span>
+                                        <label class="custom-checkbox">
+                                            <span class="label-checkbox text-color font-weight-500"></span>
+                                            <input type="checkbox" class="" id="view"
+                                                (change)="selectOrnament($event.target.checked)">
+                                            <span class="checkmark top-0"></span>
+                                        </label>
+                                    </span>
 
-                            </td>
-                            <td>Ring</td>
-                            <td>1</td>
-                            <td>12.00 gm</td>
-                            <td>4.00 gm</td>
-                            <td>8.00 gm</td>
-                            <td>View</td>
-                            <td>View</td>
-                            <td>View</td>
-                            <td>View</td>
-                            <td>View</td>
-                            <td>22 K</td>
-                            <td>4,50,000</td>
-                            <td>3,50,000</td>
-                            <td>View</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                                </td>
+                                <td>Ring</td>
+                                <td>1</td>
+                                <td>12.00 gm</td>
+                                <td>4.00 gm</td>
+                                <td>8.00 gm</td>
+                                <td>View</td>
+                                <td>View</td>
+                                <td>View</td>
+                                <td>View</td>
+                                <td>View</td>
+                                <td>22 K</td>
+                                <td>4,50,000</td>
+                                <td>3,50,000</td>
+                                <td>View</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-            <div class="row kt-padding-t-15 kt-padding-b-15">
-                <div class="col mx-auto d-flex justify-content-center">
-                    <kt-button [value]="'Release'" [type]="'button'" (click)="release()">
-                    </kt-button>
+
+                <div class="row kt-padding-t-15 kt-padding-b-15">
+                    <div class="col mx-auto d-flex justify-content-center">
+                        <kt-button [value]="'Release'" [type]="'button'" (click)="release()">
+                        </kt-button>
+                    </div>
                 </div>
             </div>
 
@@ -95,17 +103,35 @@
                                 <thead>
                                     <th class="transparent">Total Gross Weight</th>
                                     <th class="transparent w100">Deduction Weight</th>
-                                    <th class="transparent">Net Weight (Release Ornament)</th>
-                                    <th class="transparent w100">Net Weight (Remaining Ornament)</th>
-                                    <th class="transparent">Ornament Release Amount</th>
+                                    <ng-container *ngIf="!fullReleaseScreen">
+                                        <th class="transparent">Net Weight (Release Ornament)</th>
+                                        <th class="transparent w100">Net Weight (Remaining Ornament)</th>
+                                        <th class="transparent">Ornament Release Amount</th>
+                                    </ng-container>
+                                    <ng-container *ngIf="fullReleaseScreen">
+                                        <th class="transparent">Net Weight</th>
+                                        <th class="transparent">Previous LTV</th>
+                                        <th class="transparent">Current LTV</th>
+                                        <th class="transparent">Principal Outstanding Amount
+                                            (based on Current LTV Price)
+                                        </th>
+                                    </ng-container>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>12.00 gm</td>
                                         <td>12.00 gm</td>
-                                        <td>12.00 gm</td>
-                                        <td>12.00 gm</td>
-                                        <td>1,20,000</td>
+                                        <ng-container *ngIf="!fullReleaseScreen">
+                                            <td>12.00 gm</td>
+                                            <td>12.00 gm</td>
+                                            <td>1,20,000</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="fullReleaseScreen">
+                                            <td>12.00 gm</td>
+                                            <td>3,50,000</td>
+                                            <td>50,000</td>
+                                            <td>1,45,000</td>
+                                        </ng-container>
                                     </tr>
                                 </tbody>
                             </table>
@@ -119,7 +145,8 @@
                             <kt-button [value]="'Proceed'" [type]="'button'" (click)="proceed()">
                             </kt-button>
                         </span>
-                        <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancelRelease()">
+                        <kt-button *ngIf="!fullReleaseScreen" [value]="'Cancel'" [type]="'reset'"
+                            (click)="cancelRelease()">
                         </kt-button>
                     </div>
                 </div>
@@ -147,9 +174,9 @@
                                     <td class="last">
                                         <select class="form-control">
                                             <option value="" selected disabled>Select Payment</option>
-                                            <option value="cash">Cash</option>
-                                            <option value="gateway">Payment Gateway</option>
-                                            <option value="enach">Enach</option>
+                                            <option value="cash">CASh</option>
+                                            <option value="gateway">RTGS/NEFT/IMPS</option>
+                                            <option value="enach">CHEQUE</option>
                                         </select>
                                     </td>
                                 </tr>

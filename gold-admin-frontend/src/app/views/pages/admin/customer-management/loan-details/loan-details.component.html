@@ -9,71 +9,75 @@
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer ID</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.loanPersonalDetail.customerUniqueId}}</div>
+                        {{loanDetails.customer.customerUniqueId}}</div>
                 </div>
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Amount</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.finalLoanAmount}}
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.loanAmount}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Tenure</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.tenure}} Months
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.masterLoan?.tenure}} Months
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Start Date</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.finalLoan.loanStartDate | date: 'mediumDate'}}</div>
+                        {{loanDetails?.masterLoan?.loanStartDate | date: 'mediumDate'}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">End Date</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.finalLoan.loanEndDate | date: 'mediumDate'}}</div>
+                        {{loanDetails?.masterLoan?.loanEndDate | date: 'mediumDate'}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Status</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanStage.name | titlecase}}
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{loanDetails?.masterLoan?.loanStage?.name | titlecase}}
                     </div>
                 </div>
             </div>
             <div class="row justify-content-around">
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Interest Rate</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.finalLoan.interestRate}}% P.M
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.interestRate}}% P.M
                     </div>
                 </div>
 
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer Name</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.customer.firstName | titlecase}}
-                        {{loanDetails.customer.lastName | titlecase}}
+                        {{loanDetails?.customer?.firstName | titlecase}}
+                        {{loanDetails?.customer?.lastName | titlecase}}
                     </div>
                 </div>
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Account Number</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanBankDetail.accountNumber}}
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{loanDetails?.loanBankDetail?.accountNumber}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">IFSC Code</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.loanBankDetail.ifscCode | uppercase}}</div>
+                        {{loanDetails?.loanBankDetail?.ifscCode | uppercase}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Nominee</div>
-                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].nomineeName | titlecase}}
+                    <div class="text-color font-weight-500">
+                        {{loanDetails?.masterLoan.loanNomineeDetail[0].nomineeName | titlecase}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Age</div>
-                    <div class="text-color font-weight-500">{{loanDetails.loanNomineeDetail[0].nomineeAge}}</div>
+                    <div class="text-color font-weight-500">{{loanDetails?.masterLoan.loanNomineeDetail[0].nomineeAge}}
+                    </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Relation</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails.loanNomineeDetail[0].relationship | titlecase}}</div>
+                        {{loanDetails?.masterLoan.loanNomineeDetail[0].relationship | titlecase}}</div>
                 </div>
             </div>
         </div>
@@ -82,63 +86,67 @@
     <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total
-                {{loanDetails.loanOrnamentsDetail.length}} Ornaments</label>
+                {{loanDetails?.masterLoan?.loanOrnamentsDetail.length}} Ornaments</label>
             <mat-tab-group style="min-height: 300px;">
                 <mat-tab label="Ornaments {{idx + 1}}"
-                    *ngFor="let ornaments of loanDetails.loanOrnamentsDetail;index as idx">
+                    *ngFor="let ornaments of loanDetails?.masterLoan?.loanOrnamentsDetail;index as idx">
                     <div class="row">
                         <div class="col-3">
-                            <img [src]="ornaments.ornamentImage" class="ornaments" alt="">
+                            <img [src]="ornaments?.ornamentImageData?.URL" class="ornaments" alt="">
                         </div>
                         <div class="col-9">
                             <div class="row kt-margin-t-15">
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Ornament Type</div>
-                                    <div class="text-color font-weight-500">{{ornaments.ornamentType | titlecase}}</div>
+                                    <div class="text-color font-weight-500">
+                                        {{ornaments?.ornamentType?.name | titlecase}}</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Quantity</div>
                                     <div class="text-color font-weight-500">{{ornaments.quantity}} Pcs</div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">Gross WL</div>
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Gross Wt.</div>
                                     <div class="text-color font-weight-500">{{ornaments.grossWeight}} Gram</div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">Net WL</div>
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Net Wt.</div>
                                     <div class="text-color font-weight-500">{{ornaments.netWeight}} Gram</div>
                                 </div>
                             </div>
                             <div class="row kt-margin-t-25">
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">Decudtion WL</div>
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Deduction Wt.</div>
                                     <div class="text-color font-weight-500">{{ornaments.deductionWeight}} Gram</div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">WM 00 wt.</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">WM 00 Wt.</div>
+                                    <div *ngIf="ornaments.weightMachineZeroWeight"
+                                        class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.weightMachineZeroWeight,idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">With Ornaments</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div *ngIf="ornaments.withOrnamentWeight"
+                                        class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.withOrnamentWeight,idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Stone Touch</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div *ngIf="ornaments.stoneTouch" class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.stoneTouch,idx)">View Image</div>
                                 </div>
                             </div>
                             <div class="row kt-margin-t-25">
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Acid Test</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div *ngIf="ornaments.acidTest" class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.acidTest,idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">Ornament Type</div>
-                                    <div class="text-primary font-weight-500 kt-pointer"
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Purity Test</div>
+                                    <div *ngIf="ornaments.purityTest.length"
+                                        class="text-primary font-weight-500 kt-pointer"
                                         (click)="preview(ornaments.purityTest[0],idx)">View Image</div>
                                 </div>
                                 <div class="col-3">
@@ -160,38 +168,105 @@
     <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
-                {{loanDetails.loanPacketDetails.length}} Packets</label>
-            <mat-tab-group style="min-height: 300px;">
-                <mat-tab label="{{packets.packet.packetUniqueId | uppercase}}"
-                    *ngFor="let packets of loanDetails.loanPacketDetails;index as idx">
-                    <div class="row">
-                        <div class="col-3">
-                            <img class="packets" [src]="packets.emptyPacketWithNoOrnament">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
-                                No
-                                Ornaments</label>
-                        </div>
-                        <div class="col-3">
-                            <img class="packets" [src]="packets.packetWithAllOrnaments">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with All
-                                Ornaments</label>
-                        </div>
-                        <div class="col-3">
-                            <img class="packets" [src]="packets.packetWithSealing">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
-                                Sealing</label>
+                {{loanDetails.masterLoan.loanPacketDetails[0].packets.length}} Packets</label>
+            <div style="min-height: 300px;"
+                *ngFor="let packets of loanDetails.masterLoan.loanPacketDetails;index as idx">
+                <div class="row justify-content-center kt-padding-t-15">
+                    <div class="col-4">
+                        <div class="table-div">
+                            <table class="table outer-border">
+                                <thead>
+                                    <th class="transparent">Packet</th>
+                                    <th class="transparent">Ornaments</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let packet of packets.packets;index as idx">
+                                        <ng-container>
+                                            <td class="text-color ">
+                                                <label class="m-0">{{packet.packetUniqueId | uppercase}}</label>
 
-                        </div>
-                        <div class="col-3">
-                            <img class="packets" [src]="packets.packetWithWeight">
-                            <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
-                                Weight</label>
+                                            </td>
+                                            <td class="text-color ">
+                                                <span *ngFor="let ornament of packet?.ornamentTypes;index as idx">
+                                                    {{ornament.name | uppercase}}
+                                                    <span *ngIf="index == packet.ornamentTypes.length - 1"></span>
+                                                </span>
+
+                                            </td>
+                                        </ng-container>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
+                            No
+                            Ornaments</label>
+                    </div>
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.sealingPacketWithWeightImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with All
+                            Ornaments</label>
+                    </div>
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
+                            Sealing</label>
 
-                </mat-tab>
+                    </div>
+                </div>
 
-            </mat-tab-group>
+            </div>
+        </div>
+    </div>
+
+    <div class="row kt-margin-t-15">
+        <div class="col-12 card kt-padding-15">
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Documents
+            </label>
+
+            <div class="row justify-content-center kt-padding-t-15">
+
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <div class="pdf">
+                        <iframe
+                            [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="pdf?.loanAgreementCopyImage" height="255"></iframe>
+                    </div>
+                    <img  *ngIf="!pdf?.loanAgreementCopyImage" class="packets"
+                        [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
+                </div>
+                <div class="col-4">
+                    <div class="pdf">
+                        <iframe [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="pdf?.pawnCopyImage" height="255"></iframe>
+                    </div>
+                    <img *ngIf="!pdf?.pawnCopyImage" class="packets"
+                        [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage">
+
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy</label>
+                </div>
+                <div class="col-4">
+                    <div class="pdf">
+                        <iframe
+                            [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="pdf?.schemeConfirmationCopyImage" height="255"></iframe>
+                    </div>
+                    <img  *ngIf="!pdf?.schemeConfirmationCopyImage" class="packets"
+                        [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
+                    </label>
+
+                </div>
+            </div>
+
         </div>
     </div>
 

@@ -1,0 +1,129 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <button (click)="openModal()"></button>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="loanAmount">
+                    <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="loanStartDate">
+                    <mat-header-cell *matHeaderCellDef>Loan Start Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="loanId">
+                    <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="loanEndDate">
+                    <mat-header-cell *matHeaderCellDef>Loan End Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="tenure">
+                    <mat-header-cell *matHeaderCellDef>Tenure</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="principalAmount">
+                    <mat-header-cell *matHeaderCellDef>Principal Outstanding Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="releaseDate">
+                    <mat-header-cell *matHeaderCellDef>Release Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="partReleaseAmountStatus">
+                    <mat-header-cell *matHeaderCellDef>Part Release Amount Status</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="totalPayableAmount">
+                    <mat-header-cell *matHeaderCellDef>Total Payable Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="penalInterest">
+                    <mat-header-cell *matHeaderCellDef>Penal Interest</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="interestAmount">
+                    <mat-header-cell *matHeaderCellDef>Interest Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ornamentReleaseAmount">
+                    <mat-header-cell *matHeaderCellDef>Ornament Release Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="netWeightRemainingOrnament">
+                    <mat-header-cell *matHeaderCellDef>
+                        <div>Net Weight</div>
+                        <div>(Remaining Ornament)</div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="netWeightReleaseOrnament">
+                    <mat-header-cell *matHeaderCellDef>
+                        <div>Net Weight</div>
+                        <div>(Release Ornament)</div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="totalDeductionWeight">
+                    <mat-header-cell *matHeaderCellDef>Total Deduction Weight</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="totalGrossWeight">
+                    <mat-header-cell *matHeaderCellDef>Total Gross Weight</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="ornaments">
+                    <mat-header-cell *matHeaderCellDef> Ornaments </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <kt-button (click)="ornamentsDetails()" [value]="'Ornament Details'" [type]="'button'">
+                        </kt-button>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="assignAppraiser">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let role" class="kt-pointer">
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <button style="width: 120px;" class="apply-kyc" (click)="assign(role)">Assign
+                                Appraiser</button>
+                        </div>
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <!-- <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(role)"
+                               >Update Appraiser
+                            </button> -->
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+            </mat-table>
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+        <div class="mat-table__bottom d-none">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

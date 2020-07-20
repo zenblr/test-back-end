@@ -26,14 +26,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'cce_verified_by',
             defaultValue: null
         },
-        isVerifiedByBranchManager: {
+        isVerifiedByOperationalTeam: {
             type: DataTypes.BOOLEAN,
-            field: 'is_verified_by_branch_manager',
+            field: 'is_verified_by_operational_team',
             defaultValue: false
         },
-        branchManagerVerifiedBy: {
+        operationalTeamVerifiedBy: {
             type: DataTypes.INTEGER,
-            field: 'branch_manager_verified_by',
+            field: 'operational_team_verified_by',
             defaultValue: null
         },
         customerKycCurrentStage: {

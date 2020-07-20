@@ -4,6 +4,7 @@ import { SharedService } from '../../../../../../../core/shared/services/shared.
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-bank-details',
@@ -23,18 +24,21 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   bankForm: FormGroup;
   passbookImg: any = [];
   passbookImgId: any = []
+  url: any;
   constructor(
     public toastr: ToastrService,
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
     public sharedService: SharedService,
     public loanFormService: LoanApplicationFormService,
+    private router: Router
   ) {
     this.initForm()
+    this.url = this.router.url.split("/")[3]
   }
 
   ngOnInit() {
-
+    console.log(this.masterAndLoanIds)
   }
 
 
@@ -44,10 +48,10 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       if (changes.action.currentValue == 'edit') {
         if (changes.details.currentValue && changes.details.currentValue.loanBankDetail) {
           this.bankForm.patchValue(changes.details.currentValue.loanBankDetail)
-          let passbookProofImage = changes.details.currentValue.loanBankDetail.passbookProofImage
-          this.bankForm.controls.passbookProofImage.patchValue(passbookProofImage.map(ele => ele.passbookProof.URL))
-          this.bankForm.controls.passbookProof.patchValue(passbookProofImage.map(ele => ele.passbookProof.id))
-          this.bankForm.controls.passbookProofImageName.patchValue(passbookProofImage[0].passbookProof.originalname)
+          // let passbookProofImage = changes.details.currentValue.loanBankDetail.passbookProofImage
+          // this.bankForm.controls.passbookProofImage.patchValue(passbookProofImage.map(ele => ele.passbookProof.URL))
+          // this.bankForm.controls.passbookProof.patchValue(passbookProofImage.map(ele => ele.passbookProof.id))
+          // this.bankForm.controls.passbookProofImageName.patchValue(passbookProofImage[0].passbookProof.originalname)
           this.ref.markForCheck()
         }
       }
@@ -55,7 +59,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       // this.bankFormEmit.emit(this.bankForm);
     }
     if (changes.finalLoanAmt) {
-      if (changes.finalLoanAmt.currentValue > '200000') {
+      if (Number(changes.finalLoanAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
       }
@@ -69,10 +73,10 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     this.bankForm = this.fb.group({
       paymentType: ['', Validators.required],
       bankName: [, [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
-      accountNumber: [, [Validators.required, Validators.minLength(9)]],
+      accountNumber: [, [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[1-9]).{3,21}$')]],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       accountType: [],
-      accountHolderName: [, [Validators.required]],
+      accountHolderName: [, [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
       bankBranchName: [, [Validators.required]],
       passbookProof: [[]],
       passbookProofImage: [[]],
@@ -111,12 +115,14 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       var ext = name.split('.')
       if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
         const params = {
-          reason: 'loan'
+          reason: 'loan',
+          masterLoanId: this.masterAndLoanIds.masterLoanId
         }
+
         this.sharedService.uploadFile(event.target.files[0], params).pipe(
           map(res => {
             this.passbookImg.push(res.uploadFile.URL);
-            this.passbookImgId.push(res.uploadFile.id);
+            this.passbookImgId.push(res.uploadFile.path);
             this.bankForm.patchValue({ passbookProofImage: this.passbookImg });
             this.bankForm.patchValue({ passbookProof: this.passbookImgId });
             this.bankForm.get('passbookProofImageName').patchValue(event.target.files[0].name);
@@ -165,11 +171,16 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       this.bankForm.controls.paymentType.patchValue('cash')
       this.bankForm.controls.passbookProof.patchValue([])
       this.bankForm.controls.passbookProofImage.patchValue([])
-      }
+    }
+    this.controls.paymentType.enable()
     data = this.bankForm.value
 
     this.loanFormService.submitBank(data, this.masterAndLoanIds).pipe(
       map(res => {
+        if (Number(this.finalLoanAmt) > 200000) {
+          this.controls.paymentType.disable()
+
+        }
         this.next.emit(5)
       })).subscribe()
   }

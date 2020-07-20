@@ -1,5 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
-
 module.exports = (sequelize, DataTypes) => {
     const customerLoan = sequelize.define('customerLoan', {
         // attributes
@@ -8,104 +6,30 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false
         },
+        masterLoanId: {
+            type: DataTypes.INTEGER,
+            field: 'master_loan_id',
+            allowNull: false
+        },
         loanUniqueId: {
             type: DataTypes.STRING,
             field: 'loan_unique_id'
         },
-        applicationFormForAppraiser: {
-            type: DataTypes.BOOLEAN,
-            field: 'application_form_for_appraiser',
-            defaultValue: false
-        },
-        goldValuationForAppraiser: {
-            type: DataTypes.BOOLEAN,
-            field: 'gold_valuation_for_appraiser',
-            defaultValue: false
-        },
-        loanStatusForAppraiser: {
-            type: DataTypes.ENUM,
-            field: 'loan_status_for_appraiser',
-            values: ['approved', 'pending', 'rejected'],
-        },
-        commentByAppraiser: {
-            type: DataTypes.TEXT,
-            field: 'comment_by_appraiser'
-        },
-        appraiserId: {
+        partnerId: {
             type: DataTypes.INTEGER,
-            field: 'appraiser_id'
+            field: 'partner_id'
         },
-        applicationFormForBM: {
-            type: DataTypes.BOOLEAN,
-            field: 'application_form_for_bm',
-            defaultValue: false
+        loanAmount: {
+            type: DataTypes.STRING,
+            field: 'loan_amount'
         },
-        goldValuationForBM: {
-            type: DataTypes.BOOLEAN,
-            field: 'gold_valuation_for_bm',
-            defaultValue: false
-        },
-        loanStatusForBM: {
-            type: DataTypes.ENUM,
-            field: 'loan_status_for_bm',
-            values: ['approved', 'pending', 'incomplete', 'rejected'],
-            defaultValue: 'pending'
-        },
-        commentByBM: {
-            type: DataTypes.TEXT,
-            field: 'comment_by_bm'
-        },
-        bmId: {
+        schemeId: {
             type: DataTypes.INTEGER,
-            field: 'bm_id'
-        },
-        totalEligibleAmt: {
-            type: DataTypes.STRING,
-            field: 'total_eligible_amt'
-        },
-        totalFinalInterestAmt: {
-            type: DataTypes.STRING,
-            field: 'total_final_interest_amt'
-        },
-        finalLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'final_loan_amount',
-        },
-        securedLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'secured_loan_amount',
-        },
-        unsecuredLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'unsecured_loan_amount',
-        },
-        tenure: {
-            type: DataTypes.INTEGER,
-            field: 'tenure',
-        },
-        loanStartDate: {
-            type: DataTypes.DATEONLY,
-            field: 'loan_start_date'
-        },
-        loanEndDate: {
-            type: DataTypes.DATEONLY,
-            field: 'loan_end_date'
-        },
-        paymentFrequency: {
-            type: DataTypes.STRING,
-            field: 'payment_frequency'
-        },
-        processingCharge: {
-            type: DataTypes.STRING,
-            field: 'processing_charge'
+            field: 'scheme_id'
         },
         interestRate: {
             type: DataTypes.STRING,
             field: 'interest_rate'
-        },
-        unsecuredInterestRate: {
-            type: DataTypes.STRING,
-            field: 'unsecured_interest_rate'
         },
         loanType: {
             type: DataTypes.STRING,
@@ -115,19 +39,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'unsecured_loan_id'
         },
-        customerLoanCurrentStage: {
-            type: DataTypes.ENUM,
-            field: 'customer_loan_current_stage',
-            values: ['1', '2', '3', '4', '5', '6']
-        },
-        loanStageId: {
-            type: DataTypes.INTEGER,
-            field: 'loan_stage_id'
-        },
-        isLoanSubmitted: {
+        disbursed: {
             type: DataTypes.BOOLEAN,
-            field: 'is_loan_submitted',
+            field: 'disbursed',
             defaultValue: false
+        },
+        disbursementAmount: {
+            type: DataTypes.STRING,
+            field: 'disbursement_amount'
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -150,6 +69,9 @@ module.exports = (sequelize, DataTypes) => {
     // CUSTOMER LOAN ASSOCIATION WITH MODULES
     customerLoan.associate = function (models) {
         customerLoan.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        customerLoan.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
+
+        customerLoan.hasOne(models.customerAssignAppraiser, { foreignKey: 'appraiserId', sourceKey: 'createdBy', });
 
         customerLoan.hasOne(models.customerLoanBankDetail, { foreignKey: 'loanId', as: 'loanBankDetail' });
         customerLoan.hasMany(models.customerLoanNomineeDetail, { foreignKey: 'loanId', as: 'loanNomineeDetail' });
@@ -157,76 +79,323 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasOne(models.customerLoanPersonalDetail, { foreignKey: 'loanId', as: 'loanPersonalDetail' });
         customerLoan.hasMany(models.customerLoanPackageDetails, { foreignKey: 'loanId', as: 'loanPacketDetails' });
         customerLoan.hasMany(models.packet, { foreignKey: 'loanId', as: 'packet' });
+        customerLoan.hasMany(models.customerLoanInterest, { foreignKey: 'loanId', as: 'customerLoanInterest' });
+        customerLoan.hasMany(models.customerLoanDisbursement, { foreignKey: 'loanId', as: 'customerLoanDisbursement' });
+        customerLoan.hasOne(models.customerLoanDocument, { foreignKey: 'loanId', as: 'customerLoanDocument' });
 
-        customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
+        // customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 
         customerLoan.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
         customerLoan.belongsTo(models.scheme, { foreignKey: 'schemeId', as: 'scheme' });
-        customerLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
+        // customerLoan.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' });
 
-        customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan', useJunctionTable: false });
-
-        customerLoan.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
-        customerLoan.belongsTo(models.user, { foreignKey: 'bmId', as: 'bm' });
+        customerLoan.belongsTo(models.customerLoan, { foreignKey: 'unsecuredLoanId', as: 'unsecuredLoan' });
 
         customerLoan.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        customerLoan.hasMany(models.customerLoanIntrestCalculator, { foreignKey: 'loanId', as: 'customerLoanIntrestCalculator' });
-
+        customerLoan.hasMany(models.customerLoanHistory, { foreignKey: 'loanId', as: 'customerLoanHistory' });
     }
 
     customerLoan.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
-
+        //orna
         var resOrna = []
-        for (let i = 0; i < values.loanOrnamentsDetail.length; i++) {
-            if (values.loanOrnamentsDetail[i].weightMachineZeroWeightData) {
-                values.loanOrnamentsDetail[i].weightMachineZeroWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].weightMachineZeroWeightData.path;
+        if (values.loanOrnamentsDetail) {
+            for (let i = 0; i < values.loanOrnamentsDetail.length; i++) {
+                if (values.loanOrnamentsDetail[i].weightMachineZeroWeight) {
+
+                    let data = {};
+                    data.path = values.loanOrnamentsDetail[i].weightMachineZeroWeight;
+                    data.URL = process.env.BASE_URL + values.loanOrnamentsDetail[i].weightMachineZeroWeight;
+                    values.loanOrnamentsDetail[i].weightMachineZeroWeightData = data;
+
+                }
+
+                if (values.loanOrnamentsDetail[i].withOrnamentWeight) {
+
+                    let data = {};
+                    data.path = values.loanOrnamentsDetail[i].withOrnamentWeight;
+                    data.URL = process.env.BASE_URL + values.loanOrnamentsDetail[i].withOrnamentWeight;
+                    values.loanOrnamentsDetail[i].withOrnamentWeightData = data;
+                }
+
+                if (values.loanOrnamentsDetail[i].stoneTouch) {
+
+                    let data = {};
+                    data.path = values.loanOrnamentsDetail[i].stoneTouch;
+                    data.URL = process.env.BASE_URL + values.loanOrnamentsDetail[i].stoneTouch;
+                    values.loanOrnamentsDetail[i].stoneTouchData = data;
+                }
+
+                if (values.loanOrnamentsDetail[i].acidTest) {
+                    // values.loanOrnamentsDetail[i].acidTestData = process.env.BASE_URL + values.loanOrnamentsDetail[i].acidTest;
+
+                    let data = {};
+                    data.path = values.loanOrnamentsDetail[i].acidTest;
+                    data.URL = process.env.BASE_URL + values.loanOrnamentsDetail[i].acidTest;
+                    values.loanOrnamentsDetail[i].acidTestData = data;
+                }
+
+                if (values.loanOrnamentsDetail[i].ornamentImage) {
+                    let data = {};
+                    data.path = values.loanOrnamentsDetail[i].ornamentImage;
+                    data.URL = process.env.BASE_URL + values.loanOrnamentsDetail[i].ornamentImage;
+                    values.loanOrnamentsDetail[i].ornamentImageData = data;
+                }
+                if (values.loanOrnamentsDetail[i].purityTest) {
+                    for (image of values.loanOrnamentsDetail[i].purityTest) {
+                        image.purityTest = process.env.BASE_URL + image.purityTest;
+                    }
+
+                }
+                let purityTestImage = []
+                let purityTestPath = []
+                let newData;
+
+                if (values.loanOrnamentsDetail[i].purityTest.length) {
+
+                    for (imgUrl of values.loanOrnamentsDetail[i].purityTest) {
+                        let URL = process.env.BASE_URL + imgUrl;
+                        purityTestImage.push(URL)
+
+                        let path = imgUrl;
+                        purityTestPath.push(path)
+
+                        let data = {};
+                        data.path = purityTestPath;
+                        data.URL = purityTestImage;
+                        newData = data;
+                    }
+                }
+                values.loanOrnamentsDetail[i].purityTestImage = newData
+
+                resOrna.push(values.loanOrnamentsDetail[i])
             }
-            if (values.loanOrnamentsDetail[i].withOrnamentWeightData) {
-                values.loanOrnamentsDetail[i].withOrnamentWeightData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].withOrnamentWeightData.path;
+        }
+        //add base url in masterLoan loanOrnamentsDetail
+        var resMasterOrna = []
+        if (values.masterLoan.loanOrnamentsDetail) {
+            for (let i = 0; i < values.masterLoan.loanOrnamentsDetail.length; i++) {
+                if (values.masterLoan.loanOrnamentsDetail[i].weightMachineZeroWeight) {
+
+                    let data = {};
+                    data.path = values.masterLoan.loanOrnamentsDetail[i].weightMachineZeroWeight;
+                    data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].weightMachineZeroWeight;
+                    values.masterLoan.loanOrnamentsDetail[i].weightMachineZeroWeightData = data;
+
+                }
+
+                if (values.masterLoan.loanOrnamentsDetail[i].withOrnamentWeight) {
+
+                    let data = {};
+                    data.path = values.masterLoan.loanOrnamentsDetail[i].withOrnamentWeight;
+                    data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].withOrnamentWeight;
+                    values.masterLoan.loanOrnamentsDetail[i].withOrnamentWeightData = data;
+                }
+
+                if (values.masterLoan.loanOrnamentsDetail[i].stoneTouch) {
+
+                    let data = {};
+                    data.path = values.masterLoan.loanOrnamentsDetail[i].stoneTouch;
+                    data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].stoneTouch;
+                    values.masterLoan.loanOrnamentsDetail[i].stoneTouchData = data;
+                }
+
+                if (values.masterLoan.loanOrnamentsDetail[i].acidTest) {
+                    // values.masterLoan.loanOrnamentsDetail[i].acidTestData = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].acidTest;
+
+                    let data = {};
+                    data.path = values.masterLoan.loanOrnamentsDetail[i].acidTest;
+                    data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].acidTest;
+                    values.masterLoan.loanOrnamentsDetail[i].acidTestData = data;
+                }
+
+                if (values.masterLoan.loanOrnamentsDetail[i].ornamentImage) {
+                    let data = {};
+                    data.path = values.masterLoan.loanOrnamentsDetail[i].ornamentImage;
+                    data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].ornamentImage;
+                    values.masterLoan.loanOrnamentsDetail[i].ornamentImageData = data;
+                }
+                if (values.masterLoan.loanOrnamentsDetail[i].purityTest) {
+                    for (image of values.masterLoan.loanOrnamentsDetail[i].purityTest) {
+                        image.purityTest = process.env.BASE_URL + image.purityTest;
+                    }
+
+                }
+                let purityTestImage = []
+                let purityTestPath = []
+                let newData;
+
+                if (values.masterLoan.loanOrnamentsDetail[i].purityTest.length) {
+
+                    for (imgUrl of values.masterLoan.loanOrnamentsDetail[i].purityTest) {
+                        let URL = process.env.BASE_URL + imgUrl;
+                        purityTestImage.push(URL)
+
+                        let path = imgUrl;
+                        purityTestPath.push(path)
+
+                        let data = {};
+                        data.path = purityTestPath;
+                        data.URL = purityTestImage;
+                        newData = data;
+                    }
+                }
+                values.masterLoan.loanOrnamentsDetail[i].purityTestImage = newData
+
+                resMasterOrna.push(values.masterLoan.loanOrnamentsDetail[i])
             }
-            if (values.loanOrnamentsDetail[i].stoneTouchData) {
-                values.loanOrnamentsDetail[i].stoneTouchData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].stoneTouchData.path;
+        }
+
+        //bank
+        if (values.loanBankDetail) {
+            let passbookProofData = [];
+
+            for (image of values.loanBankDetail.passbookProof) {
+                let URL = process.env.BASE_URL + image;
+                passbookProofData.push(URL)
+
             }
-            if (values.loanOrnamentsDetail[i].acidTestData) {
-                values.loanOrnamentsDetail[i].acidTestData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].acidTestData.path;
+            values.loanBankDetail.passbookProofImage = passbookProofData;
+        }
+        //add base url in masterLoan loanBankDetail
+        if (values.masterLoan.loanBankDetail) {
+            let passbookProofData = [];
+
+            for (image of values.masterLoan.loanBankDetail.passbookProof) {
+                let URL = process.env.BASE_URL + image;
+                passbookProofData.push(URL)
+
             }
-            if (values.loanOrnamentsDetail[i].ornamentImageData) {
-                values.loanOrnamentsDetail[i].ornamentImageData.URL = baseUrlConfig.BASEURL + values.loanOrnamentsDetail[i].ornamentImageData.path;
+            values.masterLoan.loanBankDetail.passbookProofImage = passbookProofData;
+        }
+
+        //packet
+        var resPac = []
+        if (values.loanPacketDetails) {
+            for (let i = 0; i < values.loanPacketDetails.length; i++) {
+
+                if (values.loanPacketDetails[i].emptyPacketWithNoOrnament) {
+                    values.loanPacketDetails[i].emptyPacketWithNoOrnamentImage = process.env.BASE_URL + values.loanPacketDetails[i].emptyPacketWithNoOrnament;
+                }
+                if (values.loanPacketDetails[i].sealingPacketWithWeight) {
+                    values.loanPacketDetails[i].sealingPacketWithWeightImage = process.env.BASE_URL + values.loanPacketDetails[i].sealingPacketWithWeight;
+                }
+                if (values.loanPacketDetails[i].sealingPacketWithCustomer) {
+                    values.loanPacketDetails[i].sealingPacketWithCustomerImage = process.env.BASE_URL + values.loanPacketDetails[i].sealingPacketWithCustomer;
+                }
+
+                resPac.push(values.loanPacketDetails[i])
             }
-            if (values.loanOrnamentsDetail[i].purityTestImage) {
-                for (image of values.loanOrnamentsDetail[i].purityTestImage) {
-                    image.purityTest.URL = baseUrlConfig.BASEURL + image.purityTest.path;
+        }
+        //add base url in masterLoan loanPacketDetails
+        var resMasterPac = []
+        if (values.masterLoan.loanPacketDetails) {
+            for (let i = 0; i < values.masterLoan.loanPacketDetails.length; i++) {
+
+                if (values.masterLoan.loanPacketDetails[i].emptyPacketWithNoOrnament) {
+                    values.masterLoan.loanPacketDetails[i].emptyPacketWithNoOrnamentImage = process.env.BASE_URL + values.masterLoan.loanPacketDetails[i].emptyPacketWithNoOrnament;
+                }
+                if (values.masterLoan.loanPacketDetails[i].sealingPacketWithWeight) {
+                    values.masterLoan.loanPacketDetails[i].sealingPacketWithWeightImage = process.env.BASE_URL + values.masterLoan.loanPacketDetails[i].sealingPacketWithWeight;
+                }
+                if (values.masterLoan.loanPacketDetails[i].sealingPacketWithCustomer) {
+                    values.masterLoan.loanPacketDetails[i].sealingPacketWithCustomerImage = process.env.BASE_URL + values.masterLoan.loanPacketDetails[i].sealingPacketWithCustomer;
+                }
+
+                resMasterPac.push(values.masterLoan.loanPacketDetails[i])
+            }
+        }
+
+        //documents
+        if (values.customerLoanDocument) {
+            let loanAgreementCopyImage = []
+            let pawnCopyImage = []
+            let schemeConfirmationCopyImage = []
+
+            if (values.customerLoanDocument.loanAgreementCopy) {
+                for (imgUrl of values.customerLoanDocument.loanAgreementCopy) {
+                    let URL = process.env.BASE_URL + imgUrl;
+                    loanAgreementCopyImage.push(URL)
                 }
             }
-            resOrna.push(values.loanOrnamentsDetail[i])
+            if (values.customerLoanDocument.pawnCopy) {
+                for (imgUrl of values.customerLoanDocument.pawnCopy) {
+                    let URL = process.env.BASE_URL + imgUrl;
+                    pawnCopyImage.push(URL)
+                }
+            }
+            if (values.customerLoanDocument.schemeConfirmationCopy) {
+                for (imgUrl of values.customerLoanDocument.schemeConfirmationCopy) {
+                    let URL = process.env.BASE_URL + imgUrl;
+                    schemeConfirmationCopyImage.push(URL)
+                }
+            }
+            values.customerLoanDocument.loanAgreementCopyImage = loanAgreementCopyImage
+            values.customerLoanDocument.pawnCopyImage = pawnCopyImage
+            values.customerLoanDocument.schemeConfirmationCopyImage = schemeConfirmationCopyImage
+
+        }
+        //add base url in masterLoan customerLoanDocument
+        if (values.masterLoan.customerLoanDocument) {
+            let loanAgreementCopyImage = []
+            let pawnCopyImage = []
+            let schemeConfirmationCopyImage = []
+
+            if (values.masterLoan.customerLoanDocument.loanAgreementCopy) {
+                for (imgUrl of values.masterLoan.customerLoanDocument.loanAgreementCopy) {
+                    let URL = process.env.BASE_URL + imgUrl;
+                    loanAgreementCopyImage.push(URL)
+                }
+            }
+            if (values.masterLoan.customerLoanDocument.pawnCopy) {
+                for (imgUrl of values.masterLoan.customerLoanDocument.pawnCopy) {
+                    let URL = process.env.BASE_URL + imgUrl;
+                    pawnCopyImage.push(URL)
+                }
+            }
+            if (values.masterLoan.customerLoanDocument.schemeConfirmationCopy) {
+                for (imgUrl of values.masterLoan.customerLoanDocument.schemeConfirmationCopy) {
+                    let URL = process.env.BASE_URL + imgUrl;
+                    schemeConfirmationCopyImage.push(URL)
+                }
+            }
+            values.masterLoan.customerLoanDocument.loanAgreementCopyImage = loanAgreementCopyImage
+            values.masterLoan.customerLoanDocument.pawnCopyImage = pawnCopyImage
+            values.masterLoan.customerLoanDocument.schemeConfirmationCopyImage = schemeConfirmationCopyImage
+
         }
 
-        if (values.loanBankDetail) {
-            for (image of values.loanBankDetail.passbookProofImage) {
-                image.passbookProof.URL = baseUrlConfig.BASEURL + image.passbookProof.path;
+        // loan transfer details
+        if (values.masterLoan.loanTransfer) {
+            if(values.masterLoan.loanTransfer.pawnTicket){
+                let pawnTicketImage = [];
+            for (image of values.masterLoan.loanTransfer.pawnTicket) {
+                let URL = process.env.BASE_URL + image;
+                pawnTicketImage.push(URL)
+            }
+            values.masterLoan.loanTransfer.pawnTicketImage = pawnTicketImage;
+            }
+            if(values.masterLoan.loanTransfer.signedCheque){
+                let signedChequeImage = [];
+            for (image of values.masterLoan.loanTransfer.signedCheque) {
+                let URL = process.env.BASE_URL + image;
+                signedChequeImage.push(URL)
+            }
+            values.masterLoan.loanTransfer.signedChequeImage = signedChequeImage;
+            }
+            if(values.masterLoan.loanTransfer.declaration){
+                let declarationImage = [];
+            for (image of values.masterLoan.loanTransfer.declaration) {
+                let URL = process.env.BASE_URL + image;
+                declarationImage.push(URL)
+            }
+            values.masterLoan.loanTransfer.declarationImage = declarationImage;
             }
         }
-
-        resPac = []
-        for (let i = 0; i < values.loanPacketDetails.length; i++) {
-
-            if (values.loanPacketDetails[i].emptyPacketWithNoOrnamentData) {
-                values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].emptyPacketWithNoOrnamentData.path;
-            }
-            if (values.loanPacketDetails[i].packetWithAllOrnamentsData) {
-                values.loanPacketDetails[i].packetWithAllOrnamentsData = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithAllOrnamentsData.path;
-            }
-            if (values.loanPacketDetails[i].packetWithSealingData) {
-                values.loanPacketDetails[i].packetWithSealingData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithSealingData.path;
-            }
-            if (values.loanPacketDetails[i].packetWithWeightData) {
-                values.loanPacketDetails[i].packetWithWeightData.URL = baseUrlConfig.BASEURL + values.loanPacketDetails[i].packetWithWeightData.path;
-            }
-            resPac.push(values.loanPacketDetails[i])
-        }
+        values.masterLoan.loanOrnamentsDetail = resMasterOrna
+        values.masterLoan.loanPacketDetails = resMasterPac
 
         values.loanOrnamentsDetail = resOrna
         values.loanPacketDetails = resPac

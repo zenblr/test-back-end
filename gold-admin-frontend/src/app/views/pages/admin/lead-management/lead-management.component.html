@@ -123,8 +123,8 @@
                     <mat-cell *matCellDef="let lead">
                         <ng-container *ngIf="lead.status.id == '1'">
                             <div [ngStyle]="{'display': 'inherit'}">
-                                <button (click)="assign(lead)" class="apply-kyc"
-                                    *ngxPermissionsOnly="['customerKycAdd']">Assign Appraiser</button>
+                                <button (click)="false" class="apply-kyc" style="cursor: not-allowed"
+                                    *ngxPermissionsOnly="['assignAppraiserEdit']">Assign Appraiser</button>
                             </div>
                         </ng-container>
 

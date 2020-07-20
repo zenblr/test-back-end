@@ -93,7 +93,7 @@ export class UserAddressComponent implements OnInit {
 
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
-      this.identityProofs = res.filter(filter => filter.name == 'Aadhar Card');
+      this.identityProofs = res.filter(filter => filter.name == 'Aadhaar Card');
     }, err => {
       console.log(err);
     })
@@ -124,20 +124,20 @@ export class UserAddressComponent implements OnInit {
 
           if (type == "identityProof" && this.images.identityProof.length < 2) {
             this.images.identityProof.push(res.uploadFile.URL)
-            this.imageId.identityProof.push(res.uploadFile.id)
+            this.imageId.identityProof.push(res.uploadFile.path)
             // identityProofImg
             this.identityForm.patchValue({ identityProofImg: this.images.identityProof });
             this.identityForm.patchValue({ identityProof: this.imageId.identityProof });
             this.identityForm.get('identityProofFileName').patchValue(event.target.files[0].name);
           } else if (type == 1 && this.images.residential.length < 2) {
-            this.imageId.residential.push(res.uploadFile.id)
+            this.imageId.residential.push(res.uploadFile.path)
             this.images.residential.push(res.uploadFile.URL)
             this.addressControls.controls[1].patchValue({ addressProof: this.imageId.residential });
             this.addressControls.controls[1].patchValue({ addressProofImg: this.images.residential });
             this.addressControls.at(1)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
           } else if (type == 0 && this.images.permanent.length < 2) {
             this.images.permanent.push(res.uploadFile.URL)
-            this.imageId.permanent.push(res.uploadFile.id)
+            this.imageId.permanent.push(res.uploadFile.path)
             this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
             this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
             this.addressControls.at(0)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
@@ -181,9 +181,9 @@ export class UserAddressComponent implements OnInit {
     });
   }
 
-  selectAadhar(){
-    this.identityProofs.forEach(proof=>{
-      if(proof.name == "Aadhar Card"){
+  selectAadhar() {
+    this.identityProofs.forEach(proof => {
+      if (proof.name == "Aadhaar Card") {
         this.controls.identityTypeId.patchValue(proof.id)
       }
     })
@@ -306,22 +306,26 @@ export class UserAddressComponent implements OnInit {
   //   }
   // }
 
-  checkForAadhar() {
-    if (this.addressControls.at(0).value.addressProofTypeId == 2) {
-      this.images.permanent = [];
-      this.imageId.permanent = [];
-      Array.prototype.push.apply(this.images.permanent, this.images.identityProof)
-      Array.prototype.push.apply(this.imageId.permanent, this.imageId.identityProof)
-      this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
-      this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
-      this.addressControls.controls[0].patchValue({ addressProofNumber: this.controls.identityProofNumber.value });
-      this.addressControls.controls[0].patchValue({ addressProofFileName: this.controls.identityProofFileName.value });
-    } else {
-      this.images.permanent = [];
-      this.imageId.permanent = [];
-      this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
-      this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
-      this.addressControls.controls[0].patchValue({ addressProofNumber: '' });
+  checkForAadhar(index) {
+    // console.log(index)
+    if (index === 0) {
+      if (this.addressControls.at(0).value.addressProofTypeId == 2) {
+        this.images.permanent = [];
+        this.imageId.permanent = [];
+        Array.prototype.push.apply(this.images.permanent, this.images.identityProof)
+        Array.prototype.push.apply(this.imageId.permanent, this.imageId.identityProof)
+        this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
+        this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
+        this.addressControls.controls[0].patchValue({ addressProofNumber: this.controls.identityProofNumber.value });
+        this.addressControls.controls[0].patchValue({ addressProofFileName: this.controls.identityProofFileName.value });
+      } else {
+        this.images.permanent = [];
+        this.imageId.permanent = [];
+        this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
+        this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
+        this.addressControls.controls[0].patchValue({ addressProofNumber: '' });
+        this.addressControls.controls[0].patchValue({ addressProofFileName: '' });
+      }
     }
     console.log(this.addressControls.at(0).value)
   }

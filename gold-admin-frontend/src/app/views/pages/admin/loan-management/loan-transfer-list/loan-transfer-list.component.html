@@ -1,0 +1,77 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="customerID">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan?.customer?.customerUniqueId | uppercase}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="loanId">
+                    <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.customerLoan[0]?.loanUniqueId | uppercase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="fullName">
+                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+                    <mat-cell *matCellDef="let loan"> {{loan?.customer?.firstName | titlecase}} {{loan?.customer?.lastName | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="mobile">
+                    <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.customer?.mobileNumber}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <mat-header-cell *matHeaderCellDef>Outstanding Loan Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.loanTransfer?.disbursedLoanAmount}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                    <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.loanTransfer?.createdAt | date : 'mediumDate'}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <button class="apply-kyc" *ngIf="!loan?.isLoanSubmitted && loan?.loanTransfer?.loanTransferCurrentStage == '5'" (click)="applyLoan(loan)">Apply Loan</button></mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef> Loan Transfer Status</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <div *ngIf="!loan?.loanTransfer?.isLoanDisbursed">
+                            <button  class="primary-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'incomplete'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                            <button  class="warning-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'pending'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                            <button  class="green-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'approved'" (click)="navigate(loan)">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                            <button  class="red-button"
+                            *ngIf="loan?.loanTransfer?.loanTransferStatusForBM == 'rejected'">{{loan?.loanTransfer?.loanTransferStatusForBM | uppercase}}</button>
+                        </div>
+                        <button  class="green-button" *ngIf="loan?.loanTransfer?.isLoanDisbursed"
+                            >DISBURSED</button>
+                        
+                    </mat-cell>
+                </ng-container>
+
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+
+        <div class="mat-table__bottom">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

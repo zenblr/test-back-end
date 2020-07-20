@@ -20,7 +20,7 @@ export class AppliedKycComponent implements OnInit {
 
   filteredDataList: any = {};
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'pan', 'customerId', 'appraiserName', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser'];
+  displayedColumns = ['fullName', 'pan', 'customerId', 'appraiserName', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser', 'menu'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -141,7 +141,6 @@ export class AppliedKycComponent implements OnInit {
   }
 
   assign(item) {
-    // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
     const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -168,7 +167,12 @@ export class AppliedKycComponent implements OnInit {
     })
   }
 
-  transferLoan(loan){
-    this.router.navigate(['/admin/laon-management/loan-transfer'])
+  transferLoan(loan) {
+    this.router.navigate(['/admin/loan-management/loan-transfer'], { queryParams: { customerID: loan.customer.customerUniqueId } })
+  }
+
+  applyLoan(loan) {
+    console.log(loan)
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
   }
 }

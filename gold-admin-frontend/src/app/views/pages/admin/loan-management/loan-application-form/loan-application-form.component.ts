@@ -26,10 +26,11 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false, false, false, false, false, false];
+  disabled = [false, true, true, true, true, true];
   masterAndLoanIds: any;
   ornamentType = [];
   finalLoanAmt: any;
+  fullAmount: any = 0;
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
@@ -43,7 +44,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.id = this.rout.snapshot.params.id
     if (this.id) {
       for (let index = 0; index < this.disabled.length; index++) {
-        this.disabled[index] = true;
+        this.disabled[index] = false;
       }
       this.editApi()
 
@@ -54,7 +55,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.id = event
     this.editApi()
     setTimeout(() => {
-      this.action = 'add'
+      // this.action = 'add'
     }, 5000)
   }
 
@@ -67,7 +68,11 @@ export class LoanApplicationFormComponent implements OnInit {
       this.customerDetail = res.data
       // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "packet-image-upload") {
-        this.selected = 6;
+        if (this.customerDetail.loanPacketDetails.length) {
+          this.selected = 7;
+        } else {
+          this.selected = 6;
+        }
         this.disabledForm = true;
       } else if (this.url == "view-loan") {
         this.disabledForm = true;
@@ -86,18 +91,22 @@ export class LoanApplicationFormComponent implements OnInit {
   ngOnInit() {
 
     this.getOrnamentType()
-    setTimeout(() => {
+    // setTimeout(() => {
 
-      if (this.url == "packet-image-upload") {
-        this.selected = 6;
-        this.disabledForm = true;
-      } else if (this.url == "view-loan") {
-        this.next(0)
-        this.disabledForm = true;
-      } else {
-        this.disabledForm = false;
-      }
-    }, 1000)
+    //   if (this.url == "packet-image-upload") {
+    //     if (this.customerDetail.loanPacketDetails.length) {
+    //       this.selected = 7;
+    //     } else {
+    //       this.selected = 6;
+    //     }
+    //     this.disabledForm = true;
+    //   } else if (this.url == "view-loan") {
+    //     this.next(0)
+    //     this.disabledForm = true;
+    //   } else {
+    //     this.disabledForm = false;
+    //   }
+    // }, 1000)
   }
 
   getOrnamentType() {
@@ -117,6 +126,10 @@ export class LoanApplicationFormComponent implements OnInit {
     this.totalAmount = event
   }
 
+  fullAmt(event){
+    this.fullAmount = event
+  }
+
   finalLoanAmount(event) {
     this.finalLoanAmt = event
   }
@@ -124,7 +137,6 @@ export class LoanApplicationFormComponent implements OnInit {
   customerDetails(event) {
     this.loanApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
       map(res => {
-        this.action = 'add'
         this.customerDetail = res.customerData
         for (let index = 0; index < this.disabled.length; index++) {
           if (index <= 2) {
@@ -148,21 +160,24 @@ export class LoanApplicationFormComponent implements OnInit {
 
 
   next(event) {
-    // if (event.index != undefined) {
-    //   this.selected = event.index;
-    // } else {
-    //   this.selected = event;
-    // }
-    // for (let index = 0; index < this.disabled.length; index++) {
-    //   if (this.url != "view-loan") {
-    //     if (this.selected >= index) {
-    //       this.disabled[index] = false
-    //     } else {
-    //       this.disabled[index] = true
-    //     }
-    //   } else {
-    //     this.disabled[index] = false
-    //   }
-    // }
+    if (event.index != undefined) {
+      this.selected = event.index;
+    } else {
+      this.selected = event;
+    }
+    if (this.selected < 7) {
+      for (let index = 0; index < this.disabled.length; index++) {
+        if (this.url != "view-loan" && this.url != 'packet-image-upload') {
+          if (this.selected >= index) {
+            this.disabled[index] = false
+          } else {
+            this.disabled[index] = true
+          }
+        } else {
+          this.disabled[index] = false
+        }
+      }
+    }
+    this.ref.detectChanges();
   }
 }
