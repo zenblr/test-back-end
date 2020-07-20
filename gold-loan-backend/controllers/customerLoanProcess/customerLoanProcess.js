@@ -424,11 +424,13 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
             }
-            if (loanDetail.unsecuredLoanId == null) {
-                var unsecuredLoanUniqueId = null;
-                // unsecured loan Id
-                unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-                await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+            if (loanDetail.unsecuredLoanId != null) {
+                if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                    var unsecuredLoanUniqueId = null;
+                    // unsecured loan Id
+                    unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                    await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                }
             }
 
         } else {
@@ -602,17 +604,17 @@ exports.loanDocuments = async (req, res, next) => {
         })
     if (check.isEmpty(checkDocument)) {
         // remove if condiction
-            let loanData = await sequelize.transaction(async t => {
-                let stageId = await models.loanStage.findOne({ where: { name: 'OPS team rating' }, transaction: t })
+        let loanData = await sequelize.transaction(async t => {
+            let stageId = await models.loanStage.findOne({ where: { name: 'OPS team rating' }, transaction: t })
 
-                await models.customerLoanMaster.update({ loanStageId: stageId.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
+            await models.customerLoanMaster.update({ loanStageId: stageId.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
-                await models.customerLoanDocument.create({ loanId, masterLoanId, loanAgreementCopy, pawnCopy, schemeConfirmationCopy, createdBy, modifiedBy }, { transaction: t })
+            await models.customerLoanDocument.create({ loanId, masterLoanId, loanAgreementCopy, pawnCopy, schemeConfirmationCopy, createdBy, modifiedBy }, { transaction: t })
 
-                await models.customerLoanHistory.create({ loanId, masterLoanId, action: LOAN_DOCUMENTS, modifiedBy }, { transaction: t });
+            await models.customerLoanHistory.create({ loanId, masterLoanId, action: LOAN_DOCUMENTS, modifiedBy }, { transaction: t });
 
-                // return loan
-            })
+            // return loan
+        })
 
         return res.status(200).json({ message: 'success', masterLoanId, loanId })
     } else {
