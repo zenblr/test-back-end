@@ -181,11 +181,11 @@ export class CheckoutCustomerComponent implements OnInit {
           });
           this.showCustomerFlag = true;
         } else {
-          this.showCustomerFlag = false;
           this.controls['address'].enable();
           this.controls['landMark'].enable();
           this.controls['stateName'].enable();
           this.controls['cityName'].enable();
+          this.showCustomerFlag = false;
         }
         this.getCities();
         if (res.customerDetails.kycDetails) {
@@ -207,7 +207,7 @@ export class CheckoutCustomerComponent implements OnInit {
       });
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
-      // this.showCustomerFlag = true;
+      this.showCustomerFlag = true;
       this.finalOrderData = null;
       this.checkoutCustomerForm.disable();
       this.ref.detectChanges();
