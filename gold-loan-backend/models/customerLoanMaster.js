@@ -212,7 +212,7 @@ module.exports = (sequelize, DataTypes) => {
                 if(values.loanTransfer.pawnTicket){
                     let pawnTicketImage = [];
                 for (image of values.loanTransfer.pawnTicket) {
-                    let URL = baseUrlConfig.BASEURL + image;
+                    let URL = process.env.BASE_URL + image;
                     pawnTicketImage.push(URL)
                 }
                 values.loanTransfer.pawnTicketImage = pawnTicketImage;
@@ -220,7 +220,7 @@ module.exports = (sequelize, DataTypes) => {
                 if(values.loanTransfer.signedCheque){
                     let signedChequeImage = [];
                 for (image of values.loanTransfer.signedCheque) {
-                    let URL = baseUrlConfig.BASEURL + image;
+                    let URL = process.env.BASE_URL + image;
                     signedChequeImage.push(URL)
                 }
                 values.loanTransfer.signedChequeImage = signedChequeImage;
@@ -228,7 +228,7 @@ module.exports = (sequelize, DataTypes) => {
                 if(values.loanTransfer.declaration){
                     let declarationImage = [];
                 for (image of values.loanTransfer.declaration) {
-                    let URL = baseUrlConfig.BASEURL + image;
+                    let URL = process.env.BASE_URL + image;
                     declarationImage.push(URL)
                 }
                 values.loanTransfer.declarationImage = declarationImage;
