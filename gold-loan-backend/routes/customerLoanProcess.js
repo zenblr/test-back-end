@@ -4,7 +4,7 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
 const { addPackageImagesForLoan, disbursementOfLoanAmount,
   disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating,
-  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer } =
+  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer, getSingleLoanInCustomerManagment } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
@@ -26,6 +26,8 @@ route.post('/bm-rating', checkAuth, wrapper(loanBmRating)); // ADD CUSTOMER BANK
 route.post('/ops-rating', checkAuth, wrapper(loanOpsTeamRating)); // ADD CUSTOMER BANK DETAIL
 
 route.get('/single-loan', checkAuth, wrapper(getSingleLoanDetails)); // ADD CUSTOMER BANK DETAIL
+
+route.get('/single-loan-customer', checkAuth, wrapper(getSingleLoanInCustomerManagment))//customer-managment single loan
 
 route.post('/add-packet-images', checkAuth, wrapper(addPackageImagesForLoan)); // ADD PACKAGE IMAGES
 

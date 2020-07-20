@@ -403,6 +403,9 @@ exports.loanAppraiserRating = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let appraiserId = req.userData.id
+
+    let ornament = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
+
     let loanData = await sequelize.transaction(async t => {
         if (loanStatusForAppraiser == "approved") {
             if (goldValuationForAppraiser == false && applicationFormForAppraiser == false) {
@@ -451,7 +454,15 @@ exports.loanAppraiserRating = async (req, res, next) => {
             }, { where: { id: masterLoanId }, transaction: t })
         }
     })
-    return res.status(200).json({ message: 'success' })
+
+    let ornamentType = [];
+    if (ornament.loanOrnamentsDetail.length != 0) {
+        for (let ornamentsDetail of customerLoan.loanOrnamentsDetail) {
+            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
+        }
+        customerLoan.dataValues.ornamentType = ornamentType;
+    }
+    return res.status(200).json({ message: 'success', ornamentType })
 
 }
 
@@ -468,7 +479,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
         return res.status(400).json({ message: `Packets has been already assign` })
     }
 
-    if (loanDetails !== null && loanDetails.loanStatusForOperatinalTeam === 'approved') {
+    if (loanDetails !== null && loanDetails.loanStatusForAppraiser === 'approved') {
 
         //FOR PACKET UPDATE
         let packetArray = await packetOrnamentArray.map(ele => {
@@ -506,11 +517,12 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
             for (let x of packetOrnamentArray) {
                 for (let singleOrnamentId of x.ornamentsId) {
                     let pushData = {}
-                    pushData['packetId'] = x.packetId
-                    pushData['ornamentTypeId'] = singleOrnamentId
+                    pushData['packetId'] = Number(x.packetId)
+                    pushData['ornamentTypeId'] = Number(singleOrnamentId)
                     ornamentPacketData.push(pushData)
                 }
             }
+            console.log(ornamentPacketData)
             await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
 
             await models.packet.bulkCreate(packetUpdateArray, {
@@ -903,51 +915,56 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             {
                 model: models.customerLoanMaster,
                 as: 'masterLoan',
-                include: [{
-                    model: models.loanStage,
-                    as: 'loanStage',
-                    attributes: ['id', 'name']
-                },
-                {
-                    model: models.customerLoanTransfer,
-                    as: "loanTransfer",
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                },
-                {
-                    model: models.customerLoanPersonalDetail,
-                    as: 'loanPersonalDetail',
-                }, {
-                    model: models.customerLoanBankDetail,
-                    as: 'loanBankDetail',
-                }, {
-                    model: models.customerLoanNomineeDetail,
-                    as: 'loanNomineeDetail',
-                }, {
-                    model: models.customerLoanOrnamentsDetail,
-                    as: 'loanOrnamentsDetail',
-                    include: [
-                        {
-                            model: models.ornamentType,
-                            as: "ornamentType"
-                        }
-                    ]
-                }, {
-                    model: models.customerLoanPackageDetails,
-                    as: 'loanPacketDetails',
-                    // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                    include: [{
-                        model: models.packet,
-                        include: [{
-                            model: models.ornamentType
-                        }]
-                    }]
-                }, {
-                    model: models.customerLoanDocument,
-                    as: 'customerLoanDocument'
-                }, {
-                    model: models.customerLoanInterest,
-                    as: 'customerLoanInterest',
-                }]
+                // include: [{
+                //     model: models.loanStage,
+                //     as: 'loanStage',
+                //     attributes: ['id', 'name']
+                // },
+                // {
+                //     model: models.customerLoanTransfer,
+                //     as: "loanTransfer",
+                //     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                // },
+                // {
+                //     model: models.customerLoanPersonalDetail,
+                //     as: 'loanPersonalDetail',
+                // }, {
+                //     model: models.customerLoanBankDetail,
+                //     as: 'loanBankDetail',
+                // }, {
+                //     model: models.customerLoanNomineeDetail,
+                //     as: 'loanNomineeDetail',
+                // }, {
+                //     model: models.customerLoanOrnamentsDetail,
+                //     as: 'loanOrnamentsDetail',
+                //     include: [
+                //         {
+                //             model: models.ornamentType,
+                //             as: "ornamentType"
+                //         }
+                //     ]
+                // }, {
+                //     model: models.customerLoanPackageDetails,
+                //     as: 'loanPacketDetails',
+                //     // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                //     include: [{
+                //         model: models.packet,
+                //         include: [{
+                //             model: models.packetOrnament,
+                //             as: 'packetOrnament',
+                //             include: [{
+                //                 model: models.ornamentType,
+                //                 as: 'ornamentType'
+                //             }]
+                //         }]
+                //     }]
+                // }, {
+                //     model: models.customerLoanDocument,
+                //     as: 'customerLoanDocument'
+                // }, {
+                //     model: models.customerLoanInterest,
+                //     as: 'customerLoanInterest',
+                // }]
             },
             {
                 model: models.customerLoanPersonalDetail,
@@ -1000,7 +1017,12 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 include: [{
                     model: models.packet,
                     include: [{
-                        model: models.ornamentType
+                        model: models.packetOrnament,
+                        as: 'packetOrnament',
+                        include: [{
+                            model: models.ornamentType,
+                            as: 'ornamentType'
+                        }]
                     }]
                 }]
             },
@@ -1036,6 +1058,103 @@ exports.getSingleLoanDetails = async (req, res, next) => {
     }
 
     return res.status(200).json({ message: 'success', data: customerLoan })
+}
+
+//get function for single loan in CUSTOMER-MANAGMENT
+exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
+    let { customerLoanId } = req.query
+    let customerLoan = await models.customerLoan.findOne({
+        where: { id: customerLoanId },
+        // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        include: [
+            {
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                include: [{
+                    model: models.loanStage,
+                    as: 'loanStage',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: models.customerLoanTransfer,
+                    as: "loanTransfer",
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                },
+                {
+                    model: models.customerLoanPersonalDetail,
+                    as: 'loanPersonalDetail',
+                }, {
+                    model: models.customerLoanBankDetail,
+                    as: 'loanBankDetail',
+                }, {
+                    model: models.customerLoanNomineeDetail,
+                    as: 'loanNomineeDetail',
+                }, {
+                    model: models.customerLoanOrnamentsDetail,
+                    as: 'loanOrnamentsDetail',
+                    include: [
+                        {
+                            model: models.ornamentType,
+                            as: "ornamentType"
+                        }
+                    ]
+                }, {
+                    model: models.customerLoanPackageDetails,
+                    as: 'loanPacketDetails',
+                    // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                    include: [{
+                        model: models.packet,
+                        include: [{
+                            model: models.packetOrnament,
+                            as: 'packetOrnament',
+                            include: [{
+                                model: models.ornamentType,
+                                as: 'ornamentType'
+                            }]
+                        }]
+                    }]
+                }, {
+                    model: models.customerLoanDocument,
+                    as: 'customerLoanDocument'
+                }, {
+                    model: models.customerLoanInterest,
+                    as: 'customerLoanInterest',
+                }]
+            },
+            {
+                model: models.customerLoanInterest,
+                as: 'customerLoanInterest',
+            },
+            {
+                model: models.scheme,
+                as: 'scheme'
+            },
+            {
+                model: models.customerLoan,
+                as: 'unsecuredLoan',
+                include: [{
+                    model: models.customerLoanInterest,
+                    as: 'customerLoanInterest',
+                }, {
+                    model: models.scheme,
+                    as: 'scheme',
+                }]
+            },
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+            },
+            {
+                model: models.customerLoanInterest,
+                as: 'customerLoanInterest',
+            }, {
+                model: models.customerLoanDocument,
+                as: 'customerLoanDocument'
+            }]
+    });
+    return res.status(200).json({ message: 'success', data: customerLoan })
+
 }
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS
