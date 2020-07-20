@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /jewellery-relese/{masterLoanId}:
+ * /jewellery-release/{masterLoanId}:
  *   get:
  *     tags:
  *       - Jewellery Relese

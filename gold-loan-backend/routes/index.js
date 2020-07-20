@@ -158,7 +158,7 @@ router.use('/single-sign-on',singleSignOn);
 const customerLoanTransfer = require('./customerLoanTransfer');
 router.use('/loan-transfer',customerLoanTransfer);
 
-const jewelleryRelese = require('./jewelleryRelese');
-router.use('/jewellery-relese',jewelleryRelese);
+const jewelleryRelese = require('./jewelleryRelease');
+router.use('/jewellery-release',jewelleryRelese);
 
 module.exports = router;
