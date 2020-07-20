@@ -1,14 +1,14 @@
 <kt-toastr #toastr></kt-toastr>
 <kt-portlet>
     <kt-portlet-body class="checkout-height">
-        <div class="row py-4">
+        <!-- <div class="row py-4">
             <div class="col-12">
                 <kt-button [value]="'Existing Customer'" [type]="'button'" (action)="checkCustomerType('exist')">
                 </kt-button>
                 <span class="px-4 font-weight-500">Or</span>
                 <kt-button [value]="'New Customer'" [type]="'reset'" (action)="checkCustomerType('new')"></kt-button>
             </div>
-        </div>
+        </div> -->
         <form [formGroup]="numberSearchForm" *ngIf="showNumberSearchFlag">
             <div class="row py-3">
                 <div class="col-5">
@@ -35,37 +35,6 @@
             </div>
         </form>
         <form [formGroup]="checkoutCustomerForm" *ngIf="showformFlag">
-            <!-- <div *ngIf="existingCustomerData" class="font-weight-500">
-                <div class="row py-2">
-                    <div class="col-2 align-self-center text-muted">Customer Name</div>
-                    <div class="col-8">{{existingCustomerData?.customerDetails?.firstName}}
-                        {{existingCustomerData?.customerDetails?.lastName}}</div>
-                </div>
-                <div class="row py-2">
-                    <div class="col-2 align-self-center text-muted">Email ID</div>
-                    <div class="col-8">{{existingCustomerData?.customerDetails?.email}}</div>
-                </div>
-                <div class="row py-2">
-                    <div class="col-2 align-self-center text-muted">Address</div>
-                    <div class="col-8">{{existingCustomerData?.customerDetails?.customeraddress[0]?.address}}</div>
-                </div>
-                <div class="row py-2">
-                    <div class="col-2 align-self-center text-muted">Landmark</div>
-                    <div class="col-8">{{existingCustomerData?.customerDetails?.customeraddress[0]?.landMark}}</div>
-                </div>
-                <div class="row py-2">
-                    <div class="col-2 align-self-center text-muted">State</div>
-                    <div class="col-8">{{existingCustomerData?.customerDetails?.customeraddress[0]?.state?.name}}</div>
-                </div>
-                <div class="row py-2">
-                    <div class="col-2 align-self-center text-muted">City</div>
-                    <div class="col-8">{{existingCustomerData?.customerDetails?.customeraddress[0]?.city?.name}}</div>
-                </div>
-                <div class="row py-2">
-                    <div class="col-2 align-self-center text-muted">Pincode</div>
-                    <div class="col-8">{{existingCustomerData?.customerDetails?.pinCode}}</div>
-                </div>
-            </div> -->
             <div class="row py-3">
                 <div class="col-6" [ngClass]="showNumberSearchFlag ? 'pr-4' : 'pl-4'">
                     <div class="row">
