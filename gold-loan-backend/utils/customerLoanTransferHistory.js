@@ -6,4 +6,6 @@ module.exports = {
     LOAN_DOCUMENTS: "Loan transfer documents submitted",
     LOAN_DOCUMENTS_UPDATED: "Loan transfer documents updated",
     LOAN_DISBURSEMENT: "Paid the outstanding loan amount to the existing loan company",
+    APPRAISER_RATING_APPROVED: "Loan transfer approved by Appraiser",
+    APPRAISER_RATING_PENDING : "Loan transfer status changed to incomplete by Appraiser",
 }

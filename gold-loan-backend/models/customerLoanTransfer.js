@@ -20,6 +20,12 @@ module.exports = (sequelize, DataTypes) => {
             values: ['approved', 'pending', 'incomplete', 'rejected'],
             defaultValue: 'pending'
         },
+        loanTransferStatusForAppraiser:{
+            type: DataTypes.ENUM,
+            field: 'loan_transfer_status_for_appraiser',
+            values: ['approved', 'pending', 'incomplete'],
+            defaultValue: 'pending'
+        },
         reasonByBM: {
             type: DataTypes.TEXT,
             field: 'reason_by_bm'
@@ -43,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         loanTransferCurrentStage: {
             type: DataTypes.ENUM,
             field: 'loan_transfer_current_stage',
-            values: ['1', '2', '3', '4','5']
+            values: ['1', '2', '3', '4','5','6']
         },
         createdBy: {
             type: DataTypes.INTEGER,

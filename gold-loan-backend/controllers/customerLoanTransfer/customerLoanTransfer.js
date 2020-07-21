@@ -32,7 +32,7 @@ exports.customerDetails = async (req, res, next) => {
         include: [{
             model: models.customerLoanTransfer,
             as: "loanTransfer",
-            where: {loanTransferCurrentStage: { [Op.notIn]: ["5"] } },
+            where: {loanTransferCurrentStage: { [Op.notIn]: ["6"] } },
         }]
     })
 
@@ -44,6 +44,8 @@ exports.customerDetails = async (req, res, next) => {
         } else if (customerCurrentStage == '3') {
             return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage })
         } else if (customerCurrentStage == '4') {
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanUniqueId: customerLoanStage.loanTransfer.transferredLoanId, disbursedLoanAmount: customerLoanStage.loanTransfer.disbursedLoanAmount })
+        } else if (customerCurrentStage == '5') {
             return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanUniqueId: customerLoanStage.loanTransfer.transferredLoanId, disbursedLoanAmount: customerLoanStage.loanTransfer.disbursedLoanAmount })
         }
     }
@@ -93,7 +95,7 @@ exports.loanTransferDocuments = async (req, res, next) => {
             as: "loanTransfer",
         }]
     });
-    if (masterLoan.loanTransfer.loanTransferStatusForBM == "pending" || masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete") {
+    if (masterLoan.loanTransfer.loanTransferStatusForBM == "pending" || masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete" ||  masterLoan.loanTransfer.loanTransferStatusForAppraiser == "pending" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "incomplete") {
         await sequelize.transaction(async t => {
             if (!masterLoan.loanTransfer.pawnTicket || !masterLoan.loanTransfer.signedCheque || !masterLoan.loanTransfer.declaration || !masterLoan.loanTransfer.outstandingLoanAmount) {
                 await models.customerLoanTransfer.update({ pawnTicket, signedCheque, declaration, outstandingLoanAmount, modifiedBy, loanTransferCurrentStage: '3', disbursedLoanAmount }, { where: { id: masterLoan.loanTransfer.id }, transaction: t })
@@ -103,8 +105,41 @@ exports.loanTransferDocuments = async (req, res, next) => {
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DOCUMENTS_UPDATED, createdBy, modifiedBy }, { transaction: t })
             }
         })
+        return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'3' })
+    } else {
+        return res.status(400).json({ message: 'You cannot change documents now' })
     }
-    return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'3' })
+    
+}
+
+exports.loanTransferAppraiserRating = async (req, res, next) => {
+
+    let { loanTransferStatusForAppraiser, loanId, masterLoanId } = req.body
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+
+    let masterLoan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        include: [{
+            model: models.customerLoanTransfer,
+            as: "loanTransfer",
+        }]
+    });
+        await sequelize.transaction(async t => {
+            if (masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete" || masterLoan.loanTransfer.loanTransferStatusForBM == "pending" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "pending" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "incomplete" ) {
+                if (loanTransferStatusForAppraiser == "approved") {
+                    await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser, modifiedBy, loanTransferCurrentStage: '4' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.APPRAISER_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
+                    return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage:'4' })
+                } else if (loanTransferStatusForAppraiser == "pending") {
+                    await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser, modifiedBy,loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.APPRAISER_RATING_PENDING, createdBy, modifiedBy }, { transaction: t })
+                    return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'3' })
+                } 
+            } else {
+                return res.status(400).json({ message: 'You cannot change status for this customer' })
+            }
+        })
 }
 
 exports.loanTransferBmRating = async (req, res, next) => {
@@ -124,18 +159,18 @@ exports.loanTransferBmRating = async (req, res, next) => {
             if (masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete" || masterLoan.loanTransfer.loanTransferStatusForBM == "pending") {
                 if (loanTransferStatusForBM == "approved") {
                     let loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-                    await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, loanTransferCurrentStage: '4', transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, loanTransferCurrentStage: '5', transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                     await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { masterLoanId: masterLoanId }, transaction: t }) 
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
-                    return res.status(200).json({ message: 'success', masterLoanId, loanId, loanUniqueId, disbursedLoanAmount: masterLoan.loanTransfer.disbursedLoanAmount,loanCurrentStage:'4' })
+                    return res.status(200).json({ message: 'success', masterLoanId, loanId, loanUniqueId, disbursedLoanAmount: masterLoan.loanTransfer.disbursedLoanAmount,loanCurrentStage:'5' })
                 } else if (loanTransferStatusForBM == "rejected") {
-                    await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM,loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM,loanTransferCurrentStage: '4' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_REJECTED, createdBy, modifiedBy }, { transaction: t })
-                    return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'3' })
+                    return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'4' })
                 } else {
-                    await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM,loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransfer.update({loanTransferStatusForAppraiser:"pending", loanTransferStatusForBM, modifiedBy, reasonByBM,loanTransferCurrentStage: '4' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_PENDING, createdBy, modifiedBy }, { transaction: t })
-                    return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'3' })
+                    return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'4' })
                 }
             } else {
                 return res.status(400).json({ message: 'You cannot change status for this customer' })
@@ -155,11 +190,11 @@ exports.loanTransferDisbursal = async (req, res, next) => {
         }]
     });
         await sequelize.transaction(async t => {
-            if (masterLoan.loanTransfer.loanTransferStatusForBM == "approved" && masterLoan.loanTransfer.loanTransferCurrentStage == 5) {
+            if (masterLoan.loanTransfer.loanTransferStatusForBM == "approved" && masterLoan.loanTransfer.loanTransferCurrentStage == 6) {
                 return res.status(400).json({ message: 'Amount is already disbursed'})
             } else {
                 if(masterLoan.loanTransfer.loanTransferStatusForBM == "approved"){
-                    await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '5',isLoanDisbursed:true }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '6',isLoanDisbursed:true }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DISBURSEMENT, createdBy, modifiedBy }, { transaction: t })
                     return res.status(200).json({ message: 'success', masterLoanId, loanId })
                 }else{
@@ -304,7 +339,7 @@ exports.customerDetailsLoanTransfer = async (req, res, next) => {
         include: [{
             model: models.customerLoanTransfer,
             as: "loanTransfer",
-            where: {loanTransferCurrentStage: '5' },
+            where: {loanTransferCurrentStage: '6' },
         }]
     });
     let loanTransfer = true;
