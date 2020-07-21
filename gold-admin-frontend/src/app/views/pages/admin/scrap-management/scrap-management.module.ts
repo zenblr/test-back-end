@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoanCalculatorComponent } from './scrap-calculator/loan-calculator.component';
 import { RouterModule, Routes } from '@angular/router';
 import { AngularMaterialModule } from '../../angular-material/angular-material.module'
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
@@ -12,14 +11,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { DeleteEntityDialogComponent } from '../../../partials/content/crud';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 
-import { RoughLoanAmountComponent } from './scrap-calculator/tabs/rough-loan-amount/rough-loan-amount.component';
-import { FinalLoanAmountComponent } from './scrap-calculator/tabs/final-loan-amount/final-loan-amount.component';
+import { ScrapCalculatorComponent } from './scrap-calculator/scrap-calculator.component';
 import { LoanApplicationFormComponent } from './scrap-application-form/loan-application-form.component';
 import { BasicDetailsComponent } from './scrap-application-form/tabs/basic-details/basic-details.component';
 import { KycDetailsComponent } from './scrap-application-form/tabs/kyc-details/kyc-details.component';
 import { NomineeDetailsComponent } from './scrap-application-form/tabs/nominee-details/nominee-details.component'
 // import { OrnamentsComponent } from './scrap-application-form/tabs/ornaments/ornaments.component';
-import { FinalInterestAmountComponent } from './scrap-calculator/tabs/final-interest-amount/final-interest-amount.component'
 import { BankDetailsComponent } from './scrap-application-form/tabs/bank-details/bank-details.component';
 import { ApprovalComponent } from './scrap-application-form/tabs/approval/approval.component';
 import { UploadPacketsComponent } from './packets/upload-packets/upload-packets.component';
@@ -43,7 +40,7 @@ import { UploadLoanDocumentsComponent } from './scrap-application-form/tabs/uplo
 const rout: Routes = [
   {
     path: 'scrap-calculator',
-    component: LoanCalculatorComponent
+    component: ScrapCalculatorComponent
   },
   {
     path: 'scrap-application-form',
@@ -73,14 +70,11 @@ const rout: Routes = [
 
 @NgModule({
   declarations: [
-    LoanCalculatorComponent,
-    RoughLoanAmountComponent,
-    FinalLoanAmountComponent,
+    ScrapCalculatorComponent,
     LoanApplicationFormComponent,
     BasicDetailsComponent,
     KycDetailsComponent,
     NomineeDetailsComponent,
-    FinalInterestAmountComponent,
     BankDetailsComponent,
     ApprovalComponent,
     UploadPacketsComponent,
