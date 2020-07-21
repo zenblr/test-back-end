@@ -32,6 +32,7 @@ export class GlobalSettingsComponent implements OnInit {
   initForm() {
     this.globalSettingForm = this.fb.group({
       ltvGoldValue: [, [Validators.required]],
+      scrapLtvGoldValue: [, [Validators.required]],
       minimumLoanAmountAllowed: [, [Validators.required]],
       gst: [, [Validators.required]],
       cashTransactionLimit: [, [Validators.required]],

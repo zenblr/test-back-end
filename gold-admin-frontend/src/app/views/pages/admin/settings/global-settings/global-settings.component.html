@@ -1,8 +1,7 @@
 <kt-portlet>
-    <kt-portlet-body class="">
+    <kt-portlet-body>
         <div class="col-6 mx-auto parent-container">
             <form [formGroup]="globalSettingForm">
-
                 <div class="row kt-padding-t-40 ">
                     <div class="col">
                         <div class="row">
@@ -14,6 +13,27 @@
                                     placeholder="75%"
                                     [class.isError]="controls.ltvGoldValue.invalid && controls.ltvGoldValue.touched">
                                 <mat-error *ngIf="controls.ltvGoldValue.invalid && controls.ltvGoldValue.touched">
+                                    Field required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-4">
+                    <kt-button [value]="'Save'" [type]="'submit'" (action)="submit('ltvGoldPercent')"></kt-button>
+                </div> -->
+                </div>
+
+                <div class="row kt-padding-t-40 ">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-6 form-label text-color d-flex align-items-center mandatory">LTV scrap gold
+                                value(%)
+                            </div>
+                            <div class="col-6 per-gram align-items-center">
+                                <input type="text" class="form-control" numbersOnly formControlName="scrapLtvGoldValue"
+                                    placeholder="75%"
+                                    [class.isError]="controls.scrapLtvGoldValue.invalid && controls.scrapLtvGoldValue.touched">
+                                <mat-error
+                                    *ngIf="controls.scrapLtvGoldValue.invalid && controls.scrapLtvGoldValue.touched">
                                     Field required</mat-error>
                             </div>
                         </div>
@@ -131,8 +151,6 @@
                     <kt-button [value]="'Save'" [type]="'submit'" (action)="submit()"></kt-button>
                 </div>
             </form>
-
         </div>
-
     </kt-portlet-body>
 </kt-portlet>
