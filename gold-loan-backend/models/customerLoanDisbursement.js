@@ -73,6 +73,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanDisbursement.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanDisbursement.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
+
         CustomerLoanDisbursement.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanDisbursement.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
