@@ -248,13 +248,13 @@
                                     <th scope="col" class=" text-left">Date</th>
                                     <th scope="col" class=" text-center"
                                         [ngStyle]="{'width':controls.isUnsecuredSchemeApplied.value?'auto':'50%'}">
-                                        Interest Amount <br>
-                                        (Secured Scheme)
+                                        {{partnerName | uppercase }} / {{selectedScheme[0]?.schemeName | titlecase}}
+                                        ({{controls.interestRate.value}}%)
                                     </th>
                                     <th scope="col" class=" text-center"
                                         *ngIf="controls.isUnsecuredSchemeApplied.value">
-                                        Interest Amount <br>
-                                        (UnSecured Scheme)
+                                        {{partnerName | uppercase }} / {{selectedUnsecuredscheme[0]?.schemeName | titlecase}}
+                                        ({{controls.unsecuredInterestRate.value}}%)
                                     </th>
                                     <th scope="col" class=" text-center"
                                         *ngIf="controls.isUnsecuredSchemeApplied.value">
@@ -320,7 +320,7 @@
                                 {{controls.totalFinalInterestAmt.value | indianCurrencyFormat}}</label>
                         </div>
                     </div>
-                    <div class="row" *ngIf="controls.isUnsecuredSchemeApplied.value">
+                    <!-- <div class="row" *ngIf="controls.isUnsecuredSchemeApplied.value">
                         <div class="col-8">
                             <label for="" class="form-label">
                                 Unsecured Scheme
@@ -331,8 +331,8 @@
                                 {{selectedUnsecuredscheme[0]?.schemeName | titlecase}}
                             </label>
                         </div>
-                    </div>
-                    <div class="row" *ngIf="controls.isUnsecuredSchemeApplied.value">
+                    </div> -->
+                    <!-- <div class="row" *ngIf="controls.isUnsecuredSchemeApplied.value">
                         <div class="col-8">
                             <label for="" class="form-label">
                                 Interest Rate(Unsecured Scheme)
@@ -343,7 +343,7 @@
                                 {{controls.unsecuredInterestRate.value}}%
                             </label>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row " *ngIf="controls.isUnsecuredSchemeApplied.value && !disable">
                         <div class="col-12">
                             <div class="kt-margin-t-20 text-center">
@@ -355,7 +355,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-11" *ngIf="!disable">
+        <div class="col-11" *ngIf="showButton">
             <div class="kt-margin-t-20 kt-margin-b-30 text-right">
                 <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
             </div>

@@ -18,29 +18,29 @@
                             <td scope="row" class="rating-title">Loan Application Form</td>
                             <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
+                                    [ngClass]="{'cursor-not-allowed':((stage !=1 && stage !=6) || this.disable )}"
                                     *ngIf="controls.applicationFormForAppraiser.value"
                                     (click)="approvalOfAppraiser(false,'form')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable )}"
+                                    [ngClass]="{'cursor-not-allowed':( (stage !=1 && stage !=6) || this.disable )}"
                                     *ngIf="!controls.applicationFormForAppraiser.value"
                                     (click)="approvalOfAppraiser(true,'form')">
                             </td>
                             <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable)}"
                                     *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable)}"
                                     *ngIf="!controls.applicationFormForBM.value" (click)="approvalOfBM(true,'form')">
                             </td>
                             <td class="rating-bm text-center" *ngIf="viewOpertaionalForm || url == 'view-loan'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=8 || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable)}"
                                     *ngIf="controls.applicationFormForOperatinalTeam.value"
                                     (click)="approvalOfOperational(false,'form')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=8 || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable)}"
                                     *ngIf="!controls.applicationFormForOperatinalTeam.value"
                                     (click)="approvalOfOperational(true,'form')">
                             </td>
@@ -50,29 +50,29 @@
                             </td>
                             <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':((stage !=1 && stage !=6) || this.disable)}"
                                     *ngIf="controls.goldValuationForAppraiser.value"
                                     (click)="approvalOfAppraiser(false,'gold')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=7 || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':((stage !=1 && stage !=6) || this.disable)}"
                                     *ngIf="!controls.goldValuationForAppraiser.value"
                                     (click)="approvalOfAppraiser(true,'gold')">
                             </td>
                             <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable )}"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable )}"
                                     *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=5 || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable)}"
                                     *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')">
                             </td>
                             <td class="rating-bm text-center" *ngIf="viewOpertaionalForm || url == 'view-loan'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=8 || this.disable )}"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable )}"
                                     *ngIf="controls.goldValuationForOperatinalTeam.value"
                                     (click)="approvalOfOperational(false,'gold')">
                                 <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                    [ngClass]="{'cursor-not-allowed':(userType !=8 || this.disable)}"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable)}"
                                     *ngIf="!controls.goldValuationForOperatinalTeam.value"
                                     (click)="approvalOfOperational(true,'gold')">
                             </td>
@@ -96,6 +96,7 @@
                                     Field Required</mat-error>
                             </td>
                             <td class="rating-bm" *ngIf="viewBMForm || url == 'view-loan'">
+                                {{controls.loanStatusForBM.value}}
                                 <select class="form-control" formControlName="loanStatusForBM"
                                     (change)="resetBM();statusBM()"
                                     [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
@@ -104,11 +105,13 @@
                                         *ngFor="let status of branchManager">
                                         {{status.name | titlecase}}</option>
                                 </select>
+                               
                                 <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                                     Field
                                     Required</mat-error>
                             </td>
                             <td class="rating-bm" *ngIf="viewOpertaionalForm || url == 'view-loan'">
+                                {{controls.loanStatusForOperatinalTeam.value}}
                                 <select class="form-control" formControlName="loanStatusForOperatinalTeam"
                                     (change)="resetOT();statusOT()"
                                     [class.isError]="controls.loanStatusForOperatinalTeam.invalid && controls.loanStatusForOperatinalTeam.touched">
@@ -129,7 +132,7 @@
         </div>
 
         <div class="row justify-content-center"
-            *ngIf="userType == 7 && controls.loanStatusForBM.value == 'incomplete' && controls.commentByBM.value">
+            *ngIf="stage == 7 && controls.loanStatusForBM.value == 'incomplete' && controls.commentByBM.value">
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
@@ -145,7 +148,7 @@
         </div>
 
         <div class="row justify-content-center"
-            *ngIf="(userType == 7 || userType == 5) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value">
+            *ngIf="(stage == 7 || stage == 5) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value">
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
@@ -204,7 +207,7 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="userType == 5 && controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved'">
+            *ngIf="stage == 5 && controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved'">
             <div class="col-8">
                 <mat-form-field class="w-100">
 
@@ -216,7 +219,7 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="userType == 8 && controls.loanStatusForOperatinalTeam.value != 'pending' && controls.loanStatusForOperatinalTeam.value != 'approved'">
+            *ngIf="stage == 8 && controls.loanStatusForOperatinalTeam.value != 'pending' && controls.loanStatusForOperatinalTeam.value != 'approved'">
             <div class=" col-8">
                 <mat-form-field class="w-100">
 
@@ -234,7 +237,7 @@
 </div>
 <div class="row py-3" *ngIf="!disable">
     <div class="col-12 text-center">
-        <kt-button [value]="'Apply'" [type]="'button'" (click)=" applyForm()"></kt-button>
+        <kt-button [value]="'Submit'" [type]="'button'" (click)=" applyForm()"></kt-button>
         <span class="kt-padding-10"></span>
         <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>
     </div>

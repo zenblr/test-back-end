@@ -41,7 +41,7 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="col-4 form-label">
-                                    <label class="text-color mandatory kt-padding-l-10">Quantity</label>
+                                    <label class="text-color mandatory kt-padding-l-10">Number of Pieces</label>
                                 </div>
                                 <div class="col-8">
                                     <input type="text" class="form-control" placeholder="10" formControlName="quantity"
@@ -423,7 +423,7 @@
         <mat-divider></mat-divider>
     </div>
 </div>
-<div class="row" *ngIf="!disable">
+<div class="row" *ngIf="showButton">
     <div class="text-right py-3 col-12">
         <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
     </div>

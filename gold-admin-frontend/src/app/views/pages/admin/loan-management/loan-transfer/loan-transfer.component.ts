@@ -23,6 +23,7 @@ export class LoanTransferComponent implements OnInit {
   id: any;
   laonTransferDetails: any
   disabled = [false, true, true, true]
+  showButton: boolean = true;
   constructor(
     private custClassificationService: CustomerClassificationService,
     private sharedService: SharedService,

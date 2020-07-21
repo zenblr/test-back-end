@@ -1,24 +1,25 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AppliedLoanService } from '../../../../../core/loan-management';
+import { AppliedLoanService } from '../../../../../../../core/loan-management';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { GlobalSettingService } from '../../../../../core/global-setting/services/global-setting.service';
+import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
 
 @Component({
-  selector: 'kt-disburse-dialog',
-  templateUrl: './disburse-dialog.component.html',
-  styleUrls: ['./disburse-dialog.component.scss']
+  selector: 'kt-disburse',
+  templateUrl: './disburse.component.html',
+  styleUrls: ['./disburse.component.scss']
 })
-export class DisburseDialogComponent implements OnInit {
+export class DisburseComponent implements OnInit {
 
+  @Input() masterAndLoanIds
   currentDate = new Date()
   disburseForm: FormGroup
   details: any;
   globalValue: any;
   constructor(
-    public dialogRef: MatDialogRef<DisburseDialogComponent>,
+    public dialogRef: MatDialogRef<DisburseComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     public loanService: AppliedLoanService,
@@ -56,7 +57,7 @@ export class DisburseDialogComponent implements OnInit {
   }
 
   getBankDetails() {
-    this.loanService.getBankDetails(this.data.loan, this.data.masterLoanId).subscribe(res => {
+    this.loanService.getBankDetails(this.masterAndLoanIds.loanId, this.masterAndLoanIds.masterLoanId).subscribe(res => {
       if (Object.keys(res.data).length) {
         this.details = res.data
         this.patchValue(res.data.paymentType)

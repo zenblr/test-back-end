@@ -5,12 +5,12 @@
                 <mat-tab-group [(selectedIndex)]="selected" (selectedTabChange)="next($event)">
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
                         <kt-basic-details (id)="loan($event)" (apiHit)="getSingleDetails($event)" [details]="customerDetail"
-                        (next)="next($event)" [loanTransfer]="laonTransferDetails"></kt-basic-details>
+                        (next)="next($event)" [loanTransfer]="laonTransferDetails" [showButton]="showButton"></kt-basic-details>
                     </mat-tab>
                     <mat-tab label="Upload Documents" [disabled]="disabled[1]">
-                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" [loanTransfer]="laonTransferDetails" (next)="next($event)"></kt-upload-loan-documents>
+                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" [showButton]="showButton" [loanTransfer]="laonTransferDetails" (next)="next($event)"></kt-upload-loan-documents>
                     </mat-tab>
-                    <mat-tab *ngxPermissionsOnly="['loanTransferRating']" label="Loan Trasnfer Approval" [formGroup]="approvalForm" [disabled]="disabled[2]">
+                    <mat-tab label="Loan Trasnfer Approval" [formGroup]="approvalForm" [disabled]="disabled[2]">
                         <div class="row justify-content-center">
                             <div class="col-6">
                                 <div class="row">

@@ -23,7 +23,7 @@ export class LoanDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.loanId = this.rout.snapshot.params.loanId
-    this.loanservice.getLoanDataById(this.loanId).subscribe(res => {
+    this.loanservice.getLoanDetails(this.loanId).subscribe(res => {
       this.loanDetails = res.data
       this.createOrnamentsImage()
       this.pdfCheck()
