@@ -301,6 +301,25 @@ export class PageConfig {
 				"transfer-loan-list": {
 					page: { title: "Transfer Loan List", desc: "" },
 				}
+			},
+			"scrap-management": {
+				"scrap-calculator": {
+					page: { title: "Scrap Calculator", desc: "" },
+				},
+				"scrap-application-form": {
+					page: { title: "Scrap Application Form", desc: "" },
+					id: {
+						page: { title: "Scrap Application Form", desc: "" },
+					}
+				},
+				'view-Scrap': {
+					id: {
+						page: { title: "View Scrap Application Form", desc: "" },
+					}
+				},
+				'packet': {
+					page: { title: "Packets", desc: "" },
+				},
 			}
 		},
 		'broker': {

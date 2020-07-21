@@ -1,0 +1,96 @@
+:host {
+	::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+		color: gray !important;
+	  }
+	  ::ng-deep .mat-focused .mat-form-field-underline .mat-form-field-ripple {
+		background-color: #e3e3e3 !important;
+	  }
+	  
+	.cursor-not-allowed{
+		cursor: not-allowed !important;
+	}
+	img{
+		cursor: pointer;
+	}
+	.head {
+		background-color: #e3e3e3;
+		border: thin solid #e3e3e3;
+		border-radius: 10px 10px 0 0;
+		font-weight: 600;
+	}
+	.body {
+		font-weight: 400;
+	}
+	.col-3,
+	.col-4 {
+		padding: 10px !important;
+	}
+	.col-4.border {
+		border-right: thin solid #e3e3e3 !important;
+		border-left: thin solid #e3e3e3 !important;
+		border-top: 0 !important;
+		border-bottom: 0 !important;
+	}
+	.bordered {
+		border: thin solid #e3e3e3 !important;
+		border-radius: 10px !important ;
+	}
+	.border-top-bottom {
+		border-bottom: thin solid #e3e3e3 !important;
+	}
+	.col-4.select {
+		padding: 15px 20px !important;
+	}
+
+	// table css
+	.table-div {
+        // width: 600px !important;
+        margin: 50px auto 20px auto;
+        // border-radius: 1em;
+        // overflow: hidden;
+        // border: 1px solid #e3e3e3;
+        // display: flex;
+        // align-items: center;
+    }
+    // table.table-bordered{
+    //     border: 1px solid #e3e3e3;
+    //     margin: 0;
+    //   }
+    // table.table-bordered > thead > tr > th{
+    //     border: 1px solid #ffffff;
+        
+    // }
+    // table.table-bordered > tbody > tr > td{
+    //     border: 1px solid #e3e3e3;       
+    // }
+
+    // table {
+    //     // border-collapse: collapse;
+    //     border-radius: 1em;
+    //     // overflow: hidden;
+
+    //     thead {
+    //         background-color: #e3e3e3;
+    //     }
+
+    //     input {
+    //         width: 100%;
+    //         border: none;
+    //         outline: none;
+    //         text-align: center;
+    //     }
+    //     .rating-title {
+    //         width: 100px;
+    //         font-weight: 400;
+    //         padding-left: 16px;
+    //     }
+    //     .rating-cce {
+    //         width: 70px;
+    //         text-align: center;
+    //     }
+    //     .rating-bm {
+    //         width: 70px;
+    //     }
+    // }
+// }
+}

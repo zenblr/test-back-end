@@ -448,6 +448,33 @@ export class MenuConfig {
 							permission: !this.modulesArr.includes(2),
 						},
 						{
+							title: "Scrap Management",
+							root: true,
+							bullet: 'dot',
+							src: "assets/media/aside-icons/icons-24.svg",
+							permission: !this.modulesArr.includes(3),
+							submenu: [
+								{
+									title: "Scrap Calculator",
+									page: "/admin/scrap-management/scrap-calculator",
+									bullet: 'dot',
+									permission: false,
+								},
+								{
+									title: "Scrap Application Form",
+									page: "/admin/scrap-management/scrap-application-form",
+									bullet: 'dot',
+									permission: false,
+								},
+								{
+									title: "Packet",
+									page: "/admin/scrap-management/packet",
+									bullet: 'dot',
+									permission: false,
+								}
+							],
+						},
+						{
 							title: "Settings",
 							root: true,
 							bullet: 'dot',
