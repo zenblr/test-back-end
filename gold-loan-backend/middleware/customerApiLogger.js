@@ -25,7 +25,11 @@ module.exports = (req, res, next) => {
        "/api/customer/get-all-scheme",
        "/api/customer/my-loan",
        "/api/customer/scheme-based-on-price",
-       "/api/customer/customer-feedback"
+       "/api/customer/customer-feedback",
+
+    //    "/api/kyc/submit-kyc",
+    //    "/api/kyc/get-assigned-customer",
+
 
 
     ];

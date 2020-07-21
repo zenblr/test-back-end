@@ -18,7 +18,7 @@ export class AppliedLoanComponent implements OnInit {
   filteredDataList: any = {};
   userType: any
   dataSource: AppliedLoanDatasource;
-  displayedColumns = ['fullName', 'customerID', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'actions', 'view'];
+  displayedColumns = ['fullName', 'customerID', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'oTApproval', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -127,10 +127,10 @@ export class AppliedLoanComponent implements OnInit {
     this.filteredDataList = data.list
   }
 
-  disburse(loan,masterLoanId) {
+  disburse(loan, masterLoanId) {
     // console.log(event);
     const dialogRef = this.dialog.open(DisburseDialogComponent, {
-      data: {loan,masterLoanId},
+      data: { loan, masterLoanId },
       width: '500px'
     });
     dialogRef.afterClosed().subscribe(res => {
@@ -162,16 +162,16 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   navigate(loan) {
-    this.router.navigate(['/admin/loan-management/loan-application-form', loan.id])
+    this.router.navigate(['/admin/loan-management/loan-application-form', loan.customerLoan[0].id])
   }
 
 
   packetImageUpload(loan) {
-    this.router.navigate(['/admin/loan-management/packet-image-upload', loan.id])
+    this.router.navigate(['/admin/loan-management/packet-image-upload', loan.customerLoan[0].id])
   }
 
   viewLoan(loan) {
-    this.router.navigate(['/admin/loan-management/view-loan', loan.id])
+    this.router.navigate(['/admin/loan-management/view-loan', loan.customerLoan[0].id])
   }
 
 }

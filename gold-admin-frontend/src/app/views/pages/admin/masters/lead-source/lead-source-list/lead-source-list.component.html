@@ -16,10 +16,13 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <div [ngStyle]="{'display': 'inherit'}">
-                            <span class="kt-pointer" (click)="editLeadSource(item)">Edit</span>
+                        <div [ngStyle]="{'display': 'inherit'}"
+                            *ngxPermissionsOnly="['editLeadSource', 'deleteLeadSource']">
+                            <span class="kt-pointer" (click)="editLeadSource(item)"
+                                *ngxPermissionsOnly="['editLeadSource']">Edit</span>
                             <div class="px-2">|</div>
-                            <span class="kt-pointer text-danger" (click)="deleteLeadSource(item)">Delete</span>
+                            <span class="kt-pointer text-danger" (click)="deleteLeadSource(item)"
+                                *ngxPermissionsOnly="['deleteLeadSource']">Delete</span>
                         </div>
                     </mat-cell>
                 </ng-container>

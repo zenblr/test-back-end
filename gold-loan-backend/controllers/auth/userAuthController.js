@@ -9,7 +9,6 @@ const redis = require('redis');
 const client = redis.createClient(redisConn.PORT, redisConn.HOST);
 
 
-
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
@@ -45,8 +44,8 @@ exports.userLogin = async (req, res, next) => {
     let userDetails = await checkUser.comparePassword(password);
     if (userDetails === true) {
         let Token;
-        if(checkUser.internalBranches.length != 0){
-             Token = jwt.sign({
+        if (checkUser.internalBranches.length != 0) {
+            Token = jwt.sign({
                 id: checkUser.dataValues.id,
                 mobile: checkUser.dataValues.mobileNumber,
                 firstName: checkUser.dataValues.firstName,
@@ -74,7 +73,7 @@ exports.userLogin = async (req, res, next) => {
                 expiresIn: JWT_EXPIRATIONTIME
             });
         }
-        
+
 
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
@@ -114,7 +113,7 @@ exports.userLogin = async (req, res, next) => {
             where: { isActive: true, id: { [Op.in]: permissionId } }
         },
         )
-        if(checkUser.internalBranches.length == 0){
+        if (checkUser.internalBranches.length == 0) {
             return res.status(200).json({
                 message: 'login successful', Token, modules, permissions,
                 userDetails: {
@@ -132,7 +131,7 @@ exports.userLogin = async (req, res, next) => {
                 }
             });
         }
-        
+
 
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
@@ -233,7 +232,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
     },
     )
     return res.status(200).json({
-        message: 'login successful',Token: token , modules, permissions, userDetails: {
+        message: 'login successful', Token: token, modules, permissions, userDetails: {
             userTypeId: checkUser.userTypeId,
             stateId: checkUser.internalBranches[0].stateId,
             cityId: checkUser.internalBranches[0].cityId,

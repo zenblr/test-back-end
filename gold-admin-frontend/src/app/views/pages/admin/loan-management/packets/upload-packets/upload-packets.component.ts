@@ -71,11 +71,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     if (change.viewpacketsDetails && change.viewpacketsDetails.currentValue) {
       let packet = change.viewpacketsDetails.currentValue.loanPacketDetails[0]
       if (packet) {
-        this.packetImg.patchValue({
-          emptyPacketWithNoOrnament: packet.emptyPacketWithNoOrnamentImage,
-          sealingPacketWithCustomer: packet.sealingPacketWithCustomerImage,
-          sealingPacketWithWeight: packet.sealingPacketWithWeightImage
-        })
+        this.packetImg.patchValue(packet)
         console.log(packet.packets)
         packet.packets.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
@@ -83,7 +79,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.pushPackets()
         });
         this.url = 'view-loan'
-        // this.next.emit(8);
       }
     }
   }
@@ -98,11 +93,11 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
     this.packetImg = this.fb.group({
       emptyPacketWithNoOrnament: ['', Validators.required],
-      emptyPacketWithNoOrnamentData: ['', Validators.required],
+      emptyPacketWithNoOrnamentImage: ['', Validators.required],
       sealingPacketWithWeight: ['', Validators.required],
-      sealingPacketWithWeightData: ['', Validators.required],
+      sealingPacketWithWeightImage: ['', Validators.required],
       sealingPacketWithCustomer: ['', Validators.required],
-      sealingPacketWithCustomerData: ['', Validators.required],
+      sealingPacketWithCustomerImage: ['', Validators.required],
       packetOrnamentArray: this.fb.array([])
     })
 
@@ -131,7 +126,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.packetService.getPacketsAvailable().pipe(
       map(res => {
         this.packetsDetails = res.data;
-
+        this.ref.detectChanges()
       })
     ).subscribe()
     // this.packetsDetails = [{ packetUniqueId: 'PAC-2', id: 2 }, { packetUniqueId: 'PAC-2', id: 1 }]
@@ -171,9 +166,33 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
 
 
-  removePacketsData(idx) {
+  removeSelectedPacketsData(idx) {
     console.log(this.packets.controls[idx])
+    let packetIndex = this.splicedPackets.findIndex(packet => {
+      return packet.id == this.packets.controls[idx].value.packetId
+    })
+    this.packetsDetails.push(this.splicedPackets[packetIndex])
+    this.splicedPackets.splice(packetIndex, 1)
     this.packets.controls.splice(idx, 1)
+    let temp = this.ornamentTypeData;
+    this.ornamentTypeData = []
+    for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < this.ornamentId.length; ornamnetsIdIndex++) {
+    for (let ornamnetsIndex = 0; ornamnetsIndex < this.splicedOrnaments.length; ornamnetsIndex++) {
+        console.log(this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex])
+        if (this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex]) {
+          temp.push(this.splicedOrnaments[ornamnetsIndex])
+          this.splicedOrnaments.splice(ornamnetsIndex, 1)
+          // this.ornamentId.splice(ornamnetsIdIndex, 1)
+          // ornamnetsIndex = 0;
+        }
+      }
+    }
+
+    setTimeout(() => {
+      console.log(temp)
+      this.ornamentTypeData = temp;
+    }, 200)
+
   }
 
   clear() {
@@ -217,15 +236,20 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     });
 
     var temp = this.ornamentTypeData
+    this.ornamentTypeData = [];
     console.log(selectedOrnaments);
     selectedOrnaments.forEach(selectedornament => {
-      var index = this.ornamentTypeData.findIndex(ornament => {
+      var index = temp.findIndex(ornament => {
         return selectedornament.id == ornament.id
       })
-      this.splicedOrnaments.push(this.ornamentTypeData[index])
+      this.splicedOrnaments.push(temp[index])
       temp.splice(index, 1)
     })
-    this.ornamentTypeData = temp;
+    setTimeout(() => {
+
+      this.ornamentTypeData = temp;
+    }, 500)
+    console.log(this.ornamentTypeData)
     this.clearData = true;
 
 
@@ -247,6 +271,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.packetService.uploadPackets(this.packetImg.value, this.masterAndLoanIds).pipe(
           map(res => {
             this.toast.success(res.message)
+            this.url = 'view-loan'
             this.next.emit(7)
             // this.router.navigate(['/admin/loan-management/applied-loan'])
           }),
@@ -281,7 +306,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     });
   }
 
-  webcam(index, event, value,data) {
+  webcam(value, imageDataKey) {
     const dialogRef = this.dilaog.open(WebcamDialogComponent,
       {
         data: {},
@@ -296,7 +321,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
           this.packetImg.controls[value].patchValue(res.uploadFile.path)
-          this.packetImg.controls[data].patchValue(res.uploadFile.URL)
+          this.packetImg.controls[imageDataKey].patchValue(res.uploadFile.URL)
           this.ref.detectChanges()
         })
       }

@@ -1,5 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
-
 module.exports = (sequelize, DataTypes) => {
     const customerLoanOrnamentsDetail = sequelize.define('customerLoanOrnamentsDetail', {
         // attributes
@@ -85,6 +83,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'loan_amount'
         },
+        ornamentFullAmount:{
+            type: DataTypes.STRING,
+            field: 'ornament_full_amount'
+        },
         finalNetWeight: {
             type: DataTypes.STRING,
             field: 'final_net_weight'
@@ -122,24 +124,24 @@ module.exports = (sequelize, DataTypes) => {
     customerLoanOrnamentsDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.weightMachineZeroWeight) {
-            values.weightMachineZeroWeightData = baseUrlConfig.BASEURL + values.weightMachineZeroWeight;
+            values.weightMachineZeroWeightData = process.env.BASE_URL + values.weightMachineZeroWeight;
         }
         if (values.withOrnamentWeight) {
-            values.withOrnamentWeightData = baseUrlConfig.BASEURL + values.withOrnamentWeight;
+            values.withOrnamentWeightData = process.env.BASE_URL + values.withOrnamentWeight;
         }
         if (values.stoneTouch) {
-            values.stoneTouchData = baseUrlConfig.BASEURL + values.stoneTouch;
+            values.stoneTouchData = process.env.BASE_URL + values.stoneTouch;
         }
         if (values.acidTest) {
-            values.acidTestData = baseUrlConfig.BASEURL + values.acidTest;
+            values.acidTestData = process.env.BASE_URL + values.acidTest;
         }
         if (values.ornamentImage) {
-            values.ornamentImageData = baseUrlConfig.BASEURL + values.ornamentImage;
+            values.ornamentImageData = process.env.BASE_URL + values.ornamentImage;
         }
         let purityTestImage = []
         if (values.purityTest) {
             for (imgUrl of values.purityTest) {
-                let URL = baseUrlConfig.BASEURL + imgUrl;
+                let URL = process.env.BASE_URL + imgUrl;
                 purityTestImage.push(URL)
             }
         }

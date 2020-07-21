@@ -29,8 +29,9 @@
 
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date & Time</mat-header-cell>
-                    <mat-cell *matCellDef="let role">
-                        <span class="d-block">{{role.createdAt | date:'mediumDate'}}&nbsp;</span>
+                    <mat-cell *matCellDef="let role" class="d-block">
+                        <div class="d-block">{{role.createdAt | date:'mediumDate'}}&nbsp;</div>
+                        <div class="d-block">{{role.createdAt | date:'shortTime'}}&nbsp;</div>
                     </mat-cell>
                 </ng-container>
 

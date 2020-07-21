@@ -4,7 +4,7 @@
 
     <kt-portlet-body>
 
-        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
+        <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="fullName">
@@ -66,6 +66,15 @@
                         <span
                             [ngClass]="loan.loanStatusForBM == 'pending' ? 'text-warning' :loan.loanStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
                             {{loan.loanStatusForBM | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="oTApproval">
+                    <mat-header-cell *matHeaderCellDef>OPS Approval</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <span
+                            [ngClass]="loan.loanStatusForOperatinalTeam == 'pending' ? 'text-warning' :loan.loanStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
+                            {{loan.loanStatusForOperatinalTeam | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>

@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoanApplicationFormService {
+
+
+  finalLoanAmount = new BehaviorSubject(0)
+  finalLoanAmount$ = this.finalLoanAmount.asObservable()
 
   constructor(public http: HttpClient) { }
 
@@ -15,6 +19,8 @@ export class LoanApplicationFormService {
       map(res => res)
     )
   }
+
+  
 
   basicSubmit(details): Observable<any> {
     return this.http.post(`/api/loan-process/basic-details`, details).pipe(
@@ -29,12 +35,13 @@ export class LoanApplicationFormService {
     )
   }
 
-  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds,): Observable<any> {
+  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds,fullAmount): Observable<any> {
     let data = {
       loanOrnaments: loanOrnaments,
       totalEligibleAmt: totalEligibleAmt,
       loanId: masterAndLoanIds.loanId,
-      masterLoanId: masterAndLoanIds.masterLoanId
+      masterLoanId: masterAndLoanIds.masterLoanId,
+      fullAmount:fullAmount
     }
     return this.http.post(`/api/loan-process/ornaments-details`, data).pipe(
       map(res => res)

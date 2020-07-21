@@ -94,6 +94,10 @@
                                     *ngIf="controls.accountHolderName.errors?.required && controls.accountHolderName.touched">
                                     Required field
                                 </mat-error>
+                                <mat-error
+                                    *ngIf="controls.accountHolderName.errors?.pattern && controls.accountHolderName.touched">
+                                    Invalid Input
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -114,8 +118,8 @@
                                     Required field
                                 </mat-error>
                                 <mat-error
-                                    *ngIf="controls.accountNumber.errors?.minlength && controls.accountNumber.touched">
-                                    'Minimum 9 or maximum 18 digits required"
+                                    *ngIf="controls.accountNumber.errors?.pattern && controls.accountNumber.touched">
+                                    <small>Invalid Input</small>
                                 </mat-error>
                             </div>
                         </div>
@@ -157,7 +161,8 @@
                                             *ngFor="let proof of controls.passbookProofImage.value; index as idx;">
                                             <img class="fetched-image" [src]="proof">
                                             <img src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                                class="kt-pointer remove-icon" (click)="removeImages(idx);">
+                                                *ngIf="url != 'view-loan'" class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx);">
                                         </div>
                                     </div>
                                 </div>

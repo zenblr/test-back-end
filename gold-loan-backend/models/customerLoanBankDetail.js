@@ -1,5 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
-
 module.exports = (sequelize, DataTypes) => {
     const customerLoanBankDetail = sequelize.define('customerLoanBankDetail', {
         // attributes
@@ -79,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
         let passbookProofImage = []
         if (values.passbookProof) {
             for (imgUrl of values.passbookProof) {
-                let URL = baseUrlConfig.BASEURL + imgUrl;
+                let URL = process.env.BASE_URL + imgUrl;
                 passbookProofImage.push(URL)
             }
         }

@@ -30,6 +30,7 @@ export class LoanApplicationFormComponent implements OnInit {
   masterAndLoanIds: any;
   ornamentType = [];
   finalLoanAmt: any;
+  fullAmount: any = 0;
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
@@ -54,7 +55,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.id = event
     this.editApi()
     setTimeout(() => {
-      this.action = 'add'
+      // this.action = 'add'
     }, 5000)
   }
 
@@ -67,7 +68,7 @@ export class LoanApplicationFormComponent implements OnInit {
       this.customerDetail = res.data
       // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "packet-image-upload") {
-        if (this.customerDetail.loanPacketDetails[0].packets.length) {
+        if (this.customerDetail.loanPacketDetails.length) {
           this.selected = 7;
         } else {
           this.selected = 6;
@@ -90,22 +91,22 @@ export class LoanApplicationFormComponent implements OnInit {
   ngOnInit() {
 
     this.getOrnamentType()
-    setTimeout(() => {
+    // setTimeout(() => {
 
-      if (this.url == "packet-image-upload") {
-        if (this.customerDetail.loanPacketDetails[0].packets.length) {
-          this.selected = 7;
-        } else {
-          this.selected = 6;
-        }
-        this.disabledForm = true;
-      } else if (this.url == "view-loan") {
-        this.next(0)
-        this.disabledForm = true;
-      } else {
-        this.disabledForm = false;
-      }
-    }, 1000)
+    //   if (this.url == "packet-image-upload") {
+    //     if (this.customerDetail.loanPacketDetails.length) {
+    //       this.selected = 7;
+    //     } else {
+    //       this.selected = 6;
+    //     }
+    //     this.disabledForm = true;
+    //   } else if (this.url == "view-loan") {
+    //     this.next(0)
+    //     this.disabledForm = true;
+    //   } else {
+    //     this.disabledForm = false;
+    //   }
+    // }, 1000)
   }
 
   getOrnamentType() {
@@ -125,6 +126,10 @@ export class LoanApplicationFormComponent implements OnInit {
     this.totalAmount = event
   }
 
+  fullAmt(event){
+    this.fullAmount = event
+  }
+
   finalLoanAmount(event) {
     this.finalLoanAmt = event
   }
@@ -132,7 +137,6 @@ export class LoanApplicationFormComponent implements OnInit {
   customerDetails(event) {
     this.loanApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
       map(res => {
-        this.action = 'add'
         this.customerDetail = res.customerData
         for (let index = 0; index < this.disabled.length; index++) {
           if (index <= 2) {
@@ -161,9 +165,9 @@ export class LoanApplicationFormComponent implements OnInit {
     } else {
       this.selected = event;
     }
-    if (event < 7) {
+    if (this.selected < 7) {
       for (let index = 0; index < this.disabled.length; index++) {
-        if (this.url != "view-loan") {
+        if (this.url != "view-loan" && this.url != 'packet-image-upload') {
           if (this.selected >= index) {
             this.disabled[index] = false
           } else {

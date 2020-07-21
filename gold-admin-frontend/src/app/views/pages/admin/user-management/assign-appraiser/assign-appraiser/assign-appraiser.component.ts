@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { BranchService } from '../../../../../../core/user-management/branch/services/branch.service';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
@@ -22,9 +22,10 @@ export class AssignAppraiserComponent implements OnInit {
   customers = [];
   editData = false;
   viewOnly = false;
+
   viewLoading: boolean = false;
   title: string;
-  minDate = new Date();
+  currentDate = new Date();
   darkTheme: NgxMaterialTimepickerTheme = {
     container: {
       bodyBackgroundColor: '#fff',
@@ -39,6 +40,9 @@ export class AssignAppraiserComponent implements OnInit {
       clockFaceTimeInactiveColor: '#454d67'
     }
   };
+  startTime: string;
+  endTime: string;
+  addStartTime: string;
 
   constructor(
     public dialogRef: MatDialogRef<AssignAppraiserComponent>,
@@ -46,7 +50,8 @@ export class AssignAppraiserComponent implements OnInit {
     private sharedService: SharedService,
     private fb: FormBuilder,
     private branchService: BranchService,
-    private appraiserService: AppraiserService
+    private appraiserService: AppraiserService,
+    private ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -69,9 +74,9 @@ export class AssignAppraiserComponent implements OnInit {
       this.title = 'Edit Appraiser'
 
       this.appraiserForm.patchValue(this.data.appraiser)
-      const startTime = this.convertTime24To12(this.data.appraiser.startTime);
-      const endTime = this.convertTime24To12(this.data.appraiser.endTime);
-      this.appraiserForm.patchValue({ startTime, endTime })
+      this.startTime = this.convertTime24To12(this.data.appraiser.startTime);
+      this.endTime = this.convertTime24To12(this.data.appraiser.endTime);
+      this.appraiserForm.patchValue({ startTime: this.startTime, endTime: this.endTime })
 
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
@@ -91,7 +96,7 @@ export class AssignAppraiserComponent implements OnInit {
       customerName: [''],
       appraiserId: ['', [Validators.required]],
       appoinmentDate: [],
-      startTime: [],
+      startTime: [this.addStartTime],
       endTime: []
     });
   }
@@ -138,6 +143,9 @@ export class AssignAppraiserComponent implements OnInit {
       return
     }
     // console.log(this.appraiserForm.value);
+    const appoinmentDate = new Date(this.controls.appoinmentDate.value)
+    const correctedDate = new Date(appoinmentDate.getTime() - appoinmentDate.getTimezoneOffset() * 60000)
+    this.appraiserForm.patchValue({ appoinmentDate: correctedDate })
     const appraiserData = this.appraiserForm.value;
     this.customers.filter(cust => {
       if (appraiserData.customerId == cust.id) {
@@ -177,6 +185,11 @@ export class AssignAppraiserComponent implements OnInit {
 
   }
 
+  setStartTime(event) {
+    this.startTime = event
+    this.ref.detectChanges
+  }
+
   convertTime24To12(timeString) {
     return (new Date("1955-11-05T" + timeString + "Z")).toLocaleTimeString("bestfit", {
       timeZone: "UTC",
@@ -185,6 +198,28 @@ export class AssignAppraiserComponent implements OnInit {
       minute: "numeric"
     });
   };
+
+  minStartTime() {
+    let currentDate = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000);
+    this.addStartTime = currentDate.toLocaleTimeString("bestfit", {
+      timeZone: "UTC",
+      hour12: !0,
+      hour: "numeric",
+      minute: "numeric"
+    });
+  }
+
+  setMinimumStartTime(event) {
+    const selectedDate = event.value;
+    const currentDate = new Date();
+    let timeDifference = selectedDate.getTime() - currentDate.getTime();
+    var daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    if (daysDifference > 0) {
+      this.addStartTime = null
+    } else {
+      this.minStartTime()
+    }
+  }
 
 
 

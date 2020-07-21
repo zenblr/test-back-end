@@ -21,6 +21,7 @@ export class AddInternalUserBranchComponent implements OnInit {
   partners = [];
   button: string;
   formData: FormData;
+  required: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<AddInternalUserBranchComponent>,
@@ -50,10 +51,10 @@ export class AddInternalUserBranchComponent implements OnInit {
 
   setTitle() {
     if (this.data.action == 'add') {
-      this.title = 'Add Internal User'
+      this.title = 'Add Internal User Branch'
       this.button = 'add'
     } else if (this.data.action == 'edit') {
-      this.title = 'Edit Internal User'
+      this.title = 'Edit Internal User Branch'
       this.button = 'update'
       this.addInternalBranchForm.patchValue(this.data.branch)
       console.log(this.data.branch)
@@ -75,16 +76,16 @@ export class AddInternalUserBranchComponent implements OnInit {
       stateId: ['', Validators.required],
       cityId: ['', Validators.required],
       pinCode: ['', Validators.required],
-      multiselect: [''],
+      multiselect: [null, Validators.required],
       partnerId: [''],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       bankName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
       bankBranch: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
-      accountHolderName: ['', [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
-      accountNumber: ['', Validators.required],
+      accountHolderName: ['', [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
+      accountNumber: ['', [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[1-9]).{3,21}$')]],
       passbookStatementCheque: [],
-      passbookImg: [],
-      passbookImgName: ['', Validators.required],
+      passbookImg: ['', Validators.required],
+      passbookImgName: [''],
     })
   }
 
@@ -119,6 +120,9 @@ export class AddInternalUserBranchComponent implements OnInit {
   submit() {
     if (this.addInternalBranchForm.invalid) {
       this.addInternalBranchForm.markAllAsTouched()
+      if (this.addInternalBranchForm.controls.multiselect.invalid) {
+        this.required = true;
+      }
       return
     }
     this.controls.partnerId.patchValue(this.controls.multiselect.value.multiSelect)
@@ -129,7 +133,7 @@ export class AddInternalUserBranchComponent implements OnInit {
           this.dialogRef.close(res)
         }),
         catchError(err => {
-          this.toast.error(err.error.error)
+          this.toast.error(err.error.message)
           throw err
         })).subscribe()
     } else {

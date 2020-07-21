@@ -7,7 +7,7 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="userId">
-                    <mat-header-cell *matHeaderCellDef>User ID</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>ID Number</mat-header-cell>
                     <mat-cell *matCellDef="let user">
                         <div class="text-color">
                             {{user.userUniqueId}}
@@ -15,7 +15,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="userName">
-                    <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Internal User Name</mat-header-cell>
                     <mat-cell *matCellDef="let user">
                         <div class="text-color">
                             {{user.firstName | titlecase}}

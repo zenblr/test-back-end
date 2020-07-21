@@ -1,9 +1,9 @@
-import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChildren, QueryList, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChildren, QueryList, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../../core/shared/services/shared.service';
 import { map, catchError, filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { UploadOfferService } from '../../../../../../../core/upload-data';
 import { KaratDetailsService } from '../../../../../../../core/loan-setting/karat-details/services/karat-details.service';
@@ -14,7 +14,6 @@ import { OrnamentsService } from '../../../../../../../core/masters/ornaments/se
 import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
-import { iif } from 'rxjs';
 
 
 @Component({
@@ -26,6 +25,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   selected: number = 0
   goldRate: any;
+  ltvGoldRate: any;
   @Input() invalid;
   @Input() disable;
   @Input() details;
@@ -33,6 +33,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   // @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
+  @Output() fullAmt: EventEmitter<any> = new EventEmitter();
   @Input() masterAndLoanIds
   @Input() ornamentType
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
@@ -54,6 +55,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   globalValue: any;
   purityTestPath: any = [];
   purityTestImg: any = [];
+  fullAmount: number;
 
   constructor(
     public fb: FormBuilder,
@@ -68,14 +70,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public loanApplicationFormService: LoanApplicationFormService,
     public ornamentTypeService: OrnamentsService,
     public layoutUtilsService: LayoutUtilsService,
-    public globalSettingService: GlobalSettingService
+    public globalSettingService: GlobalSettingService,
+    public dialogRef: MatDialogRef<OrnamentsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
 
   }
 
   ngOnInit() {
 
-    this.url = this.router.url.split('/')[2]
+    this.url = this.router.url.split('/')[3]
     this.getKarat()
     this.initForm()
   }
@@ -84,7 +88,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
         this.karatArr = res;
-        console.log(res)
       })
     ).subscribe()
   }
@@ -110,10 +113,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             this.addmore()
           }
         }
+
         for (let index = 0; index < array.length; index++) {
           const group = this.OrnamentsData.at(index) as FormGroup
           group.patchValue(array[index])
-          this.calcGoldDeductionWeight(index)
+          // this.calcGoldDeductionWeight(index)
           Object.keys(group.value).forEach(key => {
 
             if (key == 'purityTestImage') {
@@ -123,7 +127,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             } else {
               if (group.value[key])
                 this.patchUrlIntoForm(key, group.value[key].path, group.value[key].URL, index)
-
             }
 
           })
@@ -147,9 +150,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.globalValue = global;
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
-          this.goldRate = res * (this.globalValue.ltvGoldValue / 100)
+          this.goldRate = res;
+          this.ltvGoldRate = res * (this.globalValue.ltvGoldValue / 100)
           const group = this.OrnamentsData.at(0) as FormGroup
-          group.controls.currentLtvAmount.patchValue(this.goldRate)
+          group.controls.currentLtvAmount.patchValue(this.ltvGoldRate)
+          group.controls.currentGoldRate.patchValue(res)
         })
       }
     })
@@ -157,11 +162,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ornamentsForm.valueChanges.subscribe(() => {
       if (this.ornamentsForm.valid) {
         this.totalAmount = 0;
+        this.fullAmount = 0;
         this.OrnamentsData.value.forEach(element => {
           this.totalAmount += Number(element.loanAmount)
+          this.fullAmount += Number(element.ornamentFullAmount)
         });
+        console.log(this.fullAmount)
         this.totalAmount = Math.round(this.totalAmount)
+        this.fullAmount = Math.round(this.fullAmount)
         this.totalAmt.emit(this.totalAmount)
+        this.fullAmt.emit(this.fullAmount)
       }
     })
 
@@ -253,15 +263,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       ltvAmount: [],
       loanAmount: [''],
       id: [],
-      currentLtvAmount: [this.goldRate],
+      currentLtvAmount: [this.ltvGoldRate],
       ornamentImageData: [, Validators.required],
       weightMachineZeroWeightData: [],
       withOrnamentWeightData: [],
       stoneTouchData: [],
       acidTestData: [],
       purityTestImage: [[]],
+      ornamentFullAmount: [],
+      currentGoldRate: [this.goldRate]
     }))
     this.createImageArray()
+    this.selected = this.OrnamentsData.length;
   }
 
   createImageArray() {
@@ -379,34 +392,24 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         // this.images[index].stoneTouch = controls.controls.stoneTouchData.value
         break;
       case 'purityTestImage':
-        // if (controls.controls.purityTest.value.length <= 4) {
-        let temp: any[]; let tempId: any[];
+        if (url) {
 
-        // if (controls.controls.purityTest.value.length > 0) {
-        //   tempId = controls.controls.purityTestImage.value
-        //   temp = controls.controls.purityTestImage.value
-        // }
-        // if (!temp.includes(url)) 
+          if (typeof url == "object") {
 
-        if (typeof url == "object") {
-          //   controls.controls.purityTest.patchValue(id)
-          // controls.controls.purityTestImage.patchValue(url)
-          // temp = [] ; tempId = [];
-          this.purityTestImg = url
-          this.purityTestPath = id
-          // url.forEach(element => {
-          //   temp.push(element.purityTest.url)
-          // });
-        } else {
-          this.purityTestImg = controls.controls.purityTestImage.value
-          this.purityTestPath = controls.controls.purityTest.value
-          this.purityTestImg.push(url)
-          this.purityTestPath.push(id)
+            this.purityTestImg = url
+            this.purityTestPath = id
+
+          } else {
+            this.purityTestImg = controls.controls.purityTestImage.value
+            this.purityTestPath = controls.controls.purityTest.value
+            this.purityTestImg.push(url)
+            this.purityTestPath.push(id)
+          }
+          this.images[index].purity = this.purityTestImg
+          controls.controls.purityTest.patchValue(this.purityTestPath)
+          controls.controls.purityTestImage.patchValue(this.purityTestImg)
+          this.purity.nativeElement.value = ''
         }
-        this.images[index].purity = this.purityTestImg
-        controls.controls.purityTest.patchValue(this.purityTestPath)
-        controls.controls.purityTestImage.patchValue(this.purityTestImg)
-        this.purity.nativeElement.value = ''
         // } else {
         //   this.toast.error('Maximum of 4 Images can be uploaded in Purity Test')
         // }
@@ -419,7 +422,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         // this.images[index].ornamentImage = controls.controls.ornamentImageData.value
         break;
     }
-    console.log(controls.value)
 
   }
 
@@ -477,10 +479,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     let indexof = filterImage.findIndex(idx => {
       return typeof idx == 'object'
     })
-    temp = filterImage[indexof]
-    filterImage.splice(indexof, 1)
-    Array.prototype.push.apply(filterImage, temp)
 
+    if (indexof != -1) {
+      temp = filterImage[indexof]
+      filterImage.splice(indexof, 1)
+      Array.prototype.push.apply(filterImage, temp)
+    }
 
     temp = filterImage.filter(el => {
       return el != ''
@@ -505,7 +509,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
       controls.controls.ltvAmount.patchValue(ltv)
       controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
+      let fullAmount = controls.controls.currentGoldRate.value * (ltvPercent / 100)
+      controls.controls.ornamentFullAmount.patchValue((fullAmount * controls.controls.netWeight.value).toFixed(2))
+      console.log(controls.controls.ornamentFullAmount.value)
     }
+    console.log(this.OrnamentsData.value)
   }
 
   nextAction() {
@@ -521,17 +529,19 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds).pipe(
+    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
       map(res => {
         let array = this.OrnamentsData.controls
         for (let index = 0; index < array.length; index++) {
           const controls = this.OrnamentsData.at(index) as FormGroup;
           controls.controls.id.patchValue(res.ornaments[index].id)
         }
+        if(res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount){
+          this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+        }
         this.next.emit(3)
       })
     ).subscribe()
-    console.log(this.ornamentsForm.value, this.totalAmount)
 
   }
 
@@ -555,7 +565,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           }
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-          console.log(res)
           this.patchUrlIntoForm(string, res.uploadFile.path, res.uploadFile.URL, index)
         })
 

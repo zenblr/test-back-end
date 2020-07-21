@@ -273,4 +273,9 @@ export class UserClassificationComponent implements OnInit {
       this.cceControls.reasonFromCce.reset()
     }
   }
+
+  resetKYCStatus() {
+    this.cceControls.kycStatusFromCce.patchValue('')
+    this.cceControls.kycStatusFromCce.markAsUntouched()
+  }
 }

@@ -284,19 +284,19 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "Add Holiday";
 			this.showInput = true;
 			this.dataSourceHeader();
-			// this.permissionType = "schemeAdd";
+			this.permissionType = "addHoliday";
 		}
 		if (this.path == "ornaments") {
 			this.value2 = "Add Ornaments";
 			this.type2 = "button";
 			this.rightButton = true;
-			// this.permissionType = "schemeAdd";
+			this.permissionType = "addOrnament";
 		}
 		if (this.path == "reasons") {
 			this.value2 = "Add Reason";
 			this.type2 = "button";
 			this.rightButton = true;
-			// this.permissionType = "schemeAdd";
+			this.permissionType = "addUnapprovalReason";
 		}
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
@@ -381,6 +381,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "packet-location") {
 			this.dataSourceHeader();
 			this.value1 = "Add Packet Location";
+			this.permissionType = "addPacketLocation";
 		}
 		if (this.path == "packet-tracking") {
 			this.dataSourceHeader();
@@ -390,17 +391,19 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add Occupation";
 			this.type2 = "button";
 			this.rightButton = true;
+			this.permissionType = "addOccupation";
 		}
 		if (this.path == "purposes") {
 			this.value2 = "Add Purpose";
 			this.type2 = "button";
 			this.rightButton = true;
+			this.permissionType = "addPurpose";
 		}
 		if (this.path == "lead-source") {
 			this.value1 = "Add Lead Source";
 			this.showInput = true;
 			this.dataSourceHeader();
-			// this.permissionType = "schemeAdd";
+			this.permissionType = "addLeadSource";
 		}
 
 		if (this.path == "roles") {
@@ -553,6 +556,22 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.dataSourceHeader();
 			// this.permissionType = "schemeAdd";
+		}
+		if (this.path == 'part-release-approval') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
+		if (this.path == 'full-release-approval') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
+		if (this.path == 'part-release-final') {
+			this.showInput = true;
+			this.showfilter = true;
+		}
+		if (this.path == 'full-release-final') {
+			this.showInput = true;
+			this.showfilter = true;
 		}
 		if (location.href.includes("edit-refund-details")) {
 			this.showBackButton = true;
@@ -776,11 +795,11 @@ export class TopbarComponent implements OnInit {
 		this.sortType += 1;
 		if (this.sortType % 2 == 0) {
 			this.sortImg = "../../../../../assets/media/icons/sort (1).svg";
-			this.shopService.sortType.next(true);
+			this.shopService.sortType.next('asc');
 
 		} else {
 			this.sortImg = "../../../../../assets/media/icons/sort.svg";
-			this.shopService.sortType.next(false);
+			this.shopService.sortType.next('desc');
 		}
 	}
 
