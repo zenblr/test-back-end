@@ -83,7 +83,6 @@ exports.submitAppKyc = async (req, res, next) => {
 }
 
 exports.getAssignedCustomer = async (req, res, next) => {
-
     const id = req.userData.id
     let getAppraisal = await models.customerAssignAppraiser.findAll({
         where: { appraiserId: id },
@@ -97,6 +96,14 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 as: 'customer',
                 attributes: { exclude: ['customerUniqueId', 'internalBranchId', 'password', 'createdBy', 'modifiedBy', 'createdAt', 'updatedAt', 'isActive', 'lastLogin'] },
                 include: [
+                    {
+                        model: models.state,
+                        as: 'state'
+                    },
+                    {
+                        model: models.city,
+                        as: 'city'
+                    },
                     {
                         model: models.status,
                         as: 'status',

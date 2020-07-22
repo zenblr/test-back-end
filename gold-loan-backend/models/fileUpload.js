@@ -1,7 +1,3 @@
-const BaseUrl = require('../config/baseUrl').BASEURL;
-const baseUrlConfig = require('../config/baseUrl');
-
-
 module.exports = (sequelize, DataTypes) => {
     const FileUpload = sequelize.define('fileUpload', {
         // attributes
@@ -44,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
 
     FileUpload.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
-        values.URL = baseUrlConfig.BASEURL + values.path;
+        values.URL = process.env.BASE_URL + values.path;
         delete values.encoding;
         return values;
     }
