@@ -161,7 +161,7 @@
                                             *ngFor="let proof of controls.passbookProofImage.value; index as idx;">
                                             <img class="fetched-image" [src]="proof">
                                             <img src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                                *ngIf="url != 'view-loan'" class="kt-pointer remove-icon"
+                                                *ngIf="!disable" class="kt-pointer remove-icon"
                                                 (click)="removeImages(idx);">
                                         </div>
                                     </div>
@@ -178,7 +178,7 @@
 
 
         </div>
-        <div class="text-right py-3 col-12" *ngIf="!disable">
+        <div class="text-right py-3 col-12" *ngIf="showButton">
             <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
         </div>
     </div>

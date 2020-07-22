@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false
         },
+        loanTransferId: {
+            type: DataTypes.INTEGER,
+            field: 'loan_transfer_id'
+        },
         masterLoanUniqueId: {
             type: DataTypes.STRING,
             field: 'master_loan_unique_id'
@@ -148,6 +152,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id'
         },
+        isLoanTransfer:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_loan_transfer',
+            defaultValue: false
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -193,9 +202,39 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
-
+        CustomerLoanMaster.belongsTo(models.customerLoanTransfer, { foreignKey: 'loanTransferId', as: 'loanTransfer' });
         CustomerLoanMaster.hasMany(models.customerLoanHistory, { foreignKey: 'masterLoanId', as: 'customerLoanHistory' });
+    }
 
+        CustomerLoanMaster.prototype.toJSON = function () {
+            var values = Object.assign({}, this.get({ plain: true }));
+            if (values.loanTransfer) {
+                if(values.loanTransfer.pawnTicket){
+                    let pawnTicketData = [];
+                for (image of values.loanTransfer.pawnTicket) {
+                    let URL = baseUrlConfig.BASEURL + image;
+                    pawnTicketData.push(URL)
+                }
+                values.loanTransfer.pawnTicket = pawnTicketData;
+                }
+                if(values.loanTransfer.signedCheque){
+                    let signedChequeData = [];
+                for (image of values.loanTransfer.signedCheque) {
+                    let URL = baseUrlConfig.BASEURL + image;
+                    signedChequeData.push(URL)
+                }
+                values.loanTransfer.signedCheque = signedChequeData;
+                }
+                if(values.loanTransfer.declaration){
+                    let declarationData = [];
+                for (image of values.loanTransfer.declaration) {
+                    let URL = baseUrlConfig.BASEURL + image;
+                    declarationData.push(URL)
+                }
+                values.loanTransfer.declaration = declarationData;
+                }
+            }
+            return values
     }
 
     return CustomerLoanMaster;

@@ -31,6 +31,12 @@ export class LoanApplicationFormComponent implements OnInit {
   ornamentType = [];
   finalLoanAmt: any;
   fullAmount: any = 0;
+  showButton: boolean = true;
+  approvalFrom: boolean = false;
+  accountHolderName: any;
+  loanStage: any;
+  ornamentDetails: any;
+
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
@@ -43,9 +49,7 @@ export class LoanApplicationFormComponent implements OnInit {
     this.url = this.router.url.split('/')[3]
     this.id = this.rout.snapshot.params.id
     if (this.id) {
-      for (let index = 0; index < this.disabled.length; index++) {
-        this.disabled[index] = false;
-      }
+      //
       this.editApi()
 
     }
@@ -63,9 +67,13 @@ export class LoanApplicationFormComponent implements OnInit {
 
   editApi() {
     this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
-      this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
       this.action = 'edit'
       this.customerDetail = res.data
+      this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
+      this.loanStage = this.customerDetail.masterLoan.loanStage
+      this.ornamentDetails = res.data.ornamentType
+      console.log(this.loanStage)
+
       // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "packet-image-upload") {
         if (this.customerDetail.loanPacketDetails.length) {
@@ -76,37 +84,27 @@ export class LoanApplicationFormComponent implements OnInit {
         this.disabledForm = true;
       } else if (this.url == "view-loan") {
         this.disabledForm = true;
+        this.showButton = false;
+        this.approvalFrom = true;
+        for (let index = 0; index < this.disabled.length; index++) {
+          this.disabled[index] = false;
+        }
+
+      } else if (this.customerDetail.masterLoan.loanStatusForAppraiser == 'approved') {
+        this.showButton = true;
+        this.disabledForm = true;
       } else {
         this.disabledForm = false;
-        if (res.data.masterLoan.customerLoanCurrentStage) {
-          let stage = res.data.masterLoan.customerLoanCurrentStage
-          this.selected = Number(stage) - 1;
-        } else {
-          this.selected = 5;
-        }
+        // if (res.data.masterLoan.customerLoanCurrentStage) {
+        //   let stage = res.data.masterLoan.customerLoanCurrentStage
+        //   this.selected = Number(stage) - 1;
+        // }
       }
     })
   }
 
   ngOnInit() {
-
     this.getOrnamentType()
-    // setTimeout(() => {
-
-    //   if (this.url == "packet-image-upload") {
-    //     if (this.customerDetail.loanPacketDetails.length) {
-    //       this.selected = 7;
-    //     } else {
-    //       this.selected = 6;
-    //     }
-    //     this.disabledForm = true;
-    //   } else if (this.url == "view-loan") {
-    //     this.next(0)
-    //     this.disabledForm = true;
-    //   } else {
-    //     this.disabledForm = false;
-    //   }
-    // }, 1000)
   }
 
   getOrnamentType() {
@@ -118,6 +116,8 @@ export class LoanApplicationFormComponent implements OnInit {
     ).subscribe();
   }
 
+
+
   loan(event) {
     this.masterAndLoanIds = event
   }
@@ -126,12 +126,29 @@ export class LoanApplicationFormComponent implements OnInit {
     this.totalAmount = event
   }
 
-  fullAmt(event){
+  fullAmt(event) {
     this.fullAmount = event
   }
 
   finalLoanAmount(event) {
     this.finalLoanAmt = event
+  }
+
+  accountHolder(event) {
+    this.accountHolderName = event
+  }
+
+  stage(event) {
+    if (event)
+      this.loanStage = event
+  }
+
+  ornaments(event) {
+    this.ornamentDetails = event
+    this.loanStage.id = 3;
+    setTimeout(() => {
+      this.next(6)
+    }, 500)
   }
 
   customerDetails(event) {
@@ -143,6 +160,7 @@ export class LoanApplicationFormComponent implements OnInit {
             this.disabled[index] = false;
           }
         }
+        this.loanStage = this.customerDetail.masterLoan.loanStage
         this.selected = 2;
       }),
       catchError(err => {
@@ -160,6 +178,7 @@ export class LoanApplicationFormComponent implements OnInit {
 
 
   next(event) {
+
     if (event.index != undefined) {
       this.selected = event.index;
     } else {

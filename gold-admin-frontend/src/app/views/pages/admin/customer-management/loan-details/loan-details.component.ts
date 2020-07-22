@@ -14,6 +14,7 @@ export class LoanDetailsComponent implements OnInit {
   images: any = []
   loanId
   loanDetails: any
+  pdf = { loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false }
   constructor(
     private loanservice: LoanApplicationFormService,
     private rout: ActivatedRoute,
@@ -22,11 +23,38 @@ export class LoanDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.loanId = this.rout.snapshot.params.loanId
-    this.loanservice.getLoanDataById(this.loanId).subscribe(res => {
+    this.loanservice.getLoanDetails(this.loanId).subscribe(res => {
       this.loanDetails = res.data
       this.createOrnamentsImage()
+      this.pdfCheck()
       console.log(this.images)
     })
+  }
+
+  pdfCheck(){
+    let laonAgree = this.loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage[0].split('.')
+    let pawn = this.loanDetails.masterLoan.customerLoanDocument.pawnCopyImage[0].split('.')
+    let scheme = this.loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage[0].split('.')
+    if(laonAgree[laonAgree.length - 1] == 'pdf'){
+      this.pdf.loanAgreementCopyImage = true
+    }else{
+      this.pdf.loanAgreementCopyImage = false
+
+    }
+    if(pawn[pawn.length - 1] == 'pdf'){
+      this.pdf.pawnCopyImage = true
+
+    }else{
+      this.pdf.pawnCopyImage = false
+      
+    }
+    if(scheme[scheme.length - 1] == 'pdf'){
+      this.pdf.schemeConfirmationCopyImage = true
+
+    }else{
+      this.pdf.schemeConfirmationCopyImage = false
+      
+    }
   }
 
   createOrnamentsImage() {

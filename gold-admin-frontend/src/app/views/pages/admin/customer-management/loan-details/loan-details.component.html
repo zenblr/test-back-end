@@ -237,18 +237,18 @@
                     <div class="pdf">
                         <iframe
                             [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
-                            scrolling="no" *ngIf="false" height="255"></iframe>
+                            scrolling="no" *ngIf="pdf?.loanAgreementCopyImage" height="255"></iframe>
                     </div>
-                    <img *ngIf="true" class="packets"
+                    <img  *ngIf="!pdf?.loanAgreementCopyImage" class="packets"
                         [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
                 </div>
                 <div class="col-4">
                     <div class="pdf">
                         <iframe [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage | safe : 'resourceUrl'"
-                            scrolling="no" *ngIf="true" height="255"></iframe>
+                            scrolling="no" *ngIf="pdf?.pawnCopyImage" height="255"></iframe>
                     </div>
-                    <img *ngIf="false" class="packets"
+                    <img *ngIf="!pdf?.pawnCopyImage" class="packets"
                         [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage">
 
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy</label>
@@ -257,9 +257,9 @@
                     <div class="pdf">
                         <iframe
                             [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
-                            scrolling="no" *ngIf="true" height="255"></iframe>
+                            scrolling="no" *ngIf="pdf?.schemeConfirmationCopyImage" height="255"></iframe>
                     </div>
-                    <img *ngIf="false" class="packets"
+                    <img  *ngIf="!pdf?.schemeConfirmationCopyImage" class="packets"
                         [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
                     </label>

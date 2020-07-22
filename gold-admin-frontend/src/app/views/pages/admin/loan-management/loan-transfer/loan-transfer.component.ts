@@ -23,13 +23,14 @@ export class LoanTransferComponent implements OnInit {
   id: any;
   laonTransferDetails: any
   disabled = [false, true, true, true]
+  showButton: boolean = true;
   constructor(
     private custClassificationService: CustomerClassificationService,
     private sharedService: SharedService,
     private fb: FormBuilder,
     private loanTransferService: LoanTransferService,
     private rout: ActivatedRoute,
-    private router:Router
+    private router: Router
   ) {
     this.getReasonsList()
     this.id = this.rout.snapshot.params.id;;
@@ -39,7 +40,7 @@ export class LoanTransferComponent implements OnInit {
     this.sharedService.getStatus().subscribe(res => {
       this.branchManager = res.bm
     })
-    
+
   }
 
 
@@ -58,12 +59,16 @@ export class LoanTransferComponent implements OnInit {
             let temp = this.reasons.filter(reason => {
               return reason.description == res.data.masterLoan.loanTransfer.reasonByBM
             })
-            
+
             if (!temp.length) {
               this.approvalForm.patchValue({ reason: "Other" })
-            }else{
-            this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByBM })
+            } else {
+              this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByBM })
             }
+          }
+
+          if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
+            this.disabled = [false, false, false, false]
           }
 
           this.disbursalForm.patchValue(res.data.masterLoan.loanTransfer)
@@ -76,28 +81,28 @@ export class LoanTransferComponent implements OnInit {
 
   ngOnInit() {
     this.initForms()
-    this.approvalForm.controls.loanTransferStatusForBM.valueChanges.subscribe((res)=>{
-      if(res == 'approved'){
+    this.approvalForm.controls.loanTransferStatusForBM.valueChanges.subscribe((res) => {
+      if (res == 'approved') {
         this.approvalForm.controls.reasonByBM.reset()
         this.approvalForm.controls.reasonByBM.clearValidators()
         this.approvalForm.controls.reasonByBM.updateValueAndValidity()
         this.approvalForm.controls.reason.reset()
         this.approvalForm.controls.reason.clearValidators()
         this.approvalForm.controls.reason.updateValueAndValidity()
-      }else{
+      } else {
         this.approvalForm.controls.reasonByBM.setValidators(Validators.required)
         this.approvalForm.controls.reasonByBM.updateValueAndValidity()
       }
     })
   }
 
-  
+
 
   initForms() {
     this.approvalForm = this.fb.group({
       loanTransferStatusForBM: ['pending', Validators.required],
       reasonByBM: ['', Validators.required],
-      reason: ['',Validators.required]
+      reason: ['', Validators.required]
     })
     this.disbursalForm = this.fb.group({
       disbursedLoanAmount: [],
@@ -128,24 +133,24 @@ export class LoanTransferComponent implements OnInit {
   }
 
   approval() {
-    if (this.approvalForm.invalid || this.approvalForm.controls.loanTransferStatusForBM.value =='pending') {
+    if (this.approvalForm.invalid || this.approvalForm.controls.loanTransferStatusForBM.value == 'pending') {
       this.approvalForm.markAllAsTouched()
       return
     }
 
     this.loanTransferService.approval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
       if (res) {
-        if(this.approvalForm.controls.loanTransferStatusForBM.value =='approved'){
-        this.disbursalForm.patchValue(res)
-        if(res.loanCurrentStage){
-          let stage = Number(res.loanCurrentStage) - 1
-          this.next(stage)
+        if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
+          this.disbursalForm.patchValue(res)
+          if (res.loanCurrentStage) {
+            let stage = Number(res.loanCurrentStage) - 1
+            this.next(stage)
+          }
+        }
+        else {
+          this.router.navigate(['/admin/loan-management/transfer-loan-list'])
         }
       }
-      else{
-        this.router.navigate(['/admin/loan-management/transfer-loan-list'])
-      }
-    }
     }, err => {
 
     })
@@ -172,11 +177,13 @@ export class LoanTransferComponent implements OnInit {
     } else {
       this.selected = event;
     }
-    for (let index = 0; index < this.disabled.length; index++) {
-      if (this.selected >= index) {
-        this.disabled[index] = false
-      } else {
-        this.disabled[index] = true
+    if (this.approvalForm.controls.loanTransferStatusForBM.value != 'approved') {
+      for (let index = 0; index < this.disabled.length; index++) {
+        if (this.selected >= index) {
+          this.disabled[index] = false
+        } else {
+          this.disabled[index] = true
+        }
       }
     }
   }

@@ -21,6 +21,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   @Input() action
   @Input() finalLoanAmt
   @Output() next: EventEmitter<any> = new EventEmitter();
+  @Input() showButton
+  @Input() accountHolderName
   bankForm: FormGroup;
   passbookImg: any = [];
   passbookImgId: any = []
@@ -38,7 +40,6 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    console.log(this.masterAndLoanIds)
   }
 
 
@@ -54,10 +55,18 @@ export class BankDetailsComponent implements OnInit, OnChanges {
           // this.bankForm.controls.passbookProofImageName.patchValue(passbookProofImage[0].passbookProof.originalname)
           this.ref.markForCheck()
         }
-      }
+        if(changes.details.currentValue){
+          let name = changes.details.currentValue.customer.firstName +" "+changes.details.currentValue.customer.lastName
+          this.bankForm.patchValue({accountHolderName:name})
 
-      // this.bankFormEmit.emit(this.bankForm);
+        }
+      }
     }
+
+    if (changes.accountHolderName && changes.accountHolderName.currentValue) {
+      this.bankForm.patchValue({accountHolderName:changes.accountHolderName.currentValue})
+    }
+
     if (changes.finalLoanAmt) {
       if (Number(changes.finalLoanAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
@@ -127,7 +136,6 @@ export class BankDetailsComponent implements OnInit, OnChanges {
             this.bankForm.patchValue({ passbookProof: this.passbookImgId });
             this.bankForm.get('passbookProofImageName').patchValue(event.target.files[0].name);
             this.ref.detectChanges();
-            console.log(this.bankForm.value);
           }), catchError(err => {
             // this.toastr.error(err.error.message);
             throw err
@@ -156,6 +164,12 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   }
 
   nextAction() {
+
+    if (this.disable) {
+      this.next.emit(5)
+      return
+    }
+
     let data
     if (this.controls.paymentType.value == "bank") {
       if (this.bankForm.invalid) {

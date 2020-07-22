@@ -32,9 +32,11 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() id: EventEmitter<any> = new EventEmitter();
   @Output() totalEligibleAmt: EventEmitter<any> = new EventEmitter();
+  @Output() loanStage: EventEmitter<any> = new EventEmitter();
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
   @Input() loanTransfer
+  @Input() showButton
 
   currentDate: any = new Date();
   url: string;
@@ -106,8 +108,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
 
         // this.basicFormEmit.emit(this.basicForm)
         this.basicForm.controls.loanId.patchValue(changes.details.currentValue.id)
-        this.basicForm.disable()
-        this.basicForm.controls.purpose.enable()
+        // this.basicForm.disable()
+        // this.basicForm.controls.purpose.enable()
 
         this.ref.detectChanges()
       }
@@ -116,6 +118,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.disable()
       this.ref.detectChanges()
     }
+    
 
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
@@ -123,6 +126,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)
       this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
       this.basicForm.patchValue(changes.loanTransfer.currentValue.customer)
+      if(changes.loanTransfer.currentValue.masterLoan.loanTransfer.loanTransferStatusForBM == 'approved'){
+        this.disable = true
+      }
     }
   }
 
@@ -167,6 +173,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getCustomerDetailsForTransfer() {
+    
     if (this.controls.customerUniqueId.valid) {
       this.loanTransferFormService.getCustomerDetailsForTransfer(this.controls.customerUniqueId.value).pipe(
         map(res => {
@@ -251,6 +258,12 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   nextAction() {
+
+    if(this.disable){
+      this.next.emit(1)
+      return 
+    }
+  
     if (this.basicForm.invalid) {
       this.basicForm.markAllAsTouched();
       return
@@ -263,6 +276,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
           stage = Number(stage) - 1;
           this.next.emit(stage)
           this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+          this.loanStage.emit(res.loanstage)
         }), catchError(err => {
           this.toast.error(err.error.message)
           throw err
@@ -298,11 +312,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   viewKYC() {
-    // console.log(this.basicForm.value)
     // this.dialog.open(UserReviewComponent)
     const params = { customerId: this.controls.customerId.value };
     this.appliedKycService.editKycDetails(params).subscribe(res => {
-      // console.log(res)
       const dialogRef = this.dialog.open(UserReviewComponent, { data: { action: 'view' }, width: '900px' });
     })
   }
