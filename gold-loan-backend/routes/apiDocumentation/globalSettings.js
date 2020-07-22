@@ -28,12 +28,15 @@
  *               type: string
  *             gst:
  *               type: string
+ *             scrapLtvGoldValue:
+ *               type: string
  *         required:
  *           - ltvGoldValue
  *           - minimumLoanAmountAllowed
  *           - minimumTopUpAmount
  *           - gracePeriodDays
  *           - cashTransactionLimit
+ *           - scrapLtvGoldValue
  *     responses:
  *       200:
  *          description: success

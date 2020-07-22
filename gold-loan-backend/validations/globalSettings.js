@@ -17,6 +17,8 @@ exports.globalSettingsValidation = [
         .exists()
         .withMessage('cash transaction limit is required'),
     body('gst')
+        .exists(),
+    body('scrapLtvGoldValue')
         .exists()
-
+        .withMessage('scrap ltv gold value is required'),
 ]

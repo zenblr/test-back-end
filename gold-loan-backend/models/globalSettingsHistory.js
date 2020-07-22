@@ -31,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'gst',
             allowNull: false,
         },
+        scrapLtvGoldValue: {
+            type: DataTypes.STRING,
+            field: 'scrap_ltv_gold_value',
+            allowNull: false,
+        },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',
