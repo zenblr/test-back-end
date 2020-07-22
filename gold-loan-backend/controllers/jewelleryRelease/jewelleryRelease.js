@@ -127,13 +127,16 @@ async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments) {
 }
 
 async function getornamentLoanInfo(masterLoanId,ornamentWeight) {
-    let loanData = await models.customerLoan.findAll({where:{masterLoanId},attributes:['loanUniqueId','loanAmount']});
+    let loanData = await models.customerLoan.findAll({where:{masterLoanId},attributes:['loanUniqueId']});
+    let loanAmountData = await models.customerLoanMaster.findOne({where:{id:masterLoanId},attributes:['finalLoanAmount']});
     let loanDetails = {
         loanData,
+        finalLoanAmount:0,
         interestAmount:0,
         penalInterest:0,
         totalPayableAmount:0,
     }
+    loanDetails.finalLoanAmount = loanAmountData.finalLoanAmount;
     return loanDetails;
 }
 
