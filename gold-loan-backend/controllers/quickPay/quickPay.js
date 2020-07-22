@@ -27,3 +27,29 @@ exports.getInterestTable = async (req, res, next) => {
     return res.staus(200).json({ message: "success", data: interestTable })
 
 }
+
+
+exports.getInterestInfo = async (req, res, next) => {
+    let { loanId, masterLoanId } = req.query;
+
+    let interestInfo = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        order: [[models.customerLoan, 'id', 'asc']],
+        include: [
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                include: [
+                    {
+                        model: models.scheme,
+                        as: 'scheme'
+                    }
+                ]
+            }
+        ]
+    })
+
+    return res.status(200).json({ message: "success", data: interestInfo })
+
+
+}
