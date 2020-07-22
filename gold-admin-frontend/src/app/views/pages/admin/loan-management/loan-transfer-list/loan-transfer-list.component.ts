@@ -16,7 +16,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class LoanTransferListComponent implements OnInit {
 
   dataSource: LoanTranferDatasource;
-  displayedColumns = ['fullName', 'customerID', 'loanId', 'mobile', 'date', 'amount', 'status','actions'];
+  displayedColumns = ['fullName', 'customerID', 'loanId', 'mobile', 'date', 'amount','appraiserStatus', 'bmStatus','action','applyLoan'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -84,7 +84,7 @@ export class LoanTransferListComponent implements OnInit {
   navigate(loan) {
     this.ngxPermission.permissions$.subscribe(res=>{
       
-      if((res.loanTransferRating && loan.loanTransfer.loanTransferCurrentStage == '3')
+      if((res.loanTransferAppraiserRating && loan.loanTransfer.loanTransferCurrentStage == '3')
        || (res.loanTransferDisbursal && loan.loanTransfer.loanTransferCurrentStage == '4') ){
         this.router.navigate(['/admin/loan-management/loan-transfer/', loan.customerLoan[0].id])
       }

@@ -151,7 +151,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             let stage = res.loanCurrentStage
 
             stage = Number(stage) - 1;
-            this.next.emit(stage)
+            this.next.emit(res.loanCurrentStage)
             this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
             this.basicForm.patchValue({ loanId: res.loanId, masterLoanId: res.masterLoanId })
             if (stage >= 1) {
@@ -183,6 +183,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             let stage = res.loanCurrentStage
 
             stage = Number(stage) - 1;
+
             this.next.emit(stage)
             this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
             if (stage >= 1) {

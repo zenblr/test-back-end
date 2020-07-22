@@ -96,7 +96,6 @@
                                     Field Required</mat-error>
                             </td>
                             <td class="rating-bm" *ngIf="viewBMForm || url == 'view-loan'">
-                                {{controls.loanStatusForBM.value}}
                                 <select class="form-control" formControlName="loanStatusForBM"
                                     (change)="resetBM();statusBM()"
                                     [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
@@ -111,7 +110,6 @@
                                     Required</mat-error>
                             </td>
                             <td class="rating-bm" *ngIf="viewOpertaionalForm || url == 'view-loan'">
-                                {{controls.loanStatusForOperatinalTeam.value}}
                                 <select class="form-control" formControlName="loanStatusForOperatinalTeam"
                                     (change)="resetOT();statusOT()"
                                     [class.isError]="controls.loanStatusForOperatinalTeam.invalid && controls.loanStatusForOperatinalTeam.touched">

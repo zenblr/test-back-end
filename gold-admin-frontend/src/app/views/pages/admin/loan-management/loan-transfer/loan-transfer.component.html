@@ -8,65 +8,91 @@
                         (next)="next($event)" [loanTransfer]="laonTransferDetails" [showButton]="showButton"></kt-basic-details>
                     </mat-tab>
                     <mat-tab label="Upload Documents" [disabled]="disabled[1]">
-                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" [showButton]="showButton" [loanTransfer]="laonTransferDetails" (next)="next($event)"></kt-upload-loan-documents>
+                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" (stage)="stage($event)" [showButton]="showButton" [loanTransfer]="laonTransferDetails" (next)="next($event)"></kt-upload-loan-documents>
                     </mat-tab>
                     <mat-tab label="Loan Trasnfer Approval" [formGroup]="approvalForm" [disabled]="disabled[2]">
-                        <div class="row justify-content-center">
-                            <div class="col-6">
-                                <div class="row">
-                                    <div class="col-4 form-label">
-                                        <label class="kt-padding-l-10">B.M Status </label>
-                                    </div>
-                                    <div class="col-6">
-                                        <select name="" id="" class="form-control" 
-                                        [class.isError]="approvalForm.controls.loanTransferStatusForBM.touched && this.approvalForm.controls.loanTransferStatusForBM.value =='pending'"
-                                            formControlName="loanTransferStatusForBM">
-                                            <option value="pending">Select Status</option>
-                                            <option [value]="manager.value" *ngFor="let manager of branchManager">
-                                                {{manager.name | titlecase}}</option>
-                                        </select>
-                                        <mat-error *ngIf="approvalForm.controls.loanTransferStatusForBM.touched && this.approvalForm.controls.loanTransferStatusForBM.value =='pending'">
-                                            Field Required
-                                        </mat-error>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row kt-padding-t-25 justify-content-center" 
-                            *ngIf="approvalForm.controls.loanTransferStatusForBM.value !='pending' && approvalForm.controls.loanTransferStatusForBM.value != 'approved'">
-                            <div class="col-6">
-                                <div class="row">
-                                    <div class="col-4 form-label">
-                                        <label class="kt-padding-l-10">Reason</label>
-                                    </div>
-                                    <div class="col-6">
-                                        <select name="" id="" class="form-control" formControlName="reason"
-                                            (change)="patchValue()" [class.isError]="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
-                                            <option value="">Select Status</option>
-                                            <option [value]="reason.description" *ngFor="let reason of reasons">
-                                                {{reason.description | titlecase}}</option>
-                                        </select>
-                                        <mat-error *ngIf="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
-                                            Field Required
-                                        </mat-error>
+                        <div *ngIf="loanTransferStage == '3' || loanTransferStage == '4' || loanTransferStage == '5'">
+                            <div class="row justify-content-center">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-4 form-label">
+                                            <label class="kt-padding-l-10">Appraiser Status </label>
+                                        </div>
+                                        <div class="col-6">
+                                            <select name="" id="" class="form-control" 
+                                            [class.isError]="approvalForm.controls.loanTransferStatusForAppraiser.touched && this.approvalForm.controls.loanTransferStatusForAppraiser.invalid"
+                                                formControlName="loanTransferStatusForAppraiser">
+                                                <option value="pending">Select Status</option>
+                                                <option [value]="manager.value" *ngFor="let manager of appraiserOrCCE">
+                                                    {{manager.name | titlecase}}</option>
+                                            </select>
+                                            <mat-error *ngIf="approvalForm.controls.loanTransferStatusForAppraiser.touched && this.approvalForm.controls.loanTransferStatusForAppraiser.invalid">
+                                                Field Required
+                                            </mat-error>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row kt-padding-t-25 justify-content-center"
-                            *ngIf="approvalForm.controls.reason.value == 'Other'">
-                            <div class="col-6">
-                                <div class="row">
-                                    <div class="col-10">
-                                        <mat-form-field class="w-100">
-                                            <mat-label>Reason</mat-label>
-                                            <textarea matInput formControlName="reasonByBM"></textarea>
-                                            <mat-error>Field Required</mat-error>
-                                        </mat-form-field>
+                        <div *ngIf="loanTransferStage == '4' || loanTransferStage == '5'" class="kt-margin-t-15">
+                            <div class="row justify-content-center">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-4 form-label">
+                                            <label class="kt-padding-l-10">B.M Status </label>
+                                        </div>
+                                        <div class="col-6">
+                                            <select name="" id="" class="form-control" 
+                                            [class.isError]="approvalForm.controls.loanTransferStatusForBM.touched && this.approvalForm.controls.loanTransferStatusForBM.value =='pending'"
+                                                formControlName="loanTransferStatusForBM">
+                                                <option value="pending">Select Status</option>
+                                                <option [value]="manager.value" *ngFor="let manager of branchManager">
+                                                    {{manager.name | titlecase}}</option>
+                                            </select>
+                                            <mat-error *ngIf="approvalForm.controls.loanTransferStatusForBM.touched && this.approvalForm.controls.loanTransferStatusForBM.value =='pending'">
+                                                Field Required
+                                            </mat-error>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row kt-padding-t-25 justify-content-center" 
+                                *ngIf="approvalForm.controls.loanTransferStatusForBM.value !='pending' && approvalForm.controls.loanTransferStatusForBM.value != 'approved'">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-4 form-label">
+                                            <label class="kt-padding-l-10">Reason</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <select name="" id="" class="form-control" formControlName="reason"
+                                                (change)="patchValue()" [class.isError]="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
+                                                <option value="">Select Status</option>
+                                                <option [value]="reason.description" *ngFor="let reason of reasons">
+                                                    {{reason.description | titlecase}}</option>
+                                            </select>
+                                            <mat-error *ngIf="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
+                                                Field Required
+                                            </mat-error>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row kt-padding-t-25 justify-content-center"
+                                *ngIf="approvalForm.controls.reason.value == 'Other'">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <mat-form-field class="w-100">
+                                                <mat-label>Reason</mat-label>
+                                                <textarea matInput formControlName="reasonByBM"></textarea>
+                                                <mat-error>Field Required</mat-error>
+                                            </mat-form-field>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="row kt-padding-t-25">
                             <div class="offset-10 col-2">
                                 <kt-button [type]="'button'" [value]="'Next'" (click)="approval()"></kt-button>
