@@ -251,7 +251,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       quantity: [, Validators.required],
       grossWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[0-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ornamentImage: [, Validators.required],
       weightMachineZeroWeight: [],
       withOrnamentWeight: [],
@@ -543,7 +543,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           const controls = this.OrnamentsData.at(index) as FormGroup;
           controls.controls.id.patchValue(res.ornaments[index].id)
         }
-        if(res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount){
+        if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
           this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
         }else{
           this.loanApplicationFormService.finalLoanAmount.next(0)

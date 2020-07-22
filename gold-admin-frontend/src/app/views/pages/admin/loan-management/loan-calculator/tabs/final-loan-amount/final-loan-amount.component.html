@@ -7,15 +7,14 @@
                         <label for="" class="mandatory text-color">Gold Gross Weight </label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="goldGrossWeight" min="0" placeholder="0.00 gram"
-                            (blur)="weightCheck();calcGoldDeductionWeight()"
+                        <input ktWeight type="text" class="form-control" formControlName="goldGrossWeight" min="0"
+                            placeholder="0.00" (blur)="weightCheck();calcGoldDeductionWeight()"
                             [class.isError]="controls.goldGrossWeight.touched && controls.goldGrossWeight.invalid">
                         <mat-error
                             *ngIf="controls.goldGrossWeight.errors?.required && controls.goldGrossWeight.touched">
                             Required field
                         </mat-error>
-                        <mat-error
-                            *ngIf="controls.goldGrossWeight.errors?.pattern && controls.goldGrossWeight.touched">
+                        <mat-error *ngIf="controls.goldGrossWeight.errors?.pattern && controls.goldGrossWeight.touched">
                             Invalid Input
                         </mat-error>
                     </div>
@@ -25,8 +24,8 @@
                         <label for="" class="mandatory text-color">Gold Deduction Weight </label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="goldDeductionWeight" min="0" placeholder="0.00 gram"
-                            (blur)="weightCheck();calcGoldDeductionWeight()"
+                        <input ktWeight type="text" class="form-control" formControlName="goldDeductionWeight" min="0"
+                            placeholder="0.00" (blur)="weightCheck();calcGoldDeductionWeight()"
                             [class.isError]="controls.goldDeductionWeight.touched && controls.goldDeductionWeight.invalid">
                         <mat-error
                             *ngIf="controls.goldDeductionWeight.errors?.required && controls.goldDeductionWeight.touched">
@@ -48,7 +47,7 @@
                     </div>
                     <div class="col-6">
                         <input type="number" class="form-control" formControlName="goldNetWeight" readonly
-                            placeholder="0.00 gram"
+                            placeholder="0.00"
                             [class.isError]="controls.goldNetWeight.touched && controls.goldNetWeight.invalid">
                         <mat-error *ngIf="controls.goldNetWeight.errors?.required && controls.goldNetWeight.touched">
                             Required field
@@ -121,7 +120,8 @@
                         <label for="" class="mandatory text-color">LTV Amount</label>
                     </div>
                     <div class="col-6">
-                        <input type="number" class="form-control" formControlName="ltvAmount" placeholder="4,800"
+                        <input type="number" class="form-control" formControlName="ltvAmount"
+                            [placeholder]="controls.currentLtvAmount.value ? controls.currentLtvAmount.value : 4800"
                             [class.isError]="controls.ltvAmount.touched && controls.ltvAmount.invalid">
                         <mat-error *ngIf="controls.ltvAmount.errors?.required && controls.ltvAmount.touched">
                             Required field
