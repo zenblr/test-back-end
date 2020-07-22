@@ -224,7 +224,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 include: [{
                     model: models.customerLoanTransfer,
                     as: "loanTransfer",
-                    attributes:['id','transferredLoanId','disbursedLoanAmount','transactionId','loanTransferStatusForBM','reasonByBM','pawnTicket','signedCheque','declaration','outstandingLoanAmount','loanTransferCurrentStage','isLoanApplied']
+                    attributes:['id','transferredLoanId','loanTransferStatusForAppraiser','disbursedLoanAmount','transactionId','loanTransferStatusForBM','reasonByBM','pawnTicket','signedCheque','declaration','outstandingLoanAmount','loanTransferCurrentStage','isLoanApplied']
                 }]
             },
             {
