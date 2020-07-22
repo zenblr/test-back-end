@@ -168,9 +168,9 @@ exports.loanTransferBmRating = async (req, res, next) => {
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_REJECTED, createdBy, modifiedBy }, { transaction: t })
                     return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'4' })
                 } else {
-                    await models.customerLoanTransfer.update({loanTransferStatusForAppraiser:"pending", loanTransferStatusForBM, modifiedBy, reasonByBM,loanTransferCurrentStage: '4' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransfer.update({loanTransferStatusForAppraiser:"pending", loanTransferStatusForBM, modifiedBy, reasonByBM,loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_PENDING, createdBy, modifiedBy }, { transaction: t })
-                    return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'4' })
+                    return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'3' })
                 }
             } else {
                 return res.status(400).json({ message: 'You cannot change status for this customer' })
