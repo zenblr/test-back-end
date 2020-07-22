@@ -64,6 +64,11 @@ async function getGoldRate() {
     return goldRate.goldRate;
 }
 
+async function getGlobalSetting() {
+    let globalSettings = await models.globalSetting.getGlobalSetting();
+    return globalSettings;
+}
+
 async function ornementsDetails(masterLoanId,whereBlock) {
     let ornaments = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
@@ -105,14 +110,17 @@ async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments) {
         currentLtv:0,
         previousLtv:0
     }
+    let globalSettings = await getGlobalSetting();
     let goldRate = await getGoldRate();
-    ornamentsWeightInfo.currentLtv = goldRate;
+    ornamentsWeightInfo.currentLtv = goldRate * (globalSettings.ltvGoldValue/100);
     ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
     if(requestedOrnaments != null){
         for(const ornaments of requestedOrnaments.loanOrnamentsDetail){
             ornamentsWeightInfo.releaseGrossWeight = ornamentsWeightInfo.releaseGrossWeight + parseInt(ornaments.grossWeight);
             ornamentsWeightInfo.releaseDeductionWeight = ornamentsWeightInfo.releaseDeductionWeight + parseInt(ornaments.deductionWeight);
             ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseInt(ornaments.netWeight);
+            let ltvAmount = ornamentsWeightInfo.currentLtv*(ornaments.ltvPercent/100)
+            ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.releaseAmount + (ltvAmount * parseInt(ornaments.netWeight));
         }
     }
     if(otherOrnaments != null){
@@ -122,7 +130,7 @@ async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments) {
             ornamentsWeightInfo.remainingNetWeight = ornamentsWeightInfo.remainingNetWeight + parseInt(ornaments.netWeight);
         }
     }
-    ornamentsWeightInfo.releaseAmount = parseInt(ornamentsWeightInfo.currentLtv)*ornamentsWeightInfo.releaseNetWeight;
+    ornamentsWeightInfo.releaseAmount = Math.round(ornamentsWeightInfo.releaseAmount);
     return ornamentsWeightInfo;
 }
 
@@ -147,7 +155,7 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
     let requestedOrnaments = await ornementsDetails(masterLoanId,whereSelectedOrmenemts);
     let otherOrnaments = await ornementsDetails(masterLoanId,whereOtherOrmenemts);
     let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments,otherOrnaments);
-    let loanInfo = await getornamentLoanInfo(masterLoanId,ornamentWeight)
-    return res.status(200).json({ message: 'success', ornamentWeight,loanInfo })
+    let loanInfo = await getornamentLoanInfo(masterLoanId,ornamentWeight);
+    return res.status(200).json({ message: 'success', ornamentWeight,loanInfo });
 }
 

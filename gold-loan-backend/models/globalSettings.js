@@ -55,8 +55,9 @@ module.exports = (sequelize, DataTypes) => {
     GlobalSetting.associate = function(models) {
         GlobalSetting.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         GlobalSetting.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
-
     }
+
+    GlobalSetting.getGlobalSetting = () => GlobalSetting.findOne({order:[["updatedAt", "DESC"]]});
 
     return GlobalSetting;
 }
