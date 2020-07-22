@@ -16,15 +16,21 @@
                 </div>
             </div>
 
-            <div class="row kt-padding-t0">
-                <div class="col text-gray font-weight-500">BHUM5595</div>
-                <div class="col text-gray font-weight-500">LOAN77924</div>
-                <div class="col text-gray font-weight-500">5,10,000</div>
-                <div class="col text-gray font-weight-500">12,March 2020</div>
-                <div class="col text-gray font-weight-500">12,March 2020</div>
-                <div class="col text-gray font-weight-500">6 Months</div>
-                <div class="col text-gray font-weight-500">12,March 2020</div>
-                <div class="col-2 text-gray font-weight-500">3,40,000</div>
+            <div class="row kt-padding-t0" *ngIf="loanDetails">
+                <div class="col text-gray font-weight-500">
+                    {{loanDetails.customerLoan.loanPersonalDetail.customerUniqueId}}</div>
+                <div class="col text-gray font-weight-500">
+                    <div *ngFor="let loan of loanDetails.customerLoan.customerLoan">
+                        {{loan.loanUniqueId}}
+                    </div>
+                </div>
+                <div class="col text-gray font-weight-500"> {{loanDetails.customerLoan.finalLoanAmount}}</div>
+                <div class="col text-gray font-weight-500"> {{loanDetails.customerLoan.loanStartDate}}
+                </div>
+                <div class="col text-gray font-weight-500"> {{loanDetails.customerLoan.loanEndDate}}</div>
+                <div class="col text-gray font-weight-500">{{loanDetails.customerLoan.tenure}} Months</div>
+                <div class="col text-gray font-weight-500">{{loanDetails.lastPayment}}</div>
+                <div class="col-2 text-gray font-weight-500"></div>
                 <div class="col font-weight-500">
 
                 </div>
@@ -56,38 +62,87 @@
                             <th class="transparent">Release Date</th>
                             <th class="transparent">Status</th>
                         </thead>
-                        <tbody>
-                            <tr>
+                        <tbody *ngIf="loanDetails">
+                            <tr *ngFor="let ornament of loanDetails.customerLoan.loanOrnamentsDetail, index as i">
                                 <td>
                                     <span style="position: relative">
 
                                         <label class="custom-checkbox">
                                             <span class="label-checkbox text-color font-weight-500"></span>
                                             <input type="checkbox" class="" id="view"
-                                                (change)="selectOrnament($event.target.checked)">
+                                                (change)="selectOrnament($event.target.checked, i , ornament)">
                                             <span class="checkmark top-0"></span>
                                         </label>
                                     </span>
-
                                 </td>
-                                <td>Ring</td>
-                                <td>PAC-01</td>
-                                <td>1</td>
-                                <td>12.00 gm</td>
-                                <td>4.00 gm</td>
-                                <td>8.00 gm</td>
-                                <td>View</td>
-                                <td>View</td>
-                                <td>View</td>
-                                <td>View</td>
-                                <td>View</td>
-                                <td>22 K</td>
-                                <td>95 %</td>
-                                <td>4,50,000</td>
-                                <td>3,50,000</td>
-                                <td>View</td>
+                                <td>{{ ornament.ornamentType.name }}</td>
+                                <!-- <td>
+                                    <ng-container
+                                        *ngFor="let packets of loanDetails.customerLoan.loanPacketDetails[0].packets">
+                                        <ng-container *ngFor="let item of packets.ornamentTypes">
+                                            <ng-container *ngIf="item.name == ornament.ornamentType.name">
+                                                {{ packets.packetUniqueId | uppercase}}
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                </td> -->
+                                <td>
+                                    {{ornament.ornamentType.packetOrnament[0].packet.packetUn}}
+                                </td>
+                                <td>{{ ornament.quantity }}</td>
+                                <td>{{ ornament.grossWeight }} gm</td>
+                                <td>{{ ornament.deductionWeight }} gm</td>
+                                <td>{{ ornament.netWeight }} gm</td>
+                                <td>
+                                    <span *ngIf="ornament.weightMachineZeroWeight; else noImage" class="kt-pointer"
+                                        (click)="previewImage(ornament.weightMachineZeroWeightData.URL, i)">
+                                        View
+                                    </span>
+                                    <!-- <span *ngIf="!ornament.weightMachineZeroWeight"> - </span> -->
+                                </td>
+                                <td>
+                                    <span *ngIf="ornament.withOrnamentWeight; else noImage" class="kt-pointer"
+                                        (click)="previewImage(ornament.withOrnamentWeightData.URL, i)">
+                                        View
+                                    </span>
+                                    <!-- <span *ngIf="!ornament.withOrnamentWeight"> - </span> -->
+                                </td>
+                                <td>
+                                    <span *ngIf="ornament.stoneTouch; else noImage" class="kt-pointer"
+                                        (click)="previewImage(ornament.stoneTouchData.URL, i)">
+                                        View
+                                    </span>
+                                    <!-- <span *ngIf="!ornament.stoneTouch"> - </span> -->
+                                </td>
+                                <td>
+                                    <span *ngIf="ornament.acidTest; else noImage" class="kt-pointer"
+                                        (click)="previewImage(ornament.acidTestData.URL, i)">
+                                        View
+                                    </span>
+                                    <!-- <span *ngIf="!ornament.acidTest"> - </span> -->
+                                </td>
+                                <td>
+                                    <span *ngIf="ornament.purityTest.length; else noImage" class="kt-pointer"
+                                        (click)="previewImage(ornament.purityTestImage.URL[0], i)">
+                                        View
+                                    </span>
+                                    <!-- <span *ngIf="!ornament.purityTest"> - </span> -->
+                                </td>
+                                <td>{{ ornament.karat }} K</td>
+                                <td>{{ ornament.ltvPercent }} %</td>
+                                <td>{{ ornament.ltvAmount }}</td>
+                                <td>{{ ornament.currentLtvAmount }}</td>
+                                <td>
+                                    <span *ngIf="ornament.ornamentImage; else noImage" class="kt-pointer"
+                                        (click)="previewImage(ornament.ornamentImageData.URL, i)">
+                                        View
+                                    </span>
+                                </td>
                                 <td>-</td>
                                 <td>-</td>
+                                <ng-template #noImage>
+                                    <span> - </span>
+                                </ng-template>
                             </tr>
                         </tbody>
                     </table>
@@ -96,7 +151,8 @@
 
                 <div class="row kt-padding-t-15 kt-padding-b-15">
                     <div class="col mx-auto d-flex justify-content-center">
-                        <kt-button [value]="'Release'" [type]="'button'" (click)="release()">
+                        <kt-button [value]="'Release'" [isDisabled]="selectedOrnaments.length == 0" [type]="'button'"
+                            (click)="release()">
                         </kt-button>
                     </div>
                 </div>
@@ -125,19 +181,23 @@
                                     </ng-container>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>12.00 gm</td>
-                                        <td>12.00 gm</td>
+                                    <tr *ngIf="totalSelectedOrnamentDetails">
+                                        <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseGrossWeight }} gm</td>
+                                        <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseDeductionWeight }} gm
+                                        </td>
                                         <ng-container *ngIf="!fullReleaseScreen">
-                                            <td>12.00 gm</td>
-                                            <td>12.00 gm</td>
-                                            <td>1,20,000</td>
+                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseNetWeight }} gm
+                                            </td>
+                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.remainingNetWeight }} gm
+                                            </td>
+                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
                                         </ng-container>
                                         <ng-container *ngIf="fullReleaseScreen">
-                                            <td>12.00 gm</td>
-                                            <td>3,50,000</td>
-                                            <td>50,000</td>
-                                            <td>1,45,000</td>
+                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseNetWeight }} gm
+                                            </td>
+                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.previousLtv }}</td>
+                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.currentLtv }}</td>
+                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
                                         </ng-container>
                                     </tr>
                                 </tbody>
@@ -163,7 +223,7 @@
                         <table class="table outer-border">
                             <thead>
                                 <th class="transparent" style="width: 100px;">Loan ID</th>
-                                <th class="transparent" style="width: 100px;">Loan Amount</th>
+                                <th class="transparent" style="width: 120px;">Loan Amount</th>
                                 <th class="transparent"> Ornament Release Amount</th>
                                 <th class="transparent">Interest Amount</th>
                                 <th class="transparent">Penal Interest </th>
@@ -172,19 +232,28 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>LAG5348</td>
-                                    <td>2,95,000</td>
-                                    <td>1,20,000</td>
-                                    <td>2,500</td>
-                                    <td>750</td>
-                                    <td>1,20,000</td>
-                                    <td class="last">
-                                        <select class="form-control">
-                                            <option value="" selected disabled>Select Payment</option>
-                                            <option value="cash">CASh</option>
-                                            <option value="gateway">RTGS/NEFT/IMPS</option>
-                                            <option value="enach">CHEQUE</option>
-                                        </select>
+                                    <td>
+                                        <ng-container
+                                            *ngFor="let item of totalSelectedOrnamentDetails.loanInfo.loanData">
+                                            <div>{{item.loanUniqueId}}</div>
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <!-- <ng-container
+                                            *ngFor="let item of totalSelectedOrnamentDetails.loanInfo.loanData">
+                                            <div>{{item.loanAmount}}</div>
+                                        </ng-container> -->
+                                        {{ totalSelectedOrnamentDetails.loanInfo.finalLoanAmount }}
+                                    </td>
+                                    <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
+                                    <td>{{ totalSelectedOrnamentDetails.loanInfo.interestAmount }}</td>
+                                    <td>{{ totalSelectedOrnamentDetails.loanInfo.penalInterest }}</td>
+                                    <td>{{ totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }}</td>
+                                    <td>
+                                        <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
+                                            class="apply-kyc">Select Payment</button>
+                                        <button *ngIf="paymentValue" (click)="choosePaymentMethod()"
+                                            class="apply-kyc">{{ paymentValue.paymentMode | uppercase }}</button>
                                     </td>
                                 </tr>
                             </tbody>

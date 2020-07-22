@@ -114,6 +114,7 @@ export class LoanDetailsComponent implements OnInit {
   }
 
   jewelleryRelease(loan) {
-    this.router.navigate([`/admin/repayment/part-release/1`])
+    console.log(loan)
+    this.router.navigate([`/admin/repayment/part-release/${loan.customerLoan[0].masterLoanId}`])
   }
 }
