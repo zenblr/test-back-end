@@ -157,6 +157,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_loan_transfer',
             defaultValue: false
         },
+        isUnsecuredSchemeApplied:{
+            type:DataTypes.BOOLEAN,
+            field:'is_unsecured_scheme_applied',
+            defaultValue: false
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
