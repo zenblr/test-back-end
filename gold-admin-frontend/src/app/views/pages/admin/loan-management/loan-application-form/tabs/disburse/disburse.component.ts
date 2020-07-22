@@ -5,6 +5,7 @@ import { AppliedLoanService } from '../../../../../../../core/loan-management';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-disburse',
@@ -24,7 +25,8 @@ export class DisburseComponent implements OnInit {
     private fb: FormBuilder,
     public loanService: AppliedLoanService,
     public toast: ToastrService,
-    public globalSettingService: GlobalSettingService
+    public globalSettingService: GlobalSettingService,
+    public router:Router
   ) {
     this.globalSettingService.globalSetting$.subscribe(res => {
       // console.log(res)
@@ -35,8 +37,9 @@ export class DisburseComponent implements OnInit {
   ngOnInit() {
     console.log(this.data)
     this.disburseForm = this.fb.group({
-      loanId: [this.data.loan],
-      transactionId: ['', [Validators.required]],
+      loanId: [this.masterAndLoanIds.loanId],
+      securedTransactionId: ['', [Validators.required]],
+      unsecuredTransactionId: ['', Validators.required],
       date: [this.currentDate, Validators.required],
       paymentMode: [''],
       loanAmount: [],
@@ -50,18 +53,43 @@ export class DisburseComponent implements OnInit {
       passbookStatementChequeId: [],
       passbookImg: [],
       passbookImgName: [],
-      masterLoanId: [this.data.masterLoanId],
+      masterLoanId: [this.masterAndLoanIds.masterLoanId],
+      securedSchemeName: [],
+      unsecuredLoanAmount: [],
+      unsecuredSchemeName: [],
+      securedLoanAmount: [],
+      securedLoanId: [],
+      unsecuredLoanId: []
     })
     this.getBankDetails()
+    this.disableSchemeRelatedField()
+  }
 
+  disableSchemeRelatedField() {
+    this.controls.securedSchemeName.disable()
+    this.controls.unsecuredLoanAmount.disable()
+    this.controls.unsecuredSchemeName.disable()
+    this.controls.securedLoanAmount.disable()
+  }
+
+  enableSchemeRelatedField(){
+    this.controls.securedSchemeName.enable()
+    this.controls.unsecuredLoanAmount.enable()
+    this.controls.unsecuredSchemeName.enable()
+    this.controls.securedLoanAmount.enable()
   }
 
   getBankDetails() {
+    console.log(this.masterAndLoanIds)
     this.loanService.getBankDetails(this.masterAndLoanIds.loanId, this.masterAndLoanIds.masterLoanId).subscribe(res => {
       if (Object.keys(res.data).length) {
         this.details = res.data
         this.patchValue(res.data.paymentType)
         this.disburseForm.patchValue(res.data)
+        if (!this.details.isUnsecuredSchemeApplied) {
+          this.controls.unsecuredTransactionId.clearValidators()
+          this.controls.unsecuredTransactionId.updateValueAndValidity()
+        }
         this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
         if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
           this.disburseForm.controls.paymentMode.patchValue('bank')
@@ -118,16 +146,19 @@ export class DisburseComponent implements OnInit {
       return
     }
     this.formEnable()
+    this.enableSchemeRelatedField()
     this.loanService.disburse(this.disburseForm.value).pipe(
       map(res => {
         this.toast.success(res.message)
-        this.dialogRef.close(res);
+        this.router.navigate(['/admin/loan-management/applied-loan'])
       }),
       catchError(err => {
-        this.toast.error(err.error.message);
+        if (err.error.message)
+          this.toast.error(err.error.message);
         throw err
       }), finalize(() => {
         this.formDisable()
+        this.disableSchemeRelatedField()
       })).subscribe()
   }
 

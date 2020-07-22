@@ -22,6 +22,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class UploadLoanDocumentsComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter();
+  @Output() stage: EventEmitter<any> = new EventEmitter();
   @Input() loanDocumnets
   @Input() masterAndLoanIds;
   @Input() loanTransfer
@@ -288,6 +289,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
           // }else{
           if (res.loanCurrentStage) {
             let stage = Number(res.loanCurrentStage) - 1
+            this.stage.emit(res.loanCurrentStage)
             this.next.emit(stage)
           // }
         }

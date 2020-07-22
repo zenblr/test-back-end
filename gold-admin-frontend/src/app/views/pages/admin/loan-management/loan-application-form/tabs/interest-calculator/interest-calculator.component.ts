@@ -126,7 +126,7 @@ export class InterestCalculatorComponent implements OnInit {
             }
             temp.push(data)
           });
-          if (finalLoan.isUnsecuredSchemeApplied) {
+          if (finalLoan.masterLoan.isUnsecuredSchemeApplied) {
             this.unSecuredSchemeCheck(finalLoan.masterLoan.unsecuredLoanAmount, (finalLoan.scheme.maximumPercentageAllowed / 100), 'edit')
             this.selectedUnsecuredscheme.push(finalLoan.unsecuredLoan.scheme)
             this.finalInterestForm.patchValue({ unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id })

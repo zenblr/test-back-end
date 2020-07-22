@@ -58,11 +58,18 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     })
   }
 
-  disbaleForm(stage) {
+  disableForm(stage) {
     this.stage = stage
     if (stage == 6 || stage == 1) {
       this.controls.loanStatusForBM.disable()
       this.viewBMForm = false;
+      this.viewOpertaionalForm = false;
+
+    } else if (stage == 3) {
+      this.controls.loanStatusForAppraiser.disable()
+      this.viewBMForm = false;
+      this.viewOpertaionalForm = false;
+
     } else if (stage == 2) {
       this.controls.loanStatusForAppraiser.disable()
       this.viewBMForm = true;
@@ -138,7 +145,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     if (changes.loanStage && changes.loanStage.currentValue) {
-      this.disbaleForm(changes.loanStage.currentValue.id)
+      this.disableForm(changes.loanStage.currentValue.id)
     }
 
     if (changes.disable && changes.disable.currentValue) {
@@ -285,11 +292,13 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         map(res => {
           this.router.navigate(['/admin/loan-management/applied-loan'])
         })).subscribe()
-    } else if (this.stage == 1) {
+    } else if (this.stage == 1 || this.stage == 6) {
       // this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
       this.loanFormService.applyForLoan(this.approvalForm.value, this.masterAndLoanIds).pipe(
         map(res => {
           if (this.approvalForm.controls.loanStatusForAppraiser.value == 'approved') {
+            this.disableForm(3)
+            this.stage = 3
             this.ornamentType.emit(res.ornamentType)
           } else {
             this.router.navigate(['/admin/loan-management/applied-loan'])

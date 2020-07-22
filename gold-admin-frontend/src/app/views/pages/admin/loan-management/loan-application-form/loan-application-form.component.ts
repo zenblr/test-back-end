@@ -77,7 +77,7 @@ export class LoanApplicationFormComponent implements OnInit {
       // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "packet-image-upload") {
         if (this.customerDetail.loanPacketDetails.length) {
-          this.selected = 7;
+          this.selected = 8;
         } else {
           this.selected = 6;
         }

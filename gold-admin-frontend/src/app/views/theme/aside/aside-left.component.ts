@@ -256,7 +256,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 				localStorage.clear();
 				this.cookieService.deleteAll();
 				this.sharedService.role.next(null);
-				this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl } });
+				this.router.navigate(['/auth/login']);
 			}
 		), catchError(err => {
 			throw err
