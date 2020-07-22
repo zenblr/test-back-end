@@ -1,115 +1,111 @@
 <kt-portlet>
     <kt-portlet-body>
-            <!-- <h3>Rough Scrap Amount</h3> -->
-            <div class="container minHeight">
-                <form action="" [formGroup]="roughScrapForm">
-                    <div class="row justify-content-start">
-                        <div class="offset-2 col-8 align-self-center">
-                            <div class="row  kt-margin-t-30">
-                                <div class="col-4 form-label">
-                                    <label class="mandatory text-color">Gold Gross Weight</label>
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" class="form-control" formControlName="grossWeight" min="0"
-                                        placeholder="10.50 grams" (blur)="weightCheck();calcGoldDeductionWeight()"
-                                        [class.isError]="controls.grossWeight.touched && controls.grossWeight.invalid">
-                                    <mat-error
-                                        *ngIf="controls.grossWeight.errors?.required && controls.grossWeight.touched">
-                                        Required field
-                                    </mat-error>
-                                    <mat-error
-                                        *ngIf="controls.grossWeight.errors?.pattern && controls.grossWeight.touched">
-                                        Invalid Input
-                                    </mat-error>
+        <div class="container minHeight">
+            <form [formGroup]="roughScrapForm">
+                <div class="row justify-content-start">
+                    <div class="offset-2 col-8 align-self-center">
+                        <div class="row  kt-margin-t-30">
+                            <div class="col-4 form-label">
+                                <label class="mandatory text-color">Gold Gross Weight</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control" formControlName="grossWeight" min="0"
+                                    placeholder="10.50 grams" (blur)="weightCheck();calcGoldDeductionWeight();"
+                                    [class.isError]="controls.grossWeight.touched && controls.grossWeight.invalid">
+                                <mat-error
+                                    *ngIf="controls.grossWeight.errors?.required && controls.grossWeight.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error *ngIf="controls.grossWeight.errors?.pattern && controls.grossWeight.touched">
+                                    Invalid Input
+                                </mat-error>
 
-                                </div>
                             </div>
-                            <div class="row kt-margin-t-10">
-                                <div class="col-4 form-label">
-                                    <label class="mandatory text-color">Gold Deduction Weight</label>
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" class="form-control" formControlName="deductionWeight" min="0"
-                                        placeholder="2.00 grams" (blur)="weightCheck();calcGoldDeductionWeight()"
-                                        [class.isError]="controls.deductionWeight.touched && controls.deductionWeight.invalid">
-                                    <mat-error
-                                        *ngIf="controls.deductionWeight.errors?.required && controls.deductionWeight.touched">
-                                        Required field
-                                    </mat-error>
-                                    <mat-error
-                                        *ngIf="controls.deductionWeight.errors?.pattern && controls.deductionWeight.touched">
-                                        Invalid Input
-                                    </mat-error>
-                                    <mat-error
-                                        *ngIf="controls.deductionWeight.errors?.weight && controls.deductionWeight.touched">
-                                        <small>Deduction Weight should be lesser than Gross Weight</small>
-                                    </mat-error>
-                                </div>
+                        </div>
+                        <div class="row kt-margin-t-10">
+                            <div class="col-4 form-label">
+                                <label class="mandatory text-color">Gold Deduction Weight</label>
                             </div>
-                            <div class="row kt-margin-t-10">
-                                <div class="col-4 form-label">
-                                    <label class="mandatory text-color">Gold Net Weight</label>
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" class="form-control" formControlName="netWeight"
-                                        placeholder="8.50 grams"
-                                        [class.isError]="controls.netWeight.touched && controls.netWeight.invalid"
-                                        readonly>
-                                    <mat-error
-                                        *ngIf="controls.netWeight.errors?.required && controls.netWeight.touched">
-                                        Required field
-                                    </mat-error>
+                            <div class="col-6">
+                                <input type="number" class="form-control" formControlName="deductionWeight" min="0"
+                                    placeholder="2.00 grams" (blur)="weightCheck();calcGoldDeductionWeight();"
+                                    [class.isError]="controls.deductionWeight.touched && controls.deductionWeight.invalid">
+                                <mat-error
+                                    *ngIf="controls.deductionWeight.errors?.required && controls.deductionWeight.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.deductionWeight.errors?.pattern && controls.deductionWeight.touched">
+                                    Invalid Input
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.deductionWeight.errors?.weight && controls.deductionWeight.touched">
+                                    <small>Deduction Weight should be lesser than Gross Weight</small>
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-margin-t-10">
+                            <div class="col-4 form-label">
+                                <label class="mandatory text-color">Gold Net Weight</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control" formControlName="netWeight"
+                                    placeholder="8.50 grams"
+                                    [class.isError]="controls.netWeight.touched && controls.netWeight.invalid" readonly>
+                                <mat-error *ngIf="controls.netWeight.errors?.required && controls.netWeight.touched">
+                                    Required field
+                                </mat-error>
 
-                                </div>
                             </div>
-                            <div class="row kt-margin-t-10">
-                                <div class="col-4 form-label">
-                                    <label class="mandatory text-color">Purity %</label>
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" class="form-control" formControlName="purity" min="0"
-                                        placeholder="90 %" (input)="calcFineWeight()"
-                                        [class.isError]="controls.purity.touched && controls.purity.invalid">
-                                    <mat-error *ngIf="controls.purity.errors?.required && controls.purity.touched">
-                                        Required field
-                                    </mat-error>
-                                    <mat-error *ngIf="controls.purity.errors?.pattern && controls.purity.touched">
-                                        Invalid Input
-                                    </mat-error>
-                                </div>
+                        </div>
+                        <div class="row kt-margin-t-10">
+                            <div class="col-4 form-label">
+                                <label class="mandatory text-color">Purity %</label>
                             </div>
-                            <div class="row kt-margin-t-10">
-                                <div class="col-4 form-label">
-                                    <label class="mandatory text-color">Fine Weight</label>
-                                </div>
-                                <div class="col-6">
-                                    <input type="number" class="form-control" formControlName="fineWeight"
-                                        placeholder="2.00 grams"
-                                        [class.isError]="controls.fineWeight.touched && controls.fineWeight.invalid"
-                                        readonly>
-                                    <mat-error
-                                        *ngIf="controls.fineWeight.errors?.required && controls.fineWeight.touched">
-                                        Required field
-                                    </mat-error>
-                                </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control" formControlName="purity" min="0"
+                                    placeholder="90 %" (keyup)="calcFineWeight();"
+                                    [class.isError]="controls.purity.touched && controls.purity.invalid">
+                                <mat-error *ngIf="controls.purity.errors?.required && controls.purity.touched">
+                                    Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="(controls.purity.errors?.pattern || controls.purity.errors?.max) && controls.purity.touched">
+                                    Invalid Input
+                                </mat-error>
                             </div>
-                            <div class="row kt-margin-t-30">
-                                <div class="offset-4 col-6">
-                                    <kt-button [value]="'Calculate'" [type]="'button'" (click)="calculate()">
-                                    </kt-button>
-                                </div>
+                        </div>
+                        <div class="row kt-margin-t-10">
+                            <div class="col-4 form-label">
+                                <label class="mandatory text-color">Fine Weight</label>
                             </div>
-                            <div class="row kt-margin-t-20">
-                                <div class="offset-4 col-6">
-                                    <p class="text-gray font-weight-500 m-0">Total Amount</p>
-                                    <h3 class="text-color">
-                                        <span class="currency">{{scrapAmount | indianCurrencyFormat}}</span>
-                                    </h3>
-                                </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control" formControlName="fineWeight"
+                                    placeholder="2.00 grams"
+                                    [class.isError]="controls.fineWeight.touched && controls.fineWeight.invalid"
+                                    readonly>
+                                <mat-error *ngIf="controls.fineWeight.errors?.required && controls.fineWeight.touched">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div class="row kt-margin-t-30">
+                            <div class="offset-4 col-6">
+                                <kt-button [value]="'Calculate'" [type]="'button'" (click)="calculate()">
+                                </kt-button>
+                            </div>
+                        </div>
+                        <div class="row kt-margin-t-20">
+                            <div class="offset-4 col-6">
+                                <p class="text-gray font-weight-500 m-0">Total Amount</p>
+                                <h3 class="text-color">
+                                    <span class="currency">{{scrapAmount | indianCurrencyFormat}}</span>
+                                </h3>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
+        </div>
     </kt-portlet-body>
 </kt-portlet>

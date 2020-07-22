@@ -16,7 +16,7 @@ export class ScrapCalculatorComponent implements OnInit {
     private fb: FormBuilder,
     private globalSettingService: GlobalSettingService,
     private goldRateService: GoldRateService,
-    ) { }
+  ) { }
 
   ngOnInit() {
     this.initForm();
@@ -34,7 +34,7 @@ export class ScrapCalculatorComponent implements OnInit {
       grossWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       deductionWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      purity: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      purity: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$'), Validators.max(100)]],
       fineWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       scrapLtvGoldValue: []
     });

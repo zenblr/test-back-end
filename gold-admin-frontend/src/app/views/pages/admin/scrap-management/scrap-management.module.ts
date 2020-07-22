@@ -12,79 +12,19 @@ import { DeleteEntityDialogComponent } from '../../../partials/content/crud';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 
 import { ScrapCalculatorComponent } from './scrap-calculator/scrap-calculator.component';
-import { LoanApplicationFormComponent } from './scrap-application-form/loan-application-form.component';
-import { BasicDetailsComponent } from './scrap-application-form/tabs/basic-details/basic-details.component';
-import { KycDetailsComponent } from './scrap-application-form/tabs/kyc-details/kyc-details.component';
-import { NomineeDetailsComponent } from './scrap-application-form/tabs/nominee-details/nominee-details.component'
-// import { OrnamentsComponent } from './scrap-application-form/tabs/ornaments/ornaments.component';
-import { BankDetailsComponent } from './scrap-application-form/tabs/bank-details/bank-details.component';
-import { ApprovalComponent } from './scrap-application-form/tabs/approval/approval.component';
-import { UploadPacketsComponent } from './packets/upload-packets/upload-packets.component';
-import { PacketsListComponent } from './packets/packets-list/packets-list.component';
-import { AssignPacketsComponent } from './packets/assign-packets/assign-packets.component';
-import { InterestCalculatorComponent } from './scrap-application-form/tabs/interest-calculator/interest-calculator.component';
-import { UnSecuredSchemeComponent } from './scrap-application-form/un-secured-scheme/un-secured-scheme.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
-import { PacketTrackingComponent } from './packets/packet-tracking/packet-tracking.component';
-import { UpdateLocationComponent } from './packets/update-location/update-location.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
-import { UploadLoanDocumentsComponent } from './scrap-application-form/tabs/upload-loan-documents/upload-loan-documents.component';
-
-// import { LoanDetailsComponent } from './scrap-details/loan-details.component';
-// import { DisburseDialogComponent } from './disburse-dialog/disburse-dialog.component';
-// import { AppliedLoanComponent } from './applied-scrap/applied-loan.component';
-// import { TopUpComponent } from './top-up/top-up.component';
-// import { LoanTransferComponent } from './scrap-transfer/loan-transfer.component';
-// import { LoanTransferListComponent } from './scrap-transfer-list/loan-transfer-list.component';
 
 const rout: Routes = [
   {
     path: 'scrap-calculator',
     component: ScrapCalculatorComponent
   },
-  {
-    path: 'scrap-application-form',
-    component: LoanApplicationFormComponent
-  },
-  {
-    path: 'scrap-application-form/:id',
-    component: LoanApplicationFormComponent
-  },
-  {
-    path: 'packet',
-    component: PacketsListComponent
-  },
-  {
-    path: 'packet-image-upload/:id',
-    component: LoanApplicationFormComponent
-  },
-  {
-    path: 'packet-tracking',
-    component: PacketTrackingComponent
-  },
-  {
-    path: 'view-loan/:id',
-    component: LoanApplicationFormComponent
-  },
 ]
 
 @NgModule({
   declarations: [
     ScrapCalculatorComponent,
-    LoanApplicationFormComponent,
-    BasicDetailsComponent,
-    KycDetailsComponent,
-    NomineeDetailsComponent,
-    BankDetailsComponent,
-    ApprovalComponent,
-    UploadPacketsComponent,
-    PacketsListComponent,
-    AssignPacketsComponent,
-    InterestCalculatorComponent,
-    UnSecuredSchemeComponent,
-    PacketTrackingComponent,
-    UpdateLocationComponent,
-    UploadLoanDocumentsComponent,
   ],
   imports: [
     CommonModule,
@@ -110,12 +50,8 @@ const rout: Routes = [
     LayoutUtilsService
   ],
   entryComponents: [
-    AssignPacketsComponent,
     DeleteEntityDialogComponent,
-    UnSecuredSchemeComponent,
     WebcamDialogComponent,
-    UpdateLocationComponent,
-    // OrnamentsComponent,
     UserReviewComponent
   ]
 })
