@@ -43,18 +43,23 @@ exports.customerDetails = async (req, res, next) => {
             as: 'customer'
         }]
     })
-    let { loanStatusForAppraiser, loanStatusForBM, loanStatusForOperatinalTeam } = customerLoanStage;
-    if (loanStatusForAppraiser != 'rejected' || loanStatusForBM != 'rejected' || loanStatusForOperatinalTeam != 'rejected') {
-        if (customerLoanStage.loanStageId == bmRatingId.id) {
-            return res.status(400).json({ message: 'This customer previous Loan bm rating is pending' })
-        } else if (customerLoanStage.loanStageId == opsRatingId.id) {
-            return res.status(400).json({ message: 'This customer previous Loan ops rating is pending' })
-        } else if (customerLoanStage.loanStageId == disbursedPendingId.id) {
-            return res.status(400).json({ message: 'This customer previous Loan disbursement is pending' })
-        }
-    }
+
 
     if (!check.isEmpty(customerLoanStage)) {
+        let { loanStatusForAppraiser, loanStatusForBM, loanStatusForOperatinalTeam } = customerLoanStage;
+        if (loanStatusForAppraiser != 'rejected' || loanStatusForBM != 'rejected' || loanStatusForOperatinalTeam != 'rejected') {
+            if (customerLoanStage.loanStageId == bmRatingId.id) {
+                return res.status(400).json({ message: 'This customer previous Loan bm rating is pending' })
+            } else if (customerLoanStage.loanStageId == opsRatingId.id) {
+                return res.status(400).json({ message: 'This customer previous Loan ops rating is pending' })
+            }
+            // else if (customerLoanStage.loanStageId == disbursedPendingId.id) {
+            //     return res.status(400).json({ message: 'This customer previous Loan disbursement is pending' })
+            // }
+        }
+
+
+
         const firstName = customerLoanStage.customer.firstName
         const lastName = customerLoanStage.customer.lastName
 
@@ -791,23 +796,34 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
 
     let checkLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        order: [models.customerLoan, 'id', 'asc'],
+        order: [[models.customerLoan, 'id', 'asc']],
         include: [{
             model: models.customerLoan,
-            as: 'customerLoan'
+            as: 'customerLoan',
+            include: [{
+                model: models.scheme,
+                as: 'scheme',
+                attributes:['id','schemeName']
+            }]
         }]
     })
     let securedLoanAmount;
     let unsecuredLoanAmount;
     let securedLoanId;
     let unsecuredLoanId;
+    let securedSchemeName;
+    let unsecuredSchemeName;
     if (checkLoan.isUnsecuredSchemeApplied == true) {
         securedLoanId = checkLoan.customerLoan[0].id
+        securedSchemeName =  checkLoan.customerLoan[0].scheme.schemeName
         securedLoanAmount = Number(checkLoan.securedLoanAmount)
+
         unsecuredLoanId = checkLoan.customerLoan[1].id
-        unsecuredLoanAmount = Number(check.unsecuredLoanAmount) - Number(checkLoan.processingCharge)
+        unsecuredSchemeName =  checkLoan.customerLoan[1].scheme.schemeName
+        unsecuredLoanAmount = Number(checkLoan.unsecuredLoanAmount) - Number(checkLoan.processingCharge)
     } else {
         securedLoanId = checkLoan.customerLoan[0].id
+        securedSchemeName =  checkLoan.customerLoan[0].scheme.schemeName
         securedLoanAmount = Number(checkLoan.securedLoanAmount) - Number(checkLoan.processingCharge);
     }
 
@@ -815,10 +831,14 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         userBankDetail: userBankDetails,
         branchBankDetail: brokerBankDetails,
         paymentType: userBankDetails.paymentType,
+        isUnsecuredSchemeApplied: checkLoan.isUnsecuredSchemeApplied,
+        finalLoanAmount: securedLoanAmount + unsecuredLoanAmount,
         securedLoanAmount,
         securedLoanId,
+        securedSchemeName,
         unsecuredLoanAmount,
         unsecuredLoanId,
+        unsecuredSchemeName,
         masterLoanId
     }
     return res.status(200).json({ message: 'success', data: data })
