@@ -61,7 +61,7 @@ async function getGoldRate() {
         order:[["updatedAt", "DESC"]],
         attributes:['goldRate']
     })
-    return goldRate;
+    return goldRate.goldRate;
 }
 
 async function ornementsDetails(masterLoanId,whereBlock) {
@@ -106,7 +106,7 @@ async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments) {
         previousLtv:0
     }
     let goldRate = await getGoldRate();
-    ornamentsWeightInfo.currentLtv = goldRate.goldRate;
+    ornamentsWeightInfo.currentLtv = goldRate;
     ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
     if(requestedOrnaments != null){
         for(const ornaments of requestedOrnaments.loanOrnamentsDetail){
