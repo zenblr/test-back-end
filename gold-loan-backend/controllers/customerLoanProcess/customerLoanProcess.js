@@ -866,25 +866,13 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
         }]
     })
 
-
-    let startDate = Loan.customerLoanInterest[0].emiDueDate;
-    let endDate = Loan.customerLoanInterest[Loan.customerLoanInterest.length - 1].emiDueDate;
-
-    let holidayDate = await models.holidayMaster.findAll({
-        attributes: ['holidayDate'],
-        where: {
-            holidayDate: {
-                [Op.between]: [startDate, endDate]
-            }
-        }
-    })
     //for secured interest date change
-    let securedInterest = await getInterestTable(masterLoanId, securedLoanId, Loan, holidayDate);
+    let securedInterest = await getInterestTable(masterLoanId, securedLoanId, Loan);
 
     //for unsecured interest date change
     var unsecuredInterest
     if (Loan.isUnsecuredSchemeApplied == true) {
-        unsecuredInterest = await getInterestTable(masterLoanId, unsecuredLoanId, Loan, holidayDate);
+        unsecuredInterest = await getInterestTable(masterLoanId, unsecuredLoanId, Loan);
     }
 
     let newStartDate = date
@@ -941,7 +929,20 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 }
 
 
-async function getInterestTable(masterLoanId, loanId, Loan, holidayDate) {
+async function getInterestTable(masterLoanId, loanId, Loan) {
+
+    let startDate = Loan.customerLoanInterest[0].emiDueDate;
+    let endDate = Loan.customerLoanInterest[Loan.customerLoanInterest.length - 1].emiDueDate;
+
+    let holidayDate = await models.holidayMaster.findAll({
+        attributes: ['holidayDate'],
+        where: {
+            holidayDate: {
+                [Op.between]: [startDate, endDate]
+            }
+        }
+    })
+
     let interestTable = await models.customerLoanInterest.findAll({
         where: { loanId: loanId },
         order: [['id', 'asc']]
