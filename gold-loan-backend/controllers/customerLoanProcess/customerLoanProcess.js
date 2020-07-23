@@ -443,7 +443,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
     let loanData = await sequelize.transaction(async t => {
         if (loanStatusForAppraiser == "approved") {
-            if (goldValuationForAppraiser == false && applicationFormForAppraiser == false) {
+            if (goldValuationForAppraiser == false || applicationFormForAppraiser == false) {
                 return res.status(400).json({ message: 'One field is not verified' })
             }
 
@@ -475,12 +475,6 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
         } else {
             let stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
-
-            if (loanStatusForAppraiser == 'approved') {
-                if (applicationFormForAppraiser == false || goldValuationForAppraiser == false) {
-                    return res.status(400).json({ message: `One of field is not verified` })
-                }
-            }
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });
 
@@ -885,55 +879,12 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
         }
     })
     //for secured interest date change
-    let securedInterest = await models.customerLoanInterest.findAll({
-        where: { loanId: securedLoanId },
-        order: [['id', 'asc']]
-    })
-
-    for (let i = 0; i < securedInterest.length; i++) {
-        let date = new Date();
-        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
-        securedInterest[i].emiDueDate = newEmiDueDate
-        for (let j = 0; j < holidayDate.length; j++) {
-            let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
-            if (momentDate == holidayDate[j].holidayDate) {
-                let newDate = new Date(newEmiDueDate);
-                let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                securedInterest[i].emiDueDate = holidayEmiDueDate
-                newEmiDueDate = holidayEmiDueDate
-                j = 0
-            }
-        }
-        securedInterest.loanId = securedLoanId
-        securedInterest.masterLoanId = masterLoanId
-    }
+    let securedInterest = await getInterestTable(masterLoanId, securedLoanId, Loan, holidayDate);
 
     //for unsecured interest date change
     var unsecuredInterest
     if (Loan.isUnsecuredSchemeApplied == true) {
-        unsecuredInterest = await models.customerLoanInterest.findAll({
-            where: { loanId: unsecuredLoanId },
-            order: [['id', 'asc']]
-        })
-
-        for (let i = 0; i < unsecuredInterest.length; i++) {
-            let date = new Date();
-            let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
-            unsecuredInterest[i].emiDueDate = newEmiDueDate
-            for (let j = 0; j < holidayDate.length; j++) {
-                let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
-                if (momentDate == holidayDate[j].holidayDate) {
-                    let newDate = new Date(newEmiDueDate);
-                    let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                    unsecuredInterest[i].emiDueDate = holidayEmiDueDate
-                    newEmiDueDate = holidayEmiDueDate
-                    j = 0
-                }
-            }
-            unsecuredInterest.loanId = unsecuredLoanId
-            unsecuredInterest.masterLoanId = masterLoanId
-        }
-
+        unsecuredInterest = await getInterestTable(masterLoanId, unsecuredLoanId, Loan, holidayDate);
     }
 
     let newStartDate = date
@@ -987,6 +938,34 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     } else {
         return res.status(404).json({ message: 'Given loan id is not proper' })
     }
+}
+
+
+async function getInterestTable(masterLoanId, loanId, Loan, holidayDate) {
+    let interestTable = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId },
+        order: [['id', 'asc']]
+    })
+
+    for (let i = 0; i < interestTable.length; i++) {
+        let date = new Date();
+        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
+        interestTable[i].emiDueDate = newEmiDueDate
+        for (let j = 0; j < holidayDate.length; j++) {
+            let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
+            if (momentDate == holidayDate[j].holidayDate) {
+                let newDate = new Date(newEmiDueDate);
+                let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
+                interestTable[i].emiDueDate = holidayEmiDueDate
+                newEmiDueDate = holidayEmiDueDate
+                j = 0
+            }
+        }
+        interestTable.loanId = loanId
+        interestTable.masterLoanId = masterLoanId
+    }
+
+    return interestTable
 }
 
 //get single customer loan details DONE
