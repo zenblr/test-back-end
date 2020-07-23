@@ -124,24 +124,24 @@ async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments,loanData
     ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
     if(requestedOrnaments != null){
         for(const ornaments of requestedOrnaments.loanOrnamentsDetail){
-            ornamentsWeightInfo.releaseGrossWeight = ornamentsWeightInfo.releaseGrossWeight + parseInt(ornaments.grossWeight);
-            ornamentsWeightInfo.releaseDeductionWeight = ornamentsWeightInfo.releaseDeductionWeight + parseInt(ornaments.deductionWeight);
-            ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseInt(ornaments.netWeight);
+            ornamentsWeightInfo.releaseGrossWeight = ornamentsWeightInfo.releaseGrossWeight + parseFloat(ornaments.grossWeight);
+            ornamentsWeightInfo.releaseDeductionWeight = ornamentsWeightInfo.releaseDeductionWeight + parseFloat(ornaments.deductionWeight);
+            ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseFloat(ornaments.netWeight);
             if(otherOrnaments == null){
                 let ltvAmount = ornamentsWeightInfo.currentLtv*(ornaments.ltvPercent/100)
-                ornamentsWeightInfo.outstandingAmount = ornamentsWeightInfo.outstandingAmount + (ltvAmount * parseInt(ornaments.netWeight));
+                ornamentsWeightInfo.outstandingAmount = ornamentsWeightInfo.outstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
             }
         }
     }
     if(otherOrnaments != null){
         for(const ornaments of otherOrnaments.loanOrnamentsDetail){
-            ornamentsWeightInfo.remainingGrossWeight = ornamentsWeightInfo.remainingGrossWeight + parseInt(ornaments.grossWeight);
-            ornamentsWeightInfo.remainingDeductionWeight = ornamentsWeightInfo.remainingDeductionWeight + parseInt(ornaments.deductionWeight);
-            ornamentsWeightInfo.remainingNetWeight = ornamentsWeightInfo.remainingNetWeight + parseInt(ornaments.netWeight);
+            ornamentsWeightInfo.remainingGrossWeight = ornamentsWeightInfo.remainingGrossWeight + parseFloat(ornaments.grossWeight);
+            ornamentsWeightInfo.remainingDeductionWeight = ornamentsWeightInfo.remainingDeductionWeight + parseFloat(ornaments.deductionWeight);
+            ornamentsWeightInfo.remainingNetWeight = ornamentsWeightInfo.remainingNetWeight + parseFloat(ornaments.netWeight);
             let ltvAmount = ornamentsWeightInfo.currentLtv*(ornaments.ltvPercent/100)
-            ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.releaseAmount + (ltvAmount * parseInt(ornaments.netWeight));
+            ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.releaseAmount + (ltvAmount * parseFloat(ornaments.netWeight));
         }
-        ornamentsWeightInfo.releaseAmount = parseInt(loanData.finalLoanAmount) - Math.round(ornamentsWeightInfo.releaseAmount)
+        ornamentsWeightInfo.releaseAmount = parseFloat(loanData.finalLoanAmount) - Math.round(ornamentsWeightInfo.releaseAmount)
     }
     
     ornamentsWeightInfo.outstandingAmount = Math.round(ornamentsWeightInfo.outstandingAmount);
@@ -171,6 +171,18 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
     let otherOrnaments = await ornementsDetails(masterLoanId,whereOtherOrmenemts);
     let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments,otherOrnaments,loanData);
     let loanInfo = await getornamentLoanInfo(masterLoanId,ornamentWeight);
+    return res.status(200).json({ message: 'success', ornamentWeight,loanInfo });
+}
+
+exports.ornamentsPartRelease = async (req, res, next) => {
+    let {paymentType,paidAmount,bankName,chequeNumber,ornamentId,depositDate,transactionId,masterLoanId,releaseAmount,interestAmount,penalInterest,payableAmount} = req.body;
+    
+    
+
+
+
+
+
     return res.status(200).json({ message: 'success', ornamentWeight,loanInfo });
 }
 
