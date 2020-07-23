@@ -1,0 +1,1 @@
+export { ScrapApplicationFormService } from './scrap-application-form';

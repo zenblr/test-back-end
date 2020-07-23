@@ -306,10 +306,10 @@ export class PageConfig {
 				"scrap-calculator": {
 					page: { title: "Scrap Calculator", desc: "" },
 				},
-				"scrap-application-form": {
-					page: { title: "Scrap Application Form", desc: "" },
+				"scrap-buying-application-form": {
+					page: { title: "Scrap Buying Application Form", desc: "" },
 					id: {
-						page: { title: "Scrap Application Form", desc: "" },
+						page: { title: "Scrap Buying Application Form", desc: "" },
 					}
 				},
 				'view-Scrap': {

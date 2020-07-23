@@ -461,8 +461,8 @@ export class MenuConfig {
 									permission: false,
 								},
 								{
-									title: "Scrap Application Form",
-									page: "/admin/scrap-management/scrap-application-form",
+									title: "Scrap Buying Application Form",
+									page: "/admin/scrap-management/scrap-buying-application-form",
 									bullet: 'dot',
 									permission: false,
 								},

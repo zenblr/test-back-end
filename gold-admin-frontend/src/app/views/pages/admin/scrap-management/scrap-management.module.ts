@@ -12,7 +12,14 @@ import { DeleteEntityDialogComponent } from '../../../partials/content/crud';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 
 import { ScrapCalculatorComponent } from './scrap-calculator/scrap-calculator.component';
-import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
+import { ScrapApplicationFormComponent } from './scrap-application-form/scrap-application-form.component';
+// import { NomineeDetailsComponent } from '../loan-management/loan-application-form/tabs/nominee-details/nominee-details.component';
+// import { InterestCalculatorComponent } from '../loan-management/loan-application-form/tabs/interest-calculator/interest-calculator.component';
+// import { BankDetailsComponent } from '../loan-management/loan-application-form/tabs/bank-details/bank-details.component';
+// import { ApprovalComponent } from '../loan-management/loan-application-form/tabs/approval/approval.component';
+// import { UploadPacketsComponent } from '../loan-management/packets/upload-packets/upload-packets.component';
+// import { UploadLoanDocumentsComponent } from '../loan-management/loan-application-form/tabs/upload-loan-documents/upload-loan-documents.component';
+// import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 
 const rout: Routes = [
@@ -20,11 +27,22 @@ const rout: Routes = [
     path: 'scrap-calculator',
     component: ScrapCalculatorComponent
   },
+  {
+    path: 'scrap-buying-application-form',
+    component: ScrapApplicationFormComponent
+  },
 ]
 
 @NgModule({
   declarations: [
     ScrapCalculatorComponent,
+    ScrapApplicationFormComponent,
+    // NomineeDetailsComponent,
+    // InterestCalculatorComponent,
+    // BankDetailsComponent,
+    // ApprovalComponent,
+    // UploadPacketsComponent,
+    // UploadLoanDocumentsComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +69,7 @@ const rout: Routes = [
   ],
   entryComponents: [
     DeleteEntityDialogComponent,
-    WebcamDialogComponent,
+    // WebcamDialogComponent,
     UserReviewComponent
   ]
 })

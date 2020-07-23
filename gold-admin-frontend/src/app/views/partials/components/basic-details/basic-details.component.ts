@@ -2,15 +2,16 @@ import { Component, OnInit, EventEmitter, Output, OnChanges, Input, ChangeDetect
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
+import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { catchError, map, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { PurposeService } from '../../../../../../../core/masters/purposes/service/purpose.service';
-import { ImagePreviewDialogComponent } from '../../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PurposeService } from '../../../../core/masters/purposes/service/purpose.service';
+import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { MatDialog } from '@angular/material';
-import { AppliedKycService } from '../../../../../../../core/applied-kyc/services/applied-kyc.service';
-import { UserReviewComponent } from '../../../../kyc-settings/tabs/user-review/user-review.component';
-import { LoanTransferService } from '../../../../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
+import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
+import { UserReviewComponent } from '../../../pages/admin/kyc-settings/tabs/user-review/user-review.component';
+import { LoanTransferService } from '../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
+import { ScrapApplicationFormService } from '../../../../core/scrap-management';
 
 @Component({
   selector: 'kt-basic-details',
@@ -20,7 +21,6 @@ import { LoanTransferService } from '../../../../../../../core/loan-management/l
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
-
   customerDetail;
   basicForm: FormGroup;
   purpose: any[] = []
@@ -51,7 +51,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     private appliedKycService: AppliedKycService,
     private dialog: MatDialog,
     private router: Router,
-    private loanTransferFormService: LoanTransferService
+    private loanTransferFormService: LoanTransferService,
+    public scrapApplicationFormService: ScrapApplicationFormService,
   ) {
     this.initForm()
     this.getPurposeInfo()
@@ -63,19 +64,21 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       if (res.customerID) {
         this.controls.customerUniqueId.patchValue(res.customerID)
         if (res.customerID && this.url == 'loan-application-form') {
-          this.getCustomerDetails()
+          this.getCustomerDetails();
         } else {
-          this.basicForm.controls.purpose.clearValidators()
-          this.basicForm.controls.purpose.updateValueAndValidity()
-          this.getCustomerDetailsForTransfer()
+          if (res.customerID && this.url == 'scrap-buying-application-form') {
+            this.getScrapCustomerDetails();
+          } else {
+            this.getCustomerDetailsForTransfer();
+          }
+          this.basicForm.controls.purpose.clearValidators();
+          this.basicForm.controls.purpose.updateValueAndValidity();
         }
       } else {
         this.controls.customerUniqueId.patchValue(res.transferLoanCustomerID)
         this.getTransferLoanDetailsToApplyLoan()
       }
-
     })
-
   }
 
   ngOnInit() {
@@ -97,13 +100,11 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.basicForm.controls.customerUniqueId.enable()
         this.ref.detectChanges()
       } else if (changes.action.currentValue == 'edit') {
-
         this.controls.customerId.patchValue(changes.details.currentValue.customerId)
         this.basicForm.patchValue(changes.details.currentValue.loanPersonalDetail)
         this.currentDate = new Date(changes.details.currentValue.loanPersonalDetail.startDate)
         this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
         this.basicForm.patchValue(changes.details.currentValue.customer)
-
         // this.basicFormEmit.emit(this.basicForm)
         this.basicForm.controls.loanId.patchValue(changes.details.currentValue.id)
         this.basicForm.disable()
@@ -116,19 +117,17 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.disable()
       this.ref.detectChanges()
     }
-
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
       this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
       this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)
       this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
       this.basicForm.patchValue(changes.loanTransfer.currentValue.customer)
-      if(changes.loanTransfer.currentValue.masterLoan.loanTransfer.loanTransferStatusForBM == 'approved'){
+      if (changes.loanTransfer.currentValue.masterLoan.loanTransfer.loanTransferStatusForBM == 'approved') {
         this.disable = true
       }
     }
   }
-
 
   getPurposeInfo() {
     this.purposeService.getAllPurpose(1, -1, '').subscribe(
@@ -143,10 +142,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.controls.customerUniqueId.valid) {
       this.loanTransferFormService.getTransferLoanDetailsToApplyLoan(this.controls.customerUniqueId.value).pipe(
         map(res => {
-
           if (res.loanCurrentStage) {
             let stage = res.loanCurrentStage
-
             stage = Number(stage) - 1;
             this.next.emit(stage)
             this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
@@ -173,11 +170,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.controls.customerUniqueId.valid) {
       this.loanTransferFormService.getCustomerDetailsForTransfer(this.controls.customerUniqueId.value).pipe(
         map(res => {
-
           this.action = "add"
           if (res.loanCurrentStage) {
             let stage = res.loanCurrentStage
-
             stage = Number(stage) - 1;
             this.next.emit(stage)
             this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
@@ -198,15 +193,12 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-
-
   getCustomerDetails() {
     if (this.controls.customerUniqueId.valid) {
       this.loanApplicationFormService.customerDetails(this.controls.customerUniqueId.value).pipe(
         map(res => {
           if (res.loanCurrentStage) {
             let stage = res.loanCurrentStage
-
             stage = Number(stage) - 1;
             this.next.emit(stage)
             this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
@@ -217,7 +209,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
               this.totalEligibleAmt.emit(res.totalEligibleAmt)
             if (res.finalLoanAmount)
               this.finalLoanAmount.emit(res.finalLoanAmount)
-
           } else {
             this.customerDetail = res.customerData
             this.basicForm.patchValue(this.customerDetail)
@@ -232,6 +223,35 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
+  getScrapCustomerDetails() {
+    if (this.controls.customerUniqueId.valid) {
+      this.scrapApplicationFormService.customerDetails(this.controls.customerUniqueId.value).pipe(
+        map(res => {
+          if (res.loanCurrentStage) {
+            let stage = res.loanCurrentStage;
+            stage = Number(stage) - 1;
+            this.next.emit(stage);
+            // this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+            if (stage >= 1) {
+              this.apiHit.emit(res.scrapId);
+            }
+            // if (res.totalEligibleAmt)
+            //   this.totalEligibleAmt.emit(res.totalEligibleAmt);
+            // if (res.finalLoanAmount)
+            //   this.finalLoanAmount.emit(res.finalLoanAmount);
+          } else {
+            this.customerDetail = res.customerData;
+            this.basicForm.patchValue(this.customerDetail);
+            this.basicForm.controls.customerId.patchValue(this.customerDetail.id);
+          }
+        }),
+        catchError(err => {
+          this.toast.error(err.error.message)
+          throw err;
+        })
+      ).subscribe();
+    }
+  }
 
   initForm() {
     this.basicForm = this.fb.group({
@@ -274,7 +294,23 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             this.basicForm.disable()
             this.basicForm.controls.purpose.enable()
           }
-        })).subscribe()
+        })).subscribe();
+    } if (this.url == 'scrap-buying-application-form') {
+      this.scrapApplicationFormService.basicSubmit(this.basicForm.value).pipe(
+        map(res => {
+          let stage = res.loanCurrentStage
+          stage = Number(stage) - 1;
+          this.next.emit(stage)
+          // this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+        }), catchError(err => {
+          this.toast.error(err.error.message)
+          throw err
+        }), finalize(() => {
+          if (this.action == 'edit') {
+            this.basicForm.disable();
+            this.basicForm.controls.purpose.enable();
+          }
+        })).subscribe();
     } else {
       this.loanTransferFormService.basicSubmit(this.basicForm.value).pipe(
         map(res => {
@@ -288,7 +324,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         })).subscribe()
     }
   }
-
 
   preview(images) {
     this.dilaog.open(ImagePreviewDialogComponent, {

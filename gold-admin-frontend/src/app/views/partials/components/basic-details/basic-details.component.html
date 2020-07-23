@@ -42,13 +42,12 @@
                             <label class="text-color kt-padding-l-10">KYC Status</label>
                         </div>
                         <div class="col-6">
-                           <input type="text" class="form-control position-relative text-capitalize" formControlName="kycStatus">
-                           <span class="inside-input" (click)="viewKYC()">View KYC</span>
+                            <input type="text" class="form-control position-relative text-capitalize"
+                                formControlName="kycStatus">
+                            <span class="inside-input" (click)="viewKYC()">View KYC</span>
                         </div>
                     </div>
                 </div>
-               
-               
                 <div class="col-6">
                     <div class="row">
                         <div class="col-4 offset-2 form-label">
@@ -61,8 +60,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row kt-margin-t-15" *ngIf="url !='loan-transfer'">
-               
+            <div class="row kt-margin-t-15" *ngIf="!(url == 'loan-transfer' || url == 'scrap-buying-application-form')">
                 <div class="col-6">
                     <div class="row">
                         <div class="col-4  form-label">
@@ -70,19 +68,19 @@
                         </div>
                         <div class="col-6">
                             <select formControlName="purpose" class="form-control"
-                            [class.isError]="controls.purpose.touched && controls.purpose.invalid">
+                                [class.isError]="controls.purpose.touched && controls.purpose.invalid">
                                 <option value="" selected disabled>Select Purpose</option>
-                                <option [value]="purpose.name" *ngFor="let purpose of purpose">{{purpose.name | titlecase}}</option>
+                                <option [value]="purpose.name" *ngFor="let purpose of purpose">
+                                    {{purpose.name | titlecase}}</option>
                             </select>
                             <div *ngIf="controls.purpose.touched && controls.purpose.invalid">
-                            <mat-error *ngIf="controls.purpose.errors?.required">
-                                Field is Required
-                            </mat-error>
+                                <mat-error *ngIf="controls.purpose.errors?.required">
+                                    Field is Required
+                                </mat-error>
                             </div>
                         </div>
                     </div>
                 </div>
-                
                 <!-- <div class="col-6">
                     <div class="row" *ngIf="controls.panType.value=='pan'">
                         <div class="col-4 offset-2 form-label">
