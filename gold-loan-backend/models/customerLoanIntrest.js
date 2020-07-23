@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         emiReceivedDate: {
             type: DataTypes.DATEONLY,
-            field: 'emi_due_date'
+            field: 'emi_received_date'
         },
         panelInterest: {
             type: DataTypes.FLOAT,
