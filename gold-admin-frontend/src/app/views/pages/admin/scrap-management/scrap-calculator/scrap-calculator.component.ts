@@ -75,7 +75,7 @@ export class ScrapCalculatorComponent implements OnInit {
       this.roughScrapForm.markAllAsTouched();
       return
     }
-    this.scrapAmount = this.controls.fineWeight.value * 4500;
+    this.scrapAmount = this.controls.fineWeight.value * this.controls.scrapLtvGoldValue.value;
   }
 
   rejectNegativeNumber(val) {
