@@ -64,6 +64,13 @@ async function getGoldRate() {
     return goldRate.goldRate;
 }
 
+async function getLoanDetails(masterLoanId) {
+    let loanData = await models.customerLoanMaster.findOne({
+        where:{id:masterLoanId}
+    })
+    return loanData;
+}
+
 async function getGlobalSetting() {
     let globalSettings = await models.globalSetting.getGlobalSetting();
     return globalSettings;
@@ -98,7 +105,7 @@ async function ornementsDetails(masterLoanId,whereBlock) {
     return ornaments;
 }
 
-async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments) {
+async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments,loanData) {
     let ornamentsWeightInfo = {
         releaseGrossWeight:0,
         releaseDeductionWeight:0,
@@ -108,7 +115,8 @@ async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments) {
         remainingNetWeight:0,
         releaseAmount:0,
         currentLtv:0,
-        previousLtv:0
+        previousLtv:0,
+        outstandingAmount:0
     }
     let globalSettings = await getGlobalSetting();
     let goldRate = await getGoldRate();
@@ -119,8 +127,10 @@ async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments) {
             ornamentsWeightInfo.releaseGrossWeight = ornamentsWeightInfo.releaseGrossWeight + parseInt(ornaments.grossWeight);
             ornamentsWeightInfo.releaseDeductionWeight = ornamentsWeightInfo.releaseDeductionWeight + parseInt(ornaments.deductionWeight);
             ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseInt(ornaments.netWeight);
-            let ltvAmount = ornamentsWeightInfo.currentLtv*(ornaments.ltvPercent/100)
-            ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.releaseAmount + (ltvAmount * parseInt(ornaments.netWeight));
+            if(otherOrnaments == null){
+                let ltvAmount = ornamentsWeightInfo.currentLtv*(ornaments.ltvPercent/100)
+                ornamentsWeightInfo.outstandingAmount = ornamentsWeightInfo.outstandingAmount + (ltvAmount * parseInt(ornaments.netWeight));
+            }
         }
     }
     if(otherOrnaments != null){
@@ -128,9 +138,13 @@ async function getornamentsWeightInfo(requestedOrnaments,otherOrnaments) {
             ornamentsWeightInfo.remainingGrossWeight = ornamentsWeightInfo.remainingGrossWeight + parseInt(ornaments.grossWeight);
             ornamentsWeightInfo.remainingDeductionWeight = ornamentsWeightInfo.remainingDeductionWeight + parseInt(ornaments.deductionWeight);
             ornamentsWeightInfo.remainingNetWeight = ornamentsWeightInfo.remainingNetWeight + parseInt(ornaments.netWeight);
+            let ltvAmount = ornamentsWeightInfo.currentLtv*(ornaments.ltvPercent/100)
+            ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.releaseAmount + (ltvAmount * parseInt(ornaments.netWeight));
         }
+        ornamentsWeightInfo.releaseAmount = parseInt(loanData.finalLoanAmount) - Math.round(ornamentsWeightInfo.releaseAmount)
     }
-    ornamentsWeightInfo.releaseAmount = Math.round(ornamentsWeightInfo.releaseAmount);
+    
+    ornamentsWeightInfo.outstandingAmount = Math.round(ornamentsWeightInfo.outstandingAmount);
     return ornamentsWeightInfo;
 }
 
@@ -152,9 +166,10 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
     let {masterLoanId,ornamentId} = req.body;
     let whereSelectedOrmenemts = {id: { [Op.in]: ornamentId }, isActive: true};
     let whereOtherOrmenemts = {id: { [Op.notIn]: ornamentId }, isActive: true};
+    let loanData = await getLoanDetails(masterLoanId);
     let requestedOrnaments = await ornementsDetails(masterLoanId,whereSelectedOrmenemts);
     let otherOrnaments = await ornementsDetails(masterLoanId,whereOtherOrmenemts);
-    let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments,otherOrnaments);
+    let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments,otherOrnaments,loanData);
     let loanInfo = await getornamentLoanInfo(masterLoanId,ornamentWeight);
     return res.status(200).json({ message: 'success', ornamentWeight,loanInfo });
 }
