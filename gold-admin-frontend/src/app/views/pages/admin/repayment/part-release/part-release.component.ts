@@ -120,7 +120,19 @@ export class PartReleaseComponent implements OnInit {
     this.showPaymentConfirmation = false
   }
 
-  pay() { }
+  pay() {
+    const ornamnentIds = this.selectedOrnaments.map(e => e.id)
+    let payObject = {
+      ornamentId: ornamnentIds,
+      masterLoanId: Number(this.id),
+      releaseAmount: this.totalSelectedOrnamentDetails.ornamentWeight.releaseAmount,
+      interestAmount: this.totalSelectedOrnamentDetails.loanInfo.interestAmount,
+      penalInterest: this.totalSelectedOrnamentDetails.loanInfo.penalInterest,
+      payableAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount,
+    }
+    Object.assign(payObject, this.paymentValue)
+    console.log(payObject)
+  }
 
   cancelPayment() {
     this.showPaymentConfirmation = false
@@ -199,6 +211,9 @@ export class PartReleaseComponent implements OnInit {
 
   choosePaymentMethod() {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
+      data: {
+        value: this.paymentValue
+      },
       width: '500px'
     })
 

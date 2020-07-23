@@ -18,15 +18,16 @@ export class PaymentDialogComponent implements OnInit {
 
   ngOnInit() {
     this.initForm()
+    if (this.data.value) this.paymentForm.patchValue(this.data.value)
   }
 
   initForm() {
     this.paymentForm = this.fb.group({
-      paymentMode: ['', [Validators.required]],
-      depositBankName: [],
+      paymentType: ['', [Validators.required]],
+      bankName: [],
       transactionId: [],
       depositDate: [],
-      depositAmount: [],
+      paidAmount: [],
       chequeNumber: []
     })
   }
@@ -37,7 +38,7 @@ export class PaymentDialogComponent implements OnInit {
     switch (paymentMode) {
       case 'cash':
         this.paymentForm.clearValidators();
-        this.paymentForm.controls.paymentMode.setValidators([Validators.required])
+        this.paymentForm.controls.paymentType.setValidators([Validators.required])
         this.paymentForm.updateValueAndValidity()
         break;
 
@@ -47,6 +48,8 @@ export class PaymentDialogComponent implements OnInit {
         for (const key in this.paymentForm.controls) {
           if (key !== 'chequeNumber') {
             this.paymentForm.controls[key].setValidators([Validators.required])
+          } else {
+            this.paymentForm.controls[key].patchValue(null)
           }
         }
         this.paymentForm.updateValueAndValidity()
@@ -67,6 +70,8 @@ export class PaymentDialogComponent implements OnInit {
         for (const key in this.paymentForm.controls) {
           if (key != 'transactionId') {
             this.paymentForm.controls[key].setValidators([Validators.required])
+          } else {
+            this.paymentForm.controls[key].patchValue(null)
           }
         }
         this.paymentForm.updateValueAndValidity()
@@ -90,7 +95,11 @@ export class PaymentDialogComponent implements OnInit {
   }
 
   closeModal() {
-    this.dialogRef.close()
+    if (this.data.value) {
+      this.dialogRef.close(this.paymentForm.value)
+    } else {
+      this.dialogRef.close()
+    }
   }
 
   action(event) {

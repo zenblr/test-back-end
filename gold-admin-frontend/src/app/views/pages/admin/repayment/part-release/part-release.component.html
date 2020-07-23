@@ -253,7 +253,7 @@
                                         <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
                                             class="apply-kyc">Select Payment</button>
                                         <button *ngIf="paymentValue" (click)="choosePaymentMethod()"
-                                            class="apply-kyc">{{ paymentValue.paymentMode | uppercase }}</button>
+                                            class="apply-kyc">{{ paymentValue.paymentType | uppercase }}</button>
                                     </td>
                                 </tr>
                             </tbody>
