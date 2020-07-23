@@ -20,6 +20,11 @@ export class LoanApplicationFormService {
     )
   }
 
+  getLoanDetails(id): Observable<any> {
+    return this.http.get(`/api/loan-process/single-loan-customer?customerLoanId=${id}`).pipe(
+      map(res => res)
+    )
+  }
   
 
   basicSubmit(details): Observable<any> {
@@ -72,6 +77,20 @@ export class LoanApplicationFormService {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/appraiser-rating`, data).pipe(
       map(res => res)
+    )
+  }
+
+  bmRating(details, masterAndLoanIds): Observable<any> {
+    let data = { ...details, ...masterAndLoanIds }
+    return this.http.post(`/api/loan-process/bm-rating`, data).pipe(
+      map(res => res)
+    )
+  }
+
+  opsRating(details, masterAndLoanIds): Observable<any> {
+    let data = { ...details, ...masterAndLoanIds }
+    return this.http.post(`/api/loan-process/ops-rating`, data).pipe(
+      map(res => res),
     )
   }
 

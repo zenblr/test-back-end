@@ -89,7 +89,6 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
 
 import { AngularImageViewerModule } from 'angular-x-image-viewer';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
-import { UpdateStatusComponent } from '../pages/admin/funds-approvals/update-status/update-status.component';
 
 @NgModule({
 	declarations: [
@@ -162,7 +161,7 @@ import { UpdateStatusComponent } from '../pages/admin/funds-approvals/update-sta
 		PdfViewerComponent,
 		ImageFunctionalityDialogComponent,
 		DropdownComponent,
-		UpdateStatusComponent
+
 	],
 	exports: [
 		WidgetModule,
@@ -228,7 +227,7 @@ import { UpdateStatusComponent } from '../pages/admin/funds-approvals/update-sta
 
 		AngularImageViewerModule,
 		DropdownComponent,
-		UpdateStatusComponent
+
 	],
 	imports: [
 		PdfViewerModule,

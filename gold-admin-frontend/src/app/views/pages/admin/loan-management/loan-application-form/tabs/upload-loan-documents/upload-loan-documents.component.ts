@@ -22,9 +22,11 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class UploadLoanDocumentsComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter();
+  @Output() stage: EventEmitter<any> = new EventEmitter();
   @Input() loanDocumnets
   @Input() masterAndLoanIds;
   @Input() loanTransfer
+  @Input() showButton
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -54,7 +56,6 @@ export class UploadLoanDocumentsComponent implements OnInit {
     private renderer: Renderer,
     private ngxPermission: NgxPermissionsService
   ) {
-
     this.url = (this.router.url.split("/")[3]).split("?")[0]
     if (this.url == "loan-transfer") {
       this.show = true
@@ -69,6 +70,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
         this.buttonName = 'save'
       }
     })
+    this.initForm()
 
 
   }
@@ -89,7 +91,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
           schemeConfirmationCopy: documents.schemeConfirmationCopyImage[0],
         })
         this.pdfCheck()
-
+        this.url = 'view-loan'
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -133,6 +135,11 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
 
   ngOnInit() {
+     
+  }
+
+
+  initForm(){
     this.documentsForm = this.fb.group({
       loanAgreementCopy: [],
       pawnCopy: [, Validators.required],
@@ -153,6 +160,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
     })
     this.validation()
   }
+ 
 
   get controls() {
     return this.documentsForm.controls
@@ -263,6 +271,12 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
 
   save() {
+
+    if (this.url == 'view-loan') {
+      this.next.emit(7)
+      return
+    }
+
     if (this.documentsForm.invalid) {
       this.documentsForm.markAllAsTouched()
       return
@@ -270,13 +284,14 @@ export class UploadLoanDocumentsComponent implements OnInit {
     if (this.url == 'loan-transfer') {
       this.loanTransferFormService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
         map(res => {
-          if(this.buttonName == 'save'){
-            this.router.navigate(['/admin/loan-management/transfer-loan-list'])
-          }else{
+          // if(this.buttonName == 'save'){
+          //   this.router.navigate(['/admin/loan-management/transfer-loan-list'])
+          // }else{
           if (res.loanCurrentStage) {
             let stage = Number(res.loanCurrentStage) - 1
+            this.stage.emit(res.loanCurrentStage)
             this.next.emit(stage)
-          }
+          // }
         }
         })).subscribe()
     } else {

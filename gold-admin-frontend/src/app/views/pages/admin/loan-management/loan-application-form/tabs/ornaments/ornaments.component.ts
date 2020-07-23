@@ -36,6 +36,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() fullAmt: EventEmitter<any> = new EventEmitter();
   @Input() masterAndLoanIds
   @Input() ornamentType
+  @Input() showButton
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -250,7 +251,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       quantity: [, Validators.required],
       grossWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[0-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ornamentImage: [, Validators.required],
       weightMachineZeroWeight: [],
       withOrnamentWeight: [],
@@ -517,6 +518,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   nextAction() {
+
+    if (this.disable) {
+      this.next.emit(3)
+      return
+    }
+
     if (this.ornamentsForm.invalid) {
       let array = this.OrnamentsData.controls
       for (let index = 0; index < array.length; index++) {
@@ -536,8 +543,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           const controls = this.OrnamentsData.at(index) as FormGroup;
           controls.controls.id.patchValue(res.ornaments[index].id)
         }
-        if(res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount){
+        if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
           this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+        }else{
+          this.loanApplicationFormService.finalLoanAmount.next(0)
         }
         this.next.emit(3)
       })

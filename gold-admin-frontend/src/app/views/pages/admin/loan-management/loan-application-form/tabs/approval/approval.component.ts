@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, AfterViewInit, OnChanges, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, AfterViewInit, OnChanges, ChangeDetectorRef, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { SharedService } from '../../../../../../../core/shared/services/shared.service';
@@ -11,13 +11,14 @@ import { CustomerClassificationService } from '../../../../../../../core/kyc-set
 @Component({
   selector: 'kt-approval',
   templateUrl: './approval.component.html',
-  styleUrls: ['./approval.component.scss']
+  styleUrls: ['./approval.component.scss'],
 })
 export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() disable
   @Input() masterAndLoanIds
   @Input() invalid;
   @Input() details;
+  @Input() loanStage
   // @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
   // appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
   // branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }, { value: 'incomplete', name: 'incomplete' }];
@@ -25,14 +26,15 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   branchManager: any;
   userType: any = ''
   @Input() action;
-  // @Output() apply: EventEmitter<any> = new EventEmitter<any>();
+  @Output() ornamentType: EventEmitter<any> = new EventEmitter<any>();
 
   // kycStatus = [];
   approvalForm: FormGroup;
   url: string;
-  viewBMForm = true;
+  viewBMForm: boolean = true;
   reasons: any[] = [];
-  viewOpertaionalForm: boolean;
+  viewOpertaionalForm: boolean = true;
+  stage: any;
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -43,38 +45,51 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     public location: Location,
     private custClassificationService: CustomerClassificationService,
 
-  ) { }
+  ) {
+    this.initForm();
+    this.getReasonsList();
+  }
 
   ngOnInit() {
-
+    this.url = this.router.url.split('/')[3]
     this.sharedSerive.getStatus().subscribe(res => {
       this.appraiser = res.apprsiserOrCCE
       this.branchManager = res.bm
     })
-
-    this.url = this.router.url.split('/')[3]
-    this.initForm();
-    this.getRoles();
-    this.getReasonsList();
   }
-  getRoles() {
-    let res = this.sharedSerive.getDataFromStorage()
-    this.userType = res.userDetails.userTypeId
-    if (this.userType == 7) {
+
+  disableForm(stage) {
+    this.stage = stage
+    if (stage == 6 || stage == 1) {
       this.controls.loanStatusForBM.disable()
       this.viewBMForm = false;
-    } else if (this.userType == 5) {
+      this.viewOpertaionalForm = false;
+
+    } else if (stage == 3) {
+      this.controls.loanStatusForAppraiser.disable()
+      this.viewBMForm = false;
+      this.viewOpertaionalForm = false;
+
+    } else if (stage == 2) {
       this.controls.loanStatusForAppraiser.disable()
       this.viewBMForm = true;
       this.viewOpertaionalForm = false;
 
-    } else if (this.userType == 8) {
+    } else if (stage == 8) {
+      this.controls.loanStatusForAppraiser.disable()
+      this.controls.loanStatusForBM.disable()
+      this.viewBMForm = true;
+
+    } else if (stage == 7) {
       this.controls.loanStatusForAppraiser.disable()
       this.controls.loanStatusForBM.disable()
       this.viewOpertaionalForm = true;
+      this.viewBMForm = true;
 
     } else {
       this.approvalForm.disable()
+      this.viewOpertaionalForm = true;
+      this.viewBMForm = true;
     }
   }
 
@@ -86,7 +101,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       commentByAppraiser: [''],
       applicationFormForBM: [false],
       goldValuationForBM: [false],
-      loanStatusForBM: ['pending'],
+      loanStatusForBM: [],
       commentByBM: [''],
       reasons: [''],
       applicationFormForOperatinalTeam: [false],
@@ -102,8 +117,9 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.details) {
+    if (changes.details && changes.details.currentValue) {
       if (changes.action.currentValue == 'edit') {
+
         this.approvalForm.patchValue(changes.details.currentValue.masterLoan)
         this.approvalForm.patchValue({ commentByAppraiser: changes.details.currentValue.masterLoan.commentByAppraiser })
         if (changes.details.currentValue.masterLoan.commentByAppraiser) {
@@ -111,22 +127,28 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
           let temp = this.reasons.filter(reason => {
             return reason.description == changes.details.currentValue.masterLoan.commentByAppraiser
           })
-          
+
           if (!temp.length) {
             this.approvalForm.patchValue({ reasons: "Other" })
-          }else{
-          this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
+          } else {
+            this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
           }
         }
-        this.statusAppraiser()
-        this.statusBM()
-        this.ref.markForCheck()
+        this.approvalForm.controls.loanStatusForBM.patchValue(changes.details.currentValue.masterLoan.loanStatusForBM)
+        this.approvalForm.controls.loanStatusForBM.patchValue(changes.details.currentValue.masterLoan.loanStatusForBM)
+        console.log(this.approvalForm.value)
+        // this.statusAppraiser()
+        // this.statusBM()
+        this.ref.detectChanges()
+
       }
     }
-    if (this.invalid) {
-      this.approvalForm.markAllAsTouched()
+
+    if (changes.loanStage && changes.loanStage.currentValue) {
+      this.disableForm(changes.loanStage.currentValue.id)
     }
-    if (this.disable) {
+
+    if (changes.disable && changes.disable.currentValue) {
       this.approvalForm.disable()
     }
   }
@@ -142,7 +164,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   approvalOfAppraiser(value: boolean, type: string) {
-    if (this.userType == 7 && !this.disable) {
+    if ((this.stage == 6 || this.stage == 1) && !this.disable) {
       if (type == 'gold') {
         this.controls.goldValuationForAppraiser.patchValue(value)
       } else {
@@ -153,7 +175,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   approvalOfBM(value: boolean, type: string) {
-    if (this.userType == 5 && !this.disable) {
+    if (this.stage == 2 && !this.disable) {
       if (type == 'gold') {
         this.controls.goldValuationForBM.patchValue(value)
       } else {
@@ -164,7 +186,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   approvalOfOperational(value: boolean, type: string) {
-    if (this.userType == 8 && !this.disable) {
+    if (this.stage == 7 && !this.disable) {
       if (type == 'gold') {
         this.controls.goldValuationForOperatinalTeam.patchValue(value)
       } else {
@@ -239,6 +261,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.controls.commentByBM.markAsUntouched()
       this.resetBM()
     }
+    this.ref.markForCheck()
   }
 
   statusOT() {
@@ -259,12 +282,31 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.approvalForm.markAllAsTouched()
       return
     }
-    // this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
-    this.loanFormService.applyForLoan(this.approvalForm.value, this.masterAndLoanIds).pipe(
-      map(res => {
-        this.router.navigate(['/admin/loan-management/applied-loan'])
-      })).subscribe()
+    if (this.stage == 2) {
+      this.loanFormService.bmRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
+        map(res => {
+          this.router.navigate(['/admin/loan-management/applied-loan'])
+        })).subscribe()
+    } else if (this.stage == 7) {
+      this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
+        map(res => {
+          this.router.navigate(['/admin/loan-management/applied-loan'])
+        })).subscribe()
+    } else if (this.stage == 1 || this.stage == 6) {
+      // this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
+      this.loanFormService.applyForLoan(this.approvalForm.value, this.masterAndLoanIds).pipe(
+        map(res => {
+          if (this.approvalForm.controls.loanStatusForAppraiser.value == 'approved') {
+            this.disableForm(3)
+            this.stage = 3
+            this.ornamentType.emit(res.ornamentType)
+          } else {
+            this.router.navigate(['/admin/loan-management/applied-loan'])
+          }
+        })).subscribe()
+    }
   }
+
   cancel() {
     this.location.back()
   }

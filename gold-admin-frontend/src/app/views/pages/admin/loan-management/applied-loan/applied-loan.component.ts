@@ -6,7 +6,7 @@ import { DataTableService } from '../../../../../core/shared/services/data-table
 import { AppliedLoanDatasource, AppliedLoanService } from '../../../../../core/loan-management'
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
-import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.component';
+// import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
 @Component({
   selector: 'kt-applied-loan',
@@ -34,7 +34,7 @@ export class AppliedLoanComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
-  edit: boolean;
+  permission: any;
   filter$ = new Subject();
   constructor(
     public dialog: MatDialog,
@@ -45,12 +45,10 @@ export class AppliedLoanComponent implements OnInit {
     private ngxPermission: NgxPermissionsService
   ) {
     this.ngxPermission.permissions$.subscribe(res => {
-      if (res.loanDetailsEdit) {
-        this.edit = true
-      } else {
-        this.edit = false
-      }
+      this.permission = res
+      console.log(res)
     })
+
 
     this.AppliedLoanService.applyFilter$
       .pipe(takeUntil(this.filter$))
@@ -127,37 +125,38 @@ export class AppliedLoanComponent implements OnInit {
     this.filteredDataList = data.list
   }
 
-  disburse(loan, masterLoanId) {
-    // console.log(event);
-    const dialogRef = this.dialog.open(DisburseDialogComponent, {
-      data: { loan, masterLoanId },
-      width: '500px'
-    });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadAppliedLoansPage();
-      }
-    });
-  }
+  // disburse(loan, masterLoanId) {
+  //   // console.log(event);
+  //   const dialogRef = this.dialog.open(DisburseDialogComponent, {
+  //     data: { loan, masterLoanId },
+  //     width: '500px'
+  //   });
+  //   dialogRef.afterClosed().subscribe(res => {
+  //     if (res) {
+  //       this.loadAppliedLoansPage();
+  //     }
+  //   });
+  // }
 
   editLoan(loan) {
-
-    if (this.userType == 5) {
-      if ((loan.loanStatusForBM == 'pending' ||
-        loan.loanStatusForBM == 'rejected' ||
-        loan.loanStatusForBM == 'incomplete') && loan.loanStatusForAppraiser == 'approved') {
-        this.navigate(loan)
-      }
-    } else if (this.userType == 7) {
-      if (loan.loanStatusForAppraiser != 'approved') {
-        this.navigate(loan)
-      }
-    } else if (this.userType == 8) {
-      if ((loan.loanStatusForOperatinalTeam == 'pending' ||
-        loan.loanStatusForOperatinalTeam == 'rejected' ||
-        loan.loanStatusForOperatinalTeam == 'incomplete') && loan.loanStatusForBM == 'approved') {
-        this.navigate(loan)
-      }
+    console.log(loan)
+    if(loan.loanStage.id == 2 && this.permission.addBmRating){
+      this.navigate(loan)
+    }
+    else if(loan.loanStage.id == 1 && this.permission.addAppraiserRating){
+      this.navigate(loan)
+    }
+    else if(loan.loanStage.id == 7 && this.permission.addOpsRating){
+      this.navigate(loan)
+    }
+    else if(loan.loanStage.id == 8 && this.permission.uploadDocuments){
+      this.packetImageUpload(loan)
+    }
+    else if(loan.loanStage.id == 3 && this.permission.assignPacket){
+      this.packetImageUpload(loan)
+    }
+    else if(loan.loanStage.id == 4 && this.permission.loanDisbursement){
+      this.packetImageUpload(loan)
     }
   }
 

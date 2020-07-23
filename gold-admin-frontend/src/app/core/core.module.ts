@@ -29,6 +29,7 @@ import { ExcelService, PdfService } from "./_base/crud";
 import { IndianCurrencyFormatPipe } from './_base/layout/pipes/indian-currency-format.pipe';
 import { TruncatePipe } from './_base/layout/pipes/truncate-text.pipe';
 import { RemoveCommaPipe } from './_base/layout/pipes/remove-comma.pipe';
+import { WeightDirective } from './_base/layout/directives/weight.directive';
 
 @NgModule({
 	imports: [CommonModule],
@@ -56,6 +57,7 @@ import { RemoveCommaPipe } from './_base/layout/pipes/remove-comma.pipe';
 		IndianCurrencyFormatPipe,
 		TruncatePipe,
 		RemoveCommaPipe,
+		WeightDirective,
 	],
 	exports: [
 		// directives
@@ -69,6 +71,7 @@ import { RemoveCommaPipe } from './_base/layout/pipes/remove-comma.pipe';
 		ContentAnimateDirective,
 		StickyDirective,
 		NumberDirective,
+		WeightDirective,
 		// pipes
 		TimeElapsedPipe,
 		JoinPipe,
