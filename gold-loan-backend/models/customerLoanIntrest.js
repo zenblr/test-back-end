@@ -17,20 +17,30 @@ module.exports = (sequelize, DataTypes) => {
         },
         interestAmount: {
             type: DataTypes.FLOAT,
-            field: 'secured_interest_amount',
+            field: 'interest_amount',
+        },
+        balanceAmount: {
+            type: DataTypes.FLOAT,
+            field: 'balance_amount',
+        },
+        paidAmount: {
+            type: DataTypes.FLOAT,
+            field: 'paid_amount',
+            defaultValue: 0
         },
         emiReceivedDate: {
             type: DataTypes.DATEONLY,
             field: 'emi_due_date'
         },
-        emiAmount: {
-            type: DataTypes.STRING,
-            field: 'emi_amount'
+        panelInterest: {
+            type: DataTypes.FLOAT,
+            field: 'panel_interest',
+            defaultValue: 0
         },
         emiStatus: {
             type: DataTypes.ENUM,
             field: 'emi_status',
-            values: ['pending', 'complete'],
+            values: ['pending', 'paid','overdue','partially paid'],
             defaultValue: 'pending'
         },
         createdBy: {
@@ -55,6 +65,8 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerLoanIntrest.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanIntrest.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
+
+        CustomerLoanIntrest.belongsToMany(models.customerLoanTransaction,  { through: models.customerInterestTransaction });
 
         CustomerLoanIntrest.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanIntrest.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
