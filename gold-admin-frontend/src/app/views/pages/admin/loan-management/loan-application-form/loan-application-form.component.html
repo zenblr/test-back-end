@@ -50,7 +50,7 @@
                             [masterAndLoanIds]="masterAndLoanIds" [loanStage]="loanStage" (ornamentType)="ornaments($event)">
                         </kt-approval>
                     </mat-tab>
-                    <mat-tab label="Packets" *ngIf="loanStage?.id !=6 && loanStage?.id !=1 && loanStage?.id">
+                    <mat-tab label="Packets" *ngIf="loanStage?.id !=6 && loanStage?.id !=1 && loanStage?.id" [disabled]="disabled[5]">
                         <!-- <ng-template> -->
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab"
                             style="padding:0px !important">
@@ -62,7 +62,7 @@
                         <!-- </ng-template> -->
                     </mat-tab>
 
-                    <mat-tab label="Loan Status Approval" *ngIf="loanStage?.id == 2 || (url == 'view-loan' && loanStage?.id == 2)">
+                    <mat-tab label="Loan Status Approval" *ngIf="loanStage?.id == 2 || (url == 'view-loan' && loanStage?.id == 2)" [disabled]="disabled[6]">
                         <kt-approval [action]="action" [disable]="approvalFrom" [details]="customerDetail"
                             [masterAndLoanIds]="masterAndLoanIds" [loanStage]="loanStage">
                         </kt-approval>
@@ -73,7 +73,7 @@
                             [loanDocumnets]="customerDetail" [showButton]="showButton"></kt-upload-loan-documents>
                     </mat-tab>
 
-                    <mat-tab label="Loan Status Approval" *ngIf="loanStage?.id == 7 || loanStage?.id == 4 || (url == 'view-loan' && loanStage?.id == 7) || (url == 'view-loan' && loanStage?.id == 4)">
+                    <mat-tab label="Loan Status Approval" *ngIf="loanStage?.id == 7 || loanStage?.id == 4 || (url == 'view-loan' && loanStage?.id == 7) || (url == 'view-loan' && loanStage?.id == 4)"  [disabled]="disabled[6]">
                         <kt-approval [action]="action" [disable]="approvalFrom" [details]="customerDetail"
                             [masterAndLoanIds]="masterAndLoanIds" [loanStage]="loanStage">
                         </kt-approval>

@@ -57,6 +57,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   purityTestPath: any = [];
   purityTestImg: any = [];
   fullAmount: number;
+  showAddMoreBtn: Boolean = true;
 
   constructor(
     public fb: FormBuilder,
@@ -79,7 +80,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit() {
+    console.log(this.data.modal)
+    if (this.data && this.data.modal) {
+      this.showAddMoreBtn = false
+      this.disable = true
 
+    }
     this.url = this.router.url.split('/')[3]
     this.getKarat()
     this.initForm()
@@ -100,6 +106,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       ornamentData: this.fb.array([])
     })
     this.addmore();
+    if (this.disable) {
+      this.ornamentsForm.disable()
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -234,14 +243,22 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.left = this.left + 10
       }
       left = (this.left).toString() + 'rem'
-      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
-      addmore.style.left = left
-      this.addmoreMinus = false
+      setTimeout(() => {
+        const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
+        if (addmore) {
+          addmore.style.left = left
+          this.addmoreMinus = false
+        }
+      })
     } else {
-      const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
-      addmore.style.left = 'unset'
-      addmore.style.right = '0px'
-      this.addmoreMinus = true
+      setTimeout(() => {
+        const addmore = (this.ele.nativeElement.querySelector('.addmore') as HTMLElement);
+        if (addmore) {
+          addmore.style.left = 'unset'
+          addmore.style.right = '0px'
+          this.addmoreMinus = true
+        }
+      })
     }
 
 
@@ -545,7 +562,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         }
         if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
           this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
-        }else{
+        } else {
           this.loanApplicationFormService.finalLoanAmount.next(0)
         }
         this.next.emit(3)

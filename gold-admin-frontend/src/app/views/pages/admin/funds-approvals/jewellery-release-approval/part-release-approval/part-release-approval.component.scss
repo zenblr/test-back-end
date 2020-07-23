@@ -6,11 +6,12 @@
 
     .mat-column-netWeightReleaseOrnament{
         display: flex;
-    flex-direction: column;
+        flex-direction: column;
     }
 
     .mat-column-netWeightRemainingOrnament{
         display: flex;
-    flex-direction: column;
+        flex-direction: column;
+        flex: 0 0 6%;
     }
 }

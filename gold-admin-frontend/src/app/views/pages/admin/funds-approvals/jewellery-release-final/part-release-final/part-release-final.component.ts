@@ -101,7 +101,7 @@ export class PartReleaseFinalComponent implements OnInit {
 
   }
 
-  updateStatus(item) {
+  updateStatus(item?) {
     const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
