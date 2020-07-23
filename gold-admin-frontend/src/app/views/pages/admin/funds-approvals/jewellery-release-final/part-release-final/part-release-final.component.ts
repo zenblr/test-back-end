@@ -19,7 +19,7 @@ import { UpdateStatusComponent } from '../../update-status/update-status.compone
 export class PartReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'assignAppraiser'];
+  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus', 'assignAppraiser'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -101,8 +101,8 @@ export class PartReleaseFinalComponent implements OnInit {
 
   }
 
-  openModal() {
-    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'add' }, width: '500px' });
+  updateStatus(item) {
+    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         // this.loadPage();

@@ -3,10 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PartnerService } from '../../../../../../../core/user-management/partner/services/partner.service';
 import { DatePipe } from '@angular/common';
 import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
-import { catchError, map, finalize } from 'rxjs/operators';
+import { catchError, map, finalize, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { UnSecuredSchemeComponent } from '../../un-secured-scheme/un-secured-scheme.component';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'kt-interest-calculator',
@@ -40,7 +41,7 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() masterAndLoanIds
   @Input() fullAmount
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
-
+  @Output() accountHolderName: EventEmitter<any> = new EventEmitter()
   @ViewChild('calculation', { static: false }) calculation: ElementRef
   @ViewChild('print', { static: false }) print: ElementRef
   editedDate: any;
@@ -51,6 +52,10 @@ export class InterestCalculatorComponent implements OnInit {
   selectedUnsecuredscheme: any[] = [];
   globalValue: any;
   transferLoan: boolean = false;
+  destroy$ = new Subject()
+  @Input() showButton
+  partnerName: any;
+
   constructor(
     public fb: FormBuilder,
     public partnerService: PartnerService,
@@ -68,7 +73,7 @@ export class InterestCalculatorComponent implements OnInit {
     this.globalSettingService.globalSetting$.subscribe(res => {
       this.globalValue = res;
     })
-    this.loanFormService.finalLoanAmount$.subscribe(res => {
+    this.loanFormService.finalLoanAmount$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
         this.controls.finalLoanAmount.patchValue(res)
         this.controls.finalLoanAmount.disable()
@@ -121,14 +126,14 @@ export class InterestCalculatorComponent implements OnInit {
             }
             temp.push(data)
           });
-          if (finalLoan.isUnsecuredSchemeApplied) {
+          if (finalLoan.masterLoan.isUnsecuredSchemeApplied) {
             this.unSecuredSchemeCheck(finalLoan.masterLoan.unsecuredLoanAmount, (finalLoan.scheme.maximumPercentageAllowed / 100), 'edit')
             this.selectedUnsecuredscheme.push(finalLoan.unsecuredLoan.scheme)
             this.finalInterestForm.patchValue({ unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id })
             for (let index = 0; index < temp.length; index++) {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
-              temp[index].totalAmount = Number(temp[index].securedInterestAmount) + 
-                                        Number(temp[index].unsecuredInterestAmount)
+              temp[index].totalAmount = Number(temp[index].securedInterestAmount) +
+                Number(temp[index].unsecuredInterestAmount)
             }
             this.getIntrest()
 
@@ -182,8 +187,10 @@ export class InterestCalculatorComponent implements OnInit {
     let temp = this.partnerList.filter(part => {
       return part.id == this.controls.partnerId.value
     })
-    if (temp.length)
+    if (temp.length) {
+      this.partnerName = temp[0].name
       this.schemesList = temp[0].schemes;
+    }
   }
 
   initForm() {
@@ -241,7 +248,8 @@ export class InterestCalculatorComponent implements OnInit {
     if (this.controls.partnerId.valid && this.controls.finalLoanAmount.value && this.selectedScheme.length) {
       let amt = this.controls.finalLoanAmount.value;
 
-      if (amt <= scheme.schemeAmountEnd && amt >= scheme.schemeAmountStart) {
+      if (Number(amt) <= Number(scheme.schemeAmountEnd) &&
+        Number(amt) >= Number(scheme.schemeAmountStart)) {
         this.controls.finalLoanAmount.setErrors(null)
       } else {
         this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
@@ -307,7 +315,7 @@ export class InterestCalculatorComponent implements OnInit {
               if (scheme) {
                 if (Number(amt) <= Number(scheme.schemeAmountEnd) &&
                   Number(amt) >= Number(scheme.schemeAmountStart)
-                  // && Number(enterAmount) <= Math.round((this.fullAmount * (securedPercentage + (scheme.maximumPercentageAllowed / 100))))
+                  && Number(enterAmount) <= Math.round((this.fullAmount * (securedPercentage + (scheme.maximumPercentageAllowed / 100))))
                 ) {
 
                   this.controls.isUnsecuredSchemeApplied.patchValue(true);
@@ -402,7 +410,7 @@ export class InterestCalculatorComponent implements OnInit {
 
       this.unSecuredInterestAmount = this.unSecuredInterestAmount.toFixed(2)
       // this.controls.unsecuredLoanAmount.patchValue(this.securedInterestAmount)
-      this.controls.securedLoanAmount.patchValue(maximumAmtAllowed)
+      this.controls.securedLoanAmount.patchValue(maximumAmtAllowed.toFixed(2))
     } else {
 
       this.securedInterestAmount = (this.controls.finalLoanAmount.value *
@@ -511,6 +519,12 @@ export class InterestCalculatorComponent implements OnInit {
 
 
   nextAction() {
+
+    if (this.disable) {
+      this.next.emit(4)
+      return
+    }
+
     if (this.finalInterestForm.invalid) {
       this.finalInterestForm.markAllAsTouched()
       return
@@ -523,6 +537,7 @@ export class InterestCalculatorComponent implements OnInit {
       map(res => {
         if (res.finalLoanAmount)
           this.finalLoanAmount.emit(res.finalLoanAmount)
+        this.accountHolderName.emit(`${res.firstName} ${res.lastName}`)
         this.next.emit(4)
       }), catchError(err => {
         throw err;
@@ -563,5 +578,11 @@ export class InterestCalculatorComponent implements OnInit {
     });
 
   }
+
+  ngDestroy() {
+    this.destroy$.next()
+    this.destroy$.complete()
+  }
+
 }
 

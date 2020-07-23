@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const CustomerAssignAppraiser = sequelize.define('customerAssignAppraiser', {
         customerId: {
@@ -53,6 +55,14 @@ module.exports = (sequelize, DataTypes) => {
         CustomerAssignAppraiser.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerAssignAppraiser.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
+    }
+
+    CustomerAssignAppraiser.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get());
+        if (values.customer.panImage) {
+            values.customer.panImg = baseUrlConfig.BASEURL + values.customer.panImage;
+        }
+        return values;
     }
 
     return CustomerAssignAppraiser;

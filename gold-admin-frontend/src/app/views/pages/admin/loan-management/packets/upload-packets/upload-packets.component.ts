@@ -19,6 +19,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
   @Input() viewpacketsDetails;
   @Input() masterAndLoanIds;
+  @Input() loanStage
+  @Input() showButton
   @ViewChild('form', { static: false }) form;
   @ViewChild('emptyPacketWithNoOrnament', { static: false }) emptyPacketWithNoOrnament: ElementRef
   @ViewChild('sealingPacketWithWeight', { static: false }) sealingPacketWithWeight: ElementRef
@@ -52,13 +54,23 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private ref: ChangeDetectorRef,
     private dilaog: MatDialog
   ) {
-
+    this.url = this.router.url.split('/')[3]
+    this.initForm()
+    this.packetImg = this.fb.group({
+      emptyPacketWithNoOrnament: ['', Validators.required],
+      emptyPacketWithNoOrnamentImage: ['', Validators.required],
+      sealingPacketWithWeight: ['', Validators.required],
+      sealingPacketWithWeightImage: ['', Validators.required],
+      sealingPacketWithCustomer: ['', Validators.required],
+      sealingPacketWithCustomerImage: ['', Validators.required],
+      packetOrnamentArray: this.fb.array([])
+    })
   }
 
 
   ngOnChanges(change: SimpleChanges) {
-    if (change.ornamentType && change.ornamentType.currentValue && change.ornamentType.currentValue.ornamentType) {
-      let ornamentType = change.ornamentType.currentValue.ornamentType
+    if (change.ornamentType && change.ornamentType.currentValue) {
+      let ornamentType = change.ornamentType.currentValue
       console.log(this.ornamentType)
       var temp = []
       ornamentType.forEach(ele => {
@@ -75,7 +87,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         console.log(packet.packets)
         packet.packets.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
-          this.ornamentName = ele.ornamentTypes.map(e => e.name).toString();
+          this.ornamentName = ele.packetOrnament.map(e => e.ornamentType.name).toString();
           this.pushPackets()
         });
         this.url = 'view-loan'
@@ -86,20 +98,10 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
 
   ngOnInit() {
-    this.initForm()
     this.getPacketsDetails()
-    this.url = this.router.url.split('/')[3]
-    this.masterAndLoanIds = this.route.snapshot.params.id
+    // this.masterAndLoanIds = this.route.snapshot.params.id
 
-    this.packetImg = this.fb.group({
-      emptyPacketWithNoOrnament: ['', Validators.required],
-      emptyPacketWithNoOrnamentImage: ['', Validators.required],
-      sealingPacketWithWeight: ['', Validators.required],
-      sealingPacketWithWeightImage: ['', Validators.required],
-      sealingPacketWithCustomer: ['', Validators.required],
-      sealingPacketWithCustomerImage: ['', Validators.required],
-      packetOrnamentArray: this.fb.array([])
-    })
+    
 
   }
 
@@ -177,7 +179,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     let temp = this.ornamentTypeData;
     this.ornamentTypeData = []
     for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < this.ornamentId.length; ornamnetsIdIndex++) {
-    for (let ornamnetsIndex = 0; ornamnetsIndex < this.splicedOrnaments.length; ornamnetsIndex++) {
+      for (let ornamnetsIndex = 0; ornamnetsIndex < this.splicedOrnaments.length; ornamnetsIndex++) {
         console.log(this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex])
         if (this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex]) {
           temp.push(this.splicedOrnaments[ornamnetsIndex])
@@ -257,6 +259,12 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   save() {
+
+    if (this.url == 'view-loan') {
+      this.next.emit(6)
+      return
+    }
+
     if (this.packetImg.invalid) {
       this.packetImg.markAllAsTouched()
       return
@@ -271,9 +279,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.packetService.uploadPackets(this.packetImg.value, this.masterAndLoanIds).pipe(
           map(res => {
             this.toast.success(res.message)
-            this.url = 'view-loan'
-            this.next.emit(7)
-            // this.router.navigate(['/admin/loan-management/applied-loan'])
+            // this.url = 'view-loan'
+            // this.next.emit(7)
+            this.router.navigate(['/admin/loan-management/applied-loan'])
           }),
           catchError(err => {
             if (err.error.message && err.error.message == 'Packets has been already assign') {

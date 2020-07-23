@@ -51,11 +51,11 @@ module.exports = (sequelize, DataTypes) => {
         packet.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         
         packet.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranch', as: 'internalBranch' });
-        // packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packetOrnament' });
+        packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packetOrnament' });
 
         packet.belongsToMany(models.customerLoanPackageDetails, { through: models.customerLoanPacket });
 
-        packet.belongsToMany(models.ornamentType, { through: models.packetOrnament });
+        // packet.belongsToMany(models.ornamentType, { through: models.packetOrnament });
 
         
         

@@ -19,6 +19,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
   @Input() invalid;
   @Input() action;
   @Output() next: EventEmitter<any> = new EventEmitter()
+  @Input() showButton
 
   constructor(
     public fb: FormBuilder,
@@ -100,6 +101,12 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
   //   // this.nomineeEmit.emit({ nominee: this.nominee});
   // }
   nextAction() {
+
+    if (this.disable) {
+      this.next.emit(2)
+      return
+    }
+
     if (this.nominee.invalid) {
       this.nominee.markAllAsTouched();
       return

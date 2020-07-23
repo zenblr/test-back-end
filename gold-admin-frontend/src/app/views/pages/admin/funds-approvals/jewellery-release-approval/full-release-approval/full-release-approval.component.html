@@ -92,6 +92,14 @@
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="updateStatus">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <kt-button (click)="updateStatus(item)" [value]="'Update'" [type]="'button'">
+                        </kt-button>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="assignAppraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
