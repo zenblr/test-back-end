@@ -1,25 +1,25 @@
 import { Component, OnInit, Input, ChangeDetectorRef, ViewChild, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy, ApplicationRef, HostListener, ElementRef, Renderer } from '@angular/core';
-import { SharedService } from '../../../../../../../core/shared/services/shared.service';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 import { map, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { ImagePreviewDialogComponent } from '../../../../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
+import { ImagePreviewDialogComponent } from '../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
 import { MatDialog } from '@angular/material';
-import { PdfViewerComponent } from '../../../../../../../views/partials/components/pdf-viewer/pdf-viewer.component';
+import { PdfViewerComponent } from '../../../../views/partials/components/pdf-viewer/pdf-viewer.component';
 import { Router } from '@angular/router';
-import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
-import { LoanTransferService } from '../../../../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
+import { LoanApplicationFormService } from '../../../../core/loan-management';
+import { LoanTransferService } from '../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
 import { values } from 'lodash';
 import { NgxPermission } from 'ngx-permissions/lib/model/permission.model';
 import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
-  selector: 'kt-upload-loan-documents',
-  templateUrl: './upload-loan-documents.component.html',
-  styleUrls: ['./upload-loan-documents.component.scss'],
+  selector: 'kt-upload-documents',
+  templateUrl: './upload-documents.component.html',
+  styleUrls: ['./upload-documents.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UploadLoanDocumentsComponent implements OnInit {
+export class UploadDocumentsComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Input() loanDocumnets
@@ -78,7 +78,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
-         
+
       if (documents && documents.pawnCopyImage.length) {
         this.documentsForm.patchValue({
           pawnCopyImage: documents.pawnCopyImage[0],
@@ -106,7 +106,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
           signedCheque: documents.signedCheque
         })
         this.pdfCheck()
-        if(documents.loanTransferStatusForBM == 'approved'){
+        if (documents.loanTransferStatusForBM == 'approved') {
           this.url = 'view-loan'
         }
       }
@@ -270,14 +270,14 @@ export class UploadLoanDocumentsComponent implements OnInit {
     if (this.url == 'loan-transfer') {
       this.loanTransferFormService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
         map(res => {
-          if(this.buttonName == 'save'){
+          if (this.buttonName == 'save') {
             this.router.navigate(['/admin/loan-management/transfer-loan-list'])
-          }else{
-          if (res.loanCurrentStage) {
-            let stage = Number(res.loanCurrentStage) - 1
-            this.next.emit(stage)
+          } else {
+            if (res.loanCurrentStage) {
+              let stage = Number(res.loanCurrentStage) - 1
+              this.next.emit(stage)
+            }
           }
-        }
         })).subscribe()
     } else {
       this.loanService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(

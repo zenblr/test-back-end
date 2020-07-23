@@ -9,6 +9,10 @@
                             (next)="next($event)" (totalEligibleAmt)="totalEligibleAmt($event)">
                         </kt-basic-details>
                     </mat-tab>
+                    <mat-tab label="Customer Acknowledgment">
+                        <kt-upload-documents [masterAndLoanIds]="masterAndLoanIds" [loanDocumnets]="customerDetail">
+                        </kt-upload-documents>
+                    </mat-tab>
                     <!-- <mat-tab label="Nominee Details" [disabled]="disabled[1]">
                         <kt-nominee-details [action]="action" (next)="next($event)" [disable]="disabledForm"
                             [details]="customerDetail" [masterAndLoanIds]="masterAndLoanIds">
@@ -49,8 +53,8 @@
                         </div>
                     </mat-tab>
                     <mat-tab label="Upload Documents" *ngIf="url == 'packet-image-upload' || url == 'view-loan'">
-                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds"
-                            [loanDocumnets]="customerDetail"></kt-upload-loan-documents>
+                        <kt-upload-documents [masterAndLoanIds]="masterAndLoanIds"
+                            [loanDocumnets]="customerDetail"></kt-upload-documents>
                     </mat-tab> -->
                 </mat-tab-group>
             </div>

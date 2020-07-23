@@ -33,7 +33,6 @@ import { PacketTrackingComponent } from './packets/packet-tracking/packet-tracki
 import { UpdateLocationComponent } from './packets/update-location/update-location.component';
 import { TopUpComponent } from './top-up/top-up.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
-import { UploadLoanDocumentsComponent } from './loan-application-form/tabs/upload-loan-documents/upload-loan-documents.component';
 import { LoanTransferComponent } from './loan-transfer/loan-transfer.component';
 import { LoanTransferListComponent } from './loan-transfer-list/loan-transfer-list.component';
 const rout: Routes = [
@@ -113,7 +112,6 @@ const rout: Routes = [
     PacketTrackingComponent,
     UpdateLocationComponent,
     TopUpComponent,
-    UploadLoanDocumentsComponent,
     LoanTransferComponent,
     LoanTransferListComponent,
   ],

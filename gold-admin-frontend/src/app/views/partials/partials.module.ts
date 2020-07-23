@@ -70,6 +70,7 @@ import { FilteredDataComponent } from './components/filtered-data/filtered-data.
 import { UplodDataImageComponent } from "./components/uplod-data-image/uplod-data-image.component";
 import { ImagePreviewDialogComponent } from "./components/image-preview-dialog/image-preview-dialog.component";
 import { BasicDetailsComponent } from "./components/basic-details/basic-details.component";
+import { UploadDocumentsComponent } from "./components/upload-documents/upload-documents.component";
 import { UserClassificationComponent } from "./components/user-classification/user-classification.component";
 import { UplodPreviewImageComponent } from "./components/uplod-preview-image/uplod-preview-image.component";
 
@@ -148,6 +149,8 @@ import { UpdateStatusComponent } from '../pages/admin/funds-approvals/update-sta
 
 		BasicDetailsComponent,
 
+		UploadDocumentsComponent,
+
 		UserClassificationComponent,
 
 		UplodPreviewImageComponent,
@@ -215,6 +218,7 @@ import { UpdateStatusComponent } from '../pages/admin/funds-approvals/update-sta
 		ImagePreviewDialogComponent,
 		LoanSchemeComponent,
 		BasicDetailsComponent,
+		UploadDocumentsComponent,
 		UserClassificationComponent,
 		UplodPreviewImageComponent,
 		UserReviewComponent,
