@@ -1196,7 +1196,9 @@ exports.appliedLoanDetails = async (req, res, next) => {
     let stage = await models.loanStage.findOne({
         where: { name: 'applying' }
     })
-
+    let transfer = await models.loanStage.findOne({
+        where: { name: 'loan transfer' }
+    })
     // let stageId = stage.map(ele => {
     //     if (ele.name != 'applying') {
     //         return ele.id
@@ -1257,7 +1259,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
                 )
             },
         }],
-        loanStageId: { [Op.notIn]: [stage.id] },
+        loanStageId: { [Op.notIn]: [stage.id,transfer.id] },
         isActive: true
     };
     let internalBranchId = req.userData.internalBranchId
