@@ -23,7 +23,7 @@ exports.readOccupation = async (req, res, next) => {
     if (!readOccupation[0]) {
         return res.status(404).json({ message: 'data not found' })
     }
-    return res.status(200).json(readOccupation)
+    return res.status(200).json({ message: 'success', data: readOccupation })
 
 }
 // update occupation

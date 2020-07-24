@@ -14,6 +14,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { mergeInterestTable } = require('../../utils/loanFunction')
 
+//INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
@@ -22,7 +23,7 @@ exports.getInterestTable = async (req, res, next) => {
     return res.status(200).json({ data: mergeTble })
 }
 
-
+//INTEREST INFO
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
@@ -48,5 +49,10 @@ exports.getInterestInfo = async (req, res, next) => {
 
     return res.status(200).json({ message: "success", data: interestInfo })
 
+
+}
+
+//CALCULATE PAYABLE AMOUNT
+exports.PayableAmount = async (req, res, next) => {
 
 }

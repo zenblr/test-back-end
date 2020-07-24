@@ -7,7 +7,7 @@ const Op = Sequelize.Op;
 const check = require('../../lib/checkLib');
 
 
-exports.addStatus = async(req, res, next) => {
+exports.addStatus = async (req, res, next) => {
     let { statusName } = req.body;
     let statusExist = await models.status.findOne({ where: { statusName: statusName } })
     if (!check.isEmpty(statusExist)) {
@@ -18,7 +18,7 @@ exports.addStatus = async(req, res, next) => {
 
 }
 
-exports.getStatus = async(req, res, next) => {
+exports.getStatus = async (req, res, next) => {
 
     let { getAll } = req.query;
 
@@ -31,11 +31,11 @@ exports.getStatus = async(req, res, next) => {
         whereCondition = { order: [['id', 'ASC']] }
     }
     let allStatus = await models.status.findAll(whereCondition)
-    return res.status(200).json(allStatus)
+    return res.status(200).json({ message: allStatus })
 }
 
 exports.updateStatus = async (req, res, next) => {
-    let {  statusName } = req.body;
+    let { statusName } = req.body;
     let { id } = req.params;
 
     let statusExist = await models.status.findOne({ where: { statusName } })
@@ -50,7 +50,7 @@ exports.updateStatus = async (req, res, next) => {
 
 }
 
-exports.deactivateStatus = async(req, res, next) => {
+exports.deactivateStatus = async (req, res, next) => {
     const { statusId, isActive } = req.query;
     const status = await models.status.update({ isActive: isActive }, { where: { id: statusId } })
     if (status[0] == 0) {
