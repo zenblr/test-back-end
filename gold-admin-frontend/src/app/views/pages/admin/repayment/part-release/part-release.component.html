@@ -87,7 +87,7 @@
                                     </ng-container>
                                 </td> -->
                                 <td>
-                                    {{ornament.ornamentType.packetOrnament[0].packet.packetUn}}
+                                    {{ornament.ornamentType.packetOrnament[0].packet.packetUn | uppercase}}
                                 </td>
                                 <td>{{ ornament.quantity }}</td>
                                 <td>{{ ornament.grossWeight }} gm</td>
@@ -252,8 +252,9 @@
                                     <td>
                                         <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
                                             class="apply-kyc">Select Payment</button>
-                                        <button *ngIf="paymentValue" (click)="choosePaymentMethod()"
-                                            class="apply-kyc">{{ paymentValue.paymentType | uppercase }}</button>
+                                        <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
+                                            {{ paymentValue.paymentType === 'IMPS' ? 'RTGS | NEFT | IMPS' : paymentValue.paymentType | uppercase }}
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
