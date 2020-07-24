@@ -7,7 +7,7 @@ import { LayoutUtilsService } from '../../../../../core/_base/crud';
 import { map, tap } from 'rxjs/operators';
 import { takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
 import { TopUpApprovalDatasource, TopUpApprovalService } from '../../../../../core/funds-approvals'
-import { OrnamentsComponent } from '../../loan-management/loan-application-form/tabs/ornaments/ornaments.component';
+import { OrnamentsComponent } from '../../../../partials/components/ornaments/ornaments.component';
 
 @Component({
   selector: 'kt-top-up-approval',

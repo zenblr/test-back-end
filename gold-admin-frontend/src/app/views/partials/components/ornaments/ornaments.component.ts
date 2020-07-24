@@ -1,20 +1,19 @@
 import { Component, OnInit, ElementRef, Input, ChangeDetectorRef, AfterViewInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChildren, QueryList, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
-import { SharedService } from '../../../../../../../core/shared/services/shared.service';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 import { map, catchError, filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ImagePreviewDialogComponent } from '../../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
-import { UploadOfferService } from '../../../../../../../core/upload-data';
-import { KaratDetailsService } from '../../../../../../../core/loan-setting/karat-details/services/karat-details.service';
+import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
+import { UploadOfferService } from '../../../../core/upload-data';
+import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
 import { Router } from '@angular/router';
-import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
-import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
-import { OrnamentsService } from '../../../../../../../core/masters/ornaments/services/ornaments.service';
-import { WebcamDialogComponent } from '../../../../kyc-settings/webcam-dialog/webcam-dialog.component';
-import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
-import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
-
+import { LoanApplicationFormService } from '../../../../core/loan-management';
+import { GoldRateService } from '../../../../core/upload-data/gold-rate/gold-rate.service';
+import { OrnamentsService } from '../../../../core/masters/ornaments/services/ornaments.service';
+import { WebcamDialogComponent } from '../../../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
+import { LayoutUtilsService } from '../../../../core/_base/crud';
+import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
 
 @Component({
   selector: 'kt-ornaments',
@@ -22,7 +21,6 @@ import { GlobalSettingService } from '../../../../../../../core/global-setting/s
   styleUrls: ['./ornaments.component.scss']
 })
 export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
-
   selected: number = 0
   goldRate: any;
   ltvGoldRate: any;
@@ -35,6 +33,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
   @Output() fullAmt: EventEmitter<any> = new EventEmitter();
   @Input() masterAndLoanIds
+  @Input() scrapIds
   @Input() ornamentType
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
@@ -73,12 +72,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public globalSettingService: GlobalSettingService,
     public dialogRef: MatDialogRef<OrnamentsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-  ) {
-
-  }
+  ) { }
 
   ngOnInit() {
-
     this.url = this.router.url.split('/')[3]
     this.getKarat()
     this.initForm()
@@ -91,8 +87,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       })
     ).subscribe()
   }
-
-
 
   initForm() {
     this.ornamentsForm = this.fb.group({
@@ -242,8 +236,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       addmore.style.right = '0px'
       this.addmoreMinus = true
     }
-
-
 
     this.OrnamentsData.push(this.fb.group({
       ornamentTypeId: [, Validators.required],
@@ -536,7 +528,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           const controls = this.OrnamentsData.at(index) as FormGroup;
           controls.controls.id.patchValue(res.ornaments[index].id)
         }
-        if(res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount){
+        if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
           this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
         }
         this.next.emit(3)

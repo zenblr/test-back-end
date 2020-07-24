@@ -11,7 +11,6 @@ import { LoanApplicationFormComponent } from './loan-application-form/loan-appli
 import { KycDetailsComponent } from './loan-application-form/tabs/kyc-details/kyc-details.component';
 import { NomineeDetailsComponent } from './loan-application-form/tabs/nominee-details/nominee-details.component'
 import { CoreModule } from '../../../../core/core.module';
-import { OrnamentsComponent } from './loan-application-form/tabs/ornaments/ornaments.component';
 import { FinalInterestAmountComponent } from './loan-calculator/tabs/final-interest-amount/final-interest-amount.component'
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -145,7 +144,6 @@ const rout: Routes = [
     UnSecuredSchemeComponent,
     WebcamDialogComponent,
     UpdateLocationComponent,
-    OrnamentsComponent,
     UserReviewComponent
   ]
 })

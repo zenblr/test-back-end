@@ -6,7 +6,7 @@ import { PartReleaseFinalService } from '../../../../../../core/funds-approvals/
 import { MatPaginator, MatDialog } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
-import { OrnamentsComponent } from '../../../loan-management/loan-application-form/tabs/ornaments/ornaments.component';
+import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 import { AssignAppraiserComponent } from '../../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { PartReleaseFinalDatasource } from '../../../../../../core/funds-approvals/jewellery-release-final/part-release-final/datasources/part-release-final.datasource';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
