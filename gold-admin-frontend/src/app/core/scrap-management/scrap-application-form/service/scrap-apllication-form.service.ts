@@ -24,6 +24,13 @@ export class ScrapApplicationFormService {
     );
   }
 
+  acknowledgementSubmit(details, scrapId): Observable<any> {
+    let data = { ...details, ...scrapId }
+    return this.http.post(`/api/scrap/scrap-process/acknowledgement-details`, data).pipe(
+      map(res => res)
+    );
+  }
+
   nomineeSubmit(details, masterAndLoanIds): Observable<any> {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/nominee-details`, data).pipe(

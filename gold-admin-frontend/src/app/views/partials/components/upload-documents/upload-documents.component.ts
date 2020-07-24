@@ -12,6 +12,7 @@ import { LoanTransferService } from '../../../../core/loan-management/loan-trans
 import { values } from 'lodash';
 import { NgxPermission } from 'ngx-permissions/lib/model/permission.model';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { ScrapApplicationFormService } from '../../../../core/scrap-management';
 
 @Component({
   selector: 'kt-upload-documents',
@@ -20,25 +21,31 @@ import { NgxPermissionsService } from 'ngx-permissions';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadDocumentsComponent implements OnInit {
-
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Input() loanDocumnets
   @Input() masterAndLoanIds;
+  @Input() scrapIds;
   @Input() loanTransfer
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
   @ViewChild('signedCheque', { static: false }) signedCheque
   @ViewChild('declaration', { static: false }) declaration
+  @ViewChild('xrfMachineReading', { static: false }) xrfMachineReading
+  @ViewChild('customerConfirmation', { static: false }) customerConfirmation
   pdf = {
     loanAgreementCopy: false,
     pawnCopy: false,
     schemeConfirmationCopy: false,
     signedCheque: false,
-    declaration: false
+    declaration: false,
+    customerConfirmation: false
   }
   documentsForm: FormGroup
   show: boolean;
+  showLoanFlag = false;
+  showLoanTransferFlag = false;
+  showScrapFlag = false;
   url: string;
   buttonName: string;
   constructor(
@@ -52,33 +59,31 @@ export class UploadDocumentsComponent implements OnInit {
     private loanTransferFormService: LoanTransferService,
     private el: ElementRef,
     private renderer: Renderer,
-    private ngxPermission: NgxPermissionsService
+    private ngxPermission: NgxPermissionsService,
+    public scrapApplicationFormService: ScrapApplicationFormService,
   ) {
-
     this.url = (this.router.url.split("/")[3]).split("?")[0]
     if (this.url == "loan-transfer") {
-      this.show = true
+      this.showLoanTransferFlag = true;
+    } else if (this.url == "scrap-buying-application-form") {
+      this.showScrapFlag = true;
     } else {
-      this.show = false
+      this.showLoanFlag = true;
     }
     this.ngxPermission.permissions$.subscribe(res => {
       if (this.url == "loan-transfer" && res.loanTransferRating) {
-        this.buttonName = 'next'
-      }
-      else {
-        this.buttonName = 'save'
+        this.buttonName = 'next';
+      } else if (this.url == "scrap-buying-application-form") {
+        this.buttonName = 'next';
+      } else {
+        this.buttonName = 'save';
       }
     })
-
-
   }
-
-
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
-
       if (documents && documents.pawnCopyImage.length) {
         this.documentsForm.patchValue({
           pawnCopyImage: documents.pawnCopyImage[0],
@@ -88,14 +93,12 @@ export class UploadDocumentsComponent implements OnInit {
           pawnCopy: documents.pawnCopyImage[0],
           schemeConfirmationCopy: documents.schemeConfirmationCopyImage[0],
         })
-        this.pdfCheck()
-
+        this.pdfCheck();
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       let documents = changes.loanTransfer.currentValue.masterLoan.loanTransfer
       if (documents && documents.declaration) {
-        // this.documentsForm.patchValue(documents)
         this.documentsForm.patchValue({
           declarationCopyImage: documents.declaration[0],
           signedChequeImage: documents.signedCheque[0],
@@ -112,7 +115,6 @@ export class UploadDocumentsComponent implements OnInit {
       }
     }
   }
-
 
   pdfCheck() {
     Object.keys(this.documentsForm.value).forEach(value => {
@@ -150,6 +152,13 @@ export class UploadDocumentsComponent implements OnInit {
       loanAgreementCopyImage: [],
       pawnCopyImage: [],
       schemeConfirmationCopyImage: [],
+      approxPurityReading: [],
+      xrfMachineReading: [],
+      xrfMachineReadingImage: [],
+      xrfMachineReadingImageName: [],
+      customerConfirmation: [],
+      customerConfirmationImage: [],
+      customerConfirmationImageName: []
     })
     this.validation()
   }
@@ -159,21 +168,27 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   validation() {
-    if (this.show) {
+    if (this.showLoanTransferFlag) {
       this.documentsForm.controls.signedCheque.setValidators(Validators.required),
         this.documentsForm.controls.signedCheque.updateValueAndValidity()
       this.documentsForm.controls.declaration.setValidators(Validators.required),
         this.documentsForm.controls.declaration.updateValueAndValidity()
       this.documentsForm.controls.outstandingLoanAmount.setValidators(Validators.required),
         this.documentsForm.controls.outstandingLoanAmount.updateValueAndValidity()
-
+    } else if (this.showScrapFlag) {
+      this.documentsForm.controls.pawnCopy.setValidators([]),
+        this.documentsForm.controls.pawnCopy.updateValueAndValidity(),
+        this.documentsForm.controls.approxPurityReading.setValidators(Validators.required),
+        this.documentsForm.controls.approxPurityReading.updateValueAndValidity(),
+        this.documentsForm.controls.xrfMachineReading.setValidators(Validators.required),
+        this.documentsForm.controls.xrfMachineReading.updateValueAndValidity()
+      this.documentsForm.controls.customerConfirmation.setValidators(Validators.required),
+        this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
     } else {
-
       this.documentsForm.controls.loanAgreementCopy.setValidators(Validators.required),
         this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
       this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
         this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
-
     }
   }
 
@@ -182,13 +197,19 @@ export class UploadDocumentsComponent implements OnInit {
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png'
       || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
-      const controls = this.documentsForm.controls
-      const params = {
-        reason: 'loan',
-        masterLoanId: this.masterAndLoanIds.masterLoanId
+      const controls = this.documentsForm.controls;
+      let params;
+      if (this.scrapIds) {
+        params = {
+          reason: 'acknowledgement',
+          scrapId: this.scrapIds.scrapId
+        }
+      } else {
+        params = {
+          reason: 'loan',
+          masterLoanId: this.masterAndLoanIds.masterLoanId
+        }
       }
-
-
       this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
           if (value == 'loanAgreementCopy') {
@@ -199,35 +220,37 @@ export class UploadDocumentsComponent implements OnInit {
             controls.pawnCopy.patchValue([res.uploadFile.path])
             controls.pawnCopyImageName.patchValue(res.uploadFile.originalname)
             controls.pawnCopyImage.patchValue(res.uploadFile.URL)
-
           } else if (value == 'schemeConfirmationCopy') {
             controls.schemeConfirmationCopy.patchValue([res.uploadFile.path])
             controls.schemeConfirmationCopyImageName.patchValue(res.uploadFile.originalname)
             controls.schemeConfirmationCopyImage.patchValue(res.uploadFile.URL)
-
           } else if (value == 'signedCheque') {
             controls.signedCheque.patchValue([res.uploadFile.path])
             controls.signedChequeImageName.patchValue(res.uploadFile.originalname)
             controls.signedChequeImage.patchValue(res.uploadFile.URL)
-
           } else if (value == 'declaration') {
             controls.declaration.patchValue([res.uploadFile.path])
             controls.declarationCopyImageName.patchValue(res.uploadFile.originalname)
             controls.declarationCopyImage.patchValue(res.uploadFile.URL)
-
+          } else if (value == 'xrfMachineReading') {
+            controls.xrfMachineReading.patchValue(res.uploadFile.path)
+            controls.xrfMachineReadingImageName.patchValue(res.uploadFile.originalname)
+            controls.xrfMachineReadingImage.patchValue(res.uploadFile.URL)
+          } else if (value == 'customerConfirmation') {
+            controls.customerConfirmation.patchValue(res.uploadFile.path)
+            controls.customerConfirmationImageName.patchValue(res.uploadFile.originalname)
+            controls.customerConfirmationImage.patchValue(res.uploadFile.URL)
           }
           if (ext[ext.length - 1] == 'pdf') {
             this.pdf[value] = true
           } else {
             this.pdf[value] = false
           }
-
           console.log(this.pdf)
-
         }), finalize(() => {
           this[value].nativeElement.value = ''
-          this.ref.detectChanges()
-        })).subscribe()
+          this.ref.detectChanges();
+        })).subscribe();
     }
     else {
       this.toastr.error('Upload Valid File Format');
@@ -278,14 +301,21 @@ export class UploadDocumentsComponent implements OnInit {
               this.next.emit(stage)
             }
           }
-        })).subscribe()
+        })).subscribe();
+    } else if (this.url == 'scrap-buying-application-form') {
+      this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
+        map(res => {
+          if (res.loanCurrentStage) {
+            let stage = Number(res.loanCurrentStage) - 1;
+            this.next.emit(stage);
+          }
+        })).subscribe();
     } else {
       this.loanService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
         map(res => {
           this.toastr.success(res.message)
           this.router.navigate(['/admin/loan-management/applied-loan'])
-        })).subscribe()
-
+        })).subscribe();
     }
   }
 }

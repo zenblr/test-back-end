@@ -231,7 +231,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             let stage = res.loanCurrentStage;
             stage = Number(stage) - 1;
             this.next.emit(stage);
-            // this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+            this.id.emit({ scrapId: res.scrapId });
             if (stage >= 1) {
               this.apiHit.emit(res.scrapId);
             }
@@ -301,7 +301,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
           let stage = res.loanCurrentStage
           stage = Number(stage) - 1;
           this.next.emit(stage)
-          // this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+          this.id.emit({ scrapId: res.scrapId })
         }), catchError(err => {
           this.toast.error(err.error.message)
           throw err

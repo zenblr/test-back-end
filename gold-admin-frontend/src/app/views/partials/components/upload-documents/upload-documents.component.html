@@ -1,6 +1,6 @@
 <div class="row justify-content-around" [formGroup]="documentsForm">
     <div class="col-11">
-        <div class="row kt-padding-t-15" *ngIf="show">
+        <div class="row kt-padding-t-15" *ngIf="showLoanTransferFlag">
             <div class="col-2 form-label ">
                 <label class="kt-padding-l-10">Outstanding Loan Amount</label>
             </div>
@@ -9,30 +9,39 @@
                     placeholder="Outstanding">
             </div>
         </div>
-        <div class="row kt-padding-t-15">
+        <div class="row kt-padding-t-15" *ngIf="showLoanTransferFlag || showLoanFlag">
             <div class="offset-10 col-2">
                 <kt-button [value]="'print'" [type]="'button'"></kt-button>
             </div>
         </div>
         <div class="row kt-padding-t-15 kt-padding-b-20 justify-content-around">
-            <div class="col-4 form-label" *ngIf="!show">
+            <div class="col-4 form-label" *ngIf="showLoanFlag">
                 <label class="kt-padding-l-10">Loan Agreement Copy</label>
             </div>
-            <div class="col-4 form-label">
+            <div class="col-4 form-label" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <label class="kt-padding-l-10">Pawn Ticket/Copy of pledge</label>
             </div>
-            <div class="col-4 form-label" *ngIf="!show">
+            <div class="col-4 form-label" *ngIf="showLoanFlag">
                 <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
             </div>
-            <div class="col-4 form-label" *ngIf="show">
+            <div class="col-4 form-label" *ngIf="showLoanTransferFlag">
                 <label class="kt-padding-l-10">Signed Cheque Copy</label>
             </div>
-            <div class="col-4 form-label" *ngIf="show">
+            <div class="col-4 form-label" *ngIf="showLoanTransferFlag">
                 <label class="kt-padding-l-10">Declaration Copy</label>
+            </div>
+            <div class="col-4 form-label" *ngIf="showScrapFlag">
+                <label class="kt-padding-l-10">Approx Purity Reading(XRF machine)</label>
+            </div>
+            <div class="col-4 form-label" *ngIf="showScrapFlag">
+                <label class="kt-padding-l-10">Photo of XRF machine reading</label>
+            </div>
+            <div class="col-4 form-label" *ngIf="showScrapFlag">
+                <label class="kt-padding-l-10">Customer Confirmation for melting ornament(Jewellery)</label>
             </div>
         </div>
         <div class="row justify-content-between" *ngIf="url != 'view-loan'">
-            <div class="col-4" *ngIf="!show">
+            <div class="col-4" *ngIf="showLoanFlag">
                 <div class="input-group mb-3"
                     [class.isError]="controls.loanAgreementCopy.touched && controls.loanAgreementCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -45,10 +54,9 @@
                         (change)="fileUpload($event,'loanAgreementCopy')">
                     <mat-error *ngIf="controls.loanAgreementCopy.touched && controls.loanAgreementCopy.invalid">Field
                         Required</mat-error>
-
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-4" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <div class="input-group mb-3" [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="pawnCopyImageName" />
@@ -58,10 +66,9 @@
                     </div>
                     <input type="file" class="d-none" #pawnCopy (change)="fileUpload($event,'pawnCopy')">
                     <mat-error *ngIf="controls.pawnCopy.touched && controls.pawnCopy.invalid">Field Required</mat-error>
-
                 </div>
             </div>
-            <div class="col-4" *ngIf="!show">
+            <div class="col-4" *ngIf="showLoanFlag">
                 <div class="input-group mb-3"
                     [class.isError]="controls.schemeConfirmationCopy.touched && controls.schemeConfirmationCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -75,10 +82,9 @@
                     <mat-error
                         *ngIf="controls.schemeConfirmationCopy.touched && controls.schemeConfirmationCopy.invalid">Field
                         Required</mat-error>
-
                 </div>
             </div>
-            <div class="col-4" *ngIf="show">
+            <div class="col-4" *ngIf="showLoanTransferFlag">
                 <div class="input-group mb-3"
                     [class.isError]="controls.signedCheque.touched && controls.signedCheque.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -92,7 +98,7 @@
                     </mat-error>
                 </div>
             </div>
-            <div class="col-4" *ngIf="show">
+            <div class="col-4" *ngIf="showLoanTransferFlag">
                 <div class="input-group mb-3"
                     [class.isError]="controls.declaration.touched && controls.declaration.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -104,19 +110,56 @@
                     <input type="file" class="d-none" #declaration (change)="fileUpload($event,'declaration')">
                     <mat-error *ngIf="controls.declaration.touched && controls.declaration.invalid">Field Required
                     </mat-error>
-
+                </div>
+            </div>
+            <div class="col-4" *ngIf="showScrapFlag">
+                <input type="text" formControlName="approxPurityReading" class="form-control"
+                    placeholder="Approx Purity Reading"
+                    [class.isError]="controls.approxPurityReading.touched && controls.approxPurityReading.invalid">
+                <mat-error *ngIf="controls.approxPurityReading.touched && controls.approxPurityReading.invalid">Field
+                    Required</mat-error>
+            </div>
+            <div class="col-4" *ngIf="showScrapFlag">
+                <div class="input-group mb-3"
+                    [class.isError]="controls.xrfMachineReading.touched && controls.xrfMachineReading.invalid">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly formControlName="declarationCopyImageName" />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="xrfMachineReading.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" #xrfMachineReading
+                        (change)="fileUpload($event,'xrfMachineReading')">
+                    <mat-error *ngIf="controls.xrfMachineReading.touched && controls.xrfMachineReading.invalid">
+                        Field Required
+                    </mat-error>
+                </div>
+            </div>
+            <div class="col-4" *ngIf="showScrapFlag">
+                <div class="input-group mb-3"
+                    [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly formControlName="declarationCopyImageName" />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="customerConfirmation.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" #customerConfirmation
+                        (change)="fileUpload($event,'customerConfirmation')">
+                    <mat-error *ngIf="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
+                        Field Required
+                    </mat-error>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col" *ngIf="!show">
+            <div class="col" *ngIf="showLoanFlag">
                 <div class="row">
                     <div class="col-10">
                         <div class="img-container width" *ngIf="!controls?.loanAgreementCopy?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-
                         <div class="" *ngIf="controls?.loanAgreementCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15"
                                 (click)="preview(controls?.loanAgreementCopyImage?.value)">
@@ -129,35 +172,31 @@
                                 <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
                                     *ngIf="pdf.loanAgreementCopy"
                                     (click)="preview(controls?.loanAgreementCopy.value)"> -->
-                                <iframe
-                                    [src]="controls?.loanAgreementCopyImage.value | safe : 'resourceUrl'"
+                                <iframe [src]="controls?.loanAgreementCopyImage.value | safe : 'resourceUrl'"
                                     height="250" width="290" scrolling="no" *ngIf="pdf.loanAgreementCopy"></iframe>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div class="col">
+            <div class="col" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <div class="row">
                     <div class="col-10">
                         <div class="img-container width" *ngIf="!controls?.pawnCopyImage?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-
                         <div class="" *ngIf="controls?.pawnCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15"
                                 (click)="preview(controls?.pawnCopyImage?.value)">
-                                <img class="fetched-image" [src]="controls?.pawnCopyImage?.value"
-                                    *ngIf="!pdf.pawnCopy">
+                                <img class="fetched-image" [src]="controls?.pawnCopyImage?.value" *ngIf="!pdf.pawnCopy">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer remove-icon" *ngIf="url != 'view-loan'"
                                     (click)="editImages('pawnCopy');">
                                 <!-- <img class="fetched-image" src="../../../../../assets/media/icons/edit.svg"
                                     (click)="preview(controls?.pawnCopy.value)"> -->
-                                <iframe [src]="controls?.pawnCopyImage?.value | safe : 'resourceUrl'"
-                                    height="250" width="290" scrolling="no" *ngIf="pdf.pawnCopy"></iframe>
+                                <iframe [src]="controls?.pawnCopyImage?.value | safe : 'resourceUrl'" height="250"
+                                    width="290" scrolling="no" *ngIf="pdf.pawnCopy"></iframe>
                                 <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnCopy"
                                     [pdfSrc]="controls?.pawnCopyImage.value"
                                     (click)="preview(controls?.pawnCopyImage.value)"></kt-pdf-viewer> -->
@@ -165,22 +204,18 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div class="col" *ngIf="!show">
+            <div class="col" *ngIf="showLoanFlag">
                 <div class="row">
                     <div class="col-10">
-                        <div class="img-container width"
-                            *ngIf="!controls?.schemeConfirmationCopyImage?.value">
+                        <div class="img-container width" *ngIf="!controls?.schemeConfirmationCopyImage?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-
                         <div class="" *ngIf="controls?.schemeConfirmationCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15"
                                 (click)="preview(controls?.schemeConfirmationCopyImage?.value)">
-                                <img class="fetched-image"
-                                    [src]="controls?.schemeConfirmationCopyImage?.value"
+                                <img class="fetched-image" [src]="controls?.schemeConfirmationCopyImage?.value"
                                     *ngIf="!pdf.schemeConfirmationCopy">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer remove-icon" *ngIf="url != 'view-loan'"
@@ -191,62 +226,113 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-            <div class="col" *ngIf="show">
+            <div class="col" *ngIf="showLoanTransferFlag">
                 <div class="row">
                     <div class="col-10">
                         <div class="img-container width" *ngIf="!controls?.signedChequeImage?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-
                         <div class="" *ngIf="controls?.signedChequeImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15"
                                 (click)="preview(controls?.signedChequeImage?.value)">
                                 <img class="fetched-image" [src]="controls?.signedChequeImage?.value"
-                                    *ngIf="!pdf.signedCheque"
-                                    (click)="preview(controls?.signedChequeImage?.value)">
+                                    *ngIf="!pdf.signedCheque" (click)="preview(controls?.signedChequeImage?.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt="" *ngIf="url != 'view-loan'"
                                     class="kt-pointer remove-icon" (click)="editImages('signedCheque');">
                                 <iframe *ngIf="pdf.signedCheque"
-                                    [src]="controls?.signedChequeImage?.value | safe : 'resourceUrl'"
-                                    height="250" width="290" scrolling="no"></iframe>
+                                    [src]="controls?.signedChequeImage?.value | safe : 'resourceUrl'" height="250"
+                                    width="290" scrolling="no"></iframe>
                                 <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.signedCheque"
                                     [pdfSrc]="controls?.signedChequeImage.value"
                                     (click)="preview(controls?.signedChequeImage.value)"></kt-pdf-viewer> -->
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-            <div class="col" *ngIf="show">
+            <div class="col" *ngIf="showLoanTransferFlag">
                 <div class="row">
                     <div class="col-10">
                         <div class="img-container width" *ngIf="!controls?.declaration?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-
                         <div class="" *ngIf="controls?.declarationCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15"
                                 (click)="preview(controls?.declarationCopyImage?.value)">
                                 <img class="fetched-image" [src]="controls?.declarationCopyImage?.value"
-                                    *ngIf="!pdf.declaration"
-                                    (click)="preview(controls?.declarationCopyImage?.value)">
+                                    *ngIf="!pdf.declaration" (click)="preview(controls?.declarationCopyImage?.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer remove-icon" *ngIf="url != 'view-loan'"
                                     (click)="editImages('declaration');">
                                 <iframe *ngIf="pdf.declaration"
-                                    [src]="controls?.declarationCopyImage?.value | safe : 'resourceUrl'"
-                                    height="250" width="290" scrolling="no"></iframe>
-
+                                    [src]="controls?.declarationCopyImage?.value | safe : 'resourceUrl'" height="250"
+                                    width="290" scrolling="no"></iframe>
                             </div>
                         </div>
                     </div>
-
+                </div>
+            </div>
+            <div class="col" *ngIf="showScrapFlag">
+                <!-- <div class="row">
+                    <div class="col-10">
+                        <input type="text" formControlName="approxPurityReading" class="form-control"
+                            placeholder="Approx Purity Reading">
+                    </div>
+                </div> -->
+            </div>
+            <div class="col" *ngIf="showScrapFlag">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container width" *ngIf="!controls?.xrfMachineReadingImage?.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+                        <div class="" *ngIf="controls?.xrfMachineReadingImage?.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15"
+                                (click)="preview(controls?.xrfMachineReadingImage?.value)">
+                                <!-- <img class="fetched-image" [src]="controls?.xrfMachineReadingImage?.value"
+                                    *ngIf="!pdf.xrfMachineReading" (click)="preview(controls?.xrfMachineReadingImage?.value)"> -->
+                                <img src="../../../../../assets/media/icons/edit.svg" alt="" *ngIf="url != 'view-loan'"
+                                    class="kt-pointer remove-icon" (click)="editImages('xrfMachineReading');">
+                                <!-- <iframe *ngIf="pdf.xrfMachineReading"
+                                    [src]="controls?.xrfMachineReadingImage?.value | safe : 'resourceUrl'" height="250"
+                                    width="290" scrolling="no"></iframe> -->
+                                <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.xrfMachineReading"
+                                    [pdfSrc]="controls?.xrfMachineReadingImage.value"
+                                    (click)="preview(controls?.xrfMachineReadingImage.value)"></kt-pdf-viewer> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col" *ngIf="showScrapFlag">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container width" *ngIf="!controls?.customerConfirmationImage?.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+                        <div class="" *ngIf="controls?.customerConfirmationImage?.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15"
+                                (click)="preview(controls?.customerConfirmationImage?.value)">
+                                <img class="fetched-image" [src]="controls?.customerConfirmationImage?.value"
+                                    *ngIf="!pdf.customerConfirmation"
+                                    (click)="preview(controls?.customerConfirmationImage?.value)">
+                                <img src="../../../../../assets/media/icons/edit.svg" alt="" *ngIf="url != 'view-loan'"
+                                    class="kt-pointer remove-icon" (click)="editImages('customerConfirmation');">
+                                <iframe *ngIf="pdf.customerConfirmation"
+                                    [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"
+                                    height="250" width="290" scrolling="no"></iframe>
+                                <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.customerConfirmation"
+                                    [pdfSrc]="controls?.customerConfirmationImage.value"
+                                    (click)="preview(controls?.customerConfirmationImage.value)"></kt-pdf-viewer> -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

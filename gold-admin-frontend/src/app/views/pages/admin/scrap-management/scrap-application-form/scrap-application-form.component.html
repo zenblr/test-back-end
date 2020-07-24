@@ -5,12 +5,11 @@
                 <mat-tab-group [(selectedIndex)]="selected" (selectedTabChange)="next($event)">
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
                         <kt-basic-details [action]="action" (apiHit)="editId($event)" [details]="customerDetail"
-                            [disable]="disabledForm" (finalLoanAmount)="finalLoanAmount($event)" (id)="loan($event)"
-                            (next)="next($event)" (totalEligibleAmt)="totalEligibleAmt($event)">
+                            [disable]="disabledForm" (id)="scrap($event)" (next)="next($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <mat-tab label="Customer Acknowledgment">
-                        <kt-upload-documents [masterAndLoanIds]="masterAndLoanIds" [loanDocumnets]="customerDetail">
+                        <kt-upload-documents [scrapIds]="scrapIds" [loanDocumnets]="customerDetail">
                         </kt-upload-documents>
                     </mat-tab>
                     <!-- <mat-tab label="Nominee Details" [disabled]="disabled[1]">

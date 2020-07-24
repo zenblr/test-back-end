@@ -26,7 +26,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   action: any;
   customerDetail: any;
   disabled = [false, true, true, true, true, true];
-  masterAndLoanIds: any;
+  scrapIds: any;
   ornamentType = [];
   finalLoanAmt: any;
   fullAmount: any = 0;
@@ -57,30 +57,52 @@ export class ScrapApplicationFormComponent implements OnInit {
   }
 
   editApi() {
-    this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
-      this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
-      this.action = 'edit'
-      this.customerDetail = res.data
-      // this.totalAmount = res.data.totalEligibleAmt
-      if (this.url == "packet-image-upload") {
-        if (this.customerDetail.loanPacketDetails.length) {
-          this.selected = 7;
-        } else {
-          this.selected = 6;
-        }
-        this.disabledForm = true;
-      } else if (this.url == "view-loan") {
-        this.disabledForm = true;
-      } else {
-        this.disabledForm = false;
-        if (res.data.masterLoan.customerLoanCurrentStage) {
-          let stage = res.data.masterLoan.customerLoanCurrentStage
-          this.selected = Number(stage) - 1;
-        } else {
-          this.selected = 5;
-        }
-      }
-    })
+    // this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
+    //   this.scrapIds = { scrapId: res.data.id}
+    //   this.action = 'edit'
+    //   this.customerDetail = res.data
+    //   if (this.url == "packet-image-upload") {
+    //     if (this.customerDetail.loanPacketDetails.length) {
+    //       this.selected = 7;
+    //     } else {
+    //       this.selected = 6;
+    //     }
+    //     this.disabledForm = true;
+    //   } else if (this.url == "view-loan") {
+    //     this.disabledForm = true;
+    //   } else {
+    //     this.disabledForm = false;
+    //     if (res.data.masterLoan.customerLoanCurrentStage) {
+    //       let stage = res.data.masterLoan.customerLoanCurrentStage
+    //       this.selected = Number(stage) - 1;
+    //     } else {
+    //       this.selected = 5;
+    //     }
+    //   }
+    // })
+    // this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
+    //   this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
+    //   this.action = 'edit'
+    //   this.customerDetail = res.data
+    //   if (this.url == "packet-image-upload") {
+    //     if (this.customerDetail.loanPacketDetails.length) {
+    //       this.selected = 7;
+    //     } else {
+    //       this.selected = 6;
+    //     }
+    //     this.disabledForm = true;
+    //   } else if (this.url == "view-loan") {
+    //     this.disabledForm = true;
+    //   } else {
+    //     this.disabledForm = false;
+    //     if (res.data.masterLoan.customerLoanCurrentStage) {
+    //       let stage = res.data.masterLoan.customerLoanCurrentStage
+    //       this.selected = Number(stage) - 1;
+    //     } else {
+    //       this.selected = 5;
+    //     }
+    //   }
+    // })
   }
 
   ngOnInit() {
@@ -111,8 +133,8 @@ export class ScrapApplicationFormComponent implements OnInit {
     ).subscribe();
   }
 
-  loan(event) {
-    this.masterAndLoanIds = event
+  scrap(event) {
+    this.scrapIds = event;
   }
 
   totalEligibleAmt(event) {
