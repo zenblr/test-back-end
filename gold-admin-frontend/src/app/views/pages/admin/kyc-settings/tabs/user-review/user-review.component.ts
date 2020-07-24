@@ -632,19 +632,19 @@ export class UserReviewComponent implements OnInit {
 
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
-      this.identityProofs = res.filter(filter => filter.name == 'Aadhaar Card');
+      this.identityProofs = res.data.filter(filter => filter.name == 'Aadhaar Card');
     })
   }
 
   getAddressProofType() {
     this.userAddressService.getAddressProofType().subscribe(res => {
-      this.addressProofs = res;
+      this.addressProofs = res.data;
     })
   }
 
   getStates() {
     this.sharedService.getStates().subscribe(res => {
-      this.states = res.message;
+      this.states = res.data;
     });
     this.getCities('permanent');
     this.getCities('residential');
@@ -659,11 +659,11 @@ export class UserReviewComponent implements OnInit {
     }
     this.sharedService.getCities(stateId).subscribe(res => {
       if (type == 'permanent') {
-        this.cities0 = res.message;
+        this.cities0 = res.data;
         this.ref.detectChanges();
 
       } else if (type == 'residential') {
-        this.cities1 = res.message;
+        this.cities1 = res.data;
         this.ref.detectChanges();
 
       }
@@ -672,7 +672,7 @@ export class UserReviewComponent implements OnInit {
 
   getOccupation() {
     this.userPersonalService.getOccupation().subscribe(res => {
-      this.occupations = res;
+      this.occupations = res.data;
     })
   }
 

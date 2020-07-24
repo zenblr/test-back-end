@@ -14,17 +14,17 @@ export class QuickPayComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private quickPayServie:QuickPayService,
-    private rout:ActivatedRoute,
+    private quickPayServie: QuickPayService,
+    private rout: ActivatedRoute,
   ) { }
 
   ngOnInit() {
     this.getInterestInfo(this.rout.snapshot.params.id)
   }
 
-  getInterestInfo(id){
+  getInterestInfo(id) {
 
-    this.quickPayServie.interestInfo(id).subscribe(res=>{
+    this.quickPayServie.interestInfo(id).subscribe(res => {
       this.loanDetails = res.data
     })
   }
@@ -35,7 +35,7 @@ export class QuickPayComponent implements OnInit {
 
   viewEmiLogs() {
     const dialogRef = this.dialog.open(EmiLogsDialogComponent, {
-      data: {},
+      data: { id: this.loanDetails.id },
       width: '850px'
     })
   }

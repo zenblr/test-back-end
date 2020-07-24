@@ -26,8 +26,8 @@
 		img {
 			transform: translate(55%, 0px);
 			.kt-aside--minimize & {
-				transform: translate(-8%, 0px) !important;
-				height: 50px;
+				transform: translate(-18%, 0px) !important;
+				height: 60px;
 				transition: kt-get(
 					$kt-aside-config,
 					base,
@@ -37,8 +37,6 @@
 			}
 		}
 	}
-
-	
 
 	.kt-aside__brand-tools {
 		display: flex;
@@ -69,27 +67,16 @@
 .kt-aside__gold-rate {
 	font-weight: 600;
 	color: #ffde9c;
-	 background-color: #454D67; 
-	// span {
-	// 	.kt-aside--minimize & {
-	// 		display: none;
-	// 		transition: kt-get(
-	// 			$kt-aside-config,
-	// 			base,
-	// 			minimize,
-	// 			transition
-	// 		);
-	// 	}
-	// }
-	.kt-aside--minimize &{
-		display: none;
-		padding: 0;
-		transition: kt-get(
-				$kt-aside-config,
-				base,
-				minimize,
-				transition
-			);
+	background-color: #454d67;
+	.gold-rate__label {
+		.kt-aside--minimize & {
+			display: none;
+			transition: kt-get($kt-aside-config, base, minimize, transition);
+		}
+	}
+	.kt-aside--minimize & {
+		font-size: 12px;
+		padding: 25px 0;
 	}
 }
 
@@ -109,7 +96,7 @@
 		// Aside minimize mode
 		.kt-header--fixed.kt-aside--minimize & {
 			justify-content: center;
-			height: auto;
+			height: 90px;
 			.kt-aside__brand-tools {
 				justify-content: center;
 
