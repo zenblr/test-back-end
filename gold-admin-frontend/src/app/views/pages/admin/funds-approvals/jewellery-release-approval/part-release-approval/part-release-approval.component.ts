@@ -19,7 +19,7 @@ import { UpdateStatusComponent } from '../../update-status/update-status.compone
 export class PartReleaseApprovalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus', 'assignAppraiser'];
+  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -58,7 +58,7 @@ export class PartReleaseApprovalComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getPartReleaseList(1, 25, this.searchValue);
+    this.dataSource.getPartReleaseList(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -76,13 +76,14 @@ export class PartReleaseApprovalComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.getDepositList(from, to, this.searchValue);
+    this.dataSource.getPartReleaseList(from, to, this.searchValue);
   }
 
-  ornamentsDetails() {
+  ornamentsDetails(item) {
     this.dialog.open(OrnamentsComponent, {
       data: {
-        modal: true
+        modal: true,
+        modalData: item
       },
       width: '90%'
     })
@@ -105,7 +106,7 @@ export class PartReleaseApprovalComponent implements OnInit {
     const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        // this.loadPage();
+        this.loadPage();
       }
     });
   }

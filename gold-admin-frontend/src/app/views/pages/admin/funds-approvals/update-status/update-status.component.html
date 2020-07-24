@@ -12,7 +12,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4 form-label">
-                                        <mat-label>Lead Source</mat-label>
+                                        <mat-label>Customer ID</mat-label>
                                     </div>
                                     <div class="col-7">
                                         <input class="form-control" formControlName="customerId"
@@ -28,7 +28,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="offset-1 col-4 form-label">
-                                        <mat-label>Lead Source</mat-label>
+                                        <mat-label>Loan ID</mat-label>
                                     </div>
                                     <div class="col-7">
                                         <input class="form-control" formControlName="loanId"
@@ -82,10 +82,10 @@
                                         <mat-label>Ornament Release Amount</mat-label>
                                     </div>
                                     <div class="col-7">
-                                        <input class="form-control" formControlName="ornamentReleaseAmount"
-                                            [class.isError]="controls.ornamentReleaseAmount.touched && controls.ornamentReleaseAmount.invalid">
+                                        <input class="form-control" formControlName="releaseAmount"
+                                            [class.isError]="controls.releaseAmount.touched && controls.releaseAmount.invalid">
                                         <mat-error
-                                            *ngIf="controls.ornamentReleaseAmount.touched && controls.ornamentReleaseAmount.errors?.required">
+                                            *ngIf="controls.releaseAmount.touched && controls.releaseAmount.errors?.required">
                                             Required field
                                         </mat-error>
                                     </div>
@@ -132,10 +132,10 @@
                                         <mat-label>Total Payable Amount</mat-label>
                                     </div>
                                     <div class="col-7">
-                                        <input class="form-control" formControlName="totalPayableAmount"
-                                            [class.isError]="controls.totalPayableAmount.touched && controls.totalPayableAmount.invalid">
+                                        <input class="form-control" formControlName="payableAmount"
+                                            [class.isError]="controls.payableAmount.touched && controls.payableAmount.invalid">
                                         <mat-error
-                                            *ngIf="controls.totalPayableAmount.touched && controls.totalPayableAmount.errors?.required">
+                                            *ngIf="controls.payableAmount.touched && controls.payableAmount.errors?.required">
                                             Required field
                                         </mat-error>
                                     </div>
@@ -150,15 +150,14 @@
                                         <mat-label>Part Release Amount Status</mat-label>
                                     </div>
                                     <div class="col-7">
-                                        <select class="form-control" formControlName="partReleaseAmountStatus"
-                                            [class.isError]="controls.partReleaseAmountStatus.touched && controls.partReleaseAmountStatus.invalid">
+                                        <select class="form-control" formControlName="amountStatus"
+                                            [class.isError]="controls.amountStatus.touched && controls.amountStatus.invalid">
                                             <option value="" disabled selected>Select Status</option>
-                                            <option *ngFor="let stat of status" [value]="stat.id"> {{stat.id}} </option>
+                                            <option *ngFor="let stat of status" [value]="stat"> {{stat | titlecase}}
+                                            </option>
                                         </select>
-                                        <!-- <input class="form-control" formControlName="partReleaseAmountStatus"
-                                            [class.isError]="controls.partReleaseAmountStatus.touched && controls.partReleaseAmountStatus.invalid"> -->
                                         <mat-error
-                                            *ngIf="controls.partReleaseAmountStatus.touched && controls.partReleaseAmountStatus.errors?.required">
+                                            *ngIf="controls.amountStatus.touched && controls.amountStatus.errors?.required">
                                             Required field
                                         </mat-error>
                                     </div>

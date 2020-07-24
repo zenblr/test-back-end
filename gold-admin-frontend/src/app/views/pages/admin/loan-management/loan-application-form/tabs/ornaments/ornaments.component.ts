@@ -58,6 +58,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   purityTestImg: any = [];
   fullAmount: number;
   showAddMoreBtn: Boolean = true;
+  modalView: any = { details: { currentValue: { loanOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
 
   constructor(
     public fb: FormBuilder,
@@ -81,14 +82,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnInit() {
     console.log(this.data.modal)
-    if (this.data && this.data.modal) {
-      this.showAddMoreBtn = false
-      this.disable = true
-
-    }
     this.url = this.router.url.split('/')[3]
     this.getKarat()
     this.initForm()
+    if (this.data && this.data.modal) {
+      this.showAddMoreBtn = false
+      this.disable = true
+      this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
+      this.ngOnChanges(this.modalView)
+    }
   }
 
   getKarat() {
@@ -384,28 +386,28 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       case 'withOrnamentWeightData':
         controls.controls.withOrnamentWeight.patchValue(id)
         controls.controls.withOrnamentWeightData.patchValue(url)
-        this.withOrnamentWeight.nativeElement.value = ''
+        if (this.withOrnamentWeight) this.withOrnamentWeight.nativeElement.value = ''
         this.images[index].withOrnamentWeight = url
         // this.images[index].withOrnamentWeight = controls.controls.withOrnamentWeightData.value
         break;
       case 'acidTestData':
         controls.controls.acidTest.patchValue(id)
         controls.controls.acidTestData.patchValue(url)
-        this.acidTest.nativeElement.value = ''
+        if (this.acidTest) this.acidTest.nativeElement.value = ''
         this.images[index].acidTest = url
         // this.images[index].acidTest = controls.controls.acidTestData.value
         break;
       case 'weightMachineZeroWeightData':
         controls.controls.weightMachineZeroWeight.patchValue(id)
         controls.controls.weightMachineZeroWeightData.patchValue(url)
-        this.weightMachineZeroWeight.nativeElement.value = ''
+        if (this.weightMachineZeroWeight) this.weightMachineZeroWeight.nativeElement.value = ''
         this.images[index].weightMachineZeroWeight = url
         // this.images[index].weightMachineZeroWeight = controls.controls.weightMachineZeroWeightData.value
         break;
       case 'stoneTouchData':
         controls.controls.stoneTouch.patchValue(id)
         controls.controls.stoneTouchData.patchValue(url)
-        this.stoneTouch.nativeElement.value = ''
+        if (this.stoneTouch) this.stoneTouch.nativeElement.value = ''
         this.images[index].stoneTouch = url
         // this.images[index].stoneTouch = controls.controls.stoneTouchData.value
         break;
@@ -426,7 +428,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           this.images[index].purity = this.purityTestImg
           controls.controls.purityTest.patchValue(this.purityTestPath)
           controls.controls.purityTestImage.patchValue(this.purityTestImg)
-          this.purity.nativeElement.value = ''
+          if (this.purity) this.purity.nativeElement.value = ''
         }
         // } else {
         //   this.toast.error('Maximum of 4 Images can be uploaded in Purity Test')
@@ -435,7 +437,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       case 'ornamentImageData':
         controls.controls.ornamentImage.patchValue(id)
         controls.controls.ornamentImageData.patchValue(url)
-        this.ornamentImage.nativeElement.value = ''
+        if (this.ornamentImage) this.ornamentImage.nativeElement.value = ''
         this.images[index].ornamentImage = url
         // this.images[index].ornamentImage = controls.controls.ornamentImageData.value
         break;
