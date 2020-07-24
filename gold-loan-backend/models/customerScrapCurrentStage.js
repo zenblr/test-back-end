@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const CustomerScrapCurrentStage = sequelize.define('customerScrapCurrentStage', {
+    const ScrapStage = sequelize.define('scrapStage', {
         stageName: {
             type: DataTypes.STRING,
             field: 'stage_name',
@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'scrap_customer_scrap_current_stage',
+        tableName: 'scrap_stage',
     });
 
-    return CustomerScrapCurrentStage;
+    return ScrapStage;
 }

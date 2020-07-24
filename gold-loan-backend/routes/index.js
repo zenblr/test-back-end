@@ -165,6 +165,9 @@ const quickPay = require('./quickPay');
 router.use('/quick-pay', quickPay);
 
 const scrapPacket = require('./scrapPacket'); // Scrap packet
-router.use('/scrap/packet', scrapPacket)
+router.use('/scrap/packet', scrapPacket);
+
+const customerScrapProcess = require('./scrap/customerScrapProcess'); // customer scrap process
+router.use('/scrap/scrap-process', customerScrapProcess);
 
 module.exports = router;

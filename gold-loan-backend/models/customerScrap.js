@@ -126,8 +126,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerScrap.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
         CustomerScrap.belongsTo(models.user, { foreignKey: 'bmId', as: 'bm' });
         CustomerScrap.belongsTo(models.user, { foreignKey: 'operatinalTeamId', as: 'operatinalTeam' });
-        CustomerScrap.belongsTo(models.customerScrapCurrentStage, { foreignKey: 'scrapStageId', as: 'scrapStage' });
-
+        CustomerScrap.belongsTo(models.scrapStage, { foreignKey: 'scrapStageId', as: 'scrapStage' });
+        CustomerScrap.hasMany(models.customerScrapOrnamentsDetail, { foreignKey: 'scrapId', as: 'scrapOrnamentsDetail' });
         CustomerScrap.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerScrap.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
