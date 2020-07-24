@@ -15,4 +15,10 @@ export class QuickPayService {
       map(res=> res)
     )
   }
+
+  emiInfo(id):Observable<any>{
+    return this.http.get(`/api/quick-pay/interest-table?masterLoanId=${id}`).pipe(
+      map(res=> res)
+    )
+  }
 }

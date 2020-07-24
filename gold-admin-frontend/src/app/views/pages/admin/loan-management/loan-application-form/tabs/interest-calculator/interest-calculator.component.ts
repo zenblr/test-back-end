@@ -270,13 +270,13 @@ export class InterestCalculatorComponent implements OnInit {
         return
       }
 
-      // let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
-      // if (amt > this.totalAmt * rbiLoanPercent) {
-      //   this.controls.finalLoanAmount.setErrors({ rbi: true })
-      //   return
-      // } else {
-      //   this.controls.finalLoanAmount.setErrors(null)
-      // }
+      let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
+      if (amt > this.fullAmount * rbiLoanPercent) {
+        this.controls.finalLoanAmount.setErrors({ rbi: true })
+        return
+      } else {
+        this.controls.finalLoanAmount.setErrors(null)
+      }
 
 
 
@@ -580,6 +580,8 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   ngDestroy() {
+    this.loanFormService.finalLoanAmount.next(0)
+    this.loanFormService.finalLoanAmount.unsubscribe()
     this.destroy$.next()
     this.destroy$.complete()
   }

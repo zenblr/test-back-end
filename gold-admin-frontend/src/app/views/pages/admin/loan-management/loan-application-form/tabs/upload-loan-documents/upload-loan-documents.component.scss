@@ -10,7 +10,7 @@
 		max-width: 250px;
 	}
 
-	.w-80{
+	.w-80 {
 		width: 80% !important;
 	}
 
@@ -20,4 +20,11 @@
 		right: 1.8rem;
 		z-index: 2;
 	}
+	#print {
+		width: 100%;
+		position: absolute;
+		z-index: -7;
+		// visibility: hidden;
+	}
+	
 }

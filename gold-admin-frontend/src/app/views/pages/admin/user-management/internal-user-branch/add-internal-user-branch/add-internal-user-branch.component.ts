@@ -92,14 +92,14 @@ export class AddInternalUserBranchComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().pipe(
       map(res => {
-        this.states = res.message;
+        this.states = res.data;
       })).subscribe()
   }
 
   getCites() {
     this.sharedService.getCities(this.controls.stateId.value).pipe(
       map(res => {
-        this.cities = res.message;
+        this.cities = res.data;
       })).subscribe()
   }
 
