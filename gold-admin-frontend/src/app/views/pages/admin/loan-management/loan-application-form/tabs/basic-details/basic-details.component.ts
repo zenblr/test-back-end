@@ -81,20 +81,29 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnInit() {
-    // this.basicFormEmit.emit(this.basicForm)
-    // this.controls.customerUniqueId.valueChanges.subscribe(() => {
-    //   if (this.controls.customerUniqueId.valid) {
-    //     this.basicFormEmit.emit(this.basicForm)
-    //   }
-    // })
+    
+  }
+
+  initForm() {
+    this.basicForm = this.fb.group({
+      customerUniqueId: [, [Validators.required, Validators.minLength(8)]],
+      mobileNumber: ['', Validators.required],
+      panCardNumber: [''],
+      startDate: [this.currentDate],
+      customerId: [, Validators.required],
+      kycStatus: [],
+      purpose: ["", Validators.required],
+      panType: [],
+      loanId: [],
+      masterLoanId: [],
+      panImage: [],
+    })
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.details && changes.details.currentValue) {
       if (changes.action.currentValue == 'add') {
         this.basicForm.controls.mobileNumber.patchValue(changes.details.currentValue.mobileNumber)
-        this.basicForm.controls.panCardNumber.patchValue(changes.details.currentValue.panCardNumber)
-        this.basicForm.controls.panImage.patchValue(changes.details.currentValue.panImage)
         this.basicForm.controls.customerId.patchValue(changes.details.currentValue.id)
         this.basicForm.controls.customerUniqueId.enable()
         this.ref.detectChanges()
@@ -238,21 +247,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
 
-  initForm() {
-    this.basicForm = this.fb.group({
-      customerUniqueId: [, [Validators.required, Validators.minLength(8)]],
-      mobileNumber: ['', Validators.required],
-      panCardNumber: [''],
-      startDate: [this.currentDate],
-      customerId: [, Validators.required],
-      kycStatus: [],
-      purpose: ["", Validators.required],
-      panType: [],
-      loanId: [],
-      masterLoanId: [],
-      panImage: [],
-    })
-  }
+  
 
   get controls() {
     return this.basicForm.controls

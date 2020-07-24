@@ -18,7 +18,7 @@
             </div>
             <div class="col-4 form-label">
                 <label class="kt-padding-l-10 kt-padding-r-25">Pawn Ticket/Copy of Pledge</label>
-                <kt-button [value]="'print'" [type]="'button'"></kt-button>
+                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col-4 form-label" *ngIf="!show">
                 <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
@@ -269,5 +269,60 @@
     </div>
     <div class="col-11 text-right kt-padding-t-15" *ngIf="showButton">
         <kt-button [type]="'button'" [value]="'Next'" (click)="save(buttonName)"></kt-button>
+    </div>
+</div>
+
+<div id="print" style="color: black;">
+    <!-- <div class="row">
+        <div class="col-12"> -->
+            <div style="display: flex; justify-content: center;">
+                <!-- <div class="col-6 "> -->
+                    <div class="col-12 mx-auto">
+                        <h2 style="text-align: center !important;" class="text-center">PartnerName</h2>
+    
+                    </div>
+                    <div class="col-12">
+    
+                        <h6 style="text-align: center;">Adress,Contact Number</h6>
+                    </div>
+                <!-- </div> -->
+            </div>
+        <!-- </div>
+    </div> -->
+    <div class="row">
+        <div class="col-3">Customer Name</div>
+        <div class="col-3"></div>
+        <div class="col-3">Customer ID</div>
+        <div class="col-3"></div>
+    </div>
+    <div class="row">
+        <div class="col-3">Date of Birth</div>
+        <div class="col-3"></div>
+        <div class="col-3">Loan ID</div>
+        <div class="col-3"></div>
+    </div>
+    <div class="row">
+        <div class="col-3">Mobile Number</div>
+        <div class="col-3"></div>
+        <div class="col-3">Loan Amount</div>
+        <div class="col-3"></div>
+    </div>
+    <div class="row">
+        <div class="col-3">Nominee Details</div>
+        <div class="col-3"></div>
+        <div class="col-3">Tenure</div>
+        <div class="col-3"></div>
+    </div>
+    <div class="row">
+        <div class="col-3">Loan Start Date</div>
+        <div class="col-3"></div>
+        <div class="col-3">Loan End Date</div>
+        <div class="col-3"></div>
+    </div>
+    <div class="row">
+        <div class="col-3">Customer Address</div>
+        <div class="col-3"></div>
+        <div class="col-3">Loan Scheme</div>
+        <div class="col-3"></div>
     </div>
 </div>

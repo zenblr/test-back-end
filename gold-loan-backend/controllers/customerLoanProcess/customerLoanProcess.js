@@ -242,6 +242,7 @@ exports.loanFinalLoan = async (req, res, next) => {
         interestTable[i]['modifiedBy'] = modifiedBy
         interestTable[i]['loanId'] = loanId
         interestTable[i]['interestAmount'] = interestTable[i].securedInterestAmount
+        interestTable[i]['balanceAmount'] = interestTable[i].securedInterestAmount
         interestTable[i]['masterLoanId'] = masterLoanId
         interestData.push(interestTable[i])
     }
@@ -263,7 +264,7 @@ exports.loanFinalLoan = async (req, res, next) => {
             await models.customerLoanInterest.bulkCreate(interestData, { transaction: t });
 
             if (isUnsecuredSchemeApplied == true) {
-                await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, outstandingAmount: finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
 
                 var unsecuredLoan = await models.customerLoan.create({ customerId: checkFinalLoan.customerId, masterLoanId, partnerId, loanAmount: unsecuredLoanAmount, schemeId: unsecuredSchemeId, interestRate: unsecuredInterestRate, loanType: "unsecured", createdBy, modifiedBy }, { transaction: t })
                 let newUnsecuredInterestData = []
@@ -272,6 +273,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['modifiedBy'] = modifiedBy
                     interestTable[i]['loanId'] = unsecuredLoan.id
                     interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
+                    interestTable[i]['balanceAmount'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     newUnsecuredInterestData.push(interestTable[i])
                 }
@@ -283,7 +285,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                 await models.customerLoanHistory.create({ loanId, masterLoanId, action: FINAL_INTEREST_LOAN, modifiedBy }, { transaction: t });
 
             } else {
-                await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, outstandingAmount: finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
 
                 await models.customerLoan.update({ partnerId, schemeId, loanAmount: securedLoanAmount, interestRate, createdBy, modifiedBy }, { where: { id: loanId }, transaction: t })
 
@@ -311,6 +313,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['modifiedBy'] = modifiedBy
                     interestTable[i]['loanId'] = getUnsecuredLoanId.unsecuredLoanId
                     interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
+                    interestTable[i]['balanceAmount'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     unsecuredInterestData.push(interestTable[i])
                 }
@@ -320,7 +323,7 @@ exports.loanFinalLoan = async (req, res, next) => {
 
                 if (getUnsecuredLoanId.unsecuredLoanId == null) {
 
-                    await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
+                    await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, outstandingAmount: finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
 
                     var unsecuredLoan = await models.customerLoan.create({ customerId: loanSubmitted.customerId, masterLoanId, partnerId, schemeId: unsecuredSchemeId, loanAmount: unsecuredLoanAmount, interestRate: unsecuredInterestRate, loanType: "unsecured", createdBy, modifiedBy }, { transaction: t })
 
@@ -332,6 +335,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                         interestTable[i]['modifiedBy'] = modifiedBy
                         interestTable[i]['loanId'] = unsecuredLoan.id
                         interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
+                        interestTable[i]['balanceAmount'] = interestTable[i].unsecuredInterestAmount
                         interestTable[i]['masterLoanId'] = masterLoanId
                         newUnsecuredInterestData.push(interestTable[i])
                     }
@@ -342,7 +346,7 @@ exports.loanFinalLoan = async (req, res, next) => {
 
                 } else {
 
-                    await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
+                    await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, outstandingAmount: finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
 
                     await models.customerLoan.update({ partnerId, schemeId, loanAmount: securedLoanAmount, interestRate, modifiedBy }, { where: { id: loanId }, transaction: t })
 
@@ -357,7 +361,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                 }
 
             } else {
-                await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, outstandingAmount: finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
 
                 await models.customerLoan.update({ partnerId, schemeId, loanAmount: securedLoanAmount, interestRate, modifiedBy }, { where: { id: loanId }, transaction: t })
 
@@ -439,7 +443,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
     let loanData = await sequelize.transaction(async t => {
         if (loanStatusForAppraiser == "approved") {
-            if (goldValuationForAppraiser == false && applicationFormForAppraiser == false) {
+            if (goldValuationForAppraiser == false || applicationFormForAppraiser == false) {
                 return res.status(400).json({ message: 'One field is not verified' })
             }
 
@@ -471,12 +475,6 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
         } else {
             let stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
-
-            if (loanStatusForAppraiser == 'approved') {
-                if (applicationFormForAppraiser == false || goldValuationForAppraiser == false) {
-                    return res.status(400).json({ message: `One of field is not verified` })
-                }
-            }
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });
 
@@ -868,68 +866,13 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
         }]
     })
 
-
-    let startDate = Loan.customerLoanInterest[0].emiDueDate;
-    let endDate = Loan.customerLoanInterest[Loan.customerLoanInterest.length - 1].emiDueDate;
-
-    let holidayDate = await models.holidayMaster.findAll({
-        attributes: ['holidayDate'],
-        where: {
-            holidayDate: {
-                [Op.between]: [startDate, endDate]
-            }
-        }
-    })
     //for secured interest date change
-    let securedInterest = await models.customerLoanInterest.findAll({
-        where: { loanId: securedLoanId },
-        order: [['id', 'asc']]
-    })
-
-    for (let i = 0; i < securedInterest.length; i++) {
-        let date = new Date();
-        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
-        securedInterest[i].emiDueDate = newEmiDueDate
-        for (let j = 0; j < holidayDate.length; j++) {
-            let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
-            if (momentDate == holidayDate[j].holidayDate) {
-                let newDate = new Date(newEmiDueDate);
-                let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                securedInterest[i].emiDueDate = holidayEmiDueDate
-                newEmiDueDate = holidayEmiDueDate
-                j = 0
-            }
-        }
-        securedInterest.loanId = securedLoanId
-        securedInterest.masterLoanId = masterLoanId
-    }
+    let securedInterest = await getInterestTable(masterLoanId, securedLoanId, Loan);
 
     //for unsecured interest date change
     var unsecuredInterest
     if (Loan.isUnsecuredSchemeApplied == true) {
-        unsecuredInterest = await models.customerLoanInterest.findAll({
-            where: { loanId: unsecuredLoanId },
-            order: [['id', 'asc']]
-        })
-
-        for (let i = 0; i < unsecuredInterest.length; i++) {
-            let date = new Date();
-            let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
-            unsecuredInterest[i].emiDueDate = newEmiDueDate
-            for (let j = 0; j < holidayDate.length; j++) {
-                let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
-                if (momentDate == holidayDate[j].holidayDate) {
-                    let newDate = new Date(newEmiDueDate);
-                    let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                    unsecuredInterest[i].emiDueDate = holidayEmiDueDate
-                    newEmiDueDate = holidayEmiDueDate
-                    j = 0
-                }
-            }
-            unsecuredInterest.loanId = unsecuredLoanId
-            unsecuredInterest.masterLoanId = masterLoanId
-        }
-
+        unsecuredInterest = await getInterestTable(masterLoanId, unsecuredLoanId, Loan);
     }
 
     let newStartDate = date
@@ -983,6 +926,47 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     } else {
         return res.status(404).json({ message: 'Given loan id is not proper' })
     }
+}
+
+
+async function getInterestTable(masterLoanId, loanId, Loan) {
+
+    let startDate = Loan.customerLoanInterest[0].emiDueDate;
+    let endDate = Loan.customerLoanInterest[Loan.customerLoanInterest.length - 1].emiDueDate;
+
+    let holidayDate = await models.holidayMaster.findAll({
+        attributes: ['holidayDate'],
+        where: {
+            holidayDate: {
+                [Op.between]: [startDate, endDate]
+            }
+        }
+    })
+
+    let interestTable = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId },
+        order: [['id', 'asc']]
+    })
+
+    for (let i = 0; i < interestTable.length; i++) {
+        let date = new Date();
+        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
+        interestTable[i].emiDueDate = newEmiDueDate
+        for (let j = 0; j < holidayDate.length; j++) {
+            let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
+            if (momentDate == holidayDate[j].holidayDate) {
+                let newDate = new Date(newEmiDueDate);
+                let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
+                interestTable[i].emiDueDate = holidayEmiDueDate
+                newEmiDueDate = holidayEmiDueDate
+                j = 0
+            }
+        }
+        interestTable.loanId = loanId
+        interestTable.masterLoanId = masterLoanId
+    }
+
+    return interestTable
 }
 
 //get single customer loan details DONE
@@ -1133,7 +1117,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
                     model: models.customerLoanNomineeDetail,
                     as: 'loanNomineeDetail',
                 },
-                 {
+                {
                     model: models.customerLoanOrnamentsDetail,
                     as: 'loanOrnamentsDetail',
                     include: [
@@ -1142,7 +1126,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
                             as: "ornamentType"
                         }
                     ]
-                }, 
+                },
                 {
                     model: models.customerLoanPackageDetails,
                     as: 'loanPacketDetails',
@@ -1153,23 +1137,23 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
                         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                         include: [
                             {
-                            model: models.packetOrnament,
-                            as: 'packetOrnament',
-                            include: [{
-                                model: models.ornamentType,
-                                as: 'ornamentType'
-                            }]
+                                model: models.packetOrnament,
+                                as: 'packetOrnament',
+                                include: [{
+                                    model: models.ornamentType,
+                                    as: 'ornamentType'
+                                }]
                             }
                         ]
                     }]
                 },
-                    {
-                        model: models.customerLoanDocument,
-                        as: 'customerLoanDocument'
-                    }
+                {
+                    model: models.customerLoanDocument,
+                    as: 'customerLoanDocument'
+                }
                 ]
             },
-             {
+            {
                 model: models.customer,
                 as: 'customer',
                 attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
@@ -1251,7 +1235,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
                 )
             },
         }],
-        loanStageId: { [Op.notIn]: [stage.id,transfer.id] },
+        loanStageId: { [Op.notIn]: [stage.id, transfer.id] },
         isActive: true
     };
     let internalBranchId = req.userData.internalBranchId

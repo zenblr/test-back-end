@@ -88,7 +88,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   getKarat() {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
-        this.karatArr = res;
+        this.karatArr = res.data;
       })
     ).subscribe()
   }

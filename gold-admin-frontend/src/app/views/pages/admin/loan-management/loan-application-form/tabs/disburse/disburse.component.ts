@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component, OnInit, Inject, Input, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppliedLoanService } from '../../../../../../../core/loan-management';
@@ -26,18 +26,31 @@ export class DisburseComponent implements OnInit {
     public loanService: AppliedLoanService,
     public toast: ToastrService,
     public globalSettingService: GlobalSettingService,
-    public router:Router
+    public router: Router
   ) {
     this.globalSettingService.globalSetting$.subscribe(res => {
       // console.log(res)
       this.globalValue = res;
     })
+    this.initForm()
+
   }
 
   ngOnInit() {
-    console.log(this.data)
+
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.masterAndLoanIds && changes.masterAndLoanIds.currentValue) {
+      this.disburseForm.patchValue(this.masterAndLoanIds)
+      this.getBankDetails()
+
+    }
+  }
+
+  initForm() {
     this.disburseForm = this.fb.group({
-      loanId: [this.masterAndLoanIds.loanId],
+      loanId: [],
       securedTransactionId: ['', [Validators.required]],
       unsecuredTransactionId: ['', Validators.required],
       date: [this.currentDate, Validators.required],
@@ -53,7 +66,7 @@ export class DisburseComponent implements OnInit {
       passbookStatementChequeId: [],
       passbookImg: [],
       passbookImgName: [],
-      masterLoanId: [this.masterAndLoanIds.masterLoanId],
+      masterLoanId: [],
       securedSchemeName: [],
       unsecuredLoanAmount: [],
       unsecuredSchemeName: [],
@@ -61,7 +74,6 @@ export class DisburseComponent implements OnInit {
       securedLoanId: [],
       unsecuredLoanId: []
     })
-    this.getBankDetails()
     this.disableSchemeRelatedField()
   }
 
@@ -72,7 +84,7 @@ export class DisburseComponent implements OnInit {
     this.controls.securedLoanAmount.disable()
   }
 
-  enableSchemeRelatedField(){
+  enableSchemeRelatedField() {
     this.controls.securedSchemeName.enable()
     this.controls.unsecuredLoanAmount.enable()
     this.controls.unsecuredSchemeName.enable()

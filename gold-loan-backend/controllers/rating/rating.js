@@ -28,12 +28,12 @@ exports.getRating = async (req, res, next) => {
         whereCondition = { order: [['id', 'ASC']] }
     }
     let allRating = await models.rating.findAll(whereCondition)
-    return res.status(200).json(allRating)
+    return res.status(200).json({ data: allRating })
 
 }
 
 exports.updateRating = async (req, res, next) => {
-    let {  ratingName, ratingPoint } = req.body;
+    let { ratingName, ratingPoint } = req.body;
     let { id } = req.params;
 
     let ratingExist = await models.rating.findOne({ where: { ratingPoint: ratingPoint, ratingName: ratingName } })

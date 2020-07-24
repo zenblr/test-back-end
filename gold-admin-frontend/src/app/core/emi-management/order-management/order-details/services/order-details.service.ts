@@ -4,6 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { map, tap, catchError } from "rxjs/operators";
 import { ExcelService, PdfService } from "../../../../_base/crud";
 import { API_ENDPOINT } from '../../../../../app.constant';
+import printJS from 'print-js';
 
 @Injectable({
 	providedIn: "root",
@@ -126,6 +127,14 @@ export class OrderDetailsService {
 				}),
 				tap(
 					(data) => {
+						// var binary = '';
+						// var bytes = new Uint8Array(data);
+						// var len = bytes.byteLength;
+						// for (var i = 0; i < len; i++) {
+						// 	binary += String.fromCharCode(bytes[i]);
+						// }
+						// let base64 = (window.btoa(binary));
+						// printJS({printable: base64, type: 'pdf', base64: true})
 						this.pdfService.saveAsPdfFile(
 							data,
 							"Proforma_" + Date.now()

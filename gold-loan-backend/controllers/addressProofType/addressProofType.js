@@ -25,7 +25,7 @@ exports.readAddressProofType = async (req, res) => {
     if (!readAddressProofType[0]) {
         return res.status(404).json({ message: 'data not found' });
     }
-    return res.status(200).json(readAddressProofType);
+    return res.status(200).json({message:'success',data: readAddressProofType});
 }
 
 //deactive Address Proof type

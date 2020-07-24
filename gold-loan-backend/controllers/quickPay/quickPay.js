@@ -12,37 +12,35 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
+let { mergeInterestTable } = require('../../utils/loanFunction')
 
+//INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
-    let interestTable = await models.customerLoan.findOne({
-        where: { id: loanId },
-        include: [{
-            model: models.customerLoanInterest,
-            as: 'customerLoanInterest'
-        }]
-    })
+    let { mergeTble, securedTable, unsecuredTable } = await mergeInterestTable(masterLoanId)
 
-    return res.staus(200).json({ message: "success", data: interestTable })
-
+    return res.status(200).json({ data: mergeTble })
 }
 
-
+//INTEREST INFO
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
     let interestInfo = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         order: [[models.customerLoan, 'id', 'asc']],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                 include: [
                     {
                         model: models.scheme,
-                        as: 'scheme'
+                        as: 'scheme',
+                        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                     }
                 ]
             }
@@ -51,5 +49,10 @@ exports.getInterestInfo = async (req, res, next) => {
 
     return res.status(200).json({ message: "success", data: interestInfo })
 
+
+}
+
+//CALCULATE PAYABLE AMOUNT
+exports.PayableAmount = async (req, res, next) => {
 
 }

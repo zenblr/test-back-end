@@ -111,7 +111,7 @@ export class UserDetailsComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().pipe(
       map(res => {
-        this.states = res.message;
+        this.states = res.data;
         this.ref.detectChanges();
       })).subscribe()
   }
@@ -121,7 +121,7 @@ export class UserDetailsComponent implements OnInit {
     } else {
       this.sharedService.getCities(this.controls.stateId.value).pipe(
         map(res => {
-          this.cityId = res.message;
+          this.cityId = res.data;
         this.ref.detectChanges();
         })).subscribe()
     }
