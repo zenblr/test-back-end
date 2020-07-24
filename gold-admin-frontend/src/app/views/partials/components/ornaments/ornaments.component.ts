@@ -14,6 +14,7 @@ import { OrnamentsService } from '../../../../core/masters/ornaments/services/or
 import { WebcamDialogComponent } from '../../../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
+import { ScrapApplicationFormService } from '../../../../core/scrap-management';
 
 @Component({
   selector: 'kt-ornaments',
@@ -24,6 +25,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   selected: number = 0
   goldRate: any;
   ltvGoldRate: any;
+  scrapLtvGoldRate: any;
   @Input() invalid;
   @Input() disable;
   @Input() details;
@@ -67,6 +69,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public karatService: KaratDetailsService,
     public router: Router,
     public loanApplicationFormService: LoanApplicationFormService,
+    public scrapApplicationFormService: ScrapApplicationFormService,
     public ornamentTypeService: OrnamentsService,
     public layoutUtilsService: LayoutUtilsService,
     public globalSettingService: GlobalSettingService,
@@ -145,31 +148,46 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
           this.goldRate = res;
-          this.ltvGoldRate = res * (this.globalValue.ltvGoldValue / 100)
-          const group = this.OrnamentsData.at(0) as FormGroup
-          group.controls.currentLtvAmount.patchValue(this.ltvGoldRate)
-          group.controls.currentGoldRate.patchValue(res)
+          this.ltvGoldRate = res * (this.globalValue.ltvGoldValue / 100);
+          this.scrapLtvGoldRate = res * (this.globalValue.scrapLtvGoldValue / 100);
+          const group = this.OrnamentsData.at(0) as FormGroup;
+          group.controls.currentGoldRate.patchValue(res);
+          if (this.scrapIds) {
+            group.controls.currentLtvAmount.patchValue(this.scrapLtvGoldRate);
+          } else {
+            group.controls.currentLtvAmount.patchValue(this.ltvGoldRate);
+          }
         })
       }
     })
 
     this.ornamentsForm.valueChanges.subscribe(() => {
       if (this.ornamentsForm.valid) {
-        this.totalAmount = 0;
-        this.fullAmount = 0;
-        this.OrnamentsData.value.forEach(element => {
-          this.totalAmount += Number(element.loanAmount)
-          this.fullAmount += Number(element.ornamentFullAmount)
-        });
-        console.log(this.fullAmount)
-        this.totalAmount = Math.round(this.totalAmount)
-        this.fullAmount = Math.round(this.fullAmount)
-        this.totalAmt.emit(this.totalAmount)
-        this.fullAmt.emit(this.fullAmount)
+        if (this.scrapIds) {
+          this.totalAmount = 0;
+          this.OrnamentsData.value.forEach(element => {
+            this.totalAmount += Number(element.finalScrapAmount);
+          });
+          console.log(this.fullAmount)
+          this.totalAmount = Math.round(this.totalAmount)
+          this.totalAmt.emit(this.totalAmount)
+        } else {
+          this.totalAmount = 0;
+          this.fullAmount = 0;
+          this.OrnamentsData.value.forEach(element => {
+            this.totalAmount += Number(element.loanAmount)
+            this.fullAmount += Number(element.ornamentFullAmount)
+          });
+          console.log(this.fullAmount)
+          this.totalAmount = Math.round(this.totalAmount)
+          this.fullAmount = Math.round(this.fullAmount)
+          this.totalAmt.emit(this.totalAmount)
+          this.fullAmt.emit(this.fullAmount)
+        }
       }
     })
-
   }
+
   get OrnamentsData() {
     if (this.ornamentsForm)
       return this.ornamentsForm.controls.ornamentData as FormArray;
@@ -256,6 +274,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       loanAmount: [''],
       id: [],
       currentLtvAmount: [this.ltvGoldRate],
+      currentScrapLtvAmount: [this.scrapLtvGoldRate],
       ornamentImageData: [, Validators.required],
       weightMachineZeroWeightData: [],
       withOrnamentWeightData: [],
@@ -263,7 +282,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       acidTestData: [],
       purityTestImage: [[]],
       ornamentFullAmount: [],
-      currentGoldRate: [this.goldRate]
+      currentGoldRate: [this.goldRate],
+      // fineWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      imageOne: [],
+      imageTwo: [],
+      imageThree: [],
+      finalScrapAmount: []
     }))
     this.createImageArray()
     this.selected = this.OrnamentsData.length;
@@ -494,6 +518,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     })
   }
 
+  calculateFineWeight(index: number) {
+    const controls = this.OrnamentsData.at(index) as FormGroup;
+    if (controls.controls.netWeight.valid && controls.controls.ltvPercent.valid
+      && controls.controls.netWeight.value && controls.controls.ltvPercent.value) {
+      let ltvPercent = controls.controls.ltvPercent.value;
+      let ltv = controls.controls.currentGoldRate.value * (ltvPercent / 100);
+      controls.controls.ltvAmount.patchValue(ltv);
+      controls.controls.finalScrapAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2));
+    }
+    console.log(this.OrnamentsData.value);
+  }
+
   calculateLtvAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
     if (controls.controls.ltvPercent.valid) {
@@ -521,20 +557,35 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
-      map(res => {
-        let array = this.OrnamentsData.controls
-        for (let index = 0; index < array.length; index++) {
-          const controls = this.OrnamentsData.at(index) as FormGroup;
-          controls.controls.id.patchValue(res.ornaments[index].id)
-        }
-        if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
-          this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
-        }
-        this.next.emit(3)
-      })
-    ).subscribe()
-
+    if(this.scrapIds) {
+      this.scrapApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.scrapIds).pipe(
+        map(res => {
+          let array = this.OrnamentsData.controls
+          for (let index = 0; index < array.length; index++) {
+            const controls = this.OrnamentsData.at(index) as FormGroup;
+            controls.controls.id.patchValue(res.ornaments[index].id)
+          }
+          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
+            this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+          }
+          this.next.emit(3)
+        })
+      ).subscribe()
+    } else {
+      this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
+        map(res => {
+          let array = this.OrnamentsData.controls
+          for (let index = 0; index < array.length; index++) {
+            const controls = this.OrnamentsData.at(index) as FormGroup;
+            controls.controls.id.patchValue(res.ornaments[index].id)
+          }
+          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
+            this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+          }
+          this.next.emit(3)
+        })
+      ).subscribe()
+    }
   }
 
   webcam(index, event, string) {

@@ -31,24 +31,15 @@ export class ScrapApplicationFormService {
     );
   }
 
-  nomineeSubmit(details, masterAndLoanIds): Observable<any> {
-    let data = { ...details, ...masterAndLoanIds }
-    return this.http.post(`/api/loan-process/nominee-details`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds, fullAmount): Observable<any> {
+  submitOrnaments(scrapOrnaments, finalScrapAmount, scrapIds): Observable<any> {
     let data = {
-      loanOrnaments: loanOrnaments,
-      totalEligibleAmt: totalEligibleAmt,
-      loanId: masterAndLoanIds.loanId,
-      masterLoanId: masterAndLoanIds.masterLoanId,
-      fullAmount: fullAmount
+      scrapOrnaments: scrapOrnaments,
+      finalScrapAmount: finalScrapAmount,
+      scrapId: scrapIds.scrapId,
     }
-    return this.http.post(`/api/loan-process/ornaments-details`, data).pipe(
+    return this.http.post(`/api/scrap/scrap-process/ornaments-details`, data).pipe(
       map(res => res)
-    )
+    );
   }
 
   submitFinalIntrest(loanFinalCalculator, masterAndLoanIds, interestTable): Observable<any> {

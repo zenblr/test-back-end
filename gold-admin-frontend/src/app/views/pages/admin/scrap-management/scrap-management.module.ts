@@ -13,7 +13,7 @@ import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsServi
 
 import { ScrapCalculatorComponent } from './scrap-calculator/scrap-calculator.component';
 import { ScrapApplicationFormComponent } from './scrap-application-form/scrap-application-form.component';
-// import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
+import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 
 const rout: Routes = [
@@ -57,7 +57,7 @@ const rout: Routes = [
   ],
   entryComponents: [
     DeleteEntityDialogComponent,
-    // WebcamDialogComponent,
+    WebcamDialogComponent,
     UserReviewComponent
   ]
 })
