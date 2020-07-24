@@ -53,6 +53,46 @@ exports.getInterestInfo = async (req, res, next) => {
 }
 
 //CALCULATE PAYABLE AMOUNT
-exports.PayableAmount = async (req, res, next) => {
+exports.payableAmount = async (req, res, next) => {
+    let { masterLoanId } = req.query
+
+    let global = await models.globalSetting.findAll()
+    let { gracePeriodDays } = getGlobalSetting[0]
+    let loan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        order: [
+            [models.customerLoan, 'id', 'asc'],
+            [models.customerLoan, models.customerLoanInterest, 'id', 'asc'],
+        ],
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['id'],
+            include: [{
+                model: models.customerLoanInterest,
+                as: 'customerLoanInterest',
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            }]
+        }]
+    })
+
+    let loanId = await loan.customerLoan.map(singleLoan => { return singleLoan.id })
+
+    let securedData = await models.customerLoanInterest.findAll({
+        where: {
+            loanId: loanId[0],
+            emiStatus: { [Op.notIn]: ['paid'] },
+        },
+        order: [['id', 'asc']],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    })
+
+    let date = securedData[0].emiDueDate
+    let createdTime = moment(new Date());
+    var expiryTimeToUser = moment(moment.utc(createdTime).toDate()).format('YYYY-MM-DD');
+    console.log(date, expiryTimeToUser, gracePeriodDays)
+
+    return res.status(200).json({ message: 'success', securedData, data: loanId })
+
 
 }
