@@ -17,6 +17,11 @@ import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-revie
 
 const rout: Routes = [
   {
+    path: '',
+    redirectTo: 'scrap-calculator',
+    pathMatch: 'full'
+  },
+  {
     path: 'scrap-calculator',
     component: ScrapCalculatorComponent
   },

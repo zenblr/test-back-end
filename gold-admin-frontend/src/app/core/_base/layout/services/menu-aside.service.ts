@@ -53,6 +53,8 @@ export class MenuAsideService {
 						break;
 					case 'emi-management': aside = 'aside.emiMgmtItems';
 						break;
+					case 'scrap-management': aside = 'aside.scrapMgmtItems';
+						break;
 				}
 				break;
 			case 'broker': aside = 'aside.brokerItems';

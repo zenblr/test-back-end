@@ -450,29 +450,9 @@ export class MenuConfig {
 						{
 							title: "Scrap Management",
 							root: true,
-							bullet: 'dot',
-							src: "assets/media/aside-icons/icons-24.svg",
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management",
 							permission: !this.modulesArr.includes(3),
-							submenu: [
-								{
-									title: "Scrap Calculator",
-									page: "/admin/scrap-management/scrap-calculator",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Scrap Application Form",
-									page: "/admin/scrap-management/scrap-application-form",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Packet",
-									page: "/admin/scrap-management/packet",
-									bullet: 'dot',
-									permission: false,
-								}
-							],
 						},
 						{
 							title: "Settings",
@@ -785,6 +765,36 @@ export class MenuConfig {
 							title: "Log Out",
 							src: "assets/media/aside-icons/icons-12.svg",
 							permission: !(this.userType === 2 || this.userType === 3),
+						},
+					],
+					scrapMgmtItems: [
+						{
+							title: "Scrap Calculator",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management/scrap-calculator",
+							permission: false,
+						},
+						{
+							title: "Scrap Application Form",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management/scrap-application-form",
+							permission: false,
+						},
+						{
+							title: "Packet",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management/packet",
+							permission: false,
+						},
+						{
+							title: 'Back',
+							root: true,
+							src: "assets/media/aside-icons/icons-21.svg",
+							page: "/admin/dashboard",
+							permission: false,
 						},
 					],
 				},
