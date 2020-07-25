@@ -47,7 +47,7 @@
 
                 <ng-container matColumnDef="releaseDate">
                     <mat-header-cell *matHeaderCellDef>Release Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.releaseDate}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.releaseDate | date:'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="partReleaseAmountStatus">
@@ -107,18 +107,18 @@
                 <ng-container matColumnDef="updateStatus">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <button style="width: 120px;" *ngIf="!item.isAppraiserAssigned" class="apply-kyc"
+                        <button style="width: 120px;" *ngIf="item.amountStatus != 'completed'" class="apply-kyc"
                             (click)="updateStatus(item)">Update
                         </button>
-                        <ng-container *ngIf="item.isAppraiserAssigned">
-                            <div [ngStyle]="{'display': 'inherit'}">
+                        <ng-container *ngIf="item.amountStatus == 'completed'">
+                            <div *ngIf="!item.isAppraiserAssigned" [ngStyle]="{'display': 'inherit'}">
                                 <button style="width: 120px;" class="apply-kyc" (click)="assign(item)">Assign
                                     Appraiser</button>
                             </div>
-                            <div [ngStyle]="{'display': 'inherit'}">
-                                <!-- <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(role)"
-                                           >Update Appraiser
-                                        </button> -->
+                            <div *ngIf="item.isAppraiserAssigned" [ngStyle]="{'display': 'inherit'}">
+                                <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(item)">Update
+                                    Appraiser
+                                </button>
                             </div>
                         </ng-container>
                     </mat-cell>

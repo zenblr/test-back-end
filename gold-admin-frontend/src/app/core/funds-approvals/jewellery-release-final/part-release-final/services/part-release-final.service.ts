@@ -15,7 +15,7 @@ export class PartReleaseFinalService {
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   getPartReleaseList(from, to, search): Observable<any> {
-    return this.http.get(`/api/deposit?search=${search}&from=${from}&to=${to}`).pipe(
+    return this.http.get(`/api/jewellery-release/part-release-approved_list?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

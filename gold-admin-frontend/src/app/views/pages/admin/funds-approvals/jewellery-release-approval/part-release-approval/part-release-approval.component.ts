@@ -90,7 +90,7 @@ export class PartReleaseApprovalComponent implements OnInit {
   }
 
   assign(item) {
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.masterLoan.customer, id: item.masterLoan.customerId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -99,7 +99,12 @@ export class PartReleaseApprovalComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', appraiser: item.appraiserData, customer: item.masterLoan.customer }, width: '500px' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
   }
 
   updateStatus(item) {
