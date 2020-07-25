@@ -3,42 +3,69 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
 import { map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'kt-global-settings',
+  selector: 'kt-global-settings-shared',
   templateUrl: './global-settings.component.html',
   styleUrls: ['./global-settings.component.scss']
 })
 export class GlobalSettingsComponent implements OnInit {
-  ltvGoldPercentForm: FormGroup;
-  minimumLoanAmountForm: FormGroup;
-  gstForm: FormGroup;
-  minimumTopUpAmountForm: FormGroup;
-  gracePeriodForm: FormGroup;
-  cashTransactionLimitForm: FormGroup;
   globalSettingForm: FormGroup;
+  url: any;
+  showScrapFlag: boolean;
 
   constructor(
     private fb: FormBuilder,
     private globalSettingService: GlobalSettingService,
-    private toastr: ToastrService
-  ) { }
+    private toastr: ToastrService,
+    private router: Router
+  ) {
+    this.url = (this.router.url.split("/")[2]);
+    if (this.url == 'scrap-management') {
+      this.showScrapFlag = true;
+    } else {
+      this.showScrapFlag = false;
+    }
+  }
 
   ngOnInit() {
     this.initForm();
-    this.getGlobalSetting();
+    if (this.showScrapFlag) {
+      this.getScrapGlobalSetting();
+    } else {
+      this.getGlobalSetting();
+    }
   }
 
   initForm() {
     this.globalSettingForm = this.fb.group({
       ltvGoldValue: [, [Validators.required]],
-      scrapLtvGoldValue: [, [Validators.required]],
-      minimumLoanAmountAllowed: [, [Validators.required]],
+      minimumLoanAmountAllowed: [],
       gst: [, [Validators.required]],
       cashTransactionLimit: [, [Validators.required]],
-      minimumTopUpAmount: [, [Validators.required]],
-      gracePeriodDays: [, [Validators.required]]
+      minimumTopUpAmount: [],
+      gracePeriodDays: [],
+      processingChargesFixed: [],
+      processingChargesInPercent: [],
     });
+    this.validation();
+  }
+
+  validation() {
+    if (this.url == 'scrap-management') {
+      this.globalSettingForm.controls.processingChargesFixed.setValidators(Validators.required),
+        this.globalSettingForm.controls.processingChargesFixed.updateValueAndValidity()
+      this.globalSettingForm.controls.processingChargesInPercent.setValidators(Validators.required),
+        this.globalSettingForm.controls.processingChargesInPercent.updateValueAndValidity()
+    } else {
+      this.globalSettingForm.controls.minimumLoanAmountAllowed.setValidators(Validators.required),
+        this.globalSettingForm.controls.minimumLoanAmountAllowed.updateValueAndValidity()
+      this.globalSettingForm.controls.minimumTopUpAmount.setValidators(Validators.required),
+        this.globalSettingForm.controls.minimumTopUpAmount.updateValueAndValidity()
+      this.globalSettingForm.controls.gracePeriodDays.setValidators(Validators.required),
+        this.globalSettingForm.controls.gracePeriodDays.updateValueAndValidity()
+    }
   }
 
   getGlobalSetting() {
@@ -54,25 +81,45 @@ export class GlobalSettingsComponent implements OnInit {
     }
   }
 
+  getScrapGlobalSetting() {
+    if (this.globalSettingService.globalSetting.getValue() != null) {
+      this.globalSettingService.globalSetting$.subscribe(res => {
+        this.globalSettingForm.patchValue(res);
+      })
+    } else {
+      this.globalSettingService.getScrapGlobalSetting().pipe(map(res => {
+        this.globalSettingService.globalSetting.next(res);
+        this.globalSettingForm.patchValue(res);
+      })).subscribe();
+    }
+  }
+
   submit() {
     if (this.globalSettingForm.invalid) {
       this.globalSettingForm.markAllAsTouched();
       return;
     }
-
     const formData = this.globalSettingForm.value;
-
-    this.globalSettingService.setGlobalSetting(formData).pipe(map(res => {
-      if (res) {
-        console.log(res);
-        this.globalSettingService.globalSetting.next(formData);
-        this.toastr.success('Successful!');
-      }
-    })).subscribe();
+    if (this.showScrapFlag) {
+      this.globalSettingService.setScrapGlobalSetting(formData).pipe(map(res => {
+        if (res) {
+          console.log(res);
+          this.globalSettingService.globalSetting.next(formData);
+          this.toastr.success('Successful!');
+        }
+      })).subscribe();
+    } else {
+      this.globalSettingService.setGlobalSetting(formData).pipe(map(res => {
+        if (res) {
+          console.log(res);
+          this.globalSettingService.globalSetting.next(formData);
+          this.toastr.success('Successful!');
+        }
+      })).subscribe();
+    }
   }
 
   get controls() {
     return this.globalSettingForm.controls;
   }
-
 }

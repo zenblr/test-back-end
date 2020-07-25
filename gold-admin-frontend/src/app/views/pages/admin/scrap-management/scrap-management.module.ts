@@ -11,29 +11,43 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { DeleteEntityDialogComponent } from '../../../partials/content/crud';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 
+import { ScrapManagementComponent } from './scrap-management.component';
 import { ScrapCalculatorComponent } from './scrap-calculator/scrap-calculator.component';
+import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 
-const rout: Routes = [
+const routes: Routes = [
   {
     path: '',
-    redirectTo: 'scrap-buying-calculator',
-    pathMatch: 'full'
+    component: ScrapManagementComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'scrap-buying-calculator',
+        pathMatch: 'full'
+      },
+      {
+        path: 'scrap-buying-calculator',
+        component: ScrapCalculatorComponent
+      },
+      {
+        path: 'global-settings',
+        component: GlobalSettingsComponent
+      },
+    ],
   },
-  {
-    path: 'scrap-buying-calculator',
-    component: ScrapCalculatorComponent
-  },
-]
+];
 
 @NgModule({
   declarations: [
+    ScrapManagementComponent,
     ScrapCalculatorComponent,
+    GlobalSettingsComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(rout),
+    RouterModule.forChild(routes),
     NgxPermissionsModule.forChild(),
     AngularMaterialModule,
     ReactiveFormsModule,

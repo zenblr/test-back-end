@@ -14,6 +14,7 @@ import { SharedService } from '../../../core/shared/services/shared.service';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { GlobalSettingService } from '../../../core/global-setting/services/global-setting.service';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'kt-base',
@@ -30,6 +31,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 	desktopHeaderDisplay: boolean;
 	fitTop: boolean;
 	fluid: boolean;
+	url: any;
 
 	// Private properties
 	private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
@@ -42,7 +44,8 @@ export class BaseComponent implements OnInit, OnDestroy {
 		private sharedService: SharedService,
 		public permissionsService: NgxPermissionsService,
 		private globalSettingService: GlobalSettingService,
-		private ref: ChangeDetectorRef
+		private ref: ChangeDetectorRef,
+		private router: Router
 	) {
 		// register configs by demos
 		this.layoutConfigService.loadConfigs(new LayoutConfig().configs);
@@ -77,10 +80,18 @@ export class BaseComponent implements OnInit, OnDestroy {
 		});
 		this.unsubscribe.push(subscr);
 
-		this.globalSettingService.getGlobalSetting().pipe(map(res => {
-			this.globalSettingService.globalSetting.next(res);
-			this.ref.detectChanges();
-		})).subscribe()
+		this.url = (this.router.url.split("/")[2]);
+		if (this.url == 'scrap-management') {
+			this.globalSettingService.getScrapGlobalSetting().pipe(map(res => {
+				this.globalSettingService.globalSetting.next(res);
+				this.ref.detectChanges();
+			})).subscribe();
+		} else {
+			this.globalSettingService.getGlobalSetting().pipe(map(res => {
+				this.globalSettingService.globalSetting.next(res);
+				this.ref.detectChanges();
+			})).subscribe();
+		}
 	}
 
 	ngOnDestroy(): void {
