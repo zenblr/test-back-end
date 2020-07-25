@@ -52,6 +52,11 @@ module.exports = (sequelize, DataTypes) => {
             values: ['secured', 'unsecured'],
             allowNull: false,
         },
+        isTopup: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_topup',
+            defaultValue: true
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

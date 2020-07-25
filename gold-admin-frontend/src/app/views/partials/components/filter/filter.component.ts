@@ -386,13 +386,13 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 
 	getStates() {
 		this.sharedService.getStates().subscribe((res) => {
-			this.states = res.message;
+			this.states = res.data;
 		});
 	}
 
 	getLeadStatus() {
 		this.sharedService.getLeadStatus().subscribe((res) => {
-			this.statusList = res;
+			this.statusList = res.data;
 		})
 	}
 
@@ -407,7 +407,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		if (event) {
 			const stateId = event.id;
 			this.sharedService.getCities(stateId).subscribe(res => {
-				this.cities = res.message;
+				this.cities = res.data;
 			});
 		} else {
 			this.cities = [];

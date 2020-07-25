@@ -61,7 +61,7 @@ export class UserPersonalComponent implements OnInit {
 
   getOccupation() {
     this.userPersonalService.getOccupation().subscribe(res => {
-      this.occupations = res;
+      this.occupations = res.data;
     }, err => {
       // console.log(err);
     })

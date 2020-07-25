@@ -39,15 +39,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'unsecured_loan_id'
         },
-        disbursed: {
-            type: DataTypes.BOOLEAN,
-            field: 'disbursed',
-            defaultValue: false
-        },
-        disbursementAmount: {
-            type: DataTypes.STRING,
-            field: 'disbursement_amount'
-        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -82,6 +73,9 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.customerLoanInterest, { foreignKey: 'loanId', as: 'customerLoanInterest' });
         customerLoan.hasOne(models.customerLoanDisbursement, { foreignKey: 'loanId', as: 'customerLoanDisbursement' });
         customerLoan.hasOne(models.customerLoanDocument, { foreignKey: 'loanId', as: 'customerLoanDocument' });
+        customerLoan.hasMany(models.customerLoanTransaction, { foreignKey: 'loanId', as: 'customerLoanTransaction' });
+
+        
 
         // customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 

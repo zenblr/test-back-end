@@ -16,20 +16,32 @@
                 <tbody>
                     <tr>
                         <td class="text-gray">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
+                            <br>
                             <span *ngIf="loanDetails?.customerLoan[1]">
                                 {{loanDetails?.customerLoan[1]?.loanUniqueId}}
                             </span>
                         </td>
-                        <td class="text-gray">10000</td>
+                        <td class="text-gray">
+                            {{loanDetails?.customerLoan[0]?.loanAmount}}
+                            <br>
+                            <span *ngIf="loanDetails?.customerLoan[1]">
+                                {{loanDetails?.customerLoan[1]?.loanAmount}}
+                            </span>
+                        </td>
                         <td class="text-gray">{{loanDetails?.loanStartDate | date :'mediumDate'}}</td>
                         <td class="text-gray">
                             {{loanDetails?.customerLoan[0]?.scheme?.schemeName | titlecase}}
+                            <br>
                             <span *ngIf="loanDetails?.customerLoan[1]">
                                 {{loanDetails?.customerLoan[1]?.scheme?.schemeName | titlecase}}
                             </span>
                         </td>
                         <td class="text-gray">{{loanDetails?.tenure}} Months</td>
-                        <td class="text-gray">5%</td>
+                        <td class="text-gray">{{loanDetails?.customerLoan[0]?.interestRate }}%
+                            <br>
+                            <span *ngIf="loanDetails?.customerLoan[1]">
+                                {{loanDetails?.customerLoan[1]?.interestRate }}%
+                            </span></td>
                         <td class="text-gray">20,May 2020</td>
                     </tr>
                 </tbody>

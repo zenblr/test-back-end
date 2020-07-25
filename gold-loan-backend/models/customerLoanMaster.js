@@ -94,17 +94,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'total_eligible_amt'
         },
-        totalFinalInterestAmt: {
-            type: DataTypes.STRING,
-            field: 'total_final_interest_amt'
-        },
         fullAmount: {
             type: DataTypes.STRING,
             field: 'full_amount'
-        },
-        finalLoanAmount: {
-            type: DataTypes.STRING,
-            field: 'final_loan_amount',
         },
         securedLoanAmount: {
             type: DataTypes.STRING,
@@ -113,6 +105,18 @@ module.exports = (sequelize, DataTypes) => {
         unsecuredLoanAmount: {
             type: DataTypes.STRING,
             field: 'unsecured_loan_amount',
+        },
+        finalLoanAmount: {
+            type: DataTypes.STRING,
+            field: 'final_loan_amount',
+        },
+        totalFinalInterestAmt: {
+            type: DataTypes.STRING,
+            field: 'total_final_interest_amt'
+        },
+        outstandingAmount: {
+            type: DataTypes.INTEGER,
+            field: 'outstanding_amount'
         },
         tenure: {
             type: DataTypes.INTEGER,
@@ -152,14 +156,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id'
         },
-        isLoanTransfer:{
+        isLoanTransfer: {
             type: DataTypes.BOOLEAN,
             field: 'is_loan_transfer',
             defaultValue: false
         },
-        isUnsecuredSchemeApplied:{
-            type:DataTypes.BOOLEAN,
-            field:'is_unsecured_scheme_applied',
+        isUnsecuredSchemeApplied: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_unsecured_scheme_applied',
             defaultValue: false
         },
         createdBy: {
@@ -202,6 +206,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.hasMany(models.customerLoanDisbursement, { foreignKey: 'masterLoanId', as: 'customerLoanDisbursement' });
         CustomerLoanMaster.hasOne(models.customerLoanDocument, { foreignKey: 'masterLoanId', as: 'customerLoanDocument' });
 
+        CustomerLoanMaster.hasMany(models.customerLoanTransaction, { foreignKey: 'masterLoanId', as: 'customerLoanTransaction' });
+
         CustomerLoanMaster.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
@@ -217,9 +223,9 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.hasOne(models.partRelease, { foreignKey: 'masterLoanId', as: 'partRelease' });
     }
 
-        CustomerLoanMaster.prototype.toJSON = function () {
-            var values = Object.assign({}, this.get({ plain: true }));
-            //orna
+    CustomerLoanMaster.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        //orna
         var resOrna = []
         if (values.loanOrnamentsDetail) {
             for (let i = 0; i < values.loanOrnamentsDetail.length; i++) {
@@ -490,33 +496,33 @@ module.exports = (sequelize, DataTypes) => {
 
 
 
-            if (values.loanTransfer) {
-                if(values.loanTransfer.pawnTicket){
-                    let pawnTicketImage = [];
+        if (values.loanTransfer) {
+            if (values.loanTransfer.pawnTicket) {
+                let pawnTicketImage = [];
                 for (image of values.loanTransfer.pawnTicket) {
                     let URL = process.env.BASE_URL + image;
                     pawnTicketImage.push(URL)
                 }
                 values.loanTransfer.pawnTicketImage = pawnTicketImage;
-                }
-                if(values.loanTransfer.signedCheque){
-                    let signedChequeImage = [];
+            }
+            if (values.loanTransfer.signedCheque) {
+                let signedChequeImage = [];
                 for (image of values.loanTransfer.signedCheque) {
                     let URL = process.env.BASE_URL + image;
                     signedChequeImage.push(URL)
                 }
                 values.loanTransfer.signedChequeImage = signedChequeImage;
-                }
-                if(values.loanTransfer.declaration){
-                    let declarationImage = [];
+            }
+            if (values.loanTransfer.declaration) {
+                let declarationImage = [];
                 for (image of values.loanTransfer.declaration) {
                     let URL = process.env.BASE_URL + image;
                     declarationImage.push(URL)
                 }
                 values.loanTransfer.declarationImage = declarationImage;
-                }
             }
-            return values
+        }
+        return values
     }
 
     return CustomerLoanMaster;

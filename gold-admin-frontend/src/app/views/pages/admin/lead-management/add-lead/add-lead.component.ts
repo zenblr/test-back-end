@@ -180,21 +180,21 @@ export class AddLeadComponent implements OnInit {
 
   getStates() {
     this.sharedService.getStates().subscribe(res => {
-      this.states = res.message;
+      this.states = res.data;
     });
   }
 
   getCities() {
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
-      this.cities = res.message;
+      this.cities = res.data;
     });
   }
 
   getStatus() {
     this.leadService.getStatus().pipe(
       map(res => {
-        this.status = res;
+        this.status = res.data;
       })
     ).subscribe();
   }
