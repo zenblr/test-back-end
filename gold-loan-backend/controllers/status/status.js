@@ -31,7 +31,7 @@ exports.getStatus = async (req, res, next) => {
         whereCondition = { order: [['id', 'ASC']] }
     }
     let allStatus = await models.status.findAll(whereCondition)
-    return res.status(200).json({ message: allStatus })
+    return res.status(200).json({ data: allStatus })
 }
 
 exports.updateStatus = async (req, res, next) => {
