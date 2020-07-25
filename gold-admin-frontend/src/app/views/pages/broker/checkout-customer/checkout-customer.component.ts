@@ -211,7 +211,7 @@ export class CheckoutCustomerComponent implements OnInit {
   }
 
   getStates() {
-    this.sharedService.getStates().subscribe(res => this.stateList = res.message);
+    this.sharedService.getStates().subscribe(res => this.stateList = res.data);
   }
 
   getCities() {
@@ -225,7 +225,7 @@ export class CheckoutCustomerComponent implements OnInit {
         stateData = this.controls.stateName.value.id;
       }
       this.sharedService.getCities(stateData).subscribe(res => {
-        this.cityList = res.message;
+        this.cityList = res.data;
         this.ref.detectChanges();
       });
     }

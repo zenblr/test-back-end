@@ -32,9 +32,11 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() id: EventEmitter<any> = new EventEmitter();
   @Output() totalEligibleAmt: EventEmitter<any> = new EventEmitter();
+  @Output() loanStage: EventEmitter<any> = new EventEmitter();
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
   @Input() loanTransfer
+  @Input() showButton
 
   currentDate: any = new Date();
   url: string;
@@ -79,20 +81,29 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnInit() {
-    // this.basicFormEmit.emit(this.basicForm)
-    // this.controls.customerUniqueId.valueChanges.subscribe(() => {
-    //   if (this.controls.customerUniqueId.valid) {
-    //     this.basicFormEmit.emit(this.basicForm)
-    //   }
-    // })
+    
+  }
+
+  initForm() {
+    this.basicForm = this.fb.group({
+      customerUniqueId: [, [Validators.required, Validators.minLength(8)]],
+      mobileNumber: ['', Validators.required],
+      panCardNumber: [''],
+      startDate: [this.currentDate],
+      customerId: [, Validators.required],
+      kycStatus: [],
+      purpose: ["", Validators.required],
+      panType: [],
+      loanId: [],
+      masterLoanId: [],
+      panImage: [],
+    })
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.details && changes.details.currentValue) {
       if (changes.action.currentValue == 'add') {
         this.basicForm.controls.mobileNumber.patchValue(changes.details.currentValue.mobileNumber)
-        this.basicForm.controls.panCardNumber.patchValue(changes.details.currentValue.panCardNumber)
-        this.basicForm.controls.panImage.patchValue(changes.details.currentValue.panImage)
         this.basicForm.controls.customerId.patchValue(changes.details.currentValue.id)
         this.basicForm.controls.customerUniqueId.enable()
         this.ref.detectChanges()
@@ -106,8 +117,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
 
         // this.basicFormEmit.emit(this.basicForm)
         this.basicForm.controls.loanId.patchValue(changes.details.currentValue.id)
-        this.basicForm.disable()
-        this.basicForm.controls.purpose.enable()
+        // this.basicForm.disable()
+        // this.basicForm.controls.purpose.enable()
 
         this.ref.detectChanges()
       }
@@ -116,6 +127,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.disable()
       this.ref.detectChanges()
     }
+    
 
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
@@ -148,7 +160,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             let stage = res.loanCurrentStage
 
             stage = Number(stage) - 1;
-            this.next.emit(stage)
+            this.next.emit(res.loanCurrentStage)
             this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
             this.basicForm.patchValue({ loanId: res.loanId, masterLoanId: res.masterLoanId })
             if (stage >= 1) {
@@ -170,6 +182,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getCustomerDetailsForTransfer() {
+    
     if (this.controls.customerUniqueId.valid) {
       this.loanTransferFormService.getCustomerDetailsForTransfer(this.controls.customerUniqueId.value).pipe(
         map(res => {
@@ -179,6 +192,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             let stage = res.loanCurrentStage
 
             stage = Number(stage) - 1;
+
             this.next.emit(stage)
             this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
             if (stage >= 1) {
@@ -233,27 +247,19 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
 
-  initForm() {
-    this.basicForm = this.fb.group({
-      customerUniqueId: [, [Validators.required, Validators.minLength(8)]],
-      mobileNumber: ['', Validators.required],
-      panCardNumber: [''],
-      startDate: [this.currentDate],
-      customerId: [, Validators.required],
-      kycStatus: [],
-      purpose: ["", Validators.required],
-      panType: [],
-      loanId: [],
-      masterLoanId: [],
-      panImage: [],
-    })
-  }
+  
 
   get controls() {
     return this.basicForm.controls
   }
 
   nextAction() {
+
+    if(this.disable){
+      this.next.emit(1)
+      return 
+    }
+  
     if (this.basicForm.invalid) {
       this.basicForm.markAllAsTouched();
       return
@@ -266,6 +272,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
           stage = Number(stage) - 1;
           this.next.emit(stage)
           this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+          this.loanStage.emit(res.loanstage)
         }), catchError(err => {
           this.toast.error(err.error.message)
           throw err
@@ -301,11 +308,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   viewKYC() {
-    // console.log(this.basicForm.value)
     // this.dialog.open(UserReviewComponent)
     const params = { customerId: this.controls.customerId.value };
     this.appliedKycService.editKycDetails(params).subscribe(res => {
-      // console.log(res)
       const dialogRef = this.dialog.open(UserReviewComponent, { data: { action: 'view' }, width: '900px' });
     })
   }

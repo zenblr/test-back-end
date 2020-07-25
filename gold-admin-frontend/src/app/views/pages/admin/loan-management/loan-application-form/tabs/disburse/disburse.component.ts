@@ -1,41 +1,58 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AppliedLoanService } from '../../../../../core/loan-management';
+import { AppliedLoanService } from '../../../../../../../core/loan-management';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { GlobalSettingService } from '../../../../../core/global-setting/services/global-setting.service';
+import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'kt-disburse-dialog',
-  templateUrl: './disburse-dialog.component.html',
-  styleUrls: ['./disburse-dialog.component.scss']
+  selector: 'kt-disburse',
+  templateUrl: './disburse.component.html',
+  styleUrls: ['./disburse.component.scss']
 })
-export class DisburseDialogComponent implements OnInit {
+export class DisburseComponent implements OnInit {
 
+  @Input() masterAndLoanIds
   currentDate = new Date()
   disburseForm: FormGroup
   details: any;
   globalValue: any;
   constructor(
-    public dialogRef: MatDialogRef<DisburseDialogComponent>,
+    public dialogRef: MatDialogRef<DisburseComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     public loanService: AppliedLoanService,
     public toast: ToastrService,
-    public globalSettingService: GlobalSettingService
+    public globalSettingService: GlobalSettingService,
+    public router: Router
   ) {
     this.globalSettingService.globalSetting$.subscribe(res => {
       // console.log(res)
       this.globalValue = res;
     })
+    this.initForm()
+
   }
 
   ngOnInit() {
-    console.log(this.data)
+
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.masterAndLoanIds && changes.masterAndLoanIds.currentValue) {
+      this.disburseForm.patchValue(this.masterAndLoanIds)
+      this.getBankDetails()
+
+    }
+  }
+
+  initForm() {
     this.disburseForm = this.fb.group({
-      loanId: [this.data.loan],
-      transactionId: ['', [Validators.required]],
+      loanId: [],
+      securedTransactionId: ['', [Validators.required]],
+      unsecuredTransactionId: ['', Validators.required],
       date: [this.currentDate, Validators.required],
       paymentMode: [''],
       loanAmount: [],
@@ -49,18 +66,42 @@ export class DisburseDialogComponent implements OnInit {
       passbookStatementChequeId: [],
       passbookImg: [],
       passbookImgName: [],
-      masterLoanId: [this.data.masterLoanId],
+      masterLoanId: [],
+      securedSchemeName: [],
+      unsecuredLoanAmount: [],
+      unsecuredSchemeName: [],
+      securedLoanAmount: [],
+      securedLoanId: [],
+      unsecuredLoanId: []
     })
-    this.getBankDetails()
+    this.disableSchemeRelatedField()
+  }
 
+  disableSchemeRelatedField() {
+    this.controls.securedSchemeName.disable()
+    this.controls.unsecuredLoanAmount.disable()
+    this.controls.unsecuredSchemeName.disable()
+    this.controls.securedLoanAmount.disable()
+  }
+
+  enableSchemeRelatedField() {
+    this.controls.securedSchemeName.enable()
+    this.controls.unsecuredLoanAmount.enable()
+    this.controls.unsecuredSchemeName.enable()
+    this.controls.securedLoanAmount.enable()
   }
 
   getBankDetails() {
-    this.loanService.getBankDetails(this.data.loan, this.data.masterLoanId).subscribe(res => {
+    console.log(this.masterAndLoanIds)
+    this.loanService.getBankDetails(this.masterAndLoanIds.loanId, this.masterAndLoanIds.masterLoanId).subscribe(res => {
       if (Object.keys(res.data).length) {
         this.details = res.data
         this.patchValue(res.data.paymentType)
         this.disburseForm.patchValue(res.data)
+        if (!this.details.isUnsecuredSchemeApplied) {
+          this.controls.unsecuredTransactionId.clearValidators()
+          this.controls.unsecuredTransactionId.updateValueAndValidity()
+        }
         this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
         if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
           this.disburseForm.controls.paymentMode.patchValue('bank')
@@ -117,16 +158,19 @@ export class DisburseDialogComponent implements OnInit {
       return
     }
     this.formEnable()
+    this.enableSchemeRelatedField()
     this.loanService.disburse(this.disburseForm.value).pipe(
       map(res => {
         this.toast.success(res.message)
-        this.dialogRef.close(res);
+        this.router.navigate(['/admin/loan-management/applied-loan'])
       }),
       catchError(err => {
-        this.toast.error(err.error.message);
+        if (err.error.message)
+          this.toast.error(err.error.message);
         throw err
       }), finalize(() => {
         this.formDisable()
+        this.disableSchemeRelatedField()
       })).subscribe()
   }
 

@@ -12,47 +12,21 @@
                     <th class="transparent">Status</th>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>25,March 2020</td>
-                        <td class="text-center">700</td>
-                        <td class="text-center">769</td>
-                        <td class="text-center">30,March 2020</td>
-                        <td class="text-center">769</td>
-                        <td>Pending</td>
+                    <tr *ngFor="let emi of emiDetails">
+                        <td>{{emi?.emiDueDate | date :'mediumDate'}}</td>
+                        <td class="text-center">{{emi?.interestAmount}}</td>
+                        <td class="text-center">{{emi?.paidAmount}}</td>
+                        <td class="text-center">
+                            <span *ngIf="emi.emiReceivedDate;else noData">
+                                {{emi?.emiReceivedDate}}
+                            </span>
+                            <ng-template #noData>
+                                -
+                            </ng-template>
+                        </td>
+                        <td class="text-center">{{emi?.balanceAmount}}</td>
+                        <td>{{emi?.emiStatus | titlecase}}</td>
                     </tr>
-                    <tr>
-                        <td>25,March 2020</td>
-                        <td class="text-center">700</td>
-                        <td class="text-center">769</td>
-                        <td class="text-center">30,March 2020</td>
-                        <td class="text-center">769</td>
-                        <td>Pending</td>
-                    </tr>
-                    <tr>
-                        <td>25,March 2020</td>
-                        <td class="text-center">700</td>
-                        <td class="text-center">769</td>
-                        <td class="text-center">30,March 2020</td>
-                        <td class="text-center">769</td>
-                        <td>Pending</td>
-                    </tr>
-                    <tr>
-                        <td>25,March 2020</td>
-                        <td class="text-center">700</td>
-                        <td class="text-center">769</td>
-                        <td class="text-center">30,March 2020</td>
-                        <td class="text-center">769</td>
-                        <td>Pending</td>
-                    </tr>
-                    <tr>
-                        <td>25,March 2020</td>
-                        <td class="text-center">700</td>
-                        <td class="text-center">769</td>
-                        <td class="text-center">30,March 2020</td>
-                        <td class="text-center">769</td>
-                        <td>Pending</td>
-                    </tr>
-                </tbody>
             </table>
         </div>
     </kt-portlet-body>
