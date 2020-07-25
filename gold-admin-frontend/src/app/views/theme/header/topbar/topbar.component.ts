@@ -49,6 +49,7 @@ import { LoanRepaymentService } from '../../../../core/account/loan-repayment/se
 import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
 import { ShopService, ShoppingCartService, OrdersService } from '../../../../core/broker';
 import { OccupationService } from '../../../../core/masters/occupation/services/occupation.service';
+import { StandardDeductionService } from '../../../../core/masters/standard-deduction/service/standard-deduction.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -143,7 +144,8 @@ export class TopbarComponent implements OnInit {
 		private loanDisbursementService: LoanDisbursementService,
 		private shoppingCartService: ShoppingCartService,
 		private ordersService: OrdersService,
-		private occupationService: OccupationService
+		private occupationService: OccupationService,
+		private standardDeductionService: StandardDeductionService,
 	) {
 
 		this.router.events.subscribe(val => {
@@ -405,7 +407,6 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.permissionType = "addLeadSource";
 		}
-
 		if (this.path == "roles") {
 			this.showInput = true;
 			this.rightButton = true;
@@ -646,6 +647,11 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/repayment/full-release')) {
 			this.showBackButton = true;
 		}
+		if (this.path == 'standard-deduction') {
+			this.dataSourceHeader();
+			this.value1 = "Add Standard Deduction";
+			// this.permissionType = "standarddeductionAdd";
+		}	
 	}
 
 	action(event: Event) {
@@ -742,7 +748,6 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'packet-location') {
 			this.packetLocation.openModal.next(true)
 		}
-
 		if (this.path == 'purposes') {
 			this.purposeService.openModal.next(true)
 		}
@@ -757,6 +762,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'occupation') {
 			this.occupationService.openModal.next(true)
+		}
+		if (this.path == 'standard-deduction') {
+			this.standardDeductionService.openModal.next(true);
 		}
 	}
 

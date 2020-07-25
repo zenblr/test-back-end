@@ -196,6 +196,12 @@ export class MenuConfig {
 											permission: !this.permissionsArr.includes('viewHoliday'),
 											page: "/admin/holidays"
 										},
+										{
+											title: "Standard Deduction",
+											root: true,
+											permission: false,
+											page: "/admin/masters/standard-deduction"
+										},
 									],
 								},
 							],

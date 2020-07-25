@@ -37,6 +37,9 @@ export class PageConfig {
 				occupation: {
 					page: { title: "Occupations", desc: "" },
 				},
+				'standard-deduction': {
+					page: { title: "Standard Deduction", desc: "" },
+				},
 			},
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
