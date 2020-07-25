@@ -57,7 +57,7 @@ exports.payableAmount = async (req, res, next) => {
     let { masterLoanId } = req.query
 
     let global = await models.globalSetting.findAll()
-    let { gracePeriodDays } = getGlobalSetting[0]
+    let { gracePeriodDays } = global[0]
     let loan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         order: [
@@ -87,10 +87,26 @@ exports.payableAmount = async (req, res, next) => {
         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
     })
 
-    let date = securedData[0].emiDueDate
-    let createdTime = moment(new Date());
-    var expiryTimeToUser = moment(moment.utc(createdTime).toDate()).format('YYYY-MM-DD');
-    console.log(date, expiryTimeToUser, gracePeriodDays)
+    let dueDateFromDb = securedData[0].emiDueDate
+    const dueDate = new Date(dueDateFromDb);
+
+    let inDate = moment(moment.utc(moment(new Date())).toDate()).format('YYYY-MM-DD');
+    const currentDate = new Date(inDate);
+
+    if (currentDate > dueDate){
+        const diffDays = Math.ceil((Math.abs(dueDate - currentDate)) / (1000 * 60 * 60 * 24));
+        if(diffDays > gracePeriodDays){
+            console.log(diffDays)
+            //panel interest lagega
+        }
+        // nahi to nahi lagega panel interest
+    }else{
+        //panel interest nahi lagega
+        console.log('false')
+    }
+   
+
+    console.log(dueDateFromDb, inDate, gracePeriodDays)
 
     return res.status(200).json({ message: 'success', securedData, data: loanId })
 
