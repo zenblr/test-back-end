@@ -123,6 +123,7 @@ module.exports = (sequelize, DataTypes) => {
         customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         customerLoanOrnamentsDetail.belongsTo(models.ornamentType, { foreignKey: 'ornamentTypeId', as: 'ornamentType' });
+        customerLoanOrnamentsDetail.belongsToMany(models.partRelease,{through: models.partReleaseOrnaments,foreignKey: 'ornamentId'});
 
     }
 

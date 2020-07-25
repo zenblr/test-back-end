@@ -170,6 +170,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by'
         },
+        isOrnamentsReleased:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_ornaments_released',
+            defaultValue: false
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -209,6 +214,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
         CustomerLoanMaster.belongsTo(models.customerLoanTransfer, { foreignKey: 'loanTransferId', as: 'loanTransfer' });
         CustomerLoanMaster.hasMany(models.customerLoanHistory, { foreignKey: 'masterLoanId', as: 'customerLoanHistory' });
+        CustomerLoanMaster.hasOne(models.partRelease, { foreignKey: 'masterLoanId', as: 'partRelease' });
     }
 
         CustomerLoanMaster.prototype.toJSON = function () {

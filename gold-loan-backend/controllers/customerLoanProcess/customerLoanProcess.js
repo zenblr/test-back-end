@@ -57,9 +57,6 @@ exports.customerDetails = async (req, res, next) => {
             //     return res.status(400).json({ message: 'This customer previous Loan disbursement is pending' })
             // }
         }
-
-
-
         const firstName = customerLoanStage.customer.firstName
         const lastName = customerLoanStage.customer.lastName
 
@@ -88,7 +85,7 @@ exports.customerDetails = async (req, res, next) => {
 //FUNCTION fot submitting basic details DONE
 exports.loanBasicDeatils = async (req, res, next) => {
 
-    let { customerId, customerUniqueId, kycStatus, startDate, purpose, masterLoanId } = req.body
+    let { customerId, customerUniqueId, kycStatus, startDate, purpose, masterLoanId,partReleaseId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'applying' } })
@@ -96,7 +93,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
     if (masterLoanId != null) {
         let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
         if (customerLoanMaster.loanTransferId != null) {
-            let transferLoan = await models.customerLoanTransfer.findOne({ id: customerLoanMaster.loanTransferId });
+            let transferLoan = await models.customerLoanTransfer.findOne({where:{ id: customerLoanMaster.loanTransferId }});
             if (transferLoan.isLoanApplied == false) {
                 await sequelize.transaction(async t => {
                     let loan = await models.customerLoan.findOne({ where: { masterLoanId } });
@@ -109,7 +106,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
         }
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanMaster.id, loanType: 'secured' } })
         if (!check.isEmpty(customerLoanMaster)) {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
+            return res.status(200).json({ message: 'success',loanstage: stageId, loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
         }
     }
 
@@ -121,9 +118,14 @@ exports.loanBasicDeatils = async (req, res, next) => {
 
         await models.customerLoanHistory.create({ loanId: loan.id, masterLoanId: masterLoan.id, action: BASIC_DETAILS_SUBMIT, modifiedBy }, { transaction: t });
 
-        await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, customerUniqueId, startDate, purpose, kycStatus, createdBy, modifiedBy }, { transaction: t })
+        await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, customerUniqueId, startDate, purpose, kycStatus, createdBy, modifiedBy }, { transaction: t });
+
+        if(partReleaseId){
+            await models.partRelease.update({isLoanCreated:true,newLoanId:masterLoan.id},{where:{id:partReleaseId},transaction: t });
+        }
         return loan
     })
+
     return res.status(200).json({ message: 'success', loanstage: stageId, loanId: loanData.id, masterLoanId: loanData.masterLoanId, loanCurrentStage: '2' })
 
 }
@@ -1375,7 +1377,13 @@ exports.getLoanDetails = async (req, res, next) => {
             as: 'customer',
             where: internalBranchWhere,
             attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
-        }]
+        },
+        {
+            model: models.partRelease,
+            as: 'partRelease',
+            attributes:  ['amountStatus','partReleaseStatus'] 
+        },
+    ]
 
     let loanDetails = await models.customerLoanMaster.findAll({
         where: searchQuery,
