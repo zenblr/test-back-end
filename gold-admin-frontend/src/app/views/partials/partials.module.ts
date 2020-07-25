@@ -90,6 +90,8 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
 import { AngularImageViewerModule } from 'angular-x-image-viewer';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
 
+import { GlobalSettingsComponent } from './components/global-settings/global-settings.component';
+
 @NgModule({
 	declarations: [
 		ScrollTopComponent,
@@ -123,50 +125,33 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 		UserProfile2Component,
 		UserProfile3Component,
 		CartComponent,
-
 		ErrorComponent,
-
 		ToastrComponent,
-
 		ButtonComponent,
-
 		FilterComponent,
-
 		SearchComponent,
-
 		ModalHeaderComponent,
-
 		ModalFooterComponent,
-
 		UplodDataImageComponent,
-
 		ImagePreviewDialogComponent,
-
 		LoanSchemeComponent,
-
 		UserClassificationComponent,
-
 		UplodPreviewImageComponent,
-
 		UserReviewComponent,
 		AssignAppraiserComponent,
 		WebcamDialogComponent,
-
 		FilteredDataComponent,
-
 		MultiSelectSearchComponent,
-
 		AssignAppraiserComponent,
 		OrnamentsComponent,
 		PdfViewerComponent,
 		ImageFunctionalityDialogComponent,
 		DropdownComponent,
-
+		GlobalSettingsComponent
 	],
 	exports: [
 		WidgetModule,
 		PortletModule,
-
 		ScrollTopComponent,
 		NoticeComponent,
 		ActionNotificationComponent,
@@ -227,7 +212,7 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 		AngularImageViewerModule,
 		DropdownComponent,
-
+		GlobalSettingsComponent
 	],
 	imports: [
 		PdfViewerModule,

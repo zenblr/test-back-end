@@ -266,7 +266,6 @@ export class PageConfig {
 					id: {
 						page: { title: "Loan Details", desc: "" },
 					}
-
 				},
 			},
 			"loan-management": {
@@ -325,6 +324,9 @@ export class PageConfig {
 				},
 				'packet': {
 					page: { title: "Packets", desc: "" },
+				},
+				"global-settings": {
+					page: { title: "Global Settings", desc: "" },
 				},
 			}
 		},

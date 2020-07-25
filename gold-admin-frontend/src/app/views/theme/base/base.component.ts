@@ -34,16 +34,6 @@ export class BaseComponent implements OnInit, OnDestroy {
 	// Private properties
 	private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
-	/**
-	 * Component constructor
-	 *
-	 * @param layoutConfigService: LayoutConfigService
-	 * @param menuConfigService: MenuConfifService
-	 * @param pageConfigService: PageConfigService
-	 * @param htmlClassService: HtmlClassService
-	 * @param store
-	 * @param permissionsService
-	 */
 	constructor(
 		private layoutConfigService: LayoutConfigService,
 		private menuConfigService: MenuConfigService,
@@ -54,8 +44,6 @@ export class BaseComponent implements OnInit, OnDestroy {
 		private globalSettingService: GlobalSettingService,
 		private ref: ChangeDetectorRef
 	) {
-
-
 		// register configs by demos
 		this.layoutConfigService.loadConfigs(new LayoutConfig().configs);
 		this.menuConfigService.loadConfigs(new MenuConfig(this.sharedService, this.permissionsService).configs);
@@ -72,13 +60,6 @@ export class BaseComponent implements OnInit, OnDestroy {
 		this.unsubscribe.push(subscr);
 	}
 
-	/**
-	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
-	 */
-
-	/**
-	 * On init
-	 */
 	ngOnInit(): void {
 		const config = this.layoutConfigService.getConfig();
 		this.selfLayout = objectPath.get(config, 'self.layout');
@@ -102,9 +83,6 @@ export class BaseComponent implements OnInit, OnDestroy {
 		})).subscribe()
 	}
 
-	/**
-	 * On destroy
-	 */
 	ngOnDestroy(): void {
 		this.unsubscribe.forEach(sb => sb.unsubscribe());
 	}

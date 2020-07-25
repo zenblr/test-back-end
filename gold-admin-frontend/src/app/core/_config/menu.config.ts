@@ -790,6 +790,20 @@ export class MenuConfig {
 							permission: false,
 						},
 						{
+							title: "Settings",
+							root: true,
+							bullet: 'dot',
+							src: "assets/media/aside-icons/icons-03.svg",
+							permission: false,
+							submenu: [
+								{
+									title: "Global Settings",
+									page: "/admin/scrap-management/global-settings",
+									permission: false
+								},
+							]
+						},
+						{
 							title: 'Back',
 							root: true,
 							src: "assets/media/aside-icons/icons-21.svg",
