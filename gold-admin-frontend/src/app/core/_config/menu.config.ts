@@ -769,10 +769,10 @@ export class MenuConfig {
 					],
 					scrapMgmtItems: [
 						{
-							title: "Scrap Calculator",
+							title: "Scrap Buying Calculator",
 							root: true,
 							src: "assets/media/aside-icons/icons-01.svg",
-							page: "/admin/scrap-management/scrap-calculator",
+							page: "/admin/scrap-management/scrap-buying-calculator",
 							permission: false,
 						},
 						{

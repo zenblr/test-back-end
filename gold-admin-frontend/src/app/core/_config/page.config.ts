@@ -309,8 +309,8 @@ export class PageConfig {
 				}
 			},
 			"scrap-management": {
-				"scrap-calculator": {
-					page: { title: "Scrap Calculator", desc: "" },
+				"scrap-buying-calculator": {
+					page: { title: "Scrap Buying Calculator", desc: "" },
 				},
 				"scrap-application-form": {
 					page: { title: "Scrap Application Form", desc: "" },
