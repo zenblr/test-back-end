@@ -5,7 +5,7 @@
                 <mat-tab-group [(selectedIndex)]="selected" (selectedTabChange)="next($event)">
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
                         <kt-basic-details (id)="loan($event)" (apiHit)="getSingleDetails($event)" [details]="customerDetail"
-                        (next)="next($event)" [loanTransfer]="laonTransferDetails" [showButton]="showButton"></kt-basic-details>
+                        (next)="next($event)" [loanTransfer]="laonTransferDetails" [showButton]="showButton" [disable]="disabledForm"></kt-basic-details>
                     </mat-tab>
                     <mat-tab label="Upload Documents" [disabled]="disabled[1]">
                         <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" (stage)="stage($event)" [showButton]="showButton" [loanTransfer]="laonTransferDetails" (next)="next($event)"></kt-upload-loan-documents>
