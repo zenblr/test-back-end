@@ -61,19 +61,19 @@ module.exports = (sequelize, DataTypes) => {
 
         if (values.loanAgreementCopy) {
             for (imgUrl of values.loanAgreementCopy) {
-                let URL = baseUrlConfig.BASEURL + imgUrl;
+                let URL = process.env.BASE_URL + imgUrl;
                 loanAgreementCopyImage.push(URL)
             }
         }
         if (values.pawnCopy) {
             for (imgUrl of values.pawnCopyImage) {
-                let URL = baseUrlConfig.BASEURL + imgUrl;
+                let URL = process.env.BASE_URL + imgUrl;
                 pawnCopyImage.push(URL)
             }
         }
         if (values.schemeConfirmationCopy) {
             for (imgUrl of values.schemeConfirmationCopyImage) {
-                let URL = baseUrlConfig.BASEURL + imgUrl;
+                let URL = process.env.BASE_URL + imgUrl;
                 schemeConfirmationCopyImage.push(URL)
             }
         }

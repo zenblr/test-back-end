@@ -96,11 +96,37 @@
  *         description: customer loan transfer document added.
  *       422:
  *         description: failed to add documents
+ * /loan-transfer/appraiser-rating:
+ *   post:
+ *     tags:
+ *       - Customer Loan Transfer
+ *     summary: appraiser rating (step 3)
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             loanId:
+ *               type: integer
+ *             masterLoanId: 
+ *               type: integer
+ *             loanTransferStatusForAppraiser:
+ *               type: string
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: customer loan transfer appraiser rating done.
+ *       422:
+ *         description: failed to do appraiser rating
  * /loan-transfer/bm-rating:
  *   post:
  *     tags:
  *       - Customer Loan Transfer
- *     summary: BM rating (step 3)
+ *     summary: BM rating (step 4)
  *     parameters:
  *       - name: body
  *         in: body
@@ -128,7 +154,7 @@
  *   post:
  *     tags:
  *       - Customer Loan Transfer
- *     summary: disbursal (step 4)
+ *     summary: disbursal (step 5)
  *     parameters:
  *       - name: body
  *         in: body

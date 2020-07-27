@@ -1,5 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
-
 module.exports = (sequelize, DataTypes) => {
     const CustomerLoanPackageDetails = sequelize.define('customerLoanPackageDetails', {
         // attributes
@@ -56,13 +54,13 @@ module.exports = (sequelize, DataTypes) => {
     CustomerLoanPackageDetails.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.emptyPacketWithNoOrnament) {
-            values.emptyPacketWithNoOrnamentImage = baseUrlConfig.BASEURL + values.emptyPacketWithNoOrnament;
+            values.emptyPacketWithNoOrnamentImage = process.env.BASE_URL + values.emptyPacketWithNoOrnament;
         }
         if (values.sealingPacketWithWeight) {
-            values.sealingPacketWithWeightImage = baseUrlConfig.BASEURL + values.sealingPacketWithWeight;
+            values.sealingPacketWithWeightImage = process.env.BASE_URL + values.sealingPacketWithWeight;
         }
         if (values.sealingPacketWithCustomer) {
-            values.sealingPacketWithCustomerImage = baseUrlConfig.BASEURL + values.sealingPacketWithCustomer;
+            values.sealingPacketWithCustomerImage = process.env.BASE_URL + values.sealingPacketWithCustomer;
         }
       
 

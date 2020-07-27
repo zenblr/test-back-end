@@ -1,9 +1,9 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); 
-const { loanTransferBasicDeatils,customerDetails,loanTransferDocuments,loanTransferBmRating,loanTransferDisbursal,getSingleLoanDetails,getLoanTransferList,customerDetailsLoanTransfer } =require('../controllers/customerLoanTransfer/customerLoanTransfer'); // IMPORTING LOAN PROCESS FUNCTIONS
+const { loanTransferBasicDeatils,customerDetails,loanTransferDocuments,loanTransferAppraiserRating,loanTransferBmRating,loanTransferDisbursal,getSingleLoanDetails,getLoanTransferList,customerDetailsLoanTransfer } =require('../controllers/customerLoanTransfer/customerLoanTransfer'); // IMPORTING LOAN PROCESS FUNCTIONS
 const validationError = require('../middleware/validationError');
-const { loanTransferStep1,loanTransferStep2,loanTransferStep3,loanTransferStep4 } = require('../validations/customerLoanTransfer');
+const { loanTransferStep1,loanTransferStep2,loanTransferStep3,loanTransferStep4,appraiserRatingValidation } = require('../validations/customerLoanTransfer');
 const checkAuth = require('../middleware/checkAuth'); 
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -17,7 +17,9 @@ route.get('/', checkAuth,checkRolePermission, wrapper(getLoanTransferList));
 
 route.post('/basic-details', checkAuth,checkRolePermission,loanTransferStep1,validationError, wrapper(loanTransferBasicDeatils)); 
 
-route.post('/documents',checkAuth,checkRolePermission,loanTransferStep2,validationError,wrapper(loanTransferDocuments)); 
+route.post('/documents',checkAuth,checkRolePermission,loanTransferStep2,validationError,wrapper(loanTransferDocuments));
+
+route.post('/appraiser-rating',checkAuth,checkRolePermission,appraiserRatingValidation,validationError,wrapper(loanTransferAppraiserRating)); 
 
 route.post('/bm-rating',checkAuth,checkRolePermission,loanTransferStep3,validationError,wrapper(loanTransferBmRating)); 
 

@@ -530,4 +530,23 @@
  *     responses:
  *       200:
  *          description: success
+ * /loan-process/get-print-details:
+ *   get:
+ *     tags: 
+ *       -  Customer Loan Process
+ *     name: print loan details
+ *     summary: To print loan details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "customerLoanId"
+ *       in: "query"
+ *       description: "Id of customer loan Id"
+ *       type: "string"
+ *       required: true
+ *     responses:
+ *       200:
+ *          description: success.
  */

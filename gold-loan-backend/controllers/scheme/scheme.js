@@ -7,7 +7,7 @@ const check = require('../../lib/checkLib');
 // add scheme
 exports.addScheme = async (req, res, next) => {
     let { schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-        interestRateOneHundredEightyDaysMonthly, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault } = req.body;
+        interestRateOneHundredEightyDaysMonthly, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning } = req.body;
     schemeName = schemeName.toLowerCase();
     let schemeNameExist = await models.scheme.findOne({
         where: { schemeName },
@@ -28,7 +28,7 @@ exports.addScheme = async (req, res, next) => {
 
         const addSchemeData = await models.scheme.create({
             schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-            interestRateOneHundredEightyDaysMonthly, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, default: isDefault
+            interestRateOneHundredEightyDaysMonthly, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, default: isDefault, isTopup: isTopUp, isSplitAtBeginning
         });
 
         let readSchemeByPartner = await models.partner.findOne({
@@ -153,7 +153,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
                 schemeType: "secured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
-                    // schemeAmountEnd: { [Op.gte]: amount },
+                    schemeAmountEnd: { [Op.gte]: amount },
                 }
             }
         }]
@@ -262,10 +262,10 @@ exports.UpdateDefault = async (req, res, next) => {
     let { id } = req.params;
     let { partnerId } = req.body;
 
-    let schemeDefault = await models.scheme.findOne({where: {id: id}});
+    let schemeDefault = await models.scheme.findOne({ where: { id: id } });
 
-    if(schemeDefault.isActive == false){
-        return res.status(400).json({message: "You can not set deactivate scheme as a default."})
+    if (schemeDefault.isActive == false) {
+        return res.status(400).json({ message: "You can not set deactivate scheme as a default." })
     }
 
     let readSchemeByPartner = await models.partner.findOne({

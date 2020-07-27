@@ -74,6 +74,7 @@ export class AddSchemeComponent implements OnInit {
       numberOfDays1: [, [Validators.required]],
       numberOfDays2: [, [Validators.required]],
       numberOfDays3: [, [Validators.required]],
+      isTopUp: [false],
     })
 
     this.csvForm = this.fb.group({
@@ -104,7 +105,7 @@ export class AddSchemeComponent implements OnInit {
 
   submit() {
     if (this.tabGroup.selectedIndex == 0) {
-      console.log(this.fillingForm.value);
+      // console.log(this.fillingForm.value);
 
       if (this.fillingForm.invalid) {
         this.fillingForm.markAllAsTouched()
@@ -117,10 +118,10 @@ export class AddSchemeComponent implements OnInit {
       let toValue = this.fillingForm.get('schemeAmountEnd').value * 100000;
       toValue = +(toValue);
       Math.ceil(toValue);
-      console.log(fromValue, toValue)
+      // console.log(fromValue, toValue)
       this.fillingForm.patchValue({ schemeAmountStart: fromValue, schemeAmountEnd: toValue });
 
-      console.log(this.fillingForm.value);
+      // console.log(this.fillingForm.value);
 
       let partnerArray = [];
       partnerArray.push(this.fillingForm.get('partnerId').value);
@@ -160,7 +161,6 @@ export class AddSchemeComponent implements OnInit {
       //   "interestRate": 1.8
       //   }
       //   ],
-      return
       this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
           this._toastr.success('Scheme Created Sucessfully');
@@ -207,6 +207,11 @@ export class AddSchemeComponent implements OnInit {
   setAsDefault(event) {
     if (this.fillingForm.controls.schemeType.valid && this.fillingForm.controls.schemeType.value == 'unsecured') {
       this.fillingForm.controls.isDefault.patchValue(event);
+    }
+  }
+  setAsTopUpAllowed(event) {
+    if (this.fillingForm.controls.schemeType.valid && this.fillingForm.controls.schemeType.value == 'secured') {
+      this.fillingForm.controls.isTopUp.patchValue(event);
     }
   }
 }

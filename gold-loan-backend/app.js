@@ -1,3 +1,4 @@
+require('custom-env').env(true)
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -42,6 +43,7 @@ app.use(bodyParser.urlencoded({
 // app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'templates')));
 
 //middleware for apiLogger
 app.use(apiLogger);
