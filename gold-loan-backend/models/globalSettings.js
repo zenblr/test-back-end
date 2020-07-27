@@ -31,11 +31,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'gst',
             allowNull: false,
         },
-        scrapLtvGoldValue: {
-            type: DataTypes.STRING,
-            field: 'scrap_ltv_gold_value',
-            allowNull: false,
-        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
@@ -60,8 +55,9 @@ module.exports = (sequelize, DataTypes) => {
     GlobalSetting.associate = function(models) {
         GlobalSetting.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         GlobalSetting.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
-
     }
+
+    GlobalSetting.getGlobalSetting = () => GlobalSetting.findOne({order:[["updatedAt", "DESC"]]});
 
     return GlobalSetting;
 }

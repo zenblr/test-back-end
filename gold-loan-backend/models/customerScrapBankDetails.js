@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'ac_number',
         },
         passbookProof: {
-            type: DataTypes.TEXT,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'passbook_proof',
         },
         createdBy: {

@@ -10,12 +10,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'approx_purity_reading',
         },
-        xrfMachineReadingImage: {
-            type: DataTypes.TEXT,
-            field: 'xrfMachineReadingImage'
+        xrfMachineReading: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'xrf_machine_reading'
         },
         customerConfirmation: {
-            type: DataTypes.TEXT,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'customer_confirmation',
         },
         createdBy: {

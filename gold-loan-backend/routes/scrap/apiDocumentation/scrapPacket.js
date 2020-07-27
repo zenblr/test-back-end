@@ -18,11 +18,11 @@
  *           properties:
  *             packetUniqueId:
  *               type: string
- *             internalUserBranch:
+ *             internalUserBranchId:
  *               type: integer
  *         required:
  *           - packetUniqueId
- *           - internalUserBranch
+ *           - internalUserBranchId
  *     responses:
  *       201:
  *          description: you adeed packet successfully
@@ -53,31 +53,7 @@
  *     responses:
  *       200:
  *          description: packet details fetch successfully
- *   delete:
- *     tags:
- *       - Packet
- *     summary: To delete by Id
- *     parameters:
- *     - name: "id"
- *       in: "query"
- *       description: "Id of Packet to delete"
- *       required: true
- *       type: "integer"
- *     - name: "isActive"
- *       in: "query"
- *       description: "IsActive of Packect to delete"
- *       required: true
- *       type: "boolean"
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     responses:
- *       200:
- *         description: Updated.
- *       404:
- *         description: Packet deleted failed.
- * /packet/{id}:
+ * /scrap/packet/{id}:
  *   put:
  *     tags:
  *       - Packet
@@ -99,7 +75,7 @@
  *           properties:
  *             packetUniqueId:
  *               type: string
- *             internalUserBranch:
+ *             internalUserBranchId:
  *               type: integer
  *         required:
  *           - packetUniqueId
@@ -107,8 +83,27 @@
  *       200:
  *         description: packet updated successfully
  *       404:
- *         description: packet not update
- * /packet/available-packet:
+ *         description: packet not updated
+ *   delete:
+ *     tags:
+ *       - Packet
+ *     summary: To delete by Id
+ *     parameters:
+ *     - name: "id"
+ *       in: "path"
+ *       description: "Id of Packet to delete"
+ *       required: true
+ *       type: "integer"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Updated.
+ *       404:
+ *         description: Packet deleted failed.
+ * /scrap/packet/available-packet:
  *   get:
  *     tags:
  *       - Packet

@@ -2,10 +2,12 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating} =
+const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap} =
   require('../../controllers/scrap/customerScrapProcess/customerScrapProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const checkAuth = require('../../middleware/checkAuth'); // IMPORTING CHECKAUTH MIDDLEWARE
+
+route.get('/single-scrap', checkAuth, wrapper(singleScrapDetails)); // ADD OPERATIONAL TEAM RATING
 
 route.get('/customer-scrap-details/:customerUniqueId', checkAuth, wrapper(customerDetails)); // FETCH CUSTOMER DETAILS
 
@@ -17,6 +19,14 @@ route.post('/bank-details', checkAuth, wrapper(scrapBankDetails)); // ADD CUSTOM
 
 route.post('/ornaments-details', checkAuth, wrapper(scrapOrnmanetDetails)); // ADD CUSTOMER ORNAMENT DETAIL
 
-route.post('/appraiser-rating', checkAuth, wrapper(scrapAppraiserRating)); // ADD CUSTOMER BANK DETAIL
+route.post('/scrap-documents', checkAuth, wrapper(scrapDocuments))// ADD scrap documents
+
+route.post('/add-packet-images', checkAuth, wrapper(addPackageImagesForScrap)); // ADD PACKAGE IMAGES
+
+route.post('/appraiser-rating', checkAuth, wrapper(scrapAppraiserRating)); // ADD APPRAISER RATING DETAIL
+
+route.post('/bm-rating', checkAuth, wrapper(scrapBmRating)); // ADD BM RATING DETAIL
+
+route.post('/ops-rating', checkAuth, wrapper(scrapOpsTeamRating)); // ADD OPERATIONAL TEAM RATING
 
 module.exports = route; // EXPORTING ALL ROUTES

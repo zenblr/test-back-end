@@ -79,14 +79,14 @@
  *               type: integer
  *             approxPurityReading:
  *               type: integer
- *             xrfMachineReadingImage:
+ *             xrfMachineReading:
  *               type: string
  *             customerConfirmation:
  *               type: string
  *         required:
  *           - scrapId
  *           - approxPurityReading
- *           - xrfMachineReadingImage
+ *           - xrfMachineReading
  *           - customerConfirmation
  *     responses:
  *       200:
@@ -138,6 +138,65 @@
  *         description: bank details added successfully
  *       404:
  *         description: Data not found.
+ * /scrap/scrap-process/ornaments-details:
+ *   post:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: add ornaments details for scrap
+ *     summary: To add ornaments details for scrap
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             scrapId:
+ *               type: integer
+ *             finalScrapAmount:
+ *               type: integer
+ *             scrapOrnaments:
+ *                type: array
+ *                items:
+ *                  type: object  
+ *                  properties:
+ *                   ornamentTypeId:
+ *                    type: integer
+ *                   quantity:
+ *                    type: integer
+ *                   grossWeight:
+ *                    type: number
+ *                   netWeight:
+ *                    type: number
+ *                   deductionWeight:
+ *                    type: number
+ *                   karat:
+ *                    type: number
+ *                   purity:
+ *                    type: number
+ *                   ornamentImage:
+ *                    type: array
+ *                    items: 
+ *                     type: string
+ *                   ornamentImageWithXrfMachineReading:
+ *                    type: array
+ *                    items: 
+ *                     type: string
+ *                   ltvAmount:
+ *                    type: number
+ *                   scrapAmount:
+ *                    type: number
+ *         required:
+ *           - scrapId
+ *           - finalScrapAmount
+ *     responses:
+ *       200:
+ *         description: acknowledgement details added successfully
+ *       404:
+ *         description: Data not found.
  * /scrap/scrap-process/appraiser-rating:
  *   post:
  *     tags:
@@ -175,4 +234,131 @@
  *         description: appraiser rating added successfully
  *       404:
  *         description: Data not found.
+ * /scrap/scrap-process/bm-rating:
+ *   post:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: bm rating for scrap
+ *     summary: To give bm rating for scrap
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             scrapId:
+ *               type: integer
+ *             applicationFormForBM:
+ *               type: string
+ *             goldValuationForBM:
+ *               type: string
+ *             scrapStatusForBM:
+ *               type: string
+ *             commentByBM:
+ *               type: string
+ *         required:
+ *           - scrapId
+ *           - applicationFormForBM
+ *           - goldValuationForBM
+ *           - scrapStatusForBM
+ *           - commentByBM
+ *     responses:
+ *       200:
+ *         description: bm rating added successfully
+ *       404:
+ *         description: Data not found.
+ * /scrap/scrap-process/ops-rating:
+ *   post:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: Operational team rating for scrap
+ *     summary: To give operational team rating for scrap
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             scrapId:
+ *               type: integer
+ *             applicationFormForOperatinalTeam:
+ *               type: string
+ *             goldValuationForOperatinalTeam:
+ *               type: string
+ *             scrapStatusForOperatinalTeam:
+ *               type: string
+ *             commentByOperatinalTeam:
+ *               type: string
+ *         required:
+ *           - scrapId
+ *           - applicationFormForOperatinalTeam
+ *           - goldValuationForOperatinalTeam
+ *           - scrapStatusForOperatinalTeam
+ *           - commentByOperatinalTeam
+ *     responses:
+ *       200:
+ *         description: operational team rating added successfully
+ *       404:
+ *         description: Data not found.
+ * /scrap/scrap-process/scrap-documents:
+ *   post:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name:  add documents for scrap
+ *     summary: To add documents for scrap
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             scrapId:
+ *               type: integer
+ *             purchaseVoucher:
+ *               type: string
+ *             purchaseInvoice:
+ *               type: string
+ *             saleInvoice:
+ *               type: string
+ *         required:
+ *           - scrapId
+ *           - purchaseVoucher
+ *           - purchaseInvoice
+ *           - saleInvoice
+ *     responses:
+ *       200:
+ *         description: ocuments added successfully
+ *       404:
+ *         description: Data not found.
+ * /scrap/scrap-process/single-scrap:
+ *   get:
+ *     tags: 
+ *       -  Customer scrap Process
+ *     name: read loan details
+ *     summary: To read scrap details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "scrapId"
+ *       in: "query"
+ *       description: "Id of customer scrap Id"
+ *       type: "string"
+ *       required: true
+ *     responses:
+ *       200:
+ *          description: success.
  */

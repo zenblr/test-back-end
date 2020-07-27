@@ -12,6 +12,7 @@ exports.uploadFile =
         const loanId = req.query.loanId;
         const customerId = req.query.customerId;
         const partnerId = req.query.partnerId;
+        const scrapId = req.query.scrapId;
         let destination;
         if (fileFor == "user") {
             destination = `public/uploads/user/`
@@ -31,6 +32,8 @@ exports.uploadFile =
             destination = `public/uploads/scheme/${partnerId}/`;
         } else if (fileFor == "holiday") {
             destination = `public/uploads/holiday/`
+        } else if(fileFor == "acknowledgement"){
+            destination = `public/uploads/acknowledgement/${scrapId}/`
         } else {
             return res.status(422).json({ message: 'reason not found' });
         }

@@ -130,6 +130,108 @@ module.exports = (sequelize, DataTypes) => {
         CustomerScrap.hasMany(models.customerScrapOrnamentsDetail, { foreignKey: 'scrapId', as: 'scrapOrnamentsDetail' });
         CustomerScrap.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerScrap.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+        CustomerScrap.hasOne(models.customerScrapPersonalDetail,{foreignKey : "scrapId", as: "scrapPersonalDetail"});
+        CustomerScrap.hasOne(models.customerScrapBankDetails,{foreignKey : "scrapId", as: "scrapBankDetails"});
+        CustomerScrap.hasOne(models.customerAcknowledgement,{foreignKey : "scrapId", as: "customerScrapAcknowledgement"});
+        CustomerScrap.hasOne(models.customerScrapDocument,{foreignKey : "scrapId", as: "scrapDocument"});
+        CustomerScrap.hasMany(models.customerScrapPackageDetails, { foreignKey: 'scrapId', as: 'scrapPacketDetails' });
+        CustomerScrap.hasMany(models.scrapPacket, { foreignKey: 'scrapId', as: 'scrapPacket' });
+    }
+
+    CustomerScrap.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+        //orna
+        if (values.scrapOrnamentsDetail) {
+            for (let i = 0; i < values.scrapOrnamentsDetail.length; i++) {
+
+                if (values.scrapOrnamentsDetail[i].ornamentImage) {
+                    let ornamentImage = [];
+                    for (image of values.scrapOrnamentsDetail[i].ornamentImage) {
+                        image = process.env.BASE_URL + image;
+                        ornamentImage.push(image);
+                    }
+                    values.scrapOrnamentsDetail[i].ornamentImage = ornamentImage;
+                }
+
+                if (values.scrapOrnamentsDetail[i].imageOne) {
+                    let imageOne = [];
+                    for (image of values.scrapOrnamentsDetail[i].imageOne) {
+                        image = process.env.BASE_URL + image;
+                        imageOne.push(image);
+                    }
+                    values.scrapOrnamentsDetail[i].imageOne = imageOne;
+                }
+                if (values.scrapOrnamentsDetail[i].imageTwo) {
+                    let imageTwo = [];
+                    for (image of values.scrapOrnamentsDetail[i].imageTwo) {
+                        image = process.env.BASE_URL + image;
+                        imageTwo.push(image);
+                    }
+                    values.scrapOrnamentsDetail[i].imageTwo = imageTwo;
+                }
+                if (values.scrapOrnamentsDetail[i].imageThree) {
+                    let imageThree = [];
+                    for (image of values.scrapOrnamentsDetail[i].imageThree) {
+                        image = process.env.BASE_URL + image;
+                        imageThree.push(image);
+                    }
+                    values.scrapOrnamentsDetail[i].imageThree = imageThree;
+                }
+            }
+        }
+
+        if(values.scrapBankDetails){
+            let passbookProof = [];
+            for (image of values.scrapBankDetails.passbookProof) {
+                image = process.env.BASE_URL + image;
+                passbookProof.push(image);
+            }
+            values.scrapBankDetails.passbookProof = passbookProof;
+        }
+
+        if(values.customerScrapAcknowledgement){
+            let xrfMachineReading = [];
+            for (image of values.customerScrapAcknowledgement.xrfMachineReading) {
+                image = process.env.BASE_URL + image;
+                xrfMachineReading.push(image);
+            }
+            values.customerScrapAcknowledgement.xrfMachineReading = xrfMachineReading;
+        }
+        if(values.customerScrapAcknowledgement){
+            let customerConfirmation = [];
+            for (image of values.customerScrapAcknowledgement.customerConfirmation) {
+                image = process.env.BASE_URL + image;
+                customerConfirmation.push(image);
+            }
+            values.customerScrapAcknowledgement.customerConfirmation = customerConfirmation;
+        }
+
+        if(values.scrapDocument){
+            let purchaseVoucher = [];
+            for (image of values.customerScrapAcknowledgement.purchaseVoucher) {
+                image = process.env.BASE_URL + image;
+                purchaseVoucher.push(image);
+            }
+            values.scrapDocument.purchaseVoucher = purchaseVoucher;
+        }
+        if(values.scrapDocument){
+            let purchaseInvoice = [];
+            for (image of values.customerScrapAcknowledgement.purchaseInvoice) {
+                image = process.env.BASE_URL + image;
+                purchaseInvoice.push(image);
+            }
+            values.scrapDocument.purchaseInvoice = purchaseInvoice;
+        }
+        if(values.scrapDocument){
+            let saleInvoice = [];
+            for (image of values.customerScrapAcknowledgement.saleInvoice) {
+                image = process.env.BASE_URL + image;
+                saleInvoice.push(image);
+            }
+            values.scrapDocument.saleInvoice = saleInvoice;
+        }
+
+        return values;
     }
 
     return CustomerScrap;

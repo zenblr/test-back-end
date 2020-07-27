@@ -6,15 +6,15 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         purchaseVoucher: {
-            type: DataTypes.TEXT,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'purchase_voucher',
         },
         purchaseInvoice: {
-            type: DataTypes.TEXT,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'purchase_invoice',
         },
         saleInvoice: {
-            type: DataTypes.TEXT,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'sale_invoice',
         },
         createdBy: {

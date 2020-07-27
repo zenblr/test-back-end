@@ -6,7 +6,7 @@ const app = express();
 const swaggerDefinition = {
     info: {
         swagger: "2.0",
-        title: 'Gold Loan',
+        title: 'Gold Scrap',
         description: 'Gold Scrap APIs',
     },
     host: process.env.BASE_URL_SWAGGER,

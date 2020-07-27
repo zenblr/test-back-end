@@ -1,10 +1,10 @@
-const { addScrapPacket, viewScrapPacket, changePacket, deletePacket, availableScrapPacket} = require('../controllers/scrapPacket/scrapPacket');
-const { wrapper } = require('../utils/errorWrap');
+const { addScrapPacket, viewScrapPacket, changePacket, deletePacket, availableScrapPacket} = require('../../controllers/scrap/scrapPacket/scrapPacket');
+const { wrapper } = require('../../utils/errorWrap');
 const express = require('express');
-const checkAuth = require('../middleware/checkAuth');
-const checkRolePermission = require('../middleware/checkRolesPermissions');
-const validationError = require('../middleware/validationError');
-const { scrapPacketValidation } = require('../validations/scrapPacket');
+const checkAuth = require('../../middleware/checkAuth');
+const checkRolePermission = require('../../middleware/checkRolesPermissions');
+const validationError = require('../../middleware/validationError');
+const { scrapPacketValidation } = require('../../validations/scrap/scrapPacket');
 
 const route = express.Router();
 

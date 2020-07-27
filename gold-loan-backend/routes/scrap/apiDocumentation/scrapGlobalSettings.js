@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /global-setting:
+ * /scrap/global-setting:
  *   post:
  *     tags:
  *       - Global Settings
@@ -17,23 +17,21 @@
  *           type: object
  *           properties:
  *             ltvGoldValue:
- *               type: string
- *             minimumLoanAmountAllowed:
- *               type: string
- *             minimumTopUpAmount:
- *               type: string
- *             gracePeriodDays:
- *               type: string
+ *               type: number
  *             cashTransactionLimit:
- *               type: string
+ *               type: number
+ *             processingChargesFixed:
+ *               type: number
+ *             processingChargesInPercent:
+ *               type: number
  *             gst:
- *               type: string
+ *               type: number
  *         required:
  *           - ltvGoldValue
- *           - minimumLoanAmountAllowed
- *           - minimumTopUpAmount
- *           - gracePeriodDays
  *           - cashTransactionLimit
+ *           - processingChargesFixed
+ *           - processingChargesInPercent
+ *           - gst
  *     responses:
  *       200:
  *          description: success

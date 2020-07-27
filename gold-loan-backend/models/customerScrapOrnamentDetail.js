@@ -34,33 +34,37 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'purity'
         },
-        fineWeight: {
-            type: DataTypes.FLOAT,
-            field: 'fine_weight'
-        },
-        imageOne: {
-            type: DataTypes.TEXT,
-            field: 'image_one'
-        },
-        imageTwo: {
-            type: DataTypes.TEXT,
-            field: 'image_two'
-        },
-        imageThree: {
-            type: DataTypes.TEXT,
-            field: 'image_three'
-        },
+        // fineWeight: {
+        //     type: DataTypes.FLOAT,
+        //     field: 'fine_weight'
+        // },
+        // imageOne: {
+        //     type: DataTypes.ARRAY(DataTypes.TEXT),
+        //     field: 'image_one'
+        // },
+        // imageTwo: {
+        //     type: DataTypes.ARRAY(DataTypes.TEXT),
+        //     field: 'image_two'
+        // },
+        // imageThree: {
+        //     type: DataTypes.ARRAY(DataTypes.TEXT),
+        //     field: 'image_three'
+        // },
         ornamentImage: {
-            type: DataTypes.TEXT,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'ornament_image'
+        },
+        ornamentImageWithXrfMachineReading: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'ornament_image_with_xrf_machine_reading'
         },
         ltvAmount: {
             type: DataTypes.FLOAT,
             field: 'ltv_amount'
         },
-        finalScrapAmount: {
+        scrapAmount: {
             type: DataTypes.FLOAT,
-            field: 'final_scrap_amount'
+            field: 'scrap_amount'
         },
         createdBy: {
             type: DataTypes.INTEGER,

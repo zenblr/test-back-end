@@ -11,7 +11,6 @@ const { BASIC_DETAILS_SUBMIT, CUSTOMER_ACKNOWLEDGEMENT, ORNAMENTES_DETAILS, BANK
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
-
     let customerUniqueId = req.params.customerUniqueId;
     let reqId = req.userData.id;
     let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } })
@@ -75,7 +74,7 @@ exports.scrapBasicDeatils = async (req, res, next) => {
         let customerScrap = await models.customerScrap.findOne({ where: { id: scrapId } });
 
         if (!check.isEmpty(customerScrap)) {
-            return res.status(200).json({ message: 'success', scrapId: scrapId.id, loanCurrentStage: '2' })
+            return res.status(200).json({ message: 'success', scrapId: scrapId.id, scrapCurrentStage: '2' })
         }
     }
 
@@ -88,42 +87,42 @@ exports.scrapBasicDeatils = async (req, res, next) => {
         await models.customerScrapPersonalDetail.create({ scrapId: scrap.id, customerUniqueId, startDate, kycStatus, createdBy, modifiedBy, }, { transaction: t })
         return scrap
     })
-    return res.status(200).json({ message: 'success', scrapStage: stageId, scrapId: scrapData.id, loanCurrentStage: '2' })
+    return res.status(200).json({ message: 'success', scrapStage: stageId, scrapId: scrapData.id, scrapCurrentStage: '2' })
 
 }
 
 //FUNCTION for submitting nominee details  DONE
 exports.acknowledgementDetails = async (req, res, next) => {
-        let { approxPurityReading, xrfMachineReadingImage, customerConfirmation, scrapId} = req.body
+        let { approxPurityReading, xrfMachineReading, customerConfirmation, scrapId} = req.body;
         let createdBy = req.userData.id;
         let modifiedBy = req.userData.id;
     
-        let checkAcknowledgement = await models.customerAcknowledgement.findOne({ where: { scrapId } })
+        let checkAcknowledgement = await models.customerAcknowledgement.findOne({ where: { scrapId } });
     
         if (check.isEmpty(checkAcknowledgement)) {
             let scrapData = await sequelize.transaction(async t => {
     
-                let scrap = await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy }, { where: { id: scrapId }, transaction: t })
+                let scrap = await models.customerScrap.update({ customerScrapCurrentStage: '4', modifiedBy }, { where: { id: scrapId }, transaction: t })
     
                 await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
     
-                await models.customerAcknowledgement.create({ scrapId, approxPurityReading, xrfMachineReadingImage, customerConfirmation, createdBy, modifiedBy }, { transaction: t })
+                await models.customerAcknowledgement.create({ scrapId, approxPurityReading, xrfMachineReading, customerConfirmation, createdBy, modifiedBy }, { transaction: t })
                 return scrap
             })
-            return res.status(200).json({ message: 'success', scrapId, loanCurrentStage: '3' })
+            return res.status(200).json({ message: 'success', scrapId, loanCurrentStage: '4' })
         } else {
             // let scrapSubmitted = await models.customerScrap.findOne({ where: { id: scrapId } })
             let scrapData = await sequelize.transaction(async t => {
     
                 // if (loanSubmitted.isLoanSubmitted == false) {
-                    var scrap = await models.customerScrap.update({ customerLoanCurrentStage: '3', modifiedBy }, { where: { id: scrapId }, transaction: t })
+                    var scrap = await models.customerScrap.update({ customerLoanCurrentStage: '4', modifiedBy }, { where: { id: scrapId }, transaction: t })
                 // }
                 await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
     
-                await models.customerAcknowledgement.update({ scrapId, approxPurityReading, xrfMachineReadingImage, customerConfirmation, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
+                await models.customerAcknowledgement.update({ scrapId, approxPurityReading, xrfMachineReading, customerConfirmation, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
                 return scrap
             })
-            return res.status(200).json({ message: 'success', scrapId, loanCurrentStage: '3' })
+            return res.status(200).json({ message: 'success', scrapId, loanCurrentStage: '4' })
     
         }
 
@@ -168,59 +167,59 @@ exports.scrapBankDetails = async (req, res, next) => {
 
   //FUNCTION for submitting ornament details  DONE
 exports.scrapOrnmanetDetails = async (req, res, next) => {
-    let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
-    let allOrnmanets = []
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-    for (let i = 0; i < scrapOrnaments.length; i++) {
-        scrapOrnaments[i]['createdBy'] = createdBy
-        scrapOrnaments[i]['modifiedBy'] = modifiedBy
-        scrapOrnaments[i]['scrapId'] = scrapId
-
-        allOrnmanets.push(scrapOrnaments[i])
-    }
+        let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
+        let allOrnmanets = []
+        let createdBy = req.userData.id;
+        let modifiedBy = req.userData.id;
+        for (let i = 0; i < scrapOrnaments.length; i++) {
+            scrapOrnaments[i]['createdBy'] = createdBy
+            scrapOrnaments[i]['modifiedBy'] = modifiedBy
+            scrapOrnaments[i]['scrapId'] = scrapId
     
-    let checkOrnaments = await models.customerScrapOrnamentsDetail.findAll({ where: { scrapId: scrapId } });
-    if (checkOrnaments.length == 0) {
-        let scrapData = await sequelize.transaction(async t => {
-            await models.customerScrap.update({ customerLoanCurrentStage: '4', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
-
-            let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
-
-            await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
-
-            return createdOrnaments
-        })
-        return res.status(200).json({ message: 'success', scrapId, loanCurrentStage: '4', finalScrapAmount, ornaments: scrapData })
-    } else {
-
-        // let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
-        let scrapData = await sequelize.transaction(async t => {
-            // if (loanSubmitted.isLoanSubmitted == false) {
-                await models.customerScrap.update({ customerLoanCurrentStage: '4', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
-            // }
-
-            await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
-
-            await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
-            let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
-
-            // let createdOrnaments = []
-            // for (let purityTestData of allOrnmanets) {
-            //     delete purityTestData.id;
-            //     var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
-            //     createdOrnaments.push(ornaments)
-            // }
-            return createdOrnaments
-        })
-        return res.status(200).json({ message: 'success', scrapId, loanCurrentStage: '4', finalScrapAmount, ornaments: scrapData })
-    }
-
+            allOrnmanets.push(scrapOrnaments[i])
+        }
+        
+        let checkOrnaments = await models.customerScrapOrnamentsDetail.findAll({ where: { scrapId: scrapId } });
+        if (checkOrnaments.length == 0) {
+            let scrapData = await sequelize.transaction(async t => {
+                await models.customerScrap.update({ customerLoanCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
+                console.log(allOrnmanets);
+                let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets,{ returning: true }, { transaction: t });
+    
+                await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
+    
+                return createdOrnaments
+            })
+            return res.status(200).json({ message: 'success', scrapId, loanCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
+        } else {
+    
+            // let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+            let scrapData = await sequelize.transaction(async t => {
+                // if (loanSubmitted.isLoanSubmitted == false) {
+                    await models.customerScrap.update({ customerLoanCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
+                // }
+    
+                await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
+    
+                await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
+                console.log(allOrnmanets);
+                let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets,{ returning: true }, { transaction: t });
+    
+                // let createdOrnaments = []
+                // for (let purityTestData of allOrnmanets) {
+                //     delete purityTestData.id;
+                //     var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
+                //     createdOrnaments.push(ornaments)
+                // }
+                return createdOrnaments;
+            })
+            return res.status(200).json({ message: 'success', scrapId, loanCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
+        }
+    
 }
 
 //FUNCTION FOR APPRAISER RATING DONE
 exports.scrapAppraiserRating = async (req, res, next) => {
-    try{
         let { scrapId, applicationFormForAppraiser, goldValuationForAppraiser, scrapStatusForAppraiser, commentByAppraiser } = req.body
         let createdBy = req.userData.id;
         let modifiedBy = req.userData.id;
@@ -285,9 +284,334 @@ exports.scrapAppraiserRating = async (req, res, next) => {
             ornament.dataValues.ornamentType = ornamentType;
         }
         return res.status(200).json({ message: 'success', ornamentType })
+   
+}
+
+//FUNCTION FOR BM RATING
+exports.scrapBmRating = async (req, res, next) => {
+    let { scrapId,
+        applicationFormForBM, goldValuationForBM, scrapStatusForBM, commentByBM } = req.body
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    let bmId = req.userData.id
+
+
+    let checkAppraiserVerified = await models.customerScrap.findOne({ where: { scrapStatusForAppraiser: "approved", id: scrapId } })
+    if (check.isEmpty(checkAppraiserVerified)) {
+        return res.status(400).json({ message: `Appraiser rating not verified` })
+    }
+    if (checkAppraiserVerified.scrapStatusForBM == "approved" || checkAppraiserVerified.scrapStatusForBM == "rejected") {
+        return res.status(400).json({ message: `You cannot change status for this customer` })
+    }
+    if (scrapStatusForBM != "approved") {
+        if (scrapStatusForBM == 'incomplete') {
+            let incompleteStageId = await models.scrapStage.findOne({ where: { stageName: 'appraiser rating' } })
+            await sequelize.transaction(async (t) => {
+                await models.customerScrap.update(
+                    { loanStatusForAppraiser: "pending", applicationFormForBM, goldValuationForBM, scrapStatusForBM, commentByBM, scrapStageId: incompleteStageId.id, bmId, modifiedBy },
+                    { where: { id: scrapId }, transaction: t })
+
+                await models.customerScrapHistory.create({ scrapId, action: BM_RATING, modifiedBy }, { transaction: t });
+            })
+
+            return res.status(200).json({ message: 'success' })
+        } else {
+            let rejectedStageId = await models.scrapStage.findOne({ where: { stageName: 'bm rating' } })
+
+            await sequelize.transaction(async (t) => {
+                await models.customerScrap.update(
+                    { applicationFormForBM, goldValuationForBM, scrapStatusForBM, commentByBM, scrapStageId: rejectedStageId.id, bmId, modifiedBy },
+                    { where: { id: scrapId }, transaction: t })
+
+                await models.customerScrapHistory.create({ scrapId, action: BM_RATING, modifiedBy }, { transaction: t });
+            })
+            return res.status(200).json({ message: 'success' })
+        }
+    } else {
+        let approvedStageId = await models.scrapStage.findOne({ where: { stageName: 'upload documents' } })
+
+        if (applicationFormForBM == false || goldValuationForBM == false) {
+            return res.status(400).json({ message: `One of field is not verified` })
+        }
+
+        await sequelize.transaction(async (t) => {
+            await models.customerScrap.update(
+                { applicationFormForBM, goldValuationForBM, scrapStatusForBM, commentByBM, scrapStageId: approvedStageId.id, bmId, modifiedBy },
+                { where: { id: scrapId }, transaction: t })
+
+            await models.customerScrapHistory.create({ scrapId, action: BM_RATING, modifiedBy }, { transaction: t });
+
+        })
+        return res.status(200).json({ message: 'success' })
+    }
+   
+}
+
+// FUNCTION FOR OPS TEAM RATING
+exports.scrapOpsTeamRating = async (req, res, next) => {
+    let { scrapId,
+        applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, scrapStatusForOperatinalTeam, commentByOperatinalTeam } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+
+    let checkAppraiserVerified = await models.customerScrap.findOne({ where: { scrapStatusForBM: "approved", id: scrapId } })
+    if (check.isEmpty(checkAppraiserVerified)) {
+        return res.status(400).json({ message: `Bm rating not verified` })
+    }
+    if (checkAppraiserVerified.scrapStatusForOperatinalTeam == "approved" || checkAppraiserVerified.scrapStatusForOperatinalTeam == "rejected") {
+        return res.status(400).json({ message: `You cannot change status for this customer` })
+    }
+    let operatinalTeamId = req.userData.id;
+
+    if (scrapStatusForOperatinalTeam !== "approved") {
+        if (scrapStatusForOperatinalTeam == 'incomplete') {
+            let incompleteStageId = await models.scrapStage.findOne({ where: { stageName: 'appraiser rating' } })
+            await sequelize.transaction(async (t) => {
+                await models.customerScrap.update(
+                    { scrapStatusForAppraiser: "pending", scrapStatusForBM: "pending", applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, scrapStatusForOperatinalTeam, commentByOperatinalTeam, scrapStageId: incompleteStageId.id, operatinalTeamId, modifiedBy },
+                    { where: { id: scrapId }, transaction: t })
+
+                await models.customerScrapHistory.create({ scrapId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
+
+
+            })
+
+
+            return res.status(200).json({ message: 'success' })
+        } else {
+            let rejectedStageId = await models.scrapStage.findOne({ where: { stageName: 'OPS team rating' } })
+
+            await sequelize.transaction(async (t) => {
+                await models.customerScrap.update(
+                    { applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, scrapStatusForOperatinalTeam, commentByOperatinalTeam, scrapStageId: rejectedStageId.id, operatinalTeamId, modifiedBy },
+                    { where: { id: scrapId }, transaction: t })
+
+                await models.customerScrapHistory.create({ scrapId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
+
+            })
+
+
+            return res.status(200).json({ message: 'success' })
+        }
+    } else {
+        let approvedStageId = await models.scrapStage.findOne({ where: { stageName: 'disbursement pending' } })
+
+        // let checkUnsecuredLoan = await models.customerLoan.findOne({ where: { id: loanId, isActive: true } })
+
+        // let loanMaster = await models.customerLoanMaster.findOne(
+        //     {
+        //         where: { id: masterLoanId },
+        //         include: [
+        //             {
+        //                 model: models.customerLoan,
+        //                 as: "customerLoan",
+        //             },
+        //             {
+        //                 model: models.customerLoanTransfer,
+        //                 as: "loanTransfer",
+        //             }
+        //         ]
+        //     })
+
+        if (applicationFormForOperatinalTeam == false || goldValuationForOperatinalTeam == false) {
+            return res.status(400).json({ message: `One of field is not verified` });
+        }
+        await sequelize.transaction(async (t) => {
+            // loan transfer changes complete
+            // if (loanMaster.isLoanTransfer == true) {
+            //     let stageIdTransfer = await models.loanStage.findOne({ where: { stageName: 'disbursed' }, transaction: t })
+
+            //     let customerLoanId = [];
+            //     for (const loan of loanMaster.customerLoan) {
+            //         customerLoanId.push(loan.id);
+            //         await models.customerLoanDisbursement.create({
+            //             loanId: loan.id, masterLoanId, loanAmount: loanMaster.loanTransfer.disbursedLoanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
+            //         }, { transaction: t })
+            //     }
+            //     await models.customerLoan.update({ disbursed: true }, { where: { id: { [Op.in]: customerLoanId } }, transaction: t })
+            //     await models.customerLoanMaster.update({ loanStageId: stageIdTransfer.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
+            // }
+            // loan transfer changes complete
+
+            await models.customerScrap.update({ applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, scrapStatusForOperatinalTeam, commentByOperatinalTeam, scrapStageId: approvedStageId.id, operatinalTeamId, modifiedBy }, { where: { id: scrapId }, transaction: t })
+            //securedLoanIdUpdate
+            // await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
+            // if (!check.isEmpty(checkUnsecuredLoan)) {
+            //     //unsecuredLoanIdUpdate
+            //     await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: checkUnsecuredLoan.unsecuredLoanId }, transaction: t })
+            // }
+
+            await models.customerScrapHistory.create({ scrapId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
+
+        })
+
+        return res.status(200).json({ message: 'success' })
+    }
+}
+
+//function of loan documents
+exports.scrapDocuments = async (req, res, next) => {
+
+    let { purchaseVoucher, purchaseInvoice, saleInvoice, scrapId } = req.body
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+
+    let checkDocument = await models.customerScrapDocument.findOne({ where: { scrapId: scrapId } })
+
+    if (check.isEmpty(checkDocument)) {
+        // remove if condiction
+        let scrapData = await sequelize.transaction(async t => {
+            let stageId = await models.scrapStage.findOne({ where: { stageName: 'OPS team rating' }, transaction: t })
+
+            await models.customerScrap.update({ scrapStageId: stageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
+
+            await models.customerScrapDocument.create({ scrapId, purchaseVoucher, purchaseInvoice, saleInvoice, createdBy, modifiedBy }, { transaction: t })
+
+            await models.customerScrapHistory.create({ scrapId, action: LOAN_DOCUMENTS, modifiedBy }, { transaction: t });
+
+        })
+
+        return res.status(200).json({ message: 'success', scrapId })
+    } else {
+        let scrapData = await sequelize.transaction(async t => {
+
+            await models.customerScrapDocument.update({ purchaseVoucher, purchaseInvoice, saleInvoice, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
+
+            await models.customerScrapHistory.create({ scrapId, action: SCRAP_DOCUMENTS, modifiedBy }, { transaction: t });
+
+            return loan
+        })
+        return res.status(200).json({ message: 'success', scrapId })
+    }
+}
+
+exports.singleScrapDetails = async (req, res, next) => {
+
+    const { scrapId } = req.query;
+
+    let customerScrap = await models.customerScrap.findOne({where: {id: scrapId},
+    include: [{
+        model: models.customer,
+        as: 'customer',
+        attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email', 'kycStatus']
+    },
+    {
+        model: models.customerScrapPersonalDetail,
+        as: 'scrapPersonalDetail',
+        attributes: ['scrapId', 'startDate', 'kycStatus']
+    },
+    {
+        model: models.customerScrapBankDetails,
+        as: 'scrapBankDetails',
+        attributes: ['scrapId', 'paymentType', 'bankName', 'bankBranch', 'acHolderName', 'acNumber', 'passbookProof', 'createdBy','modifiedBy']
+    },
+    {
+        model: models.customerAcknowledgement,
+        as: 'customerScrapAcknowledgement',
+        attributes: ['scrapId', 'approxPurityReading', 'xrfMachineReading', 'customerConfirmation']
+    },
+    {
+        model: models.customerScrapDocument,
+        as: 'scrapDocument',
+        attributes: ['scrapId', 'purchaseVoucher', 'purchaseInvoice', 'saleInvoice']
+    },
+    {
+        model: models.customerScrapOrnamentsDetail,
+        as: 'scrapOrnamentsDetail',
+        include: 
+            {
+                model: models.ornamentType,
+                as: "ornamentType",
+                attributes: ['name','id']
+            },
+        // attributes: ['scrapId', 'ornamentTypeId', 'quantity', 'grossWeight', 'netWeight', 'deductionWeight','karat','purity','fineWeight','imageOne','imageTwo','imageThree','ornamentImage','ltvAmount','scrapAmount']
+    }]
+    });
+
+    let ornamentTypesss = [];
+    if (customerScrap.scrapOrnamentsDetail.length != 0) {
+        for (let ornamentsDetail of customerScrap.scrapOrnamentsDetail) {
+            ornamentTypesss.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
+        }
+        customerScrap.dataValues.ornamentType = ornamentTypesss;
+    }
+
+    return res.status(200).json({ customerScrap })
+}
+
+//  FUNCTION FOR ADD PACKAGE IMAGES
+exports.addPackageImagesForScrap = async (req, res, next) => {
+    try{
+        let { scrapId, emptyPacketWithRefiningOrnament, sealedPacketWithWeight, sealedPacketWithCustomer, packetOrnamentArray } = req.body;
+        let createdBy = req.userData.id;
+        let modifiedBy = req.userData.id;
+        let scrapDetails = await models.customerScrap.findOne({ where: { id: scrapId } });
     
+        let getPackets = await models.customerScrapPackageDetails.findAll({ where: { scrapId: scrapId } })
+        if (!check.isEmpty(getPackets)) {
+            return res.status(400).json({ message: `Packets has been already assign` })
+        }
+    
+        if (scrapDetails !== null && scrapDetails.scrapStatusForAppraiser === 'approved') {
+    
+            //FOR PACKET UPDATE
+            let packetArray = await packetOrnamentArray.map(ele => {
+                return ele.packetId
+            })
+            let packetUpdateArray = await packetArray.map(ele => {
+                let obj = {}
+                obj.id = ele;
+                obj.customerId = scrapDetails.customerId;
+                obj.scrapId = scrapId;
+                obj.modifiedBy = modifiedBy
+                obj.packetAssigned = true;
+                return obj
+            })
+    
+            await sequelize.transaction(async (t) => {
+                let stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+    
+                await models.customerScrap.update({ scrapStageId: stageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
+    
+                let scrapPacket = await models.customerScrapPackageDetails.create({ scrapId, emptyPacketWithRefiningOrnament, sealedPacketWithWeight, sealedPacketWithCustomer, createdBy, modifiedBy }, { transaction: t });
+    
+                let packetMapping = []
+                for (single of packetOrnamentArray) {
+                    let entry = {}
+                    entry['customerScrapPackageDetailId'] = scrapPacket.id
+                    entry['packetId'] = single.packetId
+                    packetMapping.push(entry)
+                }
+    
+                await models.customerScrapPacket.bulkCreate(packetMapping, { transaction: t })
+    
+                // let ornamentPacketData = [];
+                // for (let x of packetOrnamentArray) {
+                //     for (let singleOrnamentId of x.ornamentsId) {
+                //         let pushData = {}
+                //         pushData['packetId'] = Number(x.packetId)
+                //         pushData['ornamentTypeId'] = Number(singleOrnamentId)
+                //         ornamentPacketData.push(pushData)
+                //     }
+                // }
+                // console.log(ornamentPacketData)
+                // await models.scrapPacketOrnament.bulkCreate(ornamentPacketData, { transaction: t })
+    
+                await models.scrapPacket.bulkCreate(packetUpdateArray, {
+                    updateOnDuplicate: ["customerId", "scrapId", "modifiedBy", "packetAssigned"]
+                }, { transaction: t })
+    
+                await models.customerLoanHistory.create({ scrapId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
+    
+            })
+    
+            return res.status(200).json({ message: `Packets added successfully` })
+    
+        } else {
+            res.status(404).json({ message: 'Given scrap id is not proper' })
+        }
     }catch(err){
         console.log(err);
     }
-   
+    
 }

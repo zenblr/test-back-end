@@ -1,12 +1,10 @@
-const models = require('../../models');
+const models = require('../../../models');
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
-const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
+const paginationFUNC = require('../../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 
-const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
-
-
+const check = require("../../../lib/checkLib"); // IMPORTING CHECKLIB 
 
 //  FUNCTION FOR ADD PACKET
 exports.addScrapPacket = async (req, res, next) => {
@@ -26,16 +24,16 @@ exports.addScrapPacket = async (req, res, next) => {
         console.log(packetAdded)
 }
 
-
 //  FUNCTION FOR VIEW PACKET
 exports.viewScrapPacket = async (req, res, next) => {
-    let { search, offset, pageSize } =
+    try{
+        let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
     let query = {};
-    // if (req.query.packetAssigned) {
-    //     query.packetAssigned = req.query.packetAssigned;
-    // }
+    if (req.query.packetAssigned) {
+        query.packetAssigned = req.query.packetAssigned;
+    }
     let searchQuery = {
         [Op.and]: [query, {
             [Op.or]: {
@@ -50,6 +48,13 @@ exports.viewScrapPacket = async (req, res, next) => {
     };
 
     let associateModel = [
+        {
+            model: models.customerScrap,
+            required: false,
+            as: 'customerScrap',
+            where: { isActive: true },
+            attributes: ['id', 'scrapUniqieId']
+        },
         {
             model: models.customer,
             required: false,
@@ -82,9 +87,11 @@ exports.viewScrapPacket = async (req, res, next) => {
     });
 
     return res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count });
-
+    }catch(err){
+        console.log(err);
+    }
+    
 }
-
 
 //  FUNCTION FOR GET AVAILABLE PACKET
 exports.availableScrapPacket = async (req, res, next) => {
@@ -110,7 +117,6 @@ exports.availableScrapPacket = async (req, res, next) => {
         res.status(200).json({ message: 'avalable packet details fetch successfully', data: availablePacketDetails });
     }
 }
-
 
 // FUNCTION TO ASSIGN PACKET
 // exports.assignPacket = async (req, res, next) => {
@@ -144,23 +150,21 @@ exports.changePacket = async (req, res, next) => {
     
         let packet = await models.scrapPacket.updatePacket(id, packetUniqueId, internalUserBranchId, modifiedBy);
     
-        if (packet[0] == 0) {
-            return res.status(404).json({ message: "packet not update" });
+        if (packet[0] === 0) {
+            return res.status(404).json({ message: "packet not updated" });
         }
         return res.status(200).json({ message: "packet updated successfully" });
-   
-};
 
+};
 
 // FUNCTION TO REMOVE PACKET
 exports.deletePacket = async (req, res, next) => {
         const id = req.params.id;
         let modifiedBy = req.userData.id;
-        const packet = await models.scrapPacket.update({ isActive: false, modifiedBy }, { where: { id: id } })
+        const packet = await models.scrapPacket.update({ isActive: false, modifiedBy }, { where: { id } })
     
-        if (packet[0] == 0) {
+        if (packet[0] === 0) {
             return res.status(404).json({ message: "packet not delete" });
         }
-        return res.status(200).json({ message: "packet deleted successfully" });
-   
+        return res.status(200).json({ message: "packet deleted successfully" });   
 };

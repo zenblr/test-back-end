@@ -1,5 +1,5 @@
 const { body } = require("express-validator");
-const models = require('../models');
+const models = require('../../models');
 
 // add scheme Validation
 
