@@ -70,9 +70,6 @@ exports.viewPacket = async (req, res, next) => {
             as: 'internalBranch',
             where: { isActive: true },
             attributes: ['id', 'internalBranchUniqueId', 'name']
-        },
-        {
-            model: models.ornamentType,
         }
     ];
 

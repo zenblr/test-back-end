@@ -40,6 +40,18 @@ exports.loanTransferStep2 = [
         .withMessage('masterLoanId is required')
 ]
 
+exports.appraiserRatingValidation= [
+    body('loanTransferStatusForAppraiser')
+        .exists()
+        .withMessage('loanTransferStatusForAppraiser is required'),
+    body('loanId')
+        .exists()
+        .withMessage('loanId is required'),
+    body('masterLoanId')
+        .exists()
+        .withMessage('masterLoanId is required')
+]
+
 exports.loanTransferStep3 = [
     body('loanTransferStatusForBM')
         .exists()

@@ -70,9 +70,9 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 
   // var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
-  // await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+  await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
-  await sendOtpToLeadVerification(customerExist.firstName, customerExist.mobileNumber, otp, expiryTimeToUser)
+  //await sendOtpToLeadVerification(customerExist.firstName, customerExist.mobileNumber, otp, expiryTimeToUser)
 
   let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
   await sms.sendSms(mobileNumber, message);

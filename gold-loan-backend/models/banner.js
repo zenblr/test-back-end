@@ -1,4 +1,3 @@
-const baseUrlConfig = require('../config/baseUrl');
 
 module.exports = (sequelize, DataTypes) => {
     const Banner = sequelize.define('banner', {
@@ -25,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         let bannerImage = []
         if (values.images) {
             for (imgUrl of values.images) {
-                let URL = baseUrlConfig.BASEURL + imgUrl;
+                let URL = process.env.BASE_URL + imgUrl;
                 bannerImage.push(URL)
             }
         }

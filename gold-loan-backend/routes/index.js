@@ -158,4 +158,10 @@ router.use('/single-sign-on',singleSignOn);
 const customerLoanTransfer = require('./customerLoanTransfer');
 router.use('/loan-transfer',customerLoanTransfer);
 
+const jewelleryRelese = require('./jewelleryRelease');
+router.use('/jewellery-release',jewelleryRelese);
+
+const quickPay = require('./quickPay');
+router.use('/quick-pay', quickPay);
+
 module.exports = router;

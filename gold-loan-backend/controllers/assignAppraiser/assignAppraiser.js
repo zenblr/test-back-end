@@ -17,21 +17,21 @@ exports.addAssignAppraiser = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
-    let existAssign = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } });
+    let existAssign = await models.customerAssignAppraiser.findOne({ where: { customerId } });
     if (!check.isEmpty(existAssign)) {
         return res.status(400).json({ message: `This customer already assign to the appraiser` })
     }
-    // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
-    
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+
     await models.customerAssignAppraiser.create({ customerId, customerUniqueId, appraiserId, createdBy, modifiedBy, appoinmentDate, startTime, endTime });
 
-    // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } })
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } })
 
     // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerUniqueId);
 
     // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
-    request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message= customer unique Id ${customerUniqueId} is assign for you`);
+    request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
 
     return res.status(200).json({ message: 'success' })
 }
@@ -40,11 +40,11 @@ exports.editAssignAppraiser = async (req, res, next) => {
     let { id } = req.params;
     let modifiedBy = req.userData.id;
 
-    let { appraiserId, appoinmentDate, startTime, endTime } = req.body;
+    let { appraiserId, appoinmentDate, startTime, endTime, customerId } = req.body;
 
     let getAssignCustomer = await models.customerAssignAppraiser.findOne({ where: { id: id } });
 
-    // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
 
     await models.customerAssignAppraiser.update({ appraiserId, modifiedBy, appoinmentDate, startTime, endTime }, { where: { id: id } });
 
@@ -56,7 +56,7 @@ exports.editAssignAppraiser = async (req, res, next) => {
         // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
 
-        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message= customer unique Id ${getAssignCustomer.customerUniqueId} is assign for you`);
+        request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message= ${customerInfo.firstName} is assign for you`);
     }
 
     return res.status(200).json({ message: 'success' })

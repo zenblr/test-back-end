@@ -53,9 +53,22 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row kt-margin-b-15 kt-padding-l-15" *ngIf="fillingForm.get('schemeType').value == 'unsecured'">
+                    <div class="row kt-margin-b-15 kt-padding-l-15"
+                        *ngIf="fillingForm.get('schemeType').value == 'secured'">
 
-                        <div class="offset-3 position-relative kt-padding-l-10" >
+                        <div class="offset-3 position-relative kt-padding-l-10">
+                            <label class="custom-checkbox ">
+                                <span class="label-checkbox">TOP UP Allowed</span>
+                                <input type="checkbox" (change)="setAsTopUpAllowed($event.target.checked)"
+                                    formControlName="isTopUp">
+                                <span class="checkmark top-0"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-b-15 kt-padding-l-15"
+                        *ngIf="fillingForm.get('schemeType').value == 'unsecured'">
+
+                        <div class="offset-3 position-relative kt-padding-l-10">
                             <label class="custom-checkbox ">
                                 <span class="label-checkbox">Set as Default</span>
                                 <input type="checkbox" (change)="setAsDefault($event.target.checked)"

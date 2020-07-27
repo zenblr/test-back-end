@@ -71,6 +71,8 @@ export class AddSchemeComponent implements OnInit {
       penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       isDefault: [false],
       isSplitAtBeginning:[false]
+      isTopUp: [false]
+
     })
 
     this.csvForm = this.fb.group({
@@ -169,6 +171,11 @@ export class AddSchemeComponent implements OnInit {
   setAsDefault(event) {
     if (this.fillingForm.controls.schemeType.valid && this.fillingForm.controls.schemeType.value == 'unsecured') {
       this.fillingForm.controls.isDefault.patchValue(event);
+    }
+  }
+  setAsTopUpAllowed(event) {
+    if (this.fillingForm.controls.schemeType.valid && this.fillingForm.controls.schemeType.value == 'secured') {
+      this.fillingForm.controls.isTopUp.patchValue(event);
     }
   }
 }
