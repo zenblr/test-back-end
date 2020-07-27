@@ -61,8 +61,8 @@
                     <mat-cell *matCellDef="let item">{{item.releaseDate | date:'mediumDate'}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="partReleaseAmountStatus">
-                    <mat-header-cell *matHeaderCellDef>Part Release Amount Status</mat-header-cell>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let item"
                         [ngClass]="item.partReleaseStatus == 'released' ? 'text-success': item.partReleaseStatus == 'pending' ? 'text-warning' : 'text-danger'">
                         {{item.partReleaseStatus | titlecase}}</mat-cell>
