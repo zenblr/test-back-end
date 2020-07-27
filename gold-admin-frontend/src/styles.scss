@@ -370,6 +370,11 @@ mat-header-row {
 	max-height: 74vh;
 }
 
+.mat-table__wrapper.custom{
+	min-height: 50vh !important; //set table height
+	max-height: 50vh !important;
+}
+
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
 	background-color: transparent;
 }

@@ -26,6 +26,7 @@ export class LoanTransferComponent implements OnInit {
   showButton: boolean = true;
   loanTransferStage: any;
   appraiserOrCCE: { value: string; name: string; }[];
+  disabledForm: boolean;
   constructor(
     private custClassificationService: CustomerClassificationService,
     private sharedService: SharedService,
@@ -42,7 +43,7 @@ export class LoanTransferComponent implements OnInit {
     this.sharedService.getStatus().subscribe(res => {
       this.branchManager = res.bm
       this.appraiserOrCCE = res.apprsiserOrCCE
-      
+
     })
 
   }
@@ -55,7 +56,7 @@ export class LoanTransferComponent implements OnInit {
         if (res.data.masterLoan.loanTransfer.loanTransferCurrentStage) {
           let stage = res.data.masterLoan.loanTransfer.loanTransferCurrentStage;
           this.next(Number(stage) - 1);
-          if(stage == '4'){
+          if (stage == '4') {
             this.selected = 2
             this.approvalForm.controls.loanTransferStatusForAppraiser.disable()
           }
@@ -74,9 +75,14 @@ export class LoanTransferComponent implements OnInit {
               this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByBM })
             }
           }
+          if (this.approvalForm.controls.loanTransferStatusForAppraiser.value == 'approved') {
+            this.disabled = [false, false, false, true]
+            this.disabledForm = true
+          }
 
           if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
             this.disabled = [false, false, false, false]
+            this.approvalForm.disable()
           }
 
           this.disbursalForm.patchValue(res.data.masterLoan.loanTransfer)
@@ -149,6 +155,11 @@ export class LoanTransferComponent implements OnInit {
   }
 
   approval() {
+    if (this.approvalForm.status == 'DISABLED') {
+      this.next(4)
+      return
+    }
+
     if (this.approvalForm.invalid || (this.approvalForm.controls.loanTransferStatusForBM.value == 'pending' && this.loanTransferStage != '3')) {
       this.approvalForm.markAllAsTouched()
       return
@@ -162,6 +173,7 @@ export class LoanTransferComponent implements OnInit {
       this.loanTransferService.approval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
         if (res) {
           if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
+            this.approvalForm.disable()
             this.disbursalForm.patchValue(res)
             if (res.loanCurrentStage) {
               let stage = Number(res.loanCurrentStage) - 1
@@ -197,7 +209,13 @@ export class LoanTransferComponent implements OnInit {
     if (event.index != undefined) {
       this.selected = event.index;
     } else {
-      this.selected = event;
+      if (event == 3) {
+        this.selected = 2
+      } else if (event == 4) {
+        this.selected = 3
+      } else {
+        this.selected = event;
+      }
       this.stage((event + 1).toString())
     }
     if (this.approvalForm.controls.loanTransferStatusForBM.value != 'approved') {

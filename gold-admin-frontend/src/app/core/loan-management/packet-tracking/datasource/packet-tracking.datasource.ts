@@ -37,4 +37,22 @@ export class PacketTrackingDatasource extends BaseDataSource {
             .subscribe();
     }
 
+    loadpacketsLog(from, to, search) {
+        this.loadingSubject.next(true);
+        this.loanManagementService.getpackets(from, to, search)
+            .pipe(
+                map(
+                    report => {
+                        this.paginatorTotalSubject.next(report.count);
+                        this.entitySubject.next(report.packetDetails);
+                    }
+                ),
+                catchError(() => of([])),
+                finalize(() => {
+                    this.loadingSubject.next(false);
+                    this.isPreloadTextViewedSubject.next(false);
+                })
+            )
+            .subscribe();
+    }
 }

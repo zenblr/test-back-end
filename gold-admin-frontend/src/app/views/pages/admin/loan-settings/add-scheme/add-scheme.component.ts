@@ -70,8 +70,8 @@ export class AddSchemeComponent implements OnInit {
       maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       isDefault: [false],
-      isTopUp: [false]
-
+      isTopUp: [false],
+      isSplitAtBeginning:[false]
     })
 
     this.csvForm = this.fb.group({
