@@ -147,20 +147,6 @@ export class AddSchemeComponent implements OnInit {
 
       console.log(this.fillingForm.value)
 
-      // "schemeInterest": [
-      //   {
-      //   "days": 30,
-      //   "interestRate": 1.33
-      //   },
-      //   {
-      //   "days": 50,
-      //   "interestRate": 1.55
-      //   },
-      //   {
-      //   "days": 100,
-      //   "interestRate": 1.8
-      //   }
-      //   ],
       this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
           this._toastr.success('Scheme Created Sucessfully');
