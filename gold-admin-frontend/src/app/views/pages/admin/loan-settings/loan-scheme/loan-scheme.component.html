@@ -59,13 +59,13 @@
                                 </div>
                                 <div
                                     class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                    30 Days</div>
+                                    {{schemeDeatils.schemeInterest[0].days}} Days</div>
                                 <div
                                     class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                    90 Days</div>
+                                    {{schemeDeatils.schemeInterest[1].days}} Days</div>
                                 <div
                                     class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right-radius">
-                                    180 Days
+                                    {{schemeDeatils.schemeInterest[2].days}} Days
                                 </div>
                             </div>
                             <div class="row">
@@ -73,11 +73,11 @@
                                     Interest(% /
                                     Monthly)</div>
                                 <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                    {{schemeDeatils.interestRateThirtyDaysMonthly}}</div>
+                                    {{schemeDeatils.schemeInterest[0].interestRate}}</div>
                                 <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                    {{schemeDeatils.interestRateNinetyDaysMonthly}}</div>
+                                    {{schemeDeatils.schemeInterest[1].interestRate}}</div>
                                 <div class="col text-center kt-padding-t-20 kt-padding-b-20">
-                                    {{schemeDeatils.interestRateOneHundredEightyDaysMonthly}}</div>
+                                    {{schemeDeatils.schemeInterest[2].interestRate}}</div>
                             </div>
                             <!-- <div class="row ">
                             <div class="col-4 heading kt-padding-t-20 kt-padding-b-20 border-right">Rate of Interest(% /
