@@ -76,7 +76,9 @@ module.exports = (sequelize, DataTypes) => {
     )
     Scheme.associate = function (models) {
 
-        Scheme.belongsToMany(models.partner, { through: models.partnerScheme })
+        Scheme.belongsToMany(models.partner, { through: models.partnerScheme });
+
+        Scheme.hasMany(models.schemeInterest, { foreignKey: 'schemeId', as: 'schemeInterest' })
 
     }
     return Scheme;
