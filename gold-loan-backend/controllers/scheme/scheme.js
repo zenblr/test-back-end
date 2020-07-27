@@ -153,7 +153,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
                 schemeType: "secured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
-                    // schemeAmountEnd: { [Op.gte]: amount },
+                    schemeAmountEnd: { [Op.gte]: amount },
                 }
             }
         }]
