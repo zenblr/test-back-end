@@ -1545,12 +1545,29 @@ exports.getDetailsForPrint = async (req, res, next) => {
         }
         customerLoanDetail.customerAddress = customerAddress
     }
-    //console.log(customerLoan.masterLoan.isUnsecuredSchemeApplied)
-    console.log(customerLoanDetail.customerLoan)
-    //console.log(customerLoanDetail.customerLoan.partner)
-    //console.log(customerLoan.unsecuredLoan.scheme.penalInterest)
+    //console.log(customerLoanDetail.customerLoan[1])
+    let customerUnsecureLoanData = [];
     if (customerLoanDetail.isUnsecuredSchemeApplied) {
         var html = fs.readFileSync("./templates/acknowledge-unsecure-template.html", 'utf8');
+        customerUnsecureLoanData = await [{
+            Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
+            dob: dateOfBirth,
+            contactNumber: customerLoanDetail.customer.mobileNumber,
+            start_Date: customerLoanDetail.loanStartDate,
+            customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
+            customerId: customerLoanDetail.customer.customerUniqueId,
+            loanTenure: customerLoanDetail.tenure,
+            end_Date: customerLoanDetail.loanEndDate,
+            //accountNumber: customerLoan.loanBankDetail.accountNumber,
+            //bankName: customerLoan.loanBankDetail.accountHolderName,
+            //ifscCode: customerLoan.loanBankDetail.ifscCode,
+            loanNumber: customerLoanDetail.customerLoan[1].loanUniqueId,
+            loanAmount: customerLoanDetail.customerLoan[1].loanAmount,
+            loanScheme: customerLoanDetail.customerLoan[1].scheme.schemeName,
+            penalCharges: customerLoanDetail.customerLoan[1].scheme.penalInterest,
+            interestRate: customerLoanDetail.customerLoan[1].interestRate,
+        }]
+        //console.log(customerUnsecureLoanData)
     } else {
         var html = fs.readFileSync("./templates/acknowledge-template.html", 'utf8');
     }
@@ -1567,28 +1584,26 @@ exports.getDetailsForPrint = async (req, res, next) => {
         "height": "11.69in",
         "width": "8.27in"
     }
-    //console.log(customerLoanDetail.loanNomineeDetail)
-    //console.log(Object.keys(customerLoan.loanNomineeDetail))
-    //console.log(customerLoanDetail.loanNomineeDetail[0].nomineeName)
+
     var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
     dateOfBirth = d.getDate() + "-" + d.getMonth() + 1 + "-" + d.getFullYear();
-    //console.log(dateOfBirth)
+
     var customerSecureLoanData = await [{
-        //partnerName: customerLoanDetail.customerLoan.partner.name,
+        partnerName: customerLoanDetail.customerLoan[0].partner.name,
         Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
         dob: dateOfBirth,
         contactNumber: customerLoanDetail.customer.mobileNumber,
         nomineeDetails: `${customerLoanDetail.loanNomineeDetail[0].nomineeName}, ${customerLoanDetail.loanNomineeDetail[0].nomineeAge}, ${customerLoanDetail.loanNomineeDetail[0].relationship}`,
-        start_Date: customerLoanDetail.customerLoan.loanStartDate,
+        start_Date: customerLoanDetail.loanStartDate,
         customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
-        interestRate: customerLoanDetail.customerLoan.interestRate,
+        interestRate: customerLoanDetail.customerLoan[0].interestRate,
         customerId: customerLoanDetail.customer.customerUniqueId,
-        loanNumber: customerLoanDetail.customerLoan.loanUniqueId,
-        loanAmount: customerLoanDetail.customerLoan.loanAmount,
+        loanNumber: customerLoanDetail.customerLoan[0].loanUniqueId,
+        loanAmount: customerLoanDetail.customerLoan[0].loanAmount,
         loanTenure: customerLoanDetail.tenure,
         end_Date: customerLoanDetail.loanEndDate,
-        //loanScheme: customerLoanDetail.customerLoan.scheme.schemeName,
-        //penalCharges: customerLoanDetail.customerLoan.scheme.penalInterest,
+        loanScheme: customerLoanDetail.customerLoan[0].scheme.schemeName,
+        penalCharges: customerLoanDetail.customerLoan[0].scheme.penalInterest,
         accountNumber: customerLoanDetail.loanBankDetail.accountNumber,
         bankName: customerLoanDetail.loanBankDetail.accountHolderName,
         ifscCode: customerLoanDetail.loanBankDetail.ifscCode,
@@ -1599,27 +1614,8 @@ exports.getDetailsForPrint = async (req, res, next) => {
         netWeight: customerLoanDetail.ornamentType[0].netWeight,
 
     }];
-    console.log(customerSecureLoanData)
-    /*
-    customerUnsecureLoanData = await [{
-        Name: customerLoan.customer.firstName + " " + customerLoan.customer.lastName,
-        dob: dateOfBirth,
-        contactNumber: customerLoan.customer.mobileNumber,
-        start_Date: customerLoan.masterLoan.loanStartDate,
-        customerAddress: `${customerLoan.customerAddress[0].address},${customerLoan.customerAddress[0].pinCode},${customerLoan.customerAddress[0].state},${customerLoan.customerAddress[0].city}`,
-        customerId: customerLoan.customer.customerUniqueId,
-        loanTenure: customerLoan.masterLoan.tenure,
-        end_Date: customerLoan.masterLoan.loanEndDate,
-        //accountNumber: customerLoan.loanBankDetail.accountNumber,
-        //bankName: customerLoan.loanBankDetail.accountHolderName,
-        //ifscCode: customerLoan.loanBankDetail.ifscCode,
-        loanNumber:customerLoan.unsecuredLoan.loanUniqueId, 
-         loanAmount: customerLoan.unsecuredLoan.loanAmount,
-        loanScheme: customerLoan.unsecuredLoan.scheme.schemeName,
-         penalCharges: customerLoan.unsecuredLoan.scheme.penalInterest,
-         interestRate: customerLoan.unsecuredLoan.interestRate,
-    }]
-    console.log(customerUnsecureLoanData)*/
+    //console.log(customerSecureLoanData)
+
     let fileName = await `AcknowledgeOFPledge${Date.now()}`;
     document = await {
         html: html,
@@ -1629,7 +1625,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
             popperJs: `${process.env.URL}/popper.min.js`,
             bootstrapJs: `${process.env.URL}/bootstrap.js`,
             customerLoanDetail: customerSecureLoanData,
-            //customerUnsecureLoanDetail: customerUnsecureLoanData
+            customerUnsecureLoanDetail: customerUnsecureLoanData
         },
         path: `./public/uploads/pdf/${fileName}.pdf`
     };
