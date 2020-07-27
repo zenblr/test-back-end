@@ -55,7 +55,7 @@ export class AssignAppraiserComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getCustomer()
+    // this.getCustomer()
     this.getAllAppraiser();
     this.formInitialize();
     this.setForm()
@@ -71,8 +71,8 @@ export class AssignAppraiserComponent implements OnInit {
         this.appraiserForm.controls.customerId.patchValue(this.data.id)
       }
     } else if (this.data.action == 'edit') {
-      this.title = 'Edit Appraiser'
-
+      this.title = 'Update Appraiser'
+      // console.log(this.data)
       this.appraiserForm.patchValue(this.data.appraiser)
       this.startTime = this.convertTime24To12(this.data.appraiser.startTime);
       this.endTime = this.convertTime24To12(this.data.appraiser.endTime);
@@ -129,7 +129,7 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   bindCustomerName(event) {
-    console.log(event)
+    // console.log(event)
     if (event) {
       this.controls.customerName.patchValue(event.firstName + " " + event.lastName);
     } else {
@@ -162,7 +162,7 @@ export class AssignAppraiserComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          // console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
@@ -177,7 +177,7 @@ export class AssignAppraiserComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          // console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });

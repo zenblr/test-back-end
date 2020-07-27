@@ -70,8 +70,11 @@ export class AddSchemeComponent implements OnInit {
       maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       isDefault: [false],
+      isSplitAtBeginning: [false],
+      numberOfDays1: [, [Validators.required]],
+      numberOfDays2: [, [Validators.required]],
+      numberOfDays3: [, [Validators.required]],
       isTopUp: [false],
-      isSplitAtBeginning:[false]
     })
 
     this.csvForm = this.fb.group({
@@ -102,7 +105,7 @@ export class AddSchemeComponent implements OnInit {
 
   submit() {
     if (this.tabGroup.selectedIndex == 0) {
-      console.log(this.fillingForm.value);
+      // console.log(this.fillingForm.value);
 
       if (this.fillingForm.invalid) {
         this.fillingForm.markAllAsTouched()
@@ -115,15 +118,49 @@ export class AddSchemeComponent implements OnInit {
       let toValue = this.fillingForm.get('schemeAmountEnd').value * 100000;
       toValue = +(toValue);
       Math.ceil(toValue);
-      console.log(fromValue, toValue)
+      // console.log(fromValue, toValue)
       this.fillingForm.patchValue({ schemeAmountStart: fromValue, schemeAmountEnd: toValue });
 
-      console.log(this.fillingForm.value);
+      // console.log(this.fillingForm.value);
 
       let partnerArray = [];
       partnerArray.push(this.fillingForm.get('partnerId').value);
       this.fillingForm.patchValue({ partnerId: partnerArray });
 
+      let obj1 = {
+        days: this.fillingForm.controls.numberOfDays1.value,
+        interestRate: this.fillingForm.controls.interestRateThirtyDaysMonthly.value
+      }
+      let obj2 = {
+        days: this.fillingForm.controls.numberOfDays2.value,
+        interestRate: this.fillingForm.controls.interestRateNinetyDaysMonthly.value
+      }
+      let obj3 = {
+        days: this.fillingForm.controls.numberOfDays3.value,
+        interestRate: this.fillingForm.controls.interestRateOneHundredEightyDaysMonthly.value
+      }
+
+      let schemeInterestArr = []
+      schemeInterestArr.push(obj1, obj2, obj3)
+
+      Object.assign(this.fillingForm.value, { schemeInterest: schemeInterestArr })
+
+      console.log(this.fillingForm.value)
+
+      // "schemeInterest": [
+      //   {
+      //   "days": 30,
+      //   "interestRate": 1.33
+      //   },
+      //   {
+      //   "days": 50,
+      //   "interestRate": 1.55
+      //   },
+      //   {
+      //   "days": 100,
+      //   "interestRate": 1.8
+      //   }
+      //   ],
       this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
           this._toastr.success('Scheme Created Sucessfully');

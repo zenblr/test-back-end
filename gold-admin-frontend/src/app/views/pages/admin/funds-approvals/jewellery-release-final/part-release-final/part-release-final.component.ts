@@ -19,7 +19,7 @@ import { UpdateStatusComponent } from '../../update-status/update-status.compone
 export class PartReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus', 'assignAppraiser'];
+  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPaidAmount', 'status', 'ornaments', 'updateStatus',];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -58,7 +58,7 @@ export class PartReleaseFinalComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getPartReleaseList(1, 25, this.searchValue);
+    this.dataSource.getPartReleaseList(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -76,20 +76,21 @@ export class PartReleaseFinalComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.getDepositList(from, to, this.searchValue);
+    this.dataSource.getPartReleaseList(from, to, this.searchValue);
   }
 
-  ornamentsDetails() {
+  ornamentsDetails(item) {
     this.dialog.open(OrnamentsComponent, {
       data: {
-        modal: true
+        modal: true,
+        modalData: item
       },
       width: '90%'
     })
   }
 
-  assign(item) {
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
+  updateStatus(item?) {
+    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -97,17 +98,8 @@ export class PartReleaseFinalComponent implements OnInit {
     });
   }
 
-  updateAppraiser(item) {
+  updateDocument(item) {
 
-  }
-
-  updateStatus(item) {
-    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        // this.loadPage();
-      }
-    });
   }
 
 }

@@ -1,6 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { PartReleaseApprovalService } from '../../../../../core/funds-approvals/jewellery-release-approval/part-release-approval/services/part-release-approval.service';
+import { ToastrService } from 'ngx-toastr';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-update-status',
@@ -10,10 +13,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 export class UpdateStatusComponent implements OnInit {
 
   updateStatusForm: FormGroup
-  status = [{ id: 1, name: 'pending' }, { id: 2, name: 'complete' }, { id: 3, name: 'rejected' }]
+  status = ['pending', 'completed', 'rejected']
 
   constructor(
     private fb: FormBuilder,
+    private partReleaseApprovalService: PartReleaseApprovalService,
+    private toastr: ToastrService,
     public dialogRef: MatDialogRef<UpdateStatusComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
@@ -25,20 +30,34 @@ export class UpdateStatusComponent implements OnInit {
 
   initForm() {
     this.updateStatusForm = this.fb.group({
-      customerId: ['', [Validators.required]],
-      loanId: ['', [Validators.required]],
+      partReleaseId: [],
+      customerId: [, [Validators.required]],
+      loanId: [, [Validators.required]],
       loanAmount: ['', [Validators.required]],
       principalOutStandingAmount: ['', [Validators.required]],
-      ornamentReleaseAmount: ['', [Validators.required]],
+      releaseAmount: ['', [Validators.required]],
       interestAmount: ['', [Validators.required]],
       penalInterest: ['', [Validators.required]],
-      totalPayableAmount: ['', [Validators.required]],
-      partReleaseAmountStatus: ['', [Validators.required]],
+      payableAmount: ['', [Validators.required]],
+      amountStatus: ['', [Validators.required]],
     })
   }
 
   patchForm(data) {
     this.updateStatusForm.patchValue(data)
+    const loanIdArr = data.masterLoan.customerLoan.map(e => e.loanUniqueId)
+    this.updateStatusForm.patchValue({
+      partReleaseId: data.id,
+      customerId: data.masterLoan.loanPersonalDetail.customerUniqueId,
+      loanAmount: data.masterLoan.finalLoanAmount,
+      loanId: loanIdArr.join(', ')
+    })
+
+    for (const key in this.controls) {
+      if (this.controls.hasOwnProperty(key)) {
+        if (!(key == 'amountStatus' || key == 'partReleaseId')) this.controls[key].disable()
+      }
+    }
   }
 
   get controls() {
@@ -58,10 +77,13 @@ export class UpdateStatusComponent implements OnInit {
   }
 
   submit() {
-    if (this.updateStatusForm.invalid) {
-      this.updateStatusForm.markAllAsTouched()
-      return
-    }
+    if (this.updateStatusForm.invalid) return this.updateStatusForm.markAllAsTouched()
+
+    console.log(this.updateStatusForm.value)
+    this.partReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
+      if (res) this.toastr.success('Status Updated Successfully')
+      this.dialogRef.close(true)
+    })).subscribe()
 
 
   }
