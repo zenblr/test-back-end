@@ -34,7 +34,7 @@ exports.readKaratDetails = async (req, res) => {
     // if(!readKaratDetails){
     //     return res.status(200).json({message:'data not found'})
     // }
-    return res.status(200).json(readKaratDetails);
+    return res.status(200).json({ message: 'message', data: readKaratDetails });
 }
 exports.readKaratDetailsById = async (req, res) => {
     let karatDetailsId = req.params.id;

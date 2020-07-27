@@ -67,7 +67,7 @@ export class SignUpBrokerComponent implements OnInit, OnDestroy {
 	}
 
 	getStates() {
-		this.sharedService.getStates().subscribe(res => this.stateList = res.message);
+		this.sharedService.getStates().subscribe(res => this.stateList = res.data);
 	}
 
 	getCities() {
@@ -77,7 +77,7 @@ export class SignUpBrokerComponent implements OnInit, OnDestroy {
 			let stateData;
 			stateData = this.controls.stateId.value;
 			this.sharedService.getCities(stateData).subscribe(res => {
-				this.cityList = res.message;
+				this.cityList = res.data;
 				this.ref.detectChanges();
 			});
 		}

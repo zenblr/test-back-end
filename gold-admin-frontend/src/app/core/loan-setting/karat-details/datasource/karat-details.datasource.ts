@@ -27,7 +27,7 @@ export class KaratDetailsDataSource extends BaseDataSource {
                     report => {
                         // this.paginatorTotalSubject.next(report.count);
                         if(report){
-                        this.entitySubject.next(report);}
+                        this.entitySubject.next(report.data);}
                         else{
                            this.entitySubject.next([]);
                            this.paginatorTotalSubject.next(0);

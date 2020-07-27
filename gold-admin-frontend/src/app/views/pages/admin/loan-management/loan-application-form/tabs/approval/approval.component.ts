@@ -27,6 +27,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   userType: any = ''
   @Input() action;
   @Output() ornamentType: EventEmitter<any> = new EventEmitter<any>();
+  @Output() disbursal: EventEmitter<any> = new EventEmitter<any>();
 
   // kycStatus = [];
   approvalForm: FormGroup;
@@ -290,6 +291,11 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     } else if (this.stage == 7) {
       this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
         map(res => {
+          if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved'){
+            this.disableForm(4)
+            this.stage = 4
+            this.disbursal.emit(4)
+          }
           this.router.navigate(['/admin/loan-management/applied-loan'])
         })).subscribe()
     } else if (this.stage == 1 || this.stage == 6) {

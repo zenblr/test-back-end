@@ -188,7 +188,7 @@ export class FinalLoanAmountComponent implements OnInit {
   getKarat() {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
-        this.karatArr = res;
+        this.karatArr = res.data;
         console.log(res)
       })
     ).subscribe()
