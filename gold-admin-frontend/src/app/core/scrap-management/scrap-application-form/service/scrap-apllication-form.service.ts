@@ -18,6 +18,12 @@ export class ScrapApplicationFormService {
     );
   }
 
+  getScrapDataById(id: number): Observable<any> {
+    return this.http.get(`/api/scrap/scrap-process/single-scrap?scrapId=${id}`).pipe(
+      map(res => res)
+    );
+  }
+
   basicSubmit(details): Observable<any> {
     return this.http.post(`/api/scrap/scrap-process/basic-details`, details).pipe(
       map(res => res)
@@ -64,12 +70,6 @@ export class ScrapApplicationFormService {
   applyForLoan(details, masterAndLoanIds): Observable<any> {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/appraiser-rating`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  getLoanDataById(id: number): Observable<any> {
-    return this.http.get(`/api/loan-process/single-loan?customerLoanId=${id}`).pipe(
       map(res => res)
     )
   }

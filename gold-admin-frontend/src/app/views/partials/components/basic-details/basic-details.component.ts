@@ -27,6 +27,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   // @Output() basicFormEmit: EventEmitter<any> = new EventEmitter();
   @Input() disable
   @Input() details;
+  @Input() scrapDetails;
   @Input() invalid
   @Input() action;
   @Output() next: EventEmitter<any> = new EventEmitter();
@@ -57,7 +58,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     public scrapApplicationFormService: ScrapApplicationFormService,
   ) {
     this.initForm()
-    this.getPurposeInfo()
     this.url = (this.router.url.split("/")[3]).split("?")[0]
   }
 
@@ -84,7 +84,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnInit() {
-    
+    if (this.url != 'scrap-buying-application-form') {
+      this.getPurposeInfo();
+    }
   }
 
   initForm() {
@@ -98,6 +100,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       purpose: ["", Validators.required],
       panType: [],
       loanId: [],
+      scrapId: [],
       masterLoanId: [],
       panImage: [],
     })
@@ -116,11 +119,23 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.currentDate = new Date(changes.details.currentValue.loanPersonalDetail.startDate)
         this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
         this.basicForm.patchValue(changes.details.currentValue.customer)
-        // this.basicFormEmit.emit(this.basicForm)
         this.basicForm.controls.loanId.patchValue(changes.details.currentValue.id)
-        // this.basicForm.disable()
-        // this.basicForm.controls.purpose.enable()
-
+        this.ref.detectChanges()
+      }
+    }
+    if (changes.scrapDetails && changes.scrapDetails.currentValue) {
+      if (changes.action.currentValue == 'add') {
+        this.basicForm.controls.mobileNumber.patchValue(changes.details.currentValue.mobileNumber)
+        this.basicForm.controls.customerId.patchValue(changes.details.currentValue.id)
+        this.basicForm.controls.customerUniqueId.enable()
+        this.ref.detectChanges()
+      } else if (changes.action.currentValue == 'edit') {
+        this.controls.customerId.patchValue(changes.scrapDetails.currentValue.customerId)
+        this.basicForm.patchValue(changes.scrapDetails.currentValue.scrapPersonalDetail)
+        this.currentDate = new Date(changes.scrapDetails.currentValue.scrapPersonalDetail.startDate)
+        this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
+        this.basicForm.patchValue(changes.scrapDetails.currentValue.customer)
+        this.basicForm.controls.scrapId.patchValue(changes.scrapDetails.currentValue.id)
         this.ref.detectChanges()
       }
     }
@@ -128,7 +143,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.disable()
       this.ref.detectChanges()
     }
-    
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
       this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
@@ -179,7 +193,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getCustomerDetailsForTransfer() {
-    
+
     if (this.controls.customerUniqueId.valid) {
       this.loanTransferFormService.getCustomerDetailsForTransfer(this.controls.customerUniqueId.value).pipe(
         map(res => {
@@ -267,19 +281,16 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  
-
   get controls() {
     return this.basicForm.controls
   }
 
   nextAction() {
-
-    if(this.disable){
+    if (this.disable) {
       this.next.emit(1)
-      return 
+      return
     }
-  
+
     if (this.basicForm.invalid) {
       this.basicForm.markAllAsTouched();
       return
@@ -302,10 +313,10 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             this.basicForm.controls.purpose.enable()
           }
         })).subscribe();
-    } if (this.url == 'scrap-buying-application-form') {
+    } else if (this.url == 'scrap-buying-application-form') {
       this.scrapApplicationFormService.basicSubmit(this.basicForm.value).pipe(
         map(res => {
-          let stage = res.loanCurrentStage
+          let stage = res.scrapCurrentStage
           stage = Number(stage) - 1;
           this.next.emit(stage)
           this.id.emit({ scrapId: res.scrapId })

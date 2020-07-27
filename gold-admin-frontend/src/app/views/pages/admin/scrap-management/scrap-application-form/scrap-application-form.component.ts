@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { LoanApplicationFormService } from "../../../../../core/loan-management";
+import { ScrapApplicationFormService } from "../../../../../core/scrap-management";
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { OrnamentsService } from '../../../../../core/masters/ornaments/services/ornaments.service';
@@ -30,10 +30,16 @@ export class ScrapApplicationFormComponent implements OnInit {
   ornamentType = [];
   finalLoanAmt: any;
   fullAmount: any = 0;
+  showButton: boolean = true;
+  approvalFrom: boolean = false;
+  accountHolderName: any;
+  loanStage: any;
+  ornamentDetails: any;
+
   constructor(
     public ref: ChangeDetectorRef,
     public router: Router,
-    public loanApplicationFormService: LoanApplicationFormService,
+    public scrapApplicationFormService: ScrapApplicationFormService,
     public toast: ToastrService,
     public route: ActivatedRoute,
     public ornamentTypeService: OrnamentsService,
@@ -41,10 +47,7 @@ export class ScrapApplicationFormComponent implements OnInit {
     this.url = this.router.url.split('/')[3]
     this.id = this.route.snapshot.params.id
     if (this.id) {
-      for (let index = 0; index < this.disabled.length; index++) {
-        this.disabled[index] = false;
-      }
-      this.editApi()
+      this.editApi();
     }
   }
 
@@ -57,71 +60,39 @@ export class ScrapApplicationFormComponent implements OnInit {
   }
 
   editApi() {
-    // this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
-    //   this.scrapIds = { scrapId: res.data.id}
-    //   this.action = 'edit'
-    //   this.customerDetail = res.data
-    //   if (this.url == "packet-image-upload") {
-    //     if (this.customerDetail.loanPacketDetails.length) {
-    //       this.selected = 7;
-    //     } else {
-    //       this.selected = 6;
-    //     }
-    //     this.disabledForm = true;
-    //   } else if (this.url == "view-loan") {
-    //     this.disabledForm = true;
-    //   } else {
-    //     this.disabledForm = false;
-    //     if (res.data.masterLoan.customerLoanCurrentStage) {
-    //       let stage = res.data.masterLoan.customerLoanCurrentStage
-    //       this.selected = Number(stage) - 1;
-    //     } else {
-    //       this.selected = 5;
-    //     }
-    //   }
-    // })
-    // this.loanApplicationFormService.getLoanDataById(this.id).subscribe(res => {
-    //   this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
-    //   this.action = 'edit'
-    //   this.customerDetail = res.data
-    //   if (this.url == "packet-image-upload") {
-    //     if (this.customerDetail.loanPacketDetails.length) {
-    //       this.selected = 7;
-    //     } else {
-    //       this.selected = 6;
-    //     }
-    //     this.disabledForm = true;
-    //   } else if (this.url == "view-loan") {
-    //     this.disabledForm = true;
-    //   } else {
-    //     this.disabledForm = false;
-    //     if (res.data.masterLoan.customerLoanCurrentStage) {
-    //       let stage = res.data.masterLoan.customerLoanCurrentStage
-    //       this.selected = Number(stage) - 1;
-    //     } else {
-    //       this.selected = 5;
-    //     }
-    //   }
-    // })
+    this.scrapApplicationFormService.getScrapDataById(this.id).subscribe(res => {
+      this.action = 'edit'
+      this.customerDetail = res.customerScrap
+      this.scrapIds = { scrapId: res.customerScrap.id }
+      // this.loanStage = this.customerDetail.masterLoan.loanStage
+      this.ornamentDetails = res.customerScrap.ornamentType
+      console.log(this.loanStage)
+      // this.totalAmount = res.data.totalEligibleAmt
+      if (this.url == "packet-image-upload") {
+        if (this.customerDetail.loanPacketDetails.length) {
+          this.selected = 8;
+        } else {
+          this.selected = 6;
+        }
+        this.disabledForm = true;
+      } else if (this.url == "view-loan") {
+        this.disabledForm = true;
+        this.showButton = false;
+        this.approvalFrom = true;
+        for (let index = 0; index < this.disabled.length; index++) {
+          this.disabled[index] = false;
+        }
+      } else if (this.customerDetail.scrapStatusForAppraiser == 'approved') {
+        this.showButton = true;
+        this.disabledForm = true;
+      } else {
+        this.disabledForm = false;
+      }
+    })
   }
 
   ngOnInit() {
-    this.getOrnamentType()
-    // setTimeout(() => {
-    //   if (this.url == "packet-image-upload") {
-    //     if (this.customerDetail.loanPacketDetails.length) {
-    //       this.selected = 7;
-    //     } else {
-    //       this.selected = 6;
-    //     }
-    //     this.disabledForm = true;
-    //   } else if (this.url == "view-loan") {
-    //     this.next(0)
-    //     this.disabledForm = true;
-    //   } else {
-    //     this.disabledForm = false;
-    //   }
-    // }, 1000)
+    this.getOrnamentType();
   }
 
   getOrnamentType() {
@@ -134,7 +105,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   }
 
   scrap(event) {
-    this.scrapIds = event;
+    this.scrapIds = event
   }
 
   totalEligibleAmt(event) {
@@ -149,8 +120,34 @@ export class ScrapApplicationFormComponent implements OnInit {
     this.finalLoanAmt = event
   }
 
+  accountHolder(event) {
+    this.accountHolderName = event
+  }
+
+  stage(event) {
+    if (event)
+      this.loanStage = event
+  }
+
+  ornaments(event) {
+    this.ornamentDetails = event
+    this.loanStage.id = 3;
+    this.showButton = true;
+    this.disabledForm = true;
+    setTimeout(() => {
+      this.next(6)
+    }, 500)
+  }
+
+  disbursal(event) {
+    this.loanStage.id = event;
+    setTimeout(() => {
+      this.next(8)
+    }, 500)
+  }
+
   customerDetails(event) {
-    this.loanApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
+    this.scrapApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
       map(res => {
         this.customerDetail = res.customerData
         for (let index = 0; index < this.disabled.length; index++) {
@@ -158,6 +155,7 @@ export class ScrapApplicationFormComponent implements OnInit {
             this.disabled[index] = false;
           }
         }
+        this.loanStage = this.customerDetail.masterLoan.loanStage
         this.selected = 2;
       }),
       catchError(err => {

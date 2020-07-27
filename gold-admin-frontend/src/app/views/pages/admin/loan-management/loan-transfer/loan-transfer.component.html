@@ -8,7 +8,7 @@
                         (next)="next($event)" [loanTransfer]="laonTransferDetails" [showButton]="showButton" [disable]="disabledForm"></kt-basic-details>
                     </mat-tab>
                     <mat-tab label="Upload Documents" [disabled]="disabled[1]">
-                        <kt-upload-loan-documents [masterAndLoanIds]="masterAndLoanIds" (stage)="stage($event)" [showButton]="showButton" [loanTransfer]="laonTransferDetails" (next)="next($event)"></kt-upload-loan-documents>
+                        <kt-upload-documents [masterAndLoanIds]="masterAndLoanIds" (stage)="stage($event)" [showButton]="showButton" [loanTransfer]="laonTransferDetails" (next)="next($event)"></kt-upload-documents>
                     </mat-tab>
                     <mat-tab label="Loan Trasnfer Approval" [formGroup]="approvalForm" [disabled]="disabled[2]">
                         <div *ngIf="loanTransferStage == '3' || loanTransferStage == '4' || loanTransferStage == '5'">
