@@ -8,17 +8,23 @@ import { map } from 'rxjs/operators';
 })
 export class QuickPayService {
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  interestInfo(id):Observable<any>{
+  interestInfo(id): Observable<any> {
     return this.http.get(`/api/quick-pay/interest-info?masterLoanId=${id}`).pipe(
-      map(res=> res)
+      map(res => res)
     )
   }
 
-  emiInfo(id):Observable<any>{
+  emiInfo(id): Observable<any> {
     return this.http.get(`/api/quick-pay/interest-table?masterLoanId=${id}`).pipe(
-      map(res=> res)
+      map(res => res)
+    )
+  }
+
+  getPayableAmount(id): Observable<any> {
+    return this.http.get(`api/quick-pay/payable-amount?masterLoanId=${id}`).pipe(
+      map(res => res)
     )
   }
 }

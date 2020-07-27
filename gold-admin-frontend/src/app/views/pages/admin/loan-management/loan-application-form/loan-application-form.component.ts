@@ -146,8 +146,17 @@ export class LoanApplicationFormComponent implements OnInit {
   ornaments(event) {
     this.ornamentDetails = event
     this.loanStage.id = 3;
+    this.showButton = true;
+    this.disabledForm = true;
     setTimeout(() => {
       this.next(6)
+    }, 500)
+  }
+
+  disbursal(event){
+    this.loanStage.id = event;
+    setTimeout(() => {
+      this.next(8)
     }, 500)
   }
 

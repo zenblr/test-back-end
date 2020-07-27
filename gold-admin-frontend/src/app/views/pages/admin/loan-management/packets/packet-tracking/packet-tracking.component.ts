@@ -9,6 +9,7 @@ import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { UpdateLocationComponent } from '../update-location/update-location.component';
+import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
 
 @Component({
   selector: 'kt-packet-tracking',
@@ -123,6 +124,20 @@ export class PacketTrackingComponent implements OnInit {
       {
         data: { packetData: packet, action: 'edit' },
         width: '400px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPackets();
+      }
+    });
+  }
+
+  viewPacketLog(packet) {
+    console.log(packet)
+    const dialogRef = this.dialog.open(ViewPacketLogComponent,
+      {
+        data: { packetData: packet, action: 'edit' },
+        width: '80%',
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
