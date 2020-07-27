@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href={{bootstrapCss}}>
+    <style>
+        /* html{zoom:0.75;} */
+        .tableHead {
+            width: 20%;
+            height: 40px;
+        }
+
+        body {
+            font-size: 13px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <script src={{jqueryJs}}></script>
+    <script src={{popperJs}}></script>
+    <script src={{bootstrapJs}}></script>
+    <div class="container py-5 pr-5 pl-5">
+        {{#each customerUnsecureLoanDetail}}
+        <div class="text-center col-10 pl-0 pr-5 " style="font-weight: 500">
+            <h6 class="text-center"><b>AUGMONT PRIVATE LIMITED</b></h6>
+            <p class="pb-2">Unsecure Loan Details</p>
+        </div>
+
+        <div class="row py-3 pr-5 pl-0">
+
+            <div class="col-5 float-left pl-3 pr-0">
+                <table class="align-top  table-bordered"
+                    style="width:100%;margin:0;font-size: small;font-weight: 500;table-layout: fixed; border: 1px solid black;">
+                    <tr>
+                        <td class="align-top" style="width:40%;">Name :</td>
+                        <td style=" word-break: break-all; width:60%;">{{this.Name}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">DOB :</td>
+                        <td>{{this.dob}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">Contact Number :</td>
+                        <td>{{this.contactNumber}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">Customer Address :</td>
+                        <td style=" word-break: break-all;">{{this.customerAddress}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="width:25%;">Rate of Interest :</td>
+                        <td style="width:25%;">{{this.interestRate}}%</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">Loan Date :</td>
+                        <td>{{this.start_Date}}</td>
+                    </tr>
+
+
+
+                </table>
+            </div>
+
+            <div class="col-5 float-left pl-0 pr-3">
+                <table class="align-top  table-bordered"
+                    style="width:100%;margin:0;font-size: small;font-weight: 500;table-layout: fixed; border: 1px solid black;">
+                    <tr>
+                        <td class="align-top">Customer ID :</td>
+                        <td>{{this.customerId}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">Loan Number :</td>
+                        <td>{{this.loanNumber}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">Loan Amount :</td>
+                        <td>{{this.loanAmount}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">Loan Tenure :</td>
+                        <td>{{this.loanTenure}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">Loan Scheme :</td>
+                        <td style=" word-break: break-all;">{{this.loanScheme}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top">Due Date :</td>
+                        <td>{{this.end_Date}}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+        <div class="row pt-3 mb-5 pr-5">
+            <div class="col-10 " style="font-size: small;font-weight: 400;">
+                <p class="mb-2 text-center">Default Interest
+                </p>
+                <p>Loan is payable on demand<br>
+                    Bullet repayment at the end of of the tenure of the loan<br>
+                    Interest is payable from the date of loan till full and final payment of loan outstanding amount and
+                    all other amount pertaining thereto
+                </p>
+                <p class="mt-2 text-center">Loan Repayment
+                </p>
+            </div>
+        </div>
+        <div class="row pt-2 pr-5 pl-0">
+            <div class="col-10 " style="font-size: small;font-weight: 400;">
+
+                <p>XXX<br>
+                    XXX<br>
+                    XXX
+                </p>
+            </div>
+        </div>
+        <div class="row py-2 pr-5 ">
+            <div class="col-10 " style="font-size: small;font-weight: 400;">
+                <p class="mb-2">Declaration by Company
+                </p>
+                <p>XXX<br>
+                    XXX<br>
+                    XXX
+                </p>
+            </div>
+        </div>
+        <div class="row pl-0">
+            <div class="col-10 float-left">
+                <table class="align-top table-bordered"
+                    style="width:100%;margin:0;font-size: small;font-weight: 500;table-layout: fixed;">
+                    <tr>
+                        <td class="align-top" style="width:50%;">Signature of authorized signatory of company </td>
+                        <td class="align-top" style="width:50%;"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row pt-2 mb-2 pr-5 ">
+            <div class="col-10 " style="font-size: small;font-weight: 400;">
+                <p>Acknowledgment by Borrower
+                </p>
+                <p>XXX<br>
+                    XXX<br>
+                    XXX
+                </p>
+            </div>
+        </div>
+        <div class="row pl-0 pt-2">
+            <div class="col-10 float-left">
+                <table class="align-top table-bordered"
+                    style="width:100%;margin:0;font-size: small;font-weight: 500;table-layout: fixed;">
+                    <tr>
+                        <td class="align-top" style="width:50%;">Customer Signature </td>
+                        <td class="align-top" style="width:50%;"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row  pt-2 pr-5 pl-0">
+            <div class="col-10 float-left">
+                <table class="align-top table-bordered text-center"
+                    style="width:100%;margin:0;font-size: small;font-weight: 500;table-layout: fixed;">
+                    <tr>
+                        <p class=" pb-2"><b>Bank Details</b></p>
+                    </tr>
+                    <tr>
+                        <th style="width:20%; height: 40px;"> A/C Number </th>
+                        <th style="width:20%; height: 40px;">Beneficiary Bank Name </th>
+                        <th style="width:20%; height: 40px;">IFSC code </th>
+
+                    </tr>
+                    <tr>
+                        <td>{{this.accountNumber}}</td>
+                        <td>{{this.bankName}}</td>
+                        <td>{{this.ifscCode}}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+        {{/each}}
+    </div>
+</body>
+
+</html>

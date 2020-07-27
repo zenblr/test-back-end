@@ -8,6 +8,8 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
 
+var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
+var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory')
@@ -1430,5 +1432,223 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
 
 //FUNCTION FOR PRINT DETAILS
 exports.getDetailsForPrint = async (req, res, next) => {
+    let { customerLoanId } = req.query
+    let includeArray = [
+        {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['loanUniqueId', 'loanAmount', 'interestRate', 'loanType','unsecuredLoanId'],
+            include: [
+                {
+                    model: models.scheme,
+                    as: 'scheme',
+                    attributes: ['penalInterest', 'schemeName']
+                }, {
+                    model: models.partner,
+                    as: 'partner',
+                    attributes: ['name']
+                }, 
+                /*{
+                    model: models.customerLoan,
+                    as: 'unsecuredLoan',
+                    attributes: ['interestRate', 'loanUniqueId', 'loanAmount'],
+                    include: [
+                        {
+                            model: models.scheme,
+                            as: 'scheme',
+                            attributes: ['penalInterest', 'schemeName']
+                        }
+                    ]
+
+                }*/
+            ]
+        },
+        {
+            model: models.customerLoanBankDetail,
+            as: 'loanBankDetail',
+            attributes: ['accountHolderName', 'accountNumber', 'ifscCode']
+        },
+        {
+            model: models.customerLoanNomineeDetail,
+            as: 'loanNomineeDetail',
+            attributes: ['nomineeName', 'nomineeAge', 'relationship']
+        },
+        {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber'],
+            include: [
+                {
+                    model: models.customerKycPersonalDetail,
+                    as: 'customerKycPersonal',
+                    attributes: ['dateOfBirth']
+                },
+                {
+                    model: models.customerKycAddressDetail,
+                    as: 'customerKycAddress',
+                    attributes: ['address', 'pinCode'],
+                    include: [
+                        {
+                            model: models.state,
+                            as: 'state',
+                            attributes: ['name']
+                        }, {
+                            model: models.city,
+                            as: 'city',
+                            attributes: ['name']
+                        }]
+                }
+            ]
+        },
+        {
+            model: models.customerLoanOrnamentsDetail,
+            as: 'loanOrnamentsDetail',
+            attributes: ['quantity', 'grossWeight', 'netWeight', 'deductionWeight'],
+            include: [
+                {
+                    model: models.ornamentType,
+                    as: "ornamentType",
+                    attributes: ['name']
+                }
+            ]
+        }
+
+    ]
+
+    let customerLoanDetail = await models.customerLoanMaster.findOne({
+        where: { id: customerLoanId },
+        attributes: ['tenure', 'loanStartDate', 'loanEndDate','isUnsecuredSchemeApplied'],
+        include: includeArray
+    });
+    //console.log(customerLoanDetail.loanOrnamentsDetail)
+    let ornaments = [];
+    if (customerLoanDetail.loanOrnamentsDetail.length != 0) {
+        for (let ornamentsDetail of customerLoanDetail.loanOrnamentsDetail) {
+            ornaments.push({
+                name: ornamentsDetail.ornamentType.name,
+                quantity: ornamentsDetail.quantity,
+                grossWeight: ornamentsDetail.grossWeight,
+                netWeight: ornamentsDetail.netWeight,
+                deductionWeight: ornamentsDetail.deductionWeight
+            })
+        }
+        customerLoanDetail.ornamentType = ornaments;
+    }
+
+    let customerAddress = []
+    if (customerLoanDetail.customer.length != 0) {
+        for (let address of customerLoanDetail.customer.customerKycAddress) {
+            customerAddress.push({
+                address: address.address,
+                pinCode: address.pinCode,
+                state: address.state.name,
+                city: address.city.name
+            })
+        }
+        customerLoanDetail.customerAddress = customerAddress
+    }
+    //console.log(customerLoan.masterLoan.isUnsecuredSchemeApplied)
+    console.log(customerLoanDetail.customerLoan)
+    //console.log(customerLoanDetail.customerLoan.partner)
+    //console.log(customerLoan.unsecuredLoan.scheme.penalInterest)
+    if (customerLoanDetail.isUnsecuredSchemeApplied) {
+        var html = fs.readFileSync("./templates/acknowledge-unsecure-template.html", 'utf8');
+    } else {
+        var html = fs.readFileSync("./templates/acknowledge-template.html", 'utf8');
+    }
+    var options = {
+        format: "A4",
+        orientation: "portrait",
+        border: "1mm",
+        "header": {
+            "height": "2mm",
+        },
+        "footer": {
+            "height": "2mm",
+        },
+        "height": "11.69in",
+        "width": "8.27in"
+    }
+    //console.log(customerLoanDetail.loanNomineeDetail)
+    //console.log(Object.keys(customerLoan.loanNomineeDetail))
+    //console.log(customerLoanDetail.loanNomineeDetail[0].nomineeName)
+    var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
+    dateOfBirth = d.getDate() + "-" + d.getMonth() + 1 + "-" + d.getFullYear();
+    //console.log(dateOfBirth)
+    var customerSecureLoanData = await [{
+        //partnerName: customerLoanDetail.customerLoan.partner.name,
+        Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
+        dob: dateOfBirth,
+        contactNumber: customerLoanDetail.customer.mobileNumber,
+        nomineeDetails: `${customerLoanDetail.loanNomineeDetail[0].nomineeName}, ${customerLoanDetail.loanNomineeDetail[0].nomineeAge}, ${customerLoanDetail.loanNomineeDetail[0].relationship}`,
+        start_Date: customerLoanDetail.customerLoan.loanStartDate,
+        customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
+        interestRate: customerLoanDetail.customerLoan.interestRate,
+        customerId: customerLoanDetail.customer.customerUniqueId,
+        loanNumber: customerLoanDetail.customerLoan.loanUniqueId,
+        loanAmount: customerLoanDetail.customerLoan.loanAmount,
+        loanTenure: customerLoanDetail.tenure,
+        end_Date: customerLoanDetail.loanEndDate,
+        //loanScheme: customerLoanDetail.customerLoan.scheme.schemeName,
+        //penalCharges: customerLoanDetail.customerLoan.scheme.penalInterest,
+        accountNumber: customerLoanDetail.loanBankDetail.accountNumber,
+        bankName:customerLoanDetail.loanBankDetail.accountHolderName,
+        ifscCode: customerLoanDetail.loanBankDetail.ifscCode,
+        ornamentTypes: customerLoanDetail.ornamentType[0].name,
+        quantity: customerLoanDetail.ornamentType[0].quantity,
+        grossWeight: customerLoanDetail.ornamentType[0].grossWeight,
+        deduction: customerLoanDetail.ornamentType[0].deductionWeight,
+        netWeight: customerLoanDetail.ornamentType[0].netWeight,
+
+    }];
+    console.log(customerSecureLoanData)
+    /*
+    customerUnsecureLoanData = await [{
+        Name: customerLoan.customer.firstName + " " + customerLoan.customer.lastName,
+        dob: dateOfBirth,
+        contactNumber: customerLoan.customer.mobileNumber,
+        start_Date: customerLoan.masterLoan.loanStartDate,
+        customerAddress: `${customerLoan.customerAddress[0].address},${customerLoan.customerAddress[0].pinCode},${customerLoan.customerAddress[0].state},${customerLoan.customerAddress[0].city}`,
+        customerId: customerLoan.customer.customerUniqueId,
+        loanTenure: customerLoan.masterLoan.tenure,
+        end_Date: customerLoan.masterLoan.loanEndDate,
+        //accountNumber: customerLoan.loanBankDetail.accountNumber,
+        //bankName: customerLoan.loanBankDetail.accountHolderName,
+        //ifscCode: customerLoan.loanBankDetail.ifscCode,
+        loanNumber:customerLoan.unsecuredLoan.loanUniqueId, 
+         loanAmount: customerLoan.unsecuredLoan.loanAmount,
+        loanScheme: customerLoan.unsecuredLoan.scheme.schemeName,
+         penalCharges: customerLoan.unsecuredLoan.scheme.penalInterest,
+         interestRate: customerLoan.unsecuredLoan.interestRate,
+    }]
+    console.log(customerUnsecureLoanData)*/
+    let fileName = await `AcknowledgeOFPledge${Date.now()}`;
+    document = await {
+        html: html,
+        data: {
+            bootstrapCss: `${process.env.URL}/bootstrap.css`,
+            jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+            popperJs: `${process.env.URL}/popper.min.js`,
+            bootstrapJs: `${process.env.URL}/bootstrap.js`,
+            customerLoanDetail: customerSecureLoanData,
+            //customerUnsecureLoanDetail: customerUnsecureLoanData
+        },
+        path: `./public/uploads/pdf/${fileName}.pdf`
+    };
+    let createPdf = await pdf.create(document, options);
+    if (createPdf) {
+        fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
+            let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
+            res.setHeader('Content-Length', stat.size);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+            res.send(data);
+            if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
+                fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
+            }
+        });
+    }
+
+
 
 }
