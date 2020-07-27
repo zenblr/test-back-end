@@ -70,47 +70,34 @@ exports.addScheme = async (req, res, next) => {
 exports.readScheme = async (req, res, next) => {
 
     var { isActive } = req.query;
-    const query = {};
-    let readSchemeData;
+    let query = {};
     if (isActive) {
         query.isActive = isActive;
-        readSchemeData = await models.partner.findAll({
-            where: { isActive: true },
-            order: [
-                ['id', 'asc'],
-                [models.scheme, 'id', 'desc']
 
-            ],
-            include: [
-                {
-                    model: models.scheme,
-                    required: true,
-                    where: query,
-                    include: [
-                        {
-                            model: models.schemeInterest,
-                            as: 'schemeInterest'
-                        }
-                    ]
-                },
-            ],
-        })
     } else {
-        readSchemeData = await models.partner.findAll({
-            where: { isActive: true },
-            order: [
-                ['id', 'asc'],
-                [models.scheme, 'id', 'desc']
-            ],
-            include: [
-                {
-                    model: models.scheme,
-                    required: true,
-                },
-            ],
-        })
+        query = {}
     }
+    let readSchemeData = await models.partner.findAll({
+        where: { isActive: true },
+        order: [
+            ['id', 'asc'],
+            [models.scheme, 'id', 'desc']
 
+        ],
+        include: [
+            {
+                model: models.scheme,
+                required: true,
+                where: query,
+                include: [
+                    {
+                        model: models.schemeInterest,
+                        as: 'schemeInterest'
+                    }
+                ]
+            },
+        ],
+    })
     if (!readSchemeData[0]) {
         return res.status(200).json({ data: readSchemeData });
 
