@@ -81,7 +81,8 @@ exports.readScheme = async (req, res, next) => {
         where: { isActive: true },
         order: [
             ['id', 'asc'],
-            [models.scheme, 'id', 'desc']
+            [models.scheme, 'id', 'desc'],
+            [models.scheme, models.schemeInterest, 'days', 'asc']
 
         ],
         include: [
@@ -112,6 +113,9 @@ exports.readSchemeById = async (req, res, next) => {
     const schemeId = req.params.id;
     const readSchemeByIdData = await models.scheme.findOne({
         where: { id: schemeId, isActive: true },
+        order: [
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
         include: [{
             model: models.schemeInterest,
             as: 'schemeInterest'
