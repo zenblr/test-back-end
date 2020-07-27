@@ -1537,9 +1537,29 @@ exports.getDetailsForPrint = async (req, res, next) => {
         }
         customerLoanDetail.customerAddress = customerAddress
     }
-
+    //console.log(customerLoanDetail.customerLoan[1])
+    let customerUnsecureLoanData = [];
     if (customerLoanDetail.isUnsecuredSchemeApplied) {
         var html = fs.readFileSync("./templates/acknowledge-unsecure-template.html", 'utf8');
+        customerUnsecureLoanData = await [{
+            Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
+            dob: dateOfBirth,
+            contactNumber: customerLoanDetail.customer.mobileNumber,
+            start_Date: customerLoanDetail.loanStartDate,
+            customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
+            customerId: customerLoanDetail.customer.customerUniqueId,
+            loanTenure: customerLoanDetail.tenure,
+            end_Date: customerLoanDetail.loanEndDate,
+            //accountNumber: customerLoan.loanBankDetail.accountNumber,
+            //bankName: customerLoan.loanBankDetail.accountHolderName,
+            //ifscCode: customerLoan.loanBankDetail.ifscCode,
+            loanNumber: customerLoanDetail.customerLoan[1].loanUniqueId,
+            loanAmount: customerLoanDetail.customerLoan[1].loanAmount,
+            loanScheme: customerLoanDetail.customerLoan[1].scheme.schemeName,
+            penalCharges: customerLoanDetail.customerLoan[1].scheme.penalInterest,
+            interestRate: customerLoanDetail.customerLoan[1].interestRate,
+        }]
+        //console.log(customerUnsecureLoanData)
     } else {
         var html = fs.readFileSync("./templates/acknowledge-template.html", 'utf8');
     }
@@ -1587,25 +1607,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
 
     }];
     //console.log(customerSecureLoanData)
-    customerUnsecureLoanData = await [{
-        Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
-        dob: dateOfBirth,
-        contactNumber: customerLoanDetail.customer.mobileNumber,
-        start_Date: customerLoanDetail.loanStartDate,
-        customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
-        customerId: customerLoanDetail.customer.customerUniqueId,
-        loanTenure: customerLoanDetail.tenure,
-        end_Date: customerLoanDetail.loanEndDate,
-        //accountNumber: customerLoan.loanBankDetail.accountNumber,
-        //bankName: customerLoan.loanBankDetail.accountHolderName,
-        //ifscCode: customerLoan.loanBankDetail.ifscCode,
-        loanNumber: customerLoanDetail.customerLoan[1].loanUniqueId,
-        loanAmount: customerLoanDetail.customerLoan[1].loanAmount,
-        loanScheme: customerLoanDetail.customerLoan[1].scheme.schemeName,
-        penalCharges: customerLoanDetail.customerLoan[1].scheme.penalInterest,
-        interestRate: customerLoanDetail.customerLoan[1].interestRate,
-    }]
-    //console.log(customerUnsecureLoanData)
+
     let fileName = await `AcknowledgeOFPledge${Date.now()}`;
     document = await {
         html: html,
