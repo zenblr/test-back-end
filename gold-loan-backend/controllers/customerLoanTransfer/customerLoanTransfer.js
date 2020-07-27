@@ -340,8 +340,14 @@ exports.customerDetailsLoanTransfer = async (req, res, next) => {
             model: models.customerLoanTransfer,
             as: "loanTransfer",
             where: {loanTransferCurrentStage: '6' },
+        },{
+            model: models.customer,
+            as: 'customer',
+            attributes:['firstName','lastName']
         }]
     });
+    const firstName = customerLoanStage.customer.firstName
+    const lastName = customerLoanStage.customer.lastName
     let loanTransfer = true;
     let loanTransfetData = customerLoanStage.loanTransfer;
     if (!check.isEmpty(customerLoanStage)) {
@@ -356,7 +362,7 @@ exports.customerDetailsLoanTransfer = async (req, res, next) => {
         } else if (customerCurrentStage == '4') {
             return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt,loanTransfer,loanTransfetData })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount,loanTransfer,loanTransfetData })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount,loanTransfer,loanTransfetData,firstName,lastName })
         } else if (customerCurrentStage == '6') {
             return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage,loanTransfer,loanTransfetData })
         }

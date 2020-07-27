@@ -51,7 +51,6 @@ exports.getInterestInfo = async (req, res, next) => {
 
 
 }
-
 //CALCULATE PAYABLE AMOUNT
 exports.payableAmount = async (req, res, next) => {
     let { masterLoanId } = req.query
@@ -60,6 +59,7 @@ exports.payableAmount = async (req, res, next) => {
     let { gracePeriodDays } = global[0]
     let loan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
+        attributes: ['id', 'tenure', 'paymentFrequency', 'securedLoanAmount', 'unsecuredLoanAmount', 'isUnsecuredSchemeApplied', 'finalLoanAmount', 'outstandingAmount', 'totalFinalInterestAmt', 'loanStartDate'],
         order: [
             [models.customerLoan, 'id', 'asc'],
             [models.customerLoan, models.customerLoanInterest, 'id', 'asc'],
@@ -68,11 +68,18 @@ exports.payableAmount = async (req, res, next) => {
             model: models.customerLoan,
             as: 'customerLoan',
             attributes: ['id'],
-            include: [{
-                model: models.customerLoanInterest,
-                as: 'customerLoanInterest',
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            }]
+            include: [
+                {
+                    model: models.scheme,
+                    as: 'scheme',
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                },
+                {
+                    model: models.customerLoanInterest,
+                    as: 'customerLoanInterest',
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                }
+            ]
         }]
     })
 
@@ -86,29 +93,91 @@ exports.payableAmount = async (req, res, next) => {
         order: [['id', 'asc']],
         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
     })
-
+    //due emi date
     let dueDateFromDb = securedData[0].emiDueDate
     const dueDate = new Date(dueDateFromDb);
-
+    //current date
     let inDate = moment(moment.utc(moment(new Date())).toDate()).format('YYYY-MM-DD');
     const currentDate = new Date(inDate);
 
-    if (currentDate > dueDate){
-        const diffDays = Math.ceil((Math.abs(dueDate - currentDate)) / (1000 * 60 * 60 * 24));
-        if(diffDays > gracePeriodDays){
-            console.log(diffDays)
-            //panel interest lagega
+    let daysinYear = 360
+
+    let securedLoanAmount = Number(loan.securedLoanAmount)
+    let securedPanelPer = loan.customerLoan[0].scheme.penalInterest
+
+    if (loan.isUnsecuredSchemeApplied) {
+        //if unsecured scheme (unsecured loan) applied
+        var unsecuredLoanAmount = Number(loan.unsecuredLoanAmount)
+        var unsecuredPanelPer = loan.customerLoan[1].scheme.penalInterest
+    }
+    var lotolPenal = 0;
+    if (currentDate > dueDate) {
+        //get diff of days
+        var diffDays = Math.ceil((Math.abs(dueDate - currentDate)) / (1000 * 60 * 60 * 24));
+        if (diffDays > gracePeriodDays) {
+            // var securedPanelInterest = Number(((securedLoanAmount * securedPanelPer) / (daysinYear * diffDays)).toFixed(2))
+            var securedPanelInterest = Number((((securedLoanAmount * securedPanelPer) / daysinYear) * diffDays).toFixed(2))
+            var unsecuredPanelInterest = 0;
+            if (loan.isUnsecuredSchemeApplied) {
+                //if unsecured scheme (unsecured loan ) applied
+                // unsecuredPanelInterest = Number(((unsecuredLoanAmount * unsecuredPanelPer) / (daysinYear * diffDays)).toFixed(2))
+                unsecuredPanelInterest = Number((((unsecuredLoanAmount * unsecuredPanelPer) / daysinYear) * diffDays).toFixed(2))
+            }
+            lotolPenal = Number((securedPanelInterest + unsecuredPanelInterest).toFixed(2))
         }
         // nahi to nahi lagega panel interest
-    }else{
-        //panel interest nahi lagega
-        console.log('false')
     }
-   
 
-    console.log(dueDateFromDb, inDate, gracePeriodDays)
+    let paidData = await models.customerLoanInterest.findAll({
+        where: {
+            loanId: loanId[0],
+            emiStatus: { [Op.in]: ['paid'] },
+        },
+        order: [['id', 'asc']],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    })
+    var lastPaidDate
+    if (!check.isEmpty(paidData)) {
+        var lastPaidObj = paidData[paidData.length - 1]
+        lastPaidDate = new Date(lastPaidObj.emiDueDate);
+    } else {
+        lastPaidDate = new Date(loan.loanStartDate)
+    }
 
-    return res.status(200).json({ message: 'success', securedData, data: loanId })
+    // let diffForInterest = Math.ceil((Math.abs(currentDate - lastPaidDate)) / (1000 * 60 * 60 * 24))
+    let securedInterest = loan.customerLoan[0].customerLoanInterest
+    let getEmiInterestData = []
+
+    securedInterest.forEach(element => {
+        let data = new Date(element.emiDueDate);
+        if (currentDate > data) {
+            getEmiInterestData.push(element.balanceAmount)
+        }
+    });
+
+    if (loan.isUnsecuredSchemeApplied) {
+        let unsecuredInterest = loan.customerLoan[1].customerLoanInterest
+        unsecuredInterest.forEach(element => {
+            let data = new Date(element.emiDueDate);
+            if (currentDate > data) {
+                getEmiInterestData.push(element.balanceAmount)
+            }
+        });
+
+    }
+
+    var interestAmount = getEmiInterestData.reduce(function (a, b) {
+        return a + b;
+    }, 0)
+
+
+    let totalPayableAmount = (interestAmount + lotolPenal).toFixed(2)
+
+    let data = {
+        payableAmount: totalPayableAmount
+    }
+
+    return res.status(200).json({ message: 'success', data })
 
 
 }
