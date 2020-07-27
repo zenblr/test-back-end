@@ -87,7 +87,7 @@ exports.customerDetails = async (req, res, next) => {
 //FUNCTION fot submitting basic details DONE
 exports.loanBasicDeatils = async (req, res, next) => {
 
-    let { customerId, customerUniqueId, kycStatus, startDate, purpose, masterLoanId,partReleaseId } = req.body
+    let { customerId, customerUniqueId, kycStatus, startDate, purpose, masterLoanId, partReleaseId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'applying' } })
@@ -95,7 +95,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
     if (masterLoanId != null) {
         let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
         if (customerLoanMaster.loanTransferId != null) {
-            let transferLoan = await models.customerLoanTransfer.findOne({where:{ id: customerLoanMaster.loanTransferId }});
+            let transferLoan = await models.customerLoanTransfer.findOne({ where: { id: customerLoanMaster.loanTransferId } });
             if (transferLoan.isLoanApplied == false) {
                 await sequelize.transaction(async t => {
                     let loan = await models.customerLoan.findOne({ where: { masterLoanId } });
@@ -108,7 +108,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
         }
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanMaster.id, loanType: 'secured' } })
         if (!check.isEmpty(customerLoanMaster)) {
-            return res.status(200).json({ message: 'success',loanstage: stageId, loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
+            return res.status(200).json({ message: 'success', loanstage: stageId, loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
         }
     }
 
@@ -122,8 +122,8 @@ exports.loanBasicDeatils = async (req, res, next) => {
 
         await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, customerUniqueId, startDate, purpose, kycStatus, createdBy, modifiedBy }, { transaction: t });
 
-        if(partReleaseId){
-            await models.partRelease.update({isLoanCreated:true,newLoanId:masterLoan.id},{where:{id:partReleaseId},transaction: t });
+        if (partReleaseId) {
+            await models.partRelease.update({ isLoanCreated: true, newLoanId: masterLoan.id }, { where: { id: partReleaseId }, transaction: t });
         }
         return loan
     })
@@ -247,12 +247,13 @@ exports.checkForLoanType = async (req, res, next) => {
     let securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
 
 
-
-
     if (loanAmount > securedLoanAmount) {
         var unsecuredAmount = Math.round(loanAmount - securedLoanAmount)
         partnerUnsecuredScheme = await models.partner.findOne({
             where: { id: parnterId },
+            order: [
+                [models.scheme, models.schemeInterest, 'days', 'asc']
+            ],
             include: [{
                 model: models.scheme,
                 where: {
@@ -262,7 +263,13 @@ exports.checkForLoanType = async (req, res, next) => {
                         schemeAmountStart: { [Op.lte]: unsecuredAmount },
                         schemeAmountEnd: { [Op.gte]: unsecuredAmount },
                     }
-                }
+                },
+                include: [
+                    {
+                        model: models.schemeInterest,
+                        as: 'schemeInterest'
+                    }
+                ]
             }]
         });
 
@@ -270,7 +277,7 @@ exports.checkForLoanType = async (req, res, next) => {
         if (defaultUnsecuredScheme.length &&
             Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + (defaultUnsecuredScheme[0].maximumPercentageAllowed / 100)))) {
 
-            processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, defaultUnsecuredScheme[0],unsecuredAmount)
+            processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, defaultUnsecuredScheme[0], unsecuredAmount)
 
             return res.status(200).json({ data: { partnerUnsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, defaultUnsecuredScheme } })
 
@@ -282,7 +289,7 @@ exports.checkForLoanType = async (req, res, next) => {
     }
     else {
 
-        processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme,undefined,undefined)
+        processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
         return res.status(200).json({ data: { processingCharge } })
 
     }
@@ -1444,7 +1451,7 @@ exports.getLoanDetails = async (req, res, next) => {
         {
             model: models.partRelease,
             as: 'partRelease',
-            attributes:  ['amountStatus','partReleaseStatus'] 
+            attributes: ['amountStatus', 'partReleaseStatus']
         },
     ]
 
