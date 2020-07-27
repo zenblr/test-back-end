@@ -325,7 +325,7 @@ export class PageConfig {
 						page: { title: "View Scrap Application Form", desc: "" },
 					}
 				},
-				'packet': {
+				'packets': {
 					page: { title: "Packets", desc: "" },
 				},
 				"global-settings": {

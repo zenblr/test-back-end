@@ -13,6 +13,8 @@ import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsServi
 
 import { ScrapManagementComponent } from './scrap-management.component';
 import { ScrapCalculatorComponent } from './scrap-calculator/scrap-calculator.component';
+import { PacketsListComponent } from './packets/packets-list/packets-list.component';
+import { AddPacketsComponent } from './packets/add-packets/add-packets.component';
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
@@ -32,6 +34,10 @@ const routes: Routes = [
         component: ScrapCalculatorComponent
       },
       {
+        path: 'packets',
+        component: PacketsListComponent
+      },
+      {
         path: 'global-settings',
         component: GlobalSettingsComponent
       },
@@ -43,6 +49,8 @@ const routes: Routes = [
   declarations: [
     ScrapManagementComponent,
     ScrapCalculatorComponent,
+    PacketsListComponent,
+    AddPacketsComponent,
     GlobalSettingsComponent
   ],
   imports: [
@@ -70,6 +78,7 @@ const routes: Routes = [
   ],
   entryComponents: [
     DeleteEntityDialogComponent,
+    AddPacketsComponent,
     WebcamDialogComponent,
     UserReviewComponent
   ]

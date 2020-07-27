@@ -792,7 +792,7 @@ export class MenuConfig {
 							title: "Packet",
 							root: true,
 							src: "assets/media/aside-icons/icons-01.svg",
-							page: "/admin/scrap-management/packet",
+							page: "/admin/scrap-management/packets",
 							permission: false,
 						},
 						{
