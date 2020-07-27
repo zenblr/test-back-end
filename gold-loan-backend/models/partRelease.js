@@ -294,6 +294,15 @@ module.exports = (sequelize, DataTypes) => {
                        resMasterOrna.push(values.customerLoanOrnamentsDetails[i])
                    }
                }
+
+               if (values.documents) {
+                    let documentsImages = [];
+                    for (image of values.documents) {
+                        let URL = process.env.BASE_URL + image;
+                        documentsImages.push(URL)
+                    }
+                    values.documentsImages = documentsImages;
+            }
                return values
             }
 
