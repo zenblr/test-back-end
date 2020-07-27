@@ -70,7 +70,10 @@ export class AddSchemeComponent implements OnInit {
       maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       isDefault: [false],
-      isSplitAtBeginning:[false]
+      isSplitAtBeginning: [false],
+      numberOfDays1: [, [Validators.required]],
+      numberOfDays2: [, [Validators.required]],
+      numberOfDays3: [, [Validators.required]],
     })
 
     this.csvForm = this.fb.group({
@@ -123,6 +126,41 @@ export class AddSchemeComponent implements OnInit {
       partnerArray.push(this.fillingForm.get('partnerId').value);
       this.fillingForm.patchValue({ partnerId: partnerArray });
 
+      let obj1 = {
+        days: this.fillingForm.controls.numberOfDays1.value,
+        interestRate: this.fillingForm.controls.interestRateThirtyDaysMonthly.value
+      }
+      let obj2 = {
+        days: this.fillingForm.controls.numberOfDays2.value,
+        interestRate: this.fillingForm.controls.interestRateNinetyDaysMonthly.value
+      }
+      let obj3 = {
+        days: this.fillingForm.controls.numberOfDays3.value,
+        interestRate: this.fillingForm.controls.interestRateOneHundredEightyDaysMonthly.value
+      }
+
+      let schemeInterestArr = []
+      schemeInterestArr.push(obj1, obj2, obj3)
+
+      Object.assign(this.fillingForm.value, { schemeInterest: schemeInterestArr })
+
+      console.log(this.fillingForm.value)
+
+      // "schemeInterest": [
+      //   {
+      //   "days": 30,
+      //   "interestRate": 1.33
+      //   },
+      //   {
+      //   "days": 50,
+      //   "interestRate": 1.55
+      //   },
+      //   {
+      //   "days": 100,
+      //   "interestRate": 1.8
+      //   }
+      //   ],
+      return
       this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
           this._toastr.success('Scheme Created Sucessfully');
