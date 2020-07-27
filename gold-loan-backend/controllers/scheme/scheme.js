@@ -32,7 +32,6 @@ exports.addScheme = async (req, res, next) => {
         schemeInterest.forEach(element => {
             element['schemeId'] = addSchemeData.id
         });
-        console.log(schemeInterest)
 
         await models.schemeInterest.bulkCreate(schemeInterest, { returning: true, transaction: t });
 
@@ -153,6 +152,9 @@ exports.readSchemeOnAmount = async (req, res, next) => {
     let { amount } = req.params;
 
     let partnerSecuredScheme = await models.partner.findAll({
+        order: [
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
         include: [{
             model: models.scheme,
             where: {
@@ -161,8 +163,14 @@ exports.readSchemeOnAmount = async (req, res, next) => {
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
                     schemeAmountEnd: { [Op.gte]: amount },
+                },
+            },
+            include: [
+                {
+                    model: models.schemeInterest,
+                    as: 'schemeInterest'
                 }
-            }
+            ]
         }]
     });
 
@@ -178,6 +186,9 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
     // let {amount}  = req.body;
     let partnerSecuredScheme = await models.partner.findOne({
         where: { id },
+        order: [
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
         include: [{
             model: models.scheme,
             where: {
@@ -185,9 +196,15 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
                 schemeType: "unsecured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
-                    // schemeAmountEnd: { [Op.gte]: amount },
+                    schemeAmountEnd: { [Op.gte]: amount },
                 }
-            }
+            },
+            include: [
+                {
+                    model: models.schemeInterest,
+                    as: 'schemeInterest'
+                }
+            ]
         }]
     });
     if (!partnerSecuredScheme) {
