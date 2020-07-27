@@ -239,27 +239,36 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   amountValidation() {
+    let amt = this.controls.finalLoanAmount.value;
     this.controls.isUnsecuredSchemeApplied.patchValue(false)
     this.dateOfPayment = []
     const scheme = this.selectedScheme[0]
 
+    let check = this.eligibleCheck(amt)
+    if (check) {
+      return
+    }
+
     if (this.controls.partnerId.valid && this.controls.finalLoanAmount.value && this.selectedScheme.length) {
-      let amt = this.controls.finalLoanAmount.value;
 
-      if (Number(amt) <= Number(scheme.schemeAmountEnd) &&
-        Number(amt) >= Number(scheme.schemeAmountStart)) {
-        this.controls.finalLoanAmount.setErrors(null)
-      } else {
-        this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
-        return
+      let data = {
+        loanAmount: amt,
+        securedSchemeId: this.controls.schemeId.value,
+        fullAmount: this.fullAmount,
+        parnterId: this.controls.partnerId.value
       }
 
-      let check = this.eligibleCheck(amt)
-      if(check){
-        return
-      }
-      
+      // if (Number(amt) <= Number(scheme.schemeAmountEnd) &&
+      //   Number(amt) >= Number(scheme.schemeAmountStart)) {
+      //   this.controls.finalLoanAmount.setErrors(null)
+      // } else {
+      //   this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
+      //   return
+      // }
 
+
+
+      //minimum loan amount check
       if (Number(amt) >= Number(this.globalValue.minimumLoanAmountAllowed)) {
         this.controls.finalLoanAmount.setErrors(null)
       } else {
@@ -267,6 +276,7 @@ export class InterestCalculatorComponent implements OnInit {
         return
       }
 
+      //rbi guidelines check
       let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
       if (amt > this.fullAmount * rbiLoanPercent) {
         this.controls.finalLoanAmount.setErrors({ rbi: true })
@@ -275,33 +285,48 @@ export class InterestCalculatorComponent implements OnInit {
         this.controls.finalLoanAmount.setErrors(null)
       }
 
-      
 
 
-      let maximumAmtAllowed = (scheme.maximumPercentageAllowed / 100)
-      console.log(this.fullAmount * maximumAmtAllowed)
-      let eligibleForLoan = Math.round(this.fullAmount * maximumAmtAllowed)
-      if (amt > eligibleForLoan) {
 
-        let unsecureAmt = amt - eligibleForLoan
-        this.unSecuredSchemeCheck(Math.round(unsecureAmt), maximumAmtAllowed)
+      // let maximumAmtAllowed = (scheme.maximumPercentageAllowed / 100)
+      // console.log(this.fullAmount * maximumAmtAllowed)
+      // let eligibleForLoan = Math.round(this.fullAmount * maximumAmtAllowed)
+      // if (amt > eligibleForLoan) {
 
-      }
+      //   let unsecureAmt = amt - eligibleForLoan
+      //   this.unSecuredSchemeCheck(Math.round(unsecureAmt), maximumAmtAllowed)
+
+      // }
+
+      //secure or unsecure loan check
+      this.loanFormService.checkForLoanType(data).subscribe(res => {
+        if(res.data){
+          if(res.partnerUnsecuredScheme){
+            this.controls.isUnsecuredSchemeApplied.patchValue(true);
+            this.controls.unsecuredSchemeId.patchValue(res.data.defaultUnsecuredScheme.id)
+            this.controls.unsecuredLoanAmount.patchValue(res.data.unsecuredAmount)
+            this.selectedUnsecuredscheme = res.data.defaultUnsecuredScheme
+          }
+          this.controls.processingCharge.patchValue(res.data.processingCharge)
+          this.controls.securedLoanAmount.patchValue(res.data.securedLoanAmount)
+        }
+        
+      })
 
 
-    } 
-    this.getIntrest()
-    this.CheckProcessingCharge()
+    }
+    // this.getIntrest()
+    // this.CheckProcessingCharge()
   }
 
-  eligibleCheck(amt){
-  if (amt > this.totalAmt) {
-    this.controls.finalLoanAmount.setErrors({ eligible: true })
-    return true
-  } else {
-    this.controls.finalLoanAmount.setErrors(null)
+  eligibleCheck(amt) {
+    if (amt > this.totalAmt) {
+      this.controls.finalLoanAmount.setErrors({ eligible: true })
+      return true
+    } else {
+      this.controls.finalLoanAmount.setErrors(null)
+    }
   }
-}
 
 
   unSecuredSchemeCheck(amt, securedPercentage, action?) {

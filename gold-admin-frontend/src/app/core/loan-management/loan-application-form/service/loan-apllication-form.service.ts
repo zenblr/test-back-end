@@ -26,6 +26,11 @@ export class LoanApplicationFormService {
     )
   }
   
+  checkForLoanType(data): Observable<any> {
+    return this.http.post(`/api/loan-process/check-loan-type`,data).pipe(
+      map(res => res)
+    )
+  }
 
   basicSubmit(details): Observable<any> {
     return this.http.post(`/api/loan-process/basic-details`, details).pipe(
