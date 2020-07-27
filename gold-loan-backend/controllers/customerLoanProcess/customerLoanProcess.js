@@ -1437,7 +1437,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         {
             model: models.customerLoan,
             as: 'customerLoan',
-            attributes: ['loanUniqueId', 'loanAmount', 'interestRate', 'loanType','unsecuredLoanId'],
+            attributes: ['id', 'loanUniqueId', 'loanAmount', 'interestRate', 'loanType', 'unsecuredLoanId', 'partnerId', 'schemeId'],
             include: [
                 {
                     model: models.scheme,
@@ -1447,26 +1447,13 @@ exports.getDetailsForPrint = async (req, res, next) => {
                     model: models.partner,
                     as: 'partner',
                     attributes: ['name']
-                }, 
-                /*{
-                    model: models.customerLoan,
-                    as: 'unsecuredLoan',
-                    attributes: ['interestRate', 'loanUniqueId', 'loanAmount'],
-                    include: [
-                        {
-                            model: models.scheme,
-                            as: 'scheme',
-                            attributes: ['penalInterest', 'schemeName']
-                        }
-                    ]
-
-                }*/
+                },
             ]
         },
         {
             model: models.customerLoanBankDetail,
             as: 'loanBankDetail',
-            attributes: ['accountHolderName', 'accountNumber', 'ifscCode']
+            attributes: ['accountHolderName', 'accountNumber', 'ifscCode', 'passbookProof']
         },
         {
             model: models.customerLoanNomineeDetail,
@@ -1503,7 +1490,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         {
             model: models.customerLoanOrnamentsDetail,
             as: 'loanOrnamentsDetail',
-            attributes: ['quantity', 'grossWeight', 'netWeight', 'deductionWeight'],
+            attributes: ['quantity', 'grossWeight', 'netWeight', 'deductionWeight', 'purityTest'],
             include: [
                 {
                     model: models.ornamentType,
@@ -1517,10 +1504,13 @@ exports.getDetailsForPrint = async (req, res, next) => {
 
     let customerLoanDetail = await models.customerLoanMaster.findOne({
         where: { id: customerLoanId },
-        attributes: ['tenure', 'loanStartDate', 'loanEndDate','isUnsecuredSchemeApplied'],
+        order: [
+            [models.customerLoan, 'id', 'asc'],
+        ],
+        attributes: ['id', 'tenure', 'loanStartDate', 'loanEndDate', 'isUnsecuredSchemeApplied'],
         include: includeArray
     });
-    //console.log(customerLoanDetail.loanOrnamentsDetail)
+
     let ornaments = [];
     if (customerLoanDetail.loanOrnamentsDetail.length != 0) {
         for (let ornamentsDetail of customerLoanDetail.loanOrnamentsDetail) {
@@ -1592,7 +1582,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         //loanScheme: customerLoanDetail.customerLoan.scheme.schemeName,
         //penalCharges: customerLoanDetail.customerLoan.scheme.penalInterest,
         accountNumber: customerLoanDetail.loanBankDetail.accountNumber,
-        bankName:customerLoanDetail.loanBankDetail.accountHolderName,
+        bankName: customerLoanDetail.loanBankDetail.accountHolderName,
         ifscCode: customerLoanDetail.loanBankDetail.ifscCode,
         ornamentTypes: customerLoanDetail.ornamentType[0].name,
         quantity: customerLoanDetail.ornamentType[0].quantity,
