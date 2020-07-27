@@ -2,20 +2,20 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
-import { DataTableService } from '../../../../../core/shared/services/data-table.service';
-import { LoanDetailsDatasource, LoanDetailsService } from '../../../../../core/loan-management'
-import { Router } from '@angular/router';
-import { SharedService } from '../../../../../core/shared/services/shared.service';
-@Component({
-  selector: 'kt-loan-details',
-  templateUrl: './loan-details.component.html',
-  styleUrls: ['./loan-details.component.scss']
-})
-export class LoanDetailsComponent implements OnInit {
+import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
+import { PacketTrackingDatasource, PacketTrackingService } from '../../../../../../core/loan-management'
+import { LayoutUtilsService } from '../../../../../../core/_base/crud';
+import { ToastrService } from 'ngx-toastr';
+import { NgxPermissionsService } from 'ngx-permissions';
 
-  roles: any
-  dataSource: LoanDetailsDatasource;
-  displayedColumns = ['customerID', 'loanId', 'schemeName', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'startDate', 'endDate', 'actions',];
+@Component({
+  selector: 'kt-view-packet-log',
+  templateUrl: './view-packet-log.component.html',
+  styleUrls: ['./view-packet-log.component.scss']
+})
+export class ViewPacketLogComponent implements OnInit {
+  dataSource: PacketTrackingDatasource;
+  displayedColumns = ['packetUniqueId', 'internalBranch', 'customerID', 'loanId', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -30,21 +30,19 @@ export class LoanDetailsComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private loanDetailsService: LoanDetailsService,
+    private packetsService: PacketTrackingService,
     private dataTableService: DataTableService,
-    private router: Router,
-    private sharedService: SharedService
+    private layoutUtilsService: LayoutUtilsService,
+    private toastr: ToastrService,
+    private ngxPermissionService: NgxPermissionsService
   ) {
+    
   }
 
   ngOnInit() {
-    this.sharedService.getRole().subscribe(res => {
-      this.roles = res
-    })
-
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
-        this.loadAppliedLoansPage();
+        this.loadPackets();
       })
     )
       .subscribe();
@@ -54,11 +52,11 @@ export class LoanDetailsComponent implements OnInit {
       .subscribe(res => {
         this.searchValue = res;
         this.paginator.pageIndex = 0;
-        this.loadAppliedLoansPage();
+        this.loadPackets();
       });
 
     // Init DataSource
-    this.dataSource = new LoanDetailsDatasource(this.loanDetailsService);
+    this.dataSource = new PacketTrackingDatasource(this.packetsService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -70,7 +68,7 @@ export class LoanDetailsComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadDetailsLoans(1, 25, this.searchValue);
+    this.dataSource.loadpacketsLog(this.searchValue, 1, 25);
 
   }
 
@@ -83,38 +81,14 @@ export class LoanDetailsComponent implements OnInit {
   }
 
 
-
-  loadAppliedLoansPage() {
+  loadPackets() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadDetailsLoans(from, to, this.searchValue);
+    this.dataSource.loadpacketsLog(this.searchValue, from, to);
   }
 
-  viewLoan(loan) {
-    this.router.navigate(['/admin/customer-management/loan-details', loan.id])
-  }
-
-  newLoan(loan) {
-    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
-  }
-
-  packetImageUpload(loan) {
-    this.router.navigate(['/admin/loan-management/packet-image-upload', loan.id])
-  }
-
-  topUp(loan) {
-    this.router.navigate(['/admin/loan-management/topup'])
-  }
-
-  interestEmi(loan) {
-    this.router.navigate(['/admin/repayment/interest-emi',loan.id])
-  }
-
-  jewelleryRelease(loan) {
-    console.log(loan)
-    this.router.navigate([`/admin/repayment/part-release/${loan.customerLoan[0].masterLoanId}`])
-  }
+  
 }

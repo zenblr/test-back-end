@@ -137,7 +137,7 @@ export class AddBrokerComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().pipe(map(
       res => {
-        this.states = res.message;
+        this.states = res.data;
       }
     )).subscribe()
   }
@@ -162,7 +162,7 @@ export class AddBrokerComponent implements OnInit {
 
     this.sharedService.getCities(this.controls.stateId.value).pipe(map(
       res => {
-        this.citys = res.message;
+        this.citys = res.data;
       }
     )).subscribe()
 

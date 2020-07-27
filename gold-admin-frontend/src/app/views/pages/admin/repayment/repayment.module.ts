@@ -22,7 +22,7 @@ const routes: Routes = [
     component: MonthlyPaymentComponent,
   },
   {
-    path: 'interest-emi',
+    path: 'interest-emi/:id',
     component: QuickPayComponent,
   },
   {

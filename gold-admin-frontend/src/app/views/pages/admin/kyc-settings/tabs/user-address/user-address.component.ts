@@ -93,7 +93,7 @@ export class UserAddressComponent implements OnInit {
 
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
-      this.identityProofs = res.filter(filter => filter.name == 'Aadhaar Card');
+      this.identityProofs = res.data.filter(filter => filter.name == 'Aadhaar Card');
     }, err => {
       console.log(err);
     })
@@ -101,7 +101,7 @@ export class UserAddressComponent implements OnInit {
 
   getAddressProofType() {
     this.userAddressService.getAddressProofType().subscribe(res => {
-      this.addressProofs = res;
+      this.addressProofs = res.data;
     }, err => {
       console.log(err);
     })
@@ -164,7 +164,7 @@ export class UserAddressComponent implements OnInit {
 
   getStates() {
     this.sharedService.getStates().subscribe(res => {
-      this.states = res.message;
+      this.states = res.data;
     });
   }
 
@@ -174,9 +174,9 @@ export class UserAddressComponent implements OnInit {
     // console.log(stateId)
     this.sharedService.getCities(stateId).subscribe(res => {
       if (index == 0) {
-        this.cities0 = res.message;
+        this.cities0 = res.data;
       } else {
-        this.cities1 = res.message;
+        this.cities1 = res.data;
       }
     });
   }

@@ -69,7 +69,7 @@ export class PartnerAddComponent implements OnInit {
 
   getStates() {
     this.sharedService.getStates().subscribe(res => {
-      this.states = res.message;
+      this.states = res.data;
     },
       error => {
         // console.error(error);
@@ -81,7 +81,7 @@ export class PartnerAddComponent implements OnInit {
     const stateId = this.controls.state.value;
     // console.log(stateId);
     this.sharedService.getCities(stateId).subscribe(res => {
-      this.cities = res.message;
+      this.cities = res.data;
     },
       error => {
         // console.error(error);

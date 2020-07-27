@@ -36,6 +36,7 @@ import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-revie
 import { UploadLoanDocumentsComponent } from './loan-application-form/tabs/upload-loan-documents/upload-loan-documents.component';
 import { LoanTransferComponent } from './loan-transfer/loan-transfer.component';
 import { LoanTransferListComponent } from './loan-transfer-list/loan-transfer-list.component';
+import { ViewPacketLogComponent } from './packets/view-packet-log/view-packet-log.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -116,6 +117,7 @@ const rout: Routes = [
     UploadLoanDocumentsComponent,
     LoanTransferComponent,
     LoanTransferListComponent,
+    ViewPacketLogComponent,
   ],
   imports: [
     CommonModule,
@@ -146,8 +148,8 @@ const rout: Routes = [
     UnSecuredSchemeComponent,
     UpdateLocationComponent,
     OrnamentsComponent,
-    WebcamDialogComponent,
-    UserReviewComponent
+    UserReviewComponent,
+    ViewPacketLogComponent
   ]
 })
 export class LoanManagementModule { }
