@@ -50,7 +50,7 @@
 
         <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
             <div class="col-6 text-center">
-                <kt-button [value]="'Pay EMI'" [type]="'button'"></kt-button>
+                <kt-button [value]="'Pay EMI'" [type]="'button'" (click)="payableAmount()"></kt-button>
                 <span class="kt-padding-5 "></span>
                 <kt-button [value]="'View Interest EMI Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
                 <span class="kt-padding-5 "></span>
@@ -59,14 +59,14 @@
             </div>
         </div>
 
-        <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
+        <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15" *ngIf="payableAmount">
             <div class="col-8">
                 <div class="row border-style">
                     <div class="col-3 form-label">
                         <label for="" class="font-weight-500 m-0">Payable Amount</label>
                     </div>
                     <div class="col-2 form-label">
-                        <label for="" class="font-weight-500 m-0">54000</label>
+                        <label for="" class="font-weight-500 m-0">{{payableAmount}}</label>
                     </div>
                     <div class="col-4 form-label">
                         <label for="" class="font-weight-500 m-0">Interest Payment Amount</label>

@@ -42,6 +42,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
   show: boolean;
   url: string;
   buttonName: string;
+  isEdit: boolean;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -61,6 +62,11 @@ export class UploadLoanDocumentsComponent implements OnInit {
     } else {
       this.show = false
     }
+    if (this.url == "view-loan") {
+      this.isEdit = false
+    } else {
+      this.isEdit = true
+    }
     this.ngxPermission.permissions$.subscribe(res => {
       if (this.url == "loan-transfer" && res.loanTransferRating) {
         this.buttonName = 'next'
@@ -70,7 +76,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
       }
     })
     this.initForm()
-
+    console.log(this.url)
 
   }
 
@@ -90,7 +96,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
           schemeConfirmationCopy: documents.schemeConfirmationCopyImage[0],
         })
         this.pdfCheck()
-        this.url = 'view-loan'
+        this.isEdit = false
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -98,17 +104,19 @@ export class UploadLoanDocumentsComponent implements OnInit {
       if (documents && documents.declaration) {
         // this.documentsForm.patchValue(documents)
         this.documentsForm.patchValue({
-          declarationCopyImage: documents.declaration[0],
-          signedChequeImage: documents.signedCheque[0],
-          pawnCopyImage: documents.pawnTicket[0],
+          declarationCopyImage: documents.declarationImage[0],
+          signedChequeImage: documents.signedChequeImage[0],
+          pawnCopyImage: documents.pawnTicketImage[0],
           pawnCopy: documents.pawnTicket,
           outstandingLoanAmount: documents.outstandingLoanAmount,
           declaration: documents.declaration,
           signedCheque: documents.signedCheque
         })
         this.pdfCheck()
-        if (documents.loanTransferStatusForBM == 'approved') {
-          this.url = 'view-loan'
+        if (documents.loanTransferStatusForAppraiser == 'approved') {
+          this.isEdit = false
+          this.documentsForm.disable()
+          this.ref.detectChanges()
         }
       }
     }
@@ -295,7 +303,14 @@ export class UploadLoanDocumentsComponent implements OnInit {
 
   save() {
 
-    if (this.url == 'view-loan') {
+    // loan transfer
+    if (!this.isEdit && this.documentsForm.status == 'DISABLED'){
+      this.next.emit(3)
+      return
+    }
+
+    // loan 
+    if (!this.isEdit) {
       this.next.emit(7)
       return
     }

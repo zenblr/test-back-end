@@ -11,7 +11,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class QuickPayComponent implements OnInit {
   loanDetails: any;
-
+  masterLoanId: any;
+  payableAmount:any;
   constructor(
     public dialog: MatDialog,
     private quickPayServie: QuickPayService,
@@ -19,13 +20,20 @@ export class QuickPayComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getInterestInfo(this.rout.snapshot.params.id)
+    this.masterLoanId= this.rout.snapshot.params.id
+    this.getInterestInfo(this.masterLoanId)
   }
 
   getInterestInfo(id) {
 
     this.quickPayServie.interestInfo(id).subscribe(res => {
       this.loanDetails = res.data
+    })
+  }
+
+  getPayableAmount(){
+    this.quickPayServie.getPayableAmount(this.masterLoanId).subscribe(res => {
+      this.payableAmount = res.data.payableAmount
     })
   }
 
