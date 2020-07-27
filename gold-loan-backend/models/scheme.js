@@ -1,9 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
     const Scheme = sequelize.define('scheme', {
         //attribute
-        schemeName:{
-            type:DataTypes.STRING,
-            field:'scheme_name'
+        schemeName: {
+            type: DataTypes.STRING,
+            field: 'scheme_name'
         },
         schemeAmountStart: {
             type: DataTypes.BIGINT,
@@ -51,6 +51,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'scheme_type',
             values: ['secured', 'unsecured'],
             allowNull: false,
+        },
+        isTopup: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_topup',
+            defaultValue: true
+        },
+        isSplitAtBeginning: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_split_at_beginning',
+            defaultValue: false
         },
         isActive: {
             type: DataTypes.BOOLEAN,

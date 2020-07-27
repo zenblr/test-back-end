@@ -16,13 +16,14 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class LoanTransferListComponent implements OnInit {
 
   dataSource: LoanTranferDatasource;
-  displayedColumns = ['fullName', 'customerID', 'loanId', 'mobile', 'date', 'amount', 'status','actions'];
+  displayedColumns = ['fullName', 'customerID', 'loanId', 'mobile', 'date', 'amount','appraiserStatus', 'bmStatus','action','applyLoan'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
+  permission: any;
 
   constructor(
     public dialog: MatDialog,
@@ -31,7 +32,11 @@ export class LoanTransferListComponent implements OnInit {
     private router: Router,
     // private sharedService: SharedService
     private ngxPermission:NgxPermissionsService,
-  ) { }
+  ) { 
+    this.ngxPermission.permissions$.subscribe(res=>{
+      this.permission = res
+    })
+  }
 
   ngOnInit() {
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
@@ -82,13 +87,13 @@ export class LoanTransferListComponent implements OnInit {
   }
 
   navigate(loan) {
-    this.ngxPermission.permissions$.subscribe(res=>{
+    
       
-      if((res.loanTransferRating && loan.loanTransfer.loanTransferCurrentStage == '3')
-       || (res.loanTransferDisbursal && loan.loanTransfer.loanTransferCurrentStage == '4') ){
+      if((this.permission.loanTransferAppraiserRating && loan.loanTransfer.loanTransferCurrentStage == '3')
+        || (this.permission.loanTransferRating && loan.loanTransfer.loanTransferCurrentStage == '4')
+       || (this.permission.loanTransferDisbursal && loan.loanTransfer.loanTransferCurrentStage == '5') ){
         this.router.navigate(['/admin/loan-management/loan-transfer/', loan.customerLoan[0].id])
       }
-    })
   }
 
   applyLoan(loan){

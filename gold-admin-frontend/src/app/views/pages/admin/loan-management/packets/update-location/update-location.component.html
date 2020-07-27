@@ -4,9 +4,9 @@
         <form [formGroup]="locationForm">
             <div class="row ">
                 <div class="col-12">
-                    <div class="row justify-content-center kt-margin-t-10">
+                    <div class="row justify-content-center">
                         <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">Location</label>
+                            <label class="kt-padding-l-10 mandatory">Select Location</label>
                         </div>
                         <div class="col-8">
                             <select name="" id="" class="form-control" formControlName="location" 
@@ -17,6 +17,59 @@
                                 *ngIf="locationForm.controls.location.touched && locationForm.controls.location.errors?.required">
                                 Required field
                             </mat-error>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-15">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Barcode No.</label>
+                        </div>
+                        <div class="col-8">
+                            <kt-button [type]="'button'" [value]="'Scan'"></kt-button>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-15">
+                        <div class="col-8 offset-4">
+                            <input type="text" class="form-control" placeholder="Enter Barcode No.">
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-15">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Select Role</label>
+                        </div>
+                        <div class="col-8">
+                            <select name="" id="" class="form-control" formControlName="location" 
+                            [class.isError]="locationForm.controls.location.invalid &&  locationForm.controls.location.touched">
+                                <option value=""></option>
+                            </select>                                
+                            <mat-error
+                                *ngIf="locationForm.controls.location.touched && locationForm.controls.location.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-15">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Select User</label>
+                        </div>
+                        <div class="col-8">
+                            <select name="" id="" class="form-control" formControlName="location" 
+                            [class.isError]="locationForm.controls.location.invalid &&  locationForm.controls.location.touched">
+                                <option value=""></option>
+                            </select>                                
+                            <mat-error
+                                *ngIf="locationForm.controls.location.touched && locationForm.controls.location.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-15">
+                        <div class="col-4 offset-4">
+                            <kt-button [type]="'button'" [value]="'Send OTP'"></kt-button>
+                            <mat-hint class="kt-pointer kt-margin-l-5">
+                                Resend OTP</mat-hint>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" class="form-control" placeholder="Enter OTP.">
                         </div>
                     </div>
                 </div>

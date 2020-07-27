@@ -37,6 +37,9 @@ export class PageConfig {
 				occupation: {
 					page: { title: "Occupations", desc: "" },
 				},
+				'standard-deduction': {
+					page: { title: "Standard Deduction", desc: "" },
+				},
 			},
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
@@ -154,10 +157,16 @@ export class PageConfig {
 					page: { title: "Monthly Repayment", desc: "" },
 				},
 				"part-release": {
-					page: { title: "Part Release", desc: "" },
+					page: { title: "Full Release", desc: "" },
+					id: {
+						page: { title: "Jewellery Release", desc: "" },
+					}
 				},
 				"full-release": {
 					page: { title: "Full Release", desc: "" },
+					id: {
+						page: { title: "Full Release", desc: "" },
+					}
 				},
 				'interest-emi': {
 					page: { title: "Pay Interest EMI", desc: "" },
@@ -260,7 +269,6 @@ export class PageConfig {
 					id: {
 						page: { title: "Loan Details", desc: "" },
 					}
-
 				},
 			},
 			"loan-management": {
@@ -303,8 +311,8 @@ export class PageConfig {
 				}
 			},
 			"scrap-management": {
-				"scrap-calculator": {
-					page: { title: "Scrap Calculator", desc: "" },
+				"scrap-buying-calculator": {
+					page: { title: "Scrap Buying Calculator", desc: "" },
 				},
 				"scrap-buying-application-form": {
 					page: { title: "Scrap Buying Application Form", desc: "" },
@@ -317,8 +325,11 @@ export class PageConfig {
 						page: { title: "View Scrap Application Form", desc: "" },
 					}
 				},
-				'packet': {
+				'packets': {
 					page: { title: "Packets", desc: "" },
+				},
+				"global-settings": {
+					page: { title: "Global Settings", desc: "" },
 				},
 			}
 		},

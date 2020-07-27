@@ -91,7 +91,8 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
 
 import { AngularImageViewerModule } from 'angular-x-image-viewer';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
-import { UpdateStatusComponent } from '../pages/admin/funds-approvals/update-status/update-status.component';
+
+import { GlobalSettingsComponent } from './components/global-settings/global-settings.component';
 
 @NgModule({
 	declarations: [
@@ -126,54 +127,35 @@ import { UpdateStatusComponent } from '../pages/admin/funds-approvals/update-sta
 		UserProfile2Component,
 		UserProfile3Component,
 		CartComponent,
-
 		ErrorComponent,
-
 		ToastrComponent,
-
 		ButtonComponent,
-
 		FilterComponent,
-
 		SearchComponent,
-
 		ModalHeaderComponent,
-
 		ModalFooterComponent,
-
 		UplodDataImageComponent,
-
 		ImagePreviewDialogComponent,
-
 		LoanSchemeComponent,
-
 		BasicDetailsComponent,
-
 		UploadDocumentsComponent,
-
 		UserClassificationComponent,
-
 		UplodPreviewImageComponent,
-
 		UserReviewComponent,
 		AssignAppraiserComponent,
 		WebcamDialogComponent,
-
 		FilteredDataComponent,
-
 		MultiSelectSearchComponent,
-
 		AssignAppraiserComponent,
 		OrnamentsComponent,
 		PdfViewerComponent,
 		ImageFunctionalityDialogComponent,
 		DropdownComponent,
-		UpdateStatusComponent
+		GlobalSettingsComponent
 	],
 	exports: [
 		WidgetModule,
 		PortletModule,
-
 		ScrollTopComponent,
 		NoticeComponent,
 		ActionNotificationComponent,
@@ -236,7 +218,7 @@ import { UpdateStatusComponent } from '../pages/admin/funds-approvals/update-sta
 
 		AngularImageViewerModule,
 		DropdownComponent,
-		UpdateStatusComponent
+		GlobalSettingsComponent
 	],
 	imports: [
 		PdfViewerModule,

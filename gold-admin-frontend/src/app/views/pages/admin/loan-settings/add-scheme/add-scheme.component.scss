@@ -3,7 +3,7 @@
         margin: 0 !important;
     }
 
-    .amount {
+    .amount,.penal {
         display : inline-block;
         position: relative;
     }
@@ -19,6 +19,16 @@
         right      : 1em;
         transition : all .05s ease-in-out;
         content    : '(Amt in lac)';
+        color      : #707480;
+        font-weight: bold;
+    }
+
+    .penal::after {
+        position   : absolute;
+        top        : 11px;
+        right      : 1em;
+        transition : all .05s ease-in-out;
+        content    : '(per annum)';
         color      : #707480;
         font-weight: bold;
     }

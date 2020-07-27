@@ -8,7 +8,6 @@ import { PartialsModule } from '../../../partials/partials.module';
 import { RoughLoanAmountComponent } from './loan-calculator/tabs/rough-loan-amount/rough-loan-amount.component';
 import { FinalLoanAmountComponent } from './loan-calculator/tabs/final-loan-amount/final-loan-amount.component';
 import { LoanApplicationFormComponent } from './loan-application-form/loan-application-form.component';
-import { KycDetailsComponent } from './loan-application-form/tabs/kyc-details/kyc-details.component';
 import { NomineeDetailsComponent } from './loan-application-form/tabs/nominee-details/nominee-details.component'
 import { CoreModule } from '../../../../core/core.module';
 import { FinalInterestAmountComponent } from './loan-calculator/tabs/final-interest-amount/final-interest-amount.component'
@@ -24,7 +23,7 @@ import { AssignPacketsComponent } from './packets/assign-packets/assign-packets.
 import { InterestCalculatorComponent } from './loan-application-form/tabs/interest-calculator/interest-calculator.component';
 import { DeleteEntityDialogComponent } from '../../../partials/content/crud';
 import { LoanDetailsComponent } from './loan-details/loan-details.component';
-import { DisburseDialogComponent } from './disburse-dialog/disburse-dialog.component';
+import { DisburseComponent } from './loan-application-form/tabs/disburse/disburse.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { UnSecuredSchemeComponent } from './loan-application-form/un-secured-scheme/un-secured-scheme.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
@@ -34,6 +33,7 @@ import { TopUpComponent } from './top-up/top-up.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 import { LoanTransferComponent } from './loan-transfer/loan-transfer.component';
 import { LoanTransferListComponent } from './loan-transfer-list/loan-transfer-list.component';
+import { ViewPacketLogComponent } from './packets/view-packet-log/view-packet-log.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -95,7 +95,6 @@ const rout: Routes = [
     RoughLoanAmountComponent,
     FinalLoanAmountComponent,
     LoanApplicationFormComponent,
-    KycDetailsComponent,
     NomineeDetailsComponent,
     FinalInterestAmountComponent,
     BankDetailsComponent,
@@ -106,13 +105,14 @@ const rout: Routes = [
     AssignPacketsComponent,
     InterestCalculatorComponent,
     LoanDetailsComponent,
-    DisburseDialogComponent,
+    DisburseComponent,
     UnSecuredSchemeComponent,
     PacketTrackingComponent,
     UpdateLocationComponent,
     TopUpComponent,
     LoanTransferComponent,
     LoanTransferListComponent,
+    ViewPacketLogComponent,
   ],
   imports: [
     CommonModule,
@@ -139,12 +139,12 @@ const rout: Routes = [
   ],
   entryComponents: [
     AssignPacketsComponent,
-    DisburseDialogComponent,
     DeleteEntityDialogComponent,
     UnSecuredSchemeComponent,
     WebcamDialogComponent,
     UpdateLocationComponent,
-    UserReviewComponent
+    UserReviewComponent,
+    ViewPacketLogComponent
   ]
 })
 export class LoanManagementModule { }

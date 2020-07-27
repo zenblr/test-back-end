@@ -8,6 +8,7 @@ import { MatPaginator, MatDialog } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { AssignAppraiserComponent } from '../../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
+import { UpdateStatusComponent } from '../../update-status/update-status.component';
 
 @Component({
   selector: 'kt-full-release-approval',
@@ -17,7 +18,7 @@ import { AssignAppraiserComponent } from '../../../user-management/assign-apprai
 export class FullReleaseApprovalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'assignAppraiser'];
+  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'updateStatus', 'assignAppraiser'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -88,6 +89,15 @@ export class FullReleaseApprovalComponent implements OnInit {
 
   updateAppraiser(item) {
 
+  }
+
+  updateStatus(item) {
+    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        // this.loadPage();
+      }
+    });
   }
 
 }

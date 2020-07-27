@@ -14,6 +14,7 @@ import { MonthlyPaymentAddComponent } from './monthly-payment-add/monthly-paymen
 import { QuickPayComponent } from './quick-pay/quick-pay.component';
 import { PartReleaseComponent } from './part-release/part-release.component';
 import { EmiLogsDialogComponent } from './emi-logs-dialog/emi-logs-dialog.component';
+import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
 const routes: Routes = [
   {
@@ -21,15 +22,15 @@ const routes: Routes = [
     component: MonthlyPaymentComponent,
   },
   {
-    path: 'interest-emi',
+    path: 'interest-emi/:id',
     component: QuickPayComponent,
   },
   {
-    path: 'part-release',
+    path: 'part-release/:id',
     component: PartReleaseComponent,
   },
   {
-    path: 'full-release',
+    path: 'full-release/:id',
     component: PartReleaseComponent,
   }
 ]
@@ -41,6 +42,7 @@ const routes: Routes = [
     QuickPayComponent,
     EmiLogsDialogComponent,
     PartReleaseComponent,
+    PaymentDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -75,7 +77,8 @@ const routes: Routes = [
   ],
   entryComponents: [
     MonthlyPaymentAddComponent,
-    EmiLogsDialogComponent
+    EmiLogsDialogComponent,
+    PaymentDialogComponent
   ]
 })
 export class RepaymentModule { }

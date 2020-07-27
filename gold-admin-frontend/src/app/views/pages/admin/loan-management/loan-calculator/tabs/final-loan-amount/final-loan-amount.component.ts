@@ -21,10 +21,10 @@ export class FinalLoanAmountComponent implements OnInit {
   finalLoanForm: FormGroup;
   karatArr: any;
 
-  constructor(private fb: FormBuilder, 
+  constructor(private fb: FormBuilder,
     private goldRateService: GoldRateService,
     public karatService: KaratDetailsService,
-    private globalSettingService:GlobalSettingService
+    private globalSettingService: GlobalSettingService
   ) { }
 
   ngOnInit() {
@@ -36,23 +36,23 @@ export class FinalLoanAmountComponent implements OnInit {
     //     this.calcGoldDeductionWeight();
     //   }
     // });
-    this.globalSettingService.globalSetting$.subscribe(global=>{
-      if(global){
+    this.globalSettingService.globalSetting$.subscribe(global => {
+      if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
-         if(res){
-          this.controls.currentLtvAmount.patchValue(res * (global.ltvGoldValue/100));
-         }
+          if (res) {
+            this.controls.currentLtvAmount.patchValue(res * (global.ltvGoldValue / 100));
+          }
         })
       }
     })
-    
+
   }
 
   initForm() {
     this.finalLoanForm = this.fb.group({
-      goldGrossWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      goldNetWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      goldDeductionWeight: [, [Validators.required,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      goldGrossWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      goldNetWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      goldDeductionWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[0-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       karat: ['', [Validators.required]],
       purity: [],
       finalNetWeight: [],
@@ -114,9 +114,10 @@ export class FinalLoanAmountComponent implements OnInit {
 
   weightCheck() {
     if (this.controls.goldGrossWeight.valid && this.controls.goldDeductionWeight.valid) {
-      if (this.controls.goldGrossWeight.value < this.controls.goldDeductionWeight.value) {
+      if (Number(this.controls.goldGrossWeight.value) < Number(this.controls.goldDeductionWeight.value)) {
         this.controls.goldDeductionWeight.setErrors({ weight: true })
-      } 
+        this.controls.goldNetWeight.reset()
+      }
     }
   }
   // calFinalNetWeight() {
@@ -163,9 +164,9 @@ export class FinalLoanAmountComponent implements OnInit {
       return
     }
 
-    const loanAmount = (+(this.controls.goldNetWeight.value) * +(this.controls.ltvAmount.value));
+    const loanAmount = (+(this.controls.goldNetWeight.value) * +(this.controls.ltvAmount.value)).toFixed(2);
     // console.log('final: ', loanAmount);
-    this.loanAmount = loanAmount;
+    this.loanAmount = Number(loanAmount);
     this.controls.loanAmount.patchValue(this.loanAmount);
   }
 
@@ -187,7 +188,7 @@ export class FinalLoanAmountComponent implements OnInit {
   getKarat() {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
-        this.karatArr = res;
+        this.karatArr = res.data;
         console.log(res)
       })
     ).subscribe()

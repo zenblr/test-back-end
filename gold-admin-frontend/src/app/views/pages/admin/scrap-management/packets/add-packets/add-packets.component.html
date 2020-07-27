@@ -1,0 +1,53 @@
+<kt-portlet>
+    <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
+    <kt-portlet-body>
+        <form [formGroup]="packetForm">
+            <div class="row ">
+                <div class="col-12">
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Packet Id</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="packetUniqueId"
+                                placeholder="PAC-01"
+                                [class.isError]="packetForm.controls.packetUniqueId.invalid &&  packetForm.controls.packetUniqueId.touched">
+                            <mat-error
+                                *ngIf="controls.packetUniqueId.touched && controls.packetUniqueId.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Branch</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="internalUserBranchId"
+                                [class.isError]="controls.internalUserBranchId.touched && controls.internalUserBranchId.invalid">
+                                <option value="" [disabled]="true" [selected]="true"> Select Branch
+                                </option>
+                                <option *ngFor="let branch of branches" [value]="branch.id">
+                                    {{branch.name | titlecase}}
+                                </option>
+                            </select>
+                            <mat-error
+                                *ngIf="controls.internalUserBranchId.touched && controls.internalUserBranchId.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </kt-portlet-body>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="'Add'"></kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>

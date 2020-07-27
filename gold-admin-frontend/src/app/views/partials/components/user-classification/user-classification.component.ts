@@ -191,7 +191,7 @@ export class UserClassificationComponent implements OnInit {
   getRating() {
     this.custClassificationService.getRating().pipe(
       map(res => {
-        this.rating = res;
+        this.rating = res.data;
       })
     ).subscribe()
   }

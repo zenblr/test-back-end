@@ -37,6 +37,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() masterAndLoanIds
   @Input() scrapIds
   @Input() ornamentType
+  @Input() showButton
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -86,7 +87,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   getKarat() {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
-        this.karatArr = res;
+        this.karatArr = res.data;
       })
     ).subscribe()
   }
@@ -260,7 +261,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       quantity: [, Validators.required],
       grossWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      deductionWeight: ['', [Validators.required, Validators.pattern('^\\s*(?=.*[0-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       ornamentImage: [, Validators.required],
       weightMachineZeroWeight: [],
       withOrnamentWeight: [],
@@ -545,6 +546,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   nextAction() {
+
+    if (this.disable) {
+      this.next.emit(3)
+      return
+    }
+
     if (this.ornamentsForm.invalid) {
       let array = this.OrnamentsData.controls
       for (let index = 0; index < array.length; index++) {
@@ -557,35 +564,22 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    if(this.scrapIds) {
-      this.scrapApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.scrapIds).pipe(
-        map(res => {
-          let array = this.OrnamentsData.controls
-          for (let index = 0; index < array.length; index++) {
-            const controls = this.OrnamentsData.at(index) as FormGroup;
-            controls.controls.id.patchValue(res.ornaments[index].id)
-          }
-          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
-            this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
-          }
-          this.next.emit(3)
-        })
-      ).subscribe()
-    } else {
-      this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
-        map(res => {
-          let array = this.OrnamentsData.controls
-          for (let index = 0; index < array.length; index++) {
-            const controls = this.OrnamentsData.at(index) as FormGroup;
-            controls.controls.id.patchValue(res.ornaments[index].id)
-          }
-          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
-            this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
-          }
-          this.next.emit(3)
-        })
-      ).subscribe()
-    }
+    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
+      map(res => {
+        let array = this.OrnamentsData.controls
+        for (let index = 0; index < array.length; index++) {
+          const controls = this.OrnamentsData.at(index) as FormGroup;
+          controls.controls.id.patchValue(res.ornaments[index].id)
+        }
+        if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
+          this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+        }else{
+          this.loanApplicationFormService.finalLoanAmount.next(0)
+        }
+        this.next.emit(3)
+      })
+    ).subscribe()
+
   }
 
   webcam(index, event, string) {

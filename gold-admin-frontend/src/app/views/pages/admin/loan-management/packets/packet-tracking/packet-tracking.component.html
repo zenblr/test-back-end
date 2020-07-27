@@ -1,7 +1,7 @@
 <kt-portlet>
 
     <kt-portlet-body>
-
+        <button>tracking</button>
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
                 <ng-container matColumnDef="packetUniqueId">
@@ -61,9 +61,11 @@
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let packet">
+                        <button (click)="ornaments(packet)" class="btn-transparent kt-margin-r-15"
+                               >View Packets</button>
                             <button (click)="updatePacket(packet)" class="btn-transparent kt-margin-r-15"
                                >Update Location</button>
-                            <button (click)="packet(loan)" class="btn-transparent"
+                            <button (click)="viewPacketLog(loan)" class="btn-transparent"
                                 >View Log</button>
                                 <button (click)="packet(loan)" class="btn-transparent"
                                 >View Location</button>

@@ -23,6 +23,10 @@ export class LoanTransferComponent implements OnInit {
   id: any;
   laonTransferDetails: any
   disabled = [false, true, true, true]
+  showButton: boolean = true;
+  loanTransferStage: any;
+  appraiserOrCCE: { value: string; name: string; }[];
+  disabledForm: boolean;
   constructor(
     private custClassificationService: CustomerClassificationService,
     private sharedService: SharedService,
@@ -38,6 +42,8 @@ export class LoanTransferComponent implements OnInit {
     }
     this.sharedService.getStatus().subscribe(res => {
       this.branchManager = res.bm
+      this.appraiserOrCCE = res.apprsiserOrCCE
+
     })
 
   }
@@ -49,7 +55,11 @@ export class LoanTransferComponent implements OnInit {
         this.laonTransferDetails = res.data
         if (res.data.masterLoan.loanTransfer.loanTransferCurrentStage) {
           let stage = res.data.masterLoan.loanTransfer.loanTransferCurrentStage;
-          this.selected = Number(stage) - 1;
+          this.next(Number(stage) - 1);
+          if (stage == '4') {
+            this.selected = 2
+            this.approvalForm.controls.loanTransferStatusForAppraiser.disable()
+          }
 
           this.approvalForm.patchValue(res.data.masterLoan.loanTransfer)
           console.log(this.approvalForm.value)
@@ -65,9 +75,14 @@ export class LoanTransferComponent implements OnInit {
               this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByBM })
             }
           }
+          if (this.approvalForm.controls.loanTransferStatusForAppraiser.value == 'approved') {
+            this.disabled = [false, false, false, true]
+            this.disabledForm = true
+          }
 
           if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
             this.disabled = [false, false, false, false]
+            this.approvalForm.disable()
           }
 
           this.disbursalForm.patchValue(res.data.masterLoan.loanTransfer)
@@ -95,11 +110,19 @@ export class LoanTransferComponent implements OnInit {
     })
   }
 
+  stage(event) {
+    this.loanTransferStage = event
+    if (this.loanTransferStage == '3') {
+      this.approvalForm.disable()
+      this.approvalForm.controls.loanTransferStatusForAppraiser.enable()
+    }
+  }
 
 
   initForms() {
     this.approvalForm = this.fb.group({
       loanTransferStatusForBM: ['pending', Validators.required],
+      loanTransferStatusForAppraiser: ['pending', Validators.required],
       reasonByBM: ['', Validators.required],
       reason: ['', Validators.required]
     })
@@ -132,27 +155,39 @@ export class LoanTransferComponent implements OnInit {
   }
 
   approval() {
-    if (this.approvalForm.invalid || this.approvalForm.controls.loanTransferStatusForBM.value == 'pending') {
+    if (this.approvalForm.status == 'DISABLED') {
+      this.next(4)
+      return
+    }
+
+    if (this.approvalForm.invalid || (this.approvalForm.controls.loanTransferStatusForBM.value == 'pending' && this.loanTransferStage != '3')) {
       this.approvalForm.markAllAsTouched()
       return
     }
 
-    this.loanTransferService.approval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
-      if (res) {
-        if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
-          this.disbursalForm.patchValue(res)
-          if (res.loanCurrentStage) {
-            let stage = Number(res.loanCurrentStage) - 1
-            this.next(stage)
+    if (this.loanTransferStage == '3') {
+      this.loanTransferService.appraiserApproval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
+        this.router.navigate(['/admin/loan-management/transfer-loan-list'])
+      })
+    } else {
+      this.loanTransferService.approval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
+        if (res) {
+          if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
+            this.approvalForm.disable()
+            this.disbursalForm.patchValue(res)
+            if (res.loanCurrentStage) {
+              let stage = Number(res.loanCurrentStage) - 1
+              this.next(stage)
+            }
+          }
+          else {
+            this.router.navigate(['/admin/loan-management/transfer-loan-list'])
           }
         }
-        else {
-          this.router.navigate(['/admin/loan-management/transfer-loan-list'])
-        }
-      }
-    }, err => {
+      }, err => {
 
-    })
+      })
+    }
   }
 
   disbursal() {
@@ -174,7 +209,14 @@ export class LoanTransferComponent implements OnInit {
     if (event.index != undefined) {
       this.selected = event.index;
     } else {
-      this.selected = event;
+      if (event == 3) {
+        this.selected = 2
+      } else if (event == 4) {
+        this.selected = 3
+      } else {
+        this.selected = event;
+      }
+      this.stage((event + 1).toString())
     }
     if (this.approvalForm.controls.loanTransferStatusForBM.value != 'approved') {
       for (let index = 0; index < this.disabled.length; index++) {

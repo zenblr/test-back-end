@@ -35,7 +35,6 @@ export class ScrapCalculatorComponent implements OnInit {
       deductionWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       purity: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$'), Validators.max(100)]],
-      fineWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       scrapLtvGoldValue: []
     });
   }
@@ -62,20 +61,12 @@ export class ScrapCalculatorComponent implements OnInit {
     }
   }
 
-  calcFineWeight() {
-    if (this.controls.netWeight.value && this.controls.purity.value &&
-      this.controls.netWeight.valid && this.controls.purity.valid) {
-      const fineWeight = this.controls.netWeight.value * (this.controls.purity.value / 100);
-      this.controls.fineWeight.patchValue(fineWeight.toFixed(2));
-    }
-  }
-
   calculate() {
     if (this.roughScrapForm.invalid) {
       this.roughScrapForm.markAllAsTouched();
       return
     }
-    this.scrapAmount = this.controls.fineWeight.value * this.controls.scrapLtvGoldValue.value;
+    this.scrapAmount = this.controls.netWeight.value * (this.controls.purity.value / 100) * 4500;
   }
 
   rejectNegativeNumber(val) {

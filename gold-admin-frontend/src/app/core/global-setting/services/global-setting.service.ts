@@ -37,4 +37,26 @@ export class GlobalSettingService {
       })
     )
   }
+
+  setScrapGlobalSetting(params): Observable<any> {
+    return this.http.post(`/api/scrap/global-setting`, params).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
+
+  getScrapGlobalSetting(): Observable<any> {
+    return this.http.get(`/api/scrap/global-setting`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
 }

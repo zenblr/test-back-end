@@ -32,7 +32,7 @@ exports.userLogin = async (req, res, next) => {
             model: models.internalBranch
         }]
     })
-    console.log(checkUser)
+    // console.log(checkUser)
     if (!checkUser) {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }

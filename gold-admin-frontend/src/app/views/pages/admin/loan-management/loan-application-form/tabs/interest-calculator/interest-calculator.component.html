@@ -4,77 +4,11 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Tenure</label>
-                    </div>
-                    <div class="col-7">
-                        <select formControlName="tenure" class="form-control" (change)="setEndDate()"
-                            [class.isError]="controls.tenure.touched && controls.tenure.invalid">
-                            <option value="null" [selected]="true" [disabled]="true">Select Tenure</option>
-                            <option [value]="ten" *ngFor="let ten of tenure;index as i">
-                                <span *ngIf="i==0">{{ten}} Month</span>
-                                <span *ngIf="i > 0">{{ten}} Months</span>
-                            </option>
-                        </select>
-                        <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
-                            Required field
-                        </mat-error>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class="mandatory">Partner Name</label>
-                    </div>
-                    <div class="col-7">
-                        <select formControlName="partnerId" class="form-control" (change)="getSchemes()"
-                            [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
-                            <option value="null" [selected]="true" [disabled]="true">Select Partner</option>
-                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
-                            </option>
-                            <option [value]="partner.id" *ngFor="let partner of partnerList">
-                                {{partner.name | uppercase}}
-                            </option>
-                        </select>
-                        <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.invalid">Filed is
-                            required</mat-error>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="row kt-margin-b-20">
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class="mandatory">Scheme Name</label>
-                    </div>
-                    <div class="col-7">
-                        <select formControlName="schemeId" class="form-control" (change)="scheme()"
-                            [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
-                            <option value="null" [selected]="true" [disabled]="true">Select Schemes</option>
-                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
-                            </option>
-                            <option [value]="schemes.id" *ngFor="let schemes of schemesList">
-                                {{schemes.schemeName | uppercase}} ({{schemes.schemeAmountStart}} -
-                                {{schemes.schemeAmountEnd}})
-                            </option>
-                        </select>
-                        <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Filed is required
-                        </mat-error>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-
-                <div class="row">
-                    <div class="col-4 form-label">
                         <label class="mandatory">Loan Amount</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000" (blur)="amountValidation();getIntrest()"
+                        <input type="number" #amt class="form-control" formControlName="finalLoanAmount"
+                            placeholder="0,00,000" (blur)="eligibleCheck(amt.value);amountValidation();getIntrest()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
                         <div>
                             <mat-error
@@ -111,8 +45,75 @@
 
                     </div>
                 </div>
+
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Tenure</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="tenure" class="form-control" (change)="setEndDate()"
+                            [class.isError]="controls.tenure.touched && controls.tenure.invalid">
+                            <option value="null" [selected]="true" [disabled]="true">Select Tenure</option>
+                            <option [value]="ten" *ngFor="let ten of tenure;index as i">
+                                <span *ngIf="i==0">{{ten}} Month</span>
+                                <span *ngIf="i > 0">{{ten}} Months</span>
+                            </option>
+                        </select>
+                        <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+
             </div>
 
+        </div>
+
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Partner Name</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="partnerId" class="form-control" (change)="getSchemes()"
+                            [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
+                            <option value="null" [selected]="true" [disabled]="true">Select Partner</option>
+                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
+                            </option>
+                            <option [value]="partner.id" *ngFor="let partner of partnerList">
+                                {{partner.name | uppercase}}
+                            </option>
+                        </select>
+                        <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.invalid">Filed is
+                            required</mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Scheme Name</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="schemeId" class="form-control" (change)="scheme()"
+                            [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
+                            <option value="null" [selected]="true" [disabled]="true">Select Schemes</option>
+                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
+                            </option>
+                            <option [value]="schemes.id" *ngFor="let schemes of schemesList">
+                                {{schemes.schemeName | uppercase}} ({{schemes.schemeAmountStart}} -
+                                {{schemes.schemeAmountEnd}})
+                            </option>
+                        </select>
+                        <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Filed is required
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="row kt-margin-b-20">
@@ -172,7 +173,7 @@
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control" formControlName="interestRate" placeholder="00%"
-                            [class.isError]="controls.interestRate.touched && controls.interestRate.invalid" readonly/>
+                            [class.isError]="controls.interestRate.touched && controls.interestRate.invalid" readonly />
                         <mat-error *ngIf="controls.interestRate.errors?.required && controls.interestRate.touched">
                             Required field
                         </mat-error>
@@ -232,7 +233,7 @@
             <kt-button [value]="'Calculate'" [type]="'button'" (action)="calcInterestAmount()"></kt-button>
         </div>
     </div>
-    
+
     <div #calculation id="calculation" class="row justify-content-center kt-margin-b-20" *ngIf="dateOfPayment.length">
         <div class="col-8">
             <div class="row justify-content-center">
@@ -248,13 +249,14 @@
                                     <th scope="col" class=" text-left">Date</th>
                                     <th scope="col" class=" text-center"
                                         [ngStyle]="{'width':controls.isUnsecuredSchemeApplied.value?'auto':'50%'}">
-                                        Interest Amount <br>
-                                        (Secured Scheme)
+                                        {{partnerName | uppercase }} / {{selectedScheme[0]?.schemeName | titlecase}}
+                                        ({{controls.interestRate.value}}%)
                                     </th>
                                     <th scope="col" class=" text-center"
                                         *ngIf="controls.isUnsecuredSchemeApplied.value">
-                                        Interest Amount <br>
-                                        (UnSecured Scheme)
+                                        {{partnerName | uppercase }} /
+                                        {{selectedUnsecuredscheme[0]?.schemeName | titlecase}}
+                                        ({{controls.unsecuredInterestRate.value}}%)
                                     </th>
                                     <th scope="col" class=" text-center"
                                         *ngIf="controls.isUnsecuredSchemeApplied.value">
@@ -320,7 +322,7 @@
                                 {{controls.totalFinalInterestAmt.value | indianCurrencyFormat}}</label>
                         </div>
                     </div>
-                    <div class="row" *ngIf="controls.isUnsecuredSchemeApplied.value">
+                    <!-- <div class="row" *ngIf="controls.isUnsecuredSchemeApplied.value">
                         <div class="col-8">
                             <label for="" class="form-label">
                                 Unsecured Scheme
@@ -331,8 +333,8 @@
                                 {{selectedUnsecuredscheme[0]?.schemeName | titlecase}}
                             </label>
                         </div>
-                    </div>
-                    <div class="row" *ngIf="controls.isUnsecuredSchemeApplied.value">
+                    </div> -->
+                    <!-- <div class="row" *ngIf="controls.isUnsecuredSchemeApplied.value">
                         <div class="col-8">
                             <label for="" class="form-label">
                                 Interest Rate(Unsecured Scheme)
@@ -343,7 +345,7 @@
                                 {{controls.unsecuredInterestRate.value}}%
                             </label>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row " *ngIf="controls.isUnsecuredSchemeApplied.value && !disable">
                         <div class="col-12">
                             <div class="kt-margin-t-20 text-center">
@@ -355,7 +357,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-11" *ngIf="!disable">
+        <div class="col-11" *ngIf="showButton">
             <div class="kt-margin-t-20 kt-margin-b-30 text-right">
                 <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
             </div>
