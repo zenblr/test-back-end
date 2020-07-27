@@ -10,7 +10,8 @@ const moment = require('moment');
 
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
 
-const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory')
+const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
+const { json } = require('body-parser');
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
@@ -226,6 +227,83 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
         return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData })
     }
 
+}
+
+// amount validation and check its a secured scheme aur unsecured scheme
+exports.checkForLoanType = async (req, res, next) => {
+    let { loanAmount, securedSchemeId, fullAmount, parnterId } = req.body
+    let processingCharge = 0;
+    let partnerUnsecuredScheme
+
+    let securedScheme = await models.scheme.findOne({
+        where: { id: securedSchemeId }
+    })
+
+    let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
+
+    let securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
+
+
+
+
+    if (loanAmount > securedLoanAmount) {
+        var unsecuredAmount = Math.round(loanAmount - securedLoanAmount)
+        partnerUnsecuredScheme = await models.partner.findOne({
+            where: { id: parnterId },
+            include: [{
+                model: models.scheme,
+                where: {
+                    isActive: true,
+                    schemeType: "unsecured",
+                    [Op.and]: {
+                        schemeAmountStart: { [Op.lte]: unsecuredAmount },
+                        schemeAmountEnd: { [Op.gte]: unsecuredAmount },
+                    }
+                }
+            }]
+        });
+
+        var defaultUnsecuredScheme = partnerUnsecuredScheme.schemes.filter(scheme => { return scheme.default })
+        if (defaultUnsecuredScheme.length &&
+            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + (defaultUnsecuredScheme[0].maximumPercentageAllowed / 100)))) {
+
+            processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, defaultUnsecuredScheme[0],unsecuredAmount)
+
+            return res.status(200).json({ data: { partnerUnsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, defaultUnsecuredScheme } })
+
+        } else {
+
+            return res.status(200).json({ message: "No Unsecured Scheme Availabe" })
+
+        }
+    }
+    else {
+
+        processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme,undefined,undefined)
+        return res.status(200).json({ data: { processingCharge } })
+
+    }
+}
+
+//common FUNCTION for secure processing charge
+async function processingChargeSecuredScheme(amount, securedScheme, unsecuredScheme, unsecuredAmount) {
+    let processingCharge = 0
+    var processingChargePercent = (amount * securedScheme.processingChargePercent) / 100
+    if (processingChargePercent > parseFloat(securedScheme.processingChargeFixed)) {
+        processingCharge += processingChargePercent
+    } else {
+        processingCharge += securedScheme.processingChargeFixed
+    }
+
+    if (unsecuredAmount) {
+        let processingChargePercentUnsecure = (unsecuredAmount * unsecuredScheme.processingChargePercent) / 100
+        if (processingChargePercentUnsecure > parseFloat(unsecuredScheme.processingChargeFixed)) {
+            processingCharge += processingChargePercentUnsecure
+        } else {
+            processingCharge += unsecuredScheme.processingChargeFixed
+        }
+    }
+    return processingCharge;
 }
 
 //FUNCTION for final loan calculator
