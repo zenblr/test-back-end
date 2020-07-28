@@ -35,4 +35,17 @@ export class PartReleaseFinalService {
       })
     )
   }
+
+  uploadDocument(data) {
+    return this.http.post(`/api/jewellery-release/document`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
+
+
 }

@@ -41,6 +41,10 @@ const routes = [
   {
     path: 'full-release-final',
     component: FullReleaseFinalComponent
+  },
+  {
+    path: 'upload-document/:id',
+    component: UploadDocumentComponent
   }
 ]
 

@@ -70,6 +70,7 @@ export class AssignAppraiserComponent implements OnInit {
         this.appraiserForm.controls.customerUniqueId.patchValue(this.data.customer.customerUniqueId)
         this.appraiserForm.controls.customerId.patchValue(this.data.id)
       }
+      if (this.data.partReleaseId) this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
     } else if (this.data.action == 'edit') {
       this.title = 'Update Appraiser'
       // console.log(this.data)
@@ -81,6 +82,9 @@ export class AssignAppraiserComponent implements OnInit {
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
       }
+      if (this.data.partReleaseId)
+        this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
+
     } else {
       this.title = 'View Appraiser'
       this.appraiserForm.patchValue(this.data.appraiser)
@@ -97,7 +101,8 @@ export class AssignAppraiserComponent implements OnInit {
       appraiserId: ['', [Validators.required]],
       appoinmentDate: [],
       startTime: [this.addStartTime],
-      endTime: []
+      endTime: [],
+      partReleaseId: []
     });
   }
 
@@ -153,34 +158,42 @@ export class AssignAppraiserComponent implements OnInit {
       }
     })
     if (this.data.action == 'edit') {
-      this.appraiserService.updateAppraiser(appraiserData.id, appraiserData).subscribe(res => {
-        // console.log(res);
-        if (res) {
-          const msg = 'Appraiser Updated Sucessfully';
-          this.toastr.successToastr(msg);
-          this.dialogRef.close(true);
-        }
-      },
-        error => {
-          // console.log(error.error.message);
-          const msg = error.error.message;
-          this.toastr.errorToastr(msg);
+      if (this.data.partReleaseId) {
+        this.appraiserService.updateAppraiserPartRelease(appraiserData).subscribe(res => {
+          if (res) {
+            const msg = 'Appraiser Updated Sucessfully';
+            this.toastr.successToastr(msg);
+            this.dialogRef.close(true);
+          }
         });
+      } else {
+        this.appraiserService.updateAppraiser(appraiserData.id, appraiserData).subscribe(res => {
+          if (res) {
+            const msg = 'Appraiser Updated Sucessfully';
+            this.toastr.successToastr(msg);
+            this.dialogRef.close(true);
+          }
+        });
+      }
 
     } else {
-      this.appraiserService.assignAppraiser(appraiserData).subscribe(res => {
-        // console.log(res);
-        if (res) {
-          const msg = 'Appraiser Assigned Successfully';
-          this.toastr.successToastr(msg);
-          this.dialogRef.close(true);
-        }
-      },
-        error => {
-          // console.log(error.error.message);
-          const msg = error.error.message;
-          this.toastr.errorToastr(msg);
+      if (this.data.partReleaseId) {
+        this.appraiserService.assignAppraiserPartRelease(appraiserData).subscribe(res => {
+          if (res) {
+            const msg = 'Appraiser Assigned Successfully';
+            this.toastr.successToastr(msg);
+            this.dialogRef.close(true);
+          }
         });
+      } else {
+        this.appraiserService.assignAppraiser(appraiserData).subscribe(res => {
+          if (res) {
+            const msg = 'Appraiser Assigned Successfully';
+            this.toastr.successToastr(msg);
+            this.dialogRef.close(true);
+          }
+        });
+      }
     }
 
   }

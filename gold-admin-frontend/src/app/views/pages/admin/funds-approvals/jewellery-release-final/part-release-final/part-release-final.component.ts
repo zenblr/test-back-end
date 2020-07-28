@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { merge, Subject, Subscription } from 'rxjs';
-import { tap, takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
+import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators';
 import { PartReleaseFinalService } from '../../../../../../core/funds-approvals/jewellery-release-final/part-release-final/services/part-release-final.service';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
@@ -10,6 +10,7 @@ import { OrnamentsComponent } from '../../../loan-management/loan-application-fo
 import { AssignAppraiserComponent } from '../../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { PartReleaseFinalDatasource } from '../../../../../../core/funds-approvals/jewellery-release-final/part-release-final/datasources/part-release-final.datasource';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-part-release-final',
@@ -31,6 +32,7 @@ export class PartReleaseFinalComponent implements OnInit {
     private dataTableService: DataTableService,
     private partReleaseFinalService: PartReleaseFinalService,
     public dialog: MatDialog,
+    private router: Router,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
   ) { }
@@ -99,7 +101,19 @@ export class PartReleaseFinalComponent implements OnInit {
   }
 
   updateDocument(item) {
+    this.router.navigate([`admin/funds-approvals/upload-document/${item.id}`])
+  }
 
+  newLoan(item) {
+    const params = {
+      customerUniqueId: item.masterLoan.customer.customerUniqueId,
+      partReleaseId: item.id
+    }
+    // this.partReleaseFinalService.applyLoan(params).pipe(map(res => {
+    //   if (res) {
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerUniqueId: params.customerUniqueId, partReleaseId: params.partReleaseId } })
+    //   }
+    // })).subscribe()
   }
 
 }
