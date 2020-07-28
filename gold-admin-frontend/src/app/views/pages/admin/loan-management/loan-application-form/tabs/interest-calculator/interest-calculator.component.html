@@ -249,13 +249,13 @@
                                     <th scope="col" class=" text-left">Date</th>
                                     <th scope="col" class=" text-center"
                                         [ngStyle]="{'width':controls.isUnsecuredSchemeApplied.value?'auto':'50%'}">
-                                        {{partnerName | uppercase }} / {{selectedScheme[0]?.schemeName | titlecase}}
+                                        {{partnerName | uppercase }} / {{selectedScheme?.schemeName | titlecase}}
                                         ({{controls.interestRate.value}}%)
                                     </th>
                                     <th scope="col" class=" text-center"
                                         *ngIf="controls.isUnsecuredSchemeApplied.value">
                                         {{partnerName | uppercase }} /
-                                        {{selectedUnsecuredscheme[0]?.schemeName | titlecase}}
+                                        {{selectedUnsecuredscheme?.schemeName | titlecase}}
                                         ({{controls.unsecuredInterestRate.value}}%)
                                     </th>
                                     <th scope="col" class=" text-center"
