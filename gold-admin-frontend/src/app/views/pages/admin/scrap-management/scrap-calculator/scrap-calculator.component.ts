@@ -23,7 +23,7 @@ export class ScrapCalculatorComponent implements OnInit {
     this.globalSettingService.globalSetting$.subscribe(global => {
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
-          this.controls.scrapLtvGoldValue.patchValue(res * (global.scrapLtvGoldValue / 100));
+          this.controls.ltvGoldValue.patchValue(res * (global.ltvGoldValue / 100));
         })
       }
     });
@@ -35,7 +35,7 @@ export class ScrapCalculatorComponent implements OnInit {
       deductionWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       purity: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$'), Validators.max(100)]],
-      scrapLtvGoldValue: []
+      ltvGoldValue: []
     });
   }
 
@@ -66,7 +66,7 @@ export class ScrapCalculatorComponent implements OnInit {
       this.roughScrapForm.markAllAsTouched();
       return
     }
-    this.scrapAmount = this.controls.netWeight.value * (this.controls.purity.value / 100) * 4500;
+    this.scrapAmount = this.controls.netWeight.value * (this.controls.purity.value / 100) * this.controls.ltvGoldValue.value;
   }
 
   rejectNegativeNumber(val) {

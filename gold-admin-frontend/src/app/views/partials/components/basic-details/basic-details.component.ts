@@ -34,6 +34,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() id: EventEmitter<any> = new EventEmitter();
   @Output() totalEligibleAmt: EventEmitter<any> = new EventEmitter();
   @Output() loanStage: EventEmitter<any> = new EventEmitter();
+  @Output() scrapStage: EventEmitter<any> = new EventEmitter();
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
   @Input() loanTransfer
@@ -255,8 +256,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.controls.customerUniqueId.valid) {
       this.scrapApplicationFormService.customerDetails(this.controls.customerUniqueId.value).pipe(
         map(res => {
-          if (res.loanCurrentStage) {
-            let stage = res.loanCurrentStage;
+          if (res.scrapCurrentStage) {
+            let stage = res.scrapCurrentStage;
             stage = Number(stage) - 1;
             this.next.emit(stage);
             this.id.emit({ scrapId: res.scrapId });
@@ -320,6 +321,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
           stage = Number(stage) - 1;
           this.next.emit(stage)
           this.id.emit({ scrapId: res.scrapId })
+          this.scrapStage.emit(res.scrapCurrentStage)
         }), catchError(err => {
           this.toast.error(err.error.message)
           throw err

@@ -4,7 +4,7 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 import { map, catchError, filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
+import { ImagePreviewDialogComponent } from '../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { UploadOfferService } from '../../../../core/upload-data';
 import { KaratDetailsService } from '../../../../core/loan-setting/karat-details/services/karat-details.service';
 import { Router } from '@angular/router';
@@ -25,7 +25,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   selected: number = 0
   goldRate: any;
   ltvGoldRate: any;
-  scrapLtvGoldRate: any;
   @Input() invalid;
   @Input() disable;
   @Input() details;
@@ -44,6 +43,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('acidTest', { static: false }) acidTest: ElementRef
   @ViewChild('purity', { static: false }) purity: ElementRef
   @ViewChild('ornamentImage', { static: false }) ornamentImage: ElementRef
+  @ViewChild('ornamentImageWithWeight', { static: false }) ornamentImageWithWeight: ElementRef
+  @ViewChild('ornamentImageWithXrfMachineReading', { static: false }) ornamentImageWithXrfMachineReading: ElementRef
   left: number = 0
   width: number = 0
   ornamentsForm: FormGroup;
@@ -87,7 +88,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   getKarat() {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
-        this.karatArr = res.data;
+        this.karatArr = res;
       })
     ).subscribe()
   }
@@ -97,6 +98,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       ornamentData: this.fb.array([])
     })
     this.addmore();
+    this.ornamentsForm.valueChanges.subscribe(val => console.log(val))
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -105,7 +107,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
-        let array = changes.details.currentValue.loanOrnamentsDetail
+        let array;
+        if (changes.details.currentValue.scrapOrnamentsDetail) {
+          array = changes.details.currentValue.scrapOrnamentsDetail
+        } else {
+          array = changes.details.currentValue.loanOrnamentsDetail
+        }
         for (let index = 0; index < array.length; index++) {
           if (index > 0) {
             this.addmore()
@@ -133,7 +140,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
 
     }
-
+    if (changes.scrapIds) {
+      this.validation(0);
+    }
     if (this.disable) {
       this.ornamentsForm.disable()
     }
@@ -149,32 +158,25 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
           this.goldRate = res;
-          this.ltvGoldRate = res * (this.globalValue.ltvGoldValue / 100);
-          this.scrapLtvGoldRate = res * (this.globalValue.scrapLtvGoldValue / 100);
-          const group = this.OrnamentsData.at(0) as FormGroup;
-          group.controls.currentGoldRate.patchValue(res);
-          if (this.scrapIds) {
-            group.controls.currentLtvAmount.patchValue(this.scrapLtvGoldRate);
-          } else {
-            group.controls.currentLtvAmount.patchValue(this.ltvGoldRate);
-          }
+          this.ltvGoldRate = res * (this.globalValue.ltvGoldValue / 100)
+          const group = this.OrnamentsData.at(0) as FormGroup
+          group.controls.currentLtvAmount.patchValue(this.ltvGoldRate)
+          group.controls.currentGoldRate.patchValue(res)
         })
       }
     })
 
     this.ornamentsForm.valueChanges.subscribe(() => {
       if (this.ornamentsForm.valid) {
+        this.totalAmount = 0;
+        this.fullAmount = 0;
         if (this.scrapIds) {
-          this.totalAmount = 0;
           this.OrnamentsData.value.forEach(element => {
-            this.totalAmount += Number(element.finalScrapAmount);
+            this.totalAmount += Number(element.scrapAmount);
           });
-          console.log(this.fullAmount)
           this.totalAmount = Math.round(this.totalAmount)
           this.totalAmt.emit(this.totalAmount)
         } else {
-          this.totalAmount = 0;
-          this.fullAmount = 0;
           this.OrnamentsData.value.forEach(element => {
             this.totalAmount += Number(element.loanAmount)
             this.fullAmount += Number(element.ornamentFullAmount)
@@ -275,7 +277,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       loanAmount: [''],
       id: [],
       currentLtvAmount: [this.ltvGoldRate],
-      currentScrapLtvAmount: [this.scrapLtvGoldRate],
       ornamentImageData: [, Validators.required],
       weightMachineZeroWeightData: [],
       withOrnamentWeightData: [],
@@ -284,14 +285,30 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       purityTestImage: [[]],
       ornamentFullAmount: [],
       currentGoldRate: [this.goldRate],
-      // fineWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      imageOne: [],
-      imageTwo: [],
-      imageThree: [],
-      finalScrapAmount: []
+      ornamentImageWithWeight: [],
+      ornamentImageWithWeightData: [],
+      ornamentImageWithXrfMachineReading: [],
+      ornamentImageWithXrfMachineReadingData: [],
+      approxPurityReading: [],
+      scrapAmount: []
     }))
     this.createImageArray()
     this.selected = this.OrnamentsData.length;
+    this.validation(this.OrnamentsData.length - 1);
+  }
+
+  validation(index) {
+    if (this.scrapIds) {
+      const controls = this.OrnamentsData.at(index) as FormGroup;
+      controls.controls.ornamentImageWithWeight.setValidators(Validators.required),
+        controls.controls.ornamentImageWithWeight.updateValueAndValidity()
+      controls.controls.ornamentImageWithXrfMachineReading.setValidators(Validators.required),
+        controls.controls.ornamentImageWithXrfMachineReading.updateValueAndValidity()
+      controls.controls.approxPurityReading.setValidators(Validators.required),
+        controls.controls.approxPurityReading.updateValueAndValidity()
+      controls.controls.ltvPercent.setValidators([]),
+        controls.controls.ltvPercent.updateValueAndValidity()
+    }
   }
 
   createImageArray() {
@@ -438,6 +455,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.images[index].ornamentImage = url
         // this.images[index].ornamentImage = controls.controls.ornamentImageData.value
         break;
+      case 'ornamentImageWithWeightData':
+        controls.controls.ornamentImageWithWeight.patchValue(id);
+        controls.controls.ornamentImageWithWeightData.patchValue(url);
+        this.ornamentImageWithWeight.nativeElement.value = '';
+        this.images[index].ornamentImageWithWeight = url;
+        break;
+      case 'ornamentImageWithXrfMachineReadingData':
+        controls.controls.ornamentImageWithXrfMachineReading.patchValue(id);
+        controls.controls.ornamentImageWithXrfMachineReadingData.patchValue(url);
+        this.ornamentImageWithXrfMachineReading.nativeElement.value = '';
+        this.images[index].ornamentImageWithXrfMachineReading = url;
+        break;
     }
 
   }
@@ -449,25 +478,21 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         controls.controls.withOrnamentWeight.patchValue(null)
         controls.controls.withOrnamentWeightData.patchValue(null)
         this.images[index].withOrnamentWeight = ''
-
         break;
       case 'acidTest':
         controls.controls.acidTest.patchValue(null)
         controls.controls.acidTestData.patchValue(null)
         this.images[index].acidTest = ''
-
         break;
       case 'weightMachineZeroWeight':
         controls.controls.weightMachineZeroWeight.patchValue(null)
         controls.controls.weightMachineZeroWeightData.patchValue(null)
         this.images[index].weightMachineZeroWeight = ''
-
         break;
       case 'stoneTouch':
         controls.controls.stoneTouch.patchValue(null)
         controls.controls.stoneTouchData.patchValue(null)
         this.images[index].stoneTouch = ''
-
         break;
       case 'purityTestImage':
         let temp = controls.controls.purityTest.value
@@ -477,13 +502,21 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         controls.controls.purityTest.patchValue(temp)
         controls.controls.purityTestImage.patchValue(tempUrl)
         this.images[index].purity = tempUrl
-
         break;
       case 'ornamentImage':
         controls.controls.ornamentImage.patchValue(null)
         controls.controls.ornamentImageData.patchValue(null)
         this.images[index].ornamentImage = ''
-
+        break;
+      case 'ornamentImageWithWeight':
+        controls.controls.ornamentImageWithWeight.patchValue(null)
+        controls.controls.ornamentImageWithWeightData.patchValue(null)
+        this.images[index].ornamentImageWithWeight = ''
+        break;
+      case 'ornamentImageWithXrfMachineReading':
+        controls.controls.ornamentImageWithXrfMachineReading.patchValue(null)
+        controls.controls.ornamentImageWithXrfMachineReadingData.patchValue(null)
+        this.images[index].ornamentImageWithXrfMachineReading = ''
         break;
     }
   }
@@ -519,14 +552,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     })
   }
 
-  calculateFineWeight(index: number) {
+  calculateScrapAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
-    if (controls.controls.netWeight.valid && controls.controls.ltvPercent.valid
-      && controls.controls.netWeight.value && controls.controls.ltvPercent.value) {
-      let ltvPercent = controls.controls.ltvPercent.value;
-      let ltv = controls.controls.currentGoldRate.value * (ltvPercent / 100);
-      controls.controls.ltvAmount.patchValue(ltv);
-      controls.controls.finalScrapAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2));
+    if (controls.controls.netWeight.valid && controls.controls.approxPurityReading.valid
+      && controls.controls.netWeight.value && controls.controls.approxPurityReading.value) {
+      let approxPurityReading = controls.controls.approxPurityReading.value
+      let ltv = controls.controls.currentLtvAmount.value * (approxPurityReading / 100)
+      controls.controls.ltvAmount.patchValue(ltv)
+      controls.controls.scrapAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
     }
     console.log(this.OrnamentsData.value);
   }
@@ -546,12 +579,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   nextAction() {
-
     if (this.disable) {
       this.next.emit(3)
       return
     }
-
     if (this.ornamentsForm.invalid) {
       let array = this.OrnamentsData.controls
       for (let index = 0; index < array.length; index++) {
@@ -564,22 +595,43 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
       return
     }
-    this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
-      map(res => {
-        let array = this.OrnamentsData.controls
-        for (let index = 0; index < array.length; index++) {
-          const controls = this.OrnamentsData.at(index) as FormGroup;
-          controls.controls.id.patchValue(res.ornaments[index].id)
-        }
-        if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
-          this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
-        }else{
-          this.loanApplicationFormService.finalLoanAmount.next(0)
-        }
-        this.next.emit(3)
-      })
-    ).subscribe()
-
+    if (this.scrapIds) {
+      this.scrapApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.scrapIds).pipe(
+        map(res => {
+          let array = this.OrnamentsData.controls
+          for (let index = 0; index < array.length; index++) {
+            const controls = this.OrnamentsData.at(index) as FormGroup;
+            controls.controls.id.patchValue(res.ornaments[index].id)
+          }
+          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
+            this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+          } else {
+            this.loanApplicationFormService.finalLoanAmount.next(0)
+          }
+          let stage = res.scrapCurrentStage
+          stage = Number(stage) - 1;
+          this.next.emit(stage)
+          // this.id.emit({ scrapId: res.scrapId })
+          // this.next.emit(2)
+        })
+      ).subscribe()
+    } else {
+      this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
+        map(res => {
+          let array = this.OrnamentsData.controls
+          for (let index = 0; index < array.length; index++) {
+            const controls = this.OrnamentsData.at(index) as FormGroup;
+            controls.controls.id.patchValue(res.ornaments[index].id)
+          }
+          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
+            this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+          } else {
+            this.loanApplicationFormService.finalLoanAmount.next(0)
+          }
+          this.next.emit(3)
+        })
+      ).subscribe()
+    }
   }
 
   webcam(index, event, string) {
@@ -591,9 +643,17 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        const params = {
-          reason: 'loan',
-          masterLoanId: this.masterAndLoanIds.masterLoanId
+        let params;
+        if (this.scrapIds) {
+          params = {
+            reason: 'ornaments',
+            scrapId: this.scrapIds.scrapId
+          }
+        } else {
+          params = {
+            reason: 'loan',
+            masterLoanId: this.masterAndLoanIds.masterLoanId
+          }
         }
         if (string == 'purityTestImage') {
           if (controls.controls.purityTest.value.length >= 4) {
@@ -604,7 +664,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
           this.patchUrlIntoForm(string, res.uploadFile.path, res.uploadFile.URL, index)
         })
-
       }
     });
   }

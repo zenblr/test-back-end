@@ -6,7 +6,7 @@
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
                         <kt-basic-details [action]="action" (apiHit)="editId($event)" [scrapDetails]="customerDetail"
                             [disable]="disabledForm" (id)="scrap($event)" (next)="next($event)"
-                            [showButton]="showButton">
+                            [showButton]="showButton" (scrapStage)="stage($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <mat-tab label="Ornaments" [disabled]="disabled[1]">

@@ -33,7 +33,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   showButton: boolean = true;
   approvalFrom: boolean = false;
   accountHolderName: any;
-  loanStage: any;
+  scrapStage: any;
   ornamentDetails: any;
 
   constructor(
@@ -64,9 +64,9 @@ export class ScrapApplicationFormComponent implements OnInit {
       this.action = 'edit'
       this.customerDetail = res.customerScrap
       this.scrapIds = { scrapId: res.customerScrap.id }
-      // this.loanStage = this.customerDetail.masterLoan.loanStage
+      this.scrapStage = this.customerDetail.customerScrapCurrentStage
       this.ornamentDetails = res.customerScrap.ornamentType
-      console.log(this.loanStage)
+      console.log(this.scrapStage)
       // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "packet-image-upload") {
         if (this.customerDetail.loanPacketDetails.length) {
@@ -126,12 +126,12 @@ export class ScrapApplicationFormComponent implements OnInit {
 
   stage(event) {
     if (event)
-      this.loanStage = event
+      this.scrapStage = event
   }
 
   ornaments(event) {
     this.ornamentDetails = event
-    this.loanStage.id = 3;
+    this.scrapStage.id = 3;
     this.showButton = true;
     this.disabledForm = true;
     setTimeout(() => {
@@ -140,7 +140,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   }
 
   disbursal(event) {
-    this.loanStage.id = event;
+    this.scrapStage.id = event;
     setTimeout(() => {
       this.next(8)
     }, 500)
@@ -155,7 +155,7 @@ export class ScrapApplicationFormComponent implements OnInit {
             this.disabled[index] = false;
           }
         }
-        this.loanStage = this.customerDetail.masterLoan.loanStage
+        this.scrapStage = this.customerDetail.customerScrapCurrentStage
         this.selected = 2;
       }),
       catchError(err => {
