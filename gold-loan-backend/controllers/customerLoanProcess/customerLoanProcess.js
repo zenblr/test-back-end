@@ -307,7 +307,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
-            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied } })
+            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme } })
 
         } else {
             return res.status(200).json({ message: "No Unsecured Scheme Availabe" })
@@ -316,7 +316,7 @@ exports.checkForLoanType = async (req, res, next) => {
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
-        return res.status(200).json({ data: { securedScheme, processingCharge } })
+        return res.status(200).json({ data: { securedScheme, processingCharge, securedScheme } })
 
     }
 }
@@ -392,6 +392,8 @@ exports.interestRate = async (req, res, next) => {
 exports.generateInterestTable = async (req, res, next) => {
     let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure } = req.body
     let interestTable = []
+    let totalInterestAmount = 0;
+
     // secure interest calculation
     let securedInterestAmount = await ((Number(securedLoanAmount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
         / 360).toFixed(2)
@@ -403,10 +405,8 @@ exports.generateInterestTable = async (req, res, next) => {
     }
 
     // generate Table
-
-    // let momentDate = moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD')
-    let length = (tenure * 30)/paymentFrequency
-
+    let length = (tenure * 30) / paymentFrequency
+    console.log(length)
     for (let index = 0; index < Number(length); index++) {
         let date = new Date()
         let data = {
@@ -419,7 +419,24 @@ exports.generateInterestTable = async (req, res, next) => {
         interestTable.push(data)
     }
 
-    return res.status(200).json({data:{ securedInterestAmount, unsecuredInterestAmount, interestTable} })
+    if (!Number.isInteger(length)) {
+        const lastElementOfTable = interestTable[interestTable.length - 1]
+        let secure = (securedInterestAmount / Math.ceil(length)).toFixed(2)
+        lastElementOfTable.securedInterestAmount = secure
+
+        if (isUnsecuredSchemeApplied) {
+            let unsecure = (unsecuredInterestAmount / Math.ceil(length)).toFixed(2)
+            lastElementOfTable.unsecuredInterestAmount = unsecure
+            lastElementOfTable.totalAmount = Number(lastElementOfTable.securedInterestAmount) + Number(lastElementOfTable.unsecuredInterestAmount)
+        }
+
+    }
+
+    interestTable.forEach(amount => {
+        totalInterestAmount += amount.totalAmount
+    });
+
+    return res.status(200).json({ data: { interestTable, totalInterestAmount } })
 }
 
 //FUNCTION for final loan calculator
