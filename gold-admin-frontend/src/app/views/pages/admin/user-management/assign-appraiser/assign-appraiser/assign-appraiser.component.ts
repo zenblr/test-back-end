@@ -81,6 +81,7 @@ export class AssignAppraiserComponent implements OnInit {
 
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
+        if (this.data.customer.customerUniqueId) this.controls.customerUniqueId.patchValue(this.data.customer.customerUniqueId)
       }
       if (this.data.partReleaseId)
         this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
