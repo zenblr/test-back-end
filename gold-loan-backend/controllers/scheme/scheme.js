@@ -319,3 +319,80 @@ exports.UpdateDefault = async (req, res, next) => {
     return res.status(200).json({ message: 'Success' });
 
 }
+
+
+exports.checkSlab = async (req, res, next) => {
+    let { partnerId, schemeId } = req.query
+
+    let securedScheme = await models.scheme.findOne({
+        where: { id: schemeId },
+        attributes: ['id'],
+        order: [
+            [models.schemeInterest, 'days', 'asc']
+        ],
+        include: [{
+            model: models.schemeInterest,
+            as: 'schemeInterest',
+            attributes: ['days', 'interestRate']
+        }]
+    })
+
+    let unsecuredScheme = await models.partner.findOne({
+        where: { id: partnerId },
+        attributes: ['id'],
+        order: [
+            [models.scheme, 'id', 'asc'],
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
+        include: [
+            {
+                model: models.scheme,
+                attributes: ['id', 'default'],
+                where: { isActive: true, schemeType: 'unsecured' },
+                include: [
+                    {
+                        model: models.schemeInterest,
+                        as: 'schemeInterest',
+                        attributes: ['days', 'interestRate']
+                    }
+                ]
+            }
+        ]
+    })
+
+    var defaultUnsecuredScheme = unsecuredScheme.schemes.filter(scheme => { return scheme.default })
+
+    let unsecured = unsecuredScheme.schemes
+
+    let defaultFind = await selectScheme(defaultUnsecuredScheme, securedScheme)
+
+    let checkScheme = await selectScheme(unsecured, securedScheme)
+
+    return res.status(200).json({ data: { securedScheme, defaultFind, checkScheme } })
+}
+
+
+async function selectScheme(unsecured, scheme) {
+    let unsecuredArray = [];
+    for (let i = 0; i < unsecured.length; i++) {
+        let unsec = unsecured[i];
+        let schemeInterest = unsec.schemeInterest;
+        if (schemeInterest.length != scheme.schemeInterest.length) {
+            continue;
+        }
+        let isMached = true;
+        for (let j = 0; j < schemeInterest.length; j++) {
+            let schemeIntUnSec = schemeInterest[j];
+            let schemeInt = scheme.schemeInterest[j];
+
+            if (schemeIntUnSec.days != schemeInt.days) {
+                isMached = false;
+                break;
+            }
+        }
+        if (isMached) {
+            unsecuredArray.push(unsec);
+        }
+    }
+    return unsecuredArray
+}

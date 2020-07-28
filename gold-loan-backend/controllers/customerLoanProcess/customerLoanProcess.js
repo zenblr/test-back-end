@@ -236,10 +236,19 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 exports.checkForLoanType = async (req, res, next) => {
     let { loanAmount, securedSchemeId, fullAmount, parnterId } = req.body
     let processingCharge = 0;
-    let partnerUnsecuredScheme
+    let unsecuredScheme
 
-    let securedScheme = await models.scheme.findOne({
-        where: { id: securedSchemeId }
+    let = await models.scheme.findOne({
+        where: { id: securedSchemeId },
+        attributes: ['id'],
+        order: [
+            [models.schemeInterest, 'days', 'asc']
+        ],
+        include: [{
+            model: models.schemeInterest,
+            as: 'schemeInterest',
+            attributes: ['days', 'interestRate']
+        }]
     })
 
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
@@ -249,42 +258,59 @@ exports.checkForLoanType = async (req, res, next) => {
 
     if (loanAmount > securedLoanAmount) {
         var unsecuredAmount = Math.round(loanAmount - securedLoanAmount)
-        partnerUnsecuredScheme = await models.partner.findOne({
-            where: { id: parnterId },
+
+        unsecuredScheme = await models.partner.findOne({
+            where: { id: partnerId },
+            attributes: ['id'],
             order: [
+                [models.scheme, 'id', 'asc'],
                 [models.scheme, models.schemeInterest, 'days', 'asc']
             ],
-            include: [{
-                model: models.scheme,
-                where: {
-                    isActive: true,
-                    schemeType: "unsecured",
-                    [Op.and]: {
-                        schemeAmountStart: { [Op.lte]: unsecuredAmount },
-                        schemeAmountEnd: { [Op.gte]: unsecuredAmount },
-                    }
-                },
-                include: [
-                    {
-                        model: models.schemeInterest,
-                        as: 'schemeInterest'
-                    }
-                ]
-            }]
-        });
+            include: [
+                {
+                    model: models.scheme,
+                    attributes: ['id', 'default'],
+                    where: {
+                        isActive: true,
+                        schemeType: 'unsecured',
+                        [Op.and]: {
+                            schemeAmountStart: { [Op.lte]: unsecuredAmount },
+                            schemeAmountEnd: { [Op.gte]: unsecuredAmount },
+                        }
+                    },
+                    include: [
+                        {
+                            model: models.schemeInterest,
+                            as: 'schemeInterest',
+                            attributes: ['days', 'interestRate']
+                        }
+                    ]
+                }
+            ]
+        })
+        let unsecured = unsecuredScheme.schemes
+        var unsecuredSchemeApplied;
 
-        var defaultUnsecuredScheme = partnerUnsecuredScheme.schemes.filter(scheme => { return scheme.default })
-        if (defaultUnsecuredScheme.length &&
-            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + (defaultUnsecuredScheme[0].maximumPercentageAllowed / 100)))) {
+        var defaultUnsecuredScheme = unsecuredScheme.schemes.filter(scheme => { return scheme.default })
+        let defaultFind = await selectScheme(defaultUnsecuredScheme, securedScheme)
 
-            processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, defaultUnsecuredScheme[0], unsecuredAmount)
+        if (!check.isEmpty(defaultFind)) {
+            unsecuredSchemeApplied = defaultFind[0]
+        } else {
+            let checkScheme = await selectScheme(unsecured, securedScheme)
+            unsecuredSchemeApplied = checkScheme[0]
+        }
 
-            return res.status(200).json({ data: { partnerUnsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, defaultUnsecuredScheme } })
+
+        if (unsecuredSchemeApplied.length &&
+            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + (unsecuredSchemeApplied.maximumPercentageAllowed / 100)))) {
+
+            processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+
+            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied } })
 
         } else {
-
             return res.status(200).json({ message: "No Unsecured Scheme Availabe" })
-
         }
     }
     else {
@@ -293,6 +319,32 @@ exports.checkForLoanType = async (req, res, next) => {
         return res.status(200).json({ data: { processingCharge } })
 
     }
+}
+
+
+async function selectScheme(unsecured, scheme) {
+    let unsecuredArray = [];
+    for (let i = 0; i < unsecured.length; i++) {
+        let unsec = unsecured[i];
+        let schemeInterest = unsec.schemeInterest;
+        if (schemeInterest.length != scheme.schemeInterest.length) {
+            continue;
+        }
+        let isMached = true;
+        for (let j = 0; j < schemeInterest.length; j++) {
+            let schemeIntUnSec = schemeInterest[j];
+            let schemeInt = scheme.schemeInterest[j];
+
+            if (schemeIntUnSec.days != schemeInt.days) {
+                isMached = false;
+                break;
+            }
+        }
+        if (isMached) {
+            unsecuredArray.push(unsec);
+        }
+    }
+    return unsecuredArray
 }
 
 //common FUNCTION for secure processing charge
