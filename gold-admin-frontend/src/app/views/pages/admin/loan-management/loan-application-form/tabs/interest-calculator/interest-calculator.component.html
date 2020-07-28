@@ -8,7 +8,7 @@
                     </div>
                     <div class="col-7">
                         <input type="number" #amt class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000" (blur)="eligibleCheck(amt.value);amountValidation();getIntrest()"
+                            placeholder="0,00,000" (blur)="amountValidation();getIntrest()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
                         <div>
                             <mat-error

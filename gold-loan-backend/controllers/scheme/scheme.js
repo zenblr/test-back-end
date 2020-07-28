@@ -6,8 +6,7 @@ const check = require('../../lib/checkLib');
 
 // add scheme
 exports.addScheme = async (req, res, next) => {
-    let { schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-        interestRateOneHundredEightyDaysMonthly, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning } = req.body;
+    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest } = req.body;
     schemeName = schemeName.toLowerCase();
     let schemeNameExist = await models.scheme.findOne({
         where: { schemeName },
@@ -27,9 +26,14 @@ exports.addScheme = async (req, res, next) => {
     await sequelize.transaction(async t => {
 
         const addSchemeData = await models.scheme.create({
-            schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-            interestRateOneHundredEightyDaysMonthly, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, default: isDefault, isTopup: isTopUp, isSplitAtBeginning
+            schemeName, schemeAmountStart, schemeAmountEnd, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, default: isDefault, isTopup: isTopUp, isSplitAtBeginning
+        }, { transaction: t });
+
+        schemeInterest.forEach(element => {
+            element['schemeId'] = addSchemeData.id
         });
+
+        await models.schemeInterest.bulkCreate(schemeInterest, { returning: true, transaction: t });
 
         let readSchemeByPartner = await models.partner.findOne({
             where: { isActive: true, id: partnerId[0] },
@@ -46,7 +50,6 @@ exports.addScheme = async (req, res, next) => {
             if (isDefault == true) {
                 await models.scheme.update({ default: false }, { where: { id: { [Op.in]: schemeArray } } });
             }
-
 
         }
 
@@ -66,41 +69,35 @@ exports.addScheme = async (req, res, next) => {
 exports.readScheme = async (req, res, next) => {
 
     var { isActive } = req.query;
-    const query = {};
-    let readSchemeData;
+    let query = {};
     if (isActive) {
         query.isActive = isActive;
-        readSchemeData = await models.partner.findAll({
-            where: { isActive: true },
-            order: [
-                ['id', 'asc'],
-                [models.scheme, 'id', 'desc']
 
-            ],
-            include: [
-                {
-                    model: models.scheme,
-                    required: true,
-                    where: query
-                },
-            ],
-        })
     } else {
-        readSchemeData = await models.partner.findAll({
-            where: { isActive: true },
-            order: [
-                ['id', 'asc'],
-                [models.scheme, 'id', 'desc']
-            ],
-            include: [
-                {
-                    model: models.scheme,
-                    required: true,
-                },
-            ],
-        })
+        query = {}
     }
+    let readSchemeData = await models.partner.findAll({
+        where: { isActive: true },
+        order: [
+            ['id', 'asc'],
+            [models.scheme, 'id', 'desc'],
+            [models.scheme, models.schemeInterest, 'days', 'asc']
 
+        ],
+        include: [
+            {
+                model: models.scheme,
+                required: true,
+                where: query,
+                include: [
+                    {
+                        model: models.schemeInterest,
+                        as: 'schemeInterest'
+                    }
+                ]
+            },
+        ],
+    })
     if (!readSchemeData[0]) {
         return res.status(200).json({ data: readSchemeData });
 
@@ -113,7 +110,16 @@ exports.readScheme = async (req, res, next) => {
 exports.readSchemeById = async (req, res, next) => {
 
     const schemeId = req.params.id;
-    const readSchemeByIdData = await models.scheme.findOne({ where: { id: schemeId, isActive: true } });
+    const readSchemeByIdData = await models.scheme.findOne({
+        where: { id: schemeId, isActive: true },
+        order: [
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
+        include: [{
+            model: models.schemeInterest,
+            as: 'schemeInterest'
+        }]
+    });
     if (!readSchemeByIdData) {
         return res.status(404).json({ message: 'data not found' });
     }
@@ -146,6 +152,9 @@ exports.readSchemeOnAmount = async (req, res, next) => {
     let { amount } = req.params;
 
     let partnerSecuredScheme = await models.partner.findAll({
+        order: [
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
         include: [{
             model: models.scheme,
             where: {
@@ -154,8 +163,14 @@ exports.readSchemeOnAmount = async (req, res, next) => {
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
                     schemeAmountEnd: { [Op.gte]: amount },
+                },
+            },
+            include: [
+                {
+                    model: models.schemeInterest,
+                    as: 'schemeInterest'
                 }
-            }
+            ]
         }]
     });
 
@@ -171,6 +186,9 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
     // let {amount}  = req.body;
     let partnerSecuredScheme = await models.partner.findOne({
         where: { id },
+        order: [
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
         include: [{
             model: models.scheme,
             where: {
@@ -178,9 +196,15 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
                 schemeType: "unsecured",
                 [Op.and]: {
                     schemeAmountStart: { [Op.lte]: amount },
-                    // schemeAmountEnd: { [Op.gte]: amount },
+                    schemeAmountEnd: { [Op.gte]: amount },
                 }
-            }
+            },
+            include: [
+                {
+                    model: models.schemeInterest,
+                    as: 'schemeInterest'
+                }
+            ]
         }]
     });
     if (!partnerSecuredScheme) {
