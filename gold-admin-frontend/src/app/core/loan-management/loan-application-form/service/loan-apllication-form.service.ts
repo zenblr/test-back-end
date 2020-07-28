@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import printJS from 'print-js';
 
 @Injectable({
   providedIn: 'root'
@@ -25,9 +26,15 @@ export class LoanApplicationFormService {
       map(res => res)
     )
   }
-  
+
   checkForLoanType(data): Observable<any> {
-    return this.http.post(`/api/loan-process/check-loan-type`,data).pipe(
+    return this.http.post(`/api/loan-process/check-loan-type`, data).pipe(
+      map(res => res)
+    )
+  }
+
+  getInterest(data): Observable<any> {
+    return this.http.post(`/api/loan-process/interest-rate`, data).pipe(
       map(res => res)
     )
   }
@@ -45,13 +52,13 @@ export class LoanApplicationFormService {
     )
   }
 
-  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds,fullAmount): Observable<any> {
+  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds, fullAmount): Observable<any> {
     let data = {
       loanOrnaments: loanOrnaments,
       totalEligibleAmt: totalEligibleAmt,
       loanId: masterAndLoanIds.loanId,
       masterLoanId: masterAndLoanIds.masterLoanId,
-      fullAmount:fullAmount
+      fullAmount: fullAmount
     }
     return this.http.post(`/api/loan-process/ornaments-details`, data).pipe(
       map(res => res)
@@ -116,6 +123,28 @@ export class LoanApplicationFormService {
     return this.http.post(`/api/loan-process/loan-documents`, data).pipe(
       map(res => res)
     )
+  }
+
+  calculateFinalInterestTable(data):Observable<any>{
+    return this.http.post('/api/loan-process/generate-interest-table',data).pipe(
+      map(res=> res)
+    )
+  }
+
+  getPdf(customerLoanId): Observable<any> {
+    return this.http.post(`/api/loan-process/get-print-details`, { customerLoanId }).pipe(
+      tap(res => {
+        if (res) {
+          var binary = '';
+          var bytes = new Uint8Array(res);
+          var len = bytes.byteLength;
+          for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          let base64 = (window.btoa(binary));
+          printJS({ printable: base64, type: 'pdf', base64: true })
+        }
+      }))
   }
 
 }

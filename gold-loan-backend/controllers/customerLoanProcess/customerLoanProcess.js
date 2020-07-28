@@ -239,7 +239,16 @@ exports.checkForLoanType = async (req, res, next) => {
     let partnerUnsecuredScheme
 
     let securedScheme = await models.scheme.findOne({
-        where: { id: securedSchemeId }
+        where: { id: securedSchemeId },
+        // order: [
+        //     [models.scheme, models.schemeInterest, 'days', 'asc']
+        // ],
+        include: [
+            {
+                model: models.schemeInterest,
+                as: 'schemeInterest'
+            }
+        ]
     })
 
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
@@ -279,7 +288,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, defaultUnsecuredScheme[0], unsecuredAmount)
 
-            return res.status(200).json({ data: { partnerUnsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, defaultUnsecuredScheme } })
+            return res.status(200).json({ data: { securedScheme, partnerUnsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, defaultUnsecuredScheme } })
 
         } else {
 
@@ -290,7 +299,7 @@ exports.checkForLoanType = async (req, res, next) => {
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
-        return res.status(200).json({ data: { processingCharge } })
+        return res.status(200).json({ data: { securedScheme, processingCharge } })
 
     }
 }
@@ -314,6 +323,56 @@ async function processingChargeSecuredScheme(amount, securedScheme, unsecuredSch
         }
     }
     return processingCharge;
+}
+
+// FUNCTION for interest
+exports.interestRate = async (req, res, next) => {
+    let { securedSchemeId, unsecuredSchemeId, paymentFrequency } = req.body
+
+    let securedinterestRate = await models.schemeInterest.findOne({
+        where: { days: paymentFrequency, schemeId: securedSchemeId },
+        attributes: ['interestRate'],
+    })
+
+    if (unsecuredSchemeId) {
+        var unsecuredinterestRate = await models.schemeInterest.findOne({
+            where: { days: paymentFrequency, schemeId: unsecuredSchemeId },
+            attributes: ['interestRate'],
+        })
+    }
+
+    return res.status(200).json({ data: { securedinterestRate, unsecuredinterestRate } })
+}
+
+// Function to generate Interest Table
+
+exports.generateInterestTable = async (req, res, next) => {
+    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure } = req.body
+    let interestTable = []
+    // secure interest calculation
+    let securedInterestAmount = await ((Number(securedLoanAmount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
+        / 360).toFixed(2)
+
+    // unsecure interest calculation
+    if (isUnsecuredSchemeApplied) {
+        var unsecuredInterestAmount = await ((Number(unsecuredLoanAmount) * (Number(unsecuredInterestRate) * 12 / 100)) * Number(paymentFrequency)
+            / 360).toFixed(2)
+    }
+
+    // generate Table
+
+    for (let index = 0; index < Number(tenure); index++) {
+        let data = {
+            emiDueDate: new Date(date.setDate(startDate.getDate() + (30 * (index + 1)))),
+            paymentType: this.paymentType,
+            securedInterestAmount: securedInterestAmount,
+            unsecuredInterestAmount: unsecuredInterestAmount,
+            totalAmount: Number(securedInterestAmount) + Number(unsecuredInterestAmount)
+        }
+        interestTable.push(data)
+    }
+
+    return res.status(200).json({ securedInterestAmount, unsecuredInterestAmount, interestTable })
 }
 
 //FUNCTION for final loan calculator

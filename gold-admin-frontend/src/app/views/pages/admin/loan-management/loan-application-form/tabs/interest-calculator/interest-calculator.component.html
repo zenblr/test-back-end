@@ -8,7 +8,7 @@
                     </div>
                     <div class="col-7">
                         <input type="number" #amt class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000" (blur)="amountValidation();getIntrest()"
+                            placeholder="0,00,000" (blur)="amountValidation()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
                         <div>
                             <mat-error
@@ -157,7 +157,7 @@
                         <select class="form-control" formControlName="paymentFrequency" (change)="getIntrest()"
                             [class.isError]="controls.paymentFrequency.touched && controls.paymentFrequency.invalid">
                             <option value="" [selected]="true" [disabled]="true">Select Payment Frequency</option>
-                            <option [value]="pay.value" *ngFor="let pay of repayType">{{pay.name | titlecase}}</option>
+                            <option [value]="pay.days" *ngFor="let pay of paymentFrequency">{{pay.days}}</option>
                         </select>
                         <mat-error
                             *ngIf="controls.paymentFrequency.errors?.required && controls.paymentFrequency.touched">

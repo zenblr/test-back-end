@@ -2,7 +2,7 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { addPackageImagesForLoan, disbursementOfLoanAmount,
+const { addPackageImagesForLoan, disbursementOfLoanAmount,interestRate,generateInterestTable,
   disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating,checkForLoanType,
   loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer, getSingleLoanInCustomerManagment, getDetailsForPrint } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
@@ -16,6 +16,10 @@ route.post('/nominee-details', checkAuth, wrapper(loanNomineeDetails)); // ADD C
 route.post('/ornaments-details', checkAuth, wrapper(loanOrnmanetDetails)); // ADD CUSTOMER BANK DETAIL
 
 route.post('/check-loan-type',checkAuth,wrapper(checkForLoanType)) // amount validation and check for loan type
+
+route.post('/interest-rate',checkAuth,wrapper(interestRate)) // return interest for secure and unsecure
+
+route.post('/generate-interest-table',checkAuth,wrapper(generateInterestTable))
 
 route.post('/final-loan-details', checkAuth, wrapper(loanFinalLoan)); // ADD CUSTOMER BANK DETAIL
 
