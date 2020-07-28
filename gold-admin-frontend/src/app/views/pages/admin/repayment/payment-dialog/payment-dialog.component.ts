@@ -18,39 +18,45 @@ export class PaymentDialogComponent implements OnInit {
 
   ngOnInit() {
     this.initForm()
+    if (this.data.value) this.paymentForm.patchValue(this.data.value)
   }
 
   initForm() {
     this.paymentForm = this.fb.group({
-      paymentMode: ['', [Validators.required]],
-      depositBankName: [],
+      paymentType: ['', [Validators.required]],
+      bankName: [],
+      branchName: [],
       transactionId: [],
-      depositDate: [],
-      depositAmount: [],
+      depositDate: [, [Validators.required]],
+      paidAmount: [, [Validators.required]],
       chequeNumber: []
     })
   }
 
   setValidation(event) {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     const paymentMode = event.target.value
     switch (paymentMode) {
       case 'cash':
         this.paymentForm.clearValidators();
-        this.paymentForm.controls.paymentMode.setValidators([Validators.required])
+        this.paymentForm.controls.paymentType.setValidators([Validators.required])
+        this.paymentForm.controls.paidAmount.setValidators([Validators.required])
+        this.paymentForm.controls.depositDate.setValidators([Validators.required])
         this.paymentForm.updateValueAndValidity()
         break;
 
-      case 'neft':
+      case 'IMPS':
         this.paymentForm.clearValidators();
 
         for (const key in this.paymentForm.controls) {
           if (key !== 'chequeNumber') {
             this.paymentForm.controls[key].setValidators([Validators.required])
+          } else {
+            this.paymentForm.controls[key].patchValue(null)
           }
         }
         this.paymentForm.updateValueAndValidity()
-        console.log(this.paymentForm)
+        // console.log(this.paymentForm)
 
 
         // this.paymentForm.controls.paymentMode.setValidators([Validators.required])
@@ -67,10 +73,13 @@ export class PaymentDialogComponent implements OnInit {
         for (const key in this.paymentForm.controls) {
           if (key != 'transactionId') {
             this.paymentForm.controls[key].setValidators([Validators.required])
+            if (key === 'chequeNumber') this.paymentForm.controls[key].setValidators([Validators.required, Validators.pattern('[0-9]{6}')])
+          } else {
+            this.paymentForm.controls[key].patchValue(null)
           }
         }
         this.paymentForm.updateValueAndValidity()
-        console.log(this.paymentForm)
+        // console.log(this.paymentForm)
 
         // this.paymentForm.controls.paymentMode.setValidators([Validators.required])
         // this.paymentForm.controls.chequeNumber.setValidators([Validators.required])
@@ -90,7 +99,11 @@ export class PaymentDialogComponent implements OnInit {
   }
 
   closeModal() {
-    this.dialogRef.close()
+    if (this.data.value) {
+      this.dialogRef.close(this.paymentForm.value)
+    } else {
+      this.dialogRef.close()
+    }
   }
 
   action(event) {
@@ -103,7 +116,15 @@ export class PaymentDialogComponent implements OnInit {
 
   submit() {
     if (this.paymentForm.invalid) return this.paymentForm.markAllAsTouched()
-
+    this.paymentForm.patchValue({ paidAmount: Number(this.controls.paidAmount.value) })
+    if (this.controls.paymentType.value === 'cash') {
+      this.paymentForm.patchValue({
+        branchName: null,
+        bankName: null,
+        transactionId: null,
+        chequeNumber: null
+      })
+    }
     this.dialogRef.close(this.paymentForm.value)
   }
 }

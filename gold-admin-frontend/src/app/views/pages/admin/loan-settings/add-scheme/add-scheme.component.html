@@ -170,24 +170,45 @@
                             <label class="kt-padding-l-10 mandatory"> Split at Beginning</label>
                         </div>
                         <div class="col-9 form-label kt-padding-l-10">
-                           <input type="radio" name="split" id="yes" value="true" formControlName="isSplitAtBeginning">
-                           <label for="yes" >Yes</label>
-                           <span class="kt-padding-l-10"></span>
-                           <input type="radio" name="split" id="no" value="false" formControlName="isSplitAtBeginning" >
-                           <label for="no">No</label>
+                            <!-- <input type="radio" id="yes" value="true" formControlName="isSplitAtBeginning">
+                            <label for="yes">Yes</label>
+                            <span class="kt-padding-l-10"></span>
+                            <input type="radio" id="no" value="false" formControlName="isSplitAtBeginning">
+                            <label for="no">No</label> -->
 
+                            <mat-radio-group formControlName="isSplitAtBeginning">
+                                <mat-radio-button [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button [value]="false">No</mat-radio-button>
+                            </mat-radio-group>
                         </div>
                     </div>
-                    
+
                     <div class="row kt-padding-t-15">
                         <div class="offset-3 col-3">
-                            <p class="text-color form-label">30 Days</p>
+                            <p class="text-color form-label">
+                                <mat-form-field class="example-full-width">
+                                    <input type="number" matInput formControlName="numberOfDays1">
+                                    <span matSuffix>&nbsp; Days</span>
+                                </mat-form-field>
+                            </p>
                         </div>
                         <div class="col-3">
-                            <p class="text-color form-label">90 Days</p>
+                            <p class="text-color form-label">
+                                <!-- <input type="number" class="form-control" /> Days -->
+                                <mat-form-field class="example-full-width">
+                                    <input type="number" matInput formControlName="numberOfDays2">
+                                    <span matSuffix>&nbsp; Days</span>
+                                </mat-form-field>
+                            </p>
                         </div>
                         <div class="col-3">
-                            <p class="text-color form-label">180 Days</p>
+                            <p class="text-color form-label">
+                                <!-- <input type="number" class="form-control" /> Days -->
+                                <mat-form-field class="example-full-width">
+                                    <input type="number" matInput formControlName="numberOfDays3">
+                                    <span matSuffix>&nbsp; Days</span>
+                                </mat-form-field>
+                            </p>
                         </div>
                     </div>
                     <div class="row">

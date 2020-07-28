@@ -10,6 +10,7 @@ exports.uploadFile =
     async (req, res, next) => {
         const fileFor = req.query.reason;
         const loanId = req.query.loanId;
+        const partReleaseId = req.query.partReleaseId;
         const customerId = req.query.customerId;
         const partnerId = req.query.partnerId;
         let destination;
@@ -31,7 +32,9 @@ exports.uploadFile =
             destination = `public/uploads/scheme/${partnerId}/`;
         } else if (fileFor == "holiday") {
             destination = `public/uploads/holiday/`
-        } else {
+        } else if (fileFor == "partRelease") {
+            destination = `public/uploads/partRelease/${partReleaseId}/`;
+        }else {
             return res.status(422).json({ message: 'reason not found' });
         }
         if (process.env.FILE_TO_AWS == 'true') {

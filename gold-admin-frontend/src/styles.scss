@@ -721,4 +721,11 @@ mat-header-row {
 	border: unset !important;
 }
 
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+	border-color: #454d67 !important;
+}
+.mat-radio-button.mat-accent .mat-radio-inner-circle {
+	background-color: #454d67 !important;
+}
+
 

@@ -23,7 +23,7 @@ export class PartReleaseFinalDatasource extends BaseDataSource {
                 map(
                     report => {
                         this.paginatorTotalSubject.next(report.count);
-                        this.entitySubject.next(report);
+                        this.entitySubject.next(report.data);
                     }
                 ),
                 catchError(() => of([])),

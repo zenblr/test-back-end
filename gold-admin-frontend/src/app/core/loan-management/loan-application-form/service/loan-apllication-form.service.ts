@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class LoanApplicationFormService {
   finalLoanAmount = new BehaviorSubject(0)
   finalLoanAmount$ = this.finalLoanAmount.asObservable()
 
-  constructor(public http: HttpClient) { }
+  constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   customerDetails(id): Observable<any> {
     return this.http.get(`/api/loan-process/customer-loan-details/${id}`).pipe(
@@ -25,7 +26,7 @@ export class LoanApplicationFormService {
       map(res => res)
     )
   }
-  
+
 
   basicSubmit(details): Observable<any> {
     return this.http.post(`/api/loan-process/basic-details`, details).pipe(
@@ -40,13 +41,13 @@ export class LoanApplicationFormService {
     )
   }
 
-  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds,fullAmount): Observable<any> {
+  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds, fullAmount): Observable<any> {
     let data = {
       loanOrnaments: loanOrnaments,
       totalEligibleAmt: totalEligibleAmt,
       loanId: masterAndLoanIds.loanId,
       masterLoanId: masterAndLoanIds.masterLoanId,
-      fullAmount:fullAmount
+      fullAmount: fullAmount
     }
     return this.http.post(`/api/loan-process/ornaments-details`, data).pipe(
       map(res => res)
@@ -110,6 +111,17 @@ export class LoanApplicationFormService {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/loan-documents`, data).pipe(
       map(res => res)
+    )
+  }
+
+  applyLoanFromPartRelease(data): Observable<any> {
+    return this.http.get(`/api/jewellery-release/apply-loan/${data.customerUniqueId}?partReleaseId=${data.partReleaseId}`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
     )
   }
 
