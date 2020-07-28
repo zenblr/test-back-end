@@ -50,7 +50,7 @@ export class InterestCalculatorComponent implements OnInit {
   approved: boolean = false
   unSecuredAmount: number;
   unSecuredScheme: any;
-  selectedUnsecuredscheme: any[] = [];
+  selectedUnsecuredscheme: any;
   globalValue: any;
   transferLoan: boolean = false;
   destroy$ = new Subject()
@@ -174,12 +174,12 @@ export class InterestCalculatorComponent implements OnInit {
     if (this.controls.finalLoanAmount.valid) {
       this.partnerService.getPartnerBySchemeAmount(Math.floor(this.controls.finalLoanAmount.value)).subscribe(res => {
         this.partnerList = res.data;
-        if (this.controls.schemeId.value && this.details) {
-          this.details = ''
-          this.returnScheme()
-        } else {
+        // if (this.controls.schemeId.value && this.details) {
+        //   this.details = ''
+        //   this.returnScheme()
+        // } else {
           this.getSchemes()
-        }
+        // }
       })
     }
   }
@@ -249,7 +249,6 @@ export class InterestCalculatorComponent implements OnInit {
     })
 
     this.selectedScheme = temp[0]
-    this.paymentFrequency = this.selectedScheme.schemeInterest
   }
 
   scheme() {
@@ -325,10 +324,13 @@ export class InterestCalculatorComponent implements OnInit {
             this.controls.isUnsecuredSchemeApplied.patchValue(true);
             this.controls.unsecuredSchemeId.patchValue(res.data.unsecuredSchemeApplied.id)
             this.controls.unsecuredLoanAmount.patchValue(res.data.unsecuredAmount)
-            this.selectedUnsecuredscheme = res.data.defaultUnsecuredScheme
+            this.selectedUnsecuredscheme = res.data.unsecuredSchemeApplied
+            this.controls.securedLoanAmount.patchValue(res.data.securedLoanAmount)
+            this.unSecuredScheme = res.data.unsecuredScheme
+          }else{
+            this.controls.securedLoanAmount.patchValue(Number(amt))
           }
           this.controls.processingCharge.patchValue(res.data.processingCharge)
-          this.controls.securedLoanAmount.patchValue(res.data.securedLoanAmount)
           this.paymentFrequency = res.data.securedScheme.schemeInterest;
         }
 
@@ -458,7 +460,13 @@ export class InterestCalculatorComponent implements OnInit {
     }
 
     this.loanFormService.calculateFinalInterestTable(this.finalInterestForm.value).subscribe(res=>{
-      this.dateOfPayment = res.data.interestTable
+      this.dateOfPayment = res.data.interestTable;
+      this.controls.totalFinalInterestAmt.patchValue(res.data.totalInterestAmount)
+      this.ref.detectChanges()
+      setTimeout(() => {
+        const dom = this.eleRef.nativeElement.querySelector('#calculation') as HTMLElement
+        dom.scrollIntoView({ behavior: "smooth", block: "end" })
+      }, 500)
     })
     return 
     // if (this.controls.isUnsecuredSchemeApplied.value) {
@@ -488,7 +496,7 @@ export class InterestCalculatorComponent implements OnInit {
 
     this.securedInterestAmount = this.securedInterestAmount.toFixed(2);
     // this.CheckProcessingCharge()
-    this.generateTable()
+    // this.generateTable()
 
     setTimeout(() => {
       const dom = this.eleRef.nativeElement.querySelector('#calculation') as HTMLElement
@@ -496,74 +504,74 @@ export class InterestCalculatorComponent implements OnInit {
     }, 500)
   }
 
-  CheckProcessingCharge() {
-    let secure = this.selectedScheme;
-    let unsecure = this.selectedUnsecuredscheme[0];
-    let processingCharge = 0;
+  // CheckProcessingCharge() {
+  //   let secure = this.selectedScheme;
+  //   let unsecure = this.selectedUnsecuredscheme[0];
+  //   let processingCharge = 0;
 
-    if (secure) {
-      let processingChargePercent = (this.controls.finalLoanAmount.value * secure.processingChargePercent) / 100
-      if (processingChargePercent > parseFloat(secure.processingChargeFixed)) {
-        processingCharge += processingChargePercent
-      } else {
-        processingCharge += secure.processingChargeFixed
-      }
-    }
+  //   if (secure) {
+  //     let processingChargePercent = (this.controls.finalLoanAmount.value * secure.processingChargePercent) / 100
+  //     if (processingChargePercent > parseFloat(secure.processingChargeFixed)) {
+  //       processingCharge += processingChargePercent
+  //     } else {
+  //       processingCharge += secure.processingChargeFixed
+  //     }
+  //   }
 
-    if (this.controls.isUnsecuredSchemeApplied.value && unsecure) {
-      let processingChargePercentUnsecure = (this.controls.finalLoanAmount.value * unsecure.processingChargePercent) / 100
-      if (processingChargePercentUnsecure > parseFloat(unsecure.processingChargeFixed)) {
-        processingCharge += processingChargePercentUnsecure
-      } else {
-        processingCharge += unsecure.processingChargeFixed
-      }
-    }
+  //   if (this.controls.isUnsecuredSchemeApplied.value && unsecure) {
+  //     let processingChargePercentUnsecure = (this.controls.finalLoanAmount.value * unsecure.processingChargePercent) / 100
+  //     if (processingChargePercentUnsecure > parseFloat(unsecure.processingChargeFixed)) {
+  //       processingCharge += processingChargePercentUnsecure
+  //     } else {
+  //       processingCharge += unsecure.processingChargeFixed
+  //     }
+  //   }
 
-    this.controls.processingCharge.patchValue(processingCharge.toFixed(2))
-  }
+  //   this.controls.processingCharge.patchValue(processingCharge.toFixed(2))
+  // }
 
-  generateTable(unSecuredInterestAmount?) {
-    if (this.controls.isUnsecuredSchemeApplied.value && unSecuredInterestAmount) {
-      this.unSecuredInterestAmount = unSecuredInterestAmount;
-    }
+  // generateTable(unSecuredInterestAmount?) {
+  //   if (this.controls.isUnsecuredSchemeApplied.value && unSecuredInterestAmount) {
+  //     this.unSecuredInterestAmount = unSecuredInterestAmount;
+  //   }
 
-    this.dateOfPayment = []
-    let length = Number(this.controls.tenure.value)
-    for (let index = 0; index < length; index++) {
+  //   this.dateOfPayment = []
+  //   let length = Number(this.controls.tenure.value)
+  //   for (let index = 0; index < length; index++) {
 
-      let startDate = this.controls.loanStartDate.value;
-      if (typeof startDate == "string")
-        startDate = new Date(startDate)
-      let date = new Date()
+  //     let startDate = this.controls.loanStartDate.value;
+  //     if (typeof startDate == "string")
+  //       startDate = new Date(startDate)
+  //     let date = new Date()
 
-      var data = {
-        emiDueDate: new Date(date.setDate(startDate.getDate() + (30 * (index + 1)))),
-        paymentType: this.paymentType,
-        securedInterestAmount: this.securedInterestAmount,
-        unsecuredInterestAmount: this.unSecuredInterestAmount,
-        totalAmount: Number(this.securedInterestAmount) + Number(this.unSecuredInterestAmount)
-      }
+  //     var data = {
+  //       emiDueDate: new Date(date.setDate(startDate.getDate() + (30 * (index + 1)))),
+  //       paymentType: this.paymentType,
+  //       securedInterestAmount: this.securedInterestAmount,
+  //       unsecuredInterestAmount: this.unSecuredInterestAmount,
+  //       totalAmount: Number(this.securedInterestAmount) + Number(this.unSecuredInterestAmount)
+  //     }
 
-      if ((index + 1) % this.colJoin == 0) {
-        this.dateOfPayment.push(data)
-      }
-      else if (index + 1 == length) {
-        data.securedInterestAmount = ((this.securedInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
+  //     if ((index + 1) % this.colJoin == 0) {
+  //       this.dateOfPayment.push(data)
+  //     }
+  //     else if (index + 1 == length) {
+  //       data.securedInterestAmount = ((this.securedInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
 
-        if (this.controls.isUnsecuredSchemeApplied.value)
-          data.unsecuredInterestAmount = ((this.unSecuredInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
-        else {
-          data.unsecuredInterestAmount = 0;
-        }
-        data.totalAmount = Number(data.securedInterestAmount) + Number(data.unsecuredInterestAmount)
-        this.dateOfPayment.push(data)
-      }
-    }
+  //       if (this.controls.isUnsecuredSchemeApplied.value)
+  //         data.unsecuredInterestAmount = ((this.unSecuredInterestAmount / this.colJoin) * (length % this.colJoin)).toFixed(2)
+  //       else {
+  //         data.unsecuredInterestAmount = 0;
+  //       }
+  //       data.totalAmount = Number(data.securedInterestAmount) + Number(data.unsecuredInterestAmount)
+  //       this.dateOfPayment.push(data)
+  //     }
+  //   }
 
-    this.calculateTotainterestAmount()
-    console.log(this.dateOfPayment)
-    return this.dateOfPayment
-  }
+  //   this.calculateTotainterestAmount()
+  //   console.log(this.dateOfPayment)
+  //   return this.dateOfPayment
+  // }
 
   calculateTotainterestAmount() {
     this.totalinterestAmount = 0;
@@ -619,13 +627,13 @@ export class InterestCalculatorComponent implements OnInit {
     var data = {
       unsecuredSchemeAmount: this.controls.unsecuredLoanAmount.value,
       unsecuredSchemeInterest: this.controls.unsecuredInterestRate.value,
-      unsecuredSchemeName: this.selectedUnsecuredscheme[0].id,
+      unsecuredSchemeName: this.selectedUnsecuredscheme.id,
       calculation: this.dateOfPayment,
       unsecuredScheme: this.unSecuredScheme,
       paymentType: this.controls.paymentFrequency.value,
       tenure: this.controls.tenure.value
     }
-    console.log('modal')
+    console.log(data)
     const dialogRef = this.dialog.open(UnSecuredSchemeComponent, {
       data: { unsecuredSchemeForm: data },
       width: '500px'
@@ -633,13 +641,12 @@ export class InterestCalculatorComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log
         this.selectedUnsecuredscheme = res;
         this.controls.unsecuredSchemeId.patchValue(res[0].id)
         this.getIntrest()
         this.calcInterestAmount()
-        this.CheckProcessingCharge();
-        this.generateTable();
+        // this.CheckProcessingCharge();
+        // this.generateTable();
         this.ref.detectChanges()
       }
     });
