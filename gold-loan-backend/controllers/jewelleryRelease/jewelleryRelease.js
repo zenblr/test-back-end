@@ -165,11 +165,18 @@ async function getCustomerLoanId(masterLoanId) {
         include:[{
             model: models.customerLoan,
             as: 'customerLoan',
-            attributes: ['id']
+            attributes: ['id','loanType']
         }]
-    })
-    let customerLoanId = await loanData.customerLoan.map((data) => data.id);
-    return customerLoanId
+    });
+    let loan = {}
+    await loanData.customerLoan.map((data) => {
+        if(data.loanType == "secured"){
+            loan.secured = data.id;
+        }else{
+            loan.unsecured = data.id
+        }
+    });
+    return loan
 }
 
 async function getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId) {
