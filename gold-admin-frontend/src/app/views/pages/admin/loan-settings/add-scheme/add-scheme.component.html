@@ -1,6 +1,6 @@
 <div class="kt-portlet">
     <kt-modal-header [title]="'Add Scheme'" (action)="action($event)"></kt-modal-header>
-    <div class="kt-portlet__body position-relative">
+    <div class="kt-portlet__body position-relative" id="container">
         <div class="text-right">
             <a href="../../../../../assets/media/files/schemes.csv" download="schemes.csv"
                 *ngIf="tabGroup.selectedIndex == 1">
@@ -13,159 +13,163 @@
         <mat-tab-group #tabGroup>
             <mat-tab label="By Filling From">
                 <form [formGroup]="fillingForm">
-                    <div class="row kt-margin-b-15">
-                        <div class="col-3 form-label">
-                            <label class="kt-padding-l-10 mandatory">Partner Name</label>
-                        </div>
-                        <div class="col-9">
-                            <select name="" id="" class="form-control" formControlName="partnerId"
-                                [class.isError]="fillingForm.get('partnerId').touched && fillingForm.get('partnerId').invalid">
-                                <option value="" [selected]="true" [disabled]="true">Select Partner</option>
-                                <option [value]="partner.id" *ngFor="let partner of partnerData">
-                                    {{partner.name | titlecase}}
-                                </option>
-                            </select>
+                    <div>
+                        <div class="row kt-margin-b-15">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory">Partner Name</label>
+                            </div>
+                            <div class="col-9">
+                                <select name="" id="" class="form-control" formControlName="partnerId"
+                                    [class.isError]="fillingForm.get('partnerId').touched && fillingForm.get('partnerId').invalid">
+                                    <option value="" [selected]="true" [disabled]="true">Select Partner</option>
+                                    <option [value]="partner.id" *ngFor="let partner of partnerData">
+                                        {{partner.name | titlecase}}
+                                    </option>
+                                </select>
 
+                            </div>
                         </div>
-                    </div>
-                    <div class="row kt-margin-b-15">
-                        <div class="col-3 form-label">
-                            <label class="kt-padding-l-10 mandatory"> Scheme Name</label>
+                        <div class="row kt-margin-b-15">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory"> Scheme Name</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="test" class="form-control" formControlName="schemeName"
+                                    [class.isError]="fillingForm.get('schemeName').touched && fillingForm.get('schemeName').invalid"
+                                    placeholder="Express Gold Loan">
+                            </div>
                         </div>
-                        <div class="col-9">
-                            <input type="test" class="form-control" formControlName="schemeName"
-                                [class.isError]="fillingForm.get('schemeName').touched && fillingForm.get('schemeName').invalid"
-                                placeholder="Express Gold Loan">
-                        </div>
-                    </div>
 
-                    <div class="row kt-margin-b-15">
-                        <div class="col-3 form-label">
-                            <label class="kt-padding-l-10 mandatory">Scheme Type</label>
+                        <div class="row kt-margin-b-15">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory">Scheme Type</label>
+                            </div>
+                            <div class="col-9">
+                                <select name="" id="" class="form-control" formControlName="schemeType"
+                                    [class.isError]="fillingForm.get('schemeType').touched && fillingForm.get('schemeType').invalid">
+                                    <option value="" [selected]="true" [disabled]="true">Select Scheme Type</option>
+                                    <option [value]="scheme.value" *ngFor="let scheme of schemeType">
+                                        {{scheme.name | titlecase}}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-9">
-                            <select name="" id="" class="form-control" formControlName="schemeType"
-                                [class.isError]="fillingForm.get('schemeType').touched && fillingForm.get('schemeType').invalid">
-                                <option value="" [selected]="true" [disabled]="true">Select Scheme Type</option>
-                                <option [value]="scheme.value" *ngFor="let scheme of schemeType">
-                                    {{scheme.name | titlecase}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row kt-margin-b-15 kt-padding-l-15"
-                        *ngIf="fillingForm.get('schemeType').value == 'secured'">
+                        <div class="row kt-margin-b-15 kt-padding-l-15"
+                            *ngIf="fillingForm.get('schemeType').value == 'secured'">
 
-                        <div class="offset-3 position-relative kt-padding-l-10">
-                            <label class="custom-checkbox ">
-                                <span class="label-checkbox">TOP UP Allowed</span>
-                                <input type="checkbox" (change)="setAsTopUpAllowed($event.target.checked)"
-                                    formControlName="isTopUp">
-                                <span class="checkmark top-0"></span>
-                            </label>
+                            <div class="offset-3 position-relative kt-padding-l-10">
+                                <label class="custom-checkbox ">
+                                    <span class="label-checkbox">TOP UP Allowed</span>
+                                    <input type="checkbox" (change)="setAsTopUpAllowed($event.target.checked)"
+                                        formControlName="isTopUp">
+                                    <span class="checkmark top-0"></span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row kt-margin-b-15 kt-padding-l-15"
-                        *ngIf="fillingForm.get('schemeType').value == 'unsecured'">
+                        <div class="row kt-margin-b-15 kt-padding-l-15"
+                            *ngIf="fillingForm.get('schemeType').value == 'unsecured'">
 
-                        <div class="offset-3 position-relative kt-padding-l-10">
-                            <label class="custom-checkbox ">
-                                <span class="label-checkbox">Set as Default</span>
-                                <input type="checkbox" (change)="setAsDefault($event.target.checked)"
-                                    formControlName="isDefault">
-                                <span class="checkmark top-0"></span>
-                            </label>
-                            <!-- <label class="custom-checkbox">
+                            <div class="offset-3 position-relative kt-padding-l-10">
+                                <label class="custom-checkbox ">
+                                    <span class="label-checkbox">Set as Default</span>
+                                    <input type="checkbox" (change)="setAsDefault($event.target.checked)"
+                                        formControlName="isDefault">
+                                    <span class="checkmark top-0"></span>
+                                </label>
+                                <!-- <label class="custom-checkbox">
                                         <span class="label-checkbox">{{action.actionName |titlecase}}</span>
                                         <input type="checkbox" [checked]="action.isSelected" (change)="actionChange($event.target.checked,moduleIndex,entityIndex,permissionIndex)">
                                         <span class="checkmark"></span>
                                     </label> -->
+                            </div>
                         </div>
-                    </div>
-                    <div class="row kt-margin-b-10">
-                        <div class="col-3 form-label">
-                            <label class="kt-padding-l-10 mandatory"> Processing Charges</label>
-                        </div>
-                        <div class="col-9">
-                            <div class="row">
-                                <div class="col">
-                                    <input type="number" class="form-control" formControlName="processingChargeFixed"
-                                        [class.isError]="fillingForm.get('processingChargeFixed').touched && fillingForm.get('processingChargeFixed').invalid"
-                                        placeholder="Fixed">
-                                    <mat-error
-                                        *ngIf="(fillingForm.get('processingChargeFixed').errors?.pattern && fillingForm.get('processingChargeFixed').touched)
+                        <div class="row kt-margin-b-10">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory"> Processing Charges</label>
+                            </div>
+                            <div class="col-9">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="number" class="form-control"
+                                            formControlName="processingChargeFixed"
+                                            [class.isError]="fillingForm.get('processingChargeFixed').touched && fillingForm.get('processingChargeFixed').invalid"
+                                            placeholder="Fixed">
+                                        <mat-error
+                                            *ngIf="(fillingForm.get('processingChargeFixed').errors?.pattern && fillingForm.get('processingChargeFixed').touched)
                                         || (fillingForm.get('processingChargeFixed').errors?.min && fillingForm.get('processingChargeFixed').touched)">
-                                        Invalid Input
-                                    </mat-error>
-                                </div>
-                                <!-- <div class="col-1 form-label justify-content-center"><label> Or</label></div> -->
-                                <div class="col">
-                                    <input type="number" class="form-control" formControlName="processingChargePercent"
-                                        [class.isError]="fillingForm.get('processingChargePercent').touched && fillingForm.get('processingChargePercent').invalid"
-                                        placeholder="% of loan amount">
-                                    <mat-error *ngIf="(fillingForm.get('processingChargePercent').errors?.pattern && fillingForm.get('processingChargePercent').touched)
+                                            Invalid Input
+                                        </mat-error>
+                                    </div>
+                                    <!-- <div class="col-1 form-label justify-content-center"><label> Or</label></div> -->
+                                    <div class="col">
+                                        <input type="number" class="form-control"
+                                            formControlName="processingChargePercent"
+                                            [class.isError]="fillingForm.get('processingChargePercent').touched && fillingForm.get('processingChargePercent').invalid"
+                                            placeholder="% of loan amount">
+                                        <mat-error *ngIf="(fillingForm.get('processingChargePercent').errors?.pattern && fillingForm.get('processingChargePercent').touched)
                                         ">
-                                        Invalid Input
-                                    </mat-error>
+                                            Invalid Input
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row kt-margin-b-15">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory"> Maximum % Allowed </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="test" class="form-control" formControlName="maximumPercentageAllowed"
+                                    [class.isError]="fillingForm.get('maximumPercentageAllowed').touched && fillingForm.get('maximumPercentageAllowed').invalid"
+                                    placeholder="Maximum % Allowed">
+                                <mat-error
+                                    *ngIf="fillingForm.get('maximumPercentageAllowed').errors?.pattern && fillingForm.get('maximumPercentageAllowed').touched">
+                                    Invalid Input
+                                </mat-error>
+                            </div>
+                        </div>
+
+                        <div class="row kt-margin-b-15">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory"> Penal Interest (%) </label>
+                            </div>
+                            <div class="col-9 penal">
+                                <input type="test" class="form-control" formControlName="penalInterest"
+                                    [class.isError]="fillingForm.get('penalInterest').touched && fillingForm.get('penalInterest').invalid"
+                                    placeholder="00%">
+                                <mat-error
+                                    *ngIf="fillingForm.get('penalInterest').errors?.pattern && fillingForm.get('penalInterest').touched">
+                                    Invalid Input
+                                </mat-error>
+
+                            </div>
+                        </div>
+
+                        <div class="row kt-margin-b-10">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory"> Enter Amount</label>
+                            </div>
+                            <div class="col-9">
+                                <div class="row">
+                                    <div class="col-6 amount">
+                                        <input type="number" class="form-control" formControlName="schemeAmountStart"
+                                            [class.isError]="fillingForm.get('schemeAmountStart').touched && fillingForm.get('schemeAmountStart').invalid"
+                                            placeholder="From e.g. 1 or 1.5" (blur)="fromAndToValidation()">
+                                        <mat-error *ngIf="fillingForm.get('schemeAmountStart').errors?.amt">
+                                            <small>From Should be less than To Amt</small>
+                                        </mat-error>
+                                    </div>
+                                    <div class="col-6 amount">
+                                        <input type="number" class="form-control" formControlName="schemeAmountEnd"
+                                            [class.isError]="fillingForm.get('schemeAmountEnd').touched && fillingForm.get('schemeAmountEnd').invalid"
+                                            placeholder="To e.g. 2" (blur)="fromAndToValidation()">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="row kt-margin-b-15">
-                        <div class="col-3 form-label">
-                            <label class="kt-padding-l-10 mandatory"> Maximum % Allowed </label>
-                        </div>
-                        <div class="col-9">
-                            <input type="test" class="form-control" formControlName="maximumPercentageAllowed"
-                                [class.isError]="fillingForm.get('maximumPercentageAllowed').touched && fillingForm.get('maximumPercentageAllowed').invalid"
-                                placeholder="Maximum % Allowed">
-                            <mat-error
-                                *ngIf="fillingForm.get('maximumPercentageAllowed').errors?.pattern && fillingForm.get('maximumPercentageAllowed').touched">
-                                Invalid Input
-                            </mat-error>
-                        </div>
-                    </div>
-
-                    <div class="row kt-margin-b-15">
-                        <div class="col-3 form-label">
-                            <label class="kt-padding-l-10 mandatory"> Penal Interest (%) </label>
-                        </div>
-                        <div class="col-9 penal">
-                            <input type="test" class="form-control" formControlName="penalInterest"
-                                [class.isError]="fillingForm.get('penalInterest').touched && fillingForm.get('penalInterest').invalid"
-                                placeholder="00%">
-                            <mat-error
-                                *ngIf="fillingForm.get('penalInterest').errors?.pattern && fillingForm.get('penalInterest').touched">
-                                Invalid Input
-                            </mat-error>
-
-                        </div>
-                    </div>
-
-                    <div class="row kt-margin-b-10">
-                        <div class="col-3 form-label">
-                            <label class="kt-padding-l-10 mandatory"> Enter Amount</label>
-                        </div>
-                        <div class="col-9">
-                            <div class="row">
-                                <div class="col-6 amount">
-                                    <input type="number" class="form-control" formControlName="schemeAmountStart"
-                                        [class.isError]="fillingForm.get('schemeAmountStart').touched && fillingForm.get('schemeAmountStart').invalid"
-                                        placeholder="From e.g. 1 or 1.5" (blur)="fromAndToValidation()">
-                                    <mat-error *ngIf="fillingForm.get('schemeAmountStart').errors?.amt">
-                                        <small>From Should be less than To Amt</small>
-                                    </mat-error>
-                                </div>
-                                <div class="col-6 amount">
-                                    <input type="number" class="form-control" formControlName="schemeAmountEnd"
-                                        [class.isError]="fillingForm.get('schemeAmountEnd').touched && fillingForm.get('schemeAmountEnd').invalid"
-                                        placeholder="To e.g. 2" (blur)="fromAndToValidation()">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row kt-margin-t-10">
+                    <div class="row kt-margin-t-10" *ngIf="fillingForm.get('schemeType').value == 'secured'">
                         <div class="col-3 form-label">
                             <label class="kt-padding-l-10 mandatory"> Split at Beginning</label>
                         </div>
@@ -176,63 +180,100 @@
                             <input type="radio" id="no" value="false" formControlName="isSplitAtBeginning">
                             <label for="no">No</label> -->
 
-                            <mat-radio-group formControlName="isSplitAtBeginning">
-                                <mat-radio-button [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button [value]="false">No</mat-radio-button>
-                            </mat-radio-group>
+                                <mat-radio-group formControlName="isSplitAtBeginning">
+                                    <mat-radio-button [value]="true">Yes</mat-radio-button>
+                                    <mat-radio-button [value]="false">No</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="row kt-padding-t-15">
-                        <div class="offset-3 col-3">
-                            <p class="text-color form-label">
-                                <mat-form-field class="example-full-width">
-                                    <input type="number" matInput formControlName="numberOfDays1">
-                                    <span matSuffix>&nbsp; Days</span>
-                                </mat-form-field>
-                            </p>
+                        <!-- <div class="row kt-padding-t-15">
+                            <div class="offset-3 col-3">
+                                <p class="text-color form-label">
+                                    <mat-form-field class="example-full-width">
+                                        <input type="number" matInput formControlName="numberOfDays1">
+                                        <span matSuffix>&nbsp; Days</span>
+                                    </mat-form-field>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                <p class="text-color form-label">
+                                    <mat-form-field class="example-full-width">
+                                        <input type="number" matInput formControlName="numberOfDays2">
+                                        <span matSuffix>&nbsp; Days</span>
+                                    </mat-form-field>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                <p class="text-color form-label">
+                                    <mat-form-field class="example-full-width">
+                                        <input type="number" matInput formControlName="numberOfDays3">
+                                        <span matSuffix>&nbsp; Days</span>
+                                    </mat-form-field>
+                                </p>
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="row">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory">
+                                    Rate of Interest <br>
+                                    (% / Monthly)
+                                </label>
+                            </div>
+                            <div class="col-3">
+                                <input type="number" class="form-control"
+                                    formControlName="interestRateThirtyDaysMonthly"
+                                    [class.isError]="fillingForm.get('interestRateThirtyDaysMonthly').touched && fillingForm.get('interestRateThirtyDaysMonthly').invalid">
+                            </div>
+                            <div class="col-3">
+                                <input type="number" class="form-control"
+                                    formControlName="interestRateNinetyDaysMonthly"
+                                    [class.isError]="fillingForm.get('interestRateNinetyDaysMonthly').touched && fillingForm.get('interestRateNinetyDaysMonthly').invalid">
+                            </div>
+                            <div class="col-3">
+                                <input type="number" class="form-control"
+                                    formControlName="interestRateOneHundredEightyDaysMonthly"
+                                    [class.isError]="fillingForm.get('interestRateOneHundredEightyDaysMonthly').touched && fillingForm.get('interestRateOneHundredEightyDaysMonthly').invalid">
+                            </div>
+                        </div> -->
+
+                        <div class="row justify-content-end form-label">
+                            <label *ngIf="schemeInterest.length > 3" class="kt-pointer mr-4" (click)="removeSlabRate()">
+                                Remove
+                                Slab </label>&nbsp;&nbsp;
+                            <label class="kt-pointer mr-4" (click)="addSlabRate()"> Add Slab </label>
                         </div>
-                        <div class="col-3">
-                            <p class="text-color form-label">
-                                <!-- <input type="number" class="form-control" /> Days -->
-                                <mat-form-field class="example-full-width">
-                                    <input type="number" matInput formControlName="numberOfDays2">
-                                    <span matSuffix>&nbsp; Days</span>
-                                </mat-form-field>
-                            </p>
+
+                        <!-- Form Array -->
+
+                        <div class="row">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory">
+                                    Rate of Interest <br>
+                                    (% / Monthly)
+                                </label>
+                            </div>
+                            <div class="col">
+                                <div class="row" formArrayName="schemeInterest">
+                                    <div class="col-4" *ngFor="let slab of schemeInterest.controls; index as idx">
+                                        <div [formGroupName]="idx">
+                                            <div>
+                                                <mat-form-field class="example-full-width">
+                                                    <input type="number" matInput formControlName="days">
+                                                    <span matSuffix>&nbsp; Days</span>
+                                                </mat-form-field>
+                                            </div>
+                                            <div>
+                                                <input type="number" class="form-control"
+                                                    formControlName="interestRate">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-3">
-                            <p class="text-color form-label">
-                                <!-- <input type="number" class="form-control" /> Days -->
-                                <mat-form-field class="example-full-width">
-                                    <input type="number" matInput formControlName="numberOfDays3">
-                                    <span matSuffix>&nbsp; Days</span>
-                                </mat-form-field>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3 form-label">
-                            <label class="kt-padding-l-10 mandatory">
-                                Rate of Interest <br>
-                                (% / Monthly)
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <input type="number" class="form-control" formControlName="interestRateThirtyDaysMonthly"
-                                [class.isError]="fillingForm.get('interestRateThirtyDaysMonthly').touched && fillingForm.get('interestRateThirtyDaysMonthly').invalid">
-                        </div>
-                        <div class="col-3">
-                            <input type="number" class="form-control" formControlName="interestRateNinetyDaysMonthly"
-                                [class.isError]="fillingForm.get('interestRateNinetyDaysMonthly').touched && fillingForm.get('interestRateNinetyDaysMonthly').invalid">
-                        </div>
-                        <div class="col-3">
-                            <input type="number" class="form-control"
-                                formControlName="interestRateOneHundredEightyDaysMonthly"
-                                [class.isError]="fillingForm.get('interestRateOneHundredEightyDaysMonthly').touched && fillingForm.get('interestRateOneHundredEightyDaysMonthly').invalid">
-                        </div>
-                    </div>
-                    <!-- <div class="row kt-padding-t-15">
+                        <!-- <div class="row kt-padding-t-15">
                         <div class="offset-3 col-3">
                             <p class="text-color form-label">30 Days</p>
                         </div>
@@ -243,7 +284,7 @@
                             <p class="text-color form-label">180 Days</p>
                         </div>
                     </div> -->
-                    <!-- <div class="row">
+                        <!-- <div class="row">
                         <div class="col-3">
                             <p class="text-color form-label mandatory">
                                 Rate of Interest <br>
@@ -264,7 +305,7 @@
                                 [class.isError]="fillingForm.get('interestRateOneHundredEightyDaysAnnually').touched && fillingForm.get('interestRateOneHundredEightyDaysAnnually').invalid">
                         </div>
                     </div> -->
-
+                    </div>
                 </form>
             </mat-tab>
             <mat-tab label="By Uploading CSV">

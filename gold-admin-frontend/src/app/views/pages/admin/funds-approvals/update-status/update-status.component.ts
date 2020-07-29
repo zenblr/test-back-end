@@ -38,7 +38,7 @@ export class UpdateStatusComponent implements OnInit {
       customerId: [, [Validators.required]],
       loanId: [, [Validators.required]],
       loanAmount: ['', [Validators.required]],
-      principalOutStandingAmount: ['', [Validators.required]],
+      outstandingAmount: ['', [Validators.required]],
       releaseAmount: ['', [Validators.required]],
       interestAmount: ['', [Validators.required]],
       penalInterest: ['', [Validators.required]],
@@ -62,6 +62,7 @@ export class UpdateStatusComponent implements OnInit {
       partReleaseId: data.id,
       customerId: data.masterLoan.loanPersonalDetail.customerUniqueId,
       loanAmount: data.masterLoan.finalLoanAmount,
+      outstandingAmount: data.masterLoan.outstandingAmount,
       loanId: loanIdArr.join(', ')
     })
 

@@ -33,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'internal_user_branch'
         },
+        appraiserId: {
+            type: DataTypes.INTEGER,
+            field: 'appraiser_id',
+            allowNull: false
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
