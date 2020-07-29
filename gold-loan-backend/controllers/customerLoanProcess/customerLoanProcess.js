@@ -1010,7 +1010,16 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             // loan transfer changes complete
             if (loanMaster.isLoanTransfer == true) {
                 let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
-                await disbursementOfLoanTransfer(masterLoanId);
+                let dateChnage = await disbursementOfLoanTransfer(masterLoanId);
+                for (let a = 0; a < dateChnage.securedInterest.length; a++) {
+                    let updateDate = dateChnage.securedInterest[a].emiDueDate
+                    await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id } })
+                }
+                if (dateChnage.isUnSecured == true) {
+                    for (let a = 0; a < dateChnage.unsecuredInterest.length; a++) {
+                        let updateDate = dateChnage.unsecuredInterest[a].emiDueDate
+                        await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.unsecuredInterest[a].id } })
+                    }}
                 let customerLoanId = [];
                 for (const loan of loanMaster.customerLoan) {
                     customerLoanId.push(loan.id);
@@ -1063,18 +1072,12 @@ async function disbursementOfLoanTransfer(masterLoanId){
     });
     let securedInterest  = await getInterestTable(masterLoanId, securedLoanId, Loan);
     let unsecuredInterest;
+    let isUnSecured = false;
     if (Loan.isUnsecuredSchemeApplied == true) {
+        isUnSecured = true;
         unsecuredInterest = await getInterestTable(masterLoanId, unsecuredLoanId, Loan);
     }
-    for (let a = 0; a < securedInterest.length; a++) {
-        let updateDate = securedInterest[a].emiDueDate
-        await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: securedInterest[a].id } })
-    }
-    if (Loan.isUnsecuredSchemeApplied == true) {
-        for (let a = 0; a < unsecuredInterest.length; a++) {
-            let updateDate = unsecuredInterest[a].emiDueDate
-            await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: unsecuredInterest[a].id } })
-        }}
+    return {securedInterest,unsecuredInterest,isUnSecured}
 }
 
 //FUNCTION for disbursement
