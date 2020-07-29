@@ -1010,7 +1010,15 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             // loan transfer changes complete
             if (loanMaster.isLoanTransfer == true) {
                 let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
-
+                let dateChnage = await disbursementOfLoanTransfer(masterLoanId);
+                for (let a = 0; a < dateChnage.securedInterest.length; a++) {
+                    let updateDate = dateChnage.securedInterest[a].emiDueDate
+                    await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id },transaction: t })                }
+                if (dateChnage.isUnSecured == true) {
+                    for (let a = 0; a < dateChnage.unsecuredInterest.length; a++) {
+                        let updateDate = dateChnage.unsecuredInterest[a].emiDueDate
+                        await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.unsecuredInterest[a].id },transaction: t })
+                    }}
                 let customerLoanId = [];
                 for (const loan of loanMaster.customerLoan) {
                     customerLoanId.push(loan.id);
@@ -1033,6 +1041,42 @@ exports.loanOpsTeamRating = async (req, res, next) => {
 
         return res.status(200).json({ message: 'success' })
     }
+}
+
+async function disbursementOfLoanTransfer(masterLoanId){
+    let checkLoan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        order: [[models.customerLoan, 'id', 'asc']],
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan',
+        }]
+    });
+    let securedLoanId;
+    let unsecuredLoanId;
+    if (checkLoan.isUnsecuredSchemeApplied == true) {
+        securedLoanId = checkLoan.customerLoan[0].id;
+        unsecuredLoanId = checkLoan.customerLoan[1].id;
+    } else {
+        securedLoanId = checkLoan.customerLoan[0].id;
+    }
+    let Loan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied'],
+        include: [{
+            model: models.customerLoanInterest,
+            as: 'customerLoanInterest',
+            where: { isActive: true, loanId: securedLoanId }
+        }]
+    });
+    let securedInterest  = await getInterestTable(masterLoanId, securedLoanId, Loan);
+    let unsecuredInterest;
+    let isUnSecured = false;
+    if (Loan.isUnsecuredSchemeApplied == true) {
+        isUnSecured = true;
+        unsecuredInterest = await getInterestTable(masterLoanId, unsecuredLoanId, Loan);
+    }
+    return {securedInterest,unsecuredInterest,isUnSecured}
 }
 
 //FUNCTION for disbursement
@@ -1812,6 +1856,8 @@ exports.getDetailsForPrint = async (req, res, next) => {
         }
         customerLoanDetail.customerAddress = customerAddress
     }
+    var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
+    dateOfBirth = d.getDate() + "-" + d.getMonth() + 1 + "-" + d.getFullYear();
     //console.log(customerLoanDetail.customerLoan[1])
     let customerUnsecureLoanData = [];
     if (customerLoanDetail.isUnsecuredSchemeApplied) {
@@ -1852,8 +1898,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         "width": "8.27in"
     }
 
-    var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
-    dateOfBirth = d.getDate() + "-" + d.getMonth() + 1 + "-" + d.getFullYear();
+   
 
     var customerSecureLoanData = await [{
         partnerName: customerLoanDetail.customerLoan[0].partner.name,

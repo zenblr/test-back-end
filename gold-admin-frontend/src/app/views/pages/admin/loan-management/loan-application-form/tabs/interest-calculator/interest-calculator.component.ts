@@ -83,6 +83,7 @@ export class InterestCalculatorComponent implements OnInit {
         this.controls.finalLoanAmount.patchValue(res)
         this.controls.finalLoanAmount.disable()
         this.transferLoan = true;
+        this.partner()
       }
     })
 
@@ -91,7 +92,8 @@ export class InterestCalculatorComponent implements OnInit {
       debounceTime(1000),
       distinctUntilChanged()
     ).subscribe(res => {
-      this.partner()
+      if (!this.transferLoan)
+        this.partner()
     })
 
   }
@@ -123,8 +125,12 @@ export class InterestCalculatorComponent implements OnInit {
             this.currentDate = new Date(finalLoan.masterLoan.loanStartDate)
             this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
           }
-          this.selectedScheme = finalLoan.scheme
-          this.paymentFrequency = finalLoan.scheme.schemeInterest
+
+          if (finalLoan.scheme) {
+            this.selectedScheme = finalLoan.scheme
+            this.paymentFrequency = finalLoan.scheme.schemeInterest
+          }
+
           let temp = []
           // this.getIntrest()
 
@@ -169,7 +175,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   partner() {
-    if (this.controls.finalLoanAmount.valid) {
+    if (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == 'DISABLED') {
       this.partnerService.getPartnerBySchemeAmount(Math.floor(this.controls.finalLoanAmount.value)).subscribe(res => {
         this.partnerList = res.data;
         this.returnScheme()
@@ -260,22 +266,24 @@ export class InterestCalculatorComponent implements OnInit {
     this.controls.isUnsecuredSchemeApplied.patchValue(false)
     this.dateOfPayment = []
     const scheme = this.selectedScheme
-    if (!this.transferLoan) {
-      let check = this.eligibleCheck(amt) 
-      
-      if (check) {
-        return
-      }
+
+
+    let data = {
+      loanAmount: amt,
+      securedSchemeId: this.controls.schemeId.value,
+      fullAmount: this.fullAmount,
+      partnerId: this.controls.partnerId.value,
+      isLoanTransfer: this.transferLoan
+    }
+
+    let check = this.eligibleCheck(amt, data)
+    if (check) {
+      return
     }
 
     if (this.controls.partnerId.valid && this.controls.finalLoanAmount.value && this.selectedScheme) {
 
-      let data = {
-        loanAmount: amt,
-        securedSchemeId: this.controls.schemeId.value,
-        fullAmount: this.fullAmount,
-        partnerId: this.controls.partnerId.value
-      }
+
 
       // if (Number(amt) <= Number(scheme.schemeAmountEnd) &&
       //   Number(amt) >= Number(scheme.schemeAmountStart)) {
@@ -318,29 +326,8 @@ export class InterestCalculatorComponent implements OnInit {
       // }
 
       //secure or unsecure loan check
-      this.loanFormService.checkForLoanType(data).subscribe(res => {
-        if (res.data) {
-          if (res.data.unsecuredSchemeApplied) {
-            this.controls.isUnsecuredSchemeApplied.patchValue(true);
-            this.controls.unsecuredSchemeId.patchValue(res.data.unsecuredSchemeApplied.id)
-            this.controls.unsecuredLoanAmount.patchValue(res.data.unsecuredAmount)
-            this.selectedUnsecuredscheme = res.data.unsecuredSchemeApplied
-            this.controls.securedLoanAmount.patchValue(res.data.securedLoanAmount)
-            this.unSecuredScheme = res.data.unsecuredScheme
-          } else {
-            this.controls.securedLoanAmount.patchValue(Number(amt))
-          }
-          this.controls.processingCharge.patchValue(res.data.processingCharge)
-          this.paymentFrequency = res.data.securedScheme.schemeInterest;
-          this.controls.paymentFrequency.reset()
-        }
+      this.checkForLoanType(data, amt)
 
-
-      }, err => {
-        if (err.error.message == "No Unsecured Scheme Availabe") {
-          this.controls.finalLoanAmount.setErrors({ noDefaultScheme: true })
-        }
-      })
 
 
     }
@@ -348,15 +335,44 @@ export class InterestCalculatorComponent implements OnInit {
     // this.CheckProcessingCharge()
   }
 
-  eligibleCheck(amt) {
+  eligibleCheck(amt, data) {
     if (amt > this.totalAmt) {
-      this.controls.finalLoanAmount.setErrors({ eligible: true })
+      if (this.transferLoan) {
+        this.checkForLoanType(data, amt)
+      } else
+        this.controls.finalLoanAmount.setErrors({ eligible: true })
       return true
     } else {
       this.controls.finalLoanAmount.setErrors(null)
     }
   }
 
+  checkForLoanType(data, amt) {
+    this.loanFormService.checkForLoanType(data).subscribe(res => {
+      if (res.data) {
+        this.controls.finalLoanAmount.setErrors(null)
+        if (res.data.unsecuredSchemeApplied) {
+          this.controls.isUnsecuredSchemeApplied.patchValue(true);
+          this.controls.unsecuredSchemeId.patchValue(res.data.unsecuredSchemeApplied.id)
+          this.controls.unsecuredLoanAmount.patchValue(res.data.unsecuredAmount)
+          this.selectedUnsecuredscheme = res.data.unsecuredSchemeApplied
+          this.controls.securedLoanAmount.patchValue(res.data.securedLoanAmount)
+          this.unSecuredScheme = res.data.unsecuredScheme
+        } else {
+          this.controls.securedLoanAmount.patchValue(Number(amt))
+        }
+        this.controls.processingCharge.patchValue(res.data.processingCharge)
+        this.paymentFrequency = res.data.securedScheme.schemeInterest;
+        this.controls.paymentFrequency.reset()
+      }
+
+
+    }, err => {
+      if (err.error.message == "No Unsecured Scheme Availabe") {
+        this.controls.finalLoanAmount.setErrors({ noDefaultScheme: true })
+      }
+    })
+  }
 
   // unSecuredSchemeCheck(amt, securedPercentage, action?) {
   //   if (this.controls.finalLoanAmount.valid) {
@@ -404,7 +420,7 @@ export class InterestCalculatorComponent implements OnInit {
   // }
 
   getIntrest() {
-    if (this.controls.paymentFrequency.valid && this.controls.finalLoanAmount.valid && this.controls.partnerId.valid && this.controls.schemeId.valid) {
+    if (this.controls.paymentFrequency.valid && (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == 'DISABLED') && this.controls.partnerId.valid && this.controls.schemeId.valid) {
 
       let data = {
         securedSchemeId: this.controls.schemeId.value,
@@ -661,8 +677,8 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.loanFormService.finalLoanAmount.next(0)
-    this.loanFormService.finalLoanAmount.unsubscribe()
+    // this.loanFormService.finalLoanAmount.next(0)
+    // this.loanFormService.finalLoanAmount.unsubscribe()
     this.destroy$.next()
     this.destroy$.complete()
   }
