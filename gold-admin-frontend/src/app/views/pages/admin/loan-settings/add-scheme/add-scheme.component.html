@@ -165,7 +165,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row kt-margin-t-10">
+                    <div class="row kt-margin-t-10" *ngIf="fillingForm.get('schemeType').value == 'secured'">
                         <div class="col-3 form-label">
                             <label class="kt-padding-l-10 mandatory"> Split at Beginning</label>
                         </div>
