@@ -83,6 +83,7 @@ export class InterestCalculatorComponent implements OnInit {
         this.controls.finalLoanAmount.patchValue(res)
         this.controls.finalLoanAmount.disable()
         this.transferLoan = true;
+        this.partner()
       }
     })
 
@@ -170,9 +171,14 @@ export class InterestCalculatorComponent implements OnInit {
 
   partner() {
     if (this.controls.finalLoanAmount.valid) {
+      this.controls.finalLoanAmount.enable()
       this.partnerService.getPartnerBySchemeAmount(Math.floor(this.controls.finalLoanAmount.value)).subscribe(res => {
         this.partnerList = res.data;
         this.returnScheme()
+      },err=>{},()=>{
+        if(this.transferLoan){
+          this.controls.finalLoanAmount.disable()
+        }
       })
     }
   }
