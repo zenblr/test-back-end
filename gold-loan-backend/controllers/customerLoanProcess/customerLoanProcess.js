@@ -253,6 +253,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
     if(securedScheme.isSplitAtBeginning){
         
+        fullAmount = loanAmount       //During split at the beginning consider loan amount as full amount 
     }
 
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
@@ -306,8 +307,8 @@ exports.checkForLoanType = async (req, res, next) => {
         }
 
 
-        if (unsecuredSchemeApplied &&
-            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + (unsecuredSchemeApplied.maximumPercentageAllowed / 100)))) {
+        if (unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning ||
+            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + (unsecuredSchemeApplied.maximumPercentageAllowed / 100))))) {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
