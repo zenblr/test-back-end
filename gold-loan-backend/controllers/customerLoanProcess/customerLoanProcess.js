@@ -251,6 +251,10 @@ exports.checkForLoanType = async (req, res, next) => {
         }]
     })
 
+    if(securedScheme.isSplitAtBeginning){
+        
+    }
+
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
 
     let securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
