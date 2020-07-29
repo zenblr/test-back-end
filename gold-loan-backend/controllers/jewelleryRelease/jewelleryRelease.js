@@ -6,7 +6,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
-const { getCustomerLoanId,interestAmountCalculation } = require('../../utils/interestCalculation');
+const { getCustomerLoanId,interestAmountCalculation,getGlobalSetting,getLoanDetails } = require('../../utils/interestCalculation');
 
 
 exports.ornamentsDetails = async (req, res, next) => {
@@ -71,17 +71,6 @@ async function getGoldRate() {
     return goldRate.goldRate;
 }
 
-async function getLoanDetails(masterLoanId) {
-    let loanData = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId }
-    })
-    return loanData;
-}
-
-async function getGlobalSetting() {
-    let globalSettings = await models.globalSetting.getGlobalSetting();
-    return globalSettings;
-}
 
 async function ornementsDetails(masterLoanId, whereBlock) {
     let ornaments = await models.customerLoanMaster.findOne({
