@@ -1010,7 +1010,16 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             // loan transfer changes complete
             if (loanMaster.isLoanTransfer == true) {
                 let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
-                await disbursementOfLoanTransfer(masterLoanId);
+                let dateChnage = await disbursementOfLoanTransfer(masterLoanId);
+                for (let a = 0; a < dateChnage.securedInterest.length; a++) {
+                    let updateDate = dateChnage.securedInterest[a].emiDueDate
+                    await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id } })
+                }
+                if (dateChnage.isUnSecured == true) {
+                    for (let a = 0; a < dateChnage.unsecuredInterest.length; a++) {
+                        let updateDate = dateChnage.unsecuredInterest[a].emiDueDate
+                        await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.unsecuredInterest[a].id } })
+                    }}
                 let customerLoanId = [];
                 for (const loan of loanMaster.customerLoan) {
                     customerLoanId.push(loan.id);
@@ -1061,10 +1070,14 @@ async function disbursementOfLoanTransfer(masterLoanId){
             where: { isActive: true, loanId: securedLoanId }
         }]
     });
-    await getInterestTable(masterLoanId, securedLoanId, Loan);
+    let securedInterest  = await getInterestTable(masterLoanId, securedLoanId, Loan);
+    let unsecuredInterest;
+    let isUnSecured = false;
     if (Loan.isUnsecuredSchemeApplied == true) {
-        await getInterestTable(masterLoanId, unsecuredLoanId, Loan);
+        isUnSecured = true;
+        unsecuredInterest = await getInterestTable(masterLoanId, unsecuredLoanId, Loan);
     }
+    return {securedInterest,unsecuredInterest,isUnSecured}
 }
 
 //FUNCTION for disbursement
