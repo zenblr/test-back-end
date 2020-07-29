@@ -278,7 +278,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
   }
 
   ExportAsPdf() {
-    this.loanService.getPdf(this.masterAndLoanIds.masterLoan).subscribe(res=>{
+    this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe(res=>{
 
     })
   }

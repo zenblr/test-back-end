@@ -143,8 +143,10 @@ export class LoanApplicationFormService {
     )
   }
 
-  getPdf(customerLoanId): Observable<any> {
-    return this.http.post(`/api/loan-process/get-print-details`, { customerLoanId }).pipe(
+  getPdf(id): Observable<any> {
+    return this.http.get(`/api/loan-process/get-print-details?customerLoanId=${id}`,
+    { responseType: "arraybuffer" }
+    ).pipe(
       tap(res => {
         if (res) {
           var binary = '';
