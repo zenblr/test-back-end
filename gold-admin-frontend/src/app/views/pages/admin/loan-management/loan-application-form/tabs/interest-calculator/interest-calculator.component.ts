@@ -185,10 +185,10 @@ export class InterestCalculatorComponent implements OnInit {
     this.controls.totalFinalInterestAmt.reset()
     this.controls.paymentFrequency.reset()
     this.controls.processingCharge.reset()
-    this.selectedScheme=''
+    this.selectedScheme = ''
   }
 
-  partnerReset(){
+  partnerReset() {
     this.controls.partnerId.reset();
     this.reset()
   }
@@ -260,10 +260,12 @@ export class InterestCalculatorComponent implements OnInit {
     this.controls.isUnsecuredSchemeApplied.patchValue(false)
     this.dateOfPayment = []
     const scheme = this.selectedScheme
-
-    let check = this.eligibleCheck(amt)
-    if (check) {
-      return
+    if (!this.transferLoan) {
+      let check = this.eligibleCheck(amt) 
+      
+      if (check) {
+        return
+      }
     }
 
     if (this.controls.partnerId.valid && this.controls.finalLoanAmount.value && this.selectedScheme) {
@@ -325,7 +327,7 @@ export class InterestCalculatorComponent implements OnInit {
             this.selectedUnsecuredscheme = res.data.unsecuredSchemeApplied
             this.controls.securedLoanAmount.patchValue(res.data.securedLoanAmount)
             this.unSecuredScheme = res.data.unsecuredScheme
-          }else{
+          } else {
             this.controls.securedLoanAmount.patchValue(Number(amt))
           }
           this.controls.processingCharge.patchValue(res.data.processingCharge)
@@ -333,9 +335,9 @@ export class InterestCalculatorComponent implements OnInit {
           this.controls.paymentFrequency.reset()
         }
 
-        
-      },err=>{
-        if(err.error.message == "No Unsecured Scheme Availabe"){
+
+      }, err => {
+        if (err.error.message == "No Unsecured Scheme Availabe") {
           this.controls.finalLoanAmount.setErrors({ noDefaultScheme: true })
         }
       })
@@ -463,7 +465,7 @@ export class InterestCalculatorComponent implements OnInit {
       return;
     }
 
-    this.loanFormService.calculateFinalInterestTable(this.finalInterestForm.value).subscribe(res=>{
+    this.loanFormService.calculateFinalInterestTable(this.finalInterestForm.value).subscribe(res => {
       this.dateOfPayment = res.data.interestTable;
       this.controls.totalFinalInterestAmt.patchValue(res.data.totalInterestAmount)
       this.ref.detectChanges()
@@ -472,7 +474,7 @@ export class InterestCalculatorComponent implements OnInit {
         dom.scrollIntoView({ behavior: "smooth", block: "end" })
       }, 500)
     })
-    return 
+    return
     // if (this.controls.isUnsecuredSchemeApplied.value) {
 
     //   let maximumAmtAllowed = (this.fullAmount * (this.selectedScheme.maximumPercentageAllowed / 100))
@@ -658,7 +660,7 @@ export class InterestCalculatorComponent implements OnInit {
 
   }
 
-  ngDestroy() {
+  ngOnDestroy() {
     this.loanFormService.finalLoanAmount.next(0)
     this.loanFormService.finalLoanAmount.unsubscribe()
     this.destroy$.next()

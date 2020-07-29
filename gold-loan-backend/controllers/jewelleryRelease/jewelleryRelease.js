@@ -6,6 +6,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
+const { getCustomerLoanId,interestAmountCalculation,getGlobalSetting,getLoanDetails } = require('../../utils/interestCalculation');
 
 
 exports.ornamentsDetails = async (req, res, next) => {
@@ -70,17 +71,6 @@ async function getGoldRate() {
     return goldRate.goldRate;
 }
 
-async function getLoanDetails(masterLoanId) {
-    let loanData = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId }
-    })
-    return loanData;
-}
-
-async function getGlobalSetting() {
-    let globalSettings = await models.globalSetting.getGlobalSetting();
-    return globalSettings;
-}
 
 async function ornementsDetails(masterLoanId, whereBlock) {
     let ornaments = await models.customerLoanMaster.findOne({
@@ -154,31 +144,6 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
     return ornamentsWeightInfo;
 }
 
-async function interestAmountCalculation(masterLoanId,customerLoanId) {
-    // let intrest = await loanFunction(masterLoanId,customerLoanId);
-    return {masterLoanId,customerLoanId}
-}
-
-async function getCustomerLoanId(masterLoanId) {
-    let loanData = await models.customerLoanMaster.findOne({
-        where:{id:masterLoanId},
-        include:[{
-            model: models.customerLoan,
-            as: 'customerLoan',
-            attributes: ['id','loanType']
-        }]
-    });
-    let loan = {}
-    await loanData.customerLoan.map((data) => {
-        if(data.loanType == "secured"){
-            loan.secured = data.id;
-        }else{
-            loan.unsecured = data.id
-        }
-    });
-    return loan
-}
-
 async function getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId) {
     let loanData = await models.customerLoan.findAll({ where: { masterLoanId }, attributes: ['loanUniqueId'] });
     let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount'] });
@@ -197,6 +162,7 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId) 
 
 exports.ornamentsAmountDetails = async (req, res, next) => {
     let { masterLoanId, ornamentId } = req.body;
+    let amount ={};
     let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true };
     let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true };
     let loanData = await getLoanDetails(masterLoanId);
@@ -205,8 +171,13 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
     let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
     let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData);
     let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId);
-    let data = await interestAmountCalculation(masterLoanId,customerLoanId);
-    return res.status(200).json({ message: 'success', ornamentWeight, loanInfo,data });
+    if(customerLoanId.secured){
+        amount.secured = await interestAmountCalculation(masterLoanId,customerLoanId.secured);
+    }
+    if(customerLoanId.unsecured){
+        amount.unSecured = await interestAmountCalculation(masterLoanId,customerLoanId.unsecured);
+    }
+    return res.status(200).json({ message: 'success', ornamentWeight, loanInfo,amount });
 }
 
 exports.ornamentsPartRelease = async (req, res, next) => {
