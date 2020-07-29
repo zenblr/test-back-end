@@ -264,8 +264,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             if (stage >= 1) {
               this.apiHit.emit(res.scrapId);
             }
-            // if (res.totalEligibleAmt)
-            //   this.totalEligibleAmt.emit(res.totalEligibleAmt);
+            if (res.finalScrapAmount)
+              this.totalEligibleAmt.emit(res.totalEligibleAmt);
             // if (res.finalLoanAmount)
             //   this.finalLoanAmount.emit(res.finalLoanAmount);
           } else {

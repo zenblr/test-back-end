@@ -6,21 +6,22 @@
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
                         <kt-basic-details [action]="action" (apiHit)="editId($event)" [scrapDetails]="customerDetail"
                             [disable]="disabledForm" (id)="scrap($event)" (next)="next($event)"
-                            [showButton]="showButton" (scrapStage)="stage($event)">
+                            (totalEligibleAmt)="totalEligibleAmt($event)" [showButton]="showButton"
+                            (scrapStage)="stage($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <mat-tab label="Ornaments" [disabled]="disabled[1]">
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
                             style="padding:0px !important">
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
-                                [details]="customerDetail" (totalAmt)="total($event)" (fullAmt)="fullAmt($event)"
-                                [scrapIds]="scrapIds" [ornamentType]="ornamentType" [showButton]="showButton">
+                                [details]="customerDetail" (totalAmt)="total($event)" [scrapIds]="scrapIds"
+                                [ornamentType]="ornamentType" [showButton]="showButton">
                             </kt-ornaments>
                         </div>
                     </mat-tab>
                     <mat-tab label="Customer Acknowledgment" [disabled]="disabled[2]">
                         <kt-upload-documents [scrapIds]="scrapIds" [loanDocumnets]="customerDetail"
-                            [showButton]="showButton">
+                            [totalAmt]="totalAmount" [showButton]="showButton">
                         </kt-upload-documents>
                     </mat-tab>
                     <!-- <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">

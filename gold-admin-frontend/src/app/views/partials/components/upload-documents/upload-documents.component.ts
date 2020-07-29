@@ -8,11 +8,11 @@ import { MatDialog } from '@angular/material';
 import { PdfViewerComponent } from '../../../../views/partials/components/pdf-viewer/pdf-viewer.component';
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
-import { LoanTransferService } from '../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
-import { values } from 'lodash';
-import { NgxPermission } from 'ngx-permissions/lib/model/permission.model';
-import { NgxPermissionsService } from 'ngx-permissions';
 import { ScrapApplicationFormService } from '../../../../core/scrap-management';
+import { StandardDeductionService } from '../../../../core/masters/standard-deduction/service/standard-deduction.service';
+import { LoanTransferService } from '../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
+import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
+import { NgxPermissionsService } from 'ngx-permissions';
 import printJS from 'print-js';
 
 @Component({
@@ -29,6 +29,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() scrapIds;
   @Input() loanTransfer
   @Input() showButton
+  @Input() totalAmt = 0;
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -48,10 +49,13 @@ export class UploadDocumentsComponent implements OnInit {
   show: boolean;
   showLoanFlag = false;
   showLoanTransferFlag = false;
-  showScrapFlag = false;
+  showScrapAcknowledgementFlag = false;
   url: string;
   buttonName: string;
   isEdit: boolean;
+  standardDeductionArr: any;
+  globalValue: any;
+
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -61,16 +65,19 @@ export class UploadDocumentsComponent implements OnInit {
     public loanService: LoanApplicationFormService,
     private ref: ChangeDetectorRef,
     private loanTransferFormService: LoanTransferService,
+    private scrapApplicationFormService: ScrapApplicationFormService,
     private el: ElementRef,
     private renderer: Renderer,
     private ngxPermission: NgxPermissionsService,
-    public scrapApplicationFormService: ScrapApplicationFormService,
+    private standardDeductionService: StandardDeductionService,
+    public globalSettingService: GlobalSettingService,
   ) {
     this.url = (this.router.url.split("/")[3]).split("?")[0]
     if (this.url == "loan-transfer") {
       this.showLoanTransferFlag = true;
     } else if (this.url == "scrap-buying-application-form") {
-      this.showScrapFlag = true;
+      this.showScrapAcknowledgementFlag = true;
+      this.getStandardDeduction();
     } else {
       this.showLoanFlag = true;
     }
@@ -129,6 +136,17 @@ export class UploadDocumentsComponent implements OnInit {
         }
       }
     }
+    if (changes.totalAmt) {
+      if (Number(changes.totalAmt.currentValue) && this.globalValue) {
+        const calculateProcessingCharges = Math.round(this.totalAmt * this.globalValue.processingChargesInPercent / 100);
+        console.log(calculateProcessingCharges);
+        if (calculateProcessingCharges > this.globalValue.processingChargesFixed) {
+          this.controls.processingCharges.patchValue(calculateProcessingCharges);
+        } else {
+          this.controls.processingCharges.patchValue(this.globalValue.processingChargesFixed);
+        }
+      }
+    }
   }
 
   pdfCheck() {
@@ -153,6 +171,9 @@ export class UploadDocumentsComponent implements OnInit {
 
   }
 
+  ngAfterViewInit() {
+    this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
+  }
 
   initForm() {
     this.documentsForm = this.fb.group({
@@ -172,17 +193,14 @@ export class UploadDocumentsComponent implements OnInit {
       loanAgreementCopyImage: [],
       pawnCopyImage: [],
       schemeConfirmationCopyImage: [],
-      approxPurityReading: [],
-      xrfMachineReading: [],
-      xrfMachineReadingImage: [],
-      xrfMachineReadingImageName: [],
+      processingCharges: [],
+      standardDeduction: [''],
       customerConfirmation: [],
       customerConfirmationImage: [],
       customerConfirmationImageName: []
     })
     this.validation()
   }
-
 
   get controls() {
     return this.documentsForm.controls
@@ -196,13 +214,13 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.controls.declaration.updateValueAndValidity()
       this.documentsForm.controls.outstandingLoanAmount.setValidators(Validators.required),
         this.documentsForm.controls.outstandingLoanAmount.updateValueAndValidity()
-    } else if (this.showScrapFlag) {
+    } else if (this.showScrapAcknowledgementFlag) {
       this.documentsForm.controls.pawnCopy.setValidators([]),
-        this.documentsForm.controls.pawnCopy.updateValueAndValidity(),
-        this.documentsForm.controls.approxPurityReading.setValidators(Validators.required),
-        this.documentsForm.controls.approxPurityReading.updateValueAndValidity(),
-        this.documentsForm.controls.xrfMachineReading.setValidators(Validators.required),
-        this.documentsForm.controls.xrfMachineReading.updateValueAndValidity()
+        this.documentsForm.controls.pawnCopy.updateValueAndValidity()
+      this.documentsForm.controls.processingCharges.setValidators(Validators.required),
+        this.documentsForm.controls.processingCharges.updateValueAndValidity()
+      this.documentsForm.controls.standardDeduction.setValidators(Validators.required),
+        this.documentsForm.controls.standardDeduction.updateValueAndValidity()
       this.documentsForm.controls.customerConfirmation.setValidators(Validators.required),
         this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
     } else {
@@ -211,6 +229,14 @@ export class UploadDocumentsComponent implements OnInit {
       this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
         this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
     }
+  }
+
+  getStandardDeduction() {
+    this.standardDeductionService.getAllStandardDeductions().pipe(
+      map(res => {
+        this.standardDeductionArr = res.deductionDetails;
+      })
+    ).subscribe()
   }
 
   fileUpload(event, value) {
@@ -253,12 +279,8 @@ export class UploadDocumentsComponent implements OnInit {
             controls.declaration.patchValue([res.uploadFile.path])
             controls.declarationCopyImageName.patchValue(res.uploadFile.originalname)
             controls.declarationCopyImage.patchValue(res.uploadFile.URL)
-          } else if (value == 'xrfMachineReading') {
-            controls.xrfMachineReading.patchValue(res.uploadFile.path)
-            controls.xrfMachineReadingImageName.patchValue(res.uploadFile.originalname)
-            controls.xrfMachineReadingImage.patchValue(res.uploadFile.URL)
           } else if (value == 'customerConfirmation') {
-            controls.customerConfirmation.patchValue(res.uploadFile.path)
+            controls.customerConfirmation.patchValue([res.uploadFile.path])
             controls.customerConfirmationImageName.patchValue(res.uploadFile.originalname)
             controls.customerConfirmationImage.patchValue(res.uploadFile.URL)
           }
@@ -270,8 +292,8 @@ export class UploadDocumentsComponent implements OnInit {
           console.log(this.pdf)
         }), finalize(() => {
           this[value].nativeElement.value = ''
-          this.ref.detectChanges();
-        })).subscribe();
+          this.ref.detectChanges()
+        })).subscribe()
     }
     else {
       this.toastr.error('Upload Valid File Format');
@@ -361,6 +383,15 @@ export class UploadDocumentsComponent implements OnInit {
             // }
           }
         })).subscribe()
+    } else if (this.url == 'scrap-buying-application-form') {
+      this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
+        map(res => {
+          if (res.scrapCurrentStage) {
+            let stage = Number(res.scrapCurrentStage) - 1
+            this.stage.emit(res.scrapCurrentStage)
+            this.next.emit(stage)
+          }
+        })).subscribe();
     } else {
       this.loanService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(
         map(res => {

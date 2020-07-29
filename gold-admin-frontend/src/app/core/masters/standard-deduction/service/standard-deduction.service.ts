@@ -56,4 +56,14 @@ export class StandardDeductionService {
         throw (err);
       }))
   }
+
+  getAllStandardDeductions(): Observable<any> {
+    return this.http.get(`/api/scrap/standard-deduction/all-standard-deduction`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      }))
+  }
 }
