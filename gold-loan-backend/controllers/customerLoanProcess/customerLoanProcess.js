@@ -1237,6 +1237,10 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 
     let customerLoan = await models.customerLoan.findOne({
         where: { id: customerLoanId },
+        order: [
+            [models.scheme, 'id', 'asc'],
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
         // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [
             {
