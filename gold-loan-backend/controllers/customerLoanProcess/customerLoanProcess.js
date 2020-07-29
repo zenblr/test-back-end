@@ -1061,10 +1061,20 @@ async function disbursementOfLoanTransfer(masterLoanId){
             where: { isActive: true, loanId: securedLoanId }
         }]
     });
-    await getInterestTable(masterLoanId, securedLoanId, Loan);
+    let securedInterest  = await getInterestTable(masterLoanId, securedLoanId, Loan);
+    let unsecuredInterest;
     if (Loan.isUnsecuredSchemeApplied == true) {
-        await getInterestTable(masterLoanId, unsecuredLoanId, Loan);
+        unsecuredInterest = await getInterestTable(masterLoanId, unsecuredLoanId, Loan);
     }
+    for (let a = 0; a < securedInterest.length; a++) {
+        let updateDate = securedInterest[a].emiDueDate
+        await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: securedInterest[a].id } })
+    }
+    if (Loan.isUnsecuredSchemeApplied == true) {
+        for (let a = 0; a < unsecuredInterest.length; a++) {
+            let updateDate = unsecuredInterest[a].emiDueDate
+            await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: unsecuredInterest[a].id } })
+        }}
 }
 
 //FUNCTION for disbursement
